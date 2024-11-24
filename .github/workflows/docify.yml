@@ -1,0 +1,147 @@
+name: docify
+
+on:
+  # Allow running manually
+  workflow_dispatch:
+  # Run daily
+  # schedule:
+  #   - cron: "0 0 * * *"
+
+env:
+  UPSTREAM: https://github.com/python/typeshed.git
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ci/docify
+      - name: Git setup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream "$UPSTREAM"
+      - name: Fetch upstream
+        run: git fetch upstream
+      - name: Merge
+        run: |
+          git reset --hard origin/main
+          git merge upstream/main --no-ff -m 'chore: merge upstream' -s ort -X theirs
+      - name: Add docify commit
+        run: |
+          rm -rf stdlib stubs
+          git restore --source=upstream/main stdlib stubs
+          git add stdlib stubs
+          git commit --allow-empty -m 'chore: run docify'
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  docify-linux:
+    needs: merge
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ci/docify
+      - name: Git setup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream "$UPSTREAM"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "requirements-docify.txt"
+          enable-cache: true
+          version: "0.5.4"
+      - name: Run docify
+        run: |
+          for ver in 3.13 3.12 3.11 3.10 3.9; do
+            uv venv -p "python$ver"
+            uv pip install -r requirements-docify.txt
+            uv run --no-project docify -q -i stdlib
+          done
+      - name: Commit changes
+        run: |
+          git add stdlib stubs
+          git commit --amend --reset-author --no-edit
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  docify-windows:
+    needs: docify-linux
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ci/docify
+      - name: Git setup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream "$UPSTREAM"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "requirements-docify.txt"
+          enable-cache: true
+          version: "0.5.4"
+      - name: Run docify
+        run: |
+          ForEach ($ver in '3.13', '3.12', '3.11', '3.10', '3.9') {
+            uv venv -p "python$ver"
+            uv pip install -r requirements-docify.txt
+            uv run --no-project docify -q -i stdlib
+          }
+      - name: Commit changes
+        run: |
+          git add stdlib stubs
+          git commit --amend --reset-author --no-edit
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  docify-macos:
+    needs: docify-windows
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ci/docify
+      - name: Git setup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream "$UPSTREAM"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "requirements-docify.txt"
+          enable-cache: true
+          version: "0.5.4"
+      - name: Run docify
+        run: |
+          for ver in 3.13 3.12 3.11 3.10 3.9; do
+            uv venv -p "python$ver"
+            uv pip install -r requirements-docify.txt
+            uv run --no-project docify -q -i stdlib
+          done
+      - name: Commit changes
+        run: |
+          git add stdlib stubs
+          git commit --amend --reset-author --no-edit
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  push:
+    needs: docify-macos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Push
+        run: |
+          git merge --ff-only origin/ci/docify
+          git push origin main
