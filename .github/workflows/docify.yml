@@ -1,0 +1,175 @@
+name: docify
+
+on:
+  # Allow running manually
+  workflow_dispatch:
+  # Run daily
+  # schedule:
+  #   - cron: "0 0 * * *"
+
+env:
+  PYTHONUNBUFFERED: 1
+  UPSTREAM: https://github.com/python/typeshed.git
+  UV_VERSION: 0.5.4
+
+jobs:
+  setup-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git setup
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ci/docify
+      - name: Fetch upstream
+        run: |
+          git remote add upstream "$UPSTREAM"
+          git fetch upstream
+      - name: Merge
+        run: |
+          git reset --hard origin/main
+          git merge upstream/main --no-ff -m 'chore: merge upstream' -s ort -X theirs
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "scripts/ci_docify/requirements.txt"
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+      - name: Generate requirements_stubs.txt
+        run: |
+          uv venv -p python3.13
+          uv pip install -r scripts/ci_docify/requirements.txt
+          uv run --no-project scripts/ci_docify/gen_requirements.py > scripts/ci_docify/requirements_stubs.txt
+      - name: Commit changes
+        run: |
+          # don't commit if nothing changed
+          if ! git diff --quiet; then
+            git add scripts/ci_docify/requirements_stubs.txt
+            git commit -m 'chore: update scripts/ci_docify/requirements_stubs.txt'
+          fi
+      - name: Add docify commit
+        run: |
+          rm -rf stdlib stubs
+          git restore --source=upstream/main stdlib stubs
+          git add stdlib stubs
+          git commit --allow-empty -m 'chore: run docify'
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  docify-linux:
+    needs: setup-merge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git setup
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ci/docify
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "scripts/ci_docify/requirements*.txt"
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+      - name: Setup venv
+        run: |
+          uv venv -p python3.13
+          uv pip install -r scripts/ci_docify/requirements.txt
+      - name: Install dependencies
+        run: uv run --no-project scripts/ci_docify/install_os_dependencies.py --sudo apt
+      - name: Run docify
+        run: uv run --no-project scripts/ci_docify/main.py
+      - name: Commit changes
+        run: |
+          git add stdlib stubs
+          git commit --amend --reset-author --no-edit
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  docify-macos:
+    needs: docify-linux
+    runs-on: macos-latest
+    steps:
+      - name: Git setup
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ci/docify
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "scripts/ci_docify/requirements*.txt"
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+      - name: Setup venv
+        run: |
+          uv venv -p python3.13
+          uv pip install -r scripts/ci_docify/requirements.txt
+      - name: Install dependencies
+        run: uv run --no-project scripts/ci_docify/install_os_dependencies.py brew
+      - name: Run docify
+        run: |
+          export PATH="$(brew --prefix postgresql@16)/bin:$PATH"
+          export CPPFLAGS="-I$(brew --prefix openssl)/include"
+          export LDFLAGS="-L$(brew --prefix openssl)/lib"
+          export PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig"
+          export PYCURL_SSL_LIBRARY=openssl
+          uv run --no-project scripts/ci_docify/main.py
+      - name: Commit changes
+        run: |
+          git add stdlib stubs
+          git commit --amend --reset-author --no-edit
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  docify-windows:
+    needs: docify-macos
+    runs-on: windows-latest
+    steps:
+      - name: Git setup
+        run: |
+          git config --global core.autocrlf true
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ci/docify
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          cache-dependency-glob: "scripts/ci_docify/requirements*.txt"
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+      - name: Setup venv
+        run: |
+          uv venv -p python3.13
+          uv pip install -r scripts/ci_docify/requirements.txt
+      - name: Install dependencies
+        run: uv run --no-project scripts/ci_docify/install_os_dependencies.py choco
+      - name: Run docify
+        run: uv run --no-project scripts/ci_docify/main.py
+      - name: Commit changes
+        run: |
+          git add stdlib stubs
+          git commit --amend --reset-author --no-edit
+      - name: Push
+        run: git push --force-with-lease origin ci/docify
+  push:
+    needs: docify-windows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Push
+        run: |
+          git merge --ff-only origin/ci/docify
+          git push origin main
