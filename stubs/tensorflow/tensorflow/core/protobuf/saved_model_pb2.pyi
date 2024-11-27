@@ -39,6 +39,8 @@ class SavedModel(google.protobuf.message.Message):
         saved_model_schema_version: builtins.int | None = ...,
         meta_graphs: collections.abc.Iterable[tensorflow.core.protobuf.meta_graph_pb2.MetaGraphDef] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["meta_graphs", b"meta_graphs", "saved_model_schema_version", b"saved_model_schema_version"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["meta_graphs", b"meta_graphs", "saved_model_schema_version", b"saved_model_schema_version"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedModel = SavedModel

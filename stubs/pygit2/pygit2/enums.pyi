@@ -1,11 +1,13 @@
 from enum import IntEnum, IntFlag
 
 class ApplyLocation(IntEnum):
+    """Possible application locations for patches"""
     WORKDIR = 0
     INDEX = 1
     BOTH = 2
 
 class AttrCheck(IntFlag):
+    """An enumeration."""
     FILE_THEN_INDEX = 0x0
     INDEX_THEN_FILE = 0x1
     INDEX_ONLY = 0x2
@@ -14,6 +16,7 @@ class AttrCheck(IntFlag):
     INCLUDE_COMMIT = 0x10
 
 class BlameFlag(IntFlag):
+    """An enumeration."""
     NORMAL = 0x0
     TRACK_COPIES_SAME_FILE = 0x1
     TRACK_COPIES_SAME_COMMIT_MOVES = 0x2
@@ -24,17 +27,26 @@ class BlameFlag(IntFlag):
     IGNORE_WHITESPACE = 0x40
 
 class BlobFilter(IntFlag):
+    """An enumeration."""
     CHECK_FOR_BINARY = 0x1
     NO_SYSTEM_ATTRIBUTES = 0x2
     ATTRIBUTES_FROM_HEAD = 0x4
     ATTRIBUTES_FROM_COMMIT = 0x8
 
 class BranchType(IntFlag):
+    """An enumeration."""
     LOCAL = 0x1
     REMOTE = 0x2
     ALL = 0x3
 
 class CheckoutNotify(IntFlag):
+    """
+    Checkout notification flags
+
+    Checkout will invoke an options notification callback
+    (`CheckoutCallbacks.checkout_notify`) for certain cases - you pick which
+    ones via `CheckoutCallbacks.checkout_notify_flags`.
+    """
     NONE = 0x0
     CONFLICT = 0x1
     DIRTY = 0x2
@@ -44,6 +56,7 @@ class CheckoutNotify(IntFlag):
     ALL = 0xFFFF
 
 class CheckoutStrategy(IntFlag):
+    """An enumeration."""
     NONE = 0x0
     SAFE = 0x1
     FORCE = 0x2
@@ -68,6 +81,11 @@ class CheckoutStrategy(IntFlag):
     CONFLICT_STYLE_ZDIFF3 = 0x200000
 
 class ConfigLevel(IntEnum):
+    """
+    Priority level of a config file.
+    These priority levels correspond to the natural escalation logic
+    (from higher to lower) when searching for config entries in git.git.
+    """
     PROGRAMDATA = 1
     SYSTEM = 2
     XDG = 3
@@ -78,6 +96,10 @@ class ConfigLevel(IntEnum):
     HIGHEST_LEVEL = -1
 
 class CredentialType(IntFlag):
+    """
+    Supported credential types. This represents the various types of
+    authentication methods supported by the library.
+    """
     USERPASS_PLAINTEXT = 0x1
     SSH_KEY = 0x2
     SSH_CUSTOM = 0x4
@@ -87,6 +109,16 @@ class CredentialType(IntFlag):
     SSH_MEMORY = 0x40
 
 class DeltaStatus(IntEnum):
+    """
+    What type of change is described by a DiffDelta?
+
+    `RENAMED` and `COPIED` will only show up if you run
+    `find_similar()` on the Diff object.
+
+    `TYPECHANGE` only shows up given `INCLUDE_TYPECHANGE`
+    in the DiffOption option flags (otherwise type changes
+    will be split into ADDED / DELETED pairs).
+    """
     UNMODIFIED = 0
     ADDED = 1
     DELETED = 2
@@ -100,11 +132,19 @@ class DeltaStatus(IntEnum):
     CONFLICTED = 10
 
 class DescribeStrategy(IntEnum):
+    """
+    Reference lookup strategy.
+
+    These behave like the --tags and --all options to git-describe,
+    namely they say to look for any reference in either refs/tags/ or
+    refs/ respectively.
+    """
     DEFAULT = 0
     TAGS = 1
     ALL = 2
 
 class DiffFind(IntFlag):
+    """Flags to control the behavior of diff rename/copy detection."""
     FIND_BY_CONFIG = 0x0
     FIND_RENAMES = 0x1
     FIND_RENAMES_FROM_REWRITES = 0x2
@@ -123,6 +163,14 @@ class DiffFind(IntFlag):
     FIND_REMOVE_UNMODIFIED = 0x10000
 
 class DiffFlag(IntFlag):
+    """
+    Flags for the delta object and the file objects on each side.
+
+    These flags are used for both the `flags` value of the `DiffDelta`
+    and the flags for the `DiffFile` objects representing the old and
+    new sides of the delta.  Values outside of this public range should be
+    considered reserved for internal or future use.
+    """
     BINARY = 0x1
     NOT_BINARY = 0x2
     VALID_ID = 0x4
@@ -130,6 +178,10 @@ class DiffFlag(IntFlag):
     VALID_SIZE = 0x10
 
 class DiffOption(IntFlag):
+    """
+    Flags for diff options.  A combination of these flags can be passed
+    in via the `flags` value in `diff_*` functions.
+    """
     NORMAL = 0x0
     REVERSE = 0x1
     INCLUDE_IGNORED = 0x2
@@ -163,6 +215,7 @@ class DiffOption(IntFlag):
     SHOW_BINARY = 0x40000000
 
 class DiffStatsFormat(IntFlag):
+    """Formatting options for diff stats"""
     NONE = 0x0
     FULL = 0x1
     SHORT = 0x2
@@ -170,17 +223,23 @@ class DiffStatsFormat(IntFlag):
     INCLUDE_SUMMARY = 0x8
 
 class Feature(IntFlag):
+    """
+    Combinations of these values describe the features with which libgit2
+    was compiled.
+    """
     THREADS = 0x1
     HTTPS = 0x2
     SSH = 0x4
     NSEC = 0x8
 
 class FetchPrune(IntEnum):
+    """Acceptable prune settings when fetching."""
     UNSPECIFIED = 0
     PRUNE = 1
     NO_PRUNE = 2
 
 class FileMode(IntFlag):
+    """An enumeration."""
     UNREADABLE = 0x0
     TREE = 0x4000
     BLOB = 0x81A4
@@ -189,6 +248,16 @@ class FileMode(IntFlag):
     COMMIT = 0xE000
 
 class FileStatus(IntFlag):
+    """
+    Status flags for a single file.
+
+    A combination of these values will be returned to indicate the status of
+    a file. Status compares the working directory, the index, and the current
+    HEAD of the repository.  The `INDEX_...` set of flags represents the status
+    of the file in the index relative to the HEAD, and the `WT_...` set of
+    flags represents the status of the file in the working directory relative
+    to the index.
+    """
     CURRENT = 0x0
     INDEX_NEW = 0x1
     INDEX_MODIFIED = 0x2
@@ -205,6 +274,7 @@ class FileStatus(IntFlag):
     CONFLICTED = 0x8000
 
 class FilterFlag(IntFlag):
+    """Filter option flags."""
     DEFAULT = 0x0
     ALLOW_UNSAFE = 0x1
     NO_SYSTEM_ATTRIBUTES = 0x2
@@ -212,12 +282,20 @@ class FilterFlag(IntFlag):
     ATTRIBUTES_FROM_COMMIT = 0x8
 
 class FilterMode(IntEnum):
+    """
+    Filters are applied in one of two directions: smudging - which is
+    exporting a file from the Git object database to the working directory,
+    and cleaning - which is importing a file from the working directory to
+    the Git object database.  These values control which direction of
+    change is being applied.
+    """
     TO_WORKTREE = 0
     SMUDGE = 0
     TO_ODB = 1
     CLEAN = 1
 
 class MergeAnalysis(IntFlag):
+    """The results of `Repository.merge_analysis` indicate the merge opportunities."""
     NONE = 0x0
     NORMAL = 0x1
     UP_TO_DATE = 0x2
@@ -225,12 +303,17 @@ class MergeAnalysis(IntFlag):
     UNBORN = 0x8
 
 class MergeFavor(IntEnum):
+    """
+    Merge file favor options for `Repository.merge` instruct the file-level
+    merging functionality how to deal with conflicting regions of the files.
+    """
     NORMAL = 0
     OURS = 1
     THEIRS = 2
     UNION = 3
 
 class MergeFileFlag(IntFlag):
+    """File merging flags"""
     DEFAULT = 0x0
     STYLE_MERGE = 0x1
     STYLE_DIFF3 = 0x2
@@ -244,6 +327,10 @@ class MergeFileFlag(IntFlag):
     ACCEPT_CONFLICTS = 0x200
 
 class MergeFlag(IntFlag):
+    """
+    Flags for `Repository.merge` options.
+    A combination of these flags can be passed in via the `flags` value.
+    """
     FIND_RENAMES = 0x1
     FAIL_ON_CONFLICT = 0x2
     SKIP_REUC = 0x4
@@ -251,11 +338,13 @@ class MergeFlag(IntFlag):
     VIRTUAL_BASE = 0x10
 
 class MergePreference(IntFlag):
+    """The user's stated preference for merges."""
     NONE = 0x0
     NO_FASTFORWARD = 0x1
     FASTFORWARD_ONLY = 0x2
 
 class ObjectType(IntEnum):
+    """An enumeration."""
     ANY = -2
     INVALID = -1
     COMMIT = 1
@@ -266,6 +355,7 @@ class ObjectType(IntEnum):
     REF_DELTA = 7
 
 class Option(IntEnum):
+    """Global libgit2 library options"""
     GET_MWINDOW_SIZE = 0
     SET_MWINDOW_SIZE = 1
     GET_MWINDOW_MAPPED_LIMIT = 2
@@ -298,17 +388,20 @@ class Option(IntEnum):
     SET_OWNER_VALIDATION = 36
 
 class ReferenceFilter(IntEnum):
+    """Filters for References.iterator()."""
     ALL = 0
     BRANCHES = 1
     TAGS = 2
 
 class ReferenceType(IntFlag):
+    """Basic type of any Git reference."""
     INVALID = 0x0
     DIRECT = 0x1
     SYMBOLIC = 0x2
     ALL = 0x3
 
 class RepositoryInitFlag(IntFlag):
+    """Option flags for pygit2.init_repository()."""
     BARE = 0x1
     NO_REINIT = 0x2
     NO_DOTGIT_DIR = 0x4
@@ -318,11 +411,13 @@ class RepositoryInitFlag(IntFlag):
     RELATIVE_GITLINK = 0x40
 
 class RepositoryInitMode(IntEnum):
+    """Mode options for pygit2.init_repository()."""
     SHARED_UMASK = 0
     SHARED_GROUP = 1533
     SHARED_ALL = 1535
 
 class RepositoryOpenFlag(IntFlag):
+    """Option flags for Repository.__init__()."""
     DEFAULT = 0x0
     NO_SEARCH = 0x1
     CROSS_FS = 0x2
@@ -331,6 +426,10 @@ class RepositoryOpenFlag(IntFlag):
     FROM_ENV = 0x10
 
 class RepositoryState(IntEnum):
+    """
+    Repository state: These values represent possible states for the repository
+    to be in, based on the current operation which is ongoing.
+    """
     NONE = 0
     MERGE = 1
     REVERT = 2
@@ -345,22 +444,29 @@ class RepositoryState(IntEnum):
     APPLY_MAILBOX_OR_REBASE = 11
 
 class ResetMode(IntEnum):
+    """Kinds of reset operation."""
     SOFT = 1
     MIXED = 2
     HARD = 3
 
 class RevSpecFlag(IntFlag):
+    """
+    Revparse flags.
+    These indicate the intended behavior of the spec passed to Repository.revparse()
+    """
     SINGLE = 0x1
     RANGE = 0x2
     MERGE_BASE = 0x4
 
 class SortMode(IntFlag):
+    """Flags to specify the sorting which a revwalk should perform."""
     NONE = 0x0
     TOPOLOGICAL = 0x1
     TIME = 0x2
     REVERSE = 0x4
 
 class StashApplyProgress(IntEnum):
+    """Stash apply progression states"""
     NONE = 0
     LOADING_STASH = 1
     ANALYZE_INDEX = 2
@@ -371,6 +477,7 @@ class StashApplyProgress(IntEnum):
     DONE = 7
 
 class SubmoduleIgnore(IntEnum):
+    """An enumeration."""
     UNSPECIFIED = -1
     NONE = 1
     UNTRACKED = 2
@@ -378,6 +485,7 @@ class SubmoduleIgnore(IntEnum):
     ALL = 4
 
 class SubmoduleStatus(IntFlag):
+    """An enumeration."""
     IN_HEAD = 0x1
     IN_INDEX = 0x2
     IN_CONFIG = 0x4

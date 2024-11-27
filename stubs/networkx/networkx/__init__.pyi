@@ -1,3 +1,13 @@
+"""
+NetworkX
+========
+
+NetworkX is a Python package for the creation, manipulation, and study of the
+structure, dynamics, and functions of complex networks.
+
+See https://networkx.org for complete documentation.
+"""
+
 from networkx.algorithms import *
 from networkx.classes import *
 from networkx.classes import filters as filters

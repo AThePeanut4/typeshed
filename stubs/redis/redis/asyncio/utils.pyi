@@ -4,7 +4,14 @@ from typing import Any, Generic
 from redis.asyncio.client import Pipeline, Redis
 from redis.client import _StrType
 
-def from_url(url: str, **kwargs) -> Redis[Any]: ...
+def from_url(url: str, **kwargs) -> Redis[Any]:
+    """
+    Returns an active Redis client generated from the given database URL.
+
+    Will attempt to extract the database id from the path url fragment, if
+    none is provided.
+    """
+    ...
 
 class pipeline(Generic[_StrType]):
     p: Pipeline[_StrType]

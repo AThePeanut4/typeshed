@@ -1,3 +1,5 @@
+"""Defused xml.etree.ElementTree facade"""
+
 from _typeshed import Incomplete
 from collections.abc import Iterator, Sequence
 from typing import Any

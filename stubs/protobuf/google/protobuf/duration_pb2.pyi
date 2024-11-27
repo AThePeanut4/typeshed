@@ -126,6 +126,8 @@ class Duration(google.protobuf.message.Message, google.protobuf.internal.well_kn
         seconds: builtins.int | None = ...,
         nanos: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["nanos", b"nanos", "seconds", b"seconds"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["nanos", b"nanos", "seconds", b"seconds"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___Duration = Duration

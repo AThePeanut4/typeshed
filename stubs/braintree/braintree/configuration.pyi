@@ -1,6 +1,17 @@
 from _typeshed import Incomplete
 
 class Configuration:
+    """
+    A class representing the configuration of your Braintree account.
+    You must call configure before any other Braintree operations. ::
+
+        braintree.Configuration.configure(
+            braintree.Environment.Sandbox,
+            "your_merchant_id",
+            "your_public_key",
+            "your_private_key"
+        )
+    """
     @staticmethod
     def configure(environment, merchant_id, public_key, private_key, **kwargs) -> None: ...
     @staticmethod

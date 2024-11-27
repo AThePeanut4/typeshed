@@ -58,6 +58,8 @@ class SourceContext(google.protobuf.message.Message):
         *,
         file_name: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["file_name", b"file_name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["file_name", b"file_name"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SourceContext = SourceContext

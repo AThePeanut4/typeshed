@@ -46,7 +46,9 @@ class MemmappedFileSystemDirectoryElement(google.protobuf.message.Message):
         name: builtins.str | None = ...,
         length: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["length", b"length", "name", b"name", "offset", b"offset"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["length", b"length", "name", b"name", "offset", b"offset"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemmappedFileSystemDirectoryElement = MemmappedFileSystemDirectoryElement
 
@@ -64,6 +66,8 @@ class MemmappedFileSystemDirectory(google.protobuf.message.Message):
         *,
         element: collections.abc.Iterable[global___MemmappedFileSystemDirectoryElement] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["element", b"element"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["element", b"element"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemmappedFileSystemDirectory = MemmappedFileSystemDirectory

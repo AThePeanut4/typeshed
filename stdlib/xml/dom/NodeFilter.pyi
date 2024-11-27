@@ -1,4 +1,5 @@
 class NodeFilter:
+    """This is the DOM2 NodeFilter interface. It contains only constants."""
     FILTER_ACCEPT: int
     FILTER_REJECT: int
     FILTER_SKIP: int

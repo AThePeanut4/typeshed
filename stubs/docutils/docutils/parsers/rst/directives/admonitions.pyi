@@ -1,3 +1,5 @@
+"""Admonition directives."""
+
 from docutils import nodes
 from docutils.parsers.rst import Directive
 

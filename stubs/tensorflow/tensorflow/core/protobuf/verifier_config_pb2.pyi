@@ -34,7 +34,9 @@ class VerifierConfig(google.protobuf.message.Message):
         ON: VerifierConfig._Toggle.ValueType  # 1
         OFF: VerifierConfig._Toggle.ValueType  # 2
 
-    class Toggle(_Toggle, metaclass=_ToggleEnumTypeWrapper): ...
+    class Toggle(_Toggle, metaclass=_ToggleEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     DEFAULT: VerifierConfig.Toggle.ValueType  # 0
     ON: VerifierConfig.Toggle.ValueType  # 1
     OFF: VerifierConfig.Toggle.ValueType  # 2
@@ -53,6 +55,8 @@ class VerifierConfig(google.protobuf.message.Message):
         verification_timeout_in_ms: builtins.int | None = ...,
         structure_verifier: global___VerifierConfig.Toggle.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["structure_verifier", b"structure_verifier", "verification_timeout_in_ms", b"verification_timeout_in_ms"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["structure_verifier", b"structure_verifier", "verification_timeout_in_ms", b"verification_timeout_in_ms"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___VerifierConfig = VerifierConfig

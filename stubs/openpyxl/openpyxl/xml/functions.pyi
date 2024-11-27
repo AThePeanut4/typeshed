@@ -1,3 +1,5 @@
+"""XML compatibility functions"""
+
 from _typeshed import Incomplete
 from re import Pattern
 from typing import Final

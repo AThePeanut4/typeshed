@@ -55,6 +55,8 @@ class HistogramProto(google.protobuf.message.Message):
         bucket_limit: collections.abc.Iterable[builtins.float] | None = ...,
         bucket: collections.abc.Iterable[builtins.float] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bucket", b"bucket", "bucket_limit", b"bucket_limit", "max", b"max", "min", b"min", "num", b"num", "sum", b"sum", "sum_squares", b"sum_squares"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["bucket", b"bucket", "bucket_limit", b"bucket_limit", "max", b"max", "min", b"min", "num", b"num", "sum", b"sum", "sum_squares", b"sum_squares"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___HistogramProto = HistogramProto

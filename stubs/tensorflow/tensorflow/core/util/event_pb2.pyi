@@ -142,9 +142,15 @@ class Event(google.protobuf.message.Message):
         meta_graph_def: builtins.bytes | None = ...,
         source_metadata: global___SourceMetadata | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["file_version", b"file_version", "graph_def", b"graph_def", "log_message", b"log_message", "meta_graph_def", b"meta_graph_def", "session_log", b"session_log", "source_metadata", b"source_metadata", "summary", b"summary", "tagged_run_metadata", b"tagged_run_metadata", "what", b"what"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["file_version", b"file_version", "graph_def", b"graph_def", "log_message", b"log_message", "meta_graph_def", b"meta_graph_def", "session_log", b"session_log", "source_metadata", b"source_metadata", "step", b"step", "summary", b"summary", "tagged_run_metadata", b"tagged_run_metadata", "wall_time", b"wall_time", "what", b"what"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing.Literal["what", b"what"]) -> typing.Literal["file_version", "graph_def", "summary", "log_message", "session_log", "tagged_run_metadata", "meta_graph_def"] | None: ...
+    def HasField(self, field_name: typing.Literal["file_version", b"file_version", "graph_def", b"graph_def", "log_message", b"log_message", "meta_graph_def", b"meta_graph_def", "session_log", b"session_log", "source_metadata", b"source_metadata", "summary", b"summary", "tagged_run_metadata", b"tagged_run_metadata", "what", b"what"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["file_version", b"file_version", "graph_def", b"graph_def", "log_message", b"log_message", "meta_graph_def", b"meta_graph_def", "session_log", b"session_log", "source_metadata", b"source_metadata", "step", b"step", "summary", b"summary", "tagged_run_metadata", b"tagged_run_metadata", "wall_time", b"wall_time", "what", b"what"]) -> None:
+        """Clears a message field."""
+        ...
+    def WhichOneof(self, oneof_group: typing.Literal["what", b"what"]) -> typing.Literal["file_version", "graph_def", "summary", "log_message", "session_log", "tagged_run_metadata", "meta_graph_def"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___Event = Event
 
@@ -164,7 +170,9 @@ class SourceMetadata(google.protobuf.message.Message):
         *,
         writer: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["writer", b"writer"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["writer", b"writer"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SourceMetadata = SourceMetadata
 
@@ -196,7 +204,9 @@ class LogMessage(google.protobuf.message.Message):
         ERROR: LogMessage._Level.ValueType  # 40
         FATAL: LogMessage._Level.ValueType  # 50
 
-    class Level(_Level, metaclass=_LevelEnumTypeWrapper): ...
+    class Level(_Level, metaclass=_LevelEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     UNKNOWN: LogMessage.Level.ValueType  # 0
     DEBUGGING: LogMessage.Level.ValueType  # 10
     """Note: The logging level 10 cannot be named DEBUG. Some software
@@ -219,7 +229,9 @@ class LogMessage(google.protobuf.message.Message):
         level: global___LogMessage.Level.ValueType | None = ...,
         message: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["level", b"level", "message", b"message"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["level", b"level", "message", b"message"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___LogMessage = LogMessage
 
@@ -240,7 +252,9 @@ class SessionLog(google.protobuf.message.Message):
         STOP: SessionLog._SessionStatus.ValueType  # 2
         CHECKPOINT: SessionLog._SessionStatus.ValueType  # 3
 
-    class SessionStatus(_SessionStatus, metaclass=_SessionStatusEnumTypeWrapper): ...
+    class SessionStatus(_SessionStatus, metaclass=_SessionStatusEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     STATUS_UNSPECIFIED: SessionLog.SessionStatus.ValueType  # 0
     START: SessionLog.SessionStatus.ValueType  # 1
     STOP: SessionLog.SessionStatus.ValueType  # 2
@@ -260,7 +274,9 @@ class SessionLog(google.protobuf.message.Message):
         checkpoint_path: builtins.str | None = ...,
         msg: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["checkpoint_path", b"checkpoint_path", "msg", b"msg", "status", b"status"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["checkpoint_path", b"checkpoint_path", "msg", b"msg", "status", b"status"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SessionLog = SessionLog
 
@@ -284,7 +300,9 @@ class TaggedRunMetadata(google.protobuf.message.Message):
         tag: builtins.str | None = ...,
         run_metadata: builtins.bytes | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["run_metadata", b"run_metadata", "tag", b"tag"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["run_metadata", b"run_metadata", "tag", b"tag"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___TaggedRunMetadata = TaggedRunMetadata
 
@@ -299,7 +317,9 @@ class WatchdogConfig(google.protobuf.message.Message):
         *,
         timeout_ms: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["timeout_ms", b"timeout_ms"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["timeout_ms", b"timeout_ms"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___WatchdogConfig = WatchdogConfig
 
@@ -314,7 +334,9 @@ class RequestedExitCode(google.protobuf.message.Message):
         *,
         exit_code: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["exit_code", b"exit_code"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["exit_code", b"exit_code"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___RequestedExitCode = RequestedExitCode
 
@@ -337,8 +359,12 @@ class WorkerHeartbeatRequest(google.protobuf.message.Message):
         watchdog_config: global___WatchdogConfig | None = ...,
         exit_code: global___RequestedExitCode | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["exit_code", b"exit_code", "watchdog_config", b"watchdog_config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["exit_code", b"exit_code", "shutdown_mode", b"shutdown_mode", "watchdog_config", b"watchdog_config"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["exit_code", b"exit_code", "watchdog_config", b"watchdog_config"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["exit_code", b"exit_code", "shutdown_mode", b"shutdown_mode", "watchdog_config", b"watchdog_config"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___WorkerHeartbeatRequest = WorkerHeartbeatRequest
 
@@ -360,6 +386,8 @@ class WorkerHeartbeatResponse(google.protobuf.message.Message):
         worker_log: collections.abc.Iterable[global___Event] | None = ...,
         hostname: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["health_status", b"health_status", "hostname", b"hostname", "worker_log", b"worker_log"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["health_status", b"health_status", "hostname", b"hostname", "worker_log", b"worker_log"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___WorkerHeartbeatResponse = WorkerHeartbeatResponse

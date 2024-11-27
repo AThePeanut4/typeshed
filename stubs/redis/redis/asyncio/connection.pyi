@@ -24,6 +24,7 @@ SYM_EMPTY: Final[bytes]
 SERVER_CLOSED_CONNECTION_ERROR: Final[str]
 
 class _Sentinel(enum.Enum):
+    """An enumeration."""
     sentinel = object()
 
 SENTINEL: Final[object]
@@ -34,20 +35,28 @@ MODULE_EXPORTS_DATA_TYPES_ERROR: Final[str]
 NO_AUTH_SET_ERROR: Final[dict[str, type[AuthenticationError]]]
 
 class Encoder:
+    """Encode strings to bytes-like and decode bytes-like to strings"""
     encoding: str
     encoding_errors: str
     decode_responses: bool
     def __init__(self, encoding: str, encoding_errors: str, decode_responses: bool) -> None: ...
-    def encode(self, value: EncodableT) -> EncodedT: ...
-    def decode(self, value: EncodableT, force: bool = False) -> EncodableT: ...
+    def encode(self, value: EncodableT) -> EncodedT:
+        """Return a bytestring or bytes-like representation of the value"""
+        ...
+    def decode(self, value: EncodableT, force: bool = False) -> EncodableT:
+        """Return a unicode string from the bytes-like representation"""
+        ...
 
 ExceptionMappingT: TypeAlias = Mapping[str, type[Exception] | Mapping[str, type[Exception]]]
 
 class BaseParser:
+    """Plain Python parsing class"""
     EXCEPTION_CLASSES: ExceptionMappingT
     def __init__(self, socket_read_size: int) -> None: ...
     @classmethod
-    def parse_error(cls, response: str) -> ResponseError: ...
+    def parse_error(cls, response: str) -> ResponseError:
+        """Parse an error response"""
+        ...
     @abstractmethod
     def on_disconnect(self) -> None: ...
     @abstractmethod
@@ -58,14 +67,20 @@ class BaseParser:
     async def read_response(self, disable_decoding: bool = False) -> EncodableT | ResponseError | list[EncodableT] | None: ...
 
 class PythonParser(BaseParser):
+    """Plain Python parsing class"""
     encoder: Encoder | None
     def __init__(self, socket_read_size: int) -> None: ...
-    def on_connect(self, connection: AbstractConnection) -> None: ...
-    def on_disconnect(self) -> None: ...
+    def on_connect(self, connection: AbstractConnection) -> None:
+        """Called when the stream connects"""
+        ...
+    def on_disconnect(self) -> None:
+        """Called when the stream disconnects"""
+        ...
     async def can_read_destructive(self) -> bool: ...
     async def read_response(self, disable_decoding: bool = False) -> EncodableT | ResponseError | None: ...
 
 class HiredisParser(BaseParser):
+    """Parser class for connections using Hiredis"""
     def __init__(self, socket_read_size: int) -> None: ...
     def on_connect(self, connection: AbstractConnection) -> None: ...
     def on_disconnect(self) -> None: ...
@@ -84,6 +99,7 @@ class AsyncConnectCallbackProtocol(Protocol):
 ConnectCallbackT: TypeAlias = ConnectCallbackProtocol | AsyncConnectCallbackProtocol
 
 class AbstractConnection:
+    """Manages communication to and from a Redis server"""
     pid: int
     db: str | int
     client_name: str | None
@@ -128,21 +144,46 @@ class AbstractConnection:
     def is_connected(self) -> bool: ...
     def register_connect_callback(self, callback: ConnectCallbackT) -> None: ...
     def clear_connect_callbacks(self) -> None: ...
-    def set_parser(self, parser_class: type[BaseParser]) -> None: ...
-    async def connect(self) -> None: ...
-    async def on_connect(self) -> None: ...
-    async def disconnect(self, nowait: bool = False) -> None: ...
-    async def check_health(self) -> None: ...
+    def set_parser(self, parser_class: type[BaseParser]) -> None:
+        """
+        Creates a new instance of parser_class with socket size:
+        _socket_read_size and assigns it to the parser for the connection
+        :param parser_class: The required parser class
+        """
+        ...
+    async def connect(self) -> None:
+        """Connects to the Redis server if not already connected"""
+        ...
+    async def on_connect(self) -> None:
+        """Initialize the connection, authenticate and select a database"""
+        ...
+    async def disconnect(self, nowait: bool = False) -> None:
+        """Disconnects from the Redis server"""
+        ...
+    async def check_health(self) -> None:
+        """Check the health of the connection with a PING/PONG"""
+        ...
     async def send_packed_command(self, command: bytes | str | Iterable[bytes], check_health: bool = True) -> None: ...
-    async def send_command(self, *args: Any, **kwargs: Any) -> None: ...
-    async def can_read_destructive(self) -> bool: ...
+    async def send_command(self, *args: Any, **kwargs: Any) -> None:
+        """Pack and send a command to the Redis server"""
+        ...
+    async def can_read_destructive(self) -> bool:
+        """Poll the socket to see if there's data that can be read."""
+        ...
     async def read_response(
         self, disable_decoding: bool = False, timeout: float | None = None, *, disconnect_on_error: bool = True
-    ) -> EncodableT | list[EncodableT] | None: ...
-    def pack_command(self, *args: EncodableT) -> list[bytes]: ...
-    def pack_commands(self, commands: Iterable[Iterable[EncodableT]]) -> list[bytes]: ...
+    ) -> EncodableT | list[EncodableT] | None:
+        """Read the response from a previously sent command"""
+        ...
+    def pack_command(self, *args: EncodableT) -> list[bytes]:
+        """Pack a series of arguments into the Redis protocol"""
+        ...
+    def pack_commands(self, commands: Iterable[Iterable[EncodableT]]) -> list[bytes]:
+        """Pack multiple commands into the Redis protocol"""
+        ...
 
 class Connection(AbstractConnection):
+    """Manages TCP communication to and from a Redis server"""
     host: str
     port: int
     socket_keepalive: bool
@@ -180,6 +221,11 @@ class Connection(AbstractConnection):
     def repr_pieces(self) -> list[tuple[str, Any]]: ...
 
 class SSLConnection(Connection):
+    """
+    Manages SSL connections to and from the Redis server(s).
+    This class extends the Connection class, adding SSL functionality, and making
+    use of ssl.SSLContext (https://docs.python.org/3/library/ssl.html#ssl.SSLContext)
+    """
     ssl_context: RedisSSLContext
     def __init__(
         self,
@@ -248,6 +294,7 @@ class RedisSSLContext:
     def get(self) -> ssl.SSLContext: ...
 
 class UnixDomainSocketConnection(Connection):
+    """Manages UDS communication to and from a Redis server"""
     path: str
     def __init__(
         self,
@@ -295,10 +342,61 @@ def parse_url(url: str) -> ConnectKwargs: ...
 _ConnectionT = TypeVar("_ConnectionT", bound=AbstractConnection)
 
 class ConnectionPool(Generic[_ConnectionT]):
+    """
+    Create a connection pool. ``If max_connections`` is set, then this
+    object raises :py:class:`~redis.ConnectionError` when the pool's
+    limit is reached.
+
+    By default, TCP connections are created unless ``connection_class``
+    is specified. Use :py:class:`~redis.UnixDomainSocketConnection` for
+    unix sockets.
+
+    Any additional keyword arguments are passed to the constructor of
+    ``connection_class``.
+    """
     # kwargs accepts all arguments from the connection class chosen for
     # the given URL, except those encoded in the URL itself.
     @classmethod
-    def from_url(cls, url: str, **kwargs: Any) -> Self: ...
+    def from_url(cls, url: str, **kwargs: Any) -> Self:
+        """
+        Return a connection pool configured from the given URL.
+
+        For example::
+
+            redis://[[username]:[password]]@localhost:6379/0
+            rediss://[[username]:[password]]@localhost:6379/0
+            unix://[username@]/path/to/socket.sock?db=0[&password=password]
+
+        Three URL schemes are supported:
+
+        - `redis://` creates a TCP socket connection. See more at:
+          <https://www.iana.org/assignments/uri-schemes/prov/redis>
+        - `rediss://` creates a SSL wrapped TCP socket connection. See more at:
+          <https://www.iana.org/assignments/uri-schemes/prov/rediss>
+        - ``unix://``: creates a Unix Domain Socket connection.
+
+        The username, password, hostname, path and all querystring values
+        are passed through urllib.parse.unquote in order to replace any
+        percent-encoded values with their corresponding characters.
+
+        There are several ways to specify a database number. The first value
+        found will be used:
+            1. A ``db`` querystring option, e.g. redis://localhost?db=0
+            2. If using the redis:// or rediss:// schemes, the path argument
+               of the url, e.g. redis://localhost/0
+            3. A ``db`` keyword argument to this function.
+
+        If none of these options are specified, the default db=0 is used.
+
+        All querystring options are cast to their appropriate Python types.
+        Boolean arguments can be specified with string values "True"/"False"
+        or "Yes"/"No". Values that cannot be properly cast cause a
+        ``ValueError`` to be raised. Once parsed, the querystring arguments
+        and keyword arguments are passed to the ``ConnectionPool``'s
+        class initializer. In the case of conflicting arguments, querystring
+        arguments always win.
+        """
+        ...
 
     connection_class: type[_ConnectionT]
     connection_kwargs: Mapping[str, Any]
@@ -317,15 +415,63 @@ class ConnectionPool(Generic[_ConnectionT]):
     @overload
     def __init__(self: ConnectionPool[Connection], *, max_connections: int | None = None, **connection_kwargs) -> None: ...
     def reset(self) -> None: ...
-    async def get_connection(self, command_name: Unused, *keys: Unused, **options: Unused) -> _ConnectionT: ...
-    def get_encoder(self) -> Encoder: ...
-    def make_connection(self) -> _ConnectionT: ...
-    async def release(self, connection: AbstractConnection) -> None: ...
+    async def get_connection(self, command_name: Unused, *keys: Unused, **options: Unused) -> _ConnectionT:
+        """Get a connection from the pool"""
+        ...
+    def get_encoder(self) -> Encoder:
+        """Return an encoder based on encoding settings"""
+        ...
+    def make_connection(self) -> _ConnectionT:
+        """Create a new connection"""
+        ...
+    async def release(self, connection: AbstractConnection) -> None:
+        """Releases the connection back to the pool"""
+        ...
     def owns_connection(self, connection: AbstractConnection) -> bool: ...
-    async def disconnect(self, inuse_connections: bool = True) -> None: ...
+    async def disconnect(self, inuse_connections: bool = True) -> None:
+        """
+        Disconnects connections in the pool
+
+        If ``inuse_connections`` is True, disconnect connections that are
+        current in use, potentially by other tasks. Otherwise only disconnect
+        connections that are idle in the pool.
+        """
+        ...
     def set_retry(self, retry: Retry) -> None: ...
 
 class BlockingConnectionPool(ConnectionPool[_ConnectionT]):
+    """
+    Thread-safe blocking connection pool::
+
+        >>> from redis.client import Redis
+        >>> client = Redis(connection_pool=BlockingConnectionPool())
+
+    It performs the same function as the default
+    :py:class:`~redis.ConnectionPool` implementation, in that,
+    it maintains a pool of reusable connections that can be shared by
+    multiple redis clients (safely across threads if required).
+
+    The difference is that, in the event that a client tries to get a
+    connection from the pool when all of connections are in use, rather than
+    raising a :py:class:`~redis.ConnectionError` (as the default
+    :py:class:`~redis.ConnectionPool` implementation does), it
+    makes the client wait ("blocks") for a specified number of seconds until
+    a connection becomes available.
+
+    Use ``max_connections`` to increase / decrease the pool size::
+
+        >>> pool = BlockingConnectionPool(max_connections=10)
+
+    Use ``timeout`` to tell it either how many seconds to wait for a connection
+    to become available, or to block forever:
+
+        >>> # Block forever.
+        >>> pool = BlockingConnectionPool(timeout=None)
+
+        >>> # Raise a ``ConnectionError`` after five seconds if a connection is
+        >>> # not available.
+        >>> pool = BlockingConnectionPool(timeout=5)
+    """
     queue_class: type[asyncio.Queue[_ConnectionT | None]]
     timeout: int | None
     pool: asyncio.Queue[_ConnectionT | None]

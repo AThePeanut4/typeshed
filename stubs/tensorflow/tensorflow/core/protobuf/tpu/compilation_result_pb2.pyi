@@ -40,7 +40,9 @@ class CompilationResultProto(google.protobuf.message.Message):
         UNKNOWN: CompilationResultProto._ErrorCode.ValueType  # 0
         OUT_OF_MEMORY: CompilationResultProto._ErrorCode.ValueType  # 1
 
-    class ErrorCode(_ErrorCode, metaclass=_ErrorCodeEnumTypeWrapper): ...
+    class ErrorCode(_ErrorCode, metaclass=_ErrorCodeEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     UNKNOWN: CompilationResultProto.ErrorCode.ValueType  # 0
     OUT_OF_MEMORY: CompilationResultProto.ErrorCode.ValueType  # 1
 
@@ -64,6 +66,8 @@ class CompilationResultProto(google.protobuf.message.Message):
         hlo_protos: collections.abc.Iterable[tensorflow.compiler.xla.service.hlo_pb2.HloProto] | None = ...,
         error_code: global___CompilationResultProto.ErrorCode.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["error_code", b"error_code", "hlo_protos", b"hlo_protos", "status_code", b"status_code", "status_error_message", b"status_error_message"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["error_code", b"error_code", "hlo_protos", b"hlo_protos", "status_code", b"status_code", "status_error_message", b"status_error_message"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CompilationResultProto = CompilationResultProto

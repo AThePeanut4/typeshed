@@ -42,7 +42,9 @@ class TensorShapeProto(google.protobuf.message.Message):
             size: builtins.int | None = ...,
             name: builtins.str | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["name", b"name", "size", b"size"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["name", b"name", "size", b"size"]) -> None:
+            """Clears a message field."""
+            ...
 
     DIM_FIELD_NUMBER: builtins.int
     UNKNOWN_RANK_FIELD_NUMBER: builtins.int
@@ -74,6 +76,8 @@ class TensorShapeProto(google.protobuf.message.Message):
         dim: collections.abc.Iterable[global___TensorShapeProto.Dim] | None = ...,
         unknown_rank: builtins.bool | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dim", b"dim", "unknown_rank", b"unknown_rank"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dim", b"dim", "unknown_rank", b"unknown_rank"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___TensorShapeProto = TensorShapeProto

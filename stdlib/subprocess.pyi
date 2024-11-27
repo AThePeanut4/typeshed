@@ -1,3 +1,38 @@
+"""
+Subprocesses with accessible I/O streams
+
+This module allows you to spawn processes, connect to their
+input/output/error pipes, and obtain their return codes.
+
+For a complete description of this module see the Python documentation.
+
+Main API
+========
+run(...): Runs a command, waits for it to complete, then returns a
+          CompletedProcess instance.
+Popen(...): A class for flexibly executing a command in a new process
+
+Constants
+---------
+DEVNULL: Special value that indicates that os.devnull should be used
+PIPE:    Special value that indicates a pipe should be created
+STDOUT:  Special value that indicates that stderr should go to stdout
+
+
+Older API
+=========
+call(...): Runs a command, waits for it to complete, then returns
+    the return code.
+check_call(...): Same as call() but raises CalledProcessError()
+    if return code is not 0
+check_output(...): Same as check_call() but returns the contents of
+    stdout instead of a return code
+getoutput(...): Runs a command in the shell, waits for it to complete,
+    then returns the output
+getstatusoutput(...): Runs a command in the shell, waits for it to complete,
+    then returns a (exitcode, output) tuple
+"""
+
 import sys
 from _typeshed import MaybeNone, ReadableBuffer, StrOrBytesPath
 from collections.abc import Callable, Collection, Iterable, Mapping, Sequence
@@ -78,6 +113,17 @@ if sys.version_info >= (3, 11):
 _USE_POSIX_SPAWN: Final[bool]
 
 class CompletedProcess(Generic[_T]):
+    """
+    A process that has finished running.
+
+    This is returned by run().
+
+    Attributes:
+      args: The list or str args passed to run().
+      returncode: The exit code of the process, negative for signals.
+      stdout: The standard output (None if not captured).
+      stderr: The standard error (None if not captured).
+    """
     # morally: _CMD
     args: Any
     returncode: int
@@ -86,9 +132,17 @@ class CompletedProcess(Generic[_T]):
     stdout: _T
     stderr: _T
     def __init__(self, args: _CMD, returncode: int, stdout: _T | None = None, stderr: _T | None = None) -> None: ...
-    def check_returncode(self) -> None: ...
+    def check_returncode(self) -> None:
+        """Raise CalledProcessError if the exit code is non-zero."""
+        ...
     if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+            """
+            Represent a PEP 585 generic type
+
+            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+            """
+            ...
 
 if sys.version_info >= (3, 11):
     # 3.11 adds "process_group" argument
@@ -125,7 +179,37 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -159,7 +243,37 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -193,7 +307,37 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -228,7 +372,37 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -262,7 +436,37 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> CompletedProcess[bytes]: ...
+    ) -> CompletedProcess[bytes]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -296,7 +500,37 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> CompletedProcess[Any]: ...
+    ) -> CompletedProcess[Any]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
 
 elif sys.version_info >= (3, 10):
     # 3.10 adds "pipesize" argument
@@ -332,7 +566,37 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -365,7 +629,37 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -398,7 +692,37 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -432,7 +756,37 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -465,7 +819,37 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> CompletedProcess[bytes]: ...
+    ) -> CompletedProcess[bytes]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -498,7 +882,37 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> CompletedProcess[Any]: ...
+    ) -> CompletedProcess[Any]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
 
 elif sys.version_info >= (3, 9):
     # 3.9 adds arguments "user", "group", "extra_groups" and "umask"
@@ -533,7 +947,36 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -565,7 +1008,36 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -597,7 +1069,36 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -630,7 +1131,36 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> CompletedProcess[str]: ...
+    ) -> CompletedProcess[str]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -662,7 +1192,36 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> CompletedProcess[bytes]: ...
+    ) -> CompletedProcess[bytes]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
     @overload
     def run(
         args: _CMD,
@@ -694,7 +1253,36 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> CompletedProcess[Any]: ...
+    ) -> CompletedProcess[Any]:
+        """
+        Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        ...
 
 else:
     @overload
@@ -898,7 +1486,16 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> int: ...
+    ) -> int:
+        """
+        Run command with arguments.  Wait for command to complete or
+        timeout, then return the returncode attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        retcode = call(["ls", "-l"])
+        """
+        ...
 
 elif sys.version_info >= (3, 10):
     # 3.10 adds "pipesize" argument
@@ -929,7 +1526,16 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> int: ...
+    ) -> int:
+        """
+        Run command with arguments.  Wait for command to complete or
+        timeout, then return the returncode attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        retcode = call(["ls", "-l"])
+        """
+        ...
 
 elif sys.version_info >= (3, 9):
     # 3.9 adds arguments "user", "group", "extra_groups" and "umask"
@@ -959,7 +1565,16 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> int: ...
+    ) -> int:
+        """
+        Run command with arguments.  Wait for command to complete or
+        timeout, then return the returncode attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        retcode = call(["ls", "-l"])
+        """
+        ...
 
 else:
     def call(
@@ -1017,7 +1632,18 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> int: ...
+    ) -> int:
+        """
+        Run command with arguments.  Wait for command to complete.  If
+        the exit code was zero then return, otherwise raise
+        CalledProcessError.  The CalledProcessError object will have the
+        return code in the returncode attribute.
+
+        The arguments are the same as for the call function.  Example:
+
+        check_call(["ls", "-l"])
+        """
+        ...
 
 elif sys.version_info >= (3, 10):
     # 3.10 adds "pipesize" argument
@@ -1048,7 +1674,18 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> int: ...
+    ) -> int:
+        """
+        Run command with arguments.  Wait for command to complete.  If
+        the exit code was zero then return, otherwise raise
+        CalledProcessError.  The CalledProcessError object will have the
+        return code in the returncode attribute.
+
+        The arguments are the same as for the call function.  Example:
+
+        check_call(["ls", "-l"])
+        """
+        ...
 
 elif sys.version_info >= (3, 9):
     # 3.9 adds arguments "user", "group", "extra_groups" and "umask"
@@ -1078,7 +1715,18 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> int: ...
+    ) -> int:
+        """
+        Run command with arguments.  Wait for command to complete.  If
+        the exit code was zero then return, otherwise raise
+        CalledProcessError.  The CalledProcessError object will have the
+        return code in the returncode attribute.
+
+        The arguments are the same as for the call function.  Example:
+
+        check_call(["ls", "-l"])
+        """
+        ...
 
 else:
     def check_call(
@@ -1137,7 +1785,43 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1168,7 +1852,43 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1199,7 +1919,43 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1231,7 +1987,43 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1262,7 +2054,43 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> bytes: ...
+    ) -> bytes:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1293,7 +2121,43 @@ if sys.version_info >= (3, 11):
         umask: int = -1,
         pipesize: int = -1,
         process_group: int | None = None,
-    ) -> Any: ...  # morally: -> str | bytes
+    ) -> Any:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
 
 elif sys.version_info >= (3, 10):
     # 3.10 adds "pipesize" argument
@@ -1326,7 +2190,43 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1356,7 +2256,43 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1386,7 +2322,43 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1417,7 +2389,43 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1447,7 +2455,43 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> bytes: ...
+    ) -> bytes:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1477,7 +2521,43 @@ elif sys.version_info >= (3, 10):
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
         pipesize: int = -1,
-    ) -> Any: ...  # morally: -> str | bytes
+    ) -> Any:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
 
 elif sys.version_info >= (3, 9):
     # 3.9 adds arguments "user", "group", "extra_groups" and "umask"
@@ -1509,7 +2589,43 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1538,7 +2654,43 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1567,7 +2719,43 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1597,7 +2785,43 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> str: ...
+    ) -> str:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1626,7 +2850,43 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> bytes: ...
+    ) -> bytes:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
     @overload
     def check_output(
         args: _CMD,
@@ -1655,7 +2915,43 @@ elif sys.version_info >= (3, 9):
         group: str | int | None = None,
         extra_groups: Iterable[str | int] | None = None,
         umask: int = -1,
-    ) -> Any: ...  # morally: -> str | bytes
+    ) -> Any:
+        r"""
+        Run command with arguments and return its output.
+
+        If the exit code was non-zero it raises a CalledProcessError.  The
+        CalledProcessError object will have the return code in the returncode
+        attribute and output in the output attribute.
+
+        The arguments are the same as for the Popen constructor.  Example:
+
+        >>> check_output(["ls", "-l", "/dev/null"])
+        b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+
+        The stdout argument is not allowed as it is used internally.
+        To capture standard error in the result, use stderr=STDOUT.
+
+        >>> check_output(["/bin/sh", "-c",
+        ...               "ls -l non_existent_file ; exit 0"],
+        ...              stderr=STDOUT)
+        b'ls: non_existent_file: No such file or directory\n'
+
+        There is an additional optional argument, "input", allowing you to
+        pass a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it too will be used internally.  Example:
+
+        >>> check_output(["sed", "-e", "s/foo/bar/"],
+        ...              input=b"when in the course of fooman events\n")
+        b'when in the course of barman events\n'
+
+        By default, all communication is in bytes, and therefore any "input"
+        should be bytes, and the return value will be bytes.  If in text mode,
+        any "input" should be a string, and the return value will be a string
+        decoded according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or universal_newlines.
+        """
+        ...
 
 else:
     @overload
@@ -1817,6 +3113,13 @@ DEVNULL: Final[int]
 class SubprocessError(Exception): ...
 
 class TimeoutExpired(SubprocessError):
+    """
+    This exception is raised when the timeout expires while waiting for a
+    child process.
+
+    Attributes:
+        cmd, output, stdout, stderr, timeout
+    """
     def __init__(
         self, cmd: _CMD, timeout: float, output: str | bytes | None = None, stderr: str | bytes | None = None
     ) -> None: ...
@@ -1829,6 +3132,13 @@ class TimeoutExpired(SubprocessError):
     stderr: bytes | None
 
 class CalledProcessError(SubprocessError):
+    """
+    Raised when run() is called with check=True and the process
+    returns a non-zero exit status.
+
+    Attributes:
+      cmd, returncode, stdout, stderr, output
+    """
     returncode: int
     # morally: _CMD
     cmd: Any
@@ -1843,6 +3153,62 @@ class CalledProcessError(SubprocessError):
     ) -> None: ...
 
 class Popen(Generic[AnyStr]):
+    """
+    Execute a child program in a new process.
+
+    For a complete description of the arguments see the Python documentation.
+
+    Arguments:
+      args: A string, or a sequence of program arguments.
+
+      bufsize: supplied as the buffering argument to the open() function when
+          creating the stdin/stdout/stderr pipe file objects
+
+      executable: A replacement program to execute.
+
+      stdin, stdout and stderr: These specify the executed programs' standard
+          input, standard output and standard error file handles, respectively.
+
+      preexec_fn: (POSIX only) An object to be called in the child process
+          just before the child is executed.
+
+      close_fds: Controls closing or inheriting of file descriptors.
+
+      shell: If true, the command will be executed through the shell.
+
+      cwd: Sets the current directory before the child is executed.
+
+      env: Defines the environment variables for the new process.
+
+      text: If true, decode stdin, stdout and stderr using the given encoding
+          (if set) or the system default otherwise.
+
+      universal_newlines: Alias of text, provided for backwards compatibility.
+
+      startupinfo and creationflags (Windows only)
+
+      restore_signals (POSIX only)
+
+      start_new_session (POSIX only)
+
+      process_group (POSIX only)
+
+      group (POSIX only)
+
+      extra_groups (POSIX only)
+
+      user (POSIX only)
+
+      umask (POSIX only)
+
+      pass_fds (POSIX only)
+
+      encoding and errors: Text mode encoding and error handling to use for
+          file objects stdin, stdout and stderr.
+
+    Attributes:
+        stdin, stdout, stderr, pid, returncode
+    """
     args: _CMD
     stdin: IO[AnyStr] | None
     stdout: IO[AnyStr] | None
@@ -1883,7 +3249,9 @@ class Popen(Generic[AnyStr]):
             umask: int = -1,
             pipesize: int = -1,
             process_group: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -1914,7 +3282,9 @@ class Popen(Generic[AnyStr]):
             umask: int = -1,
             pipesize: int = -1,
             process_group: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -1946,7 +3316,9 @@ class Popen(Generic[AnyStr]):
             umask: int = -1,
             pipesize: int = -1,
             process_group: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -1977,7 +3349,9 @@ class Popen(Generic[AnyStr]):
             umask: int = -1,
             pipesize: int = -1,
             process_group: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[bytes],
@@ -2008,7 +3382,9 @@ class Popen(Generic[AnyStr]):
             umask: int = -1,
             pipesize: int = -1,
             process_group: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[Any],
@@ -2039,7 +3415,9 @@ class Popen(Generic[AnyStr]):
             umask: int = -1,
             pipesize: int = -1,
             process_group: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
     elif sys.version_info >= (3, 10):
         # pipesize is added in 3.10
         @overload
@@ -2071,7 +3449,9 @@ class Popen(Generic[AnyStr]):
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
             pipesize: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -2101,7 +3481,9 @@ class Popen(Generic[AnyStr]):
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
             pipesize: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -2132,7 +3514,9 @@ class Popen(Generic[AnyStr]):
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
             pipesize: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -2162,7 +3546,9 @@ class Popen(Generic[AnyStr]):
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
             pipesize: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[bytes],
@@ -2192,7 +3578,9 @@ class Popen(Generic[AnyStr]):
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
             pipesize: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[Any],
@@ -2222,7 +3610,9 @@ class Popen(Generic[AnyStr]):
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
             pipesize: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
     elif sys.version_info >= (3, 9):
         # user, group, extra_groups, umask were added in 3.9
         @overload
@@ -2253,7 +3643,9 @@ class Popen(Generic[AnyStr]):
             group: str | int | None = None,
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -2282,7 +3674,9 @@ class Popen(Generic[AnyStr]):
             group: str | int | None = None,
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -2312,7 +3706,9 @@ class Popen(Generic[AnyStr]):
             group: str | int | None = None,
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[str],
@@ -2341,7 +3737,9 @@ class Popen(Generic[AnyStr]):
             group: str | int | None = None,
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[bytes],
@@ -2370,7 +3768,9 @@ class Popen(Generic[AnyStr]):
             group: str | int | None = None,
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
         @overload
         def __init__(
             self: Popen[Any],
@@ -2399,7 +3799,9 @@ class Popen(Generic[AnyStr]):
             group: str | int | None = None,
             extra_groups: Iterable[str | int] | None = None,
             umask: int = -1,
-        ) -> None: ...
+        ) -> None:
+            """Create new Popen instance."""
+            ...
     else:
         @overload
         def __init__(
@@ -2553,33 +3955,167 @@ class Popen(Generic[AnyStr]):
             errors: str | None = None,
         ) -> None: ...
 
-    def poll(self) -> int | None: ...
-    def wait(self, timeout: float | None = None) -> int: ...
+    def poll(self) -> int | None:
+        """
+        Check if child process has terminated. Set and return returncode
+        attribute.
+        """
+        ...
+    def wait(self, timeout: float | None = None) -> int:
+        """Wait for child process to terminate; returns self.returncode."""
+        ...
     # morally the members of the returned tuple should be optional
     # TODO this should allow ReadableBuffer for Popen[bytes], but adding
     # overloads for that runs into a mypy bug (python/mypy#14070).
-    def communicate(self, input: AnyStr | None = None, timeout: float | None = None) -> tuple[AnyStr, AnyStr]: ...
-    def send_signal(self, sig: int) -> None: ...
-    def terminate(self) -> None: ...
-    def kill(self) -> None: ...
+    def communicate(self, input: AnyStr | None = None, timeout: float | None = None) -> tuple[AnyStr, AnyStr]:
+        """
+        Interact with process: Send data to stdin and close it.
+        Read data from stdout and stderr, until end-of-file is
+        reached.  Wait for process to terminate.
+
+        The optional "input" argument should be data to be sent to the
+        child process, or None, if no data should be sent to the child.
+        communicate() returns a tuple (stdout, stderr).
+
+        By default, all communication is in bytes, and therefore any
+        "input" should be bytes, and the (stdout, stderr) will be bytes.
+        If in text mode (indicated by self.text_mode), any "input" should
+        be a string, and (stdout, stderr) will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode
+        is triggered by setting any of text, encoding, errors or
+        universal_newlines.
+        """
+        ...
+    def send_signal(self, sig: int) -> None:
+        """Send a signal to the process."""
+        ...
+    def terminate(self) -> None:
+        """
+        Terminate the process with SIGTERM
+            
+        """
+        ...
+    def kill(self) -> None:
+        """
+        Kill the process with SIGKILL
+            
+        """
+        ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
     ) -> None: ...
     def __del__(self) -> None: ...
     if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+            """
+            Represent a PEP 585 generic type
+
+            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+            """
+            ...
 
 # The result really is always a str.
 if sys.version_info >= (3, 11):
-    def getstatusoutput(cmd: _CMD, *, encoding: str | None = None, errors: str | None = None) -> tuple[int, str]: ...
-    def getoutput(cmd: _CMD, *, encoding: str | None = None, errors: str | None = None) -> str: ...
+    def getstatusoutput(cmd: _CMD, *, encoding: str | None = None, errors: str | None = None) -> tuple[int, str]:
+        """
+        Return (exitcode, output) of executing cmd in a shell.
+
+        Execute the string 'cmd' in a shell with 'check_output' and
+        return a 2-tuple (status, output). The locale encoding is used
+        to decode the output and process newlines.
+
+        A trailing newline is stripped from the output.
+        The exit status for the command can be interpreted
+        according to the rules for the function 'wait'. Example:
+
+        >>> import subprocess
+        >>> subprocess.getstatusoutput('ls /bin/ls')
+        (0, '/bin/ls')
+        >>> subprocess.getstatusoutput('cat /bin/junk')
+        (1, 'cat: /bin/junk: No such file or directory')
+        >>> subprocess.getstatusoutput('/bin/junk')
+        (127, 'sh: /bin/junk: not found')
+        >>> subprocess.getstatusoutput('/bin/kill $$')
+        (-15, '')
+        """
+        ...
+    def getoutput(cmd: _CMD, *, encoding: str | None = None, errors: str | None = None) -> str:
+        """
+        Return output (stdout or stderr) of executing cmd in a shell.
+
+        Like getstatusoutput(), except the exit status is ignored and the return
+        value is a string containing the command's output.  Example:
+
+        >>> import subprocess
+        >>> subprocess.getoutput('ls /bin/ls')
+        '/bin/ls'
+        """
+        ...
 
 else:
-    def getstatusoutput(cmd: _CMD) -> tuple[int, str]: ...
-    def getoutput(cmd: _CMD) -> str: ...
+    def getstatusoutput(cmd: _CMD) -> tuple[int, str]:
+        """
+        Return (exitcode, output) of executing cmd in a shell.
 
-def list2cmdline(seq: Iterable[StrOrBytesPath]) -> str: ...  # undocumented
+        Execute the string 'cmd' in a shell with 'check_output' and
+        return a 2-tuple (status, output). The locale encoding is used
+        to decode the output and process newlines.
+
+        A trailing newline is stripped from the output.
+        The exit status for the command can be interpreted
+        according to the rules for the function 'wait'. Example:
+
+        >>> import subprocess
+        >>> subprocess.getstatusoutput('ls /bin/ls')
+        (0, '/bin/ls')
+        >>> subprocess.getstatusoutput('cat /bin/junk')
+        (1, 'cat: /bin/junk: No such file or directory')
+        >>> subprocess.getstatusoutput('/bin/junk')
+        (127, 'sh: /bin/junk: not found')
+        >>> subprocess.getstatusoutput('/bin/kill $$')
+        (-15, '')
+        """
+        ...
+    def getoutput(cmd: _CMD) -> str:
+        """
+        Return output (stdout or stderr) of executing cmd in a shell.
+
+        Like getstatusoutput(), except the exit status is ignored and the return
+        value is a string containing the command's output.  Example:
+
+        >>> import subprocess
+        >>> subprocess.getoutput('ls /bin/ls')
+        '/bin/ls'
+        """
+        ...
+
+def list2cmdline(seq: Iterable[StrOrBytesPath]) -> str:
+    """
+    Translate a sequence of arguments into a command line
+    string, using the same rules as the MS C runtime:
+
+    1) Arguments are delimited by white space, which is either a
+       space or a tab.
+
+    2) A string surrounded by double quotation marks is
+       interpreted as a single argument, regardless of white space
+       contained within.  A quoted string can be embedded in an
+       argument.
+
+    3) A double quotation mark preceded by a backslash is
+       interpreted as a literal double quotation mark.
+
+    4) Backslashes are interpreted literally, unless they
+       immediately precede a double quotation mark.
+
+    5) If backslashes immediately precede a double quotation mark,
+       every pair of backslashes is interpreted as a literal
+       backslash.  If the number of backslashes is odd, the last
+       backslash escapes the next double quotation mark as
+       described in rule 3.
+    """
+    ...
 
 if sys.platform == "win32":
     if sys.version_info >= (3, 13):

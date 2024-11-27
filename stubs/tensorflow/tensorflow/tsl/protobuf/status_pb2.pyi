@@ -32,6 +32,8 @@ class StatusProto(google.protobuf.message.Message):
         code: tensorflow.tsl.protobuf.error_codes_pb2.Code.ValueType | None = ...,
         message: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["code", b"code", "message", b"message"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["code", b"code", "message", b"message"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___StatusProto = StatusProto

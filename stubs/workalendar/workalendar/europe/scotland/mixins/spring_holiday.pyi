@@ -1,3 +1,5 @@
+"""Spring Holiday mixins"""
+
 from typing import ClassVar
 
 class SpringHoliday:

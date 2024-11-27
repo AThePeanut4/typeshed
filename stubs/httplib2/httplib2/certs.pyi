@@ -1,3 +1,5 @@
+"""Utilities for certificate management."""
+
 from typing import Any
 
 certifi_available: bool

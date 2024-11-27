@@ -11,4 +11,28 @@ def assert_geometries_equal(
     normalize: bool = False,
     err_msg: str = "",
     verbose: bool = True,
-) -> None: ...
+) -> None:
+    """
+    Raises an AssertionError if two geometry array_like objects are not equal.
+
+    Given two array_like objects, check that the shape is equal and all elements of
+    these objects are equal. An exception is raised at shape mismatch or conflicting
+    values. In contrast to the standard usage in shapely, no assertion is raised if
+    both objects have NaNs/Nones in the same positions.
+
+    Parameters
+    ----------
+    x : Geometry or array_like
+    y : Geometry or array_like
+    equal_none : bool, default True
+        Whether to consider None elements equal to other None elements.
+    equal_nan : bool, default True
+        Whether to consider nan coordinates as equal to other nan coordinates.
+    normalize : bool, default False
+        Whether to normalize geometries prior to comparison.
+    err_msg : str, optional
+        The error message to be printed in case of failure.
+    verbose : bool, optional
+        If True, the conflicting values are appended to the error message.
+    """
+    ...

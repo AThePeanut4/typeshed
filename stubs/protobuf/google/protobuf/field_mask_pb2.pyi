@@ -258,6 +258,8 @@ class FieldMask(google.protobuf.message.Message, google.protobuf.internal.well_k
         *,
         paths: collections.abc.Iterable[builtins.str] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["paths", b"paths"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["paths", b"paths"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___FieldMask = FieldMask

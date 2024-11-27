@@ -33,7 +33,9 @@ class SnapshotRecord(google.protobuf.message.Message):
         *,
         tensor: collections.abc.Iterable[tensorflow.core.framework.tensor_pb2.TensorProto] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["tensor", b"tensor"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["tensor", b"tensor"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapshotRecord = SnapshotRecord
 
@@ -78,7 +80,9 @@ class SnapshotMetadataRecord(google.protobuf.message.Message):
         num_elements: builtins.int | None = ...,
         finalized: builtins.bool | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["creation_timestamp", b"creation_timestamp", "dtype", b"dtype", "finalized", b"finalized", "graph_hash", b"graph_hash", "num_elements", b"num_elements", "run_id", b"run_id", "version", b"version"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["creation_timestamp", b"creation_timestamp", "dtype", b"dtype", "finalized", b"finalized", "graph_hash", b"graph_hash", "num_elements", b"num_elements", "run_id", b"run_id", "version", b"version"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapshotMetadataRecord = SnapshotMetadataRecord
 
@@ -100,8 +104,12 @@ class TensorMetadata(google.protobuf.message.Message):
         tensor_shape: tensorflow.core.framework.tensor_shape_pb2.TensorShapeProto | None = ...,
         tensor_size_bytes: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape", "tensor_size_bytes", b"tensor_size_bytes"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape", "tensor_size_bytes", b"tensor_size_bytes"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___TensorMetadata = TensorMetadata
 
@@ -119,7 +127,9 @@ class SnapshotTensorMetadata(google.protobuf.message.Message):
         *,
         tensor_metadata: collections.abc.Iterable[global___TensorMetadata] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["tensor_metadata", b"tensor_metadata"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["tensor_metadata", b"tensor_metadata"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapshotTensorMetadata = SnapshotTensorMetadata
 
@@ -144,6 +154,8 @@ class DistributedSnapshotMetadata(google.protobuf.message.Message):
         element_spec: builtins.bytes | None = ...,
         compression: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["compression", b"compression", "element_spec", b"element_spec"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["compression", b"compression", "element_spec", b"element_spec"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___DistributedSnapshotMetadata = DistributedSnapshotMetadata

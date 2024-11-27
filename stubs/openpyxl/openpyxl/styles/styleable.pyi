@@ -34,6 +34,7 @@ class StyleArrayDescriptor:
     def __get__(self, instance: StyleableObject, cls: Unused) -> bool: ...
 
 class StyleableObject:
+    """Base class for styleble objects implementing proxy and lookup functions"""
     font: StyleDescriptor
     fill: StyleDescriptor
     border: StyleDescriptor

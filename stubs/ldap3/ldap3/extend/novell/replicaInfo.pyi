@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 
 from ...protocol.novell import ReplicaInfoRequestValue

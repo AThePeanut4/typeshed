@@ -1,3 +1,28 @@
+"""
+Create portable serialized representations of Python objects.
+
+See module copyreg for a mechanism for registering custom picklers.
+See module pickletools source for extensive comments.
+
+Classes:
+
+    Pickler
+    Unpickler
+
+Functions:
+
+    dump(object, file)
+    dumps(object) -> string
+    load(file) -> object
+    loads(bytes) -> object
+
+Misc variables:
+
+    __version__
+    format_version
+    compatible_formats
+"""
+
 from _typeshed import ReadableBuffer, SupportsWrite
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from typing import Any, ClassVar, Protocol, SupportsBytes, SupportsIndex, final
@@ -99,11 +124,23 @@ class _ReadableFileobj(Protocol):
 
 @final
 class PickleBuffer:
+    """Wrapper for potentially out-of-band buffers"""
     def __init__(self, buffer: ReadableBuffer) -> None: ...
-    def raw(self) -> memoryview: ...
-    def release(self) -> None: ...
-    def __buffer__(self, flags: int, /) -> memoryview: ...
-    def __release_buffer__(self, buffer: memoryview, /) -> None: ...
+    def raw(self) -> memoryview:
+        """
+        Return a memoryview of the raw memory underlying this buffer.
+        Will raise BufferError is the buffer isn't contiguous.
+        """
+        ...
+    def release(self) -> None:
+        """Release the underlying buffer exposed by the PickleBuffer object."""
+        ...
+    def __buffer__(self, flags: int, /) -> memoryview:
+        """Return a buffer object that exposes the underlying memory of the object."""
+        ...
+    def __release_buffer__(self, buffer: memoryview, /) -> None:
+        """Release the buffer object that exposes the underlying memory of the object."""
+        ...
 
 _BufferCallback: TypeAlias = Callable[[PickleBuffer], Any] | None
 
@@ -114,10 +151,60 @@ def dump(
     *,
     fix_imports: bool = True,
     buffer_callback: _BufferCallback = None,
-) -> None: ...
+) -> None:
+    """
+    Write a pickled representation of obj to the open file object file.
+
+    This is equivalent to ``Pickler(file, protocol).dump(obj)``, but may
+    be more efficient.
+
+    The optional *protocol* argument tells the pickler to use the given
+    protocol; supported protocols are 0, 1, 2, 3, 4 and 5.  The default
+    protocol is 4. It was introduced in Python 3.4, and is incompatible
+    with previous versions.
+
+    Specifying a negative protocol version selects the highest protocol
+    version supported.  The higher the protocol used, the more recent the
+    version of Python needed to read the pickle produced.
+
+    The *file* argument must have a write() method that accepts a single
+    bytes argument.  It can thus be a file object opened for binary
+    writing, an io.BytesIO instance, or any other custom object that meets
+    this interface.
+
+    If *fix_imports* is True and protocol is less than 3, pickle will try
+    to map the new Python 3 names to the old module names used in Python
+    2, so that the pickle data stream is readable with Python 2.
+
+    If *buffer_callback* is None (the default), buffer views are serialized
+    into *file* as part of the pickle stream.  It is an error if
+    *buffer_callback* is not None and *protocol* is None or smaller than 5.
+    """
+    ...
 def dumps(
     obj: Any, protocol: int | None = None, *, fix_imports: bool = True, buffer_callback: _BufferCallback = None
-) -> bytes: ...
+) -> bytes:
+    """
+    Return the pickled representation of the object as a bytes object.
+
+    The optional *protocol* argument tells the pickler to use the given
+    protocol; supported protocols are 0, 1, 2, 3, 4 and 5.  The default
+    protocol is 4. It was introduced in Python 3.4, and is incompatible
+    with previous versions.
+
+    Specifying a negative protocol version selects the highest protocol
+    version supported.  The higher the protocol used, the more recent the
+    version of Python needed to read the pickle produced.
+
+    If *fix_imports* is True and *protocol* is less than 3, pickle will
+    try to map the new Python 3 names to the old module names used in
+    Python 2, so that the pickle data stream is readable with Python 2.
+
+    If *buffer_callback* is None (the default), buffer views are serialized
+    into *file* as part of the pickle stream.  It is an error if
+    *buffer_callback* is not None and *protocol* is None or smaller than 5.
+    """
+    ...
 def load(
     file: _ReadableFileobj,
     *,
@@ -125,7 +212,33 @@ def load(
     encoding: str = "ASCII",
     errors: str = "strict",
     buffers: Iterable[Any] | None = (),
-) -> Any: ...
+) -> Any:
+    """
+    Read and return an object from the pickle data stored in a file.
+
+    This is equivalent to ``Unpickler(file).load()``, but may be more
+    efficient.
+
+    The protocol version of the pickle is detected automatically, so no
+    protocol argument is needed.  Bytes past the pickled object's
+    representation are ignored.
+
+    The argument *file* must have two methods, a read() method that takes
+    an integer argument, and a readline() method that requires no
+    arguments.  Both methods should return bytes.  Thus *file* can be a
+    binary file object opened for reading, an io.BytesIO object, or any
+    other custom object that meets this interface.
+
+    Optional keyword arguments are *fix_imports*, *encoding* and *errors*,
+    which are used to control compatibility support for pickle stream
+    generated by Python 2.  If *fix_imports* is True, pickle will try to
+    map the old Python 2 names to the new names used in Python 3.  The
+    *encoding* and *errors* tell pickle how to decode 8-bit string
+    instances pickled by Python 2; these default to 'ASCII' and 'strict',
+    respectively.  The *encoding* can be 'bytes' to read these 8-bit
+    string instances as bytes objects.
+    """
+    ...
 def loads(
     data: ReadableBuffer,
     /,
@@ -134,7 +247,24 @@ def loads(
     encoding: str = "ASCII",
     errors: str = "strict",
     buffers: Iterable[Any] | None = (),
-) -> Any: ...
+) -> Any:
+    """
+    Read and return an object from the given pickle data.
+
+    The protocol version of the pickle is detected automatically, so no
+    protocol argument is needed.  Bytes past the pickled object's
+    representation are ignored.
+
+    Optional keyword arguments are *fix_imports*, *encoding* and *errors*,
+    which are used to control compatibility support for pickle stream
+    generated by Python 2.  If *fix_imports* is True, pickle will try to
+    map the old Python 2 names to the new names used in Python 3.  The
+    *encoding* and *errors* tell pickle how to decode 8-bit string
+    instances pickled by Python 2; these default to 'ASCII' and 'strict',
+    respectively.  The *encoding* can be 'bytes' to read these 8-bit
+    string instances as bytes objects.
+    """
+    ...
 
 class PickleError(Exception): ...
 class PicklingError(PickleError): ...
@@ -149,6 +279,38 @@ _ReducedType: TypeAlias = (
 )
 
 class Pickler:
+    """
+    This takes a binary file for writing a pickle data stream.
+
+    The optional *protocol* argument tells the pickler to use the given
+    protocol; supported protocols are 0, 1, 2, 3, 4 and 5.  The default
+    protocol is 4. It was introduced in Python 3.4, and is incompatible
+    with previous versions.
+
+    Specifying a negative protocol version selects the highest protocol
+    version supported.  The higher the protocol used, the more recent the
+    version of Python needed to read the pickle produced.
+
+    The *file* argument must have a write() method that accepts a single
+    bytes argument. It can thus be a file object opened for binary
+    writing, an io.BytesIO instance, or any other custom object that meets
+    this interface.
+
+    If *fix_imports* is True and protocol is less than 3, pickle will try
+    to map the new Python 3 names to the old module names used in Python
+    2, so that the pickle data stream is readable with Python 2.
+
+    If *buffer_callback* is None (the default), buffer views are
+    serialized into *file* as part of the pickle stream.
+
+    If *buffer_callback* is not None, then it can be called any number
+    of times with a buffer view.  If the callback returns a false value
+    (such as None), the given buffer is out-of-band; otherwise the
+    buffer is serialized in-band, i.e. inside the pickle stream.
+
+    It is an error if *buffer_callback* is not None and *protocol*
+    is None or smaller than 5.
+    """
     fast: bool
     dispatch_table: Mapping[type, Callable[[Any], _ReducedType]]
     bin: bool  # undocumented
@@ -163,11 +325,44 @@ class Pickler:
         buffer_callback: _BufferCallback = None,
     ) -> None: ...
     def reducer_override(self, obj: Any) -> Any: ...
-    def dump(self, obj: Any, /) -> None: ...
-    def clear_memo(self) -> None: ...
+    def dump(self, obj: Any, /) -> None:
+        """Write a pickled representation of the given object to the open file."""
+        ...
+    def clear_memo(self) -> None:
+        """
+        Clears the pickler's "memo".
+
+        The memo is the data structure that remembers which objects the
+        pickler has already seen, so that shared or recursive objects are
+        pickled by reference and not by value.  This method is useful when
+        re-using picklers.
+        """
+        ...
     def persistent_id(self, obj: Any) -> Any: ...
 
 class Unpickler:
+    """
+    This takes a binary file for reading a pickle data stream.
+
+    The protocol version of the pickle is detected automatically, so no
+    protocol argument is needed.  Bytes past the pickled object's
+    representation are ignored.
+
+    The argument *file* must have two methods, a read() method that takes
+    an integer argument, and a readline() method that requires no
+    arguments.  Both methods should return bytes.  Thus *file* can be a
+    binary file object opened for reading, an io.BytesIO object, or any
+    other custom object that meets this interface.
+
+    Optional keyword arguments are *fix_imports*, *encoding* and *errors*,
+    which are used to control compatibility support for pickle stream
+    generated by Python 2.  If *fix_imports* is True, pickle will try to
+    map the old Python 2 names to the new names used in Python 3.  The
+    *encoding* and *errors* tell pickle how to decode 8-bit string
+    instances pickled by Python 2; these default to 'ASCII' and 'strict',
+    respectively.  The *encoding* can be 'bytes' to read these 8-bit
+    string instances as bytes objects.
+    """
     dispatch: ClassVar[dict[int, Callable[[Unpickler], None]]]  # undocumented, _Unpickler only
 
     def __init__(
@@ -179,8 +374,27 @@ class Unpickler:
         errors: str = "strict",
         buffers: Iterable[Any] | None = (),
     ) -> None: ...
-    def load(self) -> Any: ...
-    def find_class(self, module_name: str, global_name: str, /) -> Any: ...
+    def load(self) -> Any:
+        """
+        Load a pickle.
+
+        Read a pickled object representation from the open file object given
+        in the constructor, and return the reconstituted object hierarchy
+        specified therein.
+        """
+        ...
+    def find_class(self, module_name: str, global_name: str, /) -> Any:
+        """
+        Return an object from a specified module.
+
+        If necessary, the module will be imported. Subclasses may override
+        this method (e.g. to restrict unpickling of arbitrary classes and
+        functions).
+
+        This method is called whenever a class or a function object is
+        needed.  Both arguments passed are str objects.
+        """
+        ...
     def persistent_load(self, pid: Any) -> Any: ...
 
 MARK: bytes
@@ -263,8 +477,49 @@ BYTEARRAY8: bytes
 NEXT_BUFFER: bytes
 READONLY_BUFFER: bytes
 
-def encode_long(x: int) -> bytes: ...  # undocumented
-def decode_long(data: Iterable[SupportsIndex] | SupportsBytes | ReadableBuffer) -> int: ...  # undocumented
+def encode_long(x: int) -> bytes:
+    r"""
+    Encode a long to a two's complement little-endian binary string.
+    Note that 0 is a special case, returning an empty string, to save a
+    byte in the LONG1 pickling context.
+
+    >>> encode_long(0)
+    b''
+    >>> encode_long(255)
+    b'\xff\x00'
+    >>> encode_long(32767)
+    b'\xff\x7f'
+    >>> encode_long(-256)
+    b'\x00\xff'
+    >>> encode_long(-32768)
+    b'\x00\x80'
+    >>> encode_long(-128)
+    b'\x80'
+    >>> encode_long(127)
+    b'\x7f'
+    >>>
+    """
+    ...
+def decode_long(data: Iterable[SupportsIndex] | SupportsBytes | ReadableBuffer) -> int:
+    r"""
+    Decode a long from a two's complement little-endian binary string.
+
+    >>> decode_long(b'')
+    0
+    >>> decode_long(b"\xff\x00")
+    255
+    >>> decode_long(b"\xff\x7f")
+    32767
+    >>> decode_long(b"\x00\xff")
+    -256
+    >>> decode_long(b"\x00\x80")
+    -32768
+    >>> decode_long(b"\x80")
+    -128
+    >>> decode_long(b"\x7f")
+    127
+    """
+    ...
 
 # pure-Python implementations
 _Pickler = Pickler  # undocumented

@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 
 def modify_dn_operation(dn, new_relative_dn, delete_old_rdn: bool = True, new_superior: Incomplete | None = None): ...

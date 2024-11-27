@@ -36,7 +36,9 @@ class AutoParallelOptions(google.protobuf.message.Message):
         enable: builtins.bool | None = ...,
         num_replicas: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["enable", b"enable", "num_replicas", b"num_replicas"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["enable", b"enable", "num_replicas", b"num_replicas"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AutoParallelOptions = AutoParallelOptions
 
@@ -54,7 +56,9 @@ class ScopedAllocatorOptions(google.protobuf.message.Message):
         *,
         enable_op: collections.abc.Iterable[builtins.str] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["enable_op", b"enable_op"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["enable_op", b"enable_op"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ScopedAllocatorOptions = ScopedAllocatorOptions
 
@@ -182,7 +186,9 @@ class RewriterConfig(google.protobuf.message.Message):
         HEURISTICS: RewriterConfig._MemOptType.ValueType  # 3
         """Use any combination of swapping and recomputation heuristics."""
 
-    class MemOptType(_MemOptType, metaclass=_MemOptTypeEnumTypeWrapper): ...
+    class MemOptType(_MemOptType, metaclass=_MemOptTypeEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     DEFAULT_MEM_OPT: RewriterConfig.MemOptType.ValueType  # 0
     """The default setting (SCHEDULING and SWAPPING HEURISTICS only)"""
     NO_MEM_OPT: RewriterConfig.MemOptType.ValueType  # 1
@@ -230,8 +236,12 @@ class RewriterConfig(google.protobuf.message.Message):
                 key: builtins.str | None = ...,
                 value: tensorflow.core.framework.attr_value_pb2.AttrValue | None = ...,
             ) -> None: ...
-            def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+            def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+                """Checks if a message field is set."""
+                ...
+            def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+                """Clears a message field."""
+                ...
 
         NAME_FIELD_NUMBER: builtins.int
         PARAMETER_MAP_FIELD_NUMBER: builtins.int
@@ -244,7 +254,9 @@ class RewriterConfig(google.protobuf.message.Message):
             name: builtins.str | None = ...,
             parameter_map: collections.abc.Mapping[builtins.str, tensorflow.core.framework.attr_value_pb2.AttrValue] | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["name", b"name", "parameter_map", b"parameter_map"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["name", b"name", "parameter_map", b"parameter_map"]) -> None:
+            """Clears a message field."""
+            ...
 
     CPU_LAYOUT_CONVERSION_FIELD_NUMBER: builtins.int
     LAYOUT_OPTIMIZER_FIELD_NUMBER: builtins.int
@@ -492,7 +504,11 @@ class RewriterConfig(google.protobuf.message.Message):
         inter_optimizer_verifier_config: tensorflow.core.protobuf.verifier_config_pb2.VerifierConfig | None = ...,
         post_optimization_verifier_config: tensorflow.core.protobuf.verifier_config_pb2.VerifierConfig | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["auto_parallel", b"auto_parallel", "inter_optimizer_verifier_config", b"inter_optimizer_verifier_config", "post_optimization_verifier_config", b"post_optimization_verifier_config", "scoped_allocator_opts", b"scoped_allocator_opts"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["arithmetic_optimization", b"arithmetic_optimization", "auto_mixed_precision", b"auto_mixed_precision", "auto_mixed_precision_cpu", b"auto_mixed_precision_cpu", "auto_mixed_precision_mkl", b"auto_mixed_precision_mkl", "auto_mixed_precision_onednn_bfloat16", b"auto_mixed_precision_onednn_bfloat16", "auto_parallel", b"auto_parallel", "common_subgraph_elimination", b"common_subgraph_elimination", "constant_folding", b"constant_folding", "cpu_layout_conversion", b"cpu_layout_conversion", "custom_optimizers", b"custom_optimizers", "debug_stripper", b"debug_stripper", "dependency_optimization", b"dependency_optimization", "disable_meta_optimizer", b"disable_meta_optimizer", "disable_model_pruning", b"disable_model_pruning", "disable_tfg_optimizer", b"disable_tfg_optimizer", "experimental_conditional_code_motion", b"experimental_conditional_code_motion", "experimental_disable_compressed_tensor_optimization", b"experimental_disable_compressed_tensor_optimization", "experimental_disable_folding_quantization_emulation", b"experimental_disable_folding_quantization_emulation", "fail_on_optimizer_errors", b"fail_on_optimizer_errors", "function_optimization", b"function_optimization", "implementation_selector", b"implementation_selector", "inter_optimizer_verifier_config", b"inter_optimizer_verifier_config", "layout_optimizer", b"layout_optimizer", "loop_optimization", b"loop_optimization", "memory_optimization", b"memory_optimization", "memory_optimizer_target_node_name_scope", b"memory_optimizer_target_node_name_scope", "meta_optimizer_iterations", b"meta_optimizer_iterations", "meta_optimizer_timeout_ms", b"meta_optimizer_timeout_ms", "min_graph_nodes", b"min_graph_nodes", "optimizers", b"optimizers", "pin_to_host_optimization", b"pin_to_host_optimization", "post_optimization_verifier_config", b"post_optimization_verifier_config", "remapping", b"remapping", "scoped_allocator_optimization", b"scoped_allocator_optimization", "scoped_allocator_opts", b"scoped_allocator_opts", "shape_optimization", b"shape_optimization", "use_plugin_optimizers", b"use_plugin_optimizers"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["auto_parallel", b"auto_parallel", "inter_optimizer_verifier_config", b"inter_optimizer_verifier_config", "post_optimization_verifier_config", b"post_optimization_verifier_config", "scoped_allocator_opts", b"scoped_allocator_opts"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["arithmetic_optimization", b"arithmetic_optimization", "auto_mixed_precision", b"auto_mixed_precision", "auto_mixed_precision_cpu", b"auto_mixed_precision_cpu", "auto_mixed_precision_mkl", b"auto_mixed_precision_mkl", "auto_mixed_precision_onednn_bfloat16", b"auto_mixed_precision_onednn_bfloat16", "auto_parallel", b"auto_parallel", "common_subgraph_elimination", b"common_subgraph_elimination", "constant_folding", b"constant_folding", "cpu_layout_conversion", b"cpu_layout_conversion", "custom_optimizers", b"custom_optimizers", "debug_stripper", b"debug_stripper", "dependency_optimization", b"dependency_optimization", "disable_meta_optimizer", b"disable_meta_optimizer", "disable_model_pruning", b"disable_model_pruning", "disable_tfg_optimizer", b"disable_tfg_optimizer", "experimental_conditional_code_motion", b"experimental_conditional_code_motion", "experimental_disable_compressed_tensor_optimization", b"experimental_disable_compressed_tensor_optimization", "experimental_disable_folding_quantization_emulation", b"experimental_disable_folding_quantization_emulation", "fail_on_optimizer_errors", b"fail_on_optimizer_errors", "function_optimization", b"function_optimization", "implementation_selector", b"implementation_selector", "inter_optimizer_verifier_config", b"inter_optimizer_verifier_config", "layout_optimizer", b"layout_optimizer", "loop_optimization", b"loop_optimization", "memory_optimization", b"memory_optimization", "memory_optimizer_target_node_name_scope", b"memory_optimizer_target_node_name_scope", "meta_optimizer_iterations", b"meta_optimizer_iterations", "meta_optimizer_timeout_ms", b"meta_optimizer_timeout_ms", "min_graph_nodes", b"min_graph_nodes", "optimizers", b"optimizers", "pin_to_host_optimization", b"pin_to_host_optimization", "post_optimization_verifier_config", b"post_optimization_verifier_config", "remapping", b"remapping", "scoped_allocator_optimization", b"scoped_allocator_optimization", "scoped_allocator_opts", b"scoped_allocator_opts", "shape_optimization", b"shape_optimization", "use_plugin_optimizers", b"use_plugin_optimizers"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___RewriterConfig = RewriterConfig

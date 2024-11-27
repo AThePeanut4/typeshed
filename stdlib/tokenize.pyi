@@ -1,3 +1,26 @@
+"""
+Tokenization help for Python programs.
+
+tokenize(readline) is a generator that breaks a stream of bytes into
+Python tokens.  It decodes the bytes according to PEP-0263 for
+determining source file encoding.
+
+It accepts a readline-like method which is called repeatedly to get the
+next line of input (or b"" for EOF).  It generates 5-tuples with these
+members:
+
+    the token type (see token.py)
+    the token (a string)
+    the starting (row, column) indices of the token (a 2-tuple of ints)
+    the ending (row, column) indices of the token (a 2-tuple of ints)
+    the original line (string)
+
+It is designed to match the working of the Python tokenizer exactly, except
+that it produces COMMENT tokens for comments and gives type OP for all
+operators.  Additionally, all token lists start with an ENCODING token
+which tells you which encoding was used to decode the bytes stream.
+"""
+
 import sys
 from _typeshed import FileDescriptorOrPath
 from collections.abc import Callable, Generator, Iterable, Sequence
@@ -132,11 +155,80 @@ class Untokenizer:
 
 # the docstring says "returns bytes" but is incorrect --
 # if the ENCODING token is missing, it skips the encode
-def untokenize(iterable: Iterable[_Token]) -> Any: ...
-def detect_encoding(readline: Callable[[], bytes | bytearray]) -> tuple[str, Sequence[bytes]]: ...
-def tokenize(readline: Callable[[], bytes | bytearray]) -> Generator[TokenInfo, None, None]: ...
-def generate_tokens(readline: Callable[[], str]) -> Generator[TokenInfo, None, None]: ...
-def open(filename: FileDescriptorOrPath) -> TextIO: ...
+def untokenize(iterable: Iterable[_Token]) -> Any:
+    """
+    Transform tokens back into Python source code.
+    It returns a bytes object, encoded using the ENCODING
+    token, which is the first token sequence output by tokenize.
+
+    Each element returned by the iterable must be a token sequence
+    with at least two elements, a token number and token value.  If
+    only two tokens are passed, the resulting output is poor.
+
+    Round-trip invariant for full input:
+        Untokenized source will match input source exactly
+
+    Round-trip invariant for limited input:
+        # Output bytes will tokenize back to the input
+        t1 = [tok[:2] for tok in tokenize(f.readline)]
+        newcode = untokenize(t1)
+        readline = BytesIO(newcode).readline
+        t2 = [tok[:2] for tok in tokenize(readline)]
+        assert t1 == t2
+    """
+    ...
+def detect_encoding(readline: Callable[[], bytes | bytearray]) -> tuple[str, Sequence[bytes]]:
+    """
+    The detect_encoding() function is used to detect the encoding that should
+    be used to decode a Python source file.  It requires one argument, readline,
+    in the same way as the tokenize() generator.
+
+    It will call readline a maximum of twice, and return the encoding used
+    (as a string) and a list of any lines (left as bytes) it has read in.
+
+    It detects the encoding from the presence of a utf-8 bom or an encoding
+    cookie as specified in pep-0263.  If both a bom and a cookie are present,
+    but disagree, a SyntaxError will be raised.  If the encoding cookie is an
+    invalid charset, raise a SyntaxError.  Note that if a utf-8 bom is found,
+    'utf-8-sig' is returned.
+
+    If no encoding is specified, then the default of 'utf-8' will be returned.
+    """
+    ...
+def tokenize(readline: Callable[[], bytes | bytearray]) -> Generator[TokenInfo, None, None]:
+    """
+    The tokenize() generator requires one argument, readline, which
+    must be a callable object which provides the same interface as the
+    readline() method of built-in file objects.  Each call to the function
+    should return one line of input as bytes.  Alternatively, readline
+    can be a callable function terminating with StopIteration:
+        readline = open(myfile, 'rb').__next__  # Example of alternate readline
+
+    The generator produces 5-tuples with these members: the token type; the
+    token string; a 2-tuple (srow, scol) of ints specifying the row and
+    column where the token begins in the source; a 2-tuple (erow, ecol) of
+    ints specifying the row and column where the token ends in the source;
+    and the line on which the token was found.  The line passed is the
+    physical line.
+
+    The first token sequence will always be an ENCODING token
+    which tells you which encoding was used to decode the bytes stream.
+    """
+    ...
+def generate_tokens(readline: Callable[[], str]) -> Generator[TokenInfo, None, None]:
+    """
+    Tokenize a source reading Python code as unicode strings.
+
+    This has the same API as tokenize(), except that it expects the *readline*
+    callable to return str objects instead of bytes.
+    """
+    ...
+def open(filename: FileDescriptorOrPath) -> TextIO:
+    """
+    Open a file in read only mode using the encoding detected by
+    detect_encoding().
+    """
+    ...
 def group(*choices: str) -> str: ...  # undocumented
 def any(*choices: str) -> str: ...  # undocumented
 def maybe(*choices: str) -> str: ...  # undocumented

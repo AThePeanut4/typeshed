@@ -1,3 +1,5 @@
+"""The asyncio package, tracking PEP 3156."""
+
 import sys
 from collections.abc import Awaitable, Coroutine, Generator
 from typing import Any, TypeVar
