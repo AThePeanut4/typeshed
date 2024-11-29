@@ -3,6 +3,22 @@ from typing import Any
 from commonmark.render.renderer import Renderer
 
 class ReStructuredTextRenderer(Renderer):
+    """
+    Render reStructuredText from Markdown
+
+    Example:
+
+    .. code:: python
+
+        import commonmark
+
+        parser = commonmark.Parser()
+        ast = parser.parse('Hello `inline code` example')
+
+        renderer = commonmark.ReStructuredTextRenderer()
+        rst = renderer.render(ast)
+        print(rst)  # Hello ``inline code`` example
+    """
     indent_char: Any
     indent_length: int
     def __init__(self, indent_char: str = ...) -> None: ...

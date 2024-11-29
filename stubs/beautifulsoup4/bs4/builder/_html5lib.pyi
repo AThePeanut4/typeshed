@@ -5,6 +5,19 @@ from bs4.builder import HTMLTreeBuilder
 from html5lib.treebuilders import base as treebuilder_base
 
 class HTML5TreeBuilder(HTMLTreeBuilder):
+    """
+    Use html5lib to build a tree.
+
+    Note that this TreeBuilder does not support some features common
+    to HTML TreeBuilders. Some of these features could theoretically
+    be implemented, but at the very least it's quite difficult,
+    because html5lib moves the parse tree around as it's being built.
+
+    * This TreeBuilder doesn't use different subclasses of NavigableString
+      based on the name of the tag in which the string was found.
+
+    * You can't use a SoupStrainer to parse only part of a document.
+    """
     NAME: str
     features: Any
     TRACKS_LINE_NUMBERS: bool
@@ -19,7 +32,9 @@ class HTML5TreeBuilder(HTMLTreeBuilder):
     def feed(self, markup) -> None: ...
     underlying_builder: Any
     def create_treebuilder(self, namespaceHTMLElements): ...
-    def test_fragment_to_document(self, fragment): ...
+    def test_fragment_to_document(self, fragment):
+        """See `TreeBuilder`."""
+        ...
 
 class TreeBuilderForHtml5lib(treebuilder_base.TreeBuilder):
     soup: Any
@@ -62,7 +77,9 @@ class Element(treebuilder_base.Node):
     def insertText(self, data, insertBefore: Incomplete | None = ...) -> None: ...
     def insertBefore(self, node, refNode) -> None: ...
     def removeChild(self, node) -> None: ...
-    def reparentChildren(self, new_parent) -> None: ...
+    def reparentChildren(self, new_parent) -> None:
+        """Move all of this tag's children into another tag."""
+        ...
     def cloneNode(self): ...
     def hasContent(self): ...
     def getNameTuple(self): ...

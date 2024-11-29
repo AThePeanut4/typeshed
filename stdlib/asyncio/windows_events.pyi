@@ -1,3 +1,5 @@
+"""Selector and proactor event loops for Windows."""
+
 import socket
 import sys
 from _typeshed import Incomplete, ReadableBuffer, WriteableBuffer

@@ -1,3 +1,5 @@
+"""Gives a multi-value dictionary object (MultiDict) plus several wrappers"""
+
 import sys
 from _typeshed import SupportsItems, SupportsKeysAndGetItem
 from _typeshed.wsgi import WSGIEnvironment
@@ -15,6 +17,11 @@ _KT = TypeVar("_KT")
 _VT = TypeVar("_VT")
 
 class MultiDict(MutableMapping[_KT, _VT]):
+    """
+    An ordered dictionary that can have multiple values for each key.
+    Adds the methods getall, getone, mixed and extend and add to the normal
+    dictionary interface.
+    """
     @overload
     def __init__(self, m: SupportsItems[_KT, _VT], /, **kwargs: _VT) -> None: ...
     @overload
@@ -22,20 +29,47 @@ class MultiDict(MutableMapping[_KT, _VT]):
     @overload
     def __init__(self, **kwargs: _VT) -> None: ...
     @classmethod
-    def view_list(cls, lst: list[tuple[_KT, _VT]]) -> MultiDict[_KT, _VT]: ...
+    def view_list(cls, lst: list[tuple[_KT, _VT]]) -> MultiDict[_KT, _VT]:
+        """Create a dict that is a view on the given list"""
+        ...
     @classmethod
-    def from_fieldstorage(cls, fs: _FieldStorage) -> MultiDict[str, str | _FieldStorage]: ...
+    def from_fieldstorage(cls, fs: _FieldStorage) -> MultiDict[str, str | _FieldStorage]:
+        """Create a dict from a cgi.FieldStorage instance"""
+        ...
     def __getitem__(self, key: _KT) -> _VT: ...
     def __setitem__(self, key: _KT, value: _VT) -> None: ...
-    def add(self, key: _KT, value: _VT) -> None: ...
+    def add(self, key: _KT, value: _VT) -> None:
+        """Add the key and value, not overwriting any previous value."""
+        ...
     @overload
-    def get(self, key: _KT) -> _VT | None: ...
+    def get(self, key: _KT) -> _VT | None:
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
+        ...
     @overload
-    def get(self, key: _KT, default: _T) -> _VT | _T: ...
-    def getall(self, key: _KT) -> list[_VT]: ...
-    def getone(self, key: _KT) -> _VT: ...
-    def mixed(self) -> dict[_KT, _VT | list[_VT]]: ...
-    def dict_of_lists(self) -> dict[_KT, list[_VT]]: ...
+    def get(self, key: _KT, default: _T) -> _VT | _T:
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
+        ...
+    def getall(self, key: _KT) -> list[_VT]:
+        """Return a list of all values matching the key (may be an empty list)"""
+        ...
+    def getone(self, key: _KT) -> _VT:
+        """
+        Get one value matching the key, raising a KeyError if multiple
+        values were found.
+        """
+        ...
+    def mixed(self) -> dict[_KT, _VT | list[_VT]]:
+        """
+        Returns a dictionary where the values are either single
+        values, or a list of values when a key/value appears more than
+        once in this dictionary.  This is similar to the kind of
+        dictionary often used to represent the variables in a web
+        request.
+        """
+        ...
+    def dict_of_lists(self) -> dict[_KT, list[_VT]]:
+        """Returns a dictionary where each key is associated with a list of values."""
+        ...
     def __delitem__(self, key: _KT) -> None: ...
     def __contains__(self, key: object) -> bool: ...
     has_key = __contains__
@@ -77,6 +111,7 @@ class GetDict(MultiDict[str, str]):
     def on_change(self) -> None: ...
 
 class NestedMultiDict(MultiDict[_KT, _VT]):
+    """Wraps several MultiDict objects, treating it as one large MultiDict"""
     dicts: tuple[MultiDict[_KT, _VT] | NoVars, ...]
     def __init__(self, *dicts: MultiDict[_KT, _VT] | NoVars) -> None: ...
     def __setitem__(self, key: _KT, value: _VT) -> None: ...
@@ -90,6 +125,12 @@ class NestedMultiDict(MultiDict[_KT, _VT]):
     def copy(self) -> MultiDict[_KT, _VT]: ...  # type: ignore[override]
 
 class NoVars:
+    """
+    Represents no variables; used when no variables
+    are applicable.
+
+    This is read-only
+    """
     reason: str
     def __init__(self, reason: str | None = None) -> None: ...
     @overload

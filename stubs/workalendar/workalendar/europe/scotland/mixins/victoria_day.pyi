@@ -1,3 +1,5 @@
+"""Victoria Day mixins"""
+
 from typing import ClassVar
 
 class VictoriaDayMixin:

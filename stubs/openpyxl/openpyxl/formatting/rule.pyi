@@ -68,6 +68,11 @@ _RuleType: TypeAlias = Literal[
 ]
 
 class ValueDescriptor(Float[Incomplete]):
+    """
+    Expected type depends upon type attribute of parent :-(
+
+    Most values should be numeric BUT they can also be cell references
+    """
     expected_type: type[Incomplete]
     def __set__(self, instance: Serialisable | Strict, value) -> None: ...
 
@@ -193,14 +198,18 @@ def ColorScaleRule(
     end_type: Incomplete | None = None,
     end_value: Incomplete | None = None,
     end_color: Incomplete | None = None,
-): ...
+):
+    """Backwards compatibility"""
+    ...
 def FormulaRule(
     formula: Incomplete | None = None,
     stopIfTrue: Incomplete | None = None,
     font: Incomplete | None = None,
     border: Incomplete | None = None,
     fill: Incomplete | None = None,
-): ...
+):
+    """Conditional formatting with custom differential style"""
+    ...
 def CellIsRule(
     operator: Incomplete | None = None,
     formula: Incomplete | None = None,
@@ -208,7 +217,9 @@ def CellIsRule(
     font: Incomplete | None = None,
     border: Incomplete | None = None,
     fill: Incomplete | None = None,
-): ...
+):
+    """Conditional formatting rule based on cell contents."""
+    ...
 def IconSetRule(
     icon_style: Incomplete | None = None,
     type: Incomplete | None = None,
@@ -216,7 +227,9 @@ def IconSetRule(
     showValue: Incomplete | None = None,
     percent: Incomplete | None = None,
     reverse: Incomplete | None = None,
-): ...
+):
+    """Convenience function for creating icon set rules"""
+    ...
 def DataBarRule(
     start_type: Incomplete | None = None,
     start_value: Incomplete | None = None,

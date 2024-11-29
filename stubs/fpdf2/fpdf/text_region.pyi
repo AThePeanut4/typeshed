@@ -8,16 +8,23 @@ from .image_datastructures import RasterImageInfo, VectorImageInfo, _TextAlign
 from .line_break import Fragment, TextLine
 
 class Extents(NamedTuple):
+    """Extents(left, right)"""
     left: float
     right: float
 
 class TextRegionMixin:
+    """Mix-in to be added to FPDF() in order to support text regions."""
     def __init__(self, *args, **kwargs) -> None: ...
     def register_text_region(self, region) -> None: ...
     def is_current_text_region(self, region): ...
     def clear_text_region(self) -> None: ...
 
 class LineWrapper(NamedTuple):
+    """
+    Connects each TextLine with the Paragraph it was written to.
+    This allows to access paragraph specific attributes like
+    top/bottom margins when rendering the line.
+    """
     line: Sequence[Incomplete]
     paragraph: Paragraph
     first_line: bool = False
@@ -134,7 +141,23 @@ class ParagraphCollectorMixin:
         bullet_string: str = "",
         bullet_r_margin: float | None = None,
         wrapmode: WrapMode | None = None,
-    ) -> Paragraph: ...
+    ) -> Paragraph:
+        """
+        Args:
+            text_align (Align, optional): the horizontal alignment of the paragraph.
+            line_height (float, optional): factor by which the line spacing will be different from the font height. (Default: by region)
+            top_margin (float, optional):  how much spacing is added above the paragraph.
+                No spacing will be added at the top of the paragraph if the current y position is at (or above) the
+                top margin of the page. (Default: 0.0)
+            bottom_margin (float, optional): those two values determine how much spacing is added below the paragraph.
+                No spacing will be added at the bottom if it would result in overstepping the bottom margin of the page. (Default: 0.0)
+            indent (float, optional): determines the indentation of the paragraph. (Default: 0.0)
+            bullet_string (str, optional): determines the fragments and text lines of the bullet. (Default: "")
+            bullet_r_margin (float, optional): determines the spacing between the bullet and the bulleted line
+            skip_leading_spaces (float, optional): removes all space characters at the beginning of each line. (Default: False)
+            wrapmode (WrapMode): determines the way text wrapping is handled. (Default: None)
+        """
+        ...
     def end_paragraph(self) -> None: ...
     def image(
         self,
@@ -152,12 +175,22 @@ class ParagraphCollectorMixin:
     ) -> None: ...
 
 class TextRegion(ParagraphCollectorMixin):
-    def current_x_extents(self, y, height) -> None: ...
+    """Abstract base class for all text region subclasses."""
+    def current_x_extents(self, y, height) -> None:
+        """
+        Return the horizontal extents of the current line.
+        Columnar regions simply return the boundaries of the column.
+        Regions with non-vertical boundaries need to check how the largest
+        font-height in the current line actually fits in there.
+        For that reason we include the current y and the line height.
+        """
+        ...
     def collect_lines(self): ...
     def render(self) -> None: ...
     def get_width(self, height): ...
 
 class TextColumnarMixin:
+    """Enable a TextRegion to perform page breaks"""
     l_margin: Incomplete
     r_margin: Incomplete
     def __init__(self, pdf, *args, l_margin: Incomplete | None = None, r_margin: Incomplete | None = None, **kwargs) -> None: ...

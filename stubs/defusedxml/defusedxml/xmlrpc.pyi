@@ -1,10 +1,22 @@
+"""
+Defused xmlrpclib
+
+Also defuses gzip bomb
+"""
+
 from _typeshed import Incomplete
 from xmlrpc.client import ExpatParser
 
 __origin__: str
 MAX_DATA: int = 31457280
 
-def defused_gzip_decode(data, limit: int | None = None): ...
+def defused_gzip_decode(data, limit: int | None = None):
+    """
+    gzip encoded data -> unencoded data
+
+    Decode data using the gzip content encoding as described in RFC 1952
+    """
+    ...
 
 # Couldn't type this as a class deriving from gzip.GzipFile
 # since overwriting `read` method does not define an optional argument

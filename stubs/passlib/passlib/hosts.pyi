@@ -1,3 +1,5 @@
+"""passlib.hosts"""
+
 from typing import Any
 
 from passlib.context import CryptContext

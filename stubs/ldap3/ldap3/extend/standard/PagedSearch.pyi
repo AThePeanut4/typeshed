@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 
 def paged_search_generator(

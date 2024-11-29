@@ -1,3 +1,21 @@
+"""
+This module manages the version specific aspects of bytecode instrumentation.
+
+Accross Python versions there are variations in:
+    - Instructions
+    - Instruction arguments
+    - Shape of a code object
+    - Construction of the lnotab
+
+Currently supported python versions are:
+    - 3.6
+    - 3.7
+    - 3.8
+    - 3.9
+    - 3.10
+    - 3.11
+"""
+
 import types
 from typing import Final
 

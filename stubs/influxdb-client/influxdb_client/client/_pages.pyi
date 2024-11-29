@@ -34,4 +34,14 @@ class _Paginated(Generic[_T, _R]):
     def __init__(
         self, paginated_getter: Callable[..., _R], pluck_page_resources_from_response: Callable[[_R], list[_T]]
     ) -> None: ...
-    def find_iter(self, *, after: str | None = None, **kwargs: Any) -> _PageIterator[_T]: ...
+    def find_iter(self, *, after: str | None = None, **kwargs: Any) -> _PageIterator[_T]:
+        """
+        Iterate over resources with pagination.
+
+        :key str org: The organization name.
+        :key str org_id: The organization ID.
+        :key str after: The last resource ID from which to seek from (but not including).
+        :key int limit: the maximum number of items per page
+        :return: resources iterator
+        """
+        ...

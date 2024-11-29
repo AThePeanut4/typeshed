@@ -1,3 +1,5 @@
+"""Basic loop implementation for ffi-based cores."""
+
 import sys
 from _typeshed import FileDescriptor
 from collections.abc import Callable

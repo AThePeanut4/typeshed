@@ -1,3 +1,9 @@
+"""
+Module which provides compatibility with older Python versions.
+This is more future-compatible rather than the opposite (prefer latest
+Python 3 way of doing things).
+"""
+
 from builtins import (
     ChildProcessError as ChildProcessError,
     FileExistsError as FileExistsError,

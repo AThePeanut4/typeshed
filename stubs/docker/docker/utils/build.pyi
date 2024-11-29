@@ -8,7 +8,15 @@ def tar(
     fileobj: Incomplete | None = None,
     gzip: bool = False,
 ): ...
-def exclude_paths(root, patterns, dockerfile: Incomplete | None = None): ...
+def exclude_paths(root, patterns, dockerfile: Incomplete | None = None):
+    """
+    Given a root directory path and a list of .dockerignore patterns, return
+    an iterator of all paths (both regular files and directories) in the root
+    directory that do *not* match any of the patterns.
+
+    All paths returned are relative to the root.
+    """
+    ...
 def build_file_list(root): ...
 def create_archive(
     root,

@@ -1,3 +1,5 @@
+"""This is an special module, it provides stuff used by by pygit2 at run-time."""
+
 from _typeshed import Incomplete
 from pathlib import Path
 

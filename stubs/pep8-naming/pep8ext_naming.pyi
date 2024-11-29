@@ -1,3 +1,5 @@
+"""Checker of PEP-8 Naming Conventions."""
+
 import ast
 from _typeshed import Incomplete
 from argparse import Namespace
@@ -11,6 +13,7 @@ METACLASS_BASES: frozenset[str]
 METHOD_CONTAINER_NODES: set[ast.AST]
 
 class NamingChecker:
+    """Checker of PEP-8 Naming Conventions."""
     name: str
     version: str
     visitors: Any
@@ -23,7 +26,9 @@ class NamingChecker:
     @classmethod
     def parse_options(cls, option: Namespace) -> None: ...
     def run(self) -> Generator[tuple[int, int, str, type[Any]], None, None]: ...
-    def tag_class_functions(self, cls_node: ast.ClassDef) -> None: ...
+    def tag_class_functions(self, cls_node: ast.ClassDef) -> None:
+        """Tag functions if they are methods, classmethods, staticmethods"""
+        ...
     def set_function_nodes_types(self, nodes: Iterable[ast.AST], ismetaclass: bool, late_decoration: dict[str, str]) -> None: ...
     def __getattr__(self, name: str) -> Incomplete: ...  # incomplete (other attributes are normally not accessed)
 

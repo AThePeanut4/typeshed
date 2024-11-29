@@ -1,3 +1,5 @@
+"""Represents the Cache-Control header"""
+
 from collections.abc import Callable, MutableMapping
 from typing import Any, Generic, Literal, TypeVar, overload
 from typing_extensions import Self, TypeAlias
@@ -12,10 +14,15 @@ _NoneLiteral = TypeVar("_NoneLiteral")
 _Type: TypeAlias = type
 
 class UpdateDict(dict[_KT, _VT]):
+    """Dict that has a callback on all updates"""
     updated: Callable[..., Any] | None
     updated_args: tuple[Any, ...] | None
 
 class exists_property:
+    """
+    Represents a property that either is listed in the Cache-Control
+    header, or is not listed (has no value)
+    """
     prop: str
     type: str | None
     def __init__(self, prop: str, type: str | None = None) -> None: ...
@@ -27,6 +34,11 @@ class exists_property:
     def __delete__(self, obj: Any) -> None: ...
 
 class value_property(Generic[_T, _NoneLiteral]):
+    """
+    Represents a property that has a value in the Cache-Control header.
+
+    When no value is actually given, the value of self.none is returned.
+    """
     prop: str
     default: _T | None
     none: _NoneLiteral
@@ -86,6 +98,13 @@ class _AnyCacheControl(_RequestCacheControl, _ResponseCacheControl):
     type: None  # type: ignore[assignment]
 
 class CacheControl(_AnyCacheControl):
+    """
+    Represents the Cache-Control header.
+
+    By giving a type of ``'request'`` or ``'response'`` you can
+    control what attributes are allowed (some Cache-Control values
+    only apply to requests or responses).
+    """
     @overload
     def __init__(self: _AnyCacheControl, properties: MutableMapping[str, Any], type: None) -> None: ...
     @overload

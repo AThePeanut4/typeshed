@@ -1,3 +1,5 @@
+"""create and manipulate C data types in Python"""
+
 import sys
 from _ctypes import (
     POINTER as POINTER,
@@ -46,6 +48,20 @@ DEFAULT_MODE: int
 class ArgumentError(Exception): ...
 
 class CDLL:
+    """
+    An instance of this class represents a loaded dll/shared
+    library, exporting functions using the standard C calling
+    convention (named 'cdecl' on Windows).
+
+    The exported functions can be accessed as attributes, or by
+    indexing with the function name.  Examples:
+
+    <obj>.qsort -> callable object
+    <obj>['qsort'] -> callable object
+
+    Calling the functions releases the Python GIL during the call and
+    reacquires it afterwards.
+    """
     _func_flags_: ClassVar[int]
     _func_restype_: ClassVar[_CDataType]
     _name: str
@@ -67,7 +83,13 @@ if sys.platform == "win32":
     class OleDLL(CDLL): ...
     class WinDLL(CDLL): ...
 
-class PyDLL(CDLL): ...
+class PyDLL(CDLL):
+    """
+    This class represents the Python library itself.  It allows
+    accessing Python API functions.  The GIL is not released, and
+    Python exceptions are handled correctly.
+    """
+    ...
 
 class LibraryLoader(Generic[_DLLT]):
     def __init__(self, dlltype: type[_DLLT]) -> None: ...
@@ -75,7 +97,13 @@ class LibraryLoader(Generic[_DLLT]):
     def __getitem__(self, name: str) -> _DLLT: ...
     def LoadLibrary(self, name: str) -> _DLLT: ...
     if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+            """
+            Represent a PEP 585 generic type
+
+            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+            """
+            ...
 
 cdll: LibraryLoader[CDLL]
 if sys.platform == "win32":
@@ -94,7 +122,24 @@ def CFUNCTYPE(
     *argtypes: type[_CData | _CDataType],
     use_errno: bool = ...,
     use_last_error: bool = ...,
-) -> type[_FuncPointer]: ...
+) -> type[_FuncPointer]:
+    """
+    CFUNCTYPE(restype, *argtypes,
+                 use_errno=False, use_last_error=False) -> function prototype.
+
+    restype: the result type
+    argtypes: a sequence specifying the argument types
+
+    The function prototype can be called in different ways to create a
+    callable object:
+
+    prototype(integer address) -> foreign function
+    prototype(callable) -> create and return a C callable function from callable
+    prototype(integer index, method name[, paramflags]) -> foreign function calling a COM method
+    prototype((ordinal number, dll object)[, paramflags]) -> foreign function exported by ordinal
+    prototype((function name, dll object)[, paramflags]) -> foreign function exported by name
+    """
+    ...
 
 if sys.platform == "win32":
     def WINFUNCTYPE(
@@ -118,11 +163,23 @@ _CVoidConstPLike: TypeAlias = _CVoidPLike | bytes
 _CastT = TypeVar("_CastT", bound=_CanCastTo)
 
 def cast(obj: _CData | _CDataType | _CArgObject | int, typ: type[_CastT]) -> _CastT: ...
-def create_string_buffer(init: int | bytes, size: int | None = None) -> Array[c_char]: ...
+def create_string_buffer(init: int | bytes, size: int | None = None) -> Array[c_char]:
+    """
+    create_string_buffer(aBytes) -> character array
+    create_string_buffer(anInteger) -> character array
+    create_string_buffer(aBytes, anInteger) -> character array
+    """
+    ...
 
 c_buffer = create_string_buffer
 
-def create_unicode_buffer(init: int | str, size: int | None = None) -> Array[c_wchar]: ...
+def create_unicode_buffer(init: int | str, size: int | None = None) -> Array[c_wchar]:
+    """
+    create_unicode_buffer(aString) -> character array
+    create_unicode_buffer(anInteger) -> character array
+    create_unicode_buffer(aString, anInteger) -> character array
+    """
+    ...
 @deprecated("Deprecated in Python 3.13; removal scheduled for Python 3.15")
 def SetPointerType(
     pointer: type[_Pointer[Any]], cls: Any  # noqa: F811  # Redefinition of unused `pointer` from line 22
@@ -136,12 +193,24 @@ if sys.platform == "win32":
 
 def memmove(dst: _CVoidPLike, src: _CVoidConstPLike, count: int) -> int: ...
 def memset(dst: _CVoidPLike, c: int, count: int) -> int: ...
-def string_at(ptr: _CVoidConstPLike, size: int = -1) -> bytes: ...
+def string_at(ptr: _CVoidConstPLike, size: int = -1) -> bytes:
+    """
+    string_at(ptr[, size]) -> string
+
+    Return the byte string at void *ptr.
+    """
+    ...
 
 if sys.platform == "win32":
     def WinError(code: int | None = None, descr: str | None = None) -> OSError: ...
 
-def wstring_at(ptr: _CVoidConstPLike, size: int = -1) -> str: ...
+def wstring_at(ptr: _CVoidConstPLike, size: int = -1) -> str:
+    """
+    wstring_at(ptr[, size]) -> string
+
+    Return the wide-character string at void *ptr.
+    """
+    ...
 
 class c_byte(_SimpleCData[int]): ...
 

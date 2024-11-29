@@ -219,6 +219,8 @@ class SerializedDType(google.protobuf.message.Message):
         *,
         datatype: global___DataType.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["datatype", b"datatype"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["datatype", b"datatype"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SerializedDType = SerializedDType

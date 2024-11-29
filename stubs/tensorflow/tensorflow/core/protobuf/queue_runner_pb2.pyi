@@ -50,6 +50,8 @@ class QueueRunnerDef(google.protobuf.message.Message):
         cancel_op_name: builtins.str | None = ...,
         queue_closed_exception_types: collections.abc.Iterable[tensorflow.tsl.protobuf.error_codes_pb2.Code.ValueType] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["cancel_op_name", b"cancel_op_name", "close_op_name", b"close_op_name", "enqueue_op_name", b"enqueue_op_name", "queue_closed_exception_types", b"queue_closed_exception_types", "queue_name", b"queue_name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["cancel_op_name", b"cancel_op_name", "close_op_name", b"close_op_name", "enqueue_op_name", b"enqueue_op_name", "queue_closed_exception_types", b"queue_closed_exception_types", "queue_name", b"queue_name"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___QueueRunnerDef = QueueRunnerDef

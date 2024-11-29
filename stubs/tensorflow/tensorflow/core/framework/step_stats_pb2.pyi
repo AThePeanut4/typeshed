@@ -33,7 +33,9 @@ class AllocationRecord(google.protobuf.message.Message):
         alloc_micros: builtins.int | None = ...,
         alloc_bytes: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["alloc_bytes", b"alloc_bytes", "alloc_micros", b"alloc_micros"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["alloc_bytes", b"alloc_bytes", "alloc_micros", b"alloc_micros"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AllocationRecord = AllocationRecord
 
@@ -71,7 +73,9 @@ class AllocatorMemoryUsed(google.protobuf.message.Message):
         allocation_records: collections.abc.Iterable[global___AllocationRecord] | None = ...,
         allocator_bytes_in_use: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["allocation_records", b"allocation_records", "allocator_bytes_in_use", b"allocator_bytes_in_use", "allocator_name", b"allocator_name", "live_bytes", b"live_bytes", "peak_bytes", b"peak_bytes", "total_bytes", b"total_bytes"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["allocation_records", b"allocation_records", "allocator_bytes_in_use", b"allocator_bytes_in_use", "allocator_name", b"allocator_name", "live_bytes", b"live_bytes", "peak_bytes", b"peak_bytes", "total_bytes", b"total_bytes"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AllocatorMemoryUsed = AllocatorMemoryUsed
 
@@ -92,8 +96,12 @@ class NodeOutput(google.protobuf.message.Message):
         slot: builtins.int | None = ...,
         tensor_description: tensorflow.core.framework.tensor_description_pb2.TensorDescription | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tensor_description", b"tensor_description"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["slot", b"slot", "tensor_description", b"tensor_description"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["tensor_description", b"tensor_description"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["slot", b"slot", "tensor_description", b"tensor_description"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___NodeOutput = NodeOutput
 
@@ -127,7 +135,9 @@ class MemoryStats(google.protobuf.message.Message):
         device_persistent_memory_size: builtins.int | None = ...,
         device_persistent_tensor_alloc_ids: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["device_persistent_memory_size", b"device_persistent_memory_size", "device_persistent_tensor_alloc_ids", b"device_persistent_tensor_alloc_ids", "device_temp_memory_size", b"device_temp_memory_size", "persistent_memory_size", b"persistent_memory_size", "persistent_tensor_alloc_ids", b"persistent_tensor_alloc_ids", "temp_memory_size", b"temp_memory_size"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["device_persistent_memory_size", b"device_persistent_memory_size", "device_persistent_tensor_alloc_ids", b"device_persistent_tensor_alloc_ids", "device_temp_memory_size", b"device_temp_memory_size", "persistent_memory_size", b"persistent_memory_size", "persistent_tensor_alloc_ids", b"persistent_tensor_alloc_ids", "temp_memory_size", b"temp_memory_size"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemoryStats = MemoryStats
 
@@ -201,8 +211,12 @@ class NodeExecStats(google.protobuf.message.Message):
         all_end_rel_nanos: builtins.int | None = ...,
         scheduled_nanos: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["memory_stats", b"memory_stats"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["all_end_rel_micros", b"all_end_rel_micros", "all_end_rel_nanos", b"all_end_rel_nanos", "all_start_micros", b"all_start_micros", "all_start_nanos", b"all_start_nanos", "memory", b"memory", "memory_stats", b"memory_stats", "node_name", b"node_name", "op_end_rel_micros", b"op_end_rel_micros", "op_end_rel_nanos", b"op_end_rel_nanos", "op_start_rel_micros", b"op_start_rel_micros", "op_start_rel_nanos", b"op_start_rel_nanos", "output", b"output", "referenced_tensor", b"referenced_tensor", "scheduled_micros", b"scheduled_micros", "scheduled_nanos", b"scheduled_nanos", "thread_id", b"thread_id", "timeline_label", b"timeline_label"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["memory_stats", b"memory_stats"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["all_end_rel_micros", b"all_end_rel_micros", "all_end_rel_nanos", b"all_end_rel_nanos", "all_start_micros", b"all_start_micros", "all_start_nanos", b"all_start_nanos", "memory", b"memory", "memory_stats", b"memory_stats", "node_name", b"node_name", "op_end_rel_micros", b"op_end_rel_micros", "op_end_rel_nanos", b"op_end_rel_nanos", "op_start_rel_micros", b"op_start_rel_micros", "op_start_rel_nanos", b"op_start_rel_nanos", "output", b"output", "referenced_tensor", b"referenced_tensor", "scheduled_micros", b"scheduled_micros", "scheduled_nanos", b"scheduled_nanos", "thread_id", b"thread_id", "timeline_label", b"timeline_label"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___NodeExecStats = NodeExecStats
 
@@ -224,7 +238,9 @@ class DeviceStepStats(google.protobuf.message.Message):
             key: builtins.int | None = ...,
             value: builtins.str | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     DEVICE_FIELD_NUMBER: builtins.int
     NODE_STATS_FIELD_NUMBER: builtins.int
@@ -243,7 +259,9 @@ class DeviceStepStats(google.protobuf.message.Message):
         node_stats: collections.abc.Iterable[global___NodeExecStats] | None = ...,
         thread_names: collections.abc.Mapping[builtins.int, builtins.str] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["device", b"device", "node_stats", b"node_stats", "thread_names", b"thread_names"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["device", b"device", "node_stats", b"node_stats", "thread_names", b"thread_names"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___DeviceStepStats = DeviceStepStats
 
@@ -259,6 +277,8 @@ class StepStats(google.protobuf.message.Message):
         *,
         dev_stats: collections.abc.Iterable[global___DeviceStepStats] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dev_stats", b"dev_stats"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dev_stats", b"dev_stats"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___StepStats = StepStats

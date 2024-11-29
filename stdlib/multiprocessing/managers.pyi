@@ -24,11 +24,14 @@ _VT = TypeVar("_VT")
 class Namespace:
     def __init__(self, **kwds: Any) -> None: ...
     def __getattr__(self, name: str, /) -> Any: ...
-    def __setattr__(self, name: str, value: Any, /) -> None: ...
+    def __setattr__(self, name: str, value: Any, /) -> None:
+        """Implement setattr(self, name, value)."""
+        ...
 
 _Namespace: TypeAlias = Namespace
 
 class Token:
+    """Type to uniquely identify a shared object"""
     typeid: str | bytes | None
     address: tuple[str | bytes, int]
     id: str | bytes | int | None
@@ -37,6 +40,7 @@ class Token:
     def __setstate__(self, state: tuple[str | bytes | None, tuple[str | bytes, int], str | bytes | int | None]) -> None: ...
 
 class BaseProxy:
+    """A base for proxies of shared objects"""
     _address_to_local: dict[Any, Any]
     _mutex: Any
     def __init__(
@@ -50,8 +54,12 @@ class BaseProxy:
         manager_owned: bool = False,
     ) -> None: ...
     def __deepcopy__(self, memo: Any | None) -> Any: ...
-    def _callmethod(self, methodname: str, args: tuple[Any, ...] = (), kwds: dict[Any, Any] = {}) -> None: ...
-    def _getvalue(self) -> Any: ...
+    def _callmethod(self, methodname: str, args: tuple[Any, ...] = (), kwds: dict[Any, Any] = {}) -> None:
+        """Try to call a method of the referent and return a copy of the result"""
+        ...
+    def _getvalue(self) -> Any:
+        """Get a copy of the value of the referent"""
+        ...
     def __reduce__(self) -> tuple[Any, tuple[Any, Any, str, dict[Any, Any]]]: ...
 
 class ValueProxy(BaseProxy, Generic[_T]):
@@ -59,7 +67,13 @@ class ValueProxy(BaseProxy, Generic[_T]):
     def set(self, value: _T) -> None: ...
     value: _T
     if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+            """
+            Represent a PEP 585 generic type
+
+            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+            """
+            ...
 
 if sys.version_info >= (3, 13):
     class _BaseDictProxy(BaseProxy, MutableMapping[_KT, _VT]):
@@ -87,7 +101,13 @@ if sys.version_info >= (3, 13):
         def values(self) -> list[_VT]: ...  # type: ignore[override]
 
     class DictProxy(_BaseDictProxy[_KT, _VT]):
-        def __class_getitem__(cls, args: Any, /) -> GenericAlias: ...
+        def __class_getitem__(cls, args: Any, /) -> GenericAlias:
+            """
+            Represent a PEP 585 generic type
+
+            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+            """
+            ...
 
 else:
     class DictProxy(BaseProxy, MutableMapping[_KT, _VT]):
@@ -148,20 +168,32 @@ class ListProxy(BaseListProxy[_T]):
     def __iadd__(self, value: Iterable[_T], /) -> Self: ...  # type: ignore[override]
     def __imul__(self, value: SupportsIndex, /) -> Self: ...  # type: ignore[override]
     if sys.version_info >= (3, 13):
-        def __class_getitem__(cls, args: Any, /) -> Any: ...
+        def __class_getitem__(cls, args: Any, /) -> Any:
+            """
+            Represent a PEP 585 generic type
+
+            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+            """
+            ...
 
 # Returned by BaseManager.get_server()
 class Server:
+    """Server class which runs in a process controlled by a manager object"""
     address: Any
     def __init__(
         self, registry: dict[str, tuple[Callable[..., Any], Any, Any, Any]], address: Any, authkey: bytes, serializer: str
     ) -> None: ...
-    def serve_forever(self) -> None: ...
+    def serve_forever(self) -> None:
+        """Run the server forever"""
+        ...
     def accept_connection(
         self, c: Connection[tuple[str, str | None], tuple[str, str, Iterable[Incomplete], Mapping[str, Incomplete]]], name: str
-    ) -> None: ...
+    ) -> None:
+        """Spawn a new thread to serve this connection"""
+        ...
 
 class BaseManager:
+    """Base class for managers"""
     if sys.version_info >= (3, 11):
         def __init__(
             self,
@@ -181,11 +213,19 @@ class BaseManager:
             ctx: BaseContext | None = None,
         ) -> None: ...
 
-    def get_server(self) -> Server: ...
-    def connect(self) -> None: ...
-    def start(self, initializer: Callable[..., object] | None = None, initargs: Iterable[Any] = ()) -> None: ...
+    def get_server(self) -> Server:
+        """Return server object with serve_forever() method and address attribute"""
+        ...
+    def connect(self) -> None:
+        """Connect manager object to the server process"""
+        ...
+    def start(self, initializer: Callable[..., object] | None = None, initargs: Iterable[Any] = ()) -> None:
+        """Spawn a server process for this manager object"""
+        ...
     shutdown: _Finalize  # only available after start() was called
-    def join(self, timeout: float | None = None) -> None: ...  # undocumented
+    def join(self, timeout: float | None = None) -> None:
+        """Join the manager process (if it has been spawned)"""
+        ...
     @property
     def address(self) -> Any: ...
     @classmethod
@@ -197,13 +237,24 @@ class BaseManager:
         exposed: Sequence[str] | None = None,
         method_to_typeid: Mapping[str, str] | None = None,
         create_method: bool = True,
-    ) -> None: ...
+    ) -> None:
+        """Register a typeid with the manager type"""
+        ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> None: ...
 
 class SyncManager(BaseManager):
+    """
+    Subclass of `BaseManager` which supports a number of shared object types.
+
+    The types registered are those intended for the synchronization
+    of threads, plus `dict`, `list` and `Namespace`.
+
+    The `multiprocessing.Manager()` function creates started instances of
+    this class.
+    """
     def BoundedSemaphore(self, value: Any = ...) -> threading.BoundedSemaphore: ...
     def Condition(self, lock: Any = ...) -> threading.Condition: ...
     def Event(self) -> threading.Event: ...
@@ -240,7 +291,28 @@ class RemoteError(Exception): ...
 class SharedMemoryServer(Server): ...
 
 class SharedMemoryManager(BaseManager):
-    def get_server(self) -> SharedMemoryServer: ...
-    def SharedMemory(self, size: int) -> _SharedMemory: ...
-    def ShareableList(self, sequence: Iterable[_SLT] | None) -> _ShareableList[_SLT]: ...
+    """
+    Like SyncManager but uses SharedMemoryServer instead of Server.
+
+    It provides methods for creating and returning SharedMemory instances
+    and for creating a list-like object (ShareableList) backed by shared
+    memory.  It also provides methods that create and return Proxy Objects
+    that support synchronization across processes (i.e. multi-process-safe
+    locks and semaphores).
+    """
+    def get_server(self) -> SharedMemoryServer:
+        """Better than monkeypatching for now; merge into Server ultimately"""
+        ...
+    def SharedMemory(self, size: int) -> _SharedMemory:
+        """
+        Returns a new SharedMemory instance with the specified size in
+        bytes, to be tracked by the manager.
+        """
+        ...
+    def ShareableList(self, sequence: Iterable[_SLT] | None) -> _ShareableList[_SLT]:
+        """
+        Returns a new ShareableList instance populated with the values
+        from the input sequence, to be tracked by the manager.
+        """
+        ...
     def __del__(self) -> None: ...

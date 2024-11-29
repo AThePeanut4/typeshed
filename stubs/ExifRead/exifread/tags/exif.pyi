@@ -1,3 +1,5 @@
+"""Standard tag definitions."""
+
 from exifread._types import TagDict
 
 INTEROP_TAGS: TagDict

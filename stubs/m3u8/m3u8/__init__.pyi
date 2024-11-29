@@ -63,7 +63,13 @@ __all__ = (
 
 _CustomTagsParser: TypeAlias = Callable[[str, int, dict[str, Any], dict[str, Any]], object]
 
-def loads(content: str, uri: str | None = None, custom_tags_parser: _CustomTagsParser | None = None) -> M3U8: ...
+def loads(content: str, uri: str | None = None, custom_tags_parser: _CustomTagsParser | None = None) -> M3U8:
+    """
+    Given a string with a m3u8 content, returns a M3U8 object.
+    Optionally parses a uri to set a correct base_uri on the M3U8 object.
+    Raises ValueError if invalid content
+    """
+    ...
 def load(
     uri: str,
     timeout: Incomplete | None = None,
@@ -71,4 +77,9 @@ def load(
     custom_tags_parser: _CustomTagsParser | None = None,
     http_client: _HTTPClientProtocol = ...,
     verify_ssl: bool = True,
-) -> M3U8: ...
+) -> M3U8:
+    """
+    Retrieves the content from a given URI and returns a M3U8 object.
+    Raises ValueError if invalid content or IOError if request fails.
+    """
+    ...

@@ -12,6 +12,7 @@ rename_headers: Mapping[str, str]
 hop_by_hop: frozenset[str]
 
 class ThreadedTaskDispatcher:
+    """A Task Dispatcher that creates a thread for each task."""
     stop_count: int
     active_count: int
     logger: Logger
@@ -55,6 +56,7 @@ class Task:
     def write(self, data: bytes) -> None: ...
 
 class ErrorTask(Task):
+    """An error task produces an error response"""
     complete: bool
     status: str
     close_on_finish: bool
@@ -62,6 +64,7 @@ class ErrorTask(Task):
     def execute(self) -> None: ...
 
 class WSGITask(Task):
+    """A WSGI task produces a response from a WSGI application."""
     environ: WSGIEnvironment | None
     response_headers: Sequence[tuple[str, str]]
     complete: bool
@@ -69,4 +72,6 @@ class WSGITask(Task):
     content_length: int | None
     close_on_finish: bool
     def execute(self) -> None: ...
-    def get_environment(self) -> WSGIEnvironment: ...
+    def get_environment(self) -> WSGIEnvironment:
+        """Returns a WSGI environment."""
+        ...

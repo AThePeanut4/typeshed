@@ -1,3 +1,14 @@
+"""
+GIT_* enum values for compatibility with legacy code.
+
+These values are deprecated starting with pygit2 1.14.
+User programs should migrate to the enum classes defined in `pygit2.enums`.
+
+Note that our C module _pygit2 already exports many libgit2 enums
+(which are all imported by __init__.py). This file only exposes the enums
+that are not available through _pygit2.
+"""
+
 GIT_FEATURE_THREADS: int
 GIT_FEATURE_HTTPS: int
 GIT_FEATURE_SSH: int

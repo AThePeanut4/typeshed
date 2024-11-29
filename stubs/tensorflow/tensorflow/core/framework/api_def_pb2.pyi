@@ -66,7 +66,9 @@ class ApiDef(google.protobuf.message.Message):
         is appropriate in the target language).
         """
 
-    class Visibility(_Visibility, metaclass=_VisibilityEnumTypeWrapper): ...
+    class Visibility(_Visibility, metaclass=_VisibilityEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     DEFAULT_VISIBILITY: ApiDef.Visibility.ValueType  # 0
     """Normally this is "VISIBLE" unless you are inheriting a
     different value from another ApiDef.
@@ -117,7 +119,9 @@ class ApiDef(google.protobuf.message.Message):
             deprecated: builtins.bool | None = ...,
             deprecation_version: builtins.int | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["deprecated", b"deprecated", "deprecation_version", b"deprecation_version", "name", b"name"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["deprecated", b"deprecated", "deprecation_version", b"deprecation_version", "name", b"name"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class Arg(google.protobuf.message.Message):
@@ -144,7 +148,9 @@ class ApiDef(google.protobuf.message.Message):
             rename_to: builtins.str | None = ...,
             description: builtins.str | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["description", b"description", "name", b"name", "rename_to", b"rename_to"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["description", b"description", "name", b"name", "rename_to", b"rename_to"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class Attr(google.protobuf.message.Message):
@@ -185,8 +191,12 @@ class ApiDef(google.protobuf.message.Message):
             default_value: tensorflow.core.framework.attr_value_pb2.AttrValue | None = ...,
             description: builtins.str | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing.Literal["default_value", b"default_value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["default_value", b"default_value", "description", b"description", "name", b"name", "rename_to", b"rename_to"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["default_value", b"default_value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["default_value", b"default_value", "description", b"description", "name", b"name", "rename_to", b"rename_to"]) -> None:
+            """Clears a message field."""
+            ...
 
     GRAPH_OP_NAME_FIELD_NUMBER: builtins.int
     DEPRECATION_MESSAGE_FIELD_NUMBER: builtins.int
@@ -255,7 +265,9 @@ class ApiDef(google.protobuf.message.Message):
         description_prefix: builtins.str | None = ...,
         description_suffix: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["arg_order", b"arg_order", "attr", b"attr", "deprecation_message", b"deprecation_message", "deprecation_version", b"deprecation_version", "description", b"description", "description_prefix", b"description_prefix", "description_suffix", b"description_suffix", "endpoint", b"endpoint", "graph_op_name", b"graph_op_name", "in_arg", b"in_arg", "out_arg", b"out_arg", "summary", b"summary", "visibility", b"visibility"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["arg_order", b"arg_order", "attr", b"attr", "deprecation_message", b"deprecation_message", "deprecation_version", b"deprecation_version", "description", b"description", "description_prefix", b"description_prefix", "description_suffix", b"description_suffix", "endpoint", b"endpoint", "graph_op_name", b"graph_op_name", "in_arg", b"in_arg", "out_arg", b"out_arg", "summary", b"summary", "visibility", b"visibility"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ApiDef = ApiDef
 
@@ -271,6 +283,8 @@ class ApiDefs(google.protobuf.message.Message):
         *,
         op: collections.abc.Iterable[global___ApiDef] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["op", b"op"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["op", b"op"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ApiDefs = ApiDefs

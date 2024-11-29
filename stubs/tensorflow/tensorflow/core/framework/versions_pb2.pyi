@@ -49,6 +49,8 @@ class VersionDef(google.protobuf.message.Message):
         min_consumer: builtins.int | None = ...,
         bad_consumers: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bad_consumers", b"bad_consumers", "min_consumer", b"min_consumer", "producer", b"producer"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["bad_consumers", b"bad_consumers", "min_consumer", b"min_consumer", "producer", b"producer"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___VersionDef = VersionDef
