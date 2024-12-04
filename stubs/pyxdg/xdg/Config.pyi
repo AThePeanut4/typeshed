@@ -1,3 +1,5 @@
+"""Functions to configure Basic Settings"""
+
 language: str
 windowmanager: str | None
 icon_theme: str

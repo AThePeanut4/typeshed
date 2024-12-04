@@ -72,7 +72,9 @@ class TaskDeviceFilters(google.protobuf.message.Message):
         *,
         device_filters: collections.abc.Iterable[builtins.str] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["device_filters", b"device_filters"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["device_filters", b"device_filters"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___TaskDeviceFilters = TaskDeviceFilters
 
@@ -97,8 +99,12 @@ class JobDeviceFilters(google.protobuf.message.Message):
             key: builtins.int | None = ...,
             value: global___TaskDeviceFilters | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     NAME_FIELD_NUMBER: builtins.int
     TASKS_FIELD_NUMBER: builtins.int
@@ -114,7 +120,9 @@ class JobDeviceFilters(google.protobuf.message.Message):
         name: builtins.str | None = ...,
         tasks: collections.abc.Mapping[builtins.int, global___TaskDeviceFilters] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "tasks", b"tasks"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "tasks", b"tasks"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___JobDeviceFilters = JobDeviceFilters
 
@@ -132,6 +140,8 @@ class ClusterDeviceFilters(google.protobuf.message.Message):
         *,
         jobs: collections.abc.Iterable[global___JobDeviceFilters] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["jobs", b"jobs"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["jobs", b"jobs"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ClusterDeviceFilters = ClusterDeviceFilters

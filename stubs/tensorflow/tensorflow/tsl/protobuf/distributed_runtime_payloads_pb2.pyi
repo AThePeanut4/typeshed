@@ -36,7 +36,9 @@ class GrpcPayloadContainer(google.protobuf.message.Message):
             key: builtins.str | None = ...,
             value: builtins.bytes | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     PAYLOADS_FIELD_NUMBER: builtins.int
     @property
@@ -46,7 +48,9 @@ class GrpcPayloadContainer(google.protobuf.message.Message):
         *,
         payloads: collections.abc.Mapping[builtins.str, builtins.bytes] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["payloads", b"payloads"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["payloads", b"payloads"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GrpcPayloadContainer = GrpcPayloadContainer
 

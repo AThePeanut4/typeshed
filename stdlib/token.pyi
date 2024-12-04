@@ -1,3 +1,5 @@
+"""Token constants."""
+
 import sys
 
 __all__ = [

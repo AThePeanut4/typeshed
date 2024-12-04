@@ -1,3 +1,5 @@
+"""Worksheet Properties"""
+
 from typing import ClassVar, Literal
 
 from openpyxl.descriptors.base import Bool, String, Typed, _ConvertibleToBool
@@ -53,4 +55,6 @@ class WorksheetProperties(Serialisable):
         tabColor: str | Color | None = None,
         outlinePr: Outline | None = None,
         pageSetUpPr: PageSetupProperties | None = None,
-    ) -> None: ...
+    ) -> None:
+        """Attributes """
+        ...

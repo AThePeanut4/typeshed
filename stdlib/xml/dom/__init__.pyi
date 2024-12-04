@@ -1,8 +1,25 @@
+"""
+W3C Document Object Model implementation for Python.
+
+The Python mapping of the Document Object Model is documented in the
+Python Library Reference in the section on the xml.dom package.
+
+This package contains the following modules:
+
+minidom -- A simple implementation of the Level 1 DOM with namespace
+           support added (based on the Level 2 specification) and other
+           minor Level 2 functionality.
+
+pulldom -- DOM builder supporting on-demand tree-building for selected
+           subtrees of the document.
+"""
+
 from typing import Any, Final
 
 from .domreg import getDOMImplementation as getDOMImplementation, registerDOMImplementation as registerDOMImplementation
 
 class Node:
+    """Class giving the NodeType constants."""
     ELEMENT_NODE: int
     ATTRIBUTE_NODE: int
     TEXT_NODE: int
@@ -35,6 +52,10 @@ INVALID_ACCESS_ERR: Final[int]
 VALIDATION_ERR: Final[int]
 
 class DOMException(Exception):
+    """
+    Abstract base class for DOM exceptions.
+    Exceptions with specific codes are specializations of this class.
+    """
     code: int
     def __init__(self, *args: Any, **kw: Any) -> None: ...
     def _get_code(self) -> int: ...
@@ -57,6 +78,7 @@ class InvalidAccessErr(DOMException): ...
 class ValidationErr(DOMException): ...
 
 class UserDataHandler:
+    """Class giving the operation constants for UserDataHandler.handle()."""
     NODE_CLONED: int
     NODE_IMPORTED: int
     NODE_DELETED: int

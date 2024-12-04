@@ -28,6 +28,7 @@ class _Callback:
     def on_predict_end(self, logs: Incomplete | None = ...) -> None: ...
 
 class TqdmCallback(_Callback):
+    """Keras callback for epoch and batch progress."""
     @staticmethod
     def bar2callback(bar, pop: Incomplete | None = None, delta=...): ...
     tqdm_class: Incomplete
@@ -45,8 +46,28 @@ class TqdmCallback(_Callback):
         verbose: int = 1,
         tqdm_class=...,
         **tqdm_kwargs,
-    ) -> None: ...
+    ) -> None:
+        """
+        Parameters
+        ----------
+        epochs  : int, optional
+        data_size  : int, optional
+            Number of training pairs.
+        batch_size  : int, optional
+            Number of training pairs per batch.
+        verbose  : int
+            0: epoch, 1: batch (transient), 2: batch. [default: 1].
+            Will be set to `0` unless both `data_size` and `batch_size`
+            are given.
+        tqdm_class  : optional
+            `tqdm` class to use for bars [default: `tqdm.auto.tqdm`].
+        tqdm_kwargs  : optional
+            Any other arguments used for all bars.
+        """
+        ...
     def on_train_begin(self, *_, **__) -> None: ...
     def on_epoch_begin(self, epoch, *_, **__) -> None: ...
     def on_train_end(self, *_, **__) -> None: ...
-    def display(self) -> None: ...
+    def display(self) -> None:
+        """Displays in the current cell in Notebooks."""
+        ...

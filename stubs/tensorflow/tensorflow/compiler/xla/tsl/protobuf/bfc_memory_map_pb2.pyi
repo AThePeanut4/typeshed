@@ -38,7 +38,9 @@ class MemAllocatorStats(google.protobuf.message.Message):
         largest_alloc_size: builtins.int | None = ...,
         fragmentation_metric: builtins.float | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bytes_in_use", b"bytes_in_use", "fragmentation_metric", b"fragmentation_metric", "largest_alloc_size", b"largest_alloc_size", "num_allocs", b"num_allocs", "peak_bytes_in_use", b"peak_bytes_in_use"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["bytes_in_use", b"bytes_in_use", "fragmentation_metric", b"fragmentation_metric", "largest_alloc_size", b"largest_alloc_size", "num_allocs", b"num_allocs", "peak_bytes_in_use", b"peak_bytes_in_use"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemAllocatorStats = MemAllocatorStats
 
@@ -77,7 +79,9 @@ class MemChunk(google.protobuf.message.Message):
         in_use: builtins.bool | None = ...,
         step_id: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["action_count", b"action_count", "address", b"address", "bin", b"bin", "freed_at_count", b"freed_at_count", "in_use", b"in_use", "op_name", b"op_name", "requested_size", b"requested_size", "size", b"size", "step_id", b"step_id"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["action_count", b"action_count", "address", b"address", "bin", b"bin", "freed_at_count", b"freed_at_count", "in_use", b"in_use", "op_name", b"op_name", "requested_size", b"requested_size", "size", b"size", "step_id", b"step_id"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemChunk = MemChunk
 
@@ -104,7 +108,9 @@ class BinSummary(google.protobuf.message.Message):
         total_chunks_in_use: builtins.int | None = ...,
         total_chunks_in_bin: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bin", b"bin", "total_bytes_in_bin", b"total_bytes_in_bin", "total_bytes_in_use", b"total_bytes_in_use", "total_chunks_in_bin", b"total_chunks_in_bin", "total_chunks_in_use", b"total_chunks_in_use"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["bin", b"bin", "total_bytes_in_bin", b"total_bytes_in_bin", "total_bytes_in_use", b"total_bytes_in_use", "total_chunks_in_bin", b"total_chunks_in_bin", "total_chunks_in_use", b"total_chunks_in_use"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___BinSummary = BinSummary
 
@@ -122,7 +128,9 @@ class SnapShot(google.protobuf.message.Message):
         action_count: builtins.int | None = ...,
         size: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["action_count", b"action_count", "size", b"size"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["action_count", b"action_count", "size", b"size"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapShot = SnapShot
 
@@ -153,7 +161,11 @@ class MemoryDump(google.protobuf.message.Message):
         snap_shot: collections.abc.Iterable[global___SnapShot] | None = ...,
         stats: global___MemAllocatorStats | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["stats", b"stats"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["allocator_name", b"allocator_name", "bin_summary", b"bin_summary", "chunk", b"chunk", "snap_shot", b"snap_shot", "stats", b"stats"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["stats", b"stats"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["allocator_name", b"allocator_name", "bin_summary", b"bin_summary", "chunk", b"chunk", "snap_shot", b"snap_shot", "stats", b"stats"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemoryDump = MemoryDump

@@ -1,3 +1,5 @@
+"""Defused xml.etree.cElementTree"""
+
 from .ElementTree import (
     XML as XML,
     ParseError as ParseError,

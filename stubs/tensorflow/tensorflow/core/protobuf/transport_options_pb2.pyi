@@ -27,6 +27,8 @@ class RecvBufRespExtra(google.protobuf.message.Message):
         *,
         tensor_content: collections.abc.Iterable[builtins.bytes] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["tensor_content", b"tensor_content"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["tensor_content", b"tensor_content"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___RecvBufRespExtra = RecvBufRespExtra

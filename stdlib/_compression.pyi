@@ -1,3 +1,5 @@
+"""Internal classes used by the gzip, lzma and bz2 modules"""
+
 from _typeshed import WriteableBuffer
 from collections.abc import Callable
 from io import DEFAULT_BUFFER_SIZE, BufferedIOBase, RawIOBase
@@ -10,9 +12,12 @@ class _Reader(Protocol):
     def seekable(self) -> bool: ...
     def seek(self, n: int, /) -> Any: ...
 
-class BaseStream(BufferedIOBase): ...
+class BaseStream(BufferedIOBase):
+    """Mode-checking helper functions."""
+    ...
 
 class DecompressReader(RawIOBase):
+    """Adapts the decompressor API to a RawIOBase reader API"""
     def __init__(
         self,
         fp: _Reader,

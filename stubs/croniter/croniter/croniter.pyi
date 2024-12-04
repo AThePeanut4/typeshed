@@ -9,7 +9,13 @@ from typing_extensions import Never, Self, TypeAlias
 _RetType: TypeAlias = type[float | datetime.datetime]
 _Expressions: TypeAlias = list[str]  # fixed-length list of 5 or 6 strings
 
-def is_32bit() -> bool: ...
+def is_32bit() -> bool:
+    """
+    Detect if Python is running in 32-bit mode.
+    Compatible with Python 2.6 and later versions.
+    Returns True if running on 32-bit Python, False for 64-bit.
+    """
+    ...
 
 OVERFLOW32B_MODE: Final[bool]
 
@@ -47,12 +53,24 @@ UTC_DT: Final[datetime.timezone]
 
 def timedelta_to_seconds(td: datetime.timedelta) -> float: ...
 
-class CroniterError(ValueError): ...
-class CroniterBadTypeRangeError(TypeError): ...
-class CroniterBadCronError(CroniterError): ...
-class CroniterUnsupportedSyntaxError(CroniterBadCronError): ...
-class CroniterBadDateError(CroniterError): ...
-class CroniterNotAlphaError(CroniterError): ...
+class CroniterError(ValueError):
+    """General top-level Croniter base exception """
+    ...
+class CroniterBadTypeRangeError(TypeError):
+    """."""
+    ...
+class CroniterBadCronError(CroniterError):
+    """Syntax, unknown value, or range error within a cron expression """
+    ...
+class CroniterUnsupportedSyntaxError(CroniterBadCronError):
+    """Valid cron syntax, but likely to produce inaccurate results """
+    ...
+class CroniterBadDateError(CroniterError):
+    """Unable to find next/prev timestamp match """
+    ...
+class CroniterNotAlphaError(CroniterError):
+    """Cron syntax contains an invalid day or month abbreviation """
+    ...
 
 def datetime_to_timestamp(d: datetime.datetime) -> float: ...
 
@@ -152,13 +170,21 @@ class croniter(Iterator[Any]):
         ret_type: _RetType | None = None,
         start_time: float | datetime.datetime | None = None,
         update_current: bool | None = None,
-    ) -> Iterator[Any]: ...
+    ) -> Iterator[Any]:
+        """
+        Generator of all consecutive dates. Can be used instead of
+        implicit call to __iter__, whenever non-default
+        'ret_type' has to be specified.
+        """
+        ...
     def all_prev(
         self,
         ret_type: _RetType | None = None,
         start_time: float | datetime.datetime | None = None,
         update_current: bool | None = None,
-    ) -> Iterator[Any]: ...
+    ) -> Iterator[Any]:
+        """Generator of all previous dates."""
+        ...
     def iter(self, ret_type: _RetType | None = ...) -> Iterator[Any]: ...
     def is_leap(self, year: int) -> bool: ...
     @classmethod
@@ -175,7 +201,9 @@ class croniter(Iterator[Any]):
         hash_id: bytes | None = None,
         second_at_beginning: bool = False,
         from_timestamp: float | None = None,
-    ) -> tuple[list[list[str]], dict[str, set[int]]]: ...
+    ) -> tuple[list[list[str]], dict[str, set[int]]]:
+        """Shallow non Croniter ValueError inside a nice CroniterBadCronError"""
+        ...
     @classmethod
     def is_valid(
         cls, expression: str, hash_id: bytes | None = None, encoding: str = "UTF-8", second_at_beginning: bool = False
@@ -208,7 +236,16 @@ def croniter_range(
     _croniter: type[croniter] | None = None,
     second_at_beginning: bool = False,
     expand_from_start_time: bool = False,
-) -> Iterator[Any]: ...
+) -> Iterator[Any]:
+    """
+    Generator that provides all times from start to stop matching the given cron expression.
+    If the cron expression matches either 'start' and/or 'stop', those times will be returned as
+    well unless 'exclude_ends=True' is passed.
+
+    You can think of this function as sibling to the builtin range function for datetime objects.
+    Like range(start,stop,step), except that here 'step' is a cron expression.
+    """
+    ...
 
 class HashExpander:
     cron: croniter
@@ -221,15 +258,21 @@ class HashExpander:
         hash_id: None = None,
         range_end: int | None = None,
         range_begin: int | None = None,
-    ) -> int: ...
+    ) -> int:
+        """Return a hashed/random integer given range/hash information"""
+        ...
     @overload
     def do(
         self, idx: int, hash_type: str, hash_id: bytes, range_end: int | None = None, range_begin: int | None = None
-    ) -> int: ...
+    ) -> int:
+        """Return a hashed/random integer given range/hash information"""
+        ...
     @overload
     def do(
         self, idx: int, hash_type: str = "h", *, hash_id: bytes, range_end: int | None = None, range_begin: int | None = None
-    ) -> int: ...
+    ) -> int:
+        """Return a hashed/random integer given range/hash information"""
+        ...
     def match(self, efl: Unused, idx: Unused, expr: str, hash_id: bytes | None = None, **kw: Unused) -> Match[str] | None: ...
     def expand(
         self,
@@ -239,6 +282,8 @@ class HashExpander:
         hash_id: bytes | None = None,
         match: Match[str] | None | Literal[""] = "",
         **kw: object,
-    ) -> str: ...
+    ) -> str:
+        """Expand a hashed/random expression to its normal representation"""
+        ...
 
 EXPANDERS: OrderedDict[str, HashExpander]

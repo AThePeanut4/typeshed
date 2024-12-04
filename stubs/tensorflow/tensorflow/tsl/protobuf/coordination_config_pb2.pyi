@@ -31,7 +31,9 @@ class CoordinatedJob(google.protobuf.message.Message):
         name: builtins.str | None = ...,
         num_tasks: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "num_tasks", b"num_tasks"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "num_tasks", b"num_tasks"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CoordinatedJob = CoordinatedJob
 
@@ -126,6 +128,8 @@ class CoordinationServiceConfig(google.protobuf.message.Message):
         force_disable: builtins.bool | None = ...,
         poll_for_error_from_service_at_startup: builtins.bool | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["agent_destruction_without_shutdown", b"agent_destruction_without_shutdown", "allow_new_incarnation_to_reconnect", b"allow_new_incarnation_to_reconnect", "cluster_register_timeout_in_ms", b"cluster_register_timeout_in_ms", "coordinated_job_list", b"coordinated_job_list", "enable_health_check", b"enable_health_check", "force_disable", b"force_disable", "heartbeat_timeout_in_ms", b"heartbeat_timeout_in_ms", "poll_for_error_from_service_at_startup", b"poll_for_error_from_service_at_startup", "recoverable_jobs", b"recoverable_jobs", "service_leader", b"service_leader", "service_type", b"service_type", "shutdown_barrier_timeout_in_ms", b"shutdown_barrier_timeout_in_ms"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["agent_destruction_without_shutdown", b"agent_destruction_without_shutdown", "allow_new_incarnation_to_reconnect", b"allow_new_incarnation_to_reconnect", "cluster_register_timeout_in_ms", b"cluster_register_timeout_in_ms", "coordinated_job_list", b"coordinated_job_list", "enable_health_check", b"enable_health_check", "force_disable", b"force_disable", "heartbeat_timeout_in_ms", b"heartbeat_timeout_in_ms", "poll_for_error_from_service_at_startup", b"poll_for_error_from_service_at_startup", "recoverable_jobs", b"recoverable_jobs", "service_leader", b"service_leader", "service_type", b"service_type", "shutdown_barrier_timeout_in_ms", b"shutdown_barrier_timeout_in_ms"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CoordinationServiceConfig = CoordinationServiceConfig

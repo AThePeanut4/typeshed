@@ -1,3 +1,38 @@
+"""
+pygments.plugin
+~~~~~~~~~~~~~~~
+
+Pygments plugin interface.
+
+lexer plugins::
+
+    [pygments.lexers]
+    yourlexer = yourmodule:YourLexer
+
+formatter plugins::
+
+    [pygments.formatters]
+    yourformatter = yourformatter:YourFormatter
+    /.ext = yourformatter:YourFormatter
+
+As you can see, you can define extensions for the formatter
+with a leading slash.
+
+syntax plugins::
+
+    [pygments.styles]
+    yourstyle = yourstyle:YourStyle
+
+filter plugin::
+
+    [pygments.filter]
+    yourfilter = yourfilter:YourFilter
+
+
+:copyright: Copyright 2006-2024 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from collections.abc import Generator, Iterable
 from typing import Any
 

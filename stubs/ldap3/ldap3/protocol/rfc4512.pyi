@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 from typing import Any
 
@@ -20,6 +22,10 @@ class BaseServerInfo:
     def to_json(self, indent: int = 4, sort: bool = True): ...
 
 class DsaInfo(BaseServerInfo):
+    """
+    This class contains info about the ldap server (DSA) read from DSE
+    as defined in RFC4512 and RFC3045. Unknown attributes are stored in the "other" dict
+    """
     alt_servers: Any
     naming_contexts: Any
     supported_controls: Any
@@ -34,6 +40,10 @@ class DsaInfo(BaseServerInfo):
     def __init__(self, attributes, raw_attributes) -> None: ...
 
 class SchemaInfo(BaseServerInfo):
+    """
+    This class contains info about the ldap server schema read from an entry (default entry is DSE)
+    as defined in RFC4512. Unknown attributes are stored in the "other" dict
+    """
     schema_entry: Any
     create_time_stamp: Any
     modify_time_stamp: Any
@@ -50,6 +60,7 @@ class SchemaInfo(BaseServerInfo):
     def is_valid(self): ...
 
 class BaseObjectInfo:
+    """Base class for objects defined in the schema as per RFC4512"""
     oid: Any
     name: Any
     description: Any
@@ -73,6 +84,7 @@ class BaseObjectInfo:
     def from_definition(cls, definitions): ...
 
 class MatchingRuleInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.3)"""
     syntax: Any
     def __init__(
         self,
@@ -87,6 +99,7 @@ class MatchingRuleInfo(BaseObjectInfo):
     ) -> None: ...
 
 class MatchingRuleUseInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.4)"""
     apply_to: Any
     def __init__(
         self,
@@ -101,6 +114,7 @@ class MatchingRuleUseInfo(BaseObjectInfo):
     ) -> None: ...
 
 class ObjectClassInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.1)"""
     superior: Any
     kind: Any
     must_contain: Any
@@ -121,6 +135,7 @@ class ObjectClassInfo(BaseObjectInfo):
     ) -> None: ...
 
 class AttributeTypeInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.2)"""
     superior: Any
     equality: Any
     ordering: Any
@@ -155,6 +170,7 @@ class AttributeTypeInfo(BaseObjectInfo):
     ) -> None: ...
 
 class LdapSyntaxInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.5)"""
     def __init__(
         self,
         oid: Incomplete | None = None,
@@ -165,6 +181,7 @@ class LdapSyntaxInfo(BaseObjectInfo):
     ) -> None: ...
 
 class DitContentRuleInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.6)"""
     auxiliary_classes: Any
     must_contain: Any
     may_contain: Any
@@ -185,6 +202,7 @@ class DitContentRuleInfo(BaseObjectInfo):
     ) -> None: ...
 
 class DitStructureRuleInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.7.1)"""
     superior: Any
     name_form: Any
     def __init__(
@@ -201,6 +219,7 @@ class DitStructureRuleInfo(BaseObjectInfo):
     ) -> None: ...
 
 class NameFormInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.7.2)"""
     object_class: Any
     must_contain: Any
     may_contain: Any

@@ -1,3 +1,5 @@
+"""Commons function for Sync and Async client."""
+
 from _typeshed import Incomplete
 
 from influxdb_client import Configuration

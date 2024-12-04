@@ -1,3 +1,5 @@
+"""The machinery of importlib: finders, loaders, hooks, etc."""
+
 import sys
 from importlib._bootstrap import BuiltinImporter as BuiltinImporter, FrozenImporter as FrozenImporter, ModuleSpec as ModuleSpec
 from importlib._bootstrap_external import (
@@ -17,4 +19,6 @@ from importlib._bootstrap_external import (
 if sys.version_info >= (3, 11):
     from importlib._bootstrap_external import NamespaceLoader as NamespaceLoader
 
-def all_suffixes() -> list[str]: ...
+def all_suffixes() -> list[str]:
+    """Returns a list of all recognized module suffixes for this process"""
+    ...

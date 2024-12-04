@@ -1,3 +1,5 @@
+"""Constants needed by ISAPI filters and extensions."""
+
 from _typeshed import Incomplete
 
 HTTP_CONTINUE: int

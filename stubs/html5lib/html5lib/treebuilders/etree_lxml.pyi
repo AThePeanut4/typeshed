@@ -1,3 +1,15 @@
+"""
+Module for supporting the lxml.etree library. The idea here is to use as much
+of the native library as possible, without using fragile hacks like custom element
+names that break between releases. The downside of this is that we cannot represent
+all possible trees; specifically the following are known to cause problems:
+
+Text or comments as siblings of the root element
+Docypes with no name
+
+When any of these things occur, we emit a DataLossWarning
+"""
+
 from _typeshed import Incomplete
 from typing import Any
 
@@ -20,7 +32,9 @@ class Document:
     def childNodes(self): ...
 
 def testSerializer(element): ...
-def tostring(element): ...
+def tostring(element):
+    """Serialize an element and its child nodes to a string"""
+    ...
 
 class TreeBuilder(base.TreeBuilder):
     documentClass: Any

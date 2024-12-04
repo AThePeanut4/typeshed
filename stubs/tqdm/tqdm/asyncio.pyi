@@ -1,3 +1,13 @@
+"""
+Asynchronous progressbar decorator for iterators.
+Includes a default `range` iterator printing to `stderr`.
+
+Usage:
+>>> from tqdm.asyncio import trange, tqdm
+>>> async for i in trange(10):
+...     ...
+"""
+
 from _typeshed import Incomplete, SupportsWrite
 from collections.abc import Awaitable, Callable, Generator, Iterable, Iterator, Mapping
 from typing import NoReturn, TypeVar, overload
@@ -10,6 +20,7 @@ __all__ = ["tqdm_asyncio", "tarange", "tqdm", "trange"]
 _T = TypeVar("_T")
 
 class tqdm_asyncio(std_tqdm[_T]):
+    """Asynchronous-friendly version of tqdm."""
     iterable_awaitable: bool
     iterable_next: Callable[[], _T | Awaitable[_T]]
     iterable_iterator: Iterator[_T]
@@ -48,7 +59,9 @@ class tqdm_asyncio(std_tqdm[_T]):
         nrows: int | None = ...,
         colour: str | None = ...,
         delay: float | None = ...,
-    ) -> Generator[Incomplete, Incomplete, None]: ...
+    ) -> Generator[Incomplete, Incomplete, None]:
+        """Wrapper for `asyncio.as_completed`."""
+        ...
     @classmethod
     async def gather(
         cls,
@@ -80,7 +93,9 @@ class tqdm_asyncio(std_tqdm[_T]):
         nrows: int | None = ...,
         colour: str | None = ...,
         delay: float | None = ...,
-    ): ...
+    ):
+        """Wrapper for `asyncio.gather`."""
+        ...
     @overload
     def __init__(
         self,
@@ -174,7 +189,9 @@ def tarange(
     nrows: int | None = ...,
     colour: str | None = ...,
     delay: float | None = ...,
-) -> tqdm_asyncio[int]: ...
+) -> tqdm_asyncio[int]:
+    """A shortcut for `tqdm.asyncio.tqdm(range(*args), **kwargs)`."""
+    ...
 @overload
 def tarange(
     stop: int,
@@ -203,7 +220,9 @@ def tarange(
     nrows: int | None = ...,
     colour: str | None = ...,
     delay: float | None = ...,
-) -> tqdm_asyncio[int]: ...
+) -> tqdm_asyncio[int]:
+    """A shortcut for `tqdm.asyncio.tqdm(range(*args), **kwargs)`."""
+    ...
 
 tqdm = tqdm_asyncio
 trange = tarange

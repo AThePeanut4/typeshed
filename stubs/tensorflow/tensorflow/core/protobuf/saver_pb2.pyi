@@ -88,6 +88,8 @@ class SaverDef(google.protobuf.message.Message):
         keep_checkpoint_every_n_hours: builtins.float | None = ...,
         version: global___SaverDef.CheckpointFormatVersion.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["filename_tensor_name", b"filename_tensor_name", "keep_checkpoint_every_n_hours", b"keep_checkpoint_every_n_hours", "max_to_keep", b"max_to_keep", "restore_op_name", b"restore_op_name", "save_tensor_name", b"save_tensor_name", "sharded", b"sharded", "version", b"version"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["filename_tensor_name", b"filename_tensor_name", "keep_checkpoint_every_n_hours", b"keep_checkpoint_every_n_hours", "max_to_keep", b"max_to_keep", "restore_op_name", b"restore_op_name", "save_tensor_name", b"save_tensor_name", "sharded", b"sharded", "version", b"version"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SaverDef = SaverDef

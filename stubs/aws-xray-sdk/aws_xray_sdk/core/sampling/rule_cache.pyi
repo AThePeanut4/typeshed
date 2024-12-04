@@ -3,6 +3,10 @@ from typing import Any
 TTL: Any
 
 class RuleCache:
+    """
+    Cache sampling rules and quota retrieved by ``TargetPoller``
+    and ``RulePoller``. It will not return anything if it expires.
+    """
     def __init__(self) -> None: ...
     def get_matched_rule(self, sampling_req, now): ...
     def load_rules(self, rules) -> None: ...

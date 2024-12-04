@@ -8,4 +8,10 @@ def rebuild(
     format: str = "gz",
     zonegroups: Sequence[str | TarInfo] = [],
     metadata: Incomplete | None = None,
-) -> None: ...
+) -> None:
+    """
+    Rebuild the internal timezone info in dateutil/zoneinfo/zoneinfo*tar*
+
+    filename is the timezone tarball from ``ftp.iana.org/tz``.
+    """
+    ...

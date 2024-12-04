@@ -1,3 +1,12 @@
+"""
+Routines for organizing lines and larger blocks of text, with manual and
+automatic line wrapping.
+
+The contents of this module are internal to fpdf2, and not part of the public API.
+They may change at any time without prior warning or any deprecation period,
+in non-backward-compatible ways.
+"""
+
 from _typeshed import Incomplete
 from collections.abc import Callable, Sequence
 from typing import Final, NamedTuple
@@ -14,6 +23,7 @@ NEWLINE: Final[str]
 FORM_FEED: Final[str]
 
 class Fragment:
+    """A fragment of text with font/size/style and other associated information."""
     characters: list[str]
     graphics_state: dict[str, Incomplete]
     k: float
@@ -67,14 +77,28 @@ class Fragment:
     def fragment_direction(self) -> TextDirection: ...
     def trim(self, index: int) -> None: ...
     def __eq__(self, other: Fragment) -> bool: ...  # type: ignore[override]
-    def get_width(self, start: int = 0, end: int | None = None, chars: str | None = None, initial_cs: bool = True) -> float: ...
-    def get_character_width(self, character: str, print_sh: bool = False, initial_cs: bool = True): ...
+    def get_width(self, start: int = 0, end: int | None = None, chars: str | None = None, initial_cs: bool = True) -> float:
+        """
+        Return the width of the string with the given font/size/style/etc.
+
+        Args:
+            start (int): Index of the start character. Default start of fragment.
+            end (int): Index of the end character. Default end of fragment.
+            chars (str): Specific text to get the width for (not necessarily the
+                same as the contents of the fragment). If given, this takes
+                precedence over the start/end arguments.
+        """
+        ...
+    def get_character_width(self, character: str, print_sh: bool = False, initial_cs: bool = True):
+        """Return the width of a single character out of the stored text."""
+        ...
     def render_pdf_text(self, frag_ws, current_ws, word_spacing, adjust_x, adjust_y, h): ...
     def render_pdf_text_ttf(self, frag_ws, word_spacing): ...
     def render_with_text_shaping(self, pos_x: float, pos_y: float, h: float, word_spacing: float) -> str: ...
     def render_pdf_text_core(self, frag_ws, current_ws): ...
 
 class TextLine(NamedTuple):
+    """TextLine(fragments, text_width, number_of_spaces, align, height, max_width, trailing_nl, trailing_form_feed)"""
     fragments: tuple[Fragment, ...]
     text_width: float
     number_of_spaces: int
@@ -86,6 +110,7 @@ class TextLine(NamedTuple):
     def get_ordered_fragments(self) -> tuple[Fragment, ...]: ...
 
 class SpaceHint(NamedTuple):
+    """SpaceHint(original_fragment_index, original_character_index, current_line_fragment_index, current_line_character_index, line_width, number_of_spaces)"""
     original_fragment_index: int
     original_character_index: int
     current_line_fragment_index: int
@@ -94,6 +119,7 @@ class SpaceHint(NamedTuple):
     number_of_spaces: int
 
 class HyphenHint(NamedTuple):
+    """HyphenHint(original_fragment_index, original_character_index, current_line_fragment_index, current_line_character_index, line_width, number_of_spaces, curchar, curchar_width, graphics_state, k)"""
     original_fragment_index: int
     original_character_index: int
     current_line_fragment_index: int
@@ -113,7 +139,14 @@ class CurrentLine:
     number_of_spaces: int
     space_break_hint: Incomplete
     hyphen_break_hint: Incomplete
-    def __init__(self, max_width: float, print_sh: bool = False) -> None: ...
+    def __init__(self, max_width: float, print_sh: bool = False) -> None:
+        """
+        Per-line text fragment management for use by MultiLineBreak.
+            Args:
+                print_sh (bool): If true, a soft-hyphen will be rendered
+                    normally, instead of triggering a line break. Default: False
+        """
+        ...
     @property
     def width(self) -> float: ...
     def add_character(
@@ -154,5 +187,28 @@ class MultiLineBreak:
         wrapmode: WrapMode = ...,
         line_height: float = 1.0,
         skip_leading_spaces: bool = False,
-    ) -> None: ...
+    ) -> None:
+        """
+        Accept text as Fragments, to be split into individual lines depending
+        on line width and text height.
+        Args:
+            fragments: A sequence of Fragment()s containing text.
+            max_width: Either a fixed width as float or a callback function
+                get_width(height). If a function, it gets called with the largest
+                height encountered on the current line, and must return the
+                applicable width for the line with the given height at the current
+                vertical position. The height is relevant in those cases where the
+                lateral boundaries of the enclosing TextRegion() are not vertical.
+            margins (sequence of floats): The extra clearance that may apply at the beginning
+                and/or end of a line (usually either FPDF.c_margin or 0.0 for each side).
+            align (Align): The horizontal alignment of the current text block.
+            print_sh (bool): If True, a soft-hyphen will be rendered
+                normally, instead of triggering a line break. Default: False
+            wrapmode (WrapMode): Selects word or character based wrapping.
+            line_height (float, optional): A multiplier relative to the font
+                size changing the vertical space occupied by a line of text. Default 1.0.
+            skip_leading_spaces (bool, optional): On each line, any space characters
+                at the beginning will be skipped. Default value: False.
+        """
+        ...
     def get_line(self) -> TextLine: ...

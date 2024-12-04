@@ -6,17 +6,32 @@ from openpyxl.descriptors.serialisable import Serialisable
 
 class _Protected:
     @overload
-    def set_password(self, value: str = "", already_hashed: Literal[False] = False) -> None: ...
+    def set_password(self, value: str = "", already_hashed: Literal[False] = False) -> None:
+        """Set a password on this sheet."""
+        ...
     @overload
-    def set_password(self, value: str | None, already_hashed: Literal[True]) -> None: ...
+    def set_password(self, value: str | None, already_hashed: Literal[True]) -> None:
+        """Set a password on this sheet."""
+        ...
     @overload
-    def set_password(self, value: str | None = "", *, already_hashed: Literal[True]) -> None: ...
+    def set_password(self, value: str | None = "", *, already_hashed: Literal[True]) -> None:
+        """Set a password on this sheet."""
+        ...
     @property
-    def password(self) -> str | None: ...
+    def password(self) -> str | None:
+        """Return the password value, regardless of hash."""
+        ...
     @password.setter
-    def password(self, value: str) -> None: ...
+    def password(self, value: str) -> None:
+        """Return the password value, regardless of hash."""
+        ...
 
 class SheetProtection(Serialisable, _Protected):
+    """
+    Information about protection of various aspects of a sheet. True values
+    mean that protection for the object or action is active This is the
+    **default** when protection is active, ie. users cannot do something
+    """
     tagname: ClassVar[str]
     sheet: Bool[Literal[False]]
     enabled: Alias

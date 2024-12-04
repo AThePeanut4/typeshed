@@ -1,3 +1,12 @@
+"""
+This module contains the serialization logic that produces a PDF document from a FPDF instance.
+Most of the code in this module is used when FPDF.output() is called.
+
+The contents of this module are internal to fpdf2, and not part of the public API.
+They may change at any time without prior warning or any deprecation period,
+in non-backward-compatible ways.
+"""
+
 from _typeshed import Incomplete, Unused
 from collections import defaultdict
 from logging import Logger
@@ -151,8 +160,12 @@ class PDFPage(PDFObject):
     parent: Incomplete | None
     def __init__(self, duration: Incomplete | None, transition, contents, index) -> None: ...
     def index(self): ...
-    def dimensions(self) -> tuple[float | None, float | None]: ...
-    def set_dimensions(self, width_pt: float | None, height_pt: float | None) -> None: ...
+    def dimensions(self) -> tuple[float | None, float | None]:
+        """Return a pair (width, height) in the unit specified to FPDF constructor"""
+        ...
+    def set_dimensions(self, width_pt: float | None, height_pt: float | None) -> None:
+        """Accepts a pair (width, height) in the unit specified to FPDF constructor"""
+        ...
 
 class PDFPagesRoot(PDFObject):
     type: Name
@@ -174,6 +187,7 @@ class PDFXrefAndTrailer(ContentWithoutID):
     def serialize(self, _security_handler: StandardSecurityHandler | None = None) -> str: ...
 
 class OutputProducer:
+    """Generates the final bytearray representing the PDF document, based on a FPDF instance."""
     fpdf: FPDF
     pdf_objs: list[Incomplete]
     obj_id: int
@@ -182,7 +196,13 @@ class OutputProducer:
     sections_size_per_trace_label: defaultdict[Incomplete, int]
     buffer: bytearray
     def __init__(self, fpdf: FPDF) -> None: ...
-    def bufferize(self) -> bytearray: ...
+    def bufferize(self) -> bytearray:
+        """
+        This method alters the target FPDF instance
+        by assigning IDs to all PDF objects,
+        plus a few other properties on PDFPage instances
+        """
+        ...
 
 def stream_content_for_raster_image(
     info: RasterImageInfo,

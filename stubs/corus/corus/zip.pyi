@@ -9,6 +9,7 @@ NO_COMPRESSION: int
 DEFLATED: int
 
 class ZipHeader(NamedTuple):
+    """ZipHeader(signature, extract_by, flags, compression, time, date, crc, compressed, uncompressed, name, extra)"""
     signature: Incomplete
     extract_by: Incomplete
     flags: Incomplete

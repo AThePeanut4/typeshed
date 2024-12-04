@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 from typing import Any
 
@@ -16,6 +18,7 @@ class PagedSearchSet:
     def next(self, size: Incomplete | None = None): ...
 
 class MockBaseStrategy:
+    """Base class for connection strategy"""
     entries: Any
     no_real_dsa: bool
     bound: Any
@@ -33,6 +36,12 @@ class MockBaseStrategy:
     def mock_modify(self, request_message, controls): ...
     def mock_search(self, request_message, controls): ...
     def mock_extended(self, request_message, controls): ...
-    def evaluate_filter_node(self, node, candidates): ...
+    def evaluate_filter_node(self, node, candidates):
+        """
+        After evaluation each 2 sets are added to each MATCH node, one for the matched object and one for unmatched object.
+        The unmatched object set is needed if a superior node is a NOT that reverts the evaluation. The BOOLEAN nodes mix the sets
+        returned by the MATCH nodes
+        """
+        ...
     def equal(self, dn, attribute_type, value_to_check): ...
     def send(self, message_type, request, controls: Incomplete | None = None): ...

@@ -1,5 +1,8 @@
 # Can't generate with stubgen because `import pywintypes` must be called first.
 # Otherwise you get the error: "KeyError: 'pywintypes'"
+
+"""Module containing common objects and functions used by various Pywin32 modules"""
+
 from _typeshed import Incomplete
 from collections.abc import Sequence
 from datetime import datetime
@@ -23,7 +26,9 @@ class HANDLEType:
     def Close(self) -> None: ...
     def close(self) -> None: ...
     def Detach(self) -> None: ...
-    def __int__(self) -> int: ...
+    def __int__(self) -> int:
+        """int(self)"""
+        ...
 
 class TimeType(datetime):  # aka: PyTime, PyDateTime
     __name__: ClassVar[str] = "datetime"

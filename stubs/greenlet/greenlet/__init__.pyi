@@ -1,3 +1,5 @@
+"""The root of the greenlet package."""
+
 from typing import Final
 
 from ._greenlet import (

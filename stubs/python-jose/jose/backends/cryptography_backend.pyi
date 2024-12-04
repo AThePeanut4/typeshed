@@ -3,7 +3,19 @@ from typing import Any
 
 from .base import Key
 
-def get_random_bytes(num_bytes: int) -> bytes: ...
+def get_random_bytes(num_bytes: int) -> bytes:
+    """
+    Get random bytes
+
+    Currently, Cryptography returns OS random bytes. If you want OpenSSL
+    generated random bytes, you'll have to switch the RAND engine after
+    initializing the OpenSSL backend
+    Args:
+        num_bytes (int): Number of random bytes to generate and return
+    Returns:
+        bytes: Random bytes
+    """
+    ...
 
 # Enable when we can use stubs from installed dependencies:
 # from cryptography.hazmat import backends
@@ -61,6 +73,10 @@ class CryptographyAESKey(Key):
     def unwrap_key(self, wrapped_key): ...
 
 class CryptographyHMACKey(Key):
+    """
+    Performs signing and verification operations using HMAC
+    and the specified hash function.
+    """
     ALG_MAP: Any
     prepared_key: Any
     def __init__(self, key, algorithm) -> None: ...

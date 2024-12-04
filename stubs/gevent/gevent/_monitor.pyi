@@ -16,7 +16,9 @@ _T = TypeVar("_T")
 #        can get rid of later
 def implementer(interface: Any, /) -> Callable[[_T], _T]: ...
 
-class MonitorWarning(RuntimeWarning): ...
+class MonitorWarning(RuntimeWarning):
+    """The type of warnings we emit."""
+    ...
 
 class _MonitorEntry:
     function: Callable[[Hub], object]

@@ -1,3 +1,9 @@
+"""
+DEPRECATED Example code for lxml.etree protection
+
+The code has NO protection against decompression bombs.
+"""
+
 import threading
 from _typeshed import Incomplete
 
@@ -12,6 +18,7 @@ tostring: Incomplete
 class _ElementBase: ...
 
 class RestrictedElement(_ElementBase):
+    """A restricted Element class that filters out instances of some classes"""
     blacklist: Incomplete
     def __iter__(self): ...
     def iterchildren(self, tag: Incomplete | None = ..., reversed: bool = ...): ...
@@ -22,6 +29,7 @@ class RestrictedElement(_ElementBase):
     def getiterator(self, tag: Incomplete | None = ...): ...
 
 class GlobalParserTLS(threading.local):
+    """Thread local context for custom parser instances"""
     parser_config: Incomplete
     element_class: Incomplete
     def createDefaultParser(self): ...
@@ -30,7 +38,14 @@ class GlobalParserTLS(threading.local):
 
 getDefaultParser: Incomplete
 
-def check_docinfo(elementtree, forbid_dtd: bool = ..., forbid_entities: bool = ...) -> None: ...
+def check_docinfo(elementtree, forbid_dtd: bool = ..., forbid_entities: bool = ...) -> None:
+    """
+    Check docinfo of an element tree for DTD and entity declarations
+
+    The check for entity declarations needs lxml 3 or newer. lxml 2.x does
+    not support dtd.iterentities().
+    """
+    ...
 def parse(
     source,
     parser: Incomplete | None = ...,

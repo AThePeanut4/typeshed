@@ -35,7 +35,9 @@ class GraphTransferNodeInput(google.protobuf.message.Message):
         node_id: builtins.int | None = ...,
         output_port: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["node_id", b"node_id", "output_port", b"output_port"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["node_id", b"node_id", "output_port", b"output_port"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferNodeInput = GraphTransferNodeInput
 
@@ -68,7 +70,9 @@ class GraphTransferNodeInfo(google.protobuf.message.Message):
         input_count: builtins.int | None = ...,
         output_count: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["input_count", b"input_count", "name", b"name", "node_id", b"node_id", "output_count", b"output_count", "padding_id", b"padding_id", "soc_op_id", b"soc_op_id", "type_name", b"type_name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["input_count", b"input_count", "name", b"name", "node_id", b"node_id", "output_count", b"output_count", "padding_id", b"padding_id", "soc_op_id", b"soc_op_id", "type_name", b"type_name"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferNodeInfo = GraphTransferNodeInfo
 
@@ -96,7 +100,9 @@ class GraphTransferConstNodeInfo(google.protobuf.message.Message):
         data: builtins.bytes | None = ...,
         dtype: tensorflow.core.framework.types_pb2.DataType.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["data", b"data", "dtype", b"dtype", "name", b"name", "node_id", b"node_id", "shape", b"shape"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["data", b"data", "dtype", b"dtype", "name", b"name", "node_id", b"node_id", "shape", b"shape"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferConstNodeInfo = GraphTransferConstNodeInfo
 
@@ -115,7 +121,9 @@ class GraphTransferNodeInputInfo(google.protobuf.message.Message):
         node_id: builtins.int | None = ...,
         node_input: collections.abc.Iterable[global___GraphTransferNodeInput] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["node_id", b"node_id", "node_input", b"node_input"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["node_id", b"node_id", "node_input", b"node_input"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferNodeInputInfo = GraphTransferNodeInputInfo
 
@@ -134,7 +142,9 @@ class GraphTransferNodeOutputInfo(google.protobuf.message.Message):
         node_id: builtins.int | None = ...,
         max_byte_size: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["max_byte_size", b"max_byte_size", "node_id", b"node_id"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["max_byte_size", b"max_byte_size", "node_id", b"node_id"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferNodeOutputInfo = GraphTransferNodeOutputInfo
 
@@ -156,7 +166,9 @@ class GraphTransferGraphInputNodeInfo(google.protobuf.message.Message):
         shape: collections.abc.Iterable[builtins.int] | None = ...,
         dtype: tensorflow.core.framework.types_pb2.DataType.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dtype", b"dtype", "name", b"name", "shape", b"shape"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dtype", b"dtype", "name", b"name", "shape", b"shape"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferGraphInputNodeInfo = GraphTransferGraphInputNodeInfo
 
@@ -178,7 +190,9 @@ class GraphTransferGraphOutputNodeInfo(google.protobuf.message.Message):
         shape: collections.abc.Iterable[builtins.int] | None = ...,
         dtype: tensorflow.core.framework.types_pb2.DataType.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dtype", b"dtype", "name", b"name", "shape", b"shape"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dtype", b"dtype", "name", b"name", "shape", b"shape"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferGraphOutputNodeInfo = GraphTransferGraphOutputNodeInfo
 
@@ -200,7 +214,9 @@ class GraphTransferInfo(google.protobuf.message.Message):
         NOP: GraphTransferInfo._Destination.ValueType  # 0
         HEXAGON: GraphTransferInfo._Destination.ValueType  # 1
 
-    class Destination(_Destination, metaclass=_DestinationEnumTypeWrapper): ...
+    class Destination(_Destination, metaclass=_DestinationEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     NOP: GraphTransferInfo.Destination.ValueType  # 0
     HEXAGON: GraphTransferInfo.Destination.ValueType  # 1
 
@@ -238,6 +254,8 @@ class GraphTransferInfo(google.protobuf.message.Message):
         graph_output_node_info: collections.abc.Iterable[global___GraphTransferGraphOutputNodeInfo] | None = ...,
         destination: global___GraphTransferInfo.Destination.ValueType | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["const_node_info", b"const_node_info", "destination", b"destination", "graph_input_node_info", b"graph_input_node_info", "graph_output_node_info", b"graph_output_node_info", "node_info", b"node_info", "node_input_info", b"node_input_info", "node_output_info", b"node_output_info"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["const_node_info", b"const_node_info", "destination", b"destination", "graph_input_node_info", b"graph_input_node_info", "graph_output_node_info", b"graph_output_node_info", "node_info", b"node_info", "node_input_info", b"node_input_info", "node_output_info", b"node_output_info"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferInfo = GraphTransferInfo

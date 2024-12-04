@@ -8,6 +8,7 @@ from typing import Literal
 from waitress import wasyncore
 
 class _triggerbase:
+    """OS-independent base class for OS-dependent trigger class."""
     kind: str | None
     lock: Lock
     thunks: list[Callable[[None], None]]

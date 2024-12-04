@@ -1,7 +1,10 @@
+""""""
+
 from datetime import tzinfo
 from typing import Any
 
 class OffsetTzInfo(tzinfo):
+    """Fixed offset in minutes east from UTC"""
     offset: Any
     name: Any
     def __init__(self, offset, name) -> None: ...

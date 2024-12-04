@@ -1,3 +1,5 @@
+"""Implementation of the DOM Level 3 'LS-Load' feature."""
+
 from _typeshed import Incomplete, Unused
 from typing import Any, Literal, NoReturn
 from typing_extensions import TypeAlias
@@ -28,6 +30,12 @@ _DOMInputSourceStringDataType: TypeAlias = Incomplete | None
 _DOMInputSourceEncodingType: TypeAlias = Incomplete | None
 
 class Options:
+    """
+    Features object that has variables set for each DOMBuilder feature.
+
+    The DOMBuilder class uses an instance of this class to pass settings to
+    the ExpatBuilder class.
+    """
     namespaces: int
     namespace_declarations: bool
     validation: bool
@@ -81,6 +89,10 @@ class DOMInputSource:
     baseURI: str | None
 
 class DOMBuilderFilter:
+    """
+    Element filter which can be used to tailor construction of
+    a DOM instance.
+    """
     FILTER_ACCEPT: Literal[1]
     FILTER_REJECT: Literal[2]
     FILTER_SKIP: Literal[3]
@@ -90,6 +102,7 @@ class DOMBuilderFilter:
     def startContainer(self, element: Unused) -> Literal[1]: ...
 
 class DocumentLS:
+    """Mixin to create documents that conform to the load/save spec."""
     async_: bool
     def abort(self) -> NoReturn: ...
     # `load()` and `loadXML()` always raise exceptions

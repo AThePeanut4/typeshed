@@ -44,7 +44,31 @@ def init_repository(
     template_path: str | None = None,
     initial_head: str | None = None,
     origin_url: str | None = None,
-) -> Repository: ...
+) -> Repository:
+    """
+    Creates a new Git repository in the given *path*.
+
+    If *bare* is True the repository will be bare, i.e. it will not have a
+    working copy.
+
+    The *flags* may be a combination of enums.RepositoryInitFlag constants:
+
+    - BARE (overriden by the *bare* parameter)
+    - NO_REINIT
+    - NO_DOTGIT_DIR
+    - MKDIR
+    - MKPATH (set by default)
+    - EXTERNAL_TEMPLATE
+
+    The *mode* parameter may be any of the predefined modes in
+    enums.RepositoryInitMode (SHARED_UMASK being the default), or a custom int.
+
+    The *workdir_path*, *description*, *template_path*, *initial_head* and
+    *origin_url* are all strings.
+
+    See libgit2's documentation on git_repository_init_ext for further details.
+    """
+    ...
 def clone_repository(
     url: str,
     path: str,
@@ -54,7 +78,48 @@ def clone_repository(
     checkout_branch: str | None = None,
     callbacks: RemoteCallbacks | None = None,
     depth: int = 0,
-) -> Repository: ...
+) -> Repository:
+    """
+    Clones a new Git repository from *url* in the given *path*.
+
+    Returns: a Repository class pointing to the newly cloned repository.
+
+    Parameters:
+
+    url : str
+        URL of the repository to clone.
+    path : str
+        Local path to clone into.
+    bare : bool
+        Whether the local repository should be bare.
+    remote : callable
+        Callback for the remote to use.
+
+        The remote callback has `(Repository, name, url) -> Remote` as a
+        signature. The Remote it returns will be used instead of the default
+        one.
+    repository : callable
+        Callback for the repository to use.
+
+        The repository callback has `(path, bare) -> Repository` as a
+        signature. The Repository it returns will be used instead of creating a
+        new one.
+    checkout_branch : str
+        Branch to checkout after the clone. The default is to use the remote's
+        default branch.
+    callbacks : RemoteCallbacks
+        Object which implements the callbacks as methods.
+
+        The callbacks should be an object which inherits from
+        `pyclass:RemoteCallbacks`.
+    depth : int
+        Number of commits to clone.
+
+        If greater than 0, creates a shallow clone with a history truncated to
+        the specified number of commits.
+        The default is 0 (full commit history).
+    """
+    ...
 
 tree_entry_key: Callable[[Object], SupportsAllComparisons]  # functools.cmp_to_key(tree_entry_cmp)
 settings: Settings

@@ -3,6 +3,9 @@
 # Note: Commented out items means they weren't implemented at the time.
 # Uncomment them when the modules have been added to the typeshed.
 # from urllib.request import proxy_bypass as proxy_bypass
+
+"""Lazy loading of moved objects in six.moves.urllib_request"""
+
 from urllib.request import (
     AbstractBasicAuthHandler as AbstractBasicAuthHandler,
     AbstractDigestAuthHandler as AbstractDigestAuthHandler,

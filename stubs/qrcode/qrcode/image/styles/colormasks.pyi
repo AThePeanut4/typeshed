@@ -7,6 +7,21 @@ from ..._types import Ink
 from ..styledpil import StyledPilImage
 
 class QRColorMask:
+    """
+    QRColorMask is used to color in the QRCode.
+
+    By the time apply_mask is called, the QRModuleDrawer of the StyledPilImage
+    will have drawn all of the modules on the canvas (the color of these
+    modules will be mostly black, although antialiasing may result in
+    gradients) In the base class, apply_mask is implemented such that the
+    background color will remain, but the foreground pixels will be replaced by
+    a color determined by a call to get_fg_pixel. There is additional
+    calculation done to preserve the gradient artifacts of antialiasing.
+
+    All QRColorMask objects should be careful about RGB vs RGBA color spaces.
+
+    For examples of what these look like, see doc/color_masks.png
+    """
     back_color: Ink
     has_transparency: bool
     paint_color: Ink
@@ -21,10 +36,12 @@ class QRColorMask:
     def extrap_color(self, col1: Ink, col2: Ink, interped_color: Ink) -> float | None: ...
 
 class SolidFillColorMask(QRColorMask):
+    """Just fills in the background with one color and the foreground with another"""
     front_color: Ink
     def __init__(self, back_color: Ink = (255, 255, 255), front_color: Ink = (0, 0, 0)) -> None: ...
 
 class RadialGradiantColorMask(QRColorMask):
+    """Fills in the foreground with a radial gradient from the center to the edge"""
     center_color: Ink
     edge_color: Ink
     def __init__(
@@ -32,6 +49,7 @@ class RadialGradiantColorMask(QRColorMask):
     ) -> None: ...
 
 class SquareGradiantColorMask(QRColorMask):
+    """Fills in the foreground with a square gradient from the center to the edge"""
     center_color: Ink
     edge_color: Ink
     def __init__(
@@ -39,6 +57,7 @@ class SquareGradiantColorMask(QRColorMask):
     ) -> None: ...
 
 class HorizontalGradiantColorMask(QRColorMask):
+    """Fills in the foreground with a gradient sweeping from the left to the right"""
     left_color: Ink
     right_color: Ink
     def __init__(
@@ -46,6 +65,7 @@ class HorizontalGradiantColorMask(QRColorMask):
     ) -> None: ...
 
 class VerticalGradiantColorMask(QRColorMask):
+    """Fills in the forefround with a gradient sweeping from the top to the bottom"""
     top_color: Ink
     bottom_color: Ink
     def __init__(
@@ -53,6 +73,10 @@ class VerticalGradiantColorMask(QRColorMask):
     ) -> None: ...
 
 class ImageColorMask(QRColorMask):
+    """
+    Fills in the foreground with pixels from another image, either passed by
+    path or passed by image object.
+    """
     color_img: Ink
     def __init__(
         self,

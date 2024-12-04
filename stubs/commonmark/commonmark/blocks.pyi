@@ -15,12 +15,30 @@ reClosingCodeFence: Any
 reSetextHeadingLine: Any
 reLineEnding: Any
 
-def is_blank(s): ...
+def is_blank(s):
+    """Returns True if string contains only space characters."""
+    ...
 def is_space_or_tab(s): ...
 def peek(ln, pos): ...
-def ends_with_blank_line(block): ...
-def parse_list_marker(parser, container): ...
-def lists_match(list_data, item_data): ...
+def ends_with_blank_line(block):
+    """
+    Returns true if block ends with a blank line,
+    descending if needed into lists and sublists.
+    """
+    ...
+def parse_list_marker(parser, container):
+    """
+    Parse a list marker and return data on the marker (type,
+    start, delimiter, bullet character, padding) or None.
+    """
+    ...
+def lists_match(list_data, item_data):
+    """
+    Returns True if the two list items are of the same type,
+    with the same delimiter and bullet character.  This is used
+    in agglomerating list items into lists.
+    """
+    ...
 
 class Block:
     accepts_lines: Any
@@ -113,6 +131,14 @@ class Paragraph(Block):
     def can_contain(t): ...
 
 class BlockStarts:
+    """
+    Block start functions.
+
+    Return values:
+    0 = no match
+    1 = matched container, keep going
+    2 = matched leaf, no more block starts
+    """
     METHODS: Any
     @staticmethod
     def block_quote(parser, container: Incomplete | None = ...): ...
@@ -153,15 +179,50 @@ class Parser:
     inline_parser: Any
     options: Any
     def __init__(self, options=...) -> None: ...
-    def add_line(self) -> None: ...
-    def add_child(self, tag, offset): ...
-    def close_unmatched_blocks(self) -> None: ...
+    def add_line(self) -> None:
+        """
+        Add a line to the block at the tip.  We assume the tip
+        can accept lines -- that check should be done before calling this.
+        """
+        ...
+    def add_child(self, tag, offset):
+        """
+        Add block of type tag as a child of the tip.  If the tip can't
+        accept children, close and finalize it and try its parent,
+        and so on til we find a block that can accept children.
+        """
+        ...
+    def close_unmatched_blocks(self) -> None:
+        """Finalize and close any unmatched blocks."""
+        ...
     def find_next_nonspace(self) -> None: ...
     def advance_next_nonspace(self) -> None: ...
     def advance_offset(self, count, columns) -> None: ...
-    def incorporate_line(self, ln) -> None: ...
-    def finalize(self, block, line_number) -> None: ...
-    def process_inlines(self, block) -> None: ...
-    def parse(self, my_input): ...
+    def incorporate_line(self, ln) -> None:
+        """
+        Analyze a line of text and update the document appropriately.
+
+        We parse markdown text by calling this on each line of input,
+        then finalizing the document.
+        """
+        ...
+    def finalize(self, block, line_number) -> None:
+        """
+        Finalize a block.  Close it and do any necessary postprocessing,
+        e.g. creating string_content from strings, setting the 'tight'
+        or 'loose' status of a list, and parsing the beginnings
+        of paragraphs for reference definitions.  Reset the tip to the
+        parent of the closed block.
+        """
+        ...
+    def process_inlines(self, block) -> None:
+        """
+        Walk through a block & children recursively, parsing string content
+        into inline content where appropriate.
+        """
+        ...
+    def parse(self, my_input):
+        """The main parsing function.  Returns a parsed document AST."""
+        ...
 
 CAMEL_RE: Any

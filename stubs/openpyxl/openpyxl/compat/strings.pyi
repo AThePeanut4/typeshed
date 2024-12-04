@@ -3,4 +3,6 @@ from typing import Final
 
 VER: Final[sys._version_info]
 
-def safe_string(value: object) -> str: ...
+def safe_string(value: object) -> str:
+    """Safely and consistently format numeric values"""
+    ...

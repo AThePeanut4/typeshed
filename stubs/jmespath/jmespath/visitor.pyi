@@ -4,6 +4,7 @@ from typing import Any, ClassVar, NoReturn, TypedDict
 from jmespath.functions import Functions
 
 class Options:
+    """Options to control how a JMESPath function is evaluated."""
     dict_cls: Callable[[], MutableMapping[Any, Any]] | None
     custom_functions: Functions | None
     def __init__(

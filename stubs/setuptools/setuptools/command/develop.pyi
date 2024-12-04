@@ -7,6 +7,7 @@ from .. import namespaces
 from .easy_install import easy_install
 
 class develop(namespaces.DevelopInstaller, easy_install):
+    """Set up package for development"""
     description: str
     user_options: ClassVar[list[tuple[str, str | None, str]]]
     boolean_options: ClassVar[list[str]]
@@ -29,6 +30,19 @@ class develop(namespaces.DevelopInstaller, easy_install):
     def install_wrapper_scripts(self, dist): ...
 
 class VersionlessRequirement:
+    """
+    Adapt a pkg_resources.Distribution to simply return the project
+    name as the 'requirement' so that scripts will work across
+    multiple versions.
+
+    >>> from pkg_resources import Distribution
+    >>> dist = Distribution(project_name='foo', version='1.0')
+    >>> str(dist.as_requirement())
+    'foo==1.0'
+    >>> adapted_dist = VersionlessRequirement(dist)
+    >>> str(adapted_dist.as_requirement())
+    'foo'
+    """
     def __init__(self, dist) -> None: ...
     def __getattr__(self, name: str): ...
     def as_requirement(self): ...

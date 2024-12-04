@@ -1,3 +1,5 @@
+"""Convert to and from Roman numerals"""
+
 import re
 
 class RomanError(Exception): ...
@@ -7,8 +9,12 @@ class InvalidRomanNumeralError(RomanError): ...
 
 romanNumeralMap: tuple[tuple[str, int], ...]
 
-def toRoman(n: int) -> str: ...
+def toRoman(n: int) -> str:
+    """convert integer to Roman numeral"""
+    ...
 
 romanNumeralPattern: re.Pattern[str]
 
-def fromRoman(s: str) -> int: ...
+def fromRoman(s: str) -> int:
+    """convert Roman numeral to integer"""
+    ...

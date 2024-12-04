@@ -1,3 +1,5 @@
+"""pyOpenSSL - A simple wrapper around the OpenSSL library"""
+
 __version__: str
 
 __title__: str

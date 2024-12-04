@@ -1,3 +1,5 @@
+"""This package contains Docutils Writer modules."""
+
 from typing import Any, Generic, TypedDict, TypeVar, type_check_only
 from typing_extensions import Required
 
@@ -65,16 +67,63 @@ class _WriterParts(TypedDict, total=False):
     titledata: str
 
 class Writer(Component, Generic[_S]):
+    """
+    Abstract base class for docutils Writers.
+
+    Each writer module or package must export a subclass also called 'Writer'.
+    Each writer must support all standard node types listed in
+    `docutils.nodes.node_class_names`.
+
+    The `write()` method is the main entry point.
+    """
     parts: _WriterParts
     language: LanguageImporter | None = None
     def __init__(self) -> None: ...
     document: nodes.document | None = None
     destination: Output | None = None
     output: _S | None = None
-    def assemble_parts(self) -> None: ...
-    def translate(self) -> None: ...
-    def write(self, document: nodes.document, destination: Output) -> str | bytes | None: ...
+    def assemble_parts(self) -> None:
+        """
+        Assemble the `self.parts` dictionary.  Extend in subclasses.
 
-class UnfilteredWriter(Writer[_S]): ...
+        See <https://docutils.sourceforge.io/docs/api/publisher.html>.
+        """
+        ...
+    def translate(self) -> None:
+        """
+        Do final translation of `self.document` into `self.output`.  Called
+        from `write`.  Override in subclasses.
 
-def get_writer_class(writer_name: str) -> type[Writer[Any]]: ...
+        Usually done with a `docutils.nodes.NodeVisitor` subclass, in
+        combination with a call to `docutils.nodes.Node.walk()` or
+        `docutils.nodes.Node.walkabout()`.  The ``NodeVisitor`` subclass must
+        support all standard elements (listed in
+        `docutils.nodes.node_class_names`) and possibly non-standard elements
+        used by the current Reader as well.
+        """
+        ...
+    def write(self, document: nodes.document, destination: Output) -> str | bytes | None:
+        """
+        Process a document into its final form.
+
+        Translate `document` (a Docutils document tree) into the Writer's
+        native format, and write it out to its `destination` (a
+        `docutils.io.Output` subclass object).
+
+        Normally not overridden or extended in subclasses.
+        """
+        ...
+
+class UnfilteredWriter(Writer[_S]):
+    """
+    A writer that passes the document tree on unchanged (e.g. a
+    serializer.)
+
+    Documents written by UnfilteredWriters are typically reused at a
+    later date using a subclass of `readers.ReReader`.
+    """
+    ...
+
+def get_writer_class(writer_name: str) -> type[Writer[Any]]:
+    """Return the Writer class from the `writer_name` module."""
+    ...
