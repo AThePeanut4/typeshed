@@ -144,7 +144,16 @@ if sys.version_info >= (3, 13):
         sync: bool = False,
         use: str | None = None,
         /,
-    ): ...
+    ):
+        """
+        wantTk
+          if false, then Tk_Init() doesn't get called
+        sync
+          if true, then pass -sync to wish
+        use
+          if not None, then pass -use to wish
+        """
+        ...
 
 else:
     def create(
@@ -157,7 +166,24 @@ else:
         sync: bool = False,
         use: str | None = None,
         /,
-    ): ...
+    ):
+        """
+        wantTk
+          if false, then Tk_Init() doesn't get called
+        sync
+          if true, then pass -sync to wish
+        use
+          if not None, then pass -use to wish
+        """
+        ...
 
-def getbusywaitinterval(): ...
-def setbusywaitinterval(new_val, /): ...
+def getbusywaitinterval():
+    """Return the current busy-wait interval between successive calls to Tcl_DoOneEvent in a threaded Python interpreter."""
+    ...
+def setbusywaitinterval(new_val, /):
+    """
+    Set the busy-wait interval in milliseconds between successive calls to Tcl_DoOneEvent in a threaded Python interpreter.
+
+    It should be set to a divisor of the maximum time between frames in an animation.
+    """
+    ...

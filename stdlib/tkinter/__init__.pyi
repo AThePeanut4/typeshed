@@ -770,20 +770,109 @@ class Misc:
         """
         ...
     # after_idle is essentially partialmethod(after, "idle")
-    def after_idle(self, func: Callable[[Unpack[_Ts]], object], *args: Unpack[_Ts]) -> str: ...
-    def after_cancel(self, id: str) -> None: ...
-    if sys.version_info >= (3, 13):
-        def after_info(self, id: str | None = None) -> tuple[str, ...]: ...
+    def after_idle(self, func: Callable[[Unpack[_Ts]], object], *args: Unpack[_Ts]) -> str:
+        """
+        Call FUNC once if the Tcl main loop has no event to
+        process.
 
-    def bell(self, displayof: Literal[0] | Misc | None = 0) -> None: ...
-    def clipboard_get(self, *, displayof: Misc = ..., type: str = ...) -> str: ...
-    def clipboard_clear(self, *, displayof: Misc = ...) -> None: ...
-    def clipboard_append(self, string: str, *, displayof: Misc = ..., format: str = ..., type: str = ...) -> None: ...
-    def grab_current(self): ...
-    def grab_release(self) -> None: ...
-    def grab_set(self) -> None: ...
-    def grab_set_global(self) -> None: ...
-    def grab_status(self) -> Literal["local", "global"] | None: ...
+        Return an identifier to cancel the scheduling with
+        after_cancel.
+        """
+        ...
+    def after_cancel(self, id: str) -> None:
+        """
+        Cancel scheduling of function identified with ID.
+
+        Identifier returned by after or after_idle must be
+        given as first parameter.
+        """
+        ...
+    if sys.version_info >= (3, 13):
+        def after_info(self, id: str | None = None) -> tuple[str, ...]:
+            """
+            Return information about existing event handlers.
+
+            With no argument, return a tuple of the identifiers for all existing
+            event handlers created by the after and after_idle commands for this
+            interpreter.  If id is supplied, it specifies an existing handler; id
+            must have been the return value from some previous call to after or
+            after_idle and it must not have triggered yet or been canceled. If the
+            id doesn't exist, a TclError is raised.  Otherwise, the return value is
+            a tuple containing (script, type) where script is a reference to the
+            function to be called by the event handler and type is either 'idle'
+            or 'timer' to indicate what kind of event handler it is.
+            """
+            ...
+
+    def bell(self, displayof: Literal[0] | Misc | None = 0) -> None:
+        """Ring a display's bell."""
+        ...
+    def clipboard_get(self, *, displayof: Misc = ..., type: str = ...) -> str:
+        """
+        Retrieve data from the clipboard on window's display.
+
+        The window keyword defaults to the root window of the Tkinter
+        application.
+
+        The type keyword specifies the form in which the data is
+        to be returned and should be an atom name such as STRING
+        or FILE_NAME.  Type defaults to STRING, except on X11, where the default
+        is to try UTF8_STRING and fall back to STRING.
+
+        This command is equivalent to:
+
+        selection_get(CLIPBOARD)
+        """
+        ...
+    def clipboard_clear(self, *, displayof: Misc = ...) -> None:
+        """
+        Clear the data in the Tk clipboard.
+
+        A widget specified for the optional displayof keyword
+        argument specifies the target display.
+        """
+        ...
+    def clipboard_append(self, string: str, *, displayof: Misc = ..., format: str = ..., type: str = ...) -> None:
+        """
+        Append STRING to the Tk clipboard.
+
+        A widget specified at the optional displayof keyword
+        argument specifies the target display. The clipboard
+        can be retrieved with selection_get.
+        """
+        ...
+    def grab_current(self):
+        """
+        Return widget which has currently the grab in this application
+        or None.
+        """
+        ...
+    def grab_release(self) -> None:
+        """Release grab for this widget if currently set."""
+        ...
+    def grab_set(self) -> None:
+        """
+        Set grab for this widget.
+
+        A grab directs all events to this and descendant
+        widgets in the application.
+        """
+        ...
+    def grab_set_global(self) -> None:
+        """
+        Set global grab for this widget.
+
+        A global grab directs all events to this and
+        descendant widgets on the display. Use with caution -
+        other applications do not get events anymore.
+        """
+        ...
+    def grab_status(self) -> Literal["local", "global"] | None:
+        """
+        Return None, "local" or "global" if this widget has
+        no, a local or a global grab.
+        """
+        ...
     def option_add(
         self, pattern, value, priority: int | Literal["widgetDefault", "startupFile", "userDefault", "interactive"] | None = None
     ) -> None:
@@ -1764,20 +1853,109 @@ class Wm:
     aspect = wm_aspect
     if sys.version_info >= (3, 13):
         @overload
-        def wm_attributes(self, *, return_python_dict: Literal[False] = False) -> tuple[Any, ...]: ...
+        def wm_attributes(self, *, return_python_dict: Literal[False] = False) -> tuple[Any, ...]:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
         @overload
-        def wm_attributes(self, *, return_python_dict: Literal[True]) -> _WmAttributes: ...
+        def wm_attributes(self, *, return_python_dict: Literal[True]) -> _WmAttributes:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
 
     else:
         @overload
-        def wm_attributes(self) -> tuple[Any, ...]: ...
+        def wm_attributes(self) -> tuple[Any, ...]:
+            """
+            This subcommand returns or sets platform specific attributes
+
+            The first form returns a list of the platform specific flags and
+            their values. The second form returns the value for the specific
+            option. The third form sets one or more of the values. The values
+            are as follows:
+
+            On Windows, -disabled gets or sets whether the window is in a
+            disabled state. -toolwindow gets or sets the style of the window
+            to toolwindow (as defined in the MSDN). -topmost gets or sets
+            whether this is a topmost window (displays above all other
+            windows).
+
+            On Macintosh, XXXXX
+
+            On Unix, there are currently no special attribute values.
+            """
+            ...
 
     @overload
-    def wm_attributes(self, option: Literal["-alpha"], /) -> float: ...
+    def wm_attributes(self, option: Literal["-alpha"], /) -> float:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     @overload
-    def wm_attributes(self, option: Literal["-fullscreen"], /) -> bool: ...
+    def wm_attributes(self, option: Literal["-fullscreen"], /) -> bool:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     @overload
-    def wm_attributes(self, option: Literal["-topmost"], /) -> bool: ...
+    def wm_attributes(self, option: Literal["-topmost"], /) -> bool:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     if sys.platform == "darwin":
         @overload
         def wm_attributes(self, option: Literal["-modified"], /) -> bool: ...
@@ -1799,16 +1977,86 @@ class Wm:
     else:
         # X11
         @overload
-        def wm_attributes(self, option: Literal["-zoomed"], /) -> bool: ...
+        def wm_attributes(self, option: Literal["-zoomed"], /) -> bool:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
         @overload
-        def wm_attributes(self, option: Literal["-type"], /) -> str: ...
+        def wm_attributes(self, option: Literal["-type"], /) -> str:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
     if sys.version_info >= (3, 13):
         @overload
-        def wm_attributes(self, option: Literal["alpha"], /) -> float: ...
+        def wm_attributes(self, option: Literal["alpha"], /) -> float:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
         @overload
-        def wm_attributes(self, option: Literal["fullscreen"], /) -> bool: ...
+        def wm_attributes(self, option: Literal["fullscreen"], /) -> bool:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
         @overload
-        def wm_attributes(self, option: Literal["topmost"], /) -> bool: ...
+        def wm_attributes(self, option: Literal["topmost"], /) -> bool:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
         if sys.platform == "darwin":
             @overload
             def wm_attributes(self, option: Literal["modified"], /) -> bool: ...
@@ -1830,9 +2078,37 @@ class Wm:
         else:
             # X11
             @overload
-            def wm_attributes(self, option: Literal["zoomed"], /) -> bool: ...
+            def wm_attributes(self, option: Literal["zoomed"], /) -> bool:
+                """
+                Return or sets platform specific attributes.
+
+                When called with a single argument return_python_dict=True,
+                return a dict of the platform specific attributes and their values.
+                When called without arguments or with a single argument
+                return_python_dict=False, return a tuple containing intermixed
+                attribute names with the minus prefix and their values.
+
+                When called with a single string value, return the value for the
+                specific option.  When called with keyword arguments, set the
+                corresponding attributes.
+                """
+                ...
             @overload
-            def wm_attributes(self, option: Literal["type"], /) -> str: ...
+            def wm_attributes(self, option: Literal["type"], /) -> str:
+                """
+                Return or sets platform specific attributes.
+
+                When called with a single argument return_python_dict=True,
+                return a dict of the platform specific attributes and their values.
+                When called without arguments or with a single argument
+                return_python_dict=False, return a tuple containing intermixed
+                attribute names with the minus prefix and their values.
+
+                When called with a single string value, return the value for the
+                specific option.  When called with keyword arguments, set the
+                corresponding attributes.
+                """
+                ...
 
     @overload
     def wm_attributes(self, option: str, /):
@@ -1851,11 +2127,53 @@ class Wm:
         """
         ...
     @overload
-    def wm_attributes(self, option: Literal["-alpha"], value: float, /) -> Literal[""]: ...
+    def wm_attributes(self, option: Literal["-alpha"], value: float, /) -> Literal[""]:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     @overload
-    def wm_attributes(self, option: Literal["-fullscreen"], value: bool, /) -> Literal[""]: ...
+    def wm_attributes(self, option: Literal["-fullscreen"], value: bool, /) -> Literal[""]:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     @overload
-    def wm_attributes(self, option: Literal["-topmost"], value: bool, /) -> Literal[""]: ...
+    def wm_attributes(self, option: Literal["-topmost"], value: bool, /) -> Literal[""]:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     if sys.platform == "darwin":
         @overload
         def wm_attributes(self, option: Literal["-modified"], value: bool, /) -> Literal[""]: ...
@@ -1875,12 +2193,54 @@ class Wm:
     else:
         # X11
         @overload
-        def wm_attributes(self, option: Literal["-zoomed"], value: bool, /) -> Literal[""]: ...
+        def wm_attributes(self, option: Literal["-zoomed"], value: bool, /) -> Literal[""]:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
         @overload
-        def wm_attributes(self, option: Literal["-type"], value: str, /) -> Literal[""]: ...
+        def wm_attributes(self, option: Literal["-type"], value: str, /) -> Literal[""]:
+            """
+            Return or sets platform specific attributes.
+
+            When called with a single argument return_python_dict=True,
+            return a dict of the platform specific attributes and their values.
+            When called without arguments or with a single argument
+            return_python_dict=False, return a tuple containing intermixed
+            attribute names with the minus prefix and their values.
+
+            When called with a single string value, return the value for the
+            specific option.  When called with keyword arguments, set the
+            corresponding attributes.
+            """
+            ...
 
     @overload
-    def wm_attributes(self, option: str, value, /, *__other_option_value_pairs: Any) -> Literal[""]: ...
+    def wm_attributes(self, option: str, value, /, *__other_option_value_pairs: Any) -> Literal[""]:
+        """
+        Return or sets platform specific attributes.
+
+        When called with a single argument return_python_dict=True,
+        return a dict of the platform specific attributes and their values.
+        When called without arguments or with a single argument
+        return_python_dict=False, return a tuple containing intermixed
+        attribute names with the minus prefix and their values.
+
+        When called with a single string value, return the value for the
+        specific option.  When called with keyword arguments, set the
+        corresponding attributes.
+        """
+        ...
     if sys.version_info >= (3, 13):
         if sys.platform == "darwin":
             @overload
@@ -1912,7 +2272,21 @@ class Wm:
             @overload
             def wm_attributes(
                 self, *, alpha: float = ..., topmost: bool = ..., zoomed: bool = ..., fullscreen: bool = ..., type: str = ...
-            ) -> None: ...
+            ) -> None:
+                """
+                Return or sets platform specific attributes.
+
+                When called with a single argument return_python_dict=True,
+                return a dict of the platform specific attributes and their values.
+                When called without arguments or with a single argument
+                return_python_dict=False, return a tuple containing intermixed
+                attribute names with the minus prefix and their values.
+
+                When called with a single string value, return the value for the
+                specific option.  When called with keyword arguments, set the
+                corresponding attributes.
+                """
+                ...
 
     attributes = wm_attributes
     def wm_client(self, name: str | None = None) -> str:
