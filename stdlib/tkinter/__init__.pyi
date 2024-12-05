@@ -770,92 +770,20 @@ class Misc:
         """
         ...
     # after_idle is essentially partialmethod(after, "idle")
-    def after_idle(self, func: Callable[[Unpack[_Ts]], object], *args: Unpack[_Ts]) -> str:
-        """
-        Call FUNC once if the Tcl main loop has no event to
-        process.
+    def after_idle(self, func: Callable[[Unpack[_Ts]], object], *args: Unpack[_Ts]) -> str: ...
+    def after_cancel(self, id: str) -> None: ...
+    if sys.version_info >= (3, 13):
+        def after_info(self, id: str | None = None) -> tuple[str, ...]: ...
 
-        Return an identifier to cancel the scheduling with
-        after_cancel.
-        """
-        ...
-    def after_cancel(self, id: str) -> None:
-        """
-        Cancel scheduling of function identified with ID.
-
-        Identifier returned by after or after_idle must be
-        given as first parameter.
-        """
-        ...
-    def bell(self, displayof: Literal[0] | Misc | None = 0) -> None:
-        """Ring a display's bell."""
-        ...
-    def clipboard_get(self, *, displayof: Misc = ..., type: str = ...) -> str:
-        """
-        Retrieve data from the clipboard on window's display.
-
-        The window keyword defaults to the root window of the Tkinter
-        application.
-
-        The type keyword specifies the form in which the data is
-        to be returned and should be an atom name such as STRING
-        or FILE_NAME.  Type defaults to STRING, except on X11, where the default
-        is to try UTF8_STRING and fall back to STRING.
-
-        This command is equivalent to:
-
-        selection_get(CLIPBOARD)
-        """
-        ...
-    def clipboard_clear(self, *, displayof: Misc = ...) -> None:
-        """
-        Clear the data in the Tk clipboard.
-
-        A widget specified for the optional displayof keyword
-        argument specifies the target display.
-        """
-        ...
-    def clipboard_append(self, string: str, *, displayof: Misc = ..., format: str = ..., type: str = ...) -> None:
-        """
-        Append STRING to the Tk clipboard.
-
-        A widget specified at the optional displayof keyword
-        argument specifies the target display. The clipboard
-        can be retrieved with selection_get.
-        """
-        ...
-    def grab_current(self):
-        """
-        Return widget which has currently the grab in this application
-        or None.
-        """
-        ...
-    def grab_release(self) -> None:
-        """Release grab for this widget if currently set."""
-        ...
-    def grab_set(self) -> None:
-        """
-        Set grab for this widget.
-
-        A grab directs all events to this and descendant
-        widgets in the application.
-        """
-        ...
-    def grab_set_global(self) -> None:
-        """
-        Set global grab for this widget.
-
-        A global grab directs all events to this and
-        descendant widgets on the display. Use with caution -
-        other applications do not get events anymore.
-        """
-        ...
-    def grab_status(self) -> Literal["local", "global"] | None:
-        """
-        Return None, "local" or "global" if this widget has
-        no, a local or a global grab.
-        """
-        ...
+    def bell(self, displayof: Literal[0] | Misc | None = 0) -> None: ...
+    def clipboard_get(self, *, displayof: Misc = ..., type: str = ...) -> str: ...
+    def clipboard_clear(self, *, displayof: Misc = ...) -> None: ...
+    def clipboard_append(self, string: str, *, displayof: Misc = ..., format: str = ..., type: str = ...) -> None: ...
+    def grab_current(self): ...
+    def grab_release(self) -> None: ...
+    def grab_set(self) -> None: ...
+    def grab_set_global(self) -> None: ...
+    def grab_status(self) -> Literal["local", "global"] | None: ...
     def option_add(
         self, pattern, value, priority: int | Literal["widgetDefault", "startupFile", "userDefault", "interactive"] | None = None
     ) -> None:
@@ -1781,6 +1709,38 @@ class YView:
         """
         ...
 
+if sys.platform == "darwin":
+    @type_check_only
+    class _WmAttributes(TypedDict):
+        alpha: float
+        fullscreen: bool
+        modified: bool
+        notify: bool
+        titlepath: str
+        topmost: bool
+        transparent: bool
+        type: str  # Present, but not actually used on darwin
+
+elif sys.platform == "win32":
+    @type_check_only
+    class _WmAttributes(TypedDict):
+        alpha: float
+        transparentcolor: str
+        disabled: bool
+        fullscreen: bool
+        toolwindow: bool
+        topmost: bool
+
+else:
+    # X11
+    @type_check_only
+    class _WmAttributes(TypedDict):
+        alpha: float
+        topmost: bool
+        zoomed: bool
+        fullscreen: bool
+        type: str
+
 class Wm:
     """Provides functions for the communication with the window manager."""
     @overload
@@ -1802,22 +1762,78 @@ class Wm:
         """
         ...
     aspect = wm_aspect
+    if sys.version_info >= (3, 13):
+        @overload
+        def wm_attributes(self, *, return_python_dict: Literal[False] = False) -> tuple[Any, ...]: ...
+        @overload
+        def wm_attributes(self, *, return_python_dict: Literal[True]) -> _WmAttributes: ...
+
+    else:
+        @overload
+        def wm_attributes(self) -> tuple[Any, ...]: ...
+
     @overload
-    def wm_attributes(self) -> tuple[Any, ...]:
-        """
-        Return or sets platform specific attributes.
+    def wm_attributes(self, option: Literal["-alpha"], /) -> float: ...
+    @overload
+    def wm_attributes(self, option: Literal["-fullscreen"], /) -> bool: ...
+    @overload
+    def wm_attributes(self, option: Literal["-topmost"], /) -> bool: ...
+    if sys.platform == "darwin":
+        @overload
+        def wm_attributes(self, option: Literal["-modified"], /) -> bool: ...
+        @overload
+        def wm_attributes(self, option: Literal["-notify"], /) -> bool: ...
+        @overload
+        def wm_attributes(self, option: Literal["-titlepath"], /) -> str: ...
+        @overload
+        def wm_attributes(self, option: Literal["-transparent"], /) -> bool: ...
+        @overload
+        def wm_attributes(self, option: Literal["-type"], /) -> str: ...
+    elif sys.platform == "win32":
+        @overload
+        def wm_attributes(self, option: Literal["-transparentcolor"], /) -> str: ...
+        @overload
+        def wm_attributes(self, option: Literal["-disabled"], /) -> bool: ...
+        @overload
+        def wm_attributes(self, option: Literal["-toolwindow"], /) -> bool: ...
+    else:
+        # X11
+        @overload
+        def wm_attributes(self, option: Literal["-zoomed"], /) -> bool: ...
+        @overload
+        def wm_attributes(self, option: Literal["-type"], /) -> str: ...
+    if sys.version_info >= (3, 13):
+        @overload
+        def wm_attributes(self, option: Literal["alpha"], /) -> float: ...
+        @overload
+        def wm_attributes(self, option: Literal["fullscreen"], /) -> bool: ...
+        @overload
+        def wm_attributes(self, option: Literal["topmost"], /) -> bool: ...
+        if sys.platform == "darwin":
+            @overload
+            def wm_attributes(self, option: Literal["modified"], /) -> bool: ...
+            @overload
+            def wm_attributes(self, option: Literal["notify"], /) -> bool: ...
+            @overload
+            def wm_attributes(self, option: Literal["titlepath"], /) -> str: ...
+            @overload
+            def wm_attributes(self, option: Literal["transparent"], /) -> bool: ...
+            @overload
+            def wm_attributes(self, option: Literal["type"], /) -> str: ...
+        elif sys.platform == "win32":
+            @overload
+            def wm_attributes(self, option: Literal["transparentcolor"], /) -> str: ...
+            @overload
+            def wm_attributes(self, option: Literal["disabled"], /) -> bool: ...
+            @overload
+            def wm_attributes(self, option: Literal["toolwindow"], /) -> bool: ...
+        else:
+            # X11
+            @overload
+            def wm_attributes(self, option: Literal["zoomed"], /) -> bool: ...
+            @overload
+            def wm_attributes(self, option: Literal["type"], /) -> str: ...
 
-        When called with a single argument return_python_dict=True,
-        return a dict of the platform specific attributes and their values.
-        When called without arguments or with a single argument
-        return_python_dict=False, return a tuple containing intermixed
-        attribute names with the minus prefix and their values.
-
-        When called with a single string value, return the value for the
-        specific option.  When called with keyword arguments, set the
-        corresponding attributes.
-        """
-        ...
     @overload
     def wm_attributes(self, option: str, /):
         """
@@ -1835,21 +1851,69 @@ class Wm:
         """
         ...
     @overload
-    def wm_attributes(self, option: str, value, /, *__other_option_value_pairs: Any) -> None:
-        """
-        Return or sets platform specific attributes.
+    def wm_attributes(self, option: Literal["-alpha"], value: float, /) -> Literal[""]: ...
+    @overload
+    def wm_attributes(self, option: Literal["-fullscreen"], value: bool, /) -> Literal[""]: ...
+    @overload
+    def wm_attributes(self, option: Literal["-topmost"], value: bool, /) -> Literal[""]: ...
+    if sys.platform == "darwin":
+        @overload
+        def wm_attributes(self, option: Literal["-modified"], value: bool, /) -> Literal[""]: ...
+        @overload
+        def wm_attributes(self, option: Literal["-notify"], value: bool, /) -> Literal[""]: ...
+        @overload
+        def wm_attributes(self, option: Literal["-titlepath"], value: str, /) -> Literal[""]: ...
+        @overload
+        def wm_attributes(self, option: Literal["-transparent"], value: bool, /) -> Literal[""]: ...
+    elif sys.platform == "win32":
+        @overload
+        def wm_attributes(self, option: Literal["-transparentcolor"], value: str, /) -> Literal[""]: ...
+        @overload
+        def wm_attributes(self, option: Literal["-disabled"], value: bool, /) -> Literal[""]: ...
+        @overload
+        def wm_attributes(self, option: Literal["-toolwindow"], value: bool, /) -> Literal[""]: ...
+    else:
+        # X11
+        @overload
+        def wm_attributes(self, option: Literal["-zoomed"], value: bool, /) -> Literal[""]: ...
+        @overload
+        def wm_attributes(self, option: Literal["-type"], value: str, /) -> Literal[""]: ...
 
-        When called with a single argument return_python_dict=True,
-        return a dict of the platform specific attributes and their values.
-        When called without arguments or with a single argument
-        return_python_dict=False, return a tuple containing intermixed
-        attribute names with the minus prefix and their values.
+    @overload
+    def wm_attributes(self, option: str, value, /, *__other_option_value_pairs: Any) -> Literal[""]: ...
+    if sys.version_info >= (3, 13):
+        if sys.platform == "darwin":
+            @overload
+            def wm_attributes(
+                self,
+                *,
+                alpha: float = ...,
+                fullscreen: bool = ...,
+                modified: bool = ...,
+                notify: bool = ...,
+                titlepath: str = ...,
+                topmost: bool = ...,
+                transparent: bool = ...,
+            ) -> None: ...
+        elif sys.platform == "win32":
+            @overload
+            def wm_attributes(
+                self,
+                *,
+                alpha: float = ...,
+                transparentcolor: str = ...,
+                disabled: bool = ...,
+                fullscreen: bool = ...,
+                toolwindow: bool = ...,
+                topmost: bool = ...,
+            ) -> None: ...
+        else:
+            # X11
+            @overload
+            def wm_attributes(
+                self, *, alpha: float = ..., topmost: bool = ..., zoomed: bool = ..., fullscreen: bool = ..., type: str = ...
+            ) -> None: ...
 
-        When called with a single string value, return the value for the
-        specific option.  When called with keyword arguments, set the
-        corresponding attributes.
-        """
-        ...
     attributes = wm_attributes
     def wm_client(self, name: str | None = None) -> str:
         """
