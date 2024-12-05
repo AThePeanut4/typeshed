@@ -169,5 +169,5 @@ console-menu==0.8.*
 influxdb-client[extra]==1.45.*
 pyflakes==3.2.*
 jmespath==1.0.*
-six==1.16.*
+six==1.17.*
 mock==5.1.*
