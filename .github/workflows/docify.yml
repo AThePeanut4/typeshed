@@ -31,7 +31,15 @@ jobs:
       - name: Merge
         run: |
           git reset --hard origin/main
-          git merge upstream/main --no-ff -m 'chore: merge upstream' -s ort -X theirs
+          if ! git merge upstream/main --no-ff -m 'chore: merge upstream' -s ort -X theirs; then
+            # merge failed, -X theirs means this should (hopefully)
+            # only be caused by either us or them deleting files
+            # so resolve all conflicts by deleting the file
+            git status --porcelain=2 | grep '^u' | cut -d ' ' -f '11-' | while read line; do
+              git rm "$line"
+            done
+            git commit --no-edit
+          fi
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
