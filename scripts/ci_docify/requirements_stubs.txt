@@ -71,7 +71,7 @@ mypy-extensions==1.0.*
 passlib==1.7.*
 editdistance==0.8.*
 dateparser[fasttext,langdetect]==1.2.*
-protobuf~=5.28.3
+protobuf~=5.29.1
 lupa==2.2.*
 pyjks==20.0.*
 colorama==0.4.*
@@ -105,7 +105,6 @@ croniter==5.0.1
 fpdf2==2.8.1
 braintree==4.31.*
 slumber==0.7.*
-python-gflags==3.1.*
 PyYAML==6.0.*
 simplejson==3.19.*
 python-jose==3.3.*
