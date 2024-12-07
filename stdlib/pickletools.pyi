@@ -1,3 +1,16 @@
+"""
+"Executable documentation" for the pickle module.
+
+Extensive comments about the pickle protocols and pickle-machine opcodes
+can be found here.  Some functions meant for external use:
+
+genops(pickle)
+   Generate all the opcodes in a pickle, as (opcode, arg, position) triples.
+
+dis(pickle, out=None, memo=None, indentlevel=4)
+   Print a symbolic disassembly of a pickle.
+"""
+
 import sys
 from collections.abc import Callable, Iterator, MutableMapping
 from typing import IO, Any
@@ -82,10 +95,62 @@ uint8: ArgumentDescriptor
 if sys.version_info >= (3, 12):
     def read_stringnl(
         f: IO[bytes], decode: bool = True, stripquotes: bool = True, *, encoding: str = "latin-1"
-    ) -> bytes | str: ...
+    ) -> bytes | str:
+        r"""
+        >>> import io
+        >>> read_stringnl(io.BytesIO(b"'abcd'\nefg\n"))
+        'abcd'
+
+        >>> read_stringnl(io.BytesIO(b"\n"))
+        Traceback (most recent call last):
+        ...
+        ValueError: no string quotes around b''
+
+        >>> read_stringnl(io.BytesIO(b"\n"), stripquotes=False)
+        ''
+
+        >>> read_stringnl(io.BytesIO(b"''\n"))
+        ''
+
+        >>> read_stringnl(io.BytesIO(b'"abcd"'))
+        Traceback (most recent call last):
+        ...
+        ValueError: no newline found when trying to read stringnl
+
+        Embedded escapes are undone in the result.
+        >>> read_stringnl(io.BytesIO(br"'a\n\\b\x00c\td'" + b"\n'e'"))
+        'a\n\\b\x00c\td'
+        """
+        ...
 
 else:
-    def read_stringnl(f: IO[bytes], decode: bool = True, stripquotes: bool = True) -> bytes | str: ...
+    def read_stringnl(f: IO[bytes], decode: bool = True, stripquotes: bool = True) -> bytes | str:
+        r"""
+        >>> import io
+        >>> read_stringnl(io.BytesIO(b"'abcd'\nefg\n"))
+        'abcd'
+
+        >>> read_stringnl(io.BytesIO(b"\n"))
+        Traceback (most recent call last):
+        ...
+        ValueError: no string quotes around b''
+
+        >>> read_stringnl(io.BytesIO(b"\n"), stripquotes=False)
+        ''
+
+        >>> read_stringnl(io.BytesIO(b"''\n"))
+        ''
+
+        >>> read_stringnl(io.BytesIO(b'"abcd"'))
+        Traceback (most recent call last):
+        ...
+        ValueError: no newline found when trying to read stringnl
+
+        Embedded escapes are undone in the result.
+        >>> read_stringnl(io.BytesIO(br"'a\n\\b\x00c\td'" + b"\n'e'"))
+        'a\n\\b\x00c\td'
+        """
+        ...
 
 stringnl: ArgumentDescriptor
 
