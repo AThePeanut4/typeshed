@@ -378,6 +378,8 @@ class TracebackException:
     """
     __cause__: TracebackException
     __context__: TracebackException
+    if sys.version_info >= (3, 11):
+        exceptions: list[TracebackException] | None
     __suppress_context__: bool
     stack: StackSummary
     filename: str
