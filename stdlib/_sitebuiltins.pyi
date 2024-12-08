@@ -1,3 +1,5 @@
+"""The objects used by the site module to add custom builtins."""
+
 import sys
 from collections.abc import Iterable
 from typing import ClassVar, Literal, NoReturn
@@ -18,4 +20,13 @@ class _Printer:
     def __call__(self) -> None: ...
 
 class _Helper:
+    """
+    Define the builtin 'help'.
+
+    This is a wrapper around pydoc.help that provides a helpful message
+    when 'help' is typed at the Python interactive prompt.
+
+    Calling help() at the Python prompt starts an interactive help session.
+    Calling help(thing) prints help for the python object 'thing'.
+    """
     def __call__(self, request: object = ...) -> None: ...

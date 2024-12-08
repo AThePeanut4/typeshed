@@ -4166,13 +4166,49 @@ def compile(
     optimize: int = -1,
     *,
     _feature_version: int = -1,
-) -> Any: ...
+) -> Any:
+    """
+    Compile source into a code object that can be executed by exec() or eval().
+
+    The source code may represent a Python module, statement or expression.
+    The filename will be used for run-time error messages.
+    The mode must be 'exec' to compile a module, 'single' to compile a
+    single (interactive) statement, or 'eval' to compile an expression.
+    The flags argument, if present, controls which future statements influence
+    the compilation of the code.
+    The dont_inherit argument, if true, stops the compilation inheriting
+    the effects of any future statements in effect in the code calling
+    compile; if absent or false these statements do influence the compilation,
+    in addition to any features explicitly specified.
+    """
+    ...
 
 copyright: _sitebuiltins._Printer
 credits: _sitebuiltins._Printer
 
-def delattr(obj: object, name: str, /) -> None: ...
-def dir(o: object = ..., /) -> list[str]: ...
+def delattr(obj: object, name: str, /) -> None:
+    """
+    Deletes the named attribute from the given object.
+
+    delattr(x, 'y') is equivalent to ``del x.y``
+    """
+    ...
+def dir(o: object = ..., /) -> list[str]:
+    """
+    dir([object]) -> list of strings
+
+    If called without an argument, return the names in the current scope.
+    Else, return an alphabetized list of names comprising (some of) the attributes
+    of the given object, and of attributes reachable from it.
+    If the object supplies a method named __dir__, it will be used; otherwise
+    the default dir() logic is used and returns:
+      for a module object: the module's attributes.
+      for a class object:  its attributes, and recursively the attributes
+        of its bases.
+      for any other object: its attributes, its class's attributes, and
+        recursively the attributes of its class's base classes.
+    """
+    ...
 @overload
 def divmod(x: SupportsDivMod[_T_contra, _T_co], y: _T_contra, /) -> _T_co:
     """Return the tuple (x//y, x%y).  Invariant: div*y + mod == x."""
@@ -4372,16 +4408,68 @@ def getattr(o: object, name: str, default: dict[Any, Any], /) -> Any | dict[Any,
     """
     ...
 @overload
-def getattr(o: object, name: str, default: _T, /) -> Any | _T: ...
-def globals() -> dict[str, Any]: ...
-def hasattr(obj: object, name: str, /) -> bool: ...
-def hash(obj: object, /) -> int: ...
+def getattr(o: object, name: str, default: _T, /) -> Any | _T:
+    """
+    getattr(object, name[, default]) -> value
+
+    Get a named attribute from an object; getattr(x, 'y') is equivalent to x.y.
+    When a default argument is given, it is returned when the attribute doesn't
+    exist; without it, an exception is raised in that case.
+    """
+    ...
+def globals() -> dict[str, Any]:
+    """
+    Return the dictionary containing the current scope's global variables.
+
+    NOTE: Updates to this dictionary *will* affect name lookups in the current
+    global scope and vice-versa.
+    """
+    ...
+def hasattr(obj: object, name: str, /) -> bool:
+    """
+    Return whether the object has an attribute with the given name.
+
+    This is done by calling getattr(obj, name) and catching AttributeError.
+    """
+    ...
+def hash(obj: object, /) -> int:
+    """
+    Return the hash value for the given object.
+
+    Two objects that compare equal must also have the same hash value, but the
+    reverse is not necessarily true.
+    """
+    ...
 
 help: _sitebuiltins._Helper
 
-def hex(number: int | SupportsIndex, /) -> str: ...
-def id(obj: object, /) -> int: ...
-def input(prompt: object = "", /) -> str: ...
+def hex(number: int | SupportsIndex, /) -> str:
+    """
+    Return the hexadecimal representation of an integer.
+
+    >>> hex(12648430)
+    '0xc0ffee'
+    """
+    ...
+def id(obj: object, /) -> int:
+    """
+    Return the identity of an object.
+
+    This is guaranteed to be unique among simultaneously existing objects.
+    (CPython uses the object's memory address.)
+    """
+    ...
+def input(prompt: object = "", /) -> str:
+    """
+    Read a string from standard input.  The trailing newline is stripped.
+
+    The prompt string, if given, is printed to standard output without a
+    trailing newline before reading input.
+
+    If the user hits EOF (*nix: Ctrl-D, Windows: Ctrl-Z+Return), raise EOFError.
+    On *nix systems, readline is used if available.
+    """
+    ...
 
 class _GetItemIterable(Protocol[_T_co]):
     def __getitem__(self, i: int, /) -> _T_co: ...
@@ -4437,13 +4525,39 @@ if sys.version_info >= (3, 10):
 else:
     _ClassInfo: TypeAlias = type | tuple[_ClassInfo, ...]
 
-def isinstance(obj: object, class_or_tuple: _ClassInfo, /) -> bool: ...
-def issubclass(cls: type, class_or_tuple: _ClassInfo, /) -> bool: ...
-def len(obj: Sized, /) -> int: ...
+def isinstance(obj: object, class_or_tuple: _ClassInfo, /) -> bool:
+    """
+    Return whether an object is an instance of a class or of a subclass thereof.
+
+    A tuple, as in ``isinstance(x, (A, B, ...))``, may be given as the target to
+    check against. This is equivalent to ``isinstance(x, A) or isinstance(x, B)
+    or ...`` etc.
+    """
+    ...
+def issubclass(cls: type, class_or_tuple: _ClassInfo, /) -> bool:
+    """
+    Return whether 'cls' is derived from another class or is the same class.
+
+    A tuple, as in ``issubclass(x, (A, B, ...))``, may be given as the target to
+    check against. This is equivalent to ``issubclass(x, A) or issubclass(x, B)
+    or ...``.
+    """
+    ...
+def len(obj: Sized, /) -> int:
+    """Return the number of items in a container."""
+    ...
 
 license: _sitebuiltins._Printer
 
-def locals() -> dict[str, Any]: ...
+def locals() -> dict[str, Any]:
+    """
+    Return a dictionary containing the current scope's local variables.
+
+    NOTE: Whether or not updates to this dictionary will affect name lookups in
+    the local scope and vice-versa is *implementation dependent* and not
+    covered by any backwards compatibility guarantees.
+    """
+    ...
 
 class map(Generic[_S]):
     """
@@ -5771,7 +5885,14 @@ def pow(base: _SupportsSomeKindOfPow, exp: float, mod: None = None) -> Any:
     """
     ...
 @overload
-def pow(base: _SupportsSomeKindOfPow, exp: complex, mod: None = None) -> complex: ...
+def pow(base: _SupportsSomeKindOfPow, exp: complex, mod: None = None) -> complex:
+    """
+    Equivalent to base**exp with 2 arguments or base**exp % mod with 3 arguments
+
+    Some types, such as ints, are able to use a more efficient algorithm when
+    invoked using the three argument form.
+    """
+    ...
 
 quit: _sitebuiltins.Quitter
 
