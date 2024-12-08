@@ -368,7 +368,7 @@ class spawn(SpawnBase[AnyStr]):
         """
         ...
     status: int | None
-    exitstatus: bool | None
+    exitstatus: int | None
     signalstatus: int | None
     terminated: bool
     def wait(self) -> int:
