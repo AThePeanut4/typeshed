@@ -95,7 +95,7 @@ jobs:
       - name: Commit changes
         run: |
           git add stdlib stubs
-          git commit --amend --reset-author --no-edit
+          git commit --amend --reset-author --allow-empty --no-edit
       - name: Push
         run: git push --force-with-lease origin ci/docify
   docify-macos:
@@ -133,7 +133,7 @@ jobs:
       - name: Commit changes
         run: |
           git add stdlib stubs
-          git commit --amend --reset-author --no-edit
+          git commit --amend --reset-author --allow-empty --no-edit
       - name: Push
         run: git push --force-with-lease origin ci/docify
   docify-windows:
@@ -166,7 +166,7 @@ jobs:
       - name: Commit changes
         run: |
           git add stdlib stubs
-          git commit --amend --reset-author --no-edit
+          git commit --amend --reset-author --allow-empty --no-edit
       - name: Push
         run: git push --force-with-lease origin ci/docify
   push:
@@ -180,4 +180,8 @@ jobs:
       - name: Push
         run: |
           git merge --ff-only origin/ci/docify
+          # If the "run docify" commit is empty, remove it
+          if ! git diff --quiet HEAD^ HEAD; then
+            git reset --soft HEAD^
+          fi
           git push origin main
