@@ -1,9 +1,3 @@
-"""
-Constants used by COM Controls
-
-Hand created version of OLECTL.H constants.
-"""
-
 FACILITY_CONTROL: int
 
 def MAKE_SCODE(sev: int, fac: int, code: int) -> int: ...

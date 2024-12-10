@@ -1,5 +1,3 @@
-"""A module, encapsulating the OLE automation API"""
-
 from _typeshed import Incomplete, Unused
 from collections.abc import Sequence
 from typing import SupportsInt, overload
