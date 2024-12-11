@@ -6,6 +6,7 @@ also includes support for signal handling, see the unix_events sub-module.
 """
 
 import selectors
+from socket import socket
 
 from . import base_events
 
@@ -18,3 +19,4 @@ class BaseSelectorEventLoop(base_events.BaseEventLoop):
     See events.EventLoop for API specification.
     """
     def __init__(self, selector: selectors.BaseSelector | None = None) -> None: ...
+    async def sock_recv(self, sock: socket, n: int) -> bytes: ...
