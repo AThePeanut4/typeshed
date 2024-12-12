@@ -93,7 +93,7 @@ wurlitzer==3.1.*
 antlr4-python3-runtime==4.13.*
 chevron==0.14.*
 click-spinner==0.1.*
-ibm-db==3.2.*
+ibm-db==3.2.3
 psycopg2~=2.9.10
 icalendar==6.1.*
 waitress~=3.0.1
@@ -141,7 +141,7 @@ python-datemath==3.0.1
 greenlet==3.1.*
 corus==0.10.*
 whatthepatch==1.0.*
-hdbcli==2.22.*
+hdbcli==2.23.*
 tqdm[slack,telegram]==4.67.*
 retry==0.9.*
 Flask-Cors==5.0.*
