@@ -22,7 +22,7 @@ opentracing==2.4.*
 python-http-client==3.3.7
 s2clientprotocol==5.*
 flake8-simplify==0.21.*
-pycurl==7.45.3
+pycurl==7.45.4
 beautifulsoup4[html5lib,lxml]==4.12.*
 jwcrypto==1.5.*
 inifile==0.4.*
@@ -93,7 +93,7 @@ wurlitzer==3.1.*
 antlr4-python3-runtime==4.13.*
 chevron==0.14.*
 click-spinner==0.1.*
-ibm-db==3.2.3
+ibm-db==3.2.4
 psycopg2~=2.9.10
 icalendar==6.1.*
 waitress~=3.0.1
