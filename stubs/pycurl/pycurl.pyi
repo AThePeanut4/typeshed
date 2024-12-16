@@ -87,491 +87,21 @@ class Curl:
     Implicitly calls :py:func:`pycurl.global_init` if the latter has not yet been called.
     """
     USERPWD: int
-    def close(self) -> None:
-        """
-        close() -> None
-
-        Close handle and end curl session.
-
-        Corresponds to `curl_easy_cleanup`_ in libcurl. This method is
-        automatically called by pycurl when a Curl object no longer has any
-        references to it, but can also be called explicitly.
-
-        .. _curl_easy_cleanup:
-            https://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
-        """
-        ...
-    def setopt(self, option: int, value) -> None:
-        """
-        setopt(option, value) -> None
-
-        Set curl session option. Corresponds to `curl_easy_setopt`_ in libcurl.
-
-        *option* specifies which option to set. PycURL defines constants
-        corresponding to ``CURLOPT_*`` constants in libcurl, except that
-        the ``CURLOPT_`` prefix is removed. For example, ``CURLOPT_URL`` is
-        exposed in PycURL as ``pycurl.URL``, with some exceptions as detailed below.
-        For convenience, ``CURLOPT_*``
-        constants are also exposed on the Curl objects themselves::
-
-            import pycurl
-            c = pycurl.Curl()
-            c.setopt(pycurl.URL, "http://www.python.org/")
-            # Same as:
-            c.setopt(c.URL, "http://www.python.org/")
-
-        The following are exceptions to option constant naming convention:
-
-        - ``CURLOPT_FILETIME`` is mapped as ``pycurl.OPT_FILETIME``
-        - ``CURLOPT_CERTINFO`` is mapped as ``pycurl.OPT_CERTINFO``
-        - ``CURLOPT_COOKIELIST`` is mapped as ``pycurl.COOKIELIST``
-          and, as of PycURL 7.43.0.2, also as ``pycurl.OPT_COOKIELIST``
-        - ``CURLOPT_RTSP_CLIENT_CSEQ`` is mapped as ``pycurl.OPT_RTSP_CLIENT_CSEQ``
-        - ``CURLOPT_RTSP_REQUEST`` is mapped as ``pycurl.OPT_RTSP_REQUEST``
-        - ``CURLOPT_RTSP_SERVER_CSEQ`` is mapped as ``pycurl.OPT_RTSP_SERVER_CSEQ``
-        - ``CURLOPT_RTSP_SESSION_ID`` is mapped as ``pycurl.OPT_RTSP_SESSION_ID``
-        - ``CURLOPT_RTSP_STREAM_URI`` is mapped as ``pycurl.OPT_RTSP_STREAM_URI``
-        - ``CURLOPT_RTSP_TRANSPORT`` is mapped as ``pycurl.OPT_RTSP_TRANSPORT``
-
-        *value* specifies the value to set the option to. Different options accept
-        values of different types:
-
-        - Options specified by `curl_easy_setopt`_ as accepting ``1`` or an
-          integer value accept Python integers, long integers (on Python 2.x) and
-          booleans::
-
-            c.setopt(pycurl.FOLLOWLOCATION, True)
-            c.setopt(pycurl.FOLLOWLOCATION, 1)
-            # Python 2.x only:
-            c.setopt(pycurl.FOLLOWLOCATION, 1L)
-
-        - Options specified as accepting strings by ``curl_easy_setopt`` accept
-          byte strings (``str`` on Python 2, ``bytes`` on Python 3) and
-          Unicode strings with ASCII code points only.
-          For more information, please refer to :ref:`unicode`. Example::
-
-            c.setopt(pycurl.URL, "http://www.python.org/")
-            c.setopt(pycurl.URL, u"http://www.python.org/")
-            # Python 3.x only:
-            c.setopt(pycurl.URL, b"http://www.python.org/")
-
-        - ``HTTP200ALIASES``, ``HTTPHEADER``, ``POSTQUOTE``, ``PREQUOTE``,
-          ``PROXYHEADER`` and
-          ``QUOTE`` accept a list or tuple of strings. The same rules apply to these
-          strings as do to string option values. Example::
-
-            c.setopt(pycurl.HTTPHEADER, ["Accept:"])
-            c.setopt(pycurl.HTTPHEADER, ("Accept:",))
-
-        - ``READDATA`` accepts a file object or any Python object which has
-          a ``read`` method. On Python 2, a file object will be passed directly
-          to libcurl and may result in greater transfer efficiency, unless
-          PycURL has been compiled with ``AVOID_STDIO`` option.
-          On Python 3 and on Python 2 when the value is not a true file object,
-          ``READDATA`` is emulated in PycURL via ``READFUNCTION``.
-          The file should generally be opened in binary mode. Example::
-
-            f = open('file.txt', 'rb')
-            c.setopt(c.READDATA, f)
-
-        - ``WRITEDATA`` and ``WRITEHEADER`` accept a file object or any Python
-          object which has a ``write`` method. On Python 2, a file object will
-          be passed directly to libcurl and may result in greater transfer efficiency,
-          unless PycURL has been compiled with ``AVOID_STDIO`` option.
-          On Python 3 and on Python 2 when the value is not a true file object,
-          ``WRITEDATA`` is emulated in PycURL via ``WRITEFUNCTION``.
-          The file should generally be opened in binary mode. Example::
-
-            f = open('/dev/null', 'wb')
-            c.setopt(c.WRITEDATA, f)
-
-        - ``*FUNCTION`` options accept a function. Supported callbacks are documented
-          in :ref:`callbacks`. Example::
-
-            # Python 2
-            import StringIO
-            b = StringIO.StringIO()
-            c.setopt(pycurl.WRITEFUNCTION, b.write)
-
-        - ``SHARE`` option accepts a :ref:`curlshareobject`.
-
-        It is possible to set integer options - and only them - that PycURL does
-        not know about by using the numeric value of the option constant directly.
-        For example, ``pycurl.VERBOSE`` has the value 42, and may be set as follows::
-
-            c.setopt(42, 1)
-
-        *setopt* can reset some options to their default value, performing the job of
-        :py:meth:`pycurl.Curl.unsetopt`, if ``None`` is passed
-        for the option value. The following two calls are equivalent::
-
-            c.setopt(c.URL, None)
-            c.unsetopt(c.URL)
-
-        Raises TypeError when the option value is not of a type accepted by the
-        respective option, and pycurl.error exception when libcurl rejects the
-        option or its value.
-
-        .. _curl_easy_setopt: https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
-        """
-        ...
-    def setopt_string(self, option: int, value: str) -> None:
-        """
-        setopt_string(option, value) -> None
-
-        Set curl session option to a string value.
-
-        This method allows setting string options that are not officially supported
-        by PycURL, for example because they did not exist when the version of PycURL
-        being used was released.
-        :py:meth:`pycurl.Curl.setopt` should be used for setting options that
-        PycURL knows about.
-
-        **Warning:** No checking is performed that *option* does, in fact,
-        expect a string value. Using this method incorrectly can crash the program
-        and may lead to a security vulnerability.
-        Furthermore, it is on the application to ensure that the *value* object
-        does not get garbage collected while libcurl is using it.
-        libcurl copies most string options but not all; one option whose value
-        is not copied by libcurl is `CURLOPT_POSTFIELDS`_.
-
-        *option* would generally need to be given as an integer literal rather than
-        a symbolic constant.
-
-        *value* can be a binary string or a Unicode string using ASCII code points,
-        same as with string options given to PycURL elsewhere.
-
-        Example setting URL via ``setopt_string``::
-
-            import pycurl
-            c = pycurl.Curl()
-            c.setopt_string(10002, "http://www.python.org/")
-
-        .. _CURLOPT_POSTFIELDS: https://curl.haxx.se/libcurl/c/CURLOPT_POSTFIELDS.html
-        """
-        ...
-    def perform(self) -> None:
-        """
-        perform() -> None
-
-        Perform a file transfer.
-
-        Corresponds to `curl_easy_perform`_ in libcurl.
-
-        Raises pycurl.error exception upon failure.
-
-        .. _curl_easy_perform:
-            https://curl.haxx.se/libcurl/c/curl_easy_perform.html
-        """
-        ...
-    def perform_rb(self) -> bytes:
-        """
-        perform_rb() -> response_body
-
-        Perform a file transfer and return response body as a byte string.
-
-        This method arranges for response body to be saved in a StringIO
-        (Python 2) or BytesIO (Python 3) instance, then invokes :ref:`perform <perform>`
-        to perform the file transfer, then returns the value of the StringIO/BytesIO
-        instance which is a ``str`` instance on Python 2 and ``bytes`` instance
-        on Python 3. Errors during transfer raise ``pycurl.error`` exceptions
-        just like in :ref:`perform <perform>`.
-
-        Use :ref:`perform_rs <perform_rs>` to retrieve response body as a string
-        (``str`` instance on both Python 2 and 3).
-
-        Raises ``pycurl.error`` exception upon failure.
-
-        *Added in version 7.43.0.2.*
-        """
-        ...
-    def perform_rs(self) -> str:
-        """
-        perform_rs() -> response_body
-
-        Perform a file transfer and return response body as a string.
-
-        On Python 2, this method arranges for response body to be saved in a StringIO
-        instance, then invokes :ref:`perform <perform>`
-        to perform the file transfer, then returns the value of the StringIO instance.
-        This behavior is identical to :ref:`perform_rb <perform_rb>`.
-
-        On Python 3, this method arranges for response body to be saved in a BytesIO
-        instance, then invokes :ref:`perform <perform>`
-        to perform the file transfer, then decodes the response body in Python's
-        default encoding and returns the decoded body as a Unicode string
-        (``str`` instance). *Note:* decoding happens after the transfer finishes,
-        thus an encoding error implies the transfer/network operation succeeded.
-
-        Any transfer errors raise ``pycurl.error`` exception,
-        just like in :ref:`perform <perform>`.
-
-        Use :ref:`perform_rb <perform_rb>` to retrieve response body as a byte
-        string (``bytes`` instance on Python 3) without attempting to decode it.
-
-        Raises ``pycurl.error`` exception upon failure.
-
-        *Added in version 7.43.0.2.*
-        """
-        ...
-    def getinfo(self, info):
-        """
-        getinfo(option) -> Result
-
-        Extract and return information from a curl session,
-        decoding string data in Python's default encoding at the time of the call.
-        Corresponds to `curl_easy_getinfo`_ in libcurl.
-        The ``getinfo`` method should not be called unless
-        ``perform`` has been called and finished.
-
-        *option* is a constant corresponding to one of the
-        ``CURLINFO_*`` constants in libcurl. Most option constant names match
-        the respective ``CURLINFO_*`` constant names with the ``CURLINFO_`` prefix
-        removed, for example ``CURLINFO_CONTENT_TYPE`` is accessible as
-        ``pycurl.CONTENT_TYPE``. Exceptions to this rule are as follows:
-
-        - ``CURLINFO_FILETIME`` is mapped as ``pycurl.INFO_FILETIME``
-        - ``CURLINFO_COOKIELIST`` is mapped as ``pycurl.INFO_COOKIELIST``
-        - ``CURLINFO_CERTINFO`` is mapped as ``pycurl.INFO_CERTINFO``
-        - ``CURLINFO_RTSP_CLIENT_CSEQ`` is mapped as ``pycurl.INFO_RTSP_CLIENT_CSEQ``
-        - ``CURLINFO_RTSP_CSEQ_RECV`` is mapped as ``pycurl.INFO_RTSP_CSEQ_RECV``
-        - ``CURLINFO_RTSP_SERVER_CSEQ`` is mapped as ``pycurl.INFO_RTSP_SERVER_CSEQ``
-        - ``CURLINFO_RTSP_SESSION_ID`` is mapped as ``pycurl.INFO_RTSP_SESSION_ID``
-
-        The type of return value depends on the option, as follows:
-
-        - Options documented by libcurl to return an integer value return a
-          Python integer (``long`` on Python 2, ``int`` on Python 3).
-        - Options documented by libcurl to return a floating point value
-          return a Python ``float``.
-        - Options documented by libcurl to return a string value
-          return a Python string (``str`` on Python 2 and Python 3).
-          On Python 2, the string contains whatever data libcurl returned.
-          On Python 3, the data returned by libcurl is decoded using the
-          default string encoding at the time of the call.
-          If the data cannot be decoded using the default encoding, ``UnicodeDecodeError``
-          is raised. Use :ref:`getinfo_raw <getinfo_raw>`
-          to retrieve the data as ``bytes`` in these
-          cases.
-        - ``SSL_ENGINES`` and ``INFO_COOKIELIST`` return a list of strings.
-          The same encoding caveats apply; use :ref:`getinfo_raw <getinfo_raw>`
-          to retrieve the
-          data as a list of byte strings.
-        - ``INFO_CERTINFO`` returns a list with one element
-          per certificate in the chain, starting with the leaf; each element is a
-          sequence of *(key, value)* tuples where both ``key`` and ``value`` are
-          strings. String encoding caveats apply; use :ref:`getinfo_raw <getinfo_raw>`
-          to retrieve
-          certificate data as byte strings.
-
-        On Python 2, ``getinfo`` and ``getinfo_raw`` behave identically.
-
-        Example usage::
-
-            import pycurl
-            c = pycurl.Curl()
-            c.setopt(pycurl.OPT_CERTINFO, 1)
-            c.setopt(pycurl.URL, "https://python.org")
-            c.setopt(pycurl.FOLLOWLOCATION, 1)
-            c.perform()
-            print(c.getinfo(pycurl.HTTP_CODE))
-            # --> 200
-            print(c.getinfo(pycurl.EFFECTIVE_URL))
-            # --> "https://www.python.org/"
-            certinfo = c.getinfo(pycurl.INFO_CERTINFO)
-            print(certinfo)
-            # --> [(('Subject', 'C = AU, ST = Some-State, O = PycURL test suite,
-                     CN = localhost'), ('Issuer', 'C = AU, ST = Some-State,
-                     O = PycURL test suite, OU = localhost, CN = localhost'),
-                    ('Version', '0'), ...)]
-
-
-        Raises pycurl.error exception upon failure.
-
-        .. _curl_easy_getinfo:
-            https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
-        """
-        ...
-    def getinfo_raw(self, info):
-        """
-        getinfo_raw(option) -> Result
-
-        Extract and return information from a curl session,
-        returning string data as byte strings.
-        Corresponds to `curl_easy_getinfo`_ in libcurl.
-        The ``getinfo_raw`` method should not be called unless
-        ``perform`` has been called and finished.
-
-        *option* is a constant corresponding to one of the
-        ``CURLINFO_*`` constants in libcurl. Most option constant names match
-        the respective ``CURLINFO_*`` constant names with the ``CURLINFO_`` prefix
-        removed, for example ``CURLINFO_CONTENT_TYPE`` is accessible as
-        ``pycurl.CONTENT_TYPE``. Exceptions to this rule are as follows:
-
-        - ``CURLINFO_FILETIME`` is mapped as ``pycurl.INFO_FILETIME``
-        - ``CURLINFO_COOKIELIST`` is mapped as ``pycurl.INFO_COOKIELIST``
-        - ``CURLINFO_CERTINFO`` is mapped as ``pycurl.INFO_CERTINFO``
-        - ``CURLINFO_RTSP_CLIENT_CSEQ`` is mapped as ``pycurl.INFO_RTSP_CLIENT_CSEQ``
-        - ``CURLINFO_RTSP_CSEQ_RECV`` is mapped as ``pycurl.INFO_RTSP_CSEQ_RECV``
-        - ``CURLINFO_RTSP_SERVER_CSEQ`` is mapped as ``pycurl.INFO_RTSP_SERVER_CSEQ``
-        - ``CURLINFO_RTSP_SESSION_ID`` is mapped as ``pycurl.INFO_RTSP_SESSION_ID``
-
-        The type of return value depends on the option, as follows:
-
-        - Options documented by libcurl to return an integer value return a
-          Python integer (``long`` on Python 2, ``int`` on Python 3).
-        - Options documented by libcurl to return a floating point value
-          return a Python ``float``.
-        - Options documented by libcurl to return a string value
-          return a Python byte string (``str`` on Python 2, ``bytes`` on Python 3).
-          The string contains whatever data libcurl returned.
-          Use :ref:`getinfo <getinfo>` to retrieve this data as a Unicode string on Python 3.
-        - ``SSL_ENGINES`` and ``INFO_COOKIELIST`` return a list of byte strings.
-          The same encoding caveats apply; use :ref:`getinfo <getinfo>` to retrieve the
-          data as a list of potentially Unicode strings.
-        - ``INFO_CERTINFO`` returns a list with one element
-          per certificate in the chain, starting with the leaf; each element is a
-          sequence of *(key, value)* tuples where both ``key`` and ``value`` are
-          byte strings. String encoding caveats apply; use :ref:`getinfo <getinfo>`
-          to retrieve
-          certificate data as potentially Unicode strings.
-
-        On Python 2, ``getinfo`` and ``getinfo_raw`` behave identically.
-
-        Example usage::
-
-            import pycurl
-            c = pycurl.Curl()
-            c.setopt(pycurl.OPT_CERTINFO, 1)
-            c.setopt(pycurl.URL, "https://python.org")
-            c.setopt(pycurl.FOLLOWLOCATION, 1)
-            c.perform()
-            print(c.getinfo_raw(pycurl.HTTP_CODE))
-            # --> 200
-            print(c.getinfo_raw(pycurl.EFFECTIVE_URL))
-            # --> b"https://www.python.org/"
-            certinfo = c.getinfo_raw(pycurl.INFO_CERTINFO)
-            print(certinfo)
-            # --> [((b'Subject', b'C = AU, ST = Some-State, O = PycURL test suite,
-                     CN = localhost'), (b'Issuer', b'C = AU, ST = Some-State,
-                     O = PycURL test suite, OU = localhost, CN = localhost'),
-                    (b'Version', b'0'), ...)]
-
-
-        Raises pycurl.error exception upon failure.
-
-        *Added in version 7.43.0.2.*
-
-        .. _curl_easy_getinfo:
-            https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
-        """
-        ...
-    def reset(self) -> None:
-        """
-        reset() -> None
-
-        Reset all options set on curl handle to default values, but preserves
-        live connections, session ID cache, DNS cache, cookies, and shares.
-
-        Corresponds to `curl_easy_reset`_ in libcurl.
-
-        .. _curl_easy_reset: https://curl.haxx.se/libcurl/c/curl_easy_reset.html
-        """
-        ...
-    def unsetopt(self, option: int):
-        """
-        unsetopt(option) -> None
-
-        Reset curl session option to its default value.
-
-        Only some curl options may be reset via this method.
-
-        libcurl does not provide a general way to reset a single option to its default value;
-        :py:meth:`pycurl.Curl.reset` resets all options to their default values,
-        otherwise :py:meth:`pycurl.Curl.setopt` must be called with whatever value
-        is the default. For convenience, PycURL provides this unsetopt method
-        to reset some of the options to their default values.
-
-        Raises pycurl.error exception on failure.
-
-        ``c.unsetopt(option)`` is equivalent to ``c.setopt(option, None)``.
-        """
-        ...
-    def pause(self, bitmask):
-        """
-        pause(bitmask) -> None
-
-        Pause or unpause a curl handle. Bitmask should be a value such as
-        PAUSE_RECV or PAUSE_CONT.
-
-        Corresponds to `curl_easy_pause`_ in libcurl. The argument should be
-        derived from the ``PAUSE_RECV``, ``PAUSE_SEND``, ``PAUSE_ALL`` and
-        ``PAUSE_CONT`` constants.
-
-        Raises pycurl.error exception upon failure.
-
-        .. _curl_easy_pause: https://curl.haxx.se/libcurl/c/curl_easy_pause.html
-        """
-        ...
-    def errstr(self) -> str:
-        """
-        errstr() -> string
-
-        Return the internal libcurl error buffer of this handle as a string.
-
-        Return value is a ``str`` instance on all Python versions.
-        On Python 3, error buffer data is decoded using Python's default encoding
-        at the time of the call. If this decoding fails, ``UnicodeDecodeError`` is
-        raised. Use :ref:`errstr_raw <errstr_raw>` to retrieve the error buffer
-        as a byte string in this case.
-
-        On Python 2, ``errstr`` and ``errstr_raw`` behave identically.
-        """
-        ...
-    def duphandle(self) -> Self:
-        """
-        duphandle() -> Curl
-
-        Clone a curl handle. This function will return a new curl handle,
-        a duplicate, using all the options previously set in the input curl handle.
-        Both handles can subsequently be used independently.
-
-        The new handle will not inherit any state information, no connections,
-        no SSL sessions and no cookies. It also will not inherit any share object
-        states or options (it will be made as if SHARE was unset).
-
-        Corresponds to `curl_easy_duphandle`_ in libcurl.
-
-        Example usage::
-
-            import pycurl
-            curl = pycurl.Curl()
-            curl.setopt(pycurl.URL, "https://python.org")
-            dup = curl.duphandle()
-            curl.perform()
-            dup.perform()
-
-        .. _curl_easy_duphandle:
-            https://curl.se/libcurl/c/curl_easy_duphandle.html
-        """
-        ...
-    def errstr_raw(self) -> bytes:
-        """
-        errstr_raw() -> byte string
-
-        Return the internal libcurl error buffer of this handle as a byte string.
-
-        Return value is a ``str`` instance on Python 2 and ``bytes`` instance
-        on Python 3. Unlike :ref:`errstr_raw <errstr_raw>`, ``errstr_raw``
-        allows reading libcurl error buffer in Python 3 when its contents is not
-        valid in Python's default encoding.
-
-        On Python 2, ``errstr`` and ``errstr_raw`` behave identically.
-
-        *Added in version 7.43.0.2.*
-        """
-        ...
-    if sys.platform == "linux":
+    def close(self) -> None: ...
+    def setopt(self, option: int, value) -> None: ...
+    def setopt_string(self, option: int, value: str) -> None: ...
+    def perform(self) -> None: ...
+    def perform_rb(self) -> bytes: ...
+    def perform_rs(self) -> str: ...
+    def getinfo(self, info): ...
+    def getinfo_raw(self, info): ...
+    def reset(self) -> None: ...
+    def unsetopt(self, option: int): ...
+    def pause(self, bitmask): ...
+    def errstr(self) -> str: ...
+    def duphandle(self) -> Self: ...
+    def errstr_raw(self) -> bytes: ...
+    if sys.platform == "linux" or sys.platform == "darwin":
         def set_ca_certs(self, value: bytes | str, /) -> None: ...
 
 @final
@@ -857,45 +387,16 @@ class CurlShare:
         """
         ...
 
-if sys.platform != "linux":
-    AWS_SIGV4: Final = 10305
-    CAINFO_BLOB: Final = 40309
-    CURL_HTTP_VERSION_3: Final = 30
-    CURL_VERSION_ALTSVC: Final = 16777216
-    CURL_VERSION_GSASL: Final = 536870912
-    CURL_VERSION_HSTS: Final = 268435456
-    CURL_VERSION_HTTP3: Final = 33554432
-    CURL_VERSION_UNICODE: Final = 134217728
-    CURL_VERSION_ZSTD: Final = 67108864
-    DOH_URL: Final = 10279
-    HTTP09_ALLOWED: Final = 285
-    ISSUERCERT_BLOB: Final = 40295
-    MAXLIFETIME_CONN: Final = 314
-    MAXAGE_CONN: Final = 288
-    M_MAX_CONCURRENT_STREAMS: Final = 16
-    PROXY_CAINFO_BLOB: Final = 40310
-    PROXY_ISSUERCERT: Final = 10296
-    PROXY_ISSUERCERT_BLOB: Final = 40297
-    PROXY_SSLCERT_BLOB: Final = 40293
-    PROXY_SSLKEY_BLOB: Final = 40294
-    SSLCERT_BLOB: Final = 40291
-    SSLKEY_BLOB: Final = 40292
-    UPLOAD_BUFFERSIZE: Final = 280
-    VERSION_ALTSVC: Final = 16777216
-    VERSION_GSASL: Final = 536870912
-    VERSION_HSTS: Final = 268435456
-    VERSION_HTTP3: Final = 33554432
-    VERSION_UNICODE: Final = 134217728
-    VERSION_ZSTD: Final = 67108864
-
 ACCEPTTIMEOUT_MS: Final = 212
 ACCEPT_ENCODING: Final = 10102
 ADDRESS_SCOPE: Final = 171
 APPCONNECT_TIME: Final = 3145761
 APPEND: Final = 50
 AUTOREFERER: Final = 58
+AWS_SIGV4: Final = 10305
 BUFFERSIZE: Final = 98
 CAINFO: Final = 10065
+CAINFO_BLOB: Final = 40309
 CAPATH: Final = 10097
 CLOSESOCKETFUNCTION: Final = 20208
 COMPILE_LIBCURL_VERSION_NUM: Final = 525824
@@ -927,11 +428,19 @@ CURL_HTTP_VERSION_2: Final = 3
 CURL_HTTP_VERSION_2TLS: Final = 4
 CURL_HTTP_VERSION_2_0: Final = 3
 CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE: Final = 5
+CURL_HTTP_VERSION_3: Final = 30
+CURL_HTTP_VERSION_3ONLY: Final = 31
 CURL_HTTP_VERSION_LAST: Final = 32
 CURL_HTTP_VERSION_NONE: Final = 0
+CURL_VERSION_ALTSVC: Final = 16777216
 CURL_VERSION_BROTLI: Final = 8388608
+CURL_VERSION_GSASL: Final = 536870912
+CURL_VERSION_HSTS: Final = 268435456
+CURL_VERSION_HTTP3: Final = 33554432
 CURL_VERSION_HTTPS_PROXY: Final = 2097152
 CURL_VERSION_MULTI_SSL: Final = 4194304
+CURL_VERSION_UNICODE: Final = 134217728
+CURL_VERSION_ZSTD: Final = 67108864
 CUSTOMREQUEST: Final = 10036
 DEBUGFUNCTION: Final = 20094
 DEFAULT_PROTOCOL: Final = 10238
@@ -939,7 +448,9 @@ DIRLISTONLY: Final = 48
 DNS_CACHE_TIMEOUT: Final = 92
 DNS_SERVERS: Final = 10211
 DNS_USE_GLOBAL_CACHE: Final = 91
+DOH_URL: Final = 10279
 EFFECTIVE_URL: Final = 1048577
+EFFECTIVE_METHOD: Final = 1048634
 EGDSOCKET: Final = 10077
 ENCODING: Final = 10102
 EXPECT_100_TIMEOUT_MS: Final = 227
@@ -1114,12 +625,14 @@ GSSAPI_DELEGATION_FLAG: Final = 2
 GSSAPI_DELEGATION_NONE: Final = 0
 GSSAPI_DELEGATION_POLICY_FLAG: Final = 1
 HAPROXYPROTOCOL: Final = 274
+HAPROXY_CLIENT_IP: Final = 10323
 HEADER: Final = 42
 HEADERFUNCTION: Final = 20079
 HEADEROPT: Final = 229
 HEADER_SEPARATE: Final = 1
 HEADER_SIZE: Final = 2097163
 HEADER_UNIFIED: Final = 0
+HTTP09_ALLOWED: Final = 285
 HTTP200ALIASES: Final = 10104
 HTTPAUTH: Final = 107
 HTTPAUTH_ANY: Final = -17
@@ -1174,6 +687,7 @@ IPRESOLVE_V4: Final = 1
 IPRESOLVE_V6: Final = 2
 IPRESOLVE_WHATEVER: Final = 0
 ISSUERCERT: Final = 10170
+ISSUERCERT_BLOB: Final = 40295
 KEYPASSWD: Final = 10026
 KHMATCH_MISMATCH: Final = 1
 KHMATCH_MISSING: Final = 2
@@ -1204,15 +718,18 @@ LOW_SPEED_TIME: Final = 20
 MAIL_AUTH: Final = 10217
 MAIL_FROM: Final = 10186
 MAIL_RCPT: Final = 10187
+MAXAGE_CONN: Final = 288
 MAXCONNECTS: Final = 71
 MAXFILESIZE: Final = 30117
 MAXFILESIZE_LARGE: Final = 30117
+MAXLIFETIME_CONN: Final = 314
 MAXREDIRS: Final = 68
 MAX_RECV_SPEED_LARGE: Final = 30146
 MAX_SEND_SPEED_LARGE: Final = 30145
 M_CHUNK_LENGTH_PENALTY_SIZE: Final = 30010
 M_CONTENT_LENGTH_PENALTY_SIZE: Final = 30009
 M_MAXCONNECTS: Final = 6
+M_MAX_CONCURRENT_STREAMS: Final = 16
 M_MAX_HOST_CONNECTIONS: Final = 7
 M_MAX_PIPELINE_LENGTH: Final = 8
 M_MAX_TOTAL_CONNECTIONS: Final = 13
@@ -1321,15 +838,20 @@ PROXYTYPE_SOCKS5_HOSTNAME: Final = 7
 PROXYUSERNAME: Final = 10175
 PROXYUSERPWD: Final = 10006
 PROXY_CAINFO: Final = 10246
+PROXY_CAINFO_BLOB: Final = 40310
 PROXY_CAPATH: Final = 10247
 PROXY_CRLFILE: Final = 10260
+PROXY_ISSUERCERT: Final = 10296
+PROXY_ISSUERCERT_BLOB: Final = 40297
 PROXY_KEYPASSWD: Final = 10258
 PROXY_PINNEDPUBLICKEY: Final = 10263
 PROXY_SERVICE_NAME: Final = 10235
 PROXY_SSLCERT: Final = 10254
 PROXY_SSLCERTTYPE: Final = 10255
+PROXY_SSLCERT_BLOB: Final = 40293
 PROXY_SSLKEY: Final = 10256
 PROXY_SSLKEYTYPE: Final = 10257
+PROXY_SSLKEY_BLOB: Final = 40294
 PROXY_SSLVERSION: Final = 250
 PROXY_SSL_CIPHER_LIST: Final = 10259
 PROXY_SSL_OPTIONS: Final = 261
@@ -1416,11 +938,13 @@ SSH_PUBLIC_KEYFILE: Final = 10152
 SSLCERT: Final = 10025
 SSLCERTPASSWD: Final = 10026
 SSLCERTTYPE: Final = 10086
+SSLCERT_BLOB: Final = 40291
 SSLENGINE: Final = 10089
 SSLENGINE_DEFAULT: Final = 90
 SSLKEY: Final = 10087
 SSLKEYPASSWD: Final = 10026
 SSLKEYTYPE: Final = 10088
+SSLKEY_BLOB: Final = 40292
 SSLOPT_ALLOW_BEAST: Final = 1
 SSLOPT_NO_REVOKE: Final = 2
 SSLVERSION: Final = 32
@@ -1475,6 +999,7 @@ TRANSFER_ENCODING: Final = 207
 UNIX_SOCKET_PATH: Final = 10231
 UNRESTRICTED_AUTH: Final = 105
 UPLOAD: Final = 46
+UPLOAD_BUFFERSIZE: Final = 280
 URL: Final = 10002
 USERAGENT: Final = 10018
 USERNAME: Final = 10173
@@ -1485,14 +1010,18 @@ USESSL_NONE: Final = 0
 USESSL_TRY: Final = 1
 USE_SSL: Final = 119
 VERBOSE: Final = 41
+VERSION_ALTSVC: Final = 16777216
 VERSION_ASYNCHDNS: Final = 128
 VERSION_BROTLI: Final = 8388608
 VERSION_CONV: Final = 4096
 VERSION_CURLDEBUG: Final = 8192
 VERSION_DEBUG: Final = 64
+VERSION_GSASL: Final = 536870912
 VERSION_GSSAPI: Final = 131072
 VERSION_GSSNEGOTIATE: Final = 32
+VERSION_HSTS: Final = 268435456
 VERSION_HTTP2: Final = 65536
+VERSION_HTTP3: Final = 33554432
 VERSION_HTTPS_PROXY: Final = 2097152
 VERSION_IDN: Final = 1024
 VERSION_IPV6: Final = 1
@@ -1508,7 +1037,9 @@ VERSION_SPNEGO: Final = 256
 VERSION_SSL: Final = 4
 VERSION_SSPI: Final = 2048
 VERSION_TLSAUTH_SRP: Final = 16384
+VERSION_UNICODE: Final = 134217728
 VERSION_UNIX_SOCKETS: Final = 524288
+VERSION_ZSTD: Final = 67108864
 WILDCARDMATCH: Final = 197
 WRITEDATA: Final = 10001
 WRITEFUNCTION: Final = 20011
