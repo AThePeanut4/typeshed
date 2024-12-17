@@ -980,24 +980,10 @@ class BoundArguments:
 # Classes and functions
 #
 
-# TODO: The actual return type should be list[_ClassTreeItem] but mypy doesn't
-# seem to be supporting this at the moment:
-# _ClassTreeItem = list[_ClassTreeItem] | Tuple[type, Tuple[type, ...]]
-def getclasstree(classes: list[type], unique: bool = False) -> list[Any]:
-    """
-    Arrange the given list of classes into a hierarchy of nested lists.
+_ClassTreeItem: TypeAlias = list[tuple[type, ...]] | list[_ClassTreeItem]
 
-    Where a nested list appears, it contains classes derived from the class
-    whose entry immediately precedes the list.  Each entry is a 2-tuple
-    containing a class and a tuple of its base classes.  If the 'unique'
-    argument is true, exactly one entry appears in the returned structure
-    for each class in the given list.  Otherwise, classes using multiple
-    inheritance and their descendants will appear multiple times.
-    """
-    ...
-def walktree(classes: list[type], children: Mapping[type[Any], list[type]], parent: type[Any] | None) -> list[Any]:
-    """Recursive helper function for getclasstree()."""
-    ...
+def getclasstree(classes: list[type], unique: bool = False) -> _ClassTreeItem: ...
+def walktree(classes: list[type], children: Mapping[type[Any], list[type]], parent: type[Any] | None) -> _ClassTreeItem: ...
 
 class Arguments(NamedTuple):
     """Arguments(args, varargs, varkw)"""
