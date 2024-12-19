@@ -1,20 +1,19 @@
-"""Definitions and behavior for iCalendar, also known as vCalendar 2.0"""
-
+import datetime
 from _typeshed import Incomplete
 from datetime import timedelta
-from typing import Any
+from typing import Any, Final
 
 from .base import Component
 from .behavior import Behavior
 
-DATENAMES: tuple[str, ...]
-RULENAMES: tuple[str, ...]
-DATESANDRULES: tuple[str, ...]
-PRODID: str
-WEEKDAYS: tuple[str, ...]
-FREQUENCIES: tuple[str, ...]
-zeroDelta: timedelta
-twoHours: timedelta
+DATENAMES: Final[tuple[str, ...]]
+RULENAMES: Final[tuple[str, ...]]
+DATESANDRULES: Final[tuple[str, ...]]
+PRODID: Final[str]
+WEEKDAYS: Final[tuple[str, ...]]
+FREQUENCIES: Final[tuple[str, ...]]
+ZERO_DELTA: Final[timedelta]
+twoHours: Final[timedelta]
 
 def toUnicode(s: str | bytes) -> str:
     """Take a string or unicode, turn it into unicode, decoding as utf-8"""
@@ -44,8 +43,8 @@ class TimezoneComponent(Component):
         The string used to refer to this timezone.
     """
     isNative: bool
-    behavior: Any
-    tzinfo: Any
+    behavior: Incomplete
+    tzinfo: Incomplete
     name: str
     useBegin: bool
     def __init__(self, tzinfo: Incomplete | None = None, *args, **kwds) -> None:
@@ -56,26 +55,11 @@ class TimezoneComponent(Component):
         """Register tzinfo if it's not already registered, return its tzid."""
         ...
     def gettzinfo(self): ...
-    tzid: Any
-    daylight: Any
-    standard: Any
-    def settzinfo(self, tzinfo, start: int = 2000, end: int = 2030):
-        """
-        Create appropriate objects in self to represent tzinfo.
-
-        Collapse DST transitions to rrules as much as possible.
-
-        Assumptions:
-        - DST <-> Standard transitions occur on the hour
-        - never within a month of one another
-        - twice or fewer times a year
-        - never in the month of December
-        - DST always moves offset exactly one hour later
-        - tzinfo classes dst method always treats times that could be in either
-          offset as being in the later regime
-        """
-        ...
-    normal_attributes: Any
+    tzid: Incomplete
+    daylight: Incomplete
+    standard: Incomplete
+    def settzinfo(self, tzinfo, start: int = 2000, end: int = 2030): ...
+    normal_attributes: Incomplete
     @staticmethod
     def pickTzid(tzinfo, allowUTC: bool = False):
         """Given a tzinfo class, use known APIs to determine TZID, or use tzname."""
@@ -117,10 +101,8 @@ class RecurringComponent(Component):
         """
         ...
     def setrruleset(self, rruleset): ...
-    rruleset: Any
-    def __setattr__(self, name, value) -> None:
-        """For convenience, make self.contents directly accessible."""
-        ...
+    rruleset: Incomplete
+    def __setattr__(self, name, value) -> None: ...
 
 class TextBehavior(Behavior):
     """
@@ -140,7 +122,7 @@ class TextBehavior(Behavior):
         ...
 
 class VCalendarComponentBehavior(Behavior):
-    defaultBehavior: Any
+    defaultBehavior: Incomplete
     isComponent: bool
 
 class RecurringBehavior(VCalendarComponentBehavior):
@@ -241,8 +223,7 @@ class VCalendar2_0(VCalendarComponentBehavior):
     name: str
     description: str
     versionString: str
-    sortFirst: Any
-    knownChildren: Any
+    sortFirst: Incomplete
     @classmethod
     def generateImplicitParameters(cls, obj) -> None:
         """
@@ -269,8 +250,7 @@ class VTimezone(VCalendarComponentBehavior):
     name: str
     hasNative: bool
     description: str
-    sortFirst: Any
-    knownChildren: Any
+    sortFirst: Incomplete
     @classmethod
     def validate(cls, obj, raiseException, *args): ...
     @staticmethod
@@ -292,14 +272,12 @@ class TZID(Behavior):
 
 class DaylightOrStandard(VCalendarComponentBehavior):
     hasNative: bool
-    knownChildren: Any
 
 class VEvent(RecurringBehavior):
     """Event behavior."""
     name: str
-    sortFirst: Any
+    sortFirst: Incomplete
     description: str
-    knownChildren: Any
     @classmethod
     def validate(cls, obj, raiseException, *args): ...
 
@@ -307,27 +285,23 @@ class VTodo(RecurringBehavior):
     """To-do behavior."""
     name: str
     description: str
-    knownChildren: Any
     @classmethod
     def validate(cls, obj, raiseException, *args): ...
 
 class VJournal(RecurringBehavior):
     """Journal entry behavior."""
     name: str
-    knownChildren: Any
 
 class VFreeBusy(VCalendarComponentBehavior):
     """Free/busy state behavior."""
     name: str
     description: str
-    sortFirst: Any
-    knownChildren: Any
+    sortFirst: Incomplete
 
 class VAlarm(VCalendarComponentBehavior):
     """Alarm behavior."""
     name: str
     description: str
-    knownChildren: Any
     @staticmethod
     def generateImplicitParameters(obj) -> None:
         """Create default ACTION and TRIGGER if they're not set."""
@@ -354,17 +328,15 @@ class VAvailability(VCalendarComponentBehavior):
     """
     name: str
     description: str
-    sortFirst: Any
-    knownChildren: Any
+    sortFirst: Incomplete
     @classmethod
     def validate(cls, obj, raiseException, *args): ...
 
 class Available(RecurringBehavior):
     """Event behavior."""
     name: str
-    sortFirst: Any
+    sortFirst: Incomplete
     description: str
-    knownChildren: Any
     @classmethod
     def validate(cls, obj, raiseException, *args): ...
 
@@ -418,9 +390,9 @@ class RRule(Behavior):
     """
     ...
 
-utcDateTimeList: Any
-dateTimeOrDateList: Any
-textList: Any
+utcDateTimeList: Incomplete
+dateTimeOrDateList: Incomplete
+textList: Incomplete
 
 def numToDigits(num, places):
     """Helper, for converting numbers to textual digits."""
@@ -442,9 +414,7 @@ def deltaToOffset(delta): ...
 def periodToString(period, convertToUTC: bool = False): ...
 def isDuration(s): ...
 def stringToDate(s): ...
-def stringToDateTime(s, tzinfo: Incomplete | None = None):
-    """Returns datetime.datetime object."""
-    ...
+def stringToDateTime(s, tzinfo: datetime.tzinfo | None = None, strict: bool = False) -> datetime.datetime: ...
 
 escapableCharList: str
 

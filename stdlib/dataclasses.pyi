@@ -310,91 +310,45 @@ if sys.version_info >= (3, 10):
     def field(
         *,
         default: _T,
+        default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,
         compare: bool = True,
         metadata: Mapping[Any, Any] | None = None,
-        kw_only: bool = ...,
-    ) -> _T:
-        """
-        Return an object to identify dataclass fields.
-
-        default is the default value of the field.  default_factory is a
-        0-argument function called to initialize a field's value.  If init
-        is true, the field will be a parameter to the class's __init__()
-        function.  If repr is true, the field will be included in the
-        object's repr().  If hash is true, the field will be included in the
-        object's hash().  If compare is true, the field will be used in
-        comparison functions.  metadata, if specified, must be a mapping
-        which is stored but not otherwise examined by dataclass.  If kw_only
-        is true, the field will become a keyword-only parameter to
-        __init__().
-
-        It is an error to specify both default and default_factory.
-        """
-        ...
+        kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ...,
+    ) -> _T: ...
     @overload
     def field(
         *,
+        default: Literal[_MISSING_TYPE.MISSING] = ...,
         default_factory: Callable[[], _T],
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,
         compare: bool = True,
         metadata: Mapping[Any, Any] | None = None,
-        kw_only: bool = ...,
-    ) -> _T:
-        """
-        Return an object to identify dataclass fields.
-
-        default is the default value of the field.  default_factory is a
-        0-argument function called to initialize a field's value.  If init
-        is true, the field will be a parameter to the class's __init__()
-        function.  If repr is true, the field will be included in the
-        object's repr().  If hash is true, the field will be included in the
-        object's hash().  If compare is true, the field will be used in
-        comparison functions.  metadata, if specified, must be a mapping
-        which is stored but not otherwise examined by dataclass.  If kw_only
-        is true, the field will become a keyword-only parameter to
-        __init__().
-
-        It is an error to specify both default and default_factory.
-        """
-        ...
+        kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ...,
+    ) -> _T: ...
     @overload
     def field(
         *,
+        default: Literal[_MISSING_TYPE.MISSING] = ...,
+        default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,
         compare: bool = True,
         metadata: Mapping[Any, Any] | None = None,
-        kw_only: bool = ...,
-    ) -> Any:
-        """
-        Return an object to identify dataclass fields.
-
-        default is the default value of the field.  default_factory is a
-        0-argument function called to initialize a field's value.  If init
-        is true, the field will be a parameter to the class's __init__()
-        function.  If repr is true, the field will be included in the
-        object's repr().  If hash is true, the field will be included in the
-        object's hash().  If compare is true, the field will be used in
-        comparison functions.  metadata, if specified, must be a mapping
-        which is stored but not otherwise examined by dataclass.  If kw_only
-        is true, the field will become a keyword-only parameter to
-        __init__().
-
-        It is an error to specify both default and default_factory.
-        """
-        ...
+        kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ...,
+    ) -> Any: ...
 
 else:
     @overload  # `default` and `default_factory` are optional and mutually exclusive.
     def field(
         *,
         default: _T,
+        default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,
@@ -419,6 +373,7 @@ else:
     @overload
     def field(
         *,
+        default: Literal[_MISSING_TYPE.MISSING] = ...,
         default_factory: Callable[[], _T],
         init: bool = True,
         repr: bool = True,
@@ -444,6 +399,8 @@ else:
     @overload
     def field(
         *,
+        default: Literal[_MISSING_TYPE.MISSING] = ...,
+        default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,

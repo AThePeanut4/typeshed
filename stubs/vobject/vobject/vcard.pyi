@@ -1,19 +1,16 @@
 """Definitions and behavior for vCard 3.0"""
 
 from _typeshed import Incomplete
-from typing import Any
 
 from .behavior import Behavior
 
 class Name:
-    family: Any
-    given: Any
-    additional: Any
-    prefix: Any
-    suffix: Any
-    def __init__(self, family: str = "", given: str = "", additional: str = "", prefix: str = "", suffix: str = "") -> None:
-        """Each name attribute can be a string or a list of strings."""
-        ...
+    family: Incomplete
+    given: Incomplete
+    additional: Incomplete
+    prefix: Incomplete
+    suffix: Incomplete
+    def __init__(self, family: str = "", given: str = "", additional: str = "", prefix: str = "", suffix: str = "") -> None: ...
     @staticmethod
     def toString(val):
         """Turn a string or array value into a string."""
@@ -21,13 +18,13 @@ class Name:
     def __eq__(self, other): ...
 
 class Address:
-    box: Any
-    extended: Any
-    street: Any
-    city: Any
-    region: Any
-    code: Any
-    country: Any
+    box: Incomplete
+    extended: Incomplete
+    street: Incomplete
+    city: Incomplete
+    region: Incomplete
+    code: Incomplete
+    country: Incomplete
     def __init__(
         self,
         street: str = "",
@@ -41,11 +38,9 @@ class Address:
         """Each name attribute can be a string or a list of strings."""
         ...
     @staticmethod
-    def toString(val, join_char: str = "\n"):
-        """Turn a string or array value into a string."""
-        ...
-    lines: Any
-    one_line: Any
+    def toString(val, join_char: str = "\n"): ...
+    lines: Incomplete
+    one_line: Incomplete
     def __eq__(self, other): ...
 
 class VCardTextBehavior(Behavior):
@@ -75,7 +70,7 @@ class VCardTextBehavior(Behavior):
 
 class VCardBehavior(Behavior):
     allowGroup: bool
-    defaultBehavior: Any
+    defaultBehavior: Incomplete
 
 class VCard3_0(VCardBehavior):
     """vCard 3.0 behavior."""
@@ -83,8 +78,7 @@ class VCard3_0(VCardBehavior):
     description: str
     versionString: str
     isComponent: bool
-    sortFirst: Any
-    knownChildren: Any
+    sortFirst: Incomplete
     @classmethod
     def generateImplicitParameters(cls, obj) -> None:
         """
@@ -102,6 +96,8 @@ class FN(VCardTextBehavior):
 class Label(VCardTextBehavior):
     name: str
     description: str
+
+class GEO(VCardBehavior): ...
 
 wacky_apple_photo_serialize: bool
 REALLY_LARGE: float
@@ -134,8 +130,8 @@ def serializeFields(obj, order: Incomplete | None = None):
     """
     ...
 
-NAME_ORDER: Any
-ADDRESS_ORDER: Any
+NAME_ORDER: Incomplete
+ADDRESS_ORDER: Incomplete
 
 class NameBehavior(VCardBehavior):
     """A structured name."""
