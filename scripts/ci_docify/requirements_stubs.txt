@@ -110,7 +110,7 @@ simplejson==3.19.*
 python-jose==3.3.*
 hvac==2.3.*
 translationstring==1.4.*
-vobject==0.9.*
+vobject~=0.9.9
 passpy==1.0.*
 TgCrypto==1.2.*
 capturer==3.0.*
