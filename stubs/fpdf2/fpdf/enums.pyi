@@ -9,8 +9,7 @@ class SignatureFlag(IntEnum):
     SIGNATURES_EXIST = 1
     APPEND_ONLY = 2
 
-class CoerciveEnum(Enum):
-    """An enumeration that provides a helper to coerce strings into enumeration members."""
+class CoerciveEnum(Enum):  # type: ignore[misc]  # Enum with no members
     @classmethod
     def coerce(cls, value: Self | str) -> Self:
         """
@@ -33,11 +32,7 @@ class CoerciveEnum(Enum):
         """
         ...
 
-class CoerciveIntEnum(IntEnum):
-    """
-    An enumeration that provides a helper to coerce strings and integers into
-    enumeration members.
-    """
+class CoerciveIntEnum(IntEnum):  # type: ignore[misc]  # Enum with no members
     @classmethod
     def coerce(cls, value: Self | str | int) -> Self:
         """
@@ -61,11 +56,7 @@ class CoerciveIntEnum(IntEnum):
         """
         ...
 
-class CoerciveIntFlag(IntFlag):
-    """
-    Enumerated constants that can be combined using the bitwise operators,
-    with a helper to coerce strings and integers into enumeration members.
-    """
+class CoerciveIntFlag(IntFlag):  # type: ignore[misc]  # Enum with no members
     @classmethod
     def coerce(cls, value: Self | str | int) -> Self:
         """
