@@ -6288,16 +6288,9 @@ class NameError(Exception):
         def __init__(self, *args: object, name: str | None = ...) -> None: ...
         name: str
 
-class ReferenceError(Exception):
-    """Weak ref proxy used after referent went away."""
-    ...
-class RuntimeError(Exception):
-    """Unspecified run-time error."""
-    ...
-
-class StopAsyncIteration(Exception):
-    """Signal the end from iterator.__anext__()."""
-    value: Any
+class ReferenceError(Exception): ...
+class RuntimeError(Exception): ...
+class StopAsyncIteration(Exception): ...
 
 class SyntaxError(Exception):
     """Invalid syntax."""
