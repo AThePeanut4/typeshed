@@ -139,9 +139,11 @@ class HelpFormatter:
     max_help_position: int
     option_strings: dict[Option, str]
     parser: OptionParser
-    short_first: Incomplete
+    short_first: bool | Literal[0, 1]
     width: int
-    def __init__(self, indent_increment: int, max_help_position: int, width: int | None, short_first: int) -> None: ...
+    def __init__(
+        self, indent_increment: int, max_help_position: int, width: int | None, short_first: bool | Literal[0, 1]
+    ) -> None: ...
     def dedent(self) -> None: ...
     def expand_default(self, option: Option) -> str: ...
     def format_description(self, description: str | None) -> str: ...
@@ -166,7 +168,11 @@ class IndentedHelpFormatter(HelpFormatter):
     
     """
     def __init__(
-        self, indent_increment: int = 2, max_help_position: int = 24, width: int | None = None, short_first: int = 1
+        self,
+        indent_increment: int = 2,
+        max_help_position: int = 24,
+        width: int | None = None,
+        short_first: bool | Literal[0, 1] = 1,
     ) -> None: ...
     def format_heading(self, heading: str) -> str: ...
     def format_usage(self, usage: str) -> str: ...
@@ -177,7 +183,11 @@ class TitledHelpFormatter(HelpFormatter):
     
     """
     def __init__(
-        self, indent_increment: int = 0, max_help_position: int = 24, width: int | None = None, short_first: int = 0
+        self,
+        indent_increment: int = 0,
+        max_help_position: int = 24,
+        width: int | None = None,
+        short_first: bool | Literal[0, 1] = 0,
     ) -> None: ...
     def format_heading(self, heading: str) -> str: ...
     def format_usage(self, usage: str) -> str: ...
@@ -474,45 +484,11 @@ class OptionParser(OptionContainer):
     @overload
     def add_option_group(self, opt_group: OptionGroup, /) -> OptionGroup: ...
     @overload
-    def add_option_group(self, *args, **kwargs) -> OptionGroup: ...
-    def check_values(self, values: Values, args: list[str]) -> tuple[Values, list[str]]:
-        """
-        check_values(values : Values, args : [string])
-        -> (values : Values, args : [string])
-
-        Check that the supplied option values and leftover arguments are
-        valid.  Returns the option values and leftover arguments
-        (possibly adjusted, possibly completely new -- whatever you
-        like).  Default implementation just returns the passed-in
-        values; subclasses may override as desired.
-        """
-        ...
-    def disable_interspersed_args(self) -> None:
-        """
-        Set parsing to stop on the first non-option. Use this if
-        you have a command processor which runs another command that
-        has options of its own and you want to make sure these options
-        don't get confused.
-        """
-        ...
-    def enable_interspersed_args(self) -> None:
-        """
-        Set parsing to not stop on the first non-option, allowing
-        interspersing switches with command arguments. This is the
-        default behavior. See also disable_interspersed_args() and the
-        class documentation description of the attribute
-        allow_interspersed_args.
-        """
-        ...
-    def error(self, msg: str) -> NoReturn:
-        """
-        error(msg : string)
-
-        Print a usage message incorporating 'msg' to stderr and exit.
-        If you override this in a subclass, it should not return -- it
-        should either exit or raise an exception.
-        """
-        ...
+    def add_option_group(self, title: str, /, description: str | None = None) -> OptionGroup: ...
+    def check_values(self, values: Values, args: list[str]) -> tuple[Values, list[str]]: ...
+    def disable_interspersed_args(self) -> None: ...
+    def enable_interspersed_args(self) -> None: ...
+    def error(self, msg: str) -> NoReturn: ...
     def exit(self, status: int = 0, msg: str | None = None) -> NoReturn: ...
     def expand_prog_name(self, s: str) -> str: ...
     def format_epilog(self, formatter: HelpFormatter) -> str: ...

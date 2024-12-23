@@ -27,7 +27,7 @@ from _ctypes import (
     sizeof as sizeof,
 )
 from ctypes._endian import BigEndianStructure as BigEndianStructure, LittleEndianStructure as LittleEndianStructure
-from typing import Any, ClassVar, Generic, TypeVar
+from typing import Any, ClassVar, Generic, TypeVar, type_check_only
 from typing_extensions import Self, TypeAlias, deprecated
 
 if sys.platform == "win32":
@@ -46,6 +46,18 @@ _CT = TypeVar("_CT", bound=_CData)
 DEFAULT_MODE: int
 
 class ArgumentError(Exception): ...
+
+# defined within CDLL.__init__
+# Runtime name is ctypes.CDLL.__init__.<locals>._FuncPtr
+@type_check_only
+class _FuncPtr(_CFuncPtr):
+    _flags_: ClassVar[int]
+    _restype_: ClassVar[type[_CDataType]]
+
+# Not a real class; _FuncPtr with a __name__ set on it.
+@type_check_only
+class _NamedFuncPointer(_FuncPtr):
+    __name__: str
 
 class CDLL:
     """
@@ -66,7 +78,7 @@ class CDLL:
     _func_restype_: ClassVar[type[_CDataType]]
     _name: str
     _handle: int
-    _FuncPtr: type[_FuncPointer]
+    _FuncPtr: type[_FuncPtr]
     def __init__(
         self,
         name: str | None,
@@ -112,44 +124,36 @@ if sys.platform == "win32":
 pydll: LibraryLoader[PyDLL]
 pythonapi: PyDLL
 
-class _FuncPointer(_CFuncPtr): ...
+# Class definition within CFUNCTYPE / WINFUNCTYPE / PYFUNCTYPE
+# Names at runtime are
+# ctypes.CFUNCTYPE.<locals>.CFunctionType
+# ctypes.WINFUNCTYPE.<locals>.WinFunctionType
+# ctypes.PYFUNCTYPE.<locals>.CFunctionType
+@type_check_only
+class _CFunctionType(_CFuncPtr):
+    _argtypes_: ClassVar[list[type[_CData | _CDataType]]]
+    _restype_: ClassVar[type[_CData | _CDataType] | None]
+    _flags_: ClassVar[int]
 
-class _NamedFuncPointer(_FuncPointer):
-    __name__: str
+# Alias for either function pointer type
+_FuncPointer: TypeAlias = _FuncPtr | _CFunctionType  # noqa: Y047  # not used here
 
 def CFUNCTYPE(
     restype: type[_CData | _CDataType] | None,
     *argtypes: type[_CData | _CDataType],
-    use_errno: bool = ...,
-    use_last_error: bool = ...,
-) -> type[_FuncPointer]:
-    """
-    CFUNCTYPE(restype, *argtypes,
-                 use_errno=False, use_last_error=False) -> function prototype.
-
-    restype: the result type
-    argtypes: a sequence specifying the argument types
-
-    The function prototype can be called in different ways to create a
-    callable object:
-
-    prototype(integer address) -> foreign function
-    prototype(callable) -> create and return a C callable function from callable
-    prototype(integer index, method name[, paramflags]) -> foreign function calling a COM method
-    prototype((ordinal number, dll object)[, paramflags]) -> foreign function exported by ordinal
-    prototype((function name, dll object)[, paramflags]) -> foreign function exported by name
-    """
-    ...
+    use_errno: bool = False,
+    use_last_error: bool = False,
+) -> type[_CFunctionType]: ...
 
 if sys.platform == "win32":
     def WINFUNCTYPE(
         restype: type[_CData | _CDataType] | None,
         *argtypes: type[_CData | _CDataType],
-        use_errno: bool = ...,
-        use_last_error: bool = ...,
-    ) -> type[_FuncPointer]: ...
+        use_errno: bool = False,
+        use_last_error: bool = False,
+    ) -> type[_CFunctionType]: ...
 
-def PYFUNCTYPE(restype: type[_CData | _CDataType] | None, *argtypes: type[_CData | _CDataType]) -> type[_FuncPointer]: ...
+def PYFUNCTYPE(restype: type[_CData | _CDataType] | None, *argtypes: type[_CData | _CDataType]) -> type[_CFunctionType]: ...
 
 # Any type that can be implicitly converted to c_void_p when passed as a C function argument.
 # (bytes is not included here, see below.)
@@ -191,15 +195,23 @@ if sys.platform == "win32":
     def DllGetClassObject(rclsid: Any, riid: Any, ppv: Any) -> int: ...  # TODO not documented
     def GetLastError() -> int: ...
 
-def memmove(dst: _CVoidPLike, src: _CVoidConstPLike, count: int) -> int: ...
-def memset(dst: _CVoidPLike, c: int, count: int) -> int: ...
-def string_at(ptr: _CVoidConstPLike, size: int = -1) -> bytes:
-    """
-    string_at(ptr[, size]) -> string
+# Actually just an instance of _CFunctionType, but we want to set a more
+# specific __call__.
+@type_check_only
+class _MemmoveFunctionType(_CFunctionType):
+    def __call__(self, dst: _CVoidPLike, src: _CVoidConstPLike, count: int) -> int: ...
 
-    Return the byte string at void *ptr.
-    """
-    ...
+memmove: _MemmoveFunctionType
+
+# Actually just an instance of _CFunctionType, but we want to set a more
+# specific __call__.
+@type_check_only
+class _MemsetFunctionType(_CFunctionType):
+    def __call__(self, dst: _CVoidPLike, c: int, count: int) -> int: ...
+
+memset: _MemsetFunctionType
+
+def string_at(ptr: _CVoidConstPLike, size: int = -1) -> bytes: ...
 
 if sys.platform == "win32":
     def WinError(code: int | None = None, descr: str | None = None) -> OSError: ...

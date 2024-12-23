@@ -7,7 +7,16 @@ from typing import Literal, overload
 from PIL import Image
 
 from .drawing import DeviceGray, DeviceRGB
-from .enums import Align, TableBordersLayout, TableCellFillMode, TableHeadingsDisplay, TableSpan, VAlign, WrapMode
+from .enums import (
+    Align,
+    CellBordersLayout,
+    TableBordersLayout,
+    TableCellFillMode,
+    TableHeadingsDisplay,
+    TableSpan,
+    VAlign,
+    WrapMode,
+)
 from .fonts import FontFace
 from .fpdf import FPDF
 from .image_datastructures import _TextAlign
@@ -120,26 +129,8 @@ class Row:
         rowspan: int = 1,
         padding: tuple[float, ...] | None = None,
         link: str | int | None = None,
-    ) -> str:
-        """
-        Adds a cell to the row.
-
-        Args:
-            text (str): string content, can contain several lines.
-                In that case, the row height will grow proportionally.
-            align (str, fpdf.enums.Align): optional text alignment.
-            v_align (str, fpdf.enums.AlignV): optional vertical text alignment.
-            style (fpdf.fonts.FontFace): optional text style.
-            img: optional. Either a string representing a file path to an image,
-                an URL to an image, an io.BytesIO, or a instance of `PIL.Image.Image`.
-            img_fill_width (bool): optional, defaults to False. Indicates to render the image
-                using the full width of the current table column.
-            colspan (int): optional number of columns this cell should span.
-            rowspan (int): optional number of rows this cell should span.
-            padding (tuple): optional padding (left, top, right, bottom) for the cell.
-            link (str, int): optional link, either an URL or an integer returned by `FPDF.add_link`, defining an internal link to a page
-        """
-        ...
+        border: CellBordersLayout | int = ...,
+    ) -> str: ...
     @overload
     def cell(
         self,
@@ -153,26 +144,8 @@ class Row:
         rowspan: int = 1,
         padding: tuple[float, ...] | None = None,
         link: str | int | None = None,
-    ) -> TableSpan:
-        """
-        Adds a cell to the row.
-
-        Args:
-            text (str): string content, can contain several lines.
-                In that case, the row height will grow proportionally.
-            align (str, fpdf.enums.Align): optional text alignment.
-            v_align (str, fpdf.enums.AlignV): optional vertical text alignment.
-            style (fpdf.fonts.FontFace): optional text style.
-            img: optional. Either a string representing a file path to an image,
-                an URL to an image, an io.BytesIO, or a instance of `PIL.Image.Image`.
-            img_fill_width (bool): optional, defaults to False. Indicates to render the image
-                using the full width of the current table column.
-            colspan (int): optional number of columns this cell should span.
-            rowspan (int): optional number of rows this cell should span.
-            padding (tuple): optional padding (left, top, right, bottom) for the cell.
-            link (str, int): optional link, either an URL or an integer returned by `FPDF.add_link`, defining an internal link to a page
-        """
-        ...
+        border: CellBordersLayout | int = ...,
+    ) -> TableSpan: ...
 
 @dataclass
 class Cell:
@@ -187,6 +160,7 @@ class Cell:
     rowspan: int
     padding: int | tuple[float, ...] | None
     link: str | int | None
+    border: CellBordersLayout | None
 
     def write(self, text, align: Incomplete | None = None): ...
 
