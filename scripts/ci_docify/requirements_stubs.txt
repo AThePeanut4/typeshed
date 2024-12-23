@@ -102,7 +102,7 @@ pysftp==0.2.*
 google-cloud-ndb==2.3.*
 atheris==2.3.*
 croniter==5.0.1
-fpdf2==2.8.1
+fpdf2==2.8.2
 braintree==4.31.*
 slumber==0.7.*
 PyYAML==6.0.*
