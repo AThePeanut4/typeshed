@@ -64,7 +64,7 @@ from _operator import (
 )
 from _typeshed import SupportsGetItem
 from typing import Any, Generic, TypeVar, final, overload
-from typing_extensions import TypeVarTuple, Unpack
+from typing_extensions import Self, TypeVarTuple, Unpack
 
 _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
@@ -237,13 +237,5 @@ class itemgetter(Generic[_T_co]):
 
 @final
 class methodcaller:
-    """
-    Return a callable object that calls the given method on its operand.
-    After f = methodcaller('name'), the call f(r) returns r.name().
-    After g = methodcaller('name', 'date', foo=1), the call g(r) returns
-    r.name('date', foo=1).
-    """
-    def __init__(self, name: str, /, *args: Any, **kwargs: Any) -> None: ...
-    def __call__(self, obj: Any) -> Any:
-        """Call self as a function."""
-        ...
+    def __new__(cls, name: str, /, *args: Any, **kwargs: Any) -> Self: ...
+    def __call__(self, obj: Any) -> Any: ...

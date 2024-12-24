@@ -107,17 +107,27 @@ class FunctionType:
         __type_params__: tuple[TypeVar | ParamSpec | TypeVarTuple, ...]
 
     __module__: str
-    def __new__(
-        cls,
-        code: CodeType,
-        globals: dict[str, Any],
-        name: str | None = ...,
-        argdefs: tuple[object, ...] | None = ...,
-        closure: tuple[CellType, ...] | None = ...,
-    ) -> Self: ...
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        """Call self as a function."""
-        ...
+    if sys.version_info >= (3, 13):
+        def __new__(
+            cls,
+            code: CodeType,
+            globals: dict[str, Any],
+            name: str | None = None,
+            argdefs: tuple[object, ...] | None = None,
+            closure: tuple[CellType, ...] | None = None,
+            kwdefaults: dict[str, object] | None = None,
+        ) -> Self: ...
+    else:
+        def __new__(
+            cls,
+            code: CodeType,
+            globals: dict[str, Any],
+            name: str | None = None,
+            argdefs: tuple[object, ...] | None = None,
+            closure: tuple[CellType, ...] | None = None,
+        ) -> Self: ...
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any: ...
     @overload
     def __get__(self, instance: None, owner: type, /) -> FunctionType:
         """Return an attribute of instance, which is of type owner."""
@@ -630,16 +640,10 @@ class MethodType:
     def __name__(self) -> str: ...  # inherited from the added function
     @property
     def __qualname__(self) -> str: ...  # inherited from the added function
-    def __new__(cls, func: Callable[..., Any], obj: object, /) -> Self: ...
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        """Call self as a function."""
-        ...
-    def __eq__(self, value: object, /) -> bool:
-        """Return self==value."""
-        ...
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
+    def __new__(cls, func: Callable[..., Any], instance: object, /) -> Self: ...
+    def __call__(self, *args: Any, **kwargs: Any) -> Any: ...
+    def __eq__(self, value: object, /) -> bool: ...
+    def __hash__(self) -> int: ...
 
 @final
 class BuiltinFunctionType:
@@ -884,19 +888,11 @@ if sys.version_info >= (3, 9):
         @property
         def __args__(self) -> tuple[Any, ...]: ...
         @property
-        def __parameters__(self) -> tuple[Any, ...]:
-            """Type variables in the GenericAlias."""
-            ...
-        def __new__(cls, origin: type, args: Any) -> Self: ...
-        def __getitem__(self, typeargs: Any, /) -> GenericAlias:
-            """Return self[key]."""
-            ...
-        def __eq__(self, value: object, /) -> bool:
-            """Return self==value."""
-            ...
-        def __hash__(self) -> int:
-            """Return hash(self)."""
-            ...
+        def __parameters__(self) -> tuple[Any, ...]: ...
+        def __new__(cls, origin: type, args: Any, /) -> Self: ...
+        def __getitem__(self, typeargs: Any, /) -> GenericAlias: ...
+        def __eq__(self, value: object, /) -> bool: ...
+        def __hash__(self) -> int: ...
         if sys.version_info >= (3, 11):
             @property
             def __unpacked__(self) -> bool: ...

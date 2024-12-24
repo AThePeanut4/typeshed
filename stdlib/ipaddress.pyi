@@ -105,13 +105,6 @@ class _IPAddressBase:
     def version(self) -> int: ...
 
 class _BaseAddress(_IPAddressBase):
-    """
-    A generic IP object.
-
-    This IP class contains the version independent methods which are
-    used by single IP addresses.
-    """
-    def __init__(self, address: object) -> None: ...
     def __add__(self, other: int) -> Self: ...
     def __hash__(self) -> int: ...
     def __int__(self) -> int: ...
@@ -164,7 +157,6 @@ class _BaseNetwork(_IPAddressBase, Generic[_A]):
     """
     network_address: _A
     netmask: _A
-    def __init__(self, address: object, strict: bool = ...) -> None: ...
     def __contains__(self, other: Any) -> bool: ...
     def __getitem__(self, n: int) -> _A: ...
     def __iter__(self) -> Iterator[_A]: ...
@@ -427,7 +419,7 @@ class _BaseV4:
     def max_prefixlen(self) -> Literal[32]: ...
 
 class IPv4Address(_BaseV4, _BaseAddress):
-    """Represent and manipulate single IPv4 Addresses."""
+    def __init__(self, address: object) -> None: ...
     @property
     def is_global(self) -> bool:
         """
@@ -521,23 +513,8 @@ class IPv4Address(_BaseV4, _BaseAddress):
             """
             Return the IPv4-mapped IPv6 address.
 
-            Returns:
-                The IPv4-mapped IPv6 address per RFC 4291.
-            """
-            ...
-
 class IPv4Network(_BaseV4, _BaseNetwork[IPv4Address]):
-    """
-    This class represents and manipulates 32-bit IPv4 network + addresses..
-
-    Attributes: [examples for IPv4Network('192.0.2.0/27')]
-        .network_address: IPv4Address('192.0.2.0')
-        .hostmask: IPv4Address('0.0.0.31')
-        .broadcast_address: IPv4Address('192.0.2.32')
-        .netmask: IPv4Address('255.255.255.224')
-        .prefixlen: 27
-    """
-    ...
+    def __init__(self, address: object, strict: bool = ...) -> None: ...
 
 class IPv4Interface(IPv4Address):
     netmask: IPv4Address
@@ -568,7 +545,7 @@ class _BaseV6:
     def max_prefixlen(self) -> Literal[128]: ...
 
 class IPv6Address(_BaseV6, _BaseAddress):
-    """Represent and manipulate single IPv6 Addresses."""
+    def __init__(self, address: object) -> None: ...
     @property
     def is_global(self) -> bool:
         """
@@ -718,16 +695,7 @@ class IPv6Address(_BaseV6, _BaseAddress):
     def __eq__(self, other: object) -> bool: ...
 
 class IPv6Network(_BaseV6, _BaseNetwork[IPv6Address]):
-    """
-    This class represents and manipulates 128-bit IPv6 networks.
-
-    Attributes: [examples for IPv6('2001:db8::1000/124')]
-        .network_address: IPv6Address('2001:db8::1000')
-        .hostmask: IPv6Address('::f')
-        .broadcast_address: IPv6Address('2001:db8::100f')
-        .netmask: IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:fff0')
-        .prefixlen: 124
-    """
+    def __init__(self, address: object, strict: bool = ...) -> None: ...
     @property
     def is_site_local(self) -> bool:
         """

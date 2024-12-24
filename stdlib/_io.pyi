@@ -430,18 +430,7 @@ class BufferedRandom(BufferedIOBase, _BufferedIOBase, BinaryIO):  # type: ignore
     def truncate(self, pos: int | None = None, /) -> int: ...
 
 class BufferedRWPair(BufferedIOBase, _BufferedIOBase):
-    """
-    A buffered reader and writer object together.
-
-    A buffered reader object and buffered writer object put together to
-    form a sequential IO object that can read and write. This is typically
-    used with a socket or two-way pipe.
-
-    reader and writer are RawIOBase objects that are readable and
-    writeable respectively. If the buffer_size is omitted it defaults to
-    DEFAULT_BUFFER_SIZE.
-    """
-    def __init__(self, reader: RawIOBase, writer: RawIOBase, buffer_size: int = 8192) -> None: ...
+    def __init__(self, reader: RawIOBase, writer: RawIOBase, buffer_size: int = 8192, /) -> None: ...
     def peek(self, size: int = 0, /) -> bytes: ...
 
 class _TextIOBase(_IOBase):

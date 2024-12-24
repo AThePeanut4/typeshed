@@ -1,7 +1,8 @@
+import sys
 from _typeshed import ReadableBuffer
 from collections.abc import Mapping, Sequence
 from typing import Any, Final, final
-from typing_extensions import TypeAlias
+from typing_extensions import Self, TypeAlias
 
 _FilterChain: TypeAlias = Sequence[Mapping[str, Any]]
 
@@ -36,45 +37,12 @@ PRESET_EXTREME: int  # v big number
 
 @final
 class LZMADecompressor:
-    """
-    Create a decompressor object for decompressing data incrementally.
+    if sys.version_info >= (3, 12):
+        def __new__(cls, format: int | None = ..., memlimit: int | None = ..., filters: _FilterChain | None = ...) -> Self: ...
+    else:
+        def __init__(self, format: int | None = ..., memlimit: int | None = ..., filters: _FilterChain | None = ...) -> None: ...
 
-      format
-        Specifies the container format of the input stream.  If this is
-        FORMAT_AUTO (the default), the decompressor will automatically detect
-        whether the input is FORMAT_XZ or FORMAT_ALONE.  Streams created with
-        FORMAT_RAW cannot be autodetected.
-      memlimit
-        Limit the amount of memory used by the decompressor.  This will cause
-        decompression to fail if the input cannot be decompressed within the
-        given limit.
-      filters
-        A custom filter chain.  This argument is required for FORMAT_RAW, and
-        not accepted with any other format.  When provided, this should be a
-        sequence of dicts, each indicating the ID and options for a single
-        filter.
-
-    For one-shot decompression, use the decompress() function instead.
-    """
-    def __init__(self, format: int | None = ..., memlimit: int | None = ..., filters: _FilterChain | None = ...) -> None: ...
-    def decompress(self, data: ReadableBuffer, max_length: int = -1) -> bytes:
-        """
-        Decompress *data*, returning uncompressed data as bytes.
-
-        If *max_length* is nonnegative, returns at most *max_length* bytes of
-        decompressed data. If this limit is reached and further output can be
-        produced, *self.needs_input* will be set to ``False``. In this case, the next
-        call to *decompress()* may provide *data* as b'' to obtain more of the output.
-
-        If all of the input data was decompressed and returned (either because this
-        was less than *max_length* bytes, or because *max_length* was negative),
-        *self.needs_input* will be set to True.
-
-        Attempting to decompress data after the end of stream is reached raises an
-        EOFError.  Any data found after the end of the stream is ignored and saved in
-        the unused_data attribute.
-        """
-        ...
+    def decompress(self, data: ReadableBuffer, max_length: int = -1) -> bytes: ...
     @property
     def check(self) -> int:
         """ID of the integrity check used by the input stream."""
@@ -94,40 +62,17 @@ class LZMADecompressor:
 
 @final
 class LZMACompressor:
-    """
-    LZMACompressor(format=FORMAT_XZ, check=-1, preset=None, filters=None)
+    if sys.version_info >= (3, 12):
+        def __new__(
+            cls, format: int | None = ..., check: int = ..., preset: int | None = ..., filters: _FilterChain | None = ...
+        ) -> Self: ...
+    else:
+        def __init__(
+            self, format: int | None = ..., check: int = ..., preset: int | None = ..., filters: _FilterChain | None = ...
+        ) -> None: ...
 
-    Create a compressor object for compressing data incrementally.
-
-    format specifies the container format to use for the output. This can
-    be FORMAT_XZ (default), FORMAT_ALONE, or FORMAT_RAW.
-
-    check specifies the integrity check to use. For FORMAT_XZ, the default
-    is CHECK_CRC64. FORMAT_ALONE and FORMAT_RAW do not support integrity
-    checks; for these formats, check must be omitted, or be CHECK_NONE.
-
-    The settings used by the compressor can be specified either as a
-    preset compression level (with the 'preset' argument), or in detail
-    as a custom filter chain (with the 'filters' argument). For FORMAT_XZ
-    and FORMAT_ALONE, the default is to use the PRESET_DEFAULT preset
-    level. For FORMAT_RAW, the caller must always specify a filter chain;
-    the raw compressor does not support preset compression levels.
-
-    preset (if provided) should be an integer in the range 0-9, optionally
-    OR-ed with the constant PRESET_EXTREME.
-
-    filters (if provided) should be a sequence of dicts. Each dict should
-    have an entry for "id" indicating the ID of the filter, plus
-    additional entries for options to the filter.
-
-    For one-shot compression, use the compress() function instead.
-    """
-    def __init__(
-        self, format: int | None = ..., check: int = ..., preset: int | None = ..., filters: _FilterChain | None = ...
-    ) -> None: ...
-    def compress(self, data: ReadableBuffer, /) -> bytes:
-        """
-        Provide data to the compressor object.
+    def compress(self, data: ReadableBuffer, /) -> bytes: ...
+    def flush(self) -> bytes: ...
 
         Returns a chunk of compressed data if possible, or b'' otherwise.
 

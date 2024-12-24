@@ -193,7 +193,6 @@ class Pickler:
         self,
         file: SupportsWrite[bytes],
         protocol: int | None = None,
-        *,
         fix_imports: bool = True,
         buffer_callback: _BufferCallback = None,
     ) -> None: ...

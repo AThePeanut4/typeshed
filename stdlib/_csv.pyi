@@ -39,8 +39,8 @@ class Dialect:
     lineterminator: str
     quoting: _QuotingType
     strict: bool
-    def __init__(
-        self,
+    def __new__(
+        cls,
         dialect: _DialectLike | None = ...,
         delimiter: str = ",",
         doublequote: bool = True,
@@ -50,7 +50,7 @@ class Dialect:
         quoting: _QuotingType = 0,
         skipinitialspace: bool = False,
         strict: bool = False,
-    ) -> None: ...
+    ) -> Self: ...
 
 if sys.version_info >= (3, 10):
     # This class calls itself _csv.reader.

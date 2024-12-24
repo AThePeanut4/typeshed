@@ -40,6 +40,7 @@ from _pickle import (
 from _typeshed import ReadableBuffer, SupportsWrite
 from collections.abc import Callable, Iterable, Mapping
 from typing import Any, ClassVar, SupportsBytes, SupportsIndex, final
+from typing_extensions import Self
 
 __all__ = [
     "PickleBuffer",
@@ -133,23 +134,11 @@ bytes_types: tuple[type[Any], ...]  # undocumented
 
 @final
 class PickleBuffer:
-    """Wrapper for potentially out-of-band buffers"""
-    def __init__(self, buffer: ReadableBuffer) -> None: ...
-    def raw(self) -> memoryview:
-        """
-        Return a memoryview of the raw memory underlying this buffer.
-        Will raise BufferError is the buffer isn't contiguous.
-        """
-        ...
-    def release(self) -> None:
-        """Release the underlying buffer exposed by the PickleBuffer object."""
-        ...
-    def __buffer__(self, flags: int, /) -> memoryview:
-        """Return a buffer object that exposes the underlying memory of the object."""
-        ...
-    def __release_buffer__(self, buffer: memoryview, /) -> None:
-        """Release the buffer object that exposes the underlying memory of the object."""
-        ...
+    def __new__(cls, buffer: ReadableBuffer) -> Self: ...
+    def raw(self) -> memoryview: ...
+    def release(self) -> None: ...
+    def __buffer__(self, flags: int, /) -> memoryview: ...
+    def __release_buffer__(self, buffer: memoryview, /) -> None: ...
 
 MARK: bytes
 STOP: bytes

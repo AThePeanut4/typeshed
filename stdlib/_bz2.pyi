@@ -1,36 +1,17 @@
+import sys
 from _typeshed import ReadableBuffer
 from typing import final
+from typing_extensions import Self
 
 @final
 class BZ2Compressor:
-    """
-    Create a compressor object for compressing data incrementally.
+    if sys.version_info >= (3, 12):
+        def __new__(cls, compresslevel: int = 9, /) -> Self: ...
+    else:
+        def __init__(self, compresslevel: int = 9, /) -> None: ...
 
-      compresslevel
-        Compression level, as a number between 1 and 9.
-
-    For one-shot compression, use the compress() function instead.
-    """
-    def __init__(self, compresslevel: int = 9) -> None: ...
-    def compress(self, data: ReadableBuffer, /) -> bytes:
-        """
-        Provide data to the compressor object.
-
-        Returns a chunk of compressed data if possible, or b'' otherwise.
-
-        When you have finished providing data to the compressor, call the
-        flush() method to finish the compression process.
-        """
-        ...
-    def flush(self) -> bytes:
-        """
-        Finish the compression process.
-
-        Returns the compressed data left in internal buffers.
-
-        The compressor object may not be used after this method is called.
-        """
-        ...
+    def compress(self, data: ReadableBuffer, /) -> bytes: ...
+    def flush(self) -> bytes: ...
 
 @final
 class BZ2Decompressor:
