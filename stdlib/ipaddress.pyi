@@ -105,6 +105,12 @@ class _IPAddressBase:
     def version(self) -> int: ...
 
 class _BaseAddress(_IPAddressBase):
+    """
+    A generic IP object.
+
+    This IP class contains the version independent methods which are
+    used by single IP addresses.
+    """
     def __add__(self, other: int) -> Self: ...
     def __hash__(self) -> int: ...
     def __int__(self) -> int: ...
@@ -419,7 +425,22 @@ class _BaseV4:
     def max_prefixlen(self) -> Literal[32]: ...
 
 class IPv4Address(_BaseV4, _BaseAddress):
-    def __init__(self, address: object) -> None: ...
+    """Represent and manipulate single IPv4 Addresses."""
+    def __init__(self, address: object) -> None:
+        """
+        Args:
+            address: A string or integer representing the IP
+
+              Additionally, an integer can be passed, so
+              IPv4Address('192.0.2.1') == IPv4Address(3221225985).
+              or, more generally
+              IPv4Address(int(IPv4Address('192.0.2.1'))) ==
+                IPv4Address('192.0.2.1')
+
+        Raises:
+            AddressValueError: If ipaddress isn't a valid IPv4 address.
+        """
+        ...
     @property
     def is_global(self) -> bool:
         """
@@ -513,8 +534,59 @@ class IPv4Address(_BaseV4, _BaseAddress):
             """
             Return the IPv4-mapped IPv6 address.
 
+            Returns:
+                The IPv4-mapped IPv6 address per RFC 4291.
+            """
+            ...
+
 class IPv4Network(_BaseV4, _BaseNetwork[IPv4Address]):
-    def __init__(self, address: object, strict: bool = ...) -> None: ...
+    """
+    This class represents and manipulates 32-bit IPv4 network + addresses..
+
+    Attributes: [examples for IPv4Network('192.0.2.0/27')]
+        .network_address: IPv4Address('192.0.2.0')
+        .hostmask: IPv4Address('0.0.0.31')
+        .broadcast_address: IPv4Address('192.0.2.32')
+        .netmask: IPv4Address('255.255.255.224')
+        .prefixlen: 27
+    """
+    def __init__(self, address: object, strict: bool = ...) -> None:
+        """
+        Instantiate a new IPv4 network object.
+
+        Args:
+            address: A string or integer representing the IP [& network].
+              '192.0.2.0/24'
+              '192.0.2.0/255.255.255.0'
+              '192.0.2.0/0.0.0.255'
+              are all functionally the same in IPv4. Similarly,
+              '192.0.2.1'
+              '192.0.2.1/255.255.255.255'
+              '192.0.2.1/32'
+              are also functionally equivalent. That is to say, failing to
+              provide a subnetmask will create an object with a mask of /32.
+
+              If the mask (portion after the / in the argument) is given in
+              dotted quad form, it is treated as a netmask if it starts with a
+              non-zero field (e.g. /255.0.0.0 == /8) and as a hostmask if it
+              starts with a zero field (e.g. 0.255.255.255 == /8), with the
+              single exception of an all-zero mask which is treated as a
+              netmask == /0. If no mask is given, a default of /32 is used.
+
+              Additionally, an integer can be passed, so
+              IPv4Network('192.0.2.1') == IPv4Network(3221225985)
+              or, more generally
+              IPv4Interface(int(IPv4Interface('192.0.2.1'))) ==
+                IPv4Interface('192.0.2.1')
+
+        Raises:
+            AddressValueError: If ipaddress isn't a valid IPv4 address.
+            NetmaskValueError: If the netmask isn't valid for
+              an IPv4 address.
+            ValueError: If strict is True and a network address is not
+              supplied.
+        """
+        ...
 
 class IPv4Interface(IPv4Address):
     netmask: IPv4Address
@@ -545,7 +617,25 @@ class _BaseV6:
     def max_prefixlen(self) -> Literal[128]: ...
 
 class IPv6Address(_BaseV6, _BaseAddress):
-    def __init__(self, address: object) -> None: ...
+    """Represent and manipulate single IPv6 Addresses."""
+    def __init__(self, address: object) -> None:
+        """
+        Instantiate a new IPv6 address object.
+
+        Args:
+            address: A string or integer representing the IP
+
+              Additionally, an integer can be passed, so
+              IPv6Address('2001:db8::') ==
+                IPv6Address(42540766411282592856903984951653826560)
+              or, more generally
+              IPv6Address(int(IPv6Address('2001:db8::'))) ==
+                IPv6Address('2001:db8::')
+
+        Raises:
+            AddressValueError: If address isn't a valid IPv6 address.
+        """
+        ...
     @property
     def is_global(self) -> bool:
         """
@@ -695,7 +785,49 @@ class IPv6Address(_BaseV6, _BaseAddress):
     def __eq__(self, other: object) -> bool: ...
 
 class IPv6Network(_BaseV6, _BaseNetwork[IPv6Address]):
-    def __init__(self, address: object, strict: bool = ...) -> None: ...
+    """
+    This class represents and manipulates 128-bit IPv6 networks.
+
+    Attributes: [examples for IPv6('2001:db8::1000/124')]
+        .network_address: IPv6Address('2001:db8::1000')
+        .hostmask: IPv6Address('::f')
+        .broadcast_address: IPv6Address('2001:db8::100f')
+        .netmask: IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:fff0')
+        .prefixlen: 124
+    """
+    def __init__(self, address: object, strict: bool = ...) -> None:
+        """
+        Instantiate a new IPv6 Network object.
+
+        Args:
+            address: A string or integer representing the IPv6 network or the
+              IP and prefix/netmask.
+              '2001:db8::/128'
+              '2001:db8:0000:0000:0000:0000:0000:0000/128'
+              '2001:db8::'
+              are all functionally the same in IPv6.  That is to say,
+              failing to provide a subnetmask will create an object with
+              a mask of /128.
+
+              Additionally, an integer can be passed, so
+              IPv6Network('2001:db8::') ==
+                IPv6Network(42540766411282592856903984951653826560)
+              or, more generally
+              IPv6Network(int(IPv6Network('2001:db8::'))) ==
+                IPv6Network('2001:db8::')
+
+            strict: A boolean. If true, ensure that we have been passed
+              A true network address, eg, 2001:db8::1000/124 and not an
+              IP address on a network, eg, 2001:db8::1/124.
+
+        Raises:
+            AddressValueError: If address isn't a valid IPv6 address.
+            NetmaskValueError: If the netmask isn't valid for
+              an IPv6 address.
+            ValueError: If strict was True and a network address was not
+              supplied.
+        """
+        ...
     @property
     def is_site_local(self) -> bool:
         """

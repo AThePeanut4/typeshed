@@ -78,18 +78,53 @@ class Fragment:
     def fragment_direction(self) -> TextDirection: ...
     def trim(self, index: int) -> None: ...
     def __eq__(self, other: Fragment) -> bool: ...  # type: ignore[override]
-    def get_width(self, start: int = 0, end: int | None = None, chars: str | None = None, initial_cs: bool = True) -> float: ...
-    def has_same_style(self, other: Fragment) -> bool: ...
-    def get_character_width(self, character: str, print_sh: bool = False, initial_cs: bool = True): ...
+    def get_width(self, start: int = 0, end: int | None = None, chars: str | None = None, initial_cs: bool = True) -> float:
+        """
+        Return the width of the string with the given font/size/style/etc.
+
+        Args:
+            start (int): Index of the start character. Default start of fragment.
+            end (int): Index of the end character. Default end of fragment.
+            chars (str): Specific text to get the width for (not necessarily the
+                same as the contents of the fragment). If given, this takes
+                precedence over the start/end arguments.
+        """
+        ...
+    def has_same_style(self, other: Fragment) -> bool:
+        """Returns if 2 fragments are equivalent other than the characters/string"""
+        ...
+    def get_character_width(self, character: str, print_sh: bool = False, initial_cs: bool = True):
+        """Return the width of a single character out of the stored text."""
+        ...
     def render_pdf_text(self, frag_ws, current_ws, word_spacing, adjust_x, adjust_y, h): ...
     def render_pdf_text_ttf(self, frag_ws, word_spacing): ...
     def render_with_text_shaping(self, pos_x: float, pos_y: float, h: float, word_spacing: float) -> str: ...
     def render_pdf_text_core(self, frag_ws, current_ws): ...
 
 class TotalPagesSubstitutionFragment(Fragment):
+    """
+    A special type of text fragment that represents a placeholder for the total number of pages
+    in a PDF document.
+
+    A placeholder will be generated during the initial content rendering phase of a PDF document.
+    This placeholder is later replaced by the total number of pages in the document when the final
+    output is being produced.
+    """
     uuid: UUID
-    def get_placeholder_string(self) -> str: ...
-    def render_text_substitution(self, replacement_text: str) -> str: ...
+    def get_placeholder_string(self) -> str:
+        """
+        This method returns a placeholder string containing a universally unique identifier (UUID4),
+        ensuring that the placeholder is distinct and does not conflict with other placeholders
+        within the document.
+        """
+        ...
+    def render_text_substitution(self, replacement_text: str) -> str:
+        """
+        This method is invoked at the output phase. It calls `render_pdf_text()` from the superclass
+        to render the fragment with the preserved rendering state (stored in `_render_args` and `_render_kwargs`)
+        and insert the final text in place of the placeholder.
+        """
+        ...
 
 class TextLine(NamedTuple):
     """TextLine(fragments, text_width, number_of_spaces, align, height, max_width, trailing_nl, trailing_form_feed)"""

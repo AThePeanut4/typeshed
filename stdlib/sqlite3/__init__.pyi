@@ -725,7 +725,9 @@ class PrepareProtocol:
 
 class Row(Sequence[Any]):
     def __new__(cls, cursor: Cursor, data: tuple[Any, ...], /) -> Self: ...
-    def keys(self) -> list[str]: ...
+    def keys(self) -> list[str]:
+        """Returns the keys of the row."""
+        ...
     @overload
     def __getitem__(self, key: int | str, /) -> Any:
         """Return self[key]."""
