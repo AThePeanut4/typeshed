@@ -3,6 +3,7 @@
 import unittest.case
 import unittest.result
 from collections.abc import Iterable, Iterator
+from typing import ClassVar
 from typing_extensions import TypeAlias
 
 _TestType: TypeAlias = unittest.case.TestCase | TestSuite
@@ -25,6 +26,7 @@ class BaseTestSuite:
     def countTestCases(self) -> int: ...
     def __iter__(self) -> Iterator[_TestType]: ...
     def __eq__(self, other: object) -> bool: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
 
 class TestSuite(BaseTestSuite):
     """

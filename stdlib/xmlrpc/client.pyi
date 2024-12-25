@@ -48,7 +48,7 @@ from collections.abc import Callable, Iterable, Mapping
 from datetime import datetime
 from io import BytesIO
 from types import TracebackType
-from typing import Any, Final, Literal, Protocol, overload
+from typing import Any, ClassVar, Final, Literal, Protocol, overload
 from typing_extensions import Self, TypeAlias
 
 class _SupportsTimeTuple(Protocol):
@@ -129,6 +129,7 @@ class DateTime:
     """
     value: str  # undocumented
     def __init__(self, value: int | str | datetime | time.struct_time | tuple[int, ...] = 0) -> None: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
     def __lt__(self, other: _DateTimeComparable) -> bool: ...
     def __le__(self, other: _DateTimeComparable) -> bool: ...
     def __gt__(self, other: _DateTimeComparable) -> bool: ...
@@ -149,6 +150,7 @@ class Binary:
     def decode(self, data: ReadableBuffer) -> None: ...
     def encode(self, out: SupportsWrite[str]) -> None: ...
     def __eq__(self, other: object) -> bool: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
 
 def _binary(data: ReadableBuffer) -> Binary: ...  # undocumented
 

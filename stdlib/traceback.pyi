@@ -4,7 +4,7 @@ import sys
 from _typeshed import SupportsWrite, Unused
 from collections.abc import Generator, Iterable, Iterator, Mapping
 from types import FrameType, TracebackType
-from typing import Any, Literal, overload
+from typing import Any, ClassVar, Literal, overload
 from typing_extensions import Self, TypeAlias, deprecated
 
 __all__ = [
@@ -459,6 +459,7 @@ class TracebackException:
             ...
 
     def __eq__(self, other: object) -> bool: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
     if sys.version_info >= (3, 11):
         def format(self, *, chain: bool = True, _ctx: _ExceptionPrintContext | None = None) -> Generator[str, None, None]:
             """
@@ -617,6 +618,7 @@ class FrameSummary:
     def __iter__(self) -> Iterator[Any]: ...
     def __eq__(self, other: object) -> bool: ...
     def __len__(self) -> Literal[4]: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
 
 class StackSummary(list[FrameSummary]):
     """A list of FrameSummary objects, representing a stack of frames."""

@@ -38,7 +38,7 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from tkinter.constants import *
 from tkinter.font import _FontDescription
 from types import TracebackType
-from typing import Any, Generic, Literal, NamedTuple, Protocol, TypedDict, TypeVar, overload, type_check_only
+from typing import Any, ClassVar, Generic, Literal, NamedTuple, Protocol, TypedDict, TypeVar, overload, type_check_only
 from typing_extensions import TypeAlias, TypeVarTuple, Unpack, deprecated
 
 if sys.version_info >= (3, 11):
@@ -498,9 +498,8 @@ class Variable:
         """
         ...
     def __eq__(self, other: object) -> bool: ...
-    def __del__(self) -> None:
-        """Unset the variable in Tcl."""
-        ...
+    def __del__(self) -> None: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
 
 class StringVar(Variable):
     """Value holder for strings variables."""

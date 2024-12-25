@@ -78,6 +78,7 @@ class Font:
         underline: bool = ...,
         overstrike: bool = ...,
     ) -> None: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
     def __setitem__(self, key: str, value: Any) -> None: ...
     @overload
     def cget(self, option: Literal["family"]) -> str:

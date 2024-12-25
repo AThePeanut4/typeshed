@@ -331,23 +331,8 @@ class Address:
         ...
     def __init__(
         self, display_name: str = "", username: str | None = "", domain: str | None = "", addr_spec: str | None = None
-    ) -> None:
-        """
-        Create an object representing a full email address.
-
-        An address can have a 'display_name', a 'username', and a 'domain'.  In
-        addition to specifying the username and domain separately, they may be
-        specified together by using the addr_spec keyword *instead of* the
-        username and domain keywords.  If an addr_spec string is specified it
-        must be properly quoted according to RFC 5322 rules; an error will be
-        raised if it is not.
-
-        An Address object has display_name, username, domain, and addr_spec
-        attributes, all of which are read-only.  The addr_spec and the string
-        value of the object are both quoted according to RFC5322 rules, but
-        without any Content Transfer Encoding.
-        """
-        ...
+    ) -> None: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
     def __eq__(self, other: object) -> bool: ...
 
 class Group:
@@ -355,20 +340,6 @@ class Group:
     def display_name(self) -> str | None: ...
     @property
     def addresses(self) -> tuple[Address, ...]: ...
-    def __init__(self, display_name: str | None = None, addresses: Iterable[Address] | None = None) -> None:
-        """
-        Create an object representing an address group.
-
-        An address group consists of a display_name followed by colon and a
-        list of addresses (see Address) terminated by a semi-colon.  The Group
-        is created by specifying a display_name and a possibly empty list of
-        Address objects.  A Group can also be used to represent a single
-        address that is not in a group, which is convenient when manipulating
-        lists that are a combination of Groups and individual Addresses.  In
-        this case the display_name should be set to None.  In particular, the
-        string representation of a Group whose display_name is None is the same
-        as the Address object, if there is one and only one Address object in
-        the addresses list.
-        """
-        ...
+    def __init__(self, display_name: str | None = None, addresses: Iterable[Address] | None = None) -> None: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
     def __eq__(self, other: object) -> bool: ...

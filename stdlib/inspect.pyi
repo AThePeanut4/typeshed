@@ -975,6 +975,7 @@ class BoundArguments:
         """
         ...
     def __eq__(self, other: object) -> bool: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
 
 #
 # Classes and functions

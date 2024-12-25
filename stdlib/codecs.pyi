@@ -678,20 +678,8 @@ class StreamReaderWriter(TextIO):
     def writable(self) -> bool: ...
 
 class StreamRecoder(BinaryIO):
-    """
-    StreamRecoder instances translate data from one encoding to another.
-
-    They use the complete set of APIs returned by the
-    codecs.lookup() function to implement their task.
-
-    Data written to the StreamRecoder is first decoded into an
-    intermediate format (depending on the "decode" codec) and then
-    written to the underlying stream using an instance of the provided
-    Writer class.
-
-    In the other direction, data is read from the underlying stream using
-    a Reader instance and then encoded and returned to the caller.
-    """
+    data_encoding: str
+    file_encoding: str
     def __init__(
         self,
         stream: _Stream,

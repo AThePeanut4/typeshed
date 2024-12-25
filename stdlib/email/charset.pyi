@@ -1,6 +1,6 @@
 from collections.abc import Callable, Iterator
 from email.message import Message
-from typing import Final, overload
+from typing import ClassVar, Final, overload
 
 __all__ = ["Charset", "add_alias", "add_charset", "add_codec"]
 
@@ -128,17 +128,8 @@ class Charset:
         """
         ...
     @overload
-    def body_encode(self, string: str | bytes) -> str:
-        """
-        Body-encode a string by converting it first to bytes.
-
-        The type of encoding (base64 or quoted-printable) will be based on
-        self.body_encoding.  If body_encoding is None, we assume the
-        output charset is a 7bit encoding, so re-encoding the decoded
-        string using the ascii codec produces the correct string version
-        of the content.
-        """
-        ...
+    def body_encode(self, string: str | bytes) -> str: ...
+    __hash__: ClassVar[None]  # type: ignore[assignment]
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, value: object, /) -> bool:
         """Return self!=value."""
