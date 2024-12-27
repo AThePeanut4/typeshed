@@ -156,7 +156,7 @@ regex==2024.11.6
 m3u8==6.0.*
 keyboard==0.13.*
 pyasn1==0.6.*
-Flask-SocketIO==5.4.*
+Flask-SocketIO==5.5.*
 pyserial[cp2110]==3.5.*
 aws-xray-sdk==2.14.*
 flake8-rst-docstrings==0.3.*
