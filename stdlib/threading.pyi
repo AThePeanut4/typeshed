@@ -325,129 +325,22 @@ class Thread:
 class _DummyThread(Thread):
     def __init__(self) -> None: ...
 
-@final
-class Lock:
-    """
-    A lock object is a synchronization primitive.  To create a lock,
-    call threading.Lock().  Methods are:
+# This is actually the function _thread.allocate_lock for <= 3.12
+Lock = _thread.LockType
 
-    acquire() -- lock the lock, possibly blocking until it can be obtained
-    release() -- unlock of the lock
-    locked() -- test whether the lock is currently locked
-
-    A lock is not owned by the thread that locked it; another thread may
-    unlock it.  A thread attempting to lock a lock that it has already locked
-    will block until another thread unlocks it.  Deadlocks may ensue.
-    """
-    def __enter__(self) -> bool:
-        """Lock the lock."""
-        ...
-    def __exit__(
-        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
-    ) -> None:
-        """Release the lock."""
-        ...
-    def acquire(self, blocking: bool = ..., timeout: float = ...) -> bool:
-        """
-        Lock the lock.  Without argument, this blocks if the lock is already
-        locked (even by the same thread), waiting for another thread to release
-        the lock, and return True once the lock is acquired.
-        With an argument, this will only block if the argument is true,
-        and the return value reflects whether the lock is acquired.
-        The blocking operation is interruptible.
-        """
-        ...
-    def release(self) -> None:
-        """
-        Release the lock, allowing another thread that is blocked waiting for
-        the lock to acquire the lock.  The lock must be in the locked state,
-        but it needn't be locked by the same thread that unlocks it.
-        """
-        ...
-    def locked(self) -> bool:
-        """Return whether the lock is in the locked state."""
-        ...
-    def acquire_lock(self, blocking: bool = ..., timeout: float = ...) -> bool:
-        """An obsolete synonym of acquire()."""
-        ...
-    def release_lock(self) -> None:
-        """An obsolete synonym of release()."""
-        ...
-    def locked_lock(self) -> bool:
-        """An obsolete synonym of locked()."""
-        ...
-
+# Python implementation of RLock.
 @final
 class _RLock:
-    """
-    This class implements reentrant lock objects.
-
-    A reentrant lock must be released by the thread that acquired it. Once a
-    thread has acquired a reentrant lock, the same thread may acquire it
-    again without blocking; the thread must release it once for each time it
-    has acquired it.
-    """
-    def acquire(self, blocking: bool = True, timeout: float = -1) -> bool:
-        """
-        Acquire a lock, blocking or non-blocking.
-
-        When invoked without arguments: if this thread already owns the lock,
-        increment the recursion level by one, and return immediately. Otherwise,
-        if another thread owns the lock, block until the lock is unlocked. Once
-        the lock is unlocked (not owned by any thread), then grab ownership, set
-        the recursion level to one, and return. If more than one thread is
-        blocked waiting until the lock is unlocked, only one at a time will be
-        able to grab ownership of the lock. There is no return value in this
-        case.
-
-        When invoked with the blocking argument set to true, do the same thing
-        as when called without arguments, and return true.
-
-        When invoked with the blocking argument set to false, do not block. If a
-        call without an argument would block, return false immediately;
-        otherwise, do the same thing as when called without arguments, and
-        return true.
-
-        When invoked with the floating-point timeout argument set to a positive
-        value, block for at most the number of seconds specified by timeout
-        and as long as the lock cannot be acquired.  Return true if the lock has
-        been acquired, false if the timeout has elapsed.
-        """
-        ...
-    def release(self) -> None:
-        """
-        Release a lock, decrementing the recursion level.
-
-        If after the decrement it is zero, reset the lock to unlocked (not owned
-        by any thread), and if any other threads are blocked waiting for the
-        lock to become unlocked, allow exactly one of them to proceed. If after
-        the decrement the recursion level is still nonzero, the lock remains
-        locked and owned by the calling thread.
-
-        Only call this method when the calling thread owns the lock. A
-        RuntimeError is raised if this method is called when the lock is
-        unlocked.
-
-        There is no return value.
-        """
-        ...
+    _count: int
+    def acquire(self, blocking: bool = True, timeout: float = -1) -> bool: ...
+    def release(self) -> None: ...
     __enter__ = acquire
     def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
 
-RLock = _RLock
+RLock = _thread.RLock  # Actually a function at runtime.
 
 class Condition:
-    """
-    Class that implements a condition variable.
-
-    A condition variable allows one or more threads to wait until they are
-    notified by another thread.
-
-    If the lock argument is given and not None, it must be a Lock or RLock
-    object, and it is used as the underlying lock. Otherwise, a new RLock object
-    is created and used as the underlying lock.
-    """
-    def __init__(self, lock: Lock | _RLock | None = None) -> None: ...
+    def __init__(self, lock: Lock | _RLock | RLock | None = None) -> None: ...
     def __enter__(self) -> bool: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None

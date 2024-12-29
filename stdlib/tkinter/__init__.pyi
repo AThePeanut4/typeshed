@@ -608,6 +608,9 @@ class _GridIndexInfo(TypedDict, total=False):
     uniform: str | None
     weight: int
 
+class _BusyInfo(TypedDict):
+    cursor: _Cursor
+
 class Misc:
     """
     Internal class.
@@ -762,116 +765,34 @@ class Misc:
         """
         Call function once after given time.
 
-        MS specifies the time in milliseconds. FUNC gives the
-        function which shall be called. Additional parameters
-        are given as parameters to the function call.  Return
-        identifier to cancel scheduling with after_cancel.
-        """
-        ...
-    # after_idle is essentially partialmethod(after, "idle")
-    def after_idle(self, func: Callable[[Unpack[_Ts]], object], *args: Unpack[_Ts]) -> str:
-        """
-        Call FUNC once if the Tcl main loop has no event to
-        process.
-
-        Return an identifier to cancel the scheduling with
-        after_cancel.
-        """
-        ...
-    def after_cancel(self, id: str) -> None:
-        """
-        Cancel scheduling of function identified with ID.
-
-        Identifier returned by after or after_idle must be
-        given as first parameter.
-        """
-        ...
+    def bell(self, displayof: Literal[0] | Misc | None = 0) -> None: ...
     if sys.version_info >= (3, 13):
-        def after_info(self, id: str | None = None) -> tuple[str, ...]:
-            """
-            Return information about existing event handlers.
+        # Supports options from `_BusyInfo``
+        def tk_busy_cget(self, option: Literal["cursor"]) -> _Cursor: ...
+        busy_cget = tk_busy_cget
+        def tk_busy_configure(self, cnf: Any = None, **kw: Any) -> Any: ...
+        tk_busy_config = tk_busy_configure
+        busy_configure = tk_busy_configure
+        busy_config = tk_busy_configure
+        def tk_busy_current(self, pattern: str | None = None) -> list[Misc]: ...
+        busy_current = tk_busy_current
+        def tk_busy_forget(self) -> None: ...
+        busy_forget = tk_busy_forget
+        def tk_busy_hold(self, **kw: Unpack[_BusyInfo]) -> None: ...
+        tk_busy = tk_busy_hold
+        busy_hold = tk_busy_hold
+        busy = tk_busy_hold
+        def tk_busy_status(self) -> bool: ...
+        busy_status = tk_busy_status
 
-            With no argument, return a tuple of the identifiers for all existing
-            event handlers created by the after and after_idle commands for this
-            interpreter.  If id is supplied, it specifies an existing handler; id
-            must have been the return value from some previous call to after or
-            after_idle and it must not have triggered yet or been canceled. If the
-            id doesn't exist, a TclError is raised.  Otherwise, the return value is
-            a tuple containing (script, type) where script is a reference to the
-            function to be called by the event handler and type is either 'idle'
-            or 'timer' to indicate what kind of event handler it is.
-            """
-            ...
-
-    def bell(self, displayof: Literal[0] | Misc | None = 0) -> None:
-        """Ring a display's bell."""
-        ...
-    def clipboard_get(self, *, displayof: Misc = ..., type: str = ...) -> str:
-        """
-        Retrieve data from the clipboard on window's display.
-
-        The window keyword defaults to the root window of the Tkinter
-        application.
-
-        The type keyword specifies the form in which the data is
-        to be returned and should be an atom name such as STRING
-        or FILE_NAME.  Type defaults to STRING, except on X11, where the default
-        is to try UTF8_STRING and fall back to STRING.
-
-        This command is equivalent to:
-
-        selection_get(CLIPBOARD)
-        """
-        ...
-    def clipboard_clear(self, *, displayof: Misc = ...) -> None:
-        """
-        Clear the data in the Tk clipboard.
-
-        A widget specified for the optional displayof keyword
-        argument specifies the target display.
-        """
-        ...
-    def clipboard_append(self, string: str, *, displayof: Misc = ..., format: str = ..., type: str = ...) -> None:
-        """
-        Append STRING to the Tk clipboard.
-
-        A widget specified at the optional displayof keyword
-        argument specifies the target display. The clipboard
-        can be retrieved with selection_get.
-        """
-        ...
-    def grab_current(self):
-        """
-        Return widget which has currently the grab in this application
-        or None.
-        """
-        ...
-    def grab_release(self) -> None:
-        """Release grab for this widget if currently set."""
-        ...
-    def grab_set(self) -> None:
-        """
-        Set grab for this widget.
-
-        A grab directs all events to this and descendant
-        widgets in the application.
-        """
-        ...
-    def grab_set_global(self) -> None:
-        """
-        Set global grab for this widget.
-
-        A global grab directs all events to this and
-        descendant widgets on the display. Use with caution -
-        other applications do not get events anymore.
-        """
-        ...
-    def grab_status(self) -> Literal["local", "global"] | None:
-        """
-        Return None, "local" or "global" if this widget has
-        no, a local or a global grab.
-        """
-        ...
+    def clipboard_get(self, *, displayof: Misc = ..., type: str = ...) -> str: ...
+    def clipboard_clear(self, *, displayof: Misc = ...) -> None: ...
+    def clipboard_append(self, string: str, *, displayof: Misc = ..., format: str = ..., type: str = ...) -> None: ...
+    def grab_current(self): ...
+    def grab_release(self) -> None: ...
+    def grab_set(self) -> None: ...
+    def grab_set_global(self) -> None: ...
+    def grab_status(self) -> Literal["local", "global"] | None: ...
     def option_add(
         self, pattern, value, priority: int | Literal["widgetDefault", "startupFile", "userDefault", "interactive"] | None = None
     ) -> None:

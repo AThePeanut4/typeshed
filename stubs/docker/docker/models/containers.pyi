@@ -129,7 +129,7 @@ class Container(Model):
         ...
     def exec_run(
         self,
-        cmd,
+        cmd: str | list[str],
         stdout: bool = True,
         stderr: bool = True,
         stdin: bool = False,
@@ -200,52 +200,9 @@ class Container(Model):
         """
         ...
     def get_archive(
-        self, path, chunk_size: int | None = 2097152, encode_stream: bool = False
-    ) -> tuple[Incomplete, Incomplete]:
-        """
-        Retrieve a file or folder from the container in the form of a tar
-        archive.
-
-        Args:
-            path (str): Path to the file or folder to retrieve
-            chunk_size (int): The number of bytes returned by each iteration
-                of the generator. If ``None``, data will be streamed as it is
-                received. Default: 2 MB
-            encode_stream (bool): Determines if data should be encoded
-                (gzip-compressed) during transmission. Default: False
-
-        Returns:
-            (tuple): First element is a raw tar data stream. Second element is
-            a dict containing ``stat`` information on the specified ``path``.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-
-        Example:
-
-            >>> f = open('./sh_bin.tar', 'wb')
-            >>> bits, stat = container.get_archive('/bin/sh')
-            >>> print(stat)
-            {'name': 'sh', 'size': 1075464, 'mode': 493,
-             'mtime': '2018-10-01T15:37:48-07:00', 'linkTarget': ''}
-            >>> for chunk in bits:
-            ...    f.write(chunk)
-            >>> f.close()
-        """
-        ...
-    def kill(self, signal: Incomplete | None = None):
-        """
-        Kill or send a signal to the container.
-
-        Args:
-            signal (str or int): The signal to send. Defaults to ``SIGKILL``
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
+        self, path: str, chunk_size: int | None = 2097152, encode_stream: bool = False
+    ) -> tuple[Incomplete, Incomplete]: ...
+    def kill(self, signal: Incomplete | None = None): ...
     @overload
     def logs(
         self,

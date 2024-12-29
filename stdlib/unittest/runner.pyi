@@ -8,22 +8,22 @@ from _typeshed import SupportsFlush, SupportsWrite
 from collections.abc import Callable, Iterable
 from typing import Any, Generic, Protocol, TypeVar
 from typing_extensions import Never, TypeAlias
+from warnings import _ActionKind
 
-_ResultClassType: TypeAlias = Callable[[_TextTestStream, bool, int], TextTestResult]
+_ResultClassType: TypeAlias = Callable[[_TextTestStream, bool, int], TextTestResult[Any]]
 
 class _SupportsWriteAndFlush(SupportsWrite[str], SupportsFlush, Protocol): ...
 
 # All methods used by unittest.runner.TextTestResult's stream
 class _TextTestStream(_SupportsWriteAndFlush, Protocol):
-    def writeln(self, arg: str | None = None, /) -> str: ...
+    def writeln(self, arg: str | None = None, /) -> None: ...
 
 # _WritelnDecorator should have all the same attrs as its stream param.
 # But that's not feasible to do Generically
 # We can expand the attributes if requested
 class _WritelnDecorator:
-    """Used to decorate file-like objects with a handy 'writeln' method"""
-    def __init__(self, stream: _TextTestStream) -> None: ...
-    def writeln(self, arg: str | None = None) -> str: ...
+    def __init__(self, stream: _SupportsWriteAndFlush) -> None: ...
+    def writeln(self, arg: str | None = None) -> None: ...
     def __getattr__(self, attr: str) -> Any: ...  # Any attribute from the stream type passed to __init__
     # These attributes are prevented by __getattr__
     stream: Never
@@ -47,15 +47,8 @@ class TextTestResult(unittest.result.TestResult, Generic[_StreamT]):
     showAll: bool  # undocumented
     stream: _StreamT  # undocumented
     if sys.version_info >= (3, 12):
-        durations: unittest.result._DurationsType | None
-        def __init__(
-            self, stream: _StreamT, descriptions: bool, verbosity: int, *, durations: unittest.result._DurationsType | None = None
-        ) -> None:
-            """
-            Construct a TextTestResult. Subclasses should accept **kwargs
-            to ensure compatibility as the interface changes.
-            """
-            ...
+        durations: int | None
+        def __init__(self, stream: _StreamT, descriptions: bool, verbosity: int, *, durations: int | None = None) -> None: ...
     else:
         def __init__(self, stream: _StreamT, descriptions: bool, verbosity: int) -> None: ...
 
@@ -75,11 +68,11 @@ class TextTestRunner:
     verbosity: int
     failfast: bool
     buffer: bool
-    warnings: str | None
+    warnings: _ActionKind | None
     tb_locals: bool
 
     if sys.version_info >= (3, 12):
-        durations: unittest.result._DurationsType | None
+        durations: int | None
         def __init__(
             self,
             stream: _SupportsWriteAndFlush | None = None,
@@ -88,18 +81,11 @@ class TextTestRunner:
             failfast: bool = False,
             buffer: bool = False,
             resultclass: _ResultClassType | None = None,
-            warnings: str | None = None,
+            warnings: _ActionKind | None = None,
             *,
             tb_locals: bool = False,
-            durations: unittest.result._DurationsType | None = None,
-        ) -> None:
-            """
-            Construct a TextTestRunner.
-
-            Subclasses should accept **kwargs to ensure compatibility as the
-            interface changes.
-            """
-            ...
+            durations: int | None = None,
+        ) -> None: ...
     else:
         def __init__(
             self,

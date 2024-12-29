@@ -1,5 +1,6 @@
 import sys
 from collections.abc import Callable, Iterable, Mapping
+from multiprocessing.context import DefaultContext, Process
 from types import TracebackType
 from typing import Any, Final, Generic, TypeVar
 from typing_extensions import Self
@@ -60,12 +61,9 @@ class Pool:
         maxtasksperchild: int | None = None,
         context: Any | None = None,
     ) -> None: ...
-    def apply(self, func: Callable[..., _T], args: Iterable[Any] = (), kwds: Mapping[str, Any] = {}) -> _T:
-        """
-        Equivalent of `func(*args, **kwds)`.
-        Pool must be running.
-        """
-        ...
+    @staticmethod
+    def Process(ctx: DefaultContext, *args: Any, **kwds: Any) -> Process: ...
+    def apply(self, func: Callable[..., _T], args: Iterable[Any] = (), kwds: Mapping[str, Any] = {}) -> _T: ...
     def apply_async(
         self,
         func: Callable[..., _T],

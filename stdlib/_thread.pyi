@@ -28,56 +28,11 @@ def _count() -> int:
     """
     ...
 @final
-class LockType:
-    """
-    A lock object is a synchronization primitive.  To create a lock,
-    call threading.Lock().  Methods are:
-
-    acquire() -- lock the lock, possibly blocking until it can be obtained
-    release() -- unlock of the lock
-    locked() -- test whether the lock is currently locked
-
-    A lock is not owned by the thread that locked it; another thread may
-    unlock it.  A thread attempting to lock a lock that it has already locked
-    will block until another thread unlocks it.  Deadlocks may ensue.
-    """
-    def acquire(self, blocking: bool = True, timeout: float = -1) -> bool:
-        """
-        Lock the lock.  Without argument, this blocks if the lock is already
-        locked (even by the same thread), waiting for another thread to release
-        the lock, and return True once the lock is acquired.
-        With an argument, this will only block if the argument is true,
-        and the return value reflects whether the lock is acquired.
-        The blocking operation is interruptible.
-        """
-        ...
-    def release(self) -> None:
-        """
-        Release the lock, allowing another thread that is blocked waiting for
-        the lock to acquire the lock.  The lock must be in the locked state,
-        but it needn't be locked by the same thread that unlocks it.
-        """
-        ...
-    def locked(self) -> bool:
-        """Return whether the lock is in the locked state."""
-        ...
-    def acquire_lock(self, blocking: bool = True, timeout: float = -1) -> bool:
-        """An obsolete synonym of acquire()."""
-        ...
-    def release_lock(self) -> None:
-        """An obsolete synonym of release()."""
-        ...
-    def locked_lock(self) -> bool:
-        """An obsolete synonym of locked()."""
-        ...
-    def __enter__(self) -> bool:
-        """Lock the lock."""
-        ...
-    def __exit__(
-        self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
-    ) -> None:
-        """Release the lock."""
-        ...
+class RLock:
+    def acquire(self, blocking: bool = True, timeout: float = -1) -> bool: ...
+    def release(self) -> None: ...
+    __enter__ = acquire
+    def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
 
 if sys.version_info >= (3, 13):
     @final
@@ -90,20 +45,34 @@ if sys.version_info >= (3, 13):
 
     def start_joinable_thread(
         function: Callable[[], object], handle: _ThreadHandle | None = None, daemon: bool = True
-    ) -> _ThreadHandle:
-        """
-        *For internal use only*: start a new thread.
+    ) -> _ThreadHandle: ...
+    @final
+    class lock:
+        def acquire(self, blocking: bool = True, timeout: float = -1) -> bool: ...
+        def release(self) -> None: ...
+        def locked(self) -> bool: ...
+        def acquire_lock(self, blocking: bool = True, timeout: float = -1) -> bool: ...
+        def release_lock(self) -> None: ...
+        def locked_lock(self) -> bool: ...
+        def __enter__(self) -> bool: ...
+        def __exit__(
+            self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
+        ) -> None: ...
 
-        Like start_new_thread(), this starts a new thread calling the given function.
-        Unlike start_new_thread(), this returns a handle object with methods to join
-        or detach the given thread.
-        This function is not for third-party code, please use the
-        `threading` module instead. During finalization the runtime will not wait for
-        the thread to exit if daemon is True. If handle is provided it must be a
-        newly created thread._ThreadHandle instance.
-        """
-        ...
-    lock = LockType
+    LockType = lock
+else:
+    @final
+    class LockType:
+        def acquire(self, blocking: bool = True, timeout: float = -1) -> bool: ...
+        def release(self) -> None: ...
+        def locked(self) -> bool: ...
+        def acquire_lock(self, blocking: bool = True, timeout: float = -1) -> bool: ...
+        def release_lock(self) -> None: ...
+        def locked_lock(self) -> bool: ...
+        def __enter__(self) -> bool: ...
+        def __exit__(
+            self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
+        ) -> None: ...
 
 @overload
 def start_new_thread(function: Callable[[Unpack[_Ts]], object], args: tuple[Unpack[_Ts]], /) -> int:

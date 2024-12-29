@@ -33,7 +33,6 @@ from re import Match as Match, Pattern as Pattern
 from types import (
     BuiltinFunctionType,
     CodeType,
-    FrameType,
     FunctionType,
     MethodDescriptorType,
     MethodType,
@@ -625,6 +624,8 @@ _F = TypeVar("_F", bound=Callable[..., Any])
 _P = _ParamSpec("_P")
 _T = TypeVar("_T")
 
+_FT = TypeVar("_FT", bound=Callable[..., Any] | type)
+
 # These type variables are used by the container types.
 _S = TypeVar("_S")
 _KT = TypeVar("_KT")  # Key type.
@@ -688,7 +689,7 @@ def no_type_check_decorator(decorator: Callable[_P, _T]) -> Callable[_P, _T]:
     ...
 
 # This itself is only available during type checking
-def type_check_only(func_or_cls: _F) -> _F: ...
+def type_check_only(func_or_cls: _FT) -> _FT: ...
 
 # Type aliases and type constructors
 
@@ -826,8 +827,8 @@ _YieldT_co = TypeVar("_YieldT_co", covariant=True)
 _SendT_contra = TypeVar("_SendT_contra", contravariant=True, default=None)
 _ReturnT_co = TypeVar("_ReturnT_co", covariant=True, default=None)
 
-class Generator(Iterator[_YieldT_co], Generic[_YieldT_co, _SendT_contra, _ReturnT_co]):
-    """A generic version of collections.abc.Generator."""
+@runtime_checkable
+class Generator(Iterator[_YieldT_co], Protocol[_YieldT_co, _SendT_contra, _ReturnT_co]):
     def __next__(self) -> _YieldT_co: ...
     @abstractmethod
     def send(self, value: _SendT_contra, /) -> _YieldT_co:
@@ -870,14 +871,6 @@ class Generator(Iterator[_YieldT_co], Generic[_YieldT_co, _SendT_contra, _Return
             ...
 
     def __iter__(self) -> Generator[_YieldT_co, _SendT_contra, _ReturnT_co]: ...
-    @property
-    def gi_code(self) -> CodeType: ...
-    @property
-    def gi_frame(self) -> FrameType: ...
-    @property
-    def gi_running(self) -> bool: ...
-    @property
-    def gi_yieldfrom(self) -> Generator[Any, Any, Any] | None: ...
 
 # NOTE: Prior to Python 3.13 these aliases are lacking the second _ExitT_co parameter
 if sys.version_info >= (3, 13):
@@ -909,14 +902,7 @@ class Coroutine(Awaitable[_ReturnT_co_nd], Generic[_YieldT_co, _SendT_contra_nd,
     """A generic version of collections.abc.Coroutine."""
     __name__: str
     __qualname__: str
-    @property
-    def cr_await(self) -> Any | None: ...
-    @property
-    def cr_code(self) -> CodeType: ...
-    @property
-    def cr_frame(self) -> FrameType | None: ...
-    @property
-    def cr_running(self) -> bool: ...
+
     @abstractmethod
     def send(self, value: _SendT_contra_nd, /) -> _YieldT_co:
         """
@@ -973,8 +959,8 @@ class AsyncIterator(AsyncIterable[_T_co], Protocol[_T_co]):
     def __anext__(self) -> Awaitable[_T_co]: ...
     def __aiter__(self) -> AsyncIterator[_T_co]: ...
 
-class AsyncGenerator(AsyncIterator[_YieldT_co], Generic[_YieldT_co, _SendT_contra]):
-    """A generic version of collections.abc.AsyncGenerator."""
+@runtime_checkable
+class AsyncGenerator(AsyncIterator[_YieldT_co], Protocol[_YieldT_co, _SendT_contra]):
     def __anext__(self) -> Coroutine[Any, Any, _YieldT_co]: ...
     @abstractmethod
     def asend(self, value: _SendT_contra, /) -> Coroutine[Any, Any, _YieldT_co]:
@@ -997,26 +983,8 @@ class AsyncGenerator(AsyncIterator[_YieldT_co], Generic[_YieldT_co, _SendT_contr
     @abstractmethod
     def athrow(
         self, typ: BaseException, val: None = None, tb: TracebackType | None = None, /
-    ) -> Coroutine[Any, Any, _YieldT_co]:
-        """
-        Raise an exception in the asynchronous generator.
-        Return next yielded value or raise StopAsyncIteration.
-        """
-        ...
-    def aclose(self) -> Coroutine[Any, Any, None]:
-        """
-        Raise GeneratorExit inside coroutine.
-        
-        """
-        ...
-    @property
-    def ag_await(self) -> Any: ...
-    @property
-    def ag_code(self) -> CodeType: ...
-    @property
-    def ag_frame(self) -> FrameType: ...
-    @property
-    def ag_running(self) -> bool: ...
+    ) -> Coroutine[Any, Any, _YieldT_co]: ...
+    def aclose(self) -> Coroutine[Any, Any, None]: ...
 
 @runtime_checkable
 class Container(Protocol[_T_co]):

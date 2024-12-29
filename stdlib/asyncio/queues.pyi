@@ -17,6 +17,7 @@ class QueueFull(Exception):
     """Raised when the Queue.put_nowait() method is called on a full Queue."""
     ...
 
+# Keep asyncio.__all__ updated with any changes to __all__ here
 if sys.version_info >= (3, 13):
     __all__ = ("Queue", "PriorityQueue", "LifoQueue", "QueueFull", "QueueEmpty", "QueueShutDown")
 

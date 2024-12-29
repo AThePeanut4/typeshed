@@ -34,7 +34,7 @@ from _ast import (
     PyCF_TYPE_COMMENTS as PyCF_TYPE_COMMENTS,
 )
 from _typeshed import ReadableBuffer, Unused
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from typing import Any, ClassVar, Generic, Literal, TypedDict, TypeVar as _TypeVar, overload
 from typing_extensions import Self, Unpack, deprecated
 
@@ -1308,9 +1308,8 @@ class Tuple(expr):
     if sys.version_info >= (3, 14):
         def __replace__(self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
 
-class slice(AST):
-    """Deprecated AST node class."""
-    ...
+@deprecated("Deprecated since Python 3.9.")
+class slice(AST): ...  # deprecated and moved to ast.py for >= (3, 9)
 
 if sys.version_info >= (3, 9):
     _Slice: typing_extensions.TypeAlias = expr
@@ -1342,33 +1341,38 @@ class Slice(_Slice):
             **kwargs: Unpack[_SliceAttributes],
         ) -> Self: ...
 
+@deprecated("Deprecated since Python 3.9. Use ast.Tuple instead.")
 class ExtSlice(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
-    """Deprecated AST node class. Use ast.Tuple instead."""
-    dims: list[slice]
-    def __init__(self, dims: list[slice], **kwargs: Unpack[_SliceAttributes]) -> None: ...
+    if sys.version_info >= (3, 9):
+        def __new__(cls, dims: Iterable[slice] = (), **kwargs: Unpack[_SliceAttributes]) -> Tuple: ...  # type: ignore[misc]
+    else:
+        dims: list[slice]
+        def __init__(self, dims: list[slice], **kwargs: Unpack[_SliceAttributes]) -> None: ...
 
+@deprecated("Deprecated since Python 3.9. Use the index value directly instead.")
 class Index(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
-    """Deprecated AST node class. Use the index value directly instead."""
-    value: expr
-    def __init__(self, value: expr, **kwargs: Unpack[_SliceAttributes]) -> None: ...
+    if sys.version_info >= (3, 9):
+        def __new__(cls, value: expr, **kwargs: Unpack[_SliceAttributes]) -> expr: ...  # type: ignore[misc]
+    else:
+        value: expr
+        def __init__(self, value: expr, **kwargs: Unpack[_SliceAttributes]) -> None: ...
 
-class expr_context(AST):
-    """expr_context = Load | Store | Del"""
-    ...
-class AugLoad(expr_context):
-    """Deprecated AST node class.  Unused in Python 3."""
-    ...
-class AugStore(expr_context):
-    """Deprecated AST node class.  Unused in Python 3."""
-    ...
-class Param(expr_context):
-    """Deprecated AST node class.  Unused in Python 3."""
-    ...
+class expr_context(AST): ...
 
+@deprecated("Deprecated since Python 3.9. Unused in Python 3.")
+class AugLoad(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+
+@deprecated("Deprecated since Python 3.9. Unused in Python 3.")
+class AugStore(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+
+@deprecated("Deprecated since Python 3.9. Unused in Python 3.")
+class Param(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+
+@deprecated("Deprecated since Python 3.9. Unused in Python 3.")
 class Suite(mod):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
-    """Deprecated AST node class.  Unused in Python 3."""
-    body: list[stmt]
-    def __init__(self, body: list[stmt]) -> None: ...
+    if sys.version_info < (3, 9):
+        body: list[stmt]
+        def __init__(self, body: list[stmt]) -> None: ...
 
 class Load(expr_context):
     """Load"""
