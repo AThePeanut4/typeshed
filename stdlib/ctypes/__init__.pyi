@@ -26,6 +26,7 @@ from _ctypes import (
     set_errno as set_errno,
     sizeof as sizeof,
 )
+from _typeshed import StrPath
 from ctypes._endian import BigEndianStructure as BigEndianStructure, LittleEndianStructure as LittleEndianStructure
 from typing import Any, ClassVar, Generic, TypeVar, type_check_only
 from typing_extensions import Self, TypeAlias, deprecated
@@ -59,6 +60,11 @@ class _CDLLFuncPointer(_CFuncPtr):
 class _NamedFuncPointer(_CDLLFuncPointer):
     __name__: str
 
+if sys.version_info >= (3, 12):
+    _NameTypes: TypeAlias = StrPath | None
+else:
+    _NameTypes: TypeAlias = str | None
+
 class CDLL:
     """
     An instance of this class represents a loaded dll/shared
@@ -81,7 +87,7 @@ class CDLL:
     _FuncPtr: type[_CDLLFuncPointer]
     def __init__(
         self,
-        name: str | None,
+        name: _NameTypes,
         mode: int = ...,
         handle: int | None = None,
         use_errno: bool = False,

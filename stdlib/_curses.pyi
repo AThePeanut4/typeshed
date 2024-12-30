@@ -1,7 +1,7 @@
 import sys
-from _typeshed import ReadOnlyBuffer, SupportsRead
+from _typeshed import ReadOnlyBuffer, SupportsRead, SupportsWrite
 from curses import _ncurses_version
-from typing import IO, Any, final, overload
+from typing import Any, final, overload
 from typing_extensions import TypeAlias
 
 # NOTE: This module is ordinarily only available on Unix, but the windows-curses
@@ -1662,41 +1662,9 @@ class window:  # undocumented
     @overload
     def overwrite(
         self, destwin: window, sminrow: int, smincol: int, dminrow: int, dmincol: int, dmaxrow: int, dmaxcol: int
-    ) -> None:
-        """
-        overwrite(destwin, [sminrow, smincol, dminrow, dmincol, dmaxrow,
-                  dmaxcol])
-        Overwrite the window on top of destwin.
-
-        The windows need not be the same size, in which case only the overlapping
-        region is copied.  This copy is destructive, which means that the current
-        background character overwrites the old contents of destwin.
-
-        To get fine-grained control over the copied region, the second form of
-        overwrite() can be used. sminrow and smincol are the upper-left coordinates
-        of the source window, the other variables mark a rectangle in the destination
-        window.
-        """
-        ...
-    def putwin(self, file: IO[Any], /) -> None:
-        """
-        Write all data associated with the window into the provided file object.
-
-        This information can be later retrieved using the getwin() function.
-        """
-        ...
-    def redrawln(self, beg: int, num: int, /) -> None:
-        """
-        Mark the specified lines corrupted.
-
-          beg
-            Starting line number.
-          num
-            The number of lines.
-
-        They should be completely redrawn on the next refresh() call.
-        """
-        ...
+    ) -> None: ...
+    def putwin(self, file: SupportsWrite[bytes], /) -> None: ...
+    def redrawln(self, beg: int, num: int, /) -> None: ...
     def redrawwin(self) -> None: ...
     @overload
     def refresh(self) -> None:
