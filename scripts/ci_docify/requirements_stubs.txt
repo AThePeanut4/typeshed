@@ -96,7 +96,7 @@ wurlitzer==3.1.*
 antlr4-python3-runtime==4.13.*
 chevron==0.14.*
 click-spinner==0.1.*
-ibm-db==3.2.4
+ibm-db==3.2.5
 psycopg2~=2.9.10
 icalendar==6.1.*
 waitress~=3.0.1
