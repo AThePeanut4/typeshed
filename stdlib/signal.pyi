@@ -3,7 +3,7 @@ from _typeshed import structseq
 from collections.abc import Callable, Iterable
 from enum import IntEnum
 from types import FrameType
-from typing import Any, Final, final
+from typing import Any, Final, Literal, final
 from typing_extensions import Never, TypeAlias
 
 NSIG: int
@@ -63,8 +63,8 @@ class Handlers(IntEnum):
     SIG_DFL = 0
     SIG_IGN = 1
 
-SIG_DFL: Handlers
-SIG_IGN: Handlers
+SIG_DFL: Literal[Handlers.SIG_DFL]
+SIG_IGN: Literal[Handlers.SIG_IGN]
 
 _SIGNUM: TypeAlias = int | Signals
 _HANDLER: TypeAlias = Callable[[int, FrameType | None], Any] | int | Handlers | None
@@ -127,45 +127,45 @@ else:
         """
         ...
 
-SIGABRT: Signals
-SIGFPE: Signals
-SIGILL: Signals
-SIGINT: Signals
-SIGSEGV: Signals
-SIGTERM: Signals
+SIGABRT: Literal[Signals.SIGABRT]
+SIGFPE: Literal[Signals.SIGFPE]
+SIGILL: Literal[Signals.SIGILL]
+SIGINT: Literal[Signals.SIGINT]
+SIGSEGV: Literal[Signals.SIGSEGV]
+SIGTERM: Literal[Signals.SIGTERM]
 
 if sys.platform == "win32":
-    SIGBREAK: Signals
-    CTRL_C_EVENT: Signals
-    CTRL_BREAK_EVENT: Signals
+    SIGBREAK: Literal[Signals.SIGBREAK]
+    CTRL_C_EVENT: Literal[Signals.CTRL_C_EVENT]
+    CTRL_BREAK_EVENT: Literal[Signals.CTRL_BREAK_EVENT]
 else:
     if sys.platform != "linux":
-        SIGINFO: Signals
-        SIGEMT: Signals
-    SIGALRM: Signals
-    SIGBUS: Signals
-    SIGCHLD: Signals
-    SIGCONT: Signals
-    SIGHUP: Signals
-    SIGIO: Signals
-    SIGIOT: Signals
-    SIGKILL: Signals
-    SIGPIPE: Signals
-    SIGPROF: Signals
-    SIGQUIT: Signals
-    SIGSTOP: Signals
-    SIGSYS: Signals
-    SIGTRAP: Signals
-    SIGTSTP: Signals
-    SIGTTIN: Signals
-    SIGTTOU: Signals
-    SIGURG: Signals
-    SIGUSR1: Signals
-    SIGUSR2: Signals
-    SIGVTALRM: Signals
-    SIGWINCH: Signals
-    SIGXCPU: Signals
-    SIGXFSZ: Signals
+        SIGINFO: Literal[Signals.SIGINFO]
+        SIGEMT: Literal[Signals.SIGEMT]
+    SIGALRM: Literal[Signals.SIGALRM]
+    SIGBUS: Literal[Signals.SIGBUS]
+    SIGCHLD: Literal[Signals.SIGCHLD]
+    SIGCONT: Literal[Signals.SIGCONT]
+    SIGHUP: Literal[Signals.SIGHUP]
+    SIGIO: Literal[Signals.SIGIO]
+    SIGIOT: Literal[Signals.SIGABRT]  # alias
+    SIGKILL: Literal[Signals.SIGKILL]
+    SIGPIPE: Literal[Signals.SIGPIPE]
+    SIGPROF: Literal[Signals.SIGPROF]
+    SIGQUIT: Literal[Signals.SIGQUIT]
+    SIGSTOP: Literal[Signals.SIGSTOP]
+    SIGSYS: Literal[Signals.SIGSYS]
+    SIGTRAP: Literal[Signals.SIGTRAP]
+    SIGTSTP: Literal[Signals.SIGTSTP]
+    SIGTTIN: Literal[Signals.SIGTTIN]
+    SIGTTOU: Literal[Signals.SIGTTOU]
+    SIGURG: Literal[Signals.SIGURG]
+    SIGUSR1: Literal[Signals.SIGUSR1]
+    SIGUSR2: Literal[Signals.SIGUSR2]
+    SIGVTALRM: Literal[Signals.SIGVTALRM]
+    SIGWINCH: Literal[Signals.SIGWINCH]
+    SIGXCPU: Literal[Signals.SIGXCPU]
+    SIGXFSZ: Literal[Signals.SIGXFSZ]
 
     class ItimerError(OSError): ...
     ITIMER_PROF: int
@@ -178,21 +178,13 @@ else:
         SIG_UNBLOCK = 1
         SIG_SETMASK = 2
 
-    SIG_BLOCK = Sigmasks.SIG_BLOCK
-    SIG_UNBLOCK = Sigmasks.SIG_UNBLOCK
-    SIG_SETMASK = Sigmasks.SIG_SETMASK
-    def alarm(seconds: int, /) -> int:
-        """Arrange for SIGALRM to arrive after the given number of seconds."""
-        ...
-    def getitimer(which: int, /) -> tuple[float, float]:
-        """Returns current value of given itimer."""
-        ...
-    def pause() -> None:
-        """Wait until a signal arrives."""
-        ...
-    def pthread_kill(thread_id: int, signalnum: int, /) -> None:
-        """Send a signal to a thread."""
-        ...
+    SIG_BLOCK: Literal[Sigmasks.SIG_BLOCK]
+    SIG_UNBLOCK: Literal[Sigmasks.SIG_UNBLOCK]
+    SIG_SETMASK: Literal[Sigmasks.SIG_SETMASK]
+    def alarm(seconds: int, /) -> int: ...
+    def getitimer(which: int, /) -> tuple[float, float]: ...
+    def pause() -> None: ...
+    def pthread_kill(thread_id: int, signalnum: int, /) -> None: ...
     if sys.version_info >= (3, 10):  # arguments changed in 3.10.2
         def pthread_sigmask(how: int, mask: Iterable[int]) -> set[_SIGNUM]:
             """Fetch and/or change the signal mask of the calling thread."""
@@ -249,13 +241,13 @@ else:
             """
             ...
     if sys.platform != "darwin":
-        SIGCLD: Signals
-        SIGPOLL: Signals
-        SIGPWR: Signals
-        SIGRTMAX: Signals
-        SIGRTMIN: Signals
+        SIGCLD: Literal[Signals.SIGCHLD]  # alias
+        SIGPOLL: Literal[Signals.SIGIO]  # alias
+        SIGPWR: Literal[Signals.SIGPWR]
+        SIGRTMAX: Literal[Signals.SIGRTMAX]
+        SIGRTMIN: Literal[Signals.SIGRTMIN]
         if sys.version_info >= (3, 11):
-            SIGSTKFLT: Signals
+            SIGSTKFLT: Literal[Signals.SIGSTKFLT]
 
         @final
         class struct_siginfo(structseq[int], tuple[int, int, int, int, int, int, int]):
