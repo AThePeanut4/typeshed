@@ -120,8 +120,8 @@ class Directory(commondialog.Dialog):
 # TODO: command kwarg available on macos
 def asksaveasfilename(
     *,
-    confirmoverwrite: bool | None = ...,
-    defaultextension: str | None = ...,
+    confirmoverwrite: bool | None = True,
+    defaultextension: str | None = "",
     filetypes: Iterable[tuple[str, str | list[str] | tuple[str, ...]]] | None = ...,
     initialdir: StrOrBytesPath | None = ...,
     initialfile: StrOrBytesPath | None = ...,
@@ -133,7 +133,7 @@ def asksaveasfilename(
     ...
 def askopenfilename(
     *,
-    defaultextension: str | None = ...,
+    defaultextension: str | None = "",
     filetypes: Iterable[tuple[str, str | list[str] | tuple[str, ...]]] | None = ...,
     initialdir: StrOrBytesPath | None = ...,
     initialfile: StrOrBytesPath | None = ...,
@@ -145,7 +145,7 @@ def askopenfilename(
     ...
 def askopenfilenames(
     *,
-    defaultextension: str | None = ...,
+    defaultextension: str | None = "",
     filetypes: Iterable[tuple[str, str | list[str] | tuple[str, ...]]] | None = ...,
     initialdir: StrOrBytesPath | None = ...,
     initialfile: StrOrBytesPath | None = ...,
@@ -161,17 +161,15 @@ def askopenfilenames(
     """
     ...
 def askdirectory(
-    *, initialdir: StrOrBytesPath | None = ..., mustexist: bool | None = ..., parent: Misc | None = ..., title: str | None = ...
-) -> str:
-    """Ask for a directory, and return the file name"""
-    ...
+    *, initialdir: StrOrBytesPath | None = ..., mustexist: bool | None = False, parent: Misc | None = ..., title: str | None = ...
+) -> str: ...  # can be empty string
 
 # TODO: If someone actually uses these, overload to have the actual return type of open(..., mode)
 def asksaveasfile(
     mode: str = "w",
     *,
-    confirmoverwrite: bool | None = ...,
-    defaultextension: str | None = ...,
+    confirmoverwrite: bool | None = True,
+    defaultextension: str | None = "",
     filetypes: Iterable[tuple[str, str | list[str] | tuple[str, ...]]] | None = ...,
     initialdir: StrOrBytesPath | None = ...,
     initialfile: StrOrBytesPath | None = ...,
@@ -184,7 +182,7 @@ def asksaveasfile(
 def askopenfile(
     mode: str = "r",
     *,
-    defaultextension: str | None = ...,
+    defaultextension: str | None = "",
     filetypes: Iterable[tuple[str, str | list[str] | tuple[str, ...]]] | None = ...,
     initialdir: StrOrBytesPath | None = ...,
     initialfile: StrOrBytesPath | None = ...,
@@ -197,7 +195,7 @@ def askopenfile(
 def askopenfiles(
     mode: str = "r",
     *,
-    defaultextension: str | None = ...,
+    defaultextension: str | None = "",
     filetypes: Iterable[tuple[str, str | list[str] | tuple[str, ...]]] | None = ...,
     initialdir: StrOrBytesPath | None = ...,
     initialfile: StrOrBytesPath | None = ...,
