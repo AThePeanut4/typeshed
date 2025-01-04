@@ -10,7 +10,9 @@ class Name:
     additional: Incomplete
     prefix: Incomplete
     suffix: Incomplete
-    def __init__(self, family: str = "", given: str = "", additional: str = "", prefix: str = "", suffix: str = "") -> None: ...
+    def __init__(self, family: str = "", given: str = "", additional: str = "", prefix: str = "", suffix: str = "") -> None:
+        """Each name attribute can be a string or a list of strings."""
+        ...
     @staticmethod
     def toString(val):
         """Turn a string or array value into a string."""
@@ -38,7 +40,9 @@ class Address:
         """Each name attribute can be a string or a list of strings."""
         ...
     @staticmethod
-    def toString(val, join_char: str = "\n"): ...
+    def toString(val, join_char: str = "\n"):
+        """Turn a string or array value into a string."""
+        ...
     lines: Incomplete
     one_line: Incomplete
     def __eq__(self, other): ...

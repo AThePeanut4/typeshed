@@ -93,6 +93,7 @@ class ContextDecorator:
     def __call__(self, func: _F) -> _F: ...
 
 class _GeneratorContextManagerBase(Generic[_G]):
+    """Shared functionality for @contextmanager and @asynccontextmanager."""
     # Ideally this would use ParamSpec, but that requires (*args, **kwargs), which this isn't. see #6676
     def __init__(self, func: Callable[..., _G], args: tuple[Any, ...], kwds: dict[str, Any]) -> None: ...
     gen: _G
@@ -105,6 +106,7 @@ class _GeneratorContextManager(
     AbstractContextManager[_T_co, bool | None],
     ContextDecorator,
 ):
+    """Helper for @contextmanager decorator."""
     if sys.version_info >= (3, 9):
         def __exit__(
             self, typ: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
@@ -162,6 +164,7 @@ if sys.version_info >= (3, 10):
         AbstractAsyncContextManager[_T_co, bool | None],
         AsyncContextDecorator,
     ):
+        """Helper for @asynccontextmanager decorator."""
         async def __aexit__(
             self, typ: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
         ) -> bool | None: ...
@@ -170,6 +173,7 @@ else:
     class _AsyncGeneratorContextManager(
         _GeneratorContextManagerBase[AsyncGenerator[_T_co, _SendT_contra]], AbstractAsyncContextManager[_T_co, bool | None]
     ):
+        """Helper for @asynccontextmanager decorator."""
         async def __aexit__(
             self, typ: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
         ) -> bool | None: ...

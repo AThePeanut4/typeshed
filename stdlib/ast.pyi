@@ -1309,7 +1309,9 @@ class Tuple(expr):
         def __replace__(self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
 
 @deprecated("Deprecated since Python 3.9.")
-class slice(AST): ...  # deprecated and moved to ast.py for >= (3, 9)
+class slice(AST):
+    """Deprecated AST node class."""
+    ...
 
 if sys.version_info >= (3, 9):
     _Slice: typing_extensions.TypeAlias = expr
@@ -1343,6 +1345,7 @@ class Slice(_Slice):
 
 @deprecated("Deprecated since Python 3.9. Use ast.Tuple instead.")
 class ExtSlice(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+    """Deprecated AST node class. Use ast.Tuple instead."""
     if sys.version_info >= (3, 9):
         def __new__(cls, dims: Iterable[slice] = (), **kwargs: Unpack[_SliceAttributes]) -> Tuple: ...  # type: ignore[misc]
     else:
@@ -1351,25 +1354,35 @@ class ExtSlice(slice):  # deprecated and moved to ast.py if sys.version_info >= 
 
 @deprecated("Deprecated since Python 3.9. Use the index value directly instead.")
 class Index(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+    """Deprecated AST node class. Use the index value directly instead."""
     if sys.version_info >= (3, 9):
         def __new__(cls, value: expr, **kwargs: Unpack[_SliceAttributes]) -> expr: ...  # type: ignore[misc]
     else:
         value: expr
         def __init__(self, value: expr, **kwargs: Unpack[_SliceAttributes]) -> None: ...
 
-class expr_context(AST): ...
+class expr_context(AST):
+    """expr_context = Load | Store | Del"""
+    ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class AugLoad(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+class AugLoad(expr_context):
+    """Deprecated AST node class.  Unused in Python 3."""
+    ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class AugStore(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+class AugStore(expr_context):
+    """Deprecated AST node class.  Unused in Python 3."""
+    ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class Param(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+class Param(expr_context):
+    """Deprecated AST node class.  Unused in Python 3."""
+    ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
 class Suite(mod):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+    """Deprecated AST node class.  Unused in Python 3."""
     if sys.version_info < (3, 9):
         body: list[stmt]
         def __init__(self, body: list[stmt]) -> None: ...

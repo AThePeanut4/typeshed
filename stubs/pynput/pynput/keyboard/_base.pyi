@@ -80,6 +80,14 @@ class KeyCode:
         ...
 
 class Key(enum.Enum):
+    """
+    A class representing various buttons that may not correspond to
+    letters. This includes modifier keys and function keys.
+
+    The actual values for these items differ between platforms. Some platforms
+    may have additional buttons, but these are guaranteed to be present
+    everywhere.
+    """
     alt = cast(KeyCode, ...)
     alt_l = cast(KeyCode, ...)
     alt_r = cast(KeyCode, ...)

@@ -1,3 +1,11 @@
+"""
+authlib.jose
+~~~~~~~~~~~~
+
+JOSE implementation in Authlib. Tracking the status of JOSE specs at
+https://tools.ietf.org/wg/jose/
+"""
+
 from _typeshed import Incomplete
 
 from .errors import JoseError as JoseError

@@ -1,3 +1,27 @@
+"""
+A powerful, extensible, and easy-to-use option parser.
+
+By Greg Ward <gward@python.net>
+
+Originally distributed as Optik.
+
+For support, use the optik-users@lists.sourceforge.net mailing list
+(http://lists.sourceforge.net/lists/listinfo/optik-users).
+
+Simple usage example:
+
+   from optparse import OptionParser
+
+   parser = OptionParser()
+   parser.add_option("-f", "--file", dest="filename",
+                     help="write report to FILE", metavar="FILE")
+   parser.add_option("-q", "--quiet",
+                     action="store_false", dest="verbose", default=True,
+                     help="don't print status messages to stdout")
+
+   (options, args) = parser.parse_args()
+"""
+
 import builtins
 from _typeshed import Incomplete, MaybeNone
 from abc import abstractmethod
@@ -320,7 +344,12 @@ class OptionContainer:
         help: str | None = None,
         metavar: str | None = None,
         **kwargs,  # Allow arbitrary keyword arguments for user defined option_class
-    ) -> Option: ...
+    ) -> Option:
+        """
+        add_option(Option)
+        add_option(opt_str, ..., kwarg=val, ...)
+        """
+        ...
     def add_options(self, option_list: Iterable[Option]) -> None: ...
     def destroy(self) -> None:
         """see OptionParser.destroy()."""
@@ -346,8 +375,21 @@ class OptionGroup(OptionContainer):
 class Values:
     def __init__(self, defaults: Mapping[str, object] | None = None) -> None: ...
     def _update(self, dict: Mapping[str, object], mode: Literal["careful", "loose"]) -> None: ...
-    def _update_careful(self, dict: Mapping[str, object]) -> None: ...
-    def _update_loose(self, dict: Mapping[str, object]) -> None: ...
+    def _update_careful(self, dict: Mapping[str, object]) -> None:
+        """
+        Update the option values from an arbitrary dictionary, but only
+        use keys from dict that already have a corresponding attribute
+        in self.  Any keys in dict without a corresponding attribute
+        are silently ignored.
+        """
+        ...
+    def _update_loose(self, dict: Mapping[str, object]) -> None:
+        """
+        Update the option values from an arbitrary dictionary,
+        using all keys from the dictionary regardless of whether
+        they have a corresponding attribute in self or not.
+        """
+        ...
     def ensure_value(self, attr: str, value: object) -> Any: ...  # return type cannot be known statically
     def read_file(self, filename: str, mode: Literal["careful", "loose"] = "careful") -> None: ...
     def read_module(self, modname: str, mode: Literal["careful", "loose"] = "careful") -> None: ...
@@ -356,7 +398,9 @@ class Values:
     # is set on the instance.
     def __getattr__(self, name: str) -> Any: ...
     # TODO mypy infers -> object for __getattr__ if __setattr__ has `value: object`
-    def __setattr__(self, name: str, value: Any, /) -> None: ...
+    def __setattr__(self, name: str, value: Any, /) -> None:
+        """Implement setattr(self, name, value)."""
+        ...
     def __eq__(self, other: object) -> bool: ...
 
 class OptionParser(OptionContainer):
@@ -486,10 +530,44 @@ class OptionParser(OptionContainer):
     def add_option_group(self, opt_group: OptionGroup, /) -> OptionGroup: ...
     @overload
     def add_option_group(self, title: str, /, description: str | None = None) -> OptionGroup: ...
-    def check_values(self, values: Values, args: list[str]) -> tuple[Values, list[str]]: ...
-    def disable_interspersed_args(self) -> None: ...
-    def enable_interspersed_args(self) -> None: ...
-    def error(self, msg: str) -> NoReturn: ...
+    def check_values(self, values: Values, args: list[str]) -> tuple[Values, list[str]]:
+        """
+        check_values(values : Values, args : [string])
+        -> (values : Values, args : [string])
+
+        Check that the supplied option values and leftover arguments are
+        valid.  Returns the option values and leftover arguments
+        (possibly adjusted, possibly completely new -- whatever you
+        like).  Default implementation just returns the passed-in
+        values; subclasses may override as desired.
+        """
+        ...
+    def disable_interspersed_args(self) -> None:
+        """
+        Set parsing to stop on the first non-option. Use this if
+        you have a command processor which runs another command that
+        has options of its own and you want to make sure these options
+        don't get confused.
+        """
+        ...
+    def enable_interspersed_args(self) -> None:
+        """
+        Set parsing to not stop on the first non-option, allowing
+        interspersing switches with command arguments. This is the
+        default behavior. See also disable_interspersed_args() and the
+        class documentation description of the attribute
+        allow_interspersed_args.
+        """
+        ...
+    def error(self, msg: str) -> NoReturn:
+        """
+        error(msg : string)
+
+        Print a usage message incorporating 'msg' to stderr and exit.
+        If you override this in a subclass, it should not return -- it
+        should either exit or raise an exception.
+        """
+        ...
     def exit(self, status: int = 0, msg: str | None = None) -> NoReturn: ...
     def expand_prog_name(self, s: str) -> str: ...
     def format_epilog(self, formatter: HelpFormatter) -> str: ...

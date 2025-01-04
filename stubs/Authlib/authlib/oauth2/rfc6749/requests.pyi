@@ -24,9 +24,23 @@ class OAuth2Request:
     @property
     def data(self) -> dict[str, str]: ...
     @property
-    def datalist(self) -> dict[str, list[Incomplete]]: ...
+    def datalist(self) -> dict[str, list[Incomplete]]:
+        """
+        Return all the data in query parameters and the body of the request as a dictionary with all the values
+        in lists. 
+        """
+        ...
     @property
-    def client_id(self) -> str: ...
+    def client_id(self) -> str:
+        """
+        The authorization server issues the registered client a client
+        identifier -- a unique string representing the registration
+        information provided by the client. The value is extracted from
+        request.
+
+        :return: string
+        """
+        ...
     @property
     def response_type(self) -> str: ...
     @property

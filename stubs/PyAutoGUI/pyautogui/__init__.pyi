@@ -103,6 +103,7 @@ def isShiftCharacter(character: str) -> bool:
     ...
 
 class Point(NamedTuple):
+    """Point(x, y)"""
     x: int
     y: int
 

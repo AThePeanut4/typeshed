@@ -168,7 +168,9 @@ class Complex(Number, _ComplexLike):
         """(x+y*i).conjugate() returns (x-y*i)."""
         ...
     @abstractmethod
-    def __eq__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> bool:
+        """self == other"""
+        ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
 # See comment at the top of the file

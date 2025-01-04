@@ -18,6 +18,7 @@ class Error:
 _ImportType: TypeAlias = Literal["update", "new", "delete", "skip", "error", "invalid"]
 
 class RowResult:
+    """Container for values relating to a row import."""
     IMPORT_TYPE_UPDATE: ClassVar[Literal["update"]]
     IMPORT_TYPE_NEW: ClassVar[Literal["new"]]
     IMPORT_TYPE_DELETE: ClassVar[Literal["delete"]]
@@ -39,17 +40,27 @@ class RowResult:
     def add_instance_info(self, instance: Model) -> None: ...
 
 class InvalidRow:
+    """
+    A row that resulted in one or more ``ValidationError``
+    being raised during import.
+    """
     number: int
     error: ValidationError
     values: tuple[Any, ...]
     error_dict: dict[str, list[str]]
     def __init__(self, number: int, validation_error: ValidationError, values: tuple[Any, ...]) -> None: ...
     @property
-    def field_specific_errors(self) -> dict[str, list[str]]: ...
+    def field_specific_errors(self) -> dict[str, list[str]]:
+        """Returns a dictionary of field-specific validation errors for this row."""
+        ...
     @property
-    def non_field_specific_errors(self) -> list[str]: ...
+    def non_field_specific_errors(self) -> list[str]:
+        """Returns a list of non field-specific validation errors for this row."""
+        ...
     @property
-    def error_count(self) -> int: ...
+    def error_count(self) -> int:
+        """Returns the total number of validation errors for this row."""
+        ...
 
 class Result:
     base_errors: list[Error]
@@ -68,6 +79,16 @@ class Result:
     def append_invalid_row(self, number: int, row: dict[str, Any], validation_error: ValidationError) -> None: ...
     def increment_row_result_total(self, row_result: RowResult) -> None: ...
     def row_errors(self) -> list[tuple[int, Any]]: ...
-    def has_errors(self) -> bool: ...
-    def has_validation_errors(self) -> bool: ...
+    def has_errors(self) -> bool:
+        """
+        Returns a boolean indicating whether the import process resulted in
+        any critical (non-validation) errors for this result.
+        """
+        ...
+    def has_validation_errors(self) -> bool:
+        """
+        Returns a boolean indicating whether the import process resulted in
+        any validation errors for this result.
+        """
+        ...
     def __iter__(self) -> Iterator[RowResult]: ...

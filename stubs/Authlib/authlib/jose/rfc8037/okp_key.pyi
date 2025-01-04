@@ -6,6 +6,7 @@ PUBLIC_KEYS_MAP: Incomplete
 PRIVATE_KEYS_MAP: Incomplete
 
 class OKPKey(AsymmetricKey):
+    """Key class of the ``OKP`` key type."""
     kty: str
     REQUIRED_JSON_FIELDS: Incomplete
     PUBLIC_KEY_FIELDS = REQUIRED_JSON_FIELDS

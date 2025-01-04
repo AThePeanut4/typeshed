@@ -46,9 +46,22 @@ class OutlineDictionary(PDFObject):
 
 def build_outline_objs(
     sections: Iterable[Incomplete],
-) -> Generator[Incomplete, None, list[OutlineDictionary | OutlineItemDictionary]]: ...
+) -> Generator[Incomplete, None, list[OutlineDictionary | OutlineItemDictionary]]:
+    """
+    Build PDF objects constitutive of the documents outline,
+    and yield them one by one, starting with the outline dictionary
+    """
+    ...
 
 class TableOfContents:
+    """
+    A reference implementation of a Table of Contents (ToC) for use with `fpdf2`.
+
+    This class provides a customizable Table of Contents that can be used directly or subclassed
+    for additional functionality. To use this class, create an instance of `TableOfContents`,
+    configure it as needed, and pass its `render_toc` method as the `render_toc_function` argument
+    to `FPDF.insert_toc_placeholder()`.
+    """
     text_style: TextStyle
     use_section_title_styles: bool
     level_indent: float
@@ -65,4 +78,6 @@ class TableOfContents:
     ) -> None: ...
     def get_text_style(self, pdf: FPDF, item: OutlineSection) -> TextStyle: ...
     def render_toc_item(self, pdf: FPDF, item: OutlineSection) -> None: ...
-    def render_toc(self, pdf: FPDF, outline: Iterable[OutlineSection]) -> None: ...
+    def render_toc(self, pdf: FPDF, outline: Iterable[OutlineSection]) -> None:
+        """This method can be overriden by subclasses to customize the Table of Contents style."""
+        ...

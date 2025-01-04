@@ -46,6 +46,122 @@ class _EngineIOServerConfig(TypedDict, total=False):
 class _SocketIOKwargs(_SocketIOServerOptions, _EngineIOServerConfig): ...
 
 class SocketIO:
+    """
+    Create a Flask-SocketIO server.
+
+    :param app: The flask application instance. If the application instance
+                isn't known at the time this class is instantiated, then call
+                ``socketio.init_app(app)`` once the application instance is
+                available.
+    :param manage_session: If set to ``True``, this extension manages the user
+                           session for Socket.IO events. If set to ``False``,
+                           Flask's own session management is used. When using
+                           Flask's cookie based sessions it is recommended that
+                           you leave this set to the default of ``True``. When
+                           using server-side sessions, a ``False`` setting
+                           enables sharing the user session between HTTP routes
+                           and Socket.IO events.
+    :param message_queue: A connection URL for a message queue service the
+                          server can use for multi-process communication. A
+                          message queue is not required when using a single
+                          server process.
+    :param channel: The channel name, when using a message queue. If a channel
+                    isn't specified, a default channel will be used. If
+                    multiple clusters of SocketIO processes need to use the
+                    same message queue without interfering with each other,
+                    then each cluster should use a different channel.
+    :param path: The path where the Socket.IO server is exposed. Defaults to
+                 ``'socket.io'``. Leave this as is unless you know what you are
+                 doing.
+    :param resource: Alias to ``path``.
+    :param kwargs: Socket.IO and Engine.IO server options.
+
+    The Socket.IO server options are detailed below:
+
+    :param client_manager: The client manager instance that will manage the
+                           client list. When this is omitted, the client list
+                           is stored in an in-memory structure, so the use of
+                           multiple connected servers is not possible. In most
+                           cases, this argument does not need to be set
+                           explicitly.
+    :param logger: To enable logging set to ``True`` or pass a logger object to
+                   use. To disable logging set to ``False``. The default is
+                   ``False``. Note that fatal errors will be logged even when
+                   ``logger`` is ``False``.
+    :param json: An alternative json module to use for encoding and decoding
+                 packets. Custom json modules must have ``dumps`` and ``loads``
+                 functions that are compatible with the standard library
+                 versions. To use the same json encoder and decoder as a Flask
+                 application, use ``flask.json``.
+    :param async_handlers: If set to ``True``, event handlers for a client are
+                           executed in separate threads. To run handlers for a
+                           client synchronously, set to ``False``. The default
+                           is ``True``.
+    :param always_connect: When set to ``False``, new connections are
+                           provisory until the connect handler returns
+                           something other than ``False``, at which point they
+                           are accepted. When set to ``True``, connections are
+                           immediately accepted, and then if the connect
+                           handler returns ``False`` a disconnect is issued.
+                           Set to ``True`` if you need to emit events from the
+                           connect handler and your client is confused when it
+                           receives events before the connection acceptance.
+                           In any other case use the default of ``False``.
+
+    The Engine.IO server configuration supports the following settings:
+
+    :param async_mode: The asynchronous model to use. See the Deployment
+                       section in the documentation for a description of the
+                       available options. Valid async modes are ``threading``,
+                       ``eventlet``, ``gevent`` and ``gevent_uwsgi``. If this
+                       argument is not given, ``eventlet`` is tried first, then
+                       ``gevent_uwsgi``, then ``gevent``, and finally
+                       ``threading``. The first async mode that has all its
+                       dependencies installed is then one that is chosen.
+    :param ping_interval: The interval in seconds at which the server pings
+                          the client. The default is 25 seconds. For advanced
+                          control, a two element tuple can be given, where
+                          the first number is the ping interval and the second
+                          is a grace period added by the server.
+    :param ping_timeout: The time in seconds that the client waits for the
+                         server to respond before disconnecting. The default
+                         is 5 seconds.
+    :param max_http_buffer_size: The maximum size of a message when using the
+                                 polling transport. The default is 1,000,000
+                                 bytes.
+    :param allow_upgrades: Whether to allow transport upgrades or not. The
+                           default is ``True``.
+    :param http_compression: Whether to compress packages when using the
+                             polling transport. The default is ``True``.
+    :param compression_threshold: Only compress messages when their byte size
+                                  is greater than this value. The default is
+                                  1024 bytes.
+    :param cookie: If set to a string, it is the name of the HTTP cookie the
+                   server sends back to the client containing the client
+                   session id. If set to a dictionary, the ``'name'`` key
+                   contains the cookie name and other keys define cookie
+                   attributes, where the value of each attribute can be a
+                   string, a callable with no arguments, or a boolean. If set
+                   to ``None`` (the default), a cookie is not sent to the
+                   client.
+    :param cors_allowed_origins: Origin or list of origins that are allowed to
+                                 connect to this server. Only the same origin
+                                 is allowed by default. Set this argument to
+                                 ``'*'`` to allow all origins, or to ``[]`` to
+                                 disable CORS handling.
+    :param cors_credentials: Whether credentials (cookies, authentication) are
+                             allowed in requests to this server. The default is
+                             ``True``.
+    :param monitor_clients: If set to ``True``, a background task will ensure
+                            inactive clients are closed. Set to ``False`` to
+                            disable the monitoring task (not recommended). The
+                            default is ``True``.
+    :param engineio_logger: To enable Engine.IO logging set to ``True`` or pass
+                            a logger object to use. To disable logging set to
+                            ``False``. The default is ``False``. Note that
+                            fatal errors are logged even when
+                            ``engineio_logger`` is ``False``.
+    """
     # This is an alias for `socketio.Server.reason` in `python-socketio`, which is not typed.
     reason: Incomplete
     # Many instance attributes are deliberately not included here,
