@@ -79,7 +79,7 @@ pyjks==20.0.*
 colorama==0.4.*
 ldap3==2.9.*
 oauthlib==3.2.*
-Pygments==2.18.*
+Pygments==2.19.*
 boltons==24.1.*
 gevent==24.11.*
 shapely==2.0.*
