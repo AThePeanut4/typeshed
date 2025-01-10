@@ -38,14 +38,12 @@ class Command:
     distribution: Distribution
     # Any to work around variance issues
     sub_commands: ClassVar[list[tuple[str, Callable[[Any], bool] | None]]]
-    def __init__(self, dist: Distribution) -> None:
-        """
-        Create and initialize a new Command object.  Most importantly,
-        invokes the 'initialize_options()' method, which is the real
-        initializer and depends on the actual command being
-        instantiated.
-        """
-        ...
+    user_options: ClassVar[
+        # Specifying both because list is invariant. Avoids mypy override assignment issues
+        list[tuple[str, str, str]]
+        | list[tuple[str, str | None, str]]
+    ]
+    def __init__(self, dist: Distribution) -> None: ...
     def ensure_finalized(self) -> None: ...
     @abstractmethod
     def initialize_options(self) -> None:

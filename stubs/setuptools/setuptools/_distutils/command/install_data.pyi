@@ -6,12 +6,13 @@ platform-independent data files.
 """
 
 from _typeshed import Incomplete
+from typing import ClassVar
 
 from ..cmd import Command
 
 class install_data(Command):
     description: str
-    user_options: Incomplete
+    user_options: ClassVar[list[tuple[str, str | None, str]]]
     boolean_options: Incomplete
     install_dir: Incomplete
     outfiles: Incomplete
