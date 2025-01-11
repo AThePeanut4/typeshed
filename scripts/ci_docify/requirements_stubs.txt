@@ -74,7 +74,7 @@ passlib==1.7.*
 editdistance==0.8.*
 dateparser[fasttext,langdetect]==1.2.*
 protobuf~=5.29.1
-lupa==2.2.*
+lupa==2.3.*
 pyjks==20.0.*
 colorama==0.4.*
 ldap3==2.9.*
