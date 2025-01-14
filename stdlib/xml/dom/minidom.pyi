@@ -378,9 +378,8 @@ class ReadOnlySequentialNamedNodeMap:
         ...
 
 class Identified:
-    """Mix-in class that supports the publicId and systemId attributes."""
-    publicId: Incomplete
-    systemId: Incomplete
+    publicId: str | None
+    systemId: str | None
 
 class DocumentType(Identified, Childless, Node):
     nodeType: int
@@ -419,7 +418,7 @@ class Notation(Identified, Childless, Node):
 class DOMImplementation(DOMImplementationLS):
     def hasFeature(self, feature: str, version: str | None) -> bool: ...
     def createDocument(self, namespaceURI: str | None, qualifiedName: str | None, doctype: DocumentType | None) -> Document: ...
-    def createDocumentType(self, qualifiedName: str | None, publicId: str, systemId: str) -> DocumentType: ...
+    def createDocumentType(self, qualifiedName: str | None, publicId: str | None, systemId: str | None) -> DocumentType: ...
     def getInterface(self, feature: str) -> Self | None: ...
 
 class ElementInfo:
