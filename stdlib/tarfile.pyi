@@ -161,7 +161,7 @@ def open(
 @overload
 def open(
     name: StrOrBytesPath | None,
-    mode: Literal["x", "x:", "a", "a:", "w", "w:"],
+    mode: Literal["x", "x:", "a", "a:", "w", "w:", "w:tar"],
     fileobj: _Fileobj | None = None,
     bufsize: int = 10240,
     *,
@@ -215,7 +215,7 @@ def open(
 def open(
     name: StrOrBytesPath | None = None,
     *,
-    mode: Literal["x", "x:", "a", "a:", "w", "w:"],
+    mode: Literal["x", "x:", "a", "a:", "w", "w:", "w:tar"],
     fileobj: _Fileobj | None = None,
     bufsize: int = 10240,
     format: int | None = ...,
