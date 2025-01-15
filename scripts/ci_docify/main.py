@@ -64,7 +64,7 @@ OS_SPECIFIC_PACKAGES = {
 }
 
 EXTRA_APT_DEPENDENCIES = [
-    "libgit2-1.1",  # pygit2
+    "libgit2-1.7",  # pygit2
     "libcurl4-openssl-dev",  # many packages
 ]
 IGNORE_APT_DEPENDENCIES = []
