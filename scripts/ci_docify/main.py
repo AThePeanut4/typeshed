@@ -13,7 +13,7 @@ from utils import parse_metadata, subprocess_run
 
 PYTHON_VERSIONS = ("3.13", "3.12", "3.11", "3.10", "3.9")
 
-DOCIFY_VER = "1.0.0"
+DOCIFY_VER = "1.1.0"
 TYPING_EXTENSIONS_VER = "4.12.2"
 
 IGNORED_PACKAGES = [
@@ -103,8 +103,8 @@ def init_venv(pyver: str) -> str:
         f"python{pyver}",
         venv,
     )
-    # uv_pip_install(venv, [f"docify=={DOCIFY_VER}"])
-    uv_pip_install(venv, ["https://github.com/AThePeanut4/docify.git"])
+    uv_pip_install(venv, [f"docify=={DOCIFY_VER}"])
+    # uv_pip_install(venv, ["https://github.com/AThePeanut4/docify.git"])
     return venv
 
 
