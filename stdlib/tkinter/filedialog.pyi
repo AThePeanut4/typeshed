@@ -162,7 +162,9 @@ def askopenfilenames(
     ...
 def askdirectory(
     *, initialdir: StrOrBytesPath | None = ..., mustexist: bool | None = False, parent: Misc | None = ..., title: str | None = ...
-) -> str: ...  # can be empty string
+) -> str:
+    """Ask for a directory, and return the file name"""
+    ...
 
 # TODO: If someone actually uses these, overload to have the actual return type of open(..., mode)
 def asksaveasfile(

@@ -164,6 +164,15 @@ class ExpatParser:  # undocumented
 _WriteCallback: TypeAlias = Callable[[str], object]
 
 class Marshaller:
+    """
+    Generate an XML-RPC params chunk from a Python data structure.
+
+    Create a Marshaller instance for each set of parameters, and use
+    the "dumps" method to convert your data (represented as a tuple)
+    to an XML-RPC params chunk.  To write a fault response, pass a
+    Fault instance instead.  You may prefer to use the "dumps" module
+    function for this purpose.
+    """
     dispatch: dict[type[_Marshallable] | Literal["_arbitrary_instance"], Callable[[Marshaller, Any, _WriteCallback], None]]
     memo: dict[Any, None]
     data: None

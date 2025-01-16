@@ -67,7 +67,10 @@ class Table:
             cell_fill_color (float, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): optional.
                 Defines the cells background color
             cell_fill_mode (str, fpdf.enums.TableCellFillMode): optional. Defines which cells are filled with color in the background
-            col_widths (float, tuple): optional. Sets column width. Can be a single number or a sequence of numbers
+            col_widths (float, tuple): optional. Sets column width. Can be a single number or a sequence of numbers.
+                 When `col_widths` is a single number, it is interpreted as a fixed column width in document units.
+                 When `col_widths` is provided as an array, the values are considered to be fractions of the full effective page width,
+                 meaning that `col_widths=(1, 1, 2)` is strictly equivalent to `col_widths=(25, 25, 50)`.
             first_row_as_headings (bool): optional, default to True. If False, the first row of the table
                 is not styled differently from the others
             gutter_height (float): optional vertical space between rows
@@ -130,7 +133,27 @@ class Row:
         padding: tuple[float, ...] | None = None,
         link: str | int | None = None,
         border: CellBordersLayout | int = ...,
-    ) -> str: ...
+    ) -> str:
+        """
+        Adds a cell to the row.
+
+        Args:
+            text (str): string content, can contain several lines.
+                In that case, the row height will grow proportionally.
+            align (str, fpdf.enums.Align): optional text alignment.
+            v_align (str, fpdf.enums.AlignV): optional vertical text alignment.
+            style (fpdf.fonts.FontFace): optional text style.
+            img: optional. Either a string representing a file path to an image,
+                an URL to an image, an io.BytesIO, or a instance of `PIL.Image.Image`.
+            img_fill_width (bool): optional, defaults to False. Indicates to render the image
+                using the full width of the current table column.
+            colspan (int): optional number of columns this cell should span.
+            rowspan (int): optional number of rows this cell should span.
+            padding (tuple): optional padding (left, top, right, bottom) for the cell.
+            link (str, int): optional link, either an URL or an integer returned by `FPDF.add_link`, defining an internal link to a page
+            border (fpdf.enums.CellBordersLayout): optional cell borders, defaults to `CellBordersLayout.INHERIT`
+        """
+        ...
     @overload
     def cell(
         self,
@@ -145,7 +168,27 @@ class Row:
         padding: tuple[float, ...] | None = None,
         link: str | int | None = None,
         border: CellBordersLayout | int = ...,
-    ) -> TableSpan: ...
+    ) -> TableSpan:
+        """
+        Adds a cell to the row.
+
+        Args:
+            text (str): string content, can contain several lines.
+                In that case, the row height will grow proportionally.
+            align (str, fpdf.enums.Align): optional text alignment.
+            v_align (str, fpdf.enums.AlignV): optional vertical text alignment.
+            style (fpdf.fonts.FontFace): optional text style.
+            img: optional. Either a string representing a file path to an image,
+                an URL to an image, an io.BytesIO, or a instance of `PIL.Image.Image`.
+            img_fill_width (bool): optional, defaults to False. Indicates to render the image
+                using the full width of the current table column.
+            colspan (int): optional number of columns this cell should span.
+            rowspan (int): optional number of rows this cell should span.
+            padding (tuple): optional padding (left, top, right, bottom) for the cell.
+            link (str, int): optional link, either an URL or an integer returned by `FPDF.add_link`, defining an internal link to a page
+            border (fpdf.enums.CellBordersLayout): optional cell borders, defaults to `CellBordersLayout.INHERIT`
+        """
+        ...
 
 @dataclass
 class Cell:

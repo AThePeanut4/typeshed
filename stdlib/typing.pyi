@@ -411,7 +411,9 @@ if sys.version_info >= (3, 10):
         else:
             def __init__(self, origin: ParamSpec) -> None: ...
 
-        def __eq__(self, other: object) -> bool: ...
+        def __eq__(self, other: object) -> bool:
+            """Return self==value."""
+            ...
         __hash__: ClassVar[None]  # type: ignore[assignment]
 
     @final
@@ -437,7 +439,9 @@ if sys.version_info >= (3, 10):
         else:
             def __init__(self, origin: ParamSpec) -> None: ...
 
-        def __eq__(self, other: object) -> bool: ...
+        def __eq__(self, other: object) -> bool:
+            """Return self==value."""
+            ...
         __hash__: ClassVar[None]  # type: ignore[assignment]
 
     @final
@@ -829,6 +833,7 @@ _ReturnT_co = TypeVar("_ReturnT_co", covariant=True, default=None)
 
 @runtime_checkable
 class Generator(Iterator[_YieldT_co], Protocol[_YieldT_co, _SendT_contra, _ReturnT_co]):
+    """A generic version of collections.abc.Generator."""
     def __next__(self) -> _YieldT_co: ...
     @abstractmethod
     def send(self, value: _SendT_contra, /) -> _YieldT_co:
@@ -961,6 +966,7 @@ class AsyncIterator(AsyncIterable[_T_co], Protocol[_T_co]):
 
 @runtime_checkable
 class AsyncGenerator(AsyncIterator[_YieldT_co], Protocol[_YieldT_co, _SendT_contra]):
+    """A generic version of collections.abc.AsyncGenerator."""
     def __anext__(self) -> Coroutine[Any, Any, _YieldT_co]: ...
     @abstractmethod
     def asend(self, value: _SendT_contra, /) -> Coroutine[Any, Any, _YieldT_co]:
@@ -983,8 +989,18 @@ class AsyncGenerator(AsyncIterator[_YieldT_co], Protocol[_YieldT_co, _SendT_cont
     @abstractmethod
     def athrow(
         self, typ: BaseException, val: None = None, tb: TracebackType | None = None, /
-    ) -> Coroutine[Any, Any, _YieldT_co]: ...
-    def aclose(self) -> Coroutine[Any, Any, None]: ...
+    ) -> Coroutine[Any, Any, _YieldT_co]:
+        """
+        Raise an exception in the asynchronous generator.
+        Return next yielded value or raise StopAsyncIteration.
+        """
+        ...
+    def aclose(self) -> Coroutine[Any, Any, None]:
+        """
+        Raise GeneratorExit inside coroutine.
+        
+        """
+        ...
 
 @runtime_checkable
 class Container(Protocol[_T_co]):
@@ -1962,6 +1978,30 @@ if sys.version_info >= (3, 12):
         ...
     @final
     class TypeAliasType:
+        """
+        Type alias.
+
+        Type aliases are created through the type statement::
+
+            type Alias = int
+
+        In this example, Alias and int will be treated equivalently by static
+        type checkers.
+
+        At runtime, Alias is an instance of TypeAliasType. The __name__
+        attribute holds the name of the type alias. The value of the type alias
+        is stored in the __value__ attribute. It is evaluated lazily, so the
+        value is computed only if the attribute is accessed.
+
+        Type aliases can also be generic::
+
+            type ListOrSet[T] = list[T] | set[T]
+
+        In this case, the type parameters of the alias are stored in the
+        __type_params__ attribute.
+
+        See PEP 695 for more information.
+        """
         def __new__(cls, name: str, value: Any, *, type_params: tuple[TypeVar | ParamSpec | TypeVarTuple, ...] = ()) -> Self: ...
         @property
         def __value__(self) -> Any: ...

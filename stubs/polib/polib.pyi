@@ -21,9 +21,63 @@ default_encoding: str
 # encoding: str
 # check_for_duplicates: bool
 @overload
-def pofile(pofile: str | Path, *, klass: type[_TP], **kwargs: Any) -> _TP: ...
+def pofile(pofile: str | Path, *, klass: type[_TP], **kwargs: Any) -> _TP:
+    """
+    Convenience function that parses the po or pot file ``pofile`` and returns
+    a :class:`~polib.POFile` instance.
+
+    Arguments:
+
+    ``pofile``
+        string, full or relative path to the po/pot file or its content (data).
+
+    ``wrapwidth``
+        integer, the wrap width, only useful when the ``-w`` option was passed
+        to xgettext (optional, default: ``78``).
+
+    ``encoding``
+        string, the encoding to use (e.g. "utf-8") (default: ``None``, the
+        encoding will be auto-detected).
+
+    ``check_for_duplicates``
+        whether to check for duplicate entries when adding entries to the
+        file (optional, default: ``False``).
+
+    ``klass``
+        class which is used to instantiate the return value (optional,
+        default: ``None``, the return value with be a :class:`~polib.POFile`
+        instance).
+    """
+    ...
 @overload
-def pofile(pofile: str | Path, **kwargs: Any) -> POFile: ...
+def pofile(pofile: str | Path, **kwargs: Any) -> POFile:
+    """
+    Convenience function that parses the po or pot file ``pofile`` and returns
+    a :class:`~polib.POFile` instance.
+
+    Arguments:
+
+    ``pofile``
+        string, full or relative path to the po/pot file or its content (data).
+
+    ``wrapwidth``
+        integer, the wrap width, only useful when the ``-w`` option was passed
+        to xgettext (optional, default: ``78``).
+
+    ``encoding``
+        string, the encoding to use (e.g. "utf-8") (default: ``None``, the
+        encoding will be auto-detected).
+
+    ``check_for_duplicates``
+        whether to check for duplicate entries when adding entries to the
+        file (optional, default: ``False``).
+
+    ``klass``
+        class which is used to instantiate the return value (optional,
+        default: ``None``, the return value with be a :class:`~polib.POFile`
+        instance).
+    """
+    ...
 @overload
 def mofile(mofile: str, *, klass: type[_TM], **kwargs: Any) -> _TM:
     """

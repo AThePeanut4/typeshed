@@ -40,7 +40,13 @@ class Base:
     children: list[_NL]
     was_changed: bool
     was_checked: bool
-    def __eq__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> bool:
+        """
+        Compare two nodes for equality.
+
+        This calls the method _eq().
+        """
+        ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     @abstractmethod
     def _eq(self, other: Base) -> bool:

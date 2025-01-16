@@ -22,6 +22,7 @@ class _TextTestStream(_SupportsWriteAndFlush, Protocol):
 # But that's not feasible to do Generically
 # We can expand the attributes if requested
 class _WritelnDecorator:
+    """Used to decorate file-like objects with a handy 'writeln' method"""
     def __init__(self, stream: _SupportsWriteAndFlush) -> None: ...
     def writeln(self, arg: str | None = None) -> None: ...
     def __getattr__(self, attr: str) -> Any: ...  # Any attribute from the stream type passed to __init__
@@ -48,7 +49,12 @@ class TextTestResult(unittest.result.TestResult, Generic[_StreamT]):
     stream: _StreamT  # undocumented
     if sys.version_info >= (3, 12):
         durations: int | None
-        def __init__(self, stream: _StreamT, descriptions: bool, verbosity: int, *, durations: int | None = None) -> None: ...
+        def __init__(self, stream: _StreamT, descriptions: bool, verbosity: int, *, durations: int | None = None) -> None:
+            """
+            Construct a TextTestResult. Subclasses should accept **kwargs
+            to ensure compatibility as the interface changes.
+            """
+            ...
     else:
         def __init__(self, stream: _StreamT, descriptions: bool, verbosity: int) -> None: ...
 
@@ -85,7 +91,14 @@ class TextTestRunner:
             *,
             tb_locals: bool = False,
             durations: int | None = None,
-        ) -> None: ...
+        ) -> None:
+            """
+            Construct a TextTestRunner.
+
+            Subclasses should accept **kwargs to ensure compatibility as the
+            interface changes.
+            """
+            ...
     else:
         def __init__(
             self,

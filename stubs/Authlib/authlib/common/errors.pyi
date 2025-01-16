@@ -1,6 +1,7 @@
 from _typeshed import Incomplete
 
 class AuthlibBaseError(Exception):
+    """Base Exception for all errors in Authlib."""
     error: Incomplete
     description: str
     uri: Incomplete

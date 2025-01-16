@@ -79,7 +79,38 @@ class Fraction(Rational):
         """
         ...
     @overload
-    def __new__(cls, numerator: float | Decimal | str) -> Self: ...
+    def __new__(cls, numerator: float | Decimal | str) -> Self:
+        """
+        Constructs a Rational.
+
+        Takes a string like '3/2' or '1.5', another Rational instance, a
+        numerator/denominator pair, or a float.
+
+        Examples
+        --------
+
+        >>> Fraction(10, -8)
+        Fraction(-5, 4)
+        >>> Fraction(Fraction(1, 7), 5)
+        Fraction(1, 35)
+        >>> Fraction(Fraction(1, 7), Fraction(2, 3))
+        Fraction(3, 14)
+        >>> Fraction('314')
+        Fraction(314, 1)
+        >>> Fraction('-35/4')
+        Fraction(-35, 4)
+        >>> Fraction('3.1415') # conversion from numeric string
+        Fraction(6283, 2000)
+        >>> Fraction('-47e-2') # string may include a decimal exponent
+        Fraction(-47, 100)
+        >>> Fraction(1.47)  # direct construction from float (exact conversion)
+        Fraction(6620291452234629, 4503599627370496)
+        >>> Fraction(2.25)
+        Fraction(9, 4)
+        >>> Fraction(Decimal('1.47'))
+        Fraction(147, 100)
+        """
+        ...
 
     if sys.version_info >= (3, 14):
         @overload
@@ -334,14 +365,34 @@ class Fraction(Rational):
         """
         ...
     @overload
-    def __round__(self, ndigits: int) -> Fraction: ...
-    def __hash__(self) -> int: ...  # type: ignore[override]
-    def __eq__(a, b: object) -> bool: ...
-    def __lt__(a, b: _ComparableNum) -> bool: ...
-    def __gt__(a, b: _ComparableNum) -> bool: ...
-    def __le__(a, b: _ComparableNum) -> bool: ...
-    def __ge__(a, b: _ComparableNum) -> bool: ...
-    def __bool__(a) -> bool: ...
+    def __round__(self, ndigits: int) -> Fraction:
+        """
+        round(self, ndigits)
+
+        Rounds half toward even.
+        """
+        ...
+    def __hash__(self) -> int:
+        """hash(self)"""
+        ...
+    def __eq__(a, b: object) -> bool:
+        """a == b"""
+        ...
+    def __lt__(a, b: _ComparableNum) -> bool:
+        """a < b"""
+        ...
+    def __gt__(a, b: _ComparableNum) -> bool:
+        """a > b"""
+        ...
+    def __le__(a, b: _ComparableNum) -> bool:
+        """a <= b"""
+        ...
+    def __ge__(a, b: _ComparableNum) -> bool:
+        """a >= b"""
+        ...
+    def __bool__(a) -> bool:
+        """a != 0"""
+        ...
     def __copy__(self) -> Self: ...
     def __deepcopy__(self, memo: Any) -> Self: ...
     if sys.version_info >= (3, 11):

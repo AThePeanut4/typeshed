@@ -4,6 +4,7 @@ from authlib.jose.rfc7517 import AsymmetricKey
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKeyWithSerialization, EllipticCurvePublicKey
 
 class ECKey(AsymmetricKey):
+    """Key class of the ``EC`` key type."""
     kty: str
     DSS_CURVES: Incomplete
     CURVES_DSS: Incomplete

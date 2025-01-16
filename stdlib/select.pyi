@@ -32,6 +32,12 @@ if sys.platform != "win32":
     # This is actually a function that returns an instance of a class.
     # The class is not accessible directly, and also calls itself select.poll.
     class poll:
+        """
+        Returns a polling object.
+
+        This object supports registering and unregistering file descriptors, and then
+        polling them for I/O events.
+        """
         # default value is select.POLLIN | select.POLLPRI | select.POLLOUT
         def register(self, fd: FileDescriptorLike, eventmask: int = 7, /) -> None: ...
         def modify(self, fd: FileDescriptorLike, eventmask: int, /) -> None: ...

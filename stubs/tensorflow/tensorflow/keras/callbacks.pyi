@@ -364,6 +364,7 @@ class BackupAndRestore(Callback):
     >>> callback = keras.callbacks.BackupAndRestore(backup_dir="/tmp/backup")
     >>> model = keras.models.Sequential([keras.layers.Dense(10)])
     >>> model.compile(keras.optimizers.SGD(), loss='mse')
+    >>> model.build(input_shape=(None, 20))
     >>> try:
     ...   model.fit(np.arange(100).reshape(5, 20), np.zeros(5), epochs=10,
     ...             batch_size=1, callbacks=[callback, InterruptingCallback()],
@@ -694,12 +695,13 @@ class ModelCheckpoint(Callback):
             which will be filled the value of `epoch` and keys in `logs`
             (passed in `on_epoch_end`).
             The `filepath` name needs to end with `".weights.h5"` when
-            `save_weights_only=True` or should end with `".keras"` when
-            checkpoint saving the whole model (default).
+            `save_weights_only=True` or should end with `".keras"` or `".h5"`
+            when checkpoint saving the whole model (default).
             For example:
-            if `filepath` is `"{epoch:02d}-{val_loss:.2f}.keras"`, then the
-            model checkpoints will be saved with the epoch number and the
-            validation loss in the filename. The directory of the filepath
+            if `filepath` is `"{epoch:02d}-{val_loss:.2f}.keras"` or
+            "{epoch:02d}-{val_loss:.2f}.weights.h5"`, then the model
+            checkpoints will be saved with the epoch number and the validation
+            loss in the filename. The directory of the filepath
             should not be reused by any other callbacks to avoid conflicts.
         monitor: The metric name to monitor. Typically the metrics are set by
             the `Model.compile` method. Note:
