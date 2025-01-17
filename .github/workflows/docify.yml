@@ -181,7 +181,7 @@ jobs:
         run: |
           git merge --ff-only origin/ci/docify
           # If the "run docify" commit is empty, remove it
-          if ! git diff --quiet HEAD^ HEAD; then
+          if git diff --quiet HEAD^ HEAD; then
             git reset --soft HEAD^
           fi
           git push origin main
