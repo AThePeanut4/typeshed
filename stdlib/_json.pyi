@@ -36,7 +36,9 @@ class make_encoder:
         """encoder"""
         ...
     @property
-    def item_separator(self) -> str: ...
+    def item_separator(self) -> str:
+        """item_separator"""
+        ...
     def __new__(
         cls,
         markers: dict[int, Any] | None,
@@ -49,7 +51,9 @@ class make_encoder:
         skipkeys: bool,
         allow_nan: bool,
     ) -> Self: ...
-    def __call__(self, obj: object, _current_indent_level: int) -> Any: ...
+    def __call__(self, obj: object, _current_indent_level: int) -> Any:
+        """Call self as a function."""
+        ...
 
 @final
 class make_scanner:
@@ -62,7 +66,9 @@ class make_scanner:
     strict: bool
     # TODO: 'context' needs the attrs above (ducktype), but not __call__.
     def __new__(cls, context: make_scanner) -> Self: ...
-    def __call__(self, string: str, index: int) -> tuple[Any, int]: ...
+    def __call__(self, string: str, index: int) -> tuple[Any, int]:
+        """Call self as a function."""
+        ...
 
 def encode_basestring(s: str, /) -> str:
     """

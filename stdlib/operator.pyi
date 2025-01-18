@@ -237,5 +237,13 @@ class itemgetter(Generic[_T_co]):
 
 @final
 class methodcaller:
+    """
+    Return a callable object that calls the given method on its operand.
+    After f = methodcaller('name'), the call f(r) returns r.name().
+    After g = methodcaller('name', 'date', foo=1), the call g(r) returns
+    r.name('date', foo=1).
+    """
     def __new__(cls, name: str, /, *args: Any, **kwargs: Any) -> Self: ...
-    def __call__(self, obj: Any) -> Any: ...
+    def __call__(self, obj: Any) -> Any:
+        """Call self as a function."""
+        ...

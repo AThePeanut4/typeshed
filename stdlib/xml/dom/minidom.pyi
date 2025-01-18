@@ -378,6 +378,7 @@ class ReadOnlySequentialNamedNodeMap:
         ...
 
 class Identified:
+    """Mix-in class that supports the publicId and systemId attributes."""
     publicId: str | None
     systemId: str | None
 

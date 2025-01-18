@@ -1,3 +1,5 @@
+"""Definitions and behavior for iCalendar, also known as vCalendar 2.0"""
+
 import datetime
 from _typeshed import Incomplete
 from datetime import timedelta
@@ -58,7 +60,22 @@ class TimezoneComponent(Component):
     tzid: Incomplete
     daylight: Incomplete
     standard: Incomplete
-    def settzinfo(self, tzinfo, start: int = 2000, end: int = 2030): ...
+    def settzinfo(self, tzinfo, start: int = 2000, end: int = 2030):
+        """
+        Create appropriate objects in self to represent tzinfo.
+
+        Collapse DST transitions to rrules as much as possible.
+
+        Assumptions:
+        - DST <-> Standard transitions occur on the hour
+        - never within a month of one another
+        - twice or fewer times a year
+        - never in the month of December
+        - DST always moves offset exactly one hour later
+        - tzinfo classes dst method always treats times that could be in either
+          offset as being in the later regime
+        """
+        ...
     normal_attributes: Incomplete
     @staticmethod
     def pickTzid(tzinfo, allowUTC: bool = False):
@@ -102,7 +119,9 @@ class RecurringComponent(Component):
         ...
     def setrruleset(self, rruleset): ...
     rruleset: Incomplete
-    def __setattr__(self, name, value) -> None: ...
+    def __setattr__(self, name, value) -> None:
+        """For convenience, make self.contents directly accessible."""
+        ...
 
 class TextBehavior(Behavior):
     """
@@ -414,7 +433,9 @@ def deltaToOffset(delta): ...
 def periodToString(period, convertToUTC: bool = False): ...
 def isDuration(s): ...
 def stringToDate(s): ...
-def stringToDateTime(s, tzinfo: datetime.tzinfo | None = None, strict: bool = False) -> datetime.datetime: ...
+def stringToDateTime(s, tzinfo: datetime.tzinfo | None = None, strict: bool = False) -> datetime.datetime:
+    """Returns datetime.datetime object."""
+    ...
 
 escapableCharList: str
 

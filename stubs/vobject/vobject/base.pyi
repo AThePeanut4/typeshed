@@ -42,15 +42,55 @@ class VBase:
     isNative: bool
     def __init__(self, group: Incomplete | None = None) -> None: ...
     def copy(self, copyit: VBase) -> None: ...
-    def validate(self, *args, **kwds) -> bool: ...
-    def getChildren(self) -> list[Incomplete]: ...
-    def clearBehavior(self, cascade: bool = True) -> None: ...
-    def autoBehavior(self, cascade: bool = False) -> None: ...
-    def setBehavior(self, behavior, cascade: bool = True) -> None: ...
-    def transformToNative(self): ...
-    def transformFromNative(self): ...
-    def transformChildrenToNative(self) -> None: ...
-    def transformChildrenFromNative(self, clearBehavior: bool = True) -> None: ...
+    def validate(self, *args, **kwds) -> bool:
+        """Call the behavior's validate method, or return True."""
+        ...
+    def getChildren(self) -> list[Incomplete]:
+        """Return an iterable containing the contents of the object."""
+        ...
+    def clearBehavior(self, cascade: bool = True) -> None:
+        """Set behavior to None. Do for all descendants if cascading."""
+        ...
+    def autoBehavior(self, cascade: bool = False) -> None:
+        """
+        Set behavior if name is in self.parentBehavior.knownChildren.
+
+        If cascade is True, unset behavior and parentBehavior for all
+        descendants, then recalculate behavior and parentBehavior.
+        """
+        ...
+    def setBehavior(self, behavior, cascade: bool = True) -> None:
+        """Set behavior. If cascade is True, autoBehavior all descendants."""
+        ...
+    def transformToNative(self):
+        """
+        Transform this object into a custom VBase subclass.
+
+        transformToNative should always return a representation of this object.
+        It may do so by modifying self in place then returning self, or by
+        creating a new object.
+        """
+        ...
+    def transformFromNative(self):
+        """
+        Return self transformed into a ContentLine or Component if needed.
+
+        May have side effects.  If it does, transformFromNative and
+        transformToNative MUST have perfectly inverse side effects. Allowing
+        such side effects is convenient for objects whose transformations only
+        change a few attributes.
+
+        Note that it isn't always possible for transformFromNative to be a
+        perfect inverse of transformToNative, in such cases transformFromNative
+        should return a new object, not self after modifications.
+        """
+        ...
+    def transformChildrenToNative(self) -> None:
+        """Recursively replace children with their native representation."""
+        ...
+    def transformChildrenFromNative(self, clearBehavior: bool = True) -> None:
+        """Recursively transform native children to vanilla representations."""
+        ...
     # Use Any because args and kwargs are passed to the behavior object
     @overload
     def serialize(
@@ -87,6 +127,31 @@ def toVName(name, stripNum: int = 0, upper: bool = False):
     ...
 
 class ContentLine(VBase):
+    """
+    Holds one content line for formats like vCard and vCalendar.
+
+    For example::
+      <SUMMARY{u'param1' : [u'val1'], u'param2' : [u'val2']}Bastille Day Party>
+
+    @ivar name:
+        The uppercased name of the contentline.
+    @ivar params:
+        A dictionary of parameters and associated lists of values (the list may
+        be empty for empty parameters).
+    @ivar value:
+        The value of the contentline.
+    @ivar singletonparams:
+        A list of parameters for which it's unclear if the string represents the
+        parameter name or the parameter value. In vCard 2.1, "The value string
+        can be specified alone in those cases where the value is unambiguous".
+        This is crazy, but we have to deal with it.
+    @ivar encoded:
+        A boolean describing whether the data in the content line is encoded.
+        Generally, text read from a serialized vCard or vCalendar should be
+        considered encoded.  Data added programmatically should not be encoded.
+    @ivar lineNumber:
+        An optional line number associated with the contentline.
+    """
     name: Incomplete
     encoded: Incomplete
     params: Incomplete
@@ -167,10 +232,30 @@ class Component(VBase):
     @classmethod
     def duplicate(cls, copyit): ...
     def copy(self, copyit) -> None: ...
-    def setProfile(self, name) -> None: ...
-    def __getattr__(self, name: str): ...
+    def setProfile(self, name) -> None:
+        """
+        Assign a PROFILE to this unnamed component.
+
+        Used by vCard, not by vCalendar.
+        """
+        ...
+    def __getattr__(self, name: str):
+        """
+        For convenience, make self.contents directly accessible.
+
+        Underscores, legal in python variable names, are converted to dashes,
+        which are legal in IANA tokens.
+        """
+        ...
     normal_attributes: Incomplete
-    def __setattr__(self, name: str, value) -> None: ...
+    def __setattr__(self, name: str, value) -> None:
+        """
+        For convenience, make self.contents directly accessible.
+
+        Underscores, legal in python variable names, are converted to dashes,
+        which are legal in IANA tokens.
+        """
+        ...
     def __delattr__(self, name: str) -> None: ...
     def getChildValue(self, childName, default: Incomplete | None = None, childNumber: int = 0):
         """Return a child's value (the first, by default), or None."""
@@ -211,11 +296,28 @@ class Component(VBase):
         """
         ...
     @overload
-    def add(self, objOrName: str, group: str | None = None) -> Any: ...  # returns VBase sub-class
-    def remove(self, obj) -> None: ...
-    def getChildren(self) -> list[Incomplete]: ...
-    def components(self) -> Iterable[Component]: ...
-    def lines(self): ...
+    def add(self, objOrName: str, group: str | None = None) -> Any:
+        """
+        Add objOrName to contents, set behavior if it can be inferred.
+
+        If objOrName is a string, create an empty component or line based on
+        behavior. If no behavior is found for the object, add a ContentLine.
+
+        group is an optional prefix to the name of the object (see RFC 2425).
+        """
+        ...
+    def remove(self, obj) -> None:
+        """Remove obj from contents."""
+        ...
+    def getChildren(self) -> list[Incomplete]:
+        """Return an iterable of all children."""
+        ...
+    def components(self) -> Iterable[Component]:
+        """Return an iterable of all Component children."""
+        ...
+    def lines(self):
+        """Return an iterable of all ContentLine children."""
+        ...
     def sortChildKeys(self): ...
     def getSortedChildren(self): ...
     def setBehaviorFromVersionLine(self, versionLine) -> None:

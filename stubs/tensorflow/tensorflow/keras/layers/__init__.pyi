@@ -318,10 +318,11 @@ class Layer(tf.Module, Generic[_InputT, _OutputT]):
             constraint: Contrainst object to call on the variable after any
                 optimizer update, or string name of a built-in constraint.
                 Defaults to `None`.
-            aggregation: String, one of `'mean'`, `'sum'`,
-                `'only_first_replica'`. Annotates the variable with the type
-                of multi-replica aggregation to be used for this variable
-                when writing custom data parallel training loops.
+            aggregation: Optional string, one of `None`, `"none"`, `"mean"`,
+                `"sum"` or `"only_first_replica"`. Annotates the variable with
+                the type of multi-replica aggregation to be used for this
+                variable when writing custom data parallel training loops.
+                Defaults to `"none"`.
             name: String name of the variable. Useful for debugging purposes.
         """
         ...

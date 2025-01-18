@@ -149,7 +149,24 @@ def CFUNCTYPE(
     *argtypes: type[_CData | _CDataType],
     use_errno: bool = False,
     use_last_error: bool = False,
-) -> type[_CFunctionType]: ...
+) -> type[_CFunctionType]:
+    """
+    CFUNCTYPE(restype, *argtypes,
+                 use_errno=False, use_last_error=False) -> function prototype.
+
+    restype: the result type
+    argtypes: a sequence specifying the argument types
+
+    The function prototype can be called in different ways to create a
+    callable object:
+
+    prototype(integer address) -> foreign function
+    prototype(callable) -> create and return a C callable function from callable
+    prototype(integer index, method name[, paramflags]) -> foreign function calling a COM method
+    prototype((ordinal number, dll object)[, paramflags]) -> foreign function exported by ordinal
+    prototype((function name, dll object)[, paramflags]) -> foreign function exported by name
+    """
+    ...
 
 if sys.platform == "win32":
     def WINFUNCTYPE(
@@ -224,7 +241,13 @@ class _MemsetFunctionType(_CFunctionType):
 
 memset: _MemsetFunctionType
 
-def string_at(ptr: _CVoidConstPLike, size: int = -1) -> bytes: ...
+def string_at(ptr: _CVoidConstPLike, size: int = -1) -> bytes:
+    """
+    string_at(ptr[, size]) -> string
+
+    Return the byte string at void *ptr.
+    """
+    ...
 
 if sys.platform == "win32":
     def WinError(code: int | None = None, descr: str | None = None) -> OSError: ...

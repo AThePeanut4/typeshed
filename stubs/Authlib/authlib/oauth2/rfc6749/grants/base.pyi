@@ -26,9 +26,34 @@ class BaseGrant:
         expires_in: int | None = None,
         include_refresh_token: bool = True,
     ) -> dict[str, str | int]: ...
-    def authenticate_token_endpoint_client(self) -> ClientMixin: ...
-    def save_token(self, token): ...
-    def validate_requested_scope(self) -> None: ...
+    def authenticate_token_endpoint_client(self) -> ClientMixin:
+        """
+        Authenticate client with the given methods for token endpoint.
+
+        For example, the client makes the following HTTP request using TLS:
+
+        .. code-block:: http
+
+            POST /token HTTP/1.1
+            Host: server.example.com
+            Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+            Content-Type: application/x-www-form-urlencoded
+
+            grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
+            &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb
+
+        Default available methods are: "none", "client_secret_basic" and
+        "client_secret_post".
+
+        :return: client
+        """
+        ...
+    def save_token(self, token):
+        """A method to save token into database."""
+        ...
+    def validate_requested_scope(self) -> None:
+        """Validate if requested scope is supported by Authorization Server."""
+        ...
     def register_hook(self, hook_type: str, hook: Callable[..., Incomplete]) -> None: ...
     def execute_hook(self, hook_type: str, *args: object, **kwargs: object) -> None: ...
 
@@ -48,7 +73,14 @@ class AuthorizationEndpointMixin:
     @staticmethod
     def validate_authorization_redirect_uri(request: OAuth2Request, client: ClientMixin) -> str: ...
     @staticmethod
-    def validate_no_multiple_request_parameter(request: OAuth2Request): ...
+    def validate_no_multiple_request_parameter(request: OAuth2Request):
+        """
+        For the Authorization Endpoint, request and response parameters MUST NOT be included
+        more than once. Per `Section 3.1`_.
+
+        .. _`Section 3.1`: https://tools.ietf.org/html/rfc6749#section-3.1
+        """
+        ...
     redirect_uri: Incomplete
     def validate_consent_request(self) -> None: ...
     def validate_authorization_request(self) -> str: ...

@@ -983,8 +983,21 @@ class BoundArguments:
 
 _ClassTreeItem: TypeAlias = list[tuple[type, ...]] | list[_ClassTreeItem]
 
-def getclasstree(classes: list[type], unique: bool = False) -> _ClassTreeItem: ...
-def walktree(classes: list[type], children: Mapping[type[Any], list[type]], parent: type[Any] | None) -> _ClassTreeItem: ...
+def getclasstree(classes: list[type], unique: bool = False) -> _ClassTreeItem:
+    """
+    Arrange the given list of classes into a hierarchy of nested lists.
+
+    Where a nested list appears, it contains classes derived from the class
+    whose entry immediately precedes the list.  Each entry is a 2-tuple
+    containing a class and a tuple of its base classes.  If the 'unique'
+    argument is true, exactly one entry appears in the returned structure
+    for each class in the given list.  Otherwise, classes using multiple
+    inheritance and their descendants will appear multiple times.
+    """
+    ...
+def walktree(classes: list[type], children: Mapping[type[Any], list[type]], parent: type[Any] | None) -> _ClassTreeItem:
+    """Recursive helper function for getclasstree()."""
+    ...
 
 class Arguments(NamedTuple):
     """Arguments(args, varargs, varkw)"""

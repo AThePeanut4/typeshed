@@ -83,6 +83,7 @@ FPDF_VERSION: Final[str]
 PAGE_FORMATS: dict[_Format, tuple[float, float]]
 
 class ToCPlaceholder(NamedTuple):
+    """ToCPlaceholder(render_function, start_page, y, page_orientation, pages)"""
     render_function: Callable[[FPDF, list[OutlineSection]], object]
     start_page: int
     y: int
@@ -247,7 +248,7 @@ class FPDF(GraphicsStateMixin):
             pre_code_font (str): [**DEPRECATED since v2.7.9**]
                 font to use for `<pre>` & `<code>` blocks - Set `tag_styles` instead
             warn_on_tags_not_matching (bool): control warnings production for unmatched HTML tags. Defaults to `True`.
-            tag_indents (dict): [**DEPRECATED since v2.7.10**]
+            tag_indents (dict): [**DEPRECATED since v2.8.0**]
                 mapping of HTML tag names to numeric values representing their horizontal left identation. - Set `tag_styles` instead
             tag_styles (dict[str, fpdf.fonts.TextStyle]): mapping of HTML tag names to `fpdf.TextStyle` or `fpdf.FontFace` instances
         """
@@ -368,9 +369,50 @@ class FPDF(GraphicsStateMixin):
         direction: Literal["ltr", "rtl"] | TextDirection | None = None,
         script: str | None = None,
         language: str | None = None,
-    ) -> None: ...
-    def set_compression(self, compress: bool) -> None: ...
-    def set_title(self, title: str) -> None: ...
+    ) -> None:
+        """
+        Enable or disable text shaping engine when rendering text.
+        If features, direction, script or language are not specified the shaping engine will try
+        to guess the values based on the input text.
+
+        Args:
+            use_shaping_engine: enable or disable the use of the shaping engine to process the text
+            features: a dictionary containing 4 digit OpenType features and whether each feature
+                should be enabled or disabled
+                example: features={"kern": False, "liga": False}
+            direction: the direction the text should be rendered, either "ltr" (left to right)
+                or "rtl" (right to left).
+            script: a valid OpenType script tag like "arab" or "latn"
+            language: a valid OpenType language tag like "eng" or "fra"
+        """
+        ...
+    def set_compression(self, compress: bool) -> None:
+        """
+        Activates or deactivates page compression.
+
+        When activated, the internal representation of each page is compressed
+        using the zlib/deflate method (FlateDecode), which leads to a compression ratio
+        of about 2 for the resulting document.
+
+        Page compression is enabled by default.
+
+        Args:
+            compress (bool): indicates if compression should be enabled
+        """
+        ...
+    def set_title(self, title: str) -> None:
+        """
+        Defines the title of the document.
+
+        Most PDF readers will display it when viewing the document.
+        There is also a related `fpdf.prefs.ViewerPreference` entry:
+
+            pdf.viewer_preferences = ViewerPreference(display_doc_title=True)
+
+        Args:
+            title (str): the title
+        """
+        ...
     lang: str
     def set_lang(self, lang: str) -> None:
         """
@@ -428,9 +470,52 @@ class FPDF(GraphicsStateMixin):
         """Sets Creation of Date time, or current time if None given."""
         ...
     def set_xmp_metadata(self, xmp_metadata: str) -> None: ...
-    def set_doc_option(self, opt: str, value: str) -> None: ...
-    def set_image_filter(self, image_filter: str) -> None: ...
-    def alias_nb_pages(self, alias: str = "{nb}") -> None: ...
+    def set_doc_option(self, opt: str, value: str) -> None:
+        """
+        Defines a document option.
+
+        Args:
+            opt (str): name of the option to set
+            value (str) option value
+
+        .. deprecated:: 2.4.0
+            Simply set the `FPDF.core_fonts_encoding` property as a replacement.
+        """
+        ...
+    def set_image_filter(self, image_filter: str) -> None:
+        """
+        Args:
+            image_filter (str): name of a the image filter to use
+                when embedding images in the document, or "AUTO",
+                meaning to use the best image filter given the images provided.
+                Allowed values: `FlateDecode` (lossless zlib/deflate compression),
+                `DCTDecode` (lossy compression with JPEG)
+                and `JPXDecode` (lossy compression with JPEG2000).
+        """
+        ...
+    def alias_nb_pages(self, alias: str = "{nb}") -> None:
+        """
+        Defines an alias for the total number of pages.
+        It will be substituted as the document is closed.
+
+        This is useful to insert the number of pages of the document
+        at a time when this number is not known by the program.
+
+        This substitution can be disabled for performances reasons, by calling `alias_nb_pages(None)`.
+
+        Args:
+            alias (str): the alias. Defaults to "{nb}".
+
+        Notes
+        -----
+
+        When using this feature with the `FPDF.cell` / `FPDF.multi_cell` methods,
+        or the `.underline` attribute of `FPDF` class,
+        the width of the text rendered will take into account the alias length,
+        not the length of the "actual number of pages" string,
+        which can causes slight positioning differences.
+        """
+        ...
     def set_page_label(
         self, label_style: PageLabelStyle | str | None = None, label_prefix: str | None = None, label_start: int | None = None
     ) -> None: ...
@@ -444,18 +529,154 @@ class FPDF(GraphicsStateMixin):
         label_style: PageLabelStyle | str | None = None,
         label_prefix: str | None = None,
         label_start: int | None = None,
-    ) -> None: ...
-    def header(self) -> None: ...
-    def footer(self) -> None: ...
-    def page_no(self) -> int: ...
+    ) -> None:
+        """
+        Adds a new page to the document.
+        If a page is already present, the `FPDF.footer()` method is called first.
+        Then the page  is added, the current position is set to the top-left corner,
+        with respect to the left and top margins, and the `FPDF.header()` method is called.
+
+        Args:
+            orientation (str): "portrait" (can be abbreviated "P")
+                or "landscape" (can be abbreviated "L"). Default to "portrait".
+            format (str): "a3", "a4", "a5", "letter", "legal" or a tuple
+                (width, height). Default to "a4".
+            same (bool): indicates to use the same page format as the previous page.
+                Default to False.
+            duration (float): optional page’s display duration, i.e. the maximum length of time,
+                in seconds, that the page is displayed in presentation mode,
+                before the viewer application automatically advances to the next page.
+                Can be configured globally through the `.page_duration` FPDF property.
+                As of june 2021, onored by Adobe Acrobat reader, but ignored by Sumatra PDF reader.
+            transition (Transition child class): optional visual transition to use when moving
+                from another page to the given page during a presentation.
+                Can be configured globally through the `.page_transition` FPDF property.
+                As of june 2021, onored by Adobe Acrobat reader, but ignored by Sumatra PDF reader.
+            label_style (str or PageLabelStyle): Defines the numbering style for the numeric portion of each
+                page label. Possible values are:
+                - "D": Decimal Arabic numerals.
+                - "R": Uppercase Roman numerals.
+                - "r": Lowercase Roman numerals.
+                - "A": Uppercase letters (A to Z for the first 26 pages, followed by AA to ZZ, etc.).
+                - "a": Lowercase letters (a to z for the first 26 pages, followed by aa to zz, etc.).
+            label_prefix (str): Prefix string applied to the page label, preceding the numeric portion.
+            label_start (int): Starting number for the first page of a page label range.
+        """
+        ...
+    def header(self) -> None:
+        """
+        Header to be implemented in your own inherited class
+
+        This is automatically called by `FPDF.add_page()`
+        and should not be called directly by the user application.
+        The default implementation performs nothing: you have to override this method
+        in a subclass to implement your own rendering logic.
+        """
+        ...
+    def footer(self) -> None:
+        """
+        Footer to be implemented in your own inherited class.
+
+        This is automatically called by `FPDF.add_page()` and `FPDF.output()`
+        and should not be called directly by the user application.
+        The default implementation performs nothing: you have to override this method
+        in a subclass to implement your own rendering logic.
+        """
+        ...
+    def page_no(self) -> int:
+        """Get the current page number"""
+        ...
     def get_page_label(self) -> str: ...
-    def set_draw_color(self, r: int, g: int = -1, b: int = -1) -> None: ...
-    def set_fill_color(self, r: int, g: int = -1, b: int = -1) -> None: ...
-    def set_text_color(self, r: int, g: int = -1, b: int = -1) -> None: ...
-    def get_string_width(self, s: str, normalized: bool = False, markdown: bool = False) -> float: ...
-    def set_line_width(self, width: float) -> None: ...
-    def set_page_background(self, background) -> None: ...
-    def drawing_context(self, debug_stream: Incomplete | None = None) -> _GeneratorContextManager[DrawingContext]: ...
+    def set_draw_color(self, r: int, g: int = -1, b: int = -1) -> None:
+        """
+        Defines the color used for all stroking operations (lines, rectangles and cell borders).
+        Accepts either a single greyscale value, 3 values as RGB components, a single `#abc` or `#abcdef` hexadecimal color string,
+        or an instance of `fpdf.drawing.DeviceCMYK`, `fpdf.drawing.DeviceRGB` or `fpdf.drawing.DeviceGray`.
+        The method can be called before the first page is created and the value is retained from page to page.
+
+        Args:
+            r (int, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): if `g` and `b` are given, this indicates the red component.
+                Else, this indicates the grey level. The value must be between 0 and 255.
+            g (int): green component (between 0 and 255)
+            b (int): blue component (between 0 and 255)
+        """
+        ...
+    def set_fill_color(self, r: int, g: int = -1, b: int = -1) -> None:
+        """
+        Defines the color used for all filling operations (filled rectangles and cell backgrounds).
+        Accepts either a single greyscale value, 3 values as RGB components, a single `#abc` or `#abcdef` hexadecimal color string,
+        or an instance of `fpdf.drawing.DeviceCMYK`, `fpdf.drawing.DeviceRGB` or `fpdf.drawing.DeviceGray`.
+        The method can be called before the first page is created and the value is retained from page to page.
+
+        Args:
+            r (int, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): if `g` and `b` are given, this indicates the red component.
+                Else, this indicates the grey level. The value must be between 0 and 255.
+            g (int): green component (between 0 and 255)
+            b (int): blue component (between 0 and 255)
+        """
+        ...
+    def set_text_color(self, r: int, g: int = -1, b: int = -1) -> None:
+        """
+        Defines the color used for text.
+        Accepts either a single greyscale value, 3 values as RGB components, a single `#abc` or `#abcdef` hexadecimal color string,
+        or an instance of `fpdf.drawing.DeviceCMYK`, `fpdf.drawing.DeviceRGB` or `fpdf.drawing.DeviceGray`.
+        The method can be called before the first page is created and the value is retained from page to page.
+
+        Args:
+            r (int, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): if `g` and `b` are given, this indicates the red component.
+                Else, this indicates the grey level. The value must be between 0 and 255.
+            g (int): green component (between 0 and 255)
+            b (int): blue component (between 0 and 255)
+        """
+        ...
+    def get_string_width(self, s: str, normalized: bool = False, markdown: bool = False) -> float:
+        """
+        Returns the length of a string in user unit. A font must be selected.
+        The value is calculated with stretching and spacing.
+
+        Note that the width of a cell has some extra padding added to this width,
+        on the left & right sides, equal to the .c_margin property.
+
+        Args:
+            s (str): the string whose length is to be computed.
+            normalized (bool): whether normalization needs to be performed on the input string.
+            markdown (bool): indicates if basic markdown support is enabled
+        """
+        ...
+    def set_line_width(self, width: float) -> None:
+        """
+        Defines the line width of all stroking operations (lines, rectangles and cell borders).
+        By default, the value equals 0.2 mm.
+        The method can be called before the first page is created and the value is retained from page to page.
+
+        Args:
+            width (float): the width in user unit
+        """
+        ...
+    def set_page_background(self, background) -> None:
+        """
+        Sets a background color or image to be drawn every time `FPDF.add_page()` is called, or removes a previously set background.
+        The method can be called before the first page is created and the value is retained from page to page.
+
+        Args:
+            background: either a string representing a file path or URL to an image,
+                an io.BytesIO containg an image as bytes, an instance of `PIL.Image.Image`, drawing.DeviceRGB
+                or a RGB tuple representing a color to fill the background with or `None` to remove the background
+        """
+        ...
+    def drawing_context(self, debug_stream: Incomplete | None = None) -> _GeneratorContextManager[DrawingContext]:
+        """
+        Create a context for drawing paths on the current page.
+
+        If this context manager is called again inside of an active context, it will
+        raise an exception, as base drawing contexts cannot be nested.
+
+        Args:
+            debug_stream (TextIO): print a pretty tree of all items to be rendered
+                to the provided stream. To store the output in a string, use
+                `io.StringIO`.
+        """
+        ...
     def new_path(
         self, x: float = 0, y: float = 0, paint_rule: PathPaintRule = ..., debug_stream: Incomplete | None = None
     ) -> _GeneratorContextManager[PaintedPath]:
@@ -919,7 +1140,24 @@ class FPDF(GraphicsStateMixin):
         *,
         border_width: int = 0,
         **kwargs,  # accepts AnnotationDict arguments
-    ) -> AnnotationDict: ...
+    ) -> AnnotationDict:
+        """
+        Puts a link annotation on a rectangular area of the page.
+        Text or image links are generally put via `FPDF.cell`,
+        `FPDF.write` or `FPDF.image`,
+        but this method can be useful for instance to define a clickable area inside an image.
+
+        Args:
+            x (float): horizontal position (from the left) to the left side of the link rectangle
+            y (float): vertical position (from the top) to the bottom side of the link rectangle
+            w (float): width of the link rectangle
+            h (float): height of the link rectangle
+            link: either an URL or an integer returned by `FPDF.add_link`, defining an internal link to a page
+            alt_text (str): optional textual description of the link, for accessibility purposes
+            border_width (int): thickness of an optional black border surrounding the link.
+                Not all PDF readers honor this: Acrobat renders it but not Sumatra.
+        """
+        ...
     def embed_file(
         self,
         file_path: StrPath | None = None,
@@ -997,7 +1235,22 @@ class FPDF(GraphicsStateMixin):
         *,
         flags: tuple[AnnotationFlag, ...] | tuple[str, ...] = ...,
         **kwargs,  # accepts AnnotationDict arguments
-    ) -> AnnotationDict: ...
+    ) -> AnnotationDict:
+        """
+        Puts a text annotation on a rectangular area of the page.
+
+        Args:
+            x (float): horizontal position (from the left) to the left side of the link rectangle
+            y (float): vertical position (from the top) to the bottom side of the link rectangle
+            text (str): text to display
+            w (float): optional width of the link rectangle
+            h (float): optional height of the link rectangle
+            name (fpdf.enums.AnnotationName, str): optional icon that shall be used in displaying the annotation
+            flags (Tuple[fpdf.enums.AnnotationFlag], Tuple[str]): optional list of flags defining annotation properties
+            title (str): the text label that shall be displayed in the title bar of the annotation’s
+                pop-up window when open and active. This entry shall identify the user who added the annotation.
+        """
+        ...
     def free_text_annotation(
         self,
         text: str,
@@ -1008,10 +1261,38 @@ class FPDF(GraphicsStateMixin):
         *,
         flags: tuple[AnnotationFlag, ...] | tuple[str, ...] = ...,
         **kwargs,  # accepts AnnotationDict arguments
-    ) -> AnnotationDict: ...
+    ) -> AnnotationDict:
+        """
+        Puts a free text annotation on a rectangular area of the page.
+
+        Args:
+            text (str): text to display
+            x (float): optional horizontal position (from the left) to the left side of the link rectangle.
+                Default value: None, meaning the current abscissa is used
+            y (float): vertical position (from the top) to the bottom side of the link rectangle.
+                Default value: None, meaning the current ordinate is used
+            w (float): optional width of the link rectangle. Default value: None, meaning the length of text in user unit
+            h (float): optional height of the link rectangle. Default value: None, meaning an height equal
+                to the current font size
+            flags (Tuple[fpdf.enums.AnnotationFlag], Tuple[str]): optional list of flags defining annotation properties
+            color (tuple): a tuple of numbers in the range 0.0 to 1.0, representing a colour used for the annotation background
+            border_width (float): width of the annotation border
+        """
+        ...
     def add_action(
         self, action, x: float, y: float, w: float, h: float, **kwargs  # accepts AnnotationDict arguments
-    ) -> AnnotationDict: ...
+    ) -> AnnotationDict:
+        """
+        Puts an Action annotation on a rectangular area of the page.
+
+        Args:
+            action (fpdf.actions.Action): the action to add
+            x (float): horizontal position (from the left) to the left side of the link rectangle
+            y (float): vertical position (from the top) to the bottom side of the link rectangle
+            w (float): width of the link rectangle
+            h (float): height of the link rectangle
+        """
+        ...
     def highlight(
         self,
         text: str,
@@ -1021,7 +1302,21 @@ class FPDF(GraphicsStateMixin):
         *,
         title: str | None = None,
         **kwargs,  # accepts AnnotationDict arguments
-    ) -> _GeneratorContextManager[None]: ...
+    ) -> _GeneratorContextManager[None]:
+        """
+        Context manager that adds a single highlight annotation based on the text lines inserted
+        inside its indented block.
+
+        Args:
+            text (str): text of the annotation
+            title (str): the text label that shall be displayed in the title bar of the annotation’s
+                pop-up window when open and active. This entry shall identify the user who added the annotation.
+            type (fpdf.enums.TextMarkupType, str): "Highlight", "Underline", "Squiggly" or "StrikeOut".
+            color (tuple): a tuple of numbers in the range 0.0 to 1.0, representing a colour used for
+                the title bar of the annotation’s pop-up window. Defaults to yellow.
+            modification_time (datetime): date and time when the annotation was most recently modified
+        """
+        ...
     add_highlight = highlight
     def add_text_markup_annotation(
         self,
@@ -1034,7 +1329,25 @@ class FPDF(GraphicsStateMixin):
         *,
         title: str | None = None,
         **kwargs,  # accepts AnnotationDict arguments
-    ) -> AnnotationDict: ...
+    ) -> AnnotationDict:
+        """
+        Adds a text markup annotation on some quadrilateral areas of the page.
+
+        Args:
+            type (fpdf.enums.TextMarkupType, str): "Highlight", "Underline", "Squiggly" or "StrikeOut"
+            text (str): text of the annotation
+            quad_points (tuple): array of 8 × n numbers specifying the coordinates of n quadrilaterals
+                in default user space that comprise the region in which the link should be activated.
+                The coordinates for each quadrilateral are given in the order: x1 y1 x2 y2 x3 y3 x4 y4
+                specifying the four vertices of the quadrilateral in counterclockwise order
+            title (str): the text label that shall be displayed in the title bar of the annotation’s
+                pop-up window when open and active. This entry shall identify the user who added the annotation.
+            color (tuple): a tuple of numbers in the range 0.0 to 1.0, representing a colour used for
+                the title bar of the annotation’s pop-up window. Defaults to yellow.
+            modification_time (datetime): date and time when the annotation was most recently modified
+            page (int): index of the page where this annotation is added
+        """
+        ...
     def ink_annotation(
         self,
         coords: Iterable[Incomplete],
@@ -1044,10 +1357,71 @@ class FPDF(GraphicsStateMixin):
         *,
         title: str | None = None,
         **kwargs,  # accepts AnnotationDict arguments
-    ) -> AnnotationDict: ...
-    def text(self, x: float, y: float, text: str = "") -> None: ...
-    def rotate(self, angle: float, x: float | None = None, y: float | None = None) -> None: ...
-    def rotation(self, angle: float, x: float | None = None, y: float | None = None) -> _GeneratorContextManager[None]: ...
+    ) -> AnnotationDict:
+        """
+        Adds add an ink annotation on the page.
+
+        Args:
+            coords (tuple): an iterable of coordinates (pairs of numbers) defining a path
+            text (str): textual description
+            title (str): the text label that shall be displayed in the title bar of the annotation’s
+                pop-up window when open and active. This entry shall identify the user who added the annotation.
+            color (tuple): a tuple of numbers in the range 0.0 to 1.0, representing a colour used for
+                the title bar of the annotation’s pop-up window. Defaults to yellow.
+            border_width (float): thickness of the path stroke.
+        """
+        ...
+    def text(self, x: float, y: float, text: str = "") -> None:
+        """
+        Prints a character string. The origin is on the left of the first character,
+        on the baseline. This method allows placing a string precisely on the page,
+        but it is usually easier to use the `FPDF.cell()`, `FPDF.multi_cell() or `FPDF.write()` methods.
+
+        Args:
+            x (float): abscissa of the origin
+            y (float): ordinate of the origin
+            text (str): string to print
+            txt (str): [**DEPRECATED since v2.7.6**] string to print
+
+        Notes
+        -----
+
+        `text()` lacks many of the features available in `FPDF.write()`,
+        `FPDF.cell()` and `FPDF.multi_cell()` like markdown and text shaping.
+        """
+        ...
+    def rotate(self, angle: float, x: float | None = None, y: float | None = None) -> None:
+        """
+        .. deprecated:: 2.1.0
+            Use `FPDF.rotation()` instead.
+        """
+        ...
+    def rotation(self, angle: float, x: float | None = None, y: float | None = None) -> _GeneratorContextManager[None]:
+        """
+        Method to perform a rotation around a given center.
+        It must be used as a context-manager using `with`:
+
+            with rotation(angle=90, x=x, y=y):
+                pdf.something()
+
+        The rotation affects all elements which are printed inside the indented
+        context (with the exception of clickable areas).
+
+        Args:
+            angle (float): angle in degrees
+            x (float): abscissa of the center of the rotation
+            y (float): ordinate of the center of the rotation
+
+        Notes
+        -----
+
+        Only the rendering is altered. The `FPDF.get_x()` and `FPDF.get_y()` methods are
+        not affected, nor the automatic page break mechanism.
+        The rotation also establishes a local graphics state, so that any
+        graphics state settings changed within will not affect the operations
+        invoked after it has finished.
+        """
+        ...
     def skew(
         self, ax: float = 0, ay: float = 0, x: float | None = None, y: float | None = None
     ) -> _GeneratorContextManager[None]:
@@ -1135,39 +1509,42 @@ class FPDF(GraphicsStateMixin):
                 draw_some_stuff()
 
         The affected settings are those controlled by GraphicsStateMixin and drawing.GraphicsStyle:
-            allow_transparency
-            auto_close
-            blend_mode
-            char_vpos
-            char_spacing
-            dash_pattern
-            denom_lift
-            denom_scale
-            draw_color
-            fill_color
-            fill_opacity
-            font_family
-            font_size
-            font_size_pt
-            font_style
-            font_stretching
-            intersection_rule
-            line_width
-            nom_lift
-            nom_scale
-            paint_rule
-            stroke_cap_style
-            stroke_join_style
-            stroke_miter_limit
-            stroke_opacity
-            sub_lift
-            sub_scale
-            sup_lift
-            sup_scale
-            text_color
-            text_mode
-            text_shaping
-            underline
+
+        * allow_transparency
+        * auto_close
+        * blend_mode
+        * char_vpos
+        * char_spacing
+        * dash_pattern
+        * denom_lift
+        * denom_scale
+        * draw_color
+        * fill_color
+        * fill_opacity
+        * font_family
+        * font_size
+        * font_size_pt
+        * font_style
+        * font_stretching
+        * intersection_rule
+        * line_width
+        * nom_lift
+        * nom_scale
+        * paint_rule
+        * stroke_cap_style
+        * stroke_join_style
+        * stroke_miter_limit
+        * stroke_opacity
+        * sub_lift
+        * sub_scale
+        * sup_lift
+        * sup_scale
+        * text_color
+        * text_mode
+        * text_shaping
+        * underline
+
+        Font size can be specified in document units with `font_size` or in points with `font_size_pt`.
 
         Args:
             **kwargs: key-values settings to set at the beggining of this context.
@@ -1431,8 +1808,8 @@ class FPDF(GraphicsStateMixin):
                 bytes, an io.BytesIO, or a instance of `PIL.Image.Image`
             x (float, fpdf.enums.Align): optional horizontal position where to put the image on the page.
                 If not specified or equal to None, the current abscissa is used.
-                `Align.C` can also be passed to center the image horizontally;
-                and `Align.R` to place it along the right page margin
+                `fpdf.enums.Align.C` can also be passed to center the image horizontally;
+                and `fpdf.enums.Align.R` to place it along the right page margin
             y (float): optional vertical position where to put the image on the page.
                 If not specified or equal to None, the current ordinate is used.
                 After the call, the current ordinate is moved to the bottom of the image
@@ -1562,18 +1939,110 @@ class FPDF(GraphicsStateMixin):
         signing_time: datetime.datetime | None = None,
         reason: str | None = None,
         flags: tuple[AnnotationFlag, ...] = ...,
-    ) -> None: ...
-    def file_id(self) -> str: ...
-    def interleaved2of5(self, text, x: float, y: float, w: float = 1, h: float = 10) -> None: ...
-    def code39(self, text, x: float, y: float, w: float = 1.5, h: float = 5) -> None: ...
-    def rect_clip(self, x: float, y: float, w: float, h: float) -> _GeneratorContextManager[None]: ...
-    def elliptic_clip(self, x: float, y: float, w: float, h: float) -> _GeneratorContextManager[None]: ...
-    def round_clip(self, x: float, y: float, r: float) -> _GeneratorContextManager[None]: ...
-    def unbreakable(self) -> _GeneratorContextManager[FPDFRecorder]: ...
-    def offset_rendering(self) -> _GeneratorContextManager[FPDFRecorder]: ...
+    ) -> None:
+        """
+        Args:
+            key: certificate private key
+            cert (cryptography.x509.Certificate): certificate
+            extra_certs (list[cryptography.x509.Certificate]): list of additional PKCS12 certificates
+            hashalgo (str): hashing algorithm used, passed to `hashlib.new`
+            contact_info (str): optional information provided by the signer to enable
+                a recipient to contact the signer to verify the signature
+            location (str): optional CPU host name or physical location of the signing
+            signing_time (datetime): optional time of signing
+            reason (str): optional signing reason
+            flags (Tuple[fpdf.enums.AnnotationFlag], Tuple[str]): optional list of flags defining annotation properties
+        """
+        ...
+    def file_id(self) -> str:
+        """
+        This method can be overridden in inherited classes
+        in order to define a custom file identifier.
+        Its output must have the format "<hex_string1><hex_string2>".
+        If this method returns a falsy value (None, empty string),
+        no /ID will be inserted in the generated PDF document.
+        """
+        ...
+    def interleaved2of5(self, text, x: float, y: float, w: float = 1, h: float = 10) -> None:
+        """Barcode I2of5 (numeric), adds a 0 if odd length"""
+        ...
+    def code39(self, text, x: float, y: float, w: float = 1.5, h: float = 5) -> None:
+        """Barcode 3of9"""
+        ...
+    def rect_clip(self, x: float, y: float, w: float, h: float) -> _GeneratorContextManager[None]:
+        """
+        Context manager that defines a rectangular crop zone,
+        useful to render only part of an image.
+
+        Args:
+            x (float): abscissa of the clipping region top left corner
+            y (float): ordinate of the clipping region top left corner
+            w (float): width of the clipping region
+            h (float): height of the clipping region
+        """
+        ...
+    def elliptic_clip(self, x: float, y: float, w: float, h: float) -> _GeneratorContextManager[None]:
+        """
+        Context manager that defines an elliptic crop zone,
+        useful to render only part of an image.
+
+        Args:
+            x (float): abscissa of the clipping region top left corner
+            y (float): ordinate of the clipping region top left corner
+            w (float): ellipse width
+            h (float): ellipse height
+        """
+        ...
+    def round_clip(self, x: float, y: float, r: float) -> _GeneratorContextManager[None]:
+        """
+        Context manager that defines a circular crop zone,
+        useful to render only part of an image.
+
+        Args:
+            x (float): abscissa of the clipping region top left corner
+            y (float): ordinate of the clipping region top left corner
+            r (float): radius of the clipping region
+        """
+        ...
+    def unbreakable(self) -> _GeneratorContextManager[FPDFRecorder]:
+        """
+        Ensures that all rendering performed in this context appear on a single page
+        by performing page break beforehand if need be.
+
+        Notes
+        -----
+
+        Using this method means to duplicate the FPDF `bytearray` buffer:
+        when generating large PDFs, doubling memory usage may be troublesome.
+        """
+        ...
+    def offset_rendering(self) -> _GeneratorContextManager[FPDFRecorder]:
+        """
+        All rendering performed in this context is made on a dummy FPDF object.
+        This allows to test the results of some operations on the global layout
+        before performing them "for real".
+        """
+        ...
     def insert_toc_placeholder(
         self, render_toc_function: Callable[[FPDF, list[OutlineSection]], object], pages: int = 1, allow_extra_pages: bool = False
-    ) -> None: ...
+    ) -> None:
+        """
+        Configure Table Of Contents rendering at the end of the document generation,
+        and reserve some vertical space right now in order to insert it.
+
+        Args:
+            render_toc_function (function): a function that will be invoked to render the ToC.
+                This function will receive 2 parameters: `pdf`, an instance of FPDF, and `outline`,
+                a list of `fpdf.outline.OutlineSection`.
+            pages (int): the number of pages that the Table of Contents will span,
+                including the current one that will. As many page breaks as the value of this argument
+                will occur immediately after calling this method.
+            allow_extra_pages (bool): If set to `True`, allows for an unlimited number of
+                extra pages in the ToC, which may cause discrepancies with pre-rendered
+                page numbers. For consistent numbering, using page labels to create a
+                separate numbering style for the ToC is recommended.
+        """
+        ...
     def set_section_title_styles(
         self,
         level0: TextStyle,
@@ -1583,10 +2052,46 @@ class FPDF(GraphicsStateMixin):
         level4: TextStyle | None = None,
         level5: TextStyle | None = None,
         level6: TextStyle | None = None,
-    ) -> None: ...
-    def start_section(self, name: str, level: int = 0, strict: bool = True) -> None: ...
+    ) -> None:
+        """
+        Defines a style for section titles.
+        After calling this method, calls to `FPDF.start_section` will render section names visually.
+
+        Args:
+            level0 (TextStyle): style for the top level section titles
+            level1 (TextStyle): optional style for the level 1 section titles
+            level2 (TextStyle): optional style for the level 2 section titles
+            level3 (TextStyle): optional style for the level 3 section titles
+            level4 (TextStyle): optional style for the level 4 section titles
+            level5 (TextStyle): optional style for the level 5 section titles
+            level6 (TextStyle): optional style for the level 6 section titles
+        """
+        ...
+    def start_section(self, name: str, level: int = 0, strict: bool = True) -> None:
+        """
+        Start a section in the document outline.
+        If section_title_styles have been configured,
+        render the section name visually as a title.
+
+        Args:
+            name (str): section name
+            level (int): section level in the document outline. 0 means top-level.
+        """
+        ...
     def use_text_style(self, text_style: TextStyle) -> _GeneratorContextManager[None]: ...
-    def use_font_face(self, font_face: FontFace) -> _GeneratorContextManager[None]: ...
+    def use_font_face(self, font_face: FontFace) -> _GeneratorContextManager[None]:
+        """
+        Sets the provided `fpdf.fonts.FontFace` in a local context,
+        then restore font settings back to they were initially.
+        This method must be used as a context manager using `with`:
+
+            with pdf.use_font_face(FontFace(emphasis="BOLD", color=255, size_pt=42)):
+                put_some_text()
+
+        Known limitation: in case of a page jump in this local context,
+        the temporary style may "leak" in the header() & footer().
+        """
+        ...
     def table(
         self,
         rows: Iterable[Incomplete] = (),

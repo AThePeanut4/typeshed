@@ -592,13 +592,27 @@ if sys.platform == "win32":
 
     def getwindowsversion() -> _WinVersion: ...
 
-def intern(string: str, /) -> str: ...
+def intern(string: str, /) -> str:
+    """
+    ``Intern'' the given string.
+
+    This enters the string in the (global) table of interned strings whose
+    purpose is to speed up dictionary lookups. Return the string itself or
+    the previously interned string object with the same value.
+    """
+    ...
 
 if sys.version_info >= (3, 13):
-    def _is_gil_enabled() -> bool: ...
+    def _is_gil_enabled() -> bool:
+        """Return True if the GIL is currently enabled and False otherwise."""
+        ...
 
-def is_finalizing() -> bool: ...
-def breakpointhook(*args: Any, **kwargs: Any) -> Any: ...
+def is_finalizing() -> bool:
+    """Return True if Python is exiting."""
+    ...
+def breakpointhook(*args: Any, **kwargs: Any) -> Any:
+    """This hook function is called by built-in breakpoint()."""
+    ...
 
 __breakpointhook__ = breakpointhook  # Contains the original value of breakpointhook
 

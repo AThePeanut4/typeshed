@@ -19,4 +19,12 @@ class BaseSelectorEventLoop(base_events.BaseEventLoop):
     See events.EventLoop for API specification.
     """
     def __init__(self, selector: selectors.BaseSelector | None = None) -> None: ...
-    async def sock_recv(self, sock: socket, n: int) -> bytes: ...
+    async def sock_recv(self, sock: socket, n: int) -> bytes:
+        """
+        Receive data from the socket.
+
+        The return value is a bytes object representing the data received.
+        The maximum amount of data to be received at once is specified by
+        nbytes.
+        """
+        ...

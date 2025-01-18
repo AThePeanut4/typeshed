@@ -10,10 +10,34 @@ class SignatureFlag(IntEnum):
     APPEND_ONLY = 2
 
 class CoerciveEnum(Enum):  # type: ignore[misc]  # Enum with no members
+    """An enumeration that provides a helper to coerce strings into enumeration members."""
     @classmethod
-    def coerce(cls, value: Self | str, case_sensitive: bool = False) -> Self: ...
+    def coerce(cls, value: Self | str, case_sensitive: bool = False) -> Self:
+        """
+        Attempt to coerce `value` into a member of this enumeration.
+
+        If value is already a member of this enumeration it is returned unchanged.
+        Otherwise, if it is a string, attempt to convert it as an enumeration value. If
+        that fails, attempt to convert it (case insensitively, by upcasing) as an
+        enumeration name.
+
+        If all different conversion attempts fail, an exception is raised.
+
+        Args:
+            value (Enum, str): the value to be coerced.
+
+        Raises:
+            ValueError: if `value` is a string but neither a member by name nor value.
+            TypeError: if `value`'s type is neither a member of the enumeration nor a
+                string.
+        """
+        ...
 
 class CoerciveIntEnum(IntEnum):  # type: ignore[misc]  # Enum with no members
+    """
+    An enumeration that provides a helper to coerce strings and integers into
+    enumeration members.
+    """
     @classmethod
     def coerce(cls, value: Self | str | int) -> Self:
         """
@@ -38,6 +62,10 @@ class CoerciveIntEnum(IntEnum):  # type: ignore[misc]  # Enum with no members
         ...
 
 class CoerciveIntFlag(IntFlag):  # type: ignore[misc]  # Enum with no members
+    """
+    Enumerated constants that can be combined using the bitwise operators,
+    with a helper to coerce strings and integers into enumeration members.
+    """
     @classmethod
     def coerce(cls, value: Self | str | int) -> Self:
         """
@@ -137,6 +165,21 @@ class TableBordersLayout(CoerciveEnum):
     SINGLE_TOP_LINE = "SINGLE_TOP_LINE"
 
 class CellBordersLayout(CoerciveIntFlag):
+    """
+    Defines how to render cell borders in table
+
+    The integer value of `border` determines which borders are applied. Below are some common examples:
+
+    - border=1 (LEFT): Only the left border is enabled.
+    - border=3 (LEFT | RIGHT): Both the left and right borders are enabled.
+    - border=5 (LEFT | TOP): The left and top borders are enabled.
+    - border=12 (TOP | BOTTOM): The top and bottom borders are enabled.
+    - border=15 (ALL): All borders (left, right, top, bottom) are enabled.
+    - border=16 (INHERIT): Inherit the border settings from the parent element.
+
+    Using `border=3` will combine LEFT and RIGHT borders, as it represents the
+    bitwise OR of `LEFT (1)` and `RIGHT (2)`.
+    """
     NONE = 0
     LEFT = 1
     RIGHT = 2
@@ -156,7 +199,9 @@ class TableCellFillMode(CoerciveEnum):
 
     def should_fill_cell(self, i: int, j: int) -> bool: ...
     @classmethod
-    def coerce(cls, value: Self | str) -> Self: ...  # type: ignore[override]
+    def coerce(cls, value: Self | str) -> Self:
+        """Any class that has a .should_fill_cell() method is considered a valid 'TableCellFillMode' (duck-typing)"""
+        ...
 
 class TableSpan(CoerciveEnum):
     """An enumeration."""
@@ -406,6 +451,7 @@ class TextDirection(CoerciveEnum):
     BTT = "BTT"
 
 class PageLabelStyle(CoerciveEnum):
+    """Style of the page label"""
     NUMBER = "D"
     UPPER_ROMAN = "R"
     LOWER_ROMAN = "r"
@@ -414,11 +460,13 @@ class PageLabelStyle(CoerciveEnum):
     NONE = None
 
 class Duplex(CoerciveEnum):
+    """The paper handling option that shall be used when printing the file from the print dialog."""
     SIMPLEX = "Simplex"
     DUPLEX_FLIP_SHORT_EDGE = "DuplexFlipShortEdge"
     DUPLEX_FLIP_LONG_EDGE = "DuplexFlipLongEdge"
 
 class PageBoundaries(CoerciveEnum):
+    """An enumeration."""
     ART_BOX = "ArtBox"
     BLEED_BOX = "BleedBox"
     CROP_BOX = "CropBox"
@@ -426,6 +474,7 @@ class PageBoundaries(CoerciveEnum):
     TRIM_BOX = "TrimBox"
 
 class PageOrientation(CoerciveEnum):
+    """An enumeration."""
     PORTRAIT = "P"
     LANDSCAPE = "L"
 

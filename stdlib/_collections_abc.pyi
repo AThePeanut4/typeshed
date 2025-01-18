@@ -79,8 +79,12 @@ _VT_co = TypeVar("_VT_co", covariant=True)  # Value type covariant containers.
 
 @final
 class dict_keys(KeysView[_KT_co], Generic[_KT_co, _VT_co]):  # undocumented
-    def __eq__(self, value: object, /) -> bool: ...
-    def __reversed__(self) -> Iterator[_KT_co]: ...
+    def __eq__(self, value: object, /) -> bool:
+        """Return self==value."""
+        ...
+    def __reversed__(self) -> Iterator[_KT_co]:
+        """Return a reverse iterator over the dict keys."""
+        ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     if sys.version_info >= (3, 13):
         def isdisjoint(self, other: Iterable[_KT_co], /) -> bool:
@@ -105,8 +109,12 @@ class dict_values(ValuesView[_VT_co], Generic[_KT_co, _VT_co]):  # undocumented
 
 @final
 class dict_items(ItemsView[_KT_co, _VT_co]):  # undocumented
-    def __eq__(self, value: object, /) -> bool: ...
-    def __reversed__(self) -> Iterator[tuple[_KT_co, _VT_co]]: ...
+    def __eq__(self, value: object, /) -> bool:
+        """Return self==value."""
+        ...
+    def __reversed__(self) -> Iterator[tuple[_KT_co, _VT_co]]:
+        """Return a reverse iterator over the dict items."""
+        ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     if sys.version_info >= (3, 13):
         def isdisjoint(self, other: Iterable[tuple[_KT_co, _VT_co]], /) -> bool:

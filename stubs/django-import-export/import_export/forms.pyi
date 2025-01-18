@@ -28,4 +28,9 @@ class ExportForm(ImportExportFormBase):
     file_format: forms.ChoiceField
     def __init__(self, formats: list[Format], *args: Any, **kwargs: Any) -> None: ...
 
-def export_action_form_factory(formats: list[tuple[str, str]]) -> type[ActionForm]: ...
+def export_action_form_factory(formats: list[tuple[str, str]]) -> type[ActionForm]:
+    """
+    Returns an ActionForm subclass containing a ChoiceField populated with
+    the given formats.
+    """
+    ...
