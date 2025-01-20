@@ -23,10 +23,10 @@ Simple usage example:
 """
 
 import builtins
-from _typeshed import Incomplete, MaybeNone
+from _typeshed import MaybeNone, SupportsWrite
 from abc import abstractmethod
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import IO, Any, AnyStr, ClassVar, Literal, NoReturn, overload
+from typing import Any, ClassVar, Literal, NoReturn, overload
 from typing_extensions import Self
 
 __all__ = [
@@ -500,32 +500,13 @@ class OptionParser(OptionContainer):
     def _add_version_option(self) -> None: ...
     def _create_option_list(self) -> None: ...
     def _get_all_options(self) -> list[Option]: ...
-    def _get_args(self, args: Iterable[Incomplete]) -> list[Incomplete]: ...
+    def _get_args(self, args: list[str] | None) -> list[str]: ...
     def _init_parsing_state(self) -> None: ...
-    def _match_long_opt(self, opt: str) -> str:
-        """
-        _match_long_opt(opt : string) -> string
-
-        Determine which long option string 'opt' matches, ie. which one
-        it is an unambiguous abbreviation for.  Raises BadOptionError if
-        'opt' doesn't unambiguously match any long option string.
-        """
-        ...
-    def _populate_option_list(self, option_list: Iterable[Option], add_help: bool = True) -> None: ...
-    def _process_args(self, largs: list[Incomplete], rargs: list[Incomplete], values: Values) -> None:
-        """
-        _process_args(largs : [string],
-                         rargs : [string],
-                         values : Values)
-
-        Process command-line arguments and populate 'values', consuming
-        options and arguments from 'rargs'.  If 'allow_interspersed_args' is
-        false, stop at the first non-option argument.  If true, accumulate any
-        interspersed non-option arguments in 'largs'.
-        """
-        ...
-    def _process_long_opt(self, rargs: list[Incomplete], values) -> None: ...
-    def _process_short_opts(self, rargs: list[Incomplete], values) -> None: ...
+    def _match_long_opt(self, opt: str) -> str: ...
+    def _populate_option_list(self, option_list: Iterable[Option] | None, add_help: bool = True) -> None: ...
+    def _process_args(self, largs: list[str], rargs: list[str], values: Values) -> None: ...
+    def _process_long_opt(self, rargs: list[str], values: Values) -> None: ...
+    def _process_short_opts(self, rargs: list[str], values: Values) -> None: ...
     @overload
     def add_option_group(self, opt_group: OptionGroup, /) -> OptionGroup: ...
     @overload
@@ -578,68 +559,11 @@ class OptionParser(OptionContainer):
     def get_prog_name(self) -> str: ...
     def get_usage(self) -> str: ...
     def get_version(self) -> str: ...
-    @overload
-    def parse_args(self, args: None = None, values: Values | None = None) -> tuple[Values, list[str]]:
-        """
-        parse_args(args : [string] = sys.argv[1:],
-                   values : Values = None)
-        -> (values : Values, args : [string])
-
-        Parse the command-line options found in 'args' (default:
-        sys.argv[1:]).  Any errors result in a call to 'error()', which
-        by default prints the usage message to stderr and calls
-        sys.exit() with an error message.  On success returns a pair
-        (values, args) where 'values' is a Values instance (with all
-        your option values) and 'args' is the list of arguments left
-        over after parsing options.
-        """
-        ...
-    @overload
-    def parse_args(self, args: Sequence[AnyStr], values: Values | None = None) -> tuple[Values, list[AnyStr]]:
-        """
-        parse_args(args : [string] = sys.argv[1:],
-                   values : Values = None)
-        -> (values : Values, args : [string])
-
-        Parse the command-line options found in 'args' (default:
-        sys.argv[1:]).  Any errors result in a call to 'error()', which
-        by default prints the usage message to stderr and calls
-        sys.exit() with an error message.  On success returns a pair
-        (values, args) where 'values' is a Values instance (with all
-        your option values) and 'args' is the list of arguments left
-        over after parsing options.
-        """
-        ...
-    def print_usage(self, file: IO[str] | None = None) -> None:
-        """
-        print_usage(file : file = stdout)
-
-        Print the usage message for the current program (self.usage) to
-        'file' (default stdout).  Any occurrence of the string "%prog" in
-        self.usage is replaced with the name of the current program
-        (basename of sys.argv[0]).  Does nothing if self.usage is empty
-        or not defined.
-        """
-        ...
-    def print_help(self, file: IO[str] | None = None) -> None:
-        """
-        print_help(file : file = stdout)
-
-        Print an extended help message, listing all options and any
-        help text provided with them, to 'file' (default stdout).
-        """
-        ...
-    def print_version(self, file: IO[str] | None = None) -> None:
-        """
-        print_version(file : file = stdout)
-
-        Print the version message for this program (self.version) to
-        'file' (default stdout).  As with print_usage(), any occurrence
-        of "%prog" in self.version is replaced by the current program's
-        name.  Does nothing if self.version is empty or undefined.
-        """
-        ...
-    def set_default(self, dest, value) -> None: ...
-    def set_defaults(self, **kwargs) -> None: ...
-    def set_process_default_values(self, process) -> None: ...
-    def set_usage(self, usage: str) -> None: ...
+    def parse_args(self, args: list[str] | None = None, values: Values | None = None) -> tuple[Values, list[str]]: ...
+    def print_usage(self, file: SupportsWrite[str] | None = None) -> None: ...
+    def print_help(self, file: SupportsWrite[str] | None = None) -> None: ...
+    def print_version(self, file: SupportsWrite[str] | None = None) -> None: ...
+    def set_default(self, dest: str, value: Any) -> None: ...  # default value can be "any" type
+    def set_defaults(self, **kwargs: Any) -> None: ...  # default values can be "any" type
+    def set_process_default_values(self, process: bool) -> None: ...
+    def set_usage(self, usage: str | None) -> None: ...
