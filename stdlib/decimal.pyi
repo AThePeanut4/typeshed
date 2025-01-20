@@ -167,6 +167,12 @@ class Underflow(Inexact, Rounded, Subnormal): ...
 class FloatOperation(DecimalException, TypeError): ...
 
 class Decimal:
+    """
+    Construct a new Decimal object. 'value' can be an integer, string, tuple,
+    or another Decimal object. If no value is given, return Decimal('0'). The
+    context does not affect the conversion and is only passed to determine if
+    the InvalidOperation trap is active.
+    """
     def __new__(cls, value: _DecimalNew = "0", context: Context | None = None) -> Self: ...
     @classmethod
     def from_float(cls, f: float, /) -> Self:
