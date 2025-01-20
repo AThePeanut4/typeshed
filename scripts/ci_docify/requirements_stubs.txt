@@ -89,6 +89,7 @@ humanfriendly==10.0.*
 jmespath==1.0.*
 RPi.GPIO==0.7.*
 flake8-simplify==0.21.*
+geopandas==1.0.1
 pywin32==308.*
 pyserial[cp2110]==3.5.*
 ujson==5.10.*
