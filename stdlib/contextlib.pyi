@@ -81,7 +81,19 @@ class _WrappedCallable(Generic[_P, _R]):
     def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R: ...
 
 class ContextDecorator:
-    def _recreate_cm(self) -> Self: ...
+    """A base class or mixin that enables context managers to work as decorators."""
+    def _recreate_cm(self) -> Self:
+        """
+        Return a recreated instance of self.
+
+        Allows an otherwise one-shot context manager like
+        _GeneratorContextManager to support use as
+        a decorator via implicit recreation.
+
+        This is a private interface just for _GeneratorContextManager.
+        See issue #11647 for details.
+        """
+        ...
     def __call__(self, func: Callable[_P, _R]) -> _WrappedCallable[_P, _R]: ...
 
 class _GeneratorContextManagerBase(Generic[_G]):
@@ -142,7 +154,13 @@ if sys.version_info >= (3, 10):
     _AR = TypeVar("_AR", bound=Awaitable[Any])
 
     class AsyncContextDecorator:
-        def _recreate_cm(self) -> Self: ...
+        """A base class or mixin that enables async context managers to work as decorators."""
+        def _recreate_cm(self) -> Self:
+            """
+            Return a recreated instance of self.
+        
+            """
+            ...
         def __call__(self, func: Callable[_P, _AR]) -> _WrappedCallable[_P, _AR]: ...
 
     class _AsyncGeneratorContextManager(
