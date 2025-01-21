@@ -4,7 +4,7 @@ import datetime as dt
 from _typeshed import ConvertibleToInt, Incomplete, SupportsRead, SupportsReadline, SupportsWrite, Unused
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from types import TracebackType
-from typing import Any, Literal, NoReturn, Protocol, TypeVar, overload, type_check_only
+from typing import Any, Literal, NoReturn, Protocol, TextIO, TypeVar, overload, type_check_only
 from typing_extensions import Self, TypeAlias
 
 from psycopg2.extras import ReplicationCursor as extras_ReplicationCursor
@@ -85,7 +85,9 @@ threadsafety: int
 
 __libpq_version__: int
 
-class _SupportsReadAndReadline(SupportsRead[str], SupportsReadline[str], Protocol): ...
+_T_co = TypeVar("_T_co", covariant=True)
+
+class _SupportsReadAndReadline(SupportsRead[_T_co], SupportsReadline[_T_co], Protocol[_T_co]): ...
 
 class cursor:
     """A database cursor."""
@@ -151,19 +153,14 @@ class cursor:
         """close() -- Close the cursor."""
         ...
     def copy_expert(
-        self, sql: str | bytes | Composable, file: _SupportsReadAndReadline | SupportsWrite[str], size: int = 8192
-    ) -> None:
-        """
-        copy_expert(sql, file, size=8192) -- Submit a user-composed COPY statement.
-        `file` must be an open, readable file for COPY FROM or an open, writable
-        file for COPY TO. The optional `size` argument, when specified for a COPY
-        FROM statement, will be passed to file's read method to control the read
-        buffer size.
-        """
-        ...
+        self,
+        sql: str | bytes | Composable,
+        file: _SupportsReadAndReadline[bytes] | SupportsWrite[bytes] | TextIO,
+        size: int = 8192,
+    ) -> None: ...
     def copy_from(
         self,
-        file: _SupportsReadAndReadline,
+        file: _SupportsReadAndReadline[bytes] | _SupportsReadAndReadline[str],
         table: str,
         sep: str = "\t",
         null: str = "\\N",
@@ -173,78 +170,24 @@ class cursor:
         r"""copy_from(file, table, sep='\t', null='\\N', size=8192, columns=None) -- Copy table from file."""
         ...
     def copy_to(
-        self, file: SupportsWrite[str], table: str, sep: str = "\t", null: str = "\\N", columns: Iterable[str] | None = None
-    ) -> None:
-        r"""copy_to(file, table, sep='\t', null='\\N', columns=None) -- Copy table to file."""
-        ...
-    def execute(self, query: str | bytes | Composable, vars: _Vars = None) -> None:
-        """execute(query, vars=None) -- Execute query with bound vars."""
-        ...
-    def executemany(self, query: str | bytes | Composable, vars_list: Iterable[_Vars]) -> None:
-        """executemany(query, vars_list) -- Execute many queries with bound vars."""
-        ...
-    def fetchall(self) -> list[tuple[Any, ...]]:
-        """
-        fetchall() -> list of tuple
-
-        Return all the remaining rows of a query result set.
-
-        Rows are returned in the form of a list of tuples (by default) or using
-        the sequence factory previously set in the `row_factory` attribute.
-        Return `!None` when no more data is available.
-        """
-        ...
-    def fetchmany(self, size: int | None = None) -> list[tuple[Any, ...]]:
-        """
-        fetchmany(size=self.arraysize) -> list of tuple
-
-        Return the next `size` rows of a query result set in the form of a list
-        of tuples (by default) or using the sequence factory previously set in
-        the `row_factory` attribute.
-
-        Return an empty list when no more data is available.
-        """
-        ...
-    def fetchone(self) -> tuple[Any, ...] | None:
-        """
-        fetchone() -> tuple or None
-
-        Return the next row of a query result set in the form of a tuple (by
-        default) or using the sequence factory previously set in the
-        `row_factory` attribute. Return `!None` when no more data is available.
-        """
-        ...
-    def mogrify(self, query: str | bytes | Composable, vars: _Vars | None = None) -> bytes:
-        """mogrify(query, vars=None) -> str -- Return query after vars binding."""
-        ...
-    def nextset(self) -> NoReturn:
-        """
-        nextset() -- Skip to next set of data.
-
-        This method is not supported (PostgreSQL does not have multiple data 
-        sets) and will raise a NotSupportedError exception.
-        """
-        ...
-    def scroll(self, value: int, mode: Literal["absolute", "relative"] = "relative") -> None:
-        """scroll(value, mode='relative') -- Scroll to new position according to mode."""
-        ...
-    def setinputsizes(self, sizes: Unused) -> None:
-        """
-        setinputsizes(sizes) -- Set memory areas before execute.
-
-        This method currently does nothing but it is safe to call it.
-        """
-        ...
-    def setoutputsize(self, size: int, column: int = ..., /) -> None:
-        """
-        setoutputsize(size, column=None) -- Set column buffer size.
-
-        This method currently does nothing but it is safe to call it.
-        """
-        ...
-    def __enter__(self) -> Self:
-        """__enter__ -> self"""
-        ...
+        self,
+        file: SupportsWrite[bytes] | TextIO,
+        table: str,
+        sep: str = "\t",
+        null: str = "\\N",
+        columns: Iterable[str] | None = None,
+    ) -> None: ...
+    def execute(self, query: str | bytes | Composable, vars: _Vars = None) -> None: ...
+    def executemany(self, query: str | bytes | Composable, vars_list: Iterable[_Vars]) -> None: ...
+    def fetchall(self) -> list[tuple[Any, ...]]: ...
+    def fetchmany(self, size: int | None = None) -> list[tuple[Any, ...]]: ...
+    def fetchone(self) -> tuple[Any, ...] | None: ...
+    def mogrify(self, query: str | bytes | Composable, vars: _Vars | None = None) -> bytes: ...
+    def nextset(self) -> NoReturn: ...  # not supported
+    def scroll(self, value: int, mode: Literal["absolute", "relative"] = "relative") -> None: ...
+    def setinputsizes(self, sizes: Unused) -> None: ...
+    def setoutputsize(self, size: int, column: int = ..., /) -> None: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
     ) -> None:

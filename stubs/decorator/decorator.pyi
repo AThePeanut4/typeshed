@@ -13,7 +13,6 @@ from re import Pattern
 from typing import Any, Literal, TypeVar
 from typing_extensions import ParamSpec
 
-_C = TypeVar("_C", bound=Callable[..., Any])
 _Func = TypeVar("_Func", bound=Callable[..., Any])
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
@@ -105,8 +104,7 @@ def decorator(
     """decorator(caller) converts a caller function into a decorator"""
     ...
 
-class ContextManager(_GeneratorContextManager[_T]):
-    def __call__(self, func: _C) -> _C: ...
+class ContextManager(_GeneratorContextManager[_T]): ...
 
 def contextmanager(func: Callable[_P, Iterator[_T]]) -> Callable[_P, ContextManager[_T]]: ...
 def append(a: type, vancestors: list[type]) -> None:
