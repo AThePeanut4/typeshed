@@ -862,27 +862,9 @@ if sys.version_info >= (3, 12):
     AGEN_CLOSED: Final = "AGEN_CLOSED"
 
     def getasyncgenstate(
-        agen: AsyncGenerator[Any, Any]
-    ) -> Literal["AGEN_CREATED", "AGEN_RUNNING", "AGEN_SUSPENDED", "AGEN_CLOSED"]:
-        """
-        Get current state of an asynchronous generator object.
-
-        Possible states are:
-          AGEN_CREATED: Waiting to start execution.
-          AGEN_RUNNING: Currently being executed by the interpreter.
-          AGEN_SUSPENDED: Currently suspended at a yield expression.
-          AGEN_CLOSED: Execution has completed.
-        """
-        ...
-    def getasyncgenlocals(agen: AsyncGeneratorType[Any, Any]) -> dict[str, Any]:
-        """
-        Get the mapping of asynchronous generator local variables to their current
-        values.
-
-        A dict is returned, with the keys the local variable names and values the
-        bound values.
-        """
-        ...
+        agen: AsyncGenerator[Any, Any],
+    ) -> Literal["AGEN_CREATED", "AGEN_RUNNING", "AGEN_SUSPENDED", "AGEN_CLOSED"]: ...
+    def getasyncgenlocals(agen: AsyncGeneratorType[Any, Any]) -> dict[str, Any]: ...
 
 class Parameter:
     """
@@ -1329,18 +1311,8 @@ GEN_SUSPENDED: Final = "GEN_SUSPENDED"
 GEN_CLOSED: Final = "GEN_CLOSED"
 
 def getgeneratorstate(
-    generator: Generator[Any, Any, Any]
-) -> Literal["GEN_CREATED", "GEN_RUNNING", "GEN_SUSPENDED", "GEN_CLOSED"]:
-    """
-    Get current state of a generator-iterator.
-
-    Possible states are:
-      GEN_CREATED: Waiting to start execution.
-      GEN_RUNNING: Currently being executed by the interpreter.
-      GEN_SUSPENDED: Currently suspended at a yield expression.
-      GEN_CLOSED: Execution has completed.
-    """
-    ...
+    generator: Generator[Any, Any, Any],
+) -> Literal["GEN_CREATED", "GEN_RUNNING", "GEN_SUSPENDED", "GEN_CLOSED"]: ...
 
 CORO_CREATED: Final = "CORO_CREATED"
 CORO_RUNNING: Final = "CORO_RUNNING"
@@ -1348,34 +1320,10 @@ CORO_SUSPENDED: Final = "CORO_SUSPENDED"
 CORO_CLOSED: Final = "CORO_CLOSED"
 
 def getcoroutinestate(
-    coroutine: Coroutine[Any, Any, Any]
-) -> Literal["CORO_CREATED", "CORO_RUNNING", "CORO_SUSPENDED", "CORO_CLOSED"]:
-    """
-    Get current state of a coroutine object.
-
-    Possible states are:
-      CORO_CREATED: Waiting to start execution.
-      CORO_RUNNING: Currently being executed by the interpreter.
-      CORO_SUSPENDED: Currently suspended at an await expression.
-      CORO_CLOSED: Execution has completed.
-    """
-    ...
-def getgeneratorlocals(generator: Generator[Any, Any, Any]) -> dict[str, Any]:
-    """
-    Get the mapping of generator local variables to their current values.
-
-    A dict is returned, with the keys the local variable names and values the
-    bound values.
-    """
-    ...
-def getcoroutinelocals(coroutine: Coroutine[Any, Any, Any]) -> dict[str, Any]:
-    """
-    Get the mapping of coroutine local variables to their current values.
-
-    A dict is returned, with the keys the local variable names and values the
-    bound values.
-    """
-    ...
+    coroutine: Coroutine[Any, Any, Any],
+) -> Literal["CORO_CREATED", "CORO_RUNNING", "CORO_SUSPENDED", "CORO_CLOSED"]: ...
+def getgeneratorlocals(generator: Generator[Any, Any, Any]) -> dict[str, Any]: ...
+def getcoroutinelocals(coroutine: Coroutine[Any, Any, Any]) -> dict[str, Any]: ...
 
 # Create private type alias to avoid conflict with symbol of same
 # name created in Attribute class.

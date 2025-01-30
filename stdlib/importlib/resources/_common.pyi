@@ -16,20 +16,8 @@ if sys.version_info >= (3, 11):
         Anchor: TypeAlias = Package
 
         def package_to_anchor(
-            func: Callable[[Anchor | None], Traversable]
-        ) -> Callable[[Anchor | None, Anchor | None], Traversable]:
-            """
-            Replace 'package' parameter as 'anchor' and warn about the change.
-
-            Other errors should fall through.
-
-            >>> files('a', 'b')
-            Traceback (most recent call last):
-            TypeError: files() takes from 0 to 1 positional arguments but 2 were given
-
-            Remove this compatibility in Python 3.14.
-            """
-            ...
+            func: Callable[[Anchor | None], Traversable],
+        ) -> Callable[[Anchor | None, Anchor | None], Traversable]: ...
         @overload
         def files(anchor: Anchor | None = None) -> Traversable:
             """Get a Traversable resource for an anchor."""
