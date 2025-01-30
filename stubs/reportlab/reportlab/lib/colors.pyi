@@ -265,7 +265,9 @@ def linearlyInterpolatedColor(c0: _ColorT, c1: _ColorT, x0: float, x1: float, x:
 @overload
 def obj_R_G_B(
     c: Color | list[float] | tuple[float, float, float, float] | tuple[float, float, float],
-) -> tuple[float, float, float]: ...
+) -> tuple[float, float, float]:
+    """attempt to convert an object to (red,green,blue)"""
+    ...
 @overload
 def obj_R_G_B(c: None) -> None:
     """attempt to convert an object to (red,green,blue)"""
