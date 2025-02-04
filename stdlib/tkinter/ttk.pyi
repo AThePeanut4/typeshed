@@ -2532,26 +2532,8 @@ class Treeview(Widget, tkinter.XView, tkinter.YView):
         values: list[Any] | tuple[Any, ...] | Literal[""] = ...,
         open: bool = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
-    ) -> None:
-        """
-        Query or modify the options for the specified item.
-
-        If no options are given, a dict with options/values for the item
-        is returned. If option is specified then the value for that option
-        is returned. Otherwise, sets the options to the corresponding
-        values as given by kw.
-        """
-        ...
-    def move(self, item: str | int, parent: str, index: int) -> None:
-        """
-        Moves item to position index in parent's list of children.
-
-        It is illegal to move an item under one of its descendants. If
-        index is less than or equal to zero, item is moved to the
-        beginning, if greater than or equal to the number of children,
-        it is moved to the end. If item was detached it is reattached.
-        """
-        ...
+    ) -> None: ...
+    def move(self, item: str | int, parent: str, index: int | Literal["end"]) -> None: ...
     reattach = move
     def next(self, item: str | int) -> str:
         """
