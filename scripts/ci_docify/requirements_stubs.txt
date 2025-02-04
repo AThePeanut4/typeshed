@@ -126,7 +126,7 @@ networkx==3.4.2
 entrypoints==0.4.*
 python-crontab==3.2.*
 olefile==0.47.*
-pytz==2024.2
+pytz==2025.1
 flake8-simplify==0.21.*
 ttkthemes==3.2.*
 ldap3==2.9.*
