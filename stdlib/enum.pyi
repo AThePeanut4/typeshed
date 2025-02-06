@@ -66,12 +66,27 @@ if sys.version_info >= (3, 11):
         def __init__(self, value: _EnumMemberT) -> None: ...
 
 class _EnumDict(dict[str, Any]):
+    """
+    Track enum member order and ensure member names are not reused.
+
+    EnumType will use the names found in self._member_names as the
+    enumeration member names.
+    """
     if sys.version_info >= (3, 13):
         def __init__(self, cls_name: str | None = None) -> None: ...
     else:
         def __init__(self) -> None: ...
 
-    def __setitem__(self, key: str, value: Any) -> None: ...
+    def __setitem__(self, key: str, value: Any) -> None:
+        """
+        Changes anything not dundered or not a descriptor.
+
+        If an enum member name is used twice, an error is raised; duplicate
+        values are not checked for.
+
+        Single underscore (sunder) names are reserved.
+        """
+        ...
     if sys.version_info >= (3, 11):
         # See comment above `typing.MutableMapping.update`
         # for why overloads are preferable to a Union here
