@@ -35,7 +35,6 @@ class GeneratedProtocolMessageType(type):
     order to create the appropriate class structure.
     """
     def __new__(cls, name, bases, dictionary): ...
-    def __init__(self, /, name, bases, dictionary) -> None: ...
 
 def ParseMessage(descriptor, byte_str):
     """
