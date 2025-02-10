@@ -13,7 +13,7 @@ defusedxml==0.7.*
 zxcvbn==4.4.*
 uWSGI==2.0.*
 pynput==1.7.7
-boltons==24.1.*
+boltons==25.0.*
 pyserial[cp2110]==3.5.*
 Flask-Cors==5.0.*
 m3u8==6.0.*
@@ -67,7 +67,7 @@ tree-sitter-languages==1.10.*
 Send2Trash==1.8.*
 polib==1.2.*
 JACK-Client==0.5.*
-pyinstaller==6.11.*
+pyinstaller==6.12.*
 flake8-bugbear==24.12.12
 dockerfile-parse==2.0.*
 tensorflow~=2.18.0
@@ -139,7 +139,7 @@ colorama==0.4.*
 whatthepatch==1.0.*
 braintree==4.32.*
 WTForms~=3.2.1
-peewee==3.17.8
+peewee==3.17.9
 decorator==5.1.*
 PyScreeze==1.0.1
 TgCrypto==1.2.*
