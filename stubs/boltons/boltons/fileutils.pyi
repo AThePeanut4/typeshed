@@ -11,8 +11,25 @@ from types import TracebackType
 from typing import IO, Any, NoReturn
 from typing_extensions import Self
 
-def mkdir_p(path: StrOrBytesPath) -> None: ...
-def rotate_file(filename: PathLike[str], *, keep: int = 5) -> None: ...
+def mkdir_p(path: StrOrBytesPath) -> None:
+    """
+    Creates a directory and any parent directories that may need to
+    be created along the way, without raising errors for any existing
+    directories. This function mimics the behavior of the ``mkdir -p``
+    command available in Linux/BSD environments, but also works on
+    Windows.
+    """
+    ...
+def rotate_file(filename: PathLike[str], *, keep: int = 5) -> None:
+    """
+    If *filename.ext* exists, it will be moved to *filename.1.ext*, 
+    with all conflicting filenames being moved up by one, dropping any files beyond *keep*.
+
+    After rotation, *filename* will be available for creation as a new file.
+
+    Fails if *filename* is not a file or if *keep* is not > 0.
+    """
+    ...
 
 class FilePerms:
     """

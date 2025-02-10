@@ -572,6 +572,48 @@ class MultiReplace:
         """
         Run substitutions on the input text.
 
-def multi_replace(text: str, sub_map: dict[str, str], **kwargs) -> str: ...
-def unwrap_text(text: str, ending: str = "\n\n") -> str: ...
-def removeprefix(text: str, prefix: str) -> str: ...
+        Given an input string, run all substitutions given in the
+        constructor.
+        """
+        ...
+
+def multi_replace(text: str, sub_map: dict[str, str], **kwargs) -> str:
+    """
+    Shortcut function to invoke MultiReplace in a single call.
+
+    Example Usage::
+
+        from boltons.strutils import multi_replace
+        new = multi_replace(
+            'The foo bar cat ate a bat',
+            {'foo': 'zoo', 'cat': 'hat', 'bat': 'kraken'}
+        )
+        new == 'The zoo bar hat ate a kraken'
+    """
+    ...
+def unwrap_text(text: str, ending: str = "\n\n") -> str:
+    r"""
+    Unwrap text, the natural complement to :func:`textwrap.wrap`.
+
+    >>> text = "Short \n lines  \nwrapped\nsmall.\n\nAnother\nparagraph."
+    >>> unwrap_text(text)
+    'Short lines wrapped small.\n\nAnother paragraph.'
+
+    Args:
+       text: A string to unwrap.
+       ending (str): The string to join all unwrapped paragraphs
+          by. Pass ``None`` to get the list. Defaults to '\n\n' for
+          compatibility with Markdown and RST.
+    """
+    ...
+def removeprefix(text: str, prefix: str) -> str:
+    """
+    Remove `prefix` from start of `text` if present.
+
+    Backport of `str.removeprefix` for Python versions less than 3.9.
+
+    Args:
+        text: A string to remove the prefix from.
+        prefix: The string to remove from the beginning of `text`.
+    """
+    ...
