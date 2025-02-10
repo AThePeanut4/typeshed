@@ -1393,7 +1393,7 @@ class ForeignKeyField(Field):
     deferred: Incomplete
     object_id_name: Incomplete
     lazy_load: Incomplete
-    constraint_name: Incomplete
+    constraint_name: str | None
     def __init__(
         self,
         model,
@@ -1407,7 +1407,7 @@ class ForeignKeyField(Field):
         to_field: Incomplete | None = ...,
         object_id_name: Incomplete | None = ...,
         lazy_load: bool = ...,
-        constraint_name: Incomplete | None = ...,
+        constraint_name: str | None = ...,
         related_name: Incomplete | None = ...,
         *args,
         **kwargs,
@@ -1421,7 +1421,8 @@ class ForeignKeyField(Field):
     column_name: Incomplete
     safe_name: Incomplete
     def bind(self, model, name, set_attribute: bool = ...) -> None: ...
-    def foreign_key_constraint(self): ...
+    def foreign_key_constraint(self, explicit_name: bool = False) -> NodeList: ...
+    def get_constraint_name(self) -> str: ...
     def __getattr__(self, attr: str): ...
 
 class DeferredForeignKey(Field):

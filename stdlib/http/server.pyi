@@ -314,7 +314,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         client_address: _socket._RetAddress,
         server: socketserver.BaseServer,
         *,
-        directory: str | None = None,
+        directory: StrPath | None = None,
     ) -> None: ...
     def do_GET(self) -> None:
         """Serve a GET request."""

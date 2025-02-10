@@ -6,19 +6,13 @@ most commonly-found gaps in the standard library.
 
 from _typeshed import StrOrBytesPath
 from collections.abc import Callable, Generator, Iterable
+from os import PathLike
 from types import TracebackType
 from typing import IO, Any, NoReturn
 from typing_extensions import Self
 
-def mkdir_p(path: StrOrBytesPath) -> None:
-    """
-    Creates a directory and any parent directories that may need to
-    be created along the way, without raising errors for any existing
-    directories. This function mimics the behavior of the ``mkdir -p``
-    command available in Linux/BSD environments, but also works on
-    Windows.
-    """
-    ...
+def mkdir_p(path: StrOrBytesPath) -> None: ...
+def rotate_file(filename: PathLike[str], *, keep: int = 5) -> None: ...
 
 class FilePerms:
     """
