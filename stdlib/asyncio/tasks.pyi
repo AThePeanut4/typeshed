@@ -1255,8 +1255,43 @@ else:
         """
         Return a future aggregating results from the given coroutines/futures.
 
+        Coroutines will be wrapped in a future and scheduled in the event
+        loop. They will not necessarily be scheduled in the same order as
+        passed in.
+
+        All futures must share the same event loop.  If all the tasks are
+        done successfully, the returned future's result is the list of
+        results (in the order of the original sequence, not necessarily
+        the order of results arrival).  If *return_exceptions* is True,
+        exceptions in the tasks are treated the same as successful
+        results, and gathered in the result list; otherwise, the first
+        raised exception will be immediately propagated to the returned
+        future.
+
+        Cancellation: if the outer Future is cancelled, all children (that
+        have not completed yet) are also cancelled.  If any child is
+        cancelled, this is treated as if it raised CancelledError --
+        the outer Future is *not* cancelled in this case.  (This is to
+        prevent the cancellation of one child to cause other children to
+        be cancelled.)
+
+        If *return_exceptions* is False, cancelling gather() after it
+        has been marked done won't cancel any submitted awaitables.
+        For instance, gather can be marked done after propagating an
+        exception to the caller, therefore, calling ``gather.cancel()``
+        after catching an exception (raised by one of the awaitables) from
+        gather won't cancel any other awaitables.
+        """
+        ...
+
 # unlike some asyncio apis, This does strict runtime checking of actually being a coroutine, not of any future-like.
-def run_coroutine_threadsafe(coro: Coroutine[Any, Any, _T], loop: AbstractEventLoop) -> concurrent.futures.Future[_T]: ...
+def run_coroutine_threadsafe(coro: Coroutine[Any, Any, _T], loop: AbstractEventLoop) -> concurrent.futures.Future[_T]:
+    """
+    Submit a coroutine object to a given event loop.
+
+    Return a concurrent.futures.Future to access the result.
+    """
+    ...
 
 if sys.version_info >= (3, 10):
     def shield(arg: _FutureLike[_T]) -> Future[_T]:

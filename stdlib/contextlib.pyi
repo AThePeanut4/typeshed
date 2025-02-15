@@ -77,7 +77,19 @@ class AbstractAsyncContextManager(ABC, Protocol[_T_co, _ExitT_co]):  # type: ign
         ...
 
 class ContextDecorator:
-    def _recreate_cm(self) -> Self: ...
+    """A base class or mixin that enables context managers to work as decorators."""
+    def _recreate_cm(self) -> Self:
+        """
+        Return a recreated instance of self.
+
+        Allows an otherwise one-shot context manager like
+        _GeneratorContextManager to support use as
+        a decorator via implicit recreation.
+
+        This is a private interface just for _GeneratorContextManager.
+        See issue #11647 for details.
+        """
+        ...
     def __call__(self, func: _F) -> _F: ...
 
 class _GeneratorContextManagerBase(Generic[_G]):
@@ -138,7 +150,13 @@ if sys.version_info >= (3, 10):
     _AF = TypeVar("_AF", bound=Callable[..., Awaitable[Any]])
 
     class AsyncContextDecorator:
-        def _recreate_cm(self) -> Self: ...
+        """A base class or mixin that enables async context managers to work as decorators."""
+        def _recreate_cm(self) -> Self:
+            """
+            Return a recreated instance of self.
+        
+            """
+            ...
         def __call__(self, func: _AF) -> _AF: ...
 
     class _AsyncGeneratorContextManager(
