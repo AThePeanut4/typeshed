@@ -34,9 +34,9 @@ _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
 _T_io = TypeVar("_T_io", bound=IO[str] | None)
 _ExitT_co = TypeVar("_ExitT_co", covariant=True, bound=bool | None, default=bool | None)
+_F = TypeVar("_F", bound=Callable[..., Any])
 _G = TypeVar("_G", bound=Generator[Any, Any, Any] | AsyncGenerator[Any, Any], covariant=True)
 _P = ParamSpec("_P")
-_R = TypeVar("_R")
 
 _SendT_contra = TypeVar("_SendT_contra", contravariant=True, default=None)
 _ReturnT_co = TypeVar("_ReturnT_co", covariant=True, default=None)
@@ -76,25 +76,9 @@ class AbstractAsyncContextManager(ABC, Protocol[_T_co, _ExitT_co]):  # type: ign
         """Raise any exception triggered within the runtime context."""
         ...
 
-class _WrappedCallable(Generic[_P, _R]):
-    __wrapped__: Callable[_P, _R]
-    def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R: ...
-
 class ContextDecorator:
-    """A base class or mixin that enables context managers to work as decorators."""
-    def _recreate_cm(self) -> Self:
-        """
-        Return a recreated instance of self.
-
-        Allows an otherwise one-shot context manager like
-        _GeneratorContextManager to support use as
-        a decorator via implicit recreation.
-
-        This is a private interface just for _GeneratorContextManager.
-        See issue #11647 for details.
-        """
-        ...
-    def __call__(self, func: Callable[_P, _R]) -> _WrappedCallable[_P, _R]: ...
+    def _recreate_cm(self) -> Self: ...
+    def __call__(self, func: _F) -> _F: ...
 
 class _GeneratorContextManagerBase(Generic[_G]):
     """Shared functionality for @contextmanager and @asynccontextmanager."""
@@ -151,17 +135,11 @@ def contextmanager(func: Callable[_P, Iterator[_T_co]]) -> Callable[_P, _Generat
     ...
 
 if sys.version_info >= (3, 10):
-    _AR = TypeVar("_AR", bound=Awaitable[Any])
+    _AF = TypeVar("_AF", bound=Callable[..., Awaitable[Any]])
 
     class AsyncContextDecorator:
-        """A base class or mixin that enables async context managers to work as decorators."""
-        def _recreate_cm(self) -> Self:
-            """
-            Return a recreated instance of self.
-        
-            """
-            ...
-        def __call__(self, func: Callable[_P, _AR]) -> _WrappedCallable[_P, _AR]: ...
+        def _recreate_cm(self) -> Self: ...
+        def __call__(self, func: _AF) -> _AF: ...
 
     class _AsyncGeneratorContextManager(
         _GeneratorContextManagerBase[AsyncGenerator[_T_co, _SendT_contra]],
