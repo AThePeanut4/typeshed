@@ -71,12 +71,7 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
     def get_use_transactions(self) -> bool: ...
     def get_chunk_size(self) -> int: ...
     @deprecated("The 'get_fields()' method is deprecated and will be removed in a future release.")
-    def get_fields(self, **kwargs: Any) -> list[Field]:
-        """
-        Returns fields sorted according to
-        :attr:`~import_export.resources.ResourceOptions.export_order`.
-        """
-        ...
+    def get_fields(self, **kwargs: Any) -> list[Field]: ...
     def get_field_name(self, field: Field) -> str:
         """Returns the field name for a given field."""
         ...
@@ -87,11 +82,7 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
         """
         ...
     def get_instance(self, instance_loader: BaseInstanceLoader, row: dict[str, Any]) -> _ModelT | None:
-        """
-        If all 'import_id_fields' are present in the dataset, calls
-        the :doc:`InstanceLoader <api_instance_loaders>`. Otherwise,
-        returns `None`.
-        """
+        """Calls the :doc:`InstanceLoader <api_instance_loaders>`."""
         ...
     def get_or_init_instance(self, instance_loader: BaseInstanceLoader, row: dict[str, Any]) -> tuple[_ModelT | None, bool]:
         """Either fetches an already existing instance or initializes a new one."""
@@ -135,65 +126,155 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
     ) -> None:
         """
         Takes any validation errors that were raised by
-        :meth:`~import_export.resources.Resource.import_obj`, and combines them
+        :meth:`~import_export.resources.Resource.import_instance`, and combines them
         with validation errors raised by the instance's ``full_clean()``
         method. The combined errors are then re-raised as single, multi-field
         ValidationError.
 
         If the ``clean_model_instances`` option is False, the instances's
         ``full_clean()`` method is not called, and only the errors raised by
-        ``import_obj()`` are re-raised.
+        ``import_instance()`` are re-raised.
         """
         ...
     # For all the definitions below (from `save_instance()` to `import_row()`), `**kwargs` should contain:
     # dry_run: bool, use_transactions: bool, row_number: int, retain_instance_in_row_result: bool.
     # Users are free to pass extra arguments in `import_data()`so PEP 728 can probably be leveraged here.
     def save_instance(self, instance: _ModelT, is_create: bool, row: dict[str, Any], **kwargs: Any) -> None:
-        """
+        r"""
         Takes care of saving the object to the database.
 
         Objects can be created in bulk if ``use_bulk`` is enabled.
 
         :param instance: The instance of the object to be persisted.
+
         :param is_create: A boolean flag to indicate whether this is a new object
                           to be created, or an existing object to be updated.
-        :param using_transactions: A flag to indicate whether db transactions are used.
-        :param dry_run: A flag to indicate dry-run mode.
+
+        :param row: A dict representing the import row.
+
+        :param \**kwargs:
+            See :meth:`import_row
         """
         ...
-    def do_instance_save(self, instance: _ModelT) -> None: ...
+    def do_instance_save(self, instance: _ModelT) -> None:
+        """
+        A method specifically to provide a single overridable hook for the instance
+        save operation.
+        For example, this can be overridden to implement update_or_create().
+
+        :param instance: The model instance to be saved.
+        :param is_create: A boolean flag to indicate whether this is a new object
+                          to be created, or an existing object to be updated.
+        """
+        ...
     def before_save_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
         ...
     def after_save_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
         ...
     def delete_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
-        """
+        r"""
         Calls :meth:`instance.delete` as long as ``dry_run`` is not set.
         If ``use_bulk`` then instances are appended to a list for bulk import.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
         """
         ...
     def before_delete_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
         ...
     def after_delete_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
         ...
     def import_field(self, field: Field, instance: _ModelT, row: dict[str, Any], is_m2m: bool = False, **kwargs: Any) -> None:
-        """
-        Calls :meth:`import_export.fields.Field.save` if ``Field.attribute``
-        is specified, and ``Field.column_name`` is found in ``data``.
+        r"""
+        Handles persistence of the field data.
+
+        :param field: A :class:`import_export.fields.Field` instance.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param is_m2m: A boolean value indicating whether or not this is a
+          many-to-many field.
+
+        :param \**kwargs:
+            See :meth:`import_row`
         """
         ...
     def get_import_fields(self) -> list[Field]: ...
-    def import_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None: ...
-    def save_m2m(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
+    def import_instance(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
+        r"""
+        Traverses every field in this Resource and calls
+        :meth:`~import_export.resources.Resource.import_field`. If
+        ``import_field()`` results in a ``ValueError`` being raised for
+        one of more fields, those errors are captured and reraised as a single,
+        multi-field ValidationError.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
         """
+        ...
+    def save_m2m(self, instance: _ModelT, row: dict[str, Any], **kwargs: Any) -> None:
+        r"""
         Saves m2m fields.
 
         Model instance need to have a primary key value before
         a many-to-many relationship can be used.
+
+        :param instance: A new or existing model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
         """
         ...
     def for_delete(self, row: dict[str, Any], instance: _ModelT) -> bool:
@@ -202,6 +283,10 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
 
         Default implementation returns ``False``.
         Override this method to handle deletion.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param instance: A new or existing model instance.
         """
         ...
     def skip_row(
@@ -235,51 +320,106 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
                     # Add code here
                     return super().skip_row(instance, original, row,
                                             import_validation_errors=import_validation_errors)
+
+        :param instance: A new or updated model instance.
+
+        :param original: The original persisted model instance.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param import_validation_errors: A ``dict`` containing key / value data for any
+          identified validation errors.
         """
         ...
     def get_diff_headers(self) -> list[str]:
         """Diff representation headers."""
         ...
     def before_import(self, dataset: Dataset, **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
-        ...
-    def after_import(self, dataset: Dataset, result: Result, **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
-        ...
-    def before_import_row(self, row: dict[str, Any], **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
-        ...
-    def after_import_row(self, row: dict[str, Any], row_result: RowResult, **kwargs: Any) -> None:
-        """
+        r"""
         Override to add additional logic. Does nothing by default.
 
-        :param row: A ``dict`` of the import row.
+        :param dataset: A ``tablib.Dataset``.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
+        ...
+    def after_import(self, dataset: Dataset, result: Result, **kwargs: Any) -> None:
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param dataset: A ``tablib.Dataset``.
+
+        :param result: A :class:`import_export.results.Result` implementation
+          containing a summary of the import.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
+        ...
+    def before_import_row(self, row: dict[str, Any], **kwargs: Any) -> None:
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
+        ...
+    def after_import_row(self, row: dict[str, Any], row_result: RowResult, **kwargs: Any) -> None:
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
 
         :param row_result: A ``RowResult`` instance.
           References the persisted ``instance`` as an attribute.
 
-        :param row_number: The row number from the dataset.
+        :param \**kwargs:
+            See :meth:`import_row`
         """
         ...
-    def after_init_instance(self, instance: _ModelT, new: bool, row: dict[str, Any], **kwargs: Any) -> None: ...
+    def after_init_instance(self, instance: _ModelT, new: bool, row: dict[str, Any], **kwargs: Any) -> None:
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param instance: A new or existing model instance.
+
+        :param new: a boolean flag indicating whether instance is new or existing.
+
+        :param row: A ``dict`` containing key / value data for the row to be imported.
+
+        :param \**kwargs:
+            See :meth:`import_row`
+        """
+        ...
     @overload
     def handle_import_error(self, result: Result, error: Exception, raise_errors: Literal[True]) -> NoReturn: ...
     @overload
     def handle_import_error(self, result: Result, error: Exception, raise_errors: Literal[False] = ...) -> None: ...
     def import_row(self, row: dict[str, Any], instance_loader: BaseInstanceLoader, **kwargs: Any) -> RowResult:
-        """
+        r"""
         Imports data from ``tablib.Dataset``. Refer to :doc:`import_workflow`
         for a more complete description of the whole import process.
 
-        :param row: A ``dict`` of the row to import
+        :param row: A ``dict`` of the 'row' to import.
+          A row is a dict of data fields so can be a csv line, a JSON object,
+          a YAML object etc.
 
-        :param instance_loader: The instance loader to be used to load the row
+        :param instance_loader: The instance loader to be used to load the model
+          instance associated with the row (if there is one).
 
-        :param using_transactions: If ``using_transactions`` is set, a transaction
-            is being used to wrap the import
+        :param \**kwargs:
+            See below.
 
-        :param dry_run: If ``dry_run`` is set, or error occurs, transaction
-            will be rolled back.
+        :Keyword Arguments:
+            * dry_run (``boolean``) --
+              A True value means that no data should be persisted.
+            * use_transactions (``boolean``) --
+              A True value means that transactions will be rolled back.
+            * row_number  (``int``) --
+              The index of the row being imported.
         """
         ...
     def import_data(
@@ -292,11 +432,11 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
         rollback_on_validation_errors: bool = False,
         **kwargs: Any,
     ) -> Result:
-        """
+        r"""
         Imports data from ``tablib.Dataset``. Refer to :doc:`import_workflow`
         for a more complete description of the whole import process.
 
-        :param dataset: A ``tablib.Dataset``
+        :param dataset: A ``tablib.Dataset``.
 
         :param raise_errors: Whether errors should be printed to the end user
                              or raised regularly.
@@ -304,17 +444,22 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
         :param use_transactions: If ``True`` the import process will be processed
                                  inside a transaction.
 
-        :param collect_failed_rows: If ``True`` the import process will collect
-                                    failed rows.
+        :param collect_failed_rows:
+          If ``True`` the import process will create a new dataset object comprising
+          failed rows and errors.
+          This can be useful for debugging purposes but will cause higher memory usage
+          for larger datasets.
+          See :attr:`~import_export.results.Result.failed_dataset`.
 
         :param rollback_on_validation_errors: If both ``use_transactions`` and
-                                              ``rollback_on_validation_errors``
-                                              are set to ``True``, the import
-                                              process will be rolled back in
-                                              case of ValidationError.
+          ``rollback_on_validation_errors`` are set to ``True``, the import process will
+          be rolled back in case of ValidationError.
 
         :param dry_run: If ``dry_run`` is set, or an error occurs, if a transaction
-                        is being used, it will be rolled back.
+            is being used, it will be rolled back.
+
+        :param \**kwargs:
+            Metadata which may be associated with the import.
         """
         ...
     def import_data_inner(
@@ -329,13 +474,38 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
     def get_import_order(self) -> tuple[str, ...]: ...
     def get_export_order(self) -> tuple[str, ...]: ...
     def before_export(self, queryset: QuerySet[_ModelT], **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param queryset: The queryset for export.
+
+        :param \**kwargs:
+            Metadata which may be associated with the export.
+        """
         ...
     def after_export(self, queryset: QuerySet[_ModelT], dataset: Dataset, **kwargs: Any) -> None:
-        """Override to add additional logic. Does nothing by default."""
+        r"""
+        Override to add additional logic. Does nothing by default.
+
+        :param queryset: The queryset for export.
+
+        :param dataset: A ``tablib.Dataset``.
+
+        :param \**kwargs:
+            Metadata which may be associated with the export.
+        """
         ...
     def filter_export(self, queryset: QuerySet[_ModelT], **kwargs: Any) -> QuerySet[_ModelT]:
-        """Override to filter an export queryset."""
+        r"""
+        Override to filter an export queryset.
+
+        :param queryset: The queryset for export.
+
+        :param \**kwargs:
+            Metadata which may be associated with the export.
+
+        :returns: The filtered queryset.
+        """
         ...
     def export_field(self, field: Field, instance: _ModelT, **kwargs: Any) -> str: ...
     def get_export_fields(self, selected_fields: Sequence[str] | None = None) -> list[Field]: ...
@@ -347,7 +517,10 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
     def export(self, queryset: QuerySet[_ModelT] | None = None, **kwargs: Any) -> Dataset:
         """
         Exports a resource.
-        :returns: Dataset object.
+
+        :param queryset: The queryset for export (optional).
+
+        :returns: A ``tablib.Dataset``.
         """
         ...
 

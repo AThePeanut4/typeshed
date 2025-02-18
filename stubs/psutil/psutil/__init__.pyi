@@ -12,7 +12,7 @@ sensors) in Python. Supported platforms:
  - Sun Solaris
  - AIX
 
-Works with Python versions 2.7 and 3.6+.
+Supported Python versions are cPython 3.6+ and PyPy.
 """
 
 import sys
@@ -421,16 +421,143 @@ class Process:
     if sys.platform == "win32":
         def num_handles(self) -> int: ...
 
-    def num_ctx_switches(self) -> pctxsw: ...
-    def num_threads(self) -> int: ...
-    def threads(self) -> list[pthread]: ...
-    def children(self, recursive: bool = False) -> list[Process]: ...
-    def cpu_percent(self, interval: float | None = None) -> float: ...
-    def cpu_times(self) -> pcputimes: ...
-    def memory_info(self) -> pmem: ...
-    def memory_full_info(self) -> pfullmem: ...
-    def memory_percent(self, memtype: str = "rss") -> float: ...
-    def open_files(self) -> list[popenfile]: ...
+    def num_ctx_switches(self) -> pctxsw:
+        """
+        Return the number of voluntary and involuntary context
+        switches performed by this process.
+        """
+        ...
+    def num_threads(self) -> int:
+        """Return the number of threads used by this process."""
+        ...
+    def threads(self) -> list[pthread]:
+        """
+        Return threads opened by process as a list of
+        (id, user_time, system_time) namedtuples representing
+        thread id and thread CPU times (user/system).
+        On OpenBSD this method requires root access.
+        """
+        ...
+    def children(self, recursive: bool = False) -> list[Process]:
+        """
+        Return the children of this process as a list of Process
+        instances, pre-emptively checking whether PID has been reused.
+        If *recursive* is True return all the parent descendants.
+
+        Example (A == this process):
+
+         A ─┐
+            │
+            ├─ B (child) ─┐
+            │             └─ X (grandchild) ─┐
+            │                                └─ Y (great grandchild)
+            ├─ C (child)
+            └─ D (child)
+
+        >>> import psutil
+        >>> p = psutil.Process()
+        >>> p.children()
+        B, C, D
+        >>> p.children(recursive=True)
+        B, X, Y, C, D
+
+        Note that in the example above if process X disappears
+        process Y won't be listed as the reference to process A
+        is lost.
+        """
+        ...
+    def cpu_percent(self, interval: float | None = None) -> float:
+        """
+        Return a float representing the current process CPU
+        utilization as a percentage.
+
+        When *interval* is 0.0 or None (default) compares process times
+        to system CPU times elapsed since last call, returning
+        immediately (non-blocking). That means that the first time
+        this is called it will return a meaningful 0.0 value.
+
+        When *interval* is > 0.0 compares process times to system CPU
+        times elapsed before and after the interval (blocking).
+
+        In this case is recommended for accuracy that this function
+        be called with at least 0.1 seconds between calls.
+
+        A value > 100.0 can be returned in case of processes running
+        multiple threads on different CPU cores.
+
+        The returned value is explicitly NOT split evenly between
+        all available logical CPUs. This means that a busy loop process
+        running on a system with 2 logical CPUs will be reported as
+        having 100% CPU utilization instead of 50%.
+
+        Examples:
+
+          >>> import psutil
+          >>> p = psutil.Process(os.getpid())
+          >>> # blocking
+          >>> p.cpu_percent(interval=1)
+          2.0
+          >>> # non-blocking (percentage since last call)
+          >>> p.cpu_percent(interval=None)
+          2.9
+          >>>
+        """
+        ...
+    def cpu_times(self) -> pcputimes:
+        """
+        Return a (user, system, children_user, children_system)
+        namedtuple representing the accumulated process time, in
+        seconds.
+        This is similar to os.times() but per-process.
+        On macOS and Windows children_user and children_system are
+        always set to 0.
+        """
+        ...
+    def memory_info(self) -> pmem:
+        """
+        Return a namedtuple with variable fields depending on the
+        platform, representing memory information about the process.
+
+        The "portable" fields available on all platforms are `rss` and `vms`.
+
+        All numbers are expressed in bytes.
+        """
+        ...
+    def memory_full_info(self) -> pfullmem:
+        """
+        This method returns the same information as memory_info(),
+        plus, on some platform (Linux, macOS, Windows), also provides
+        additional metrics (USS, PSS and swap).
+        The additional metrics provide a better representation of actual
+        process memory usage.
+
+        Namely USS is the memory which is unique to a process and which
+        would be freed if the process was terminated right now.
+
+        It does so by passing through the whole process address.
+        As such it usually requires higher user privileges than
+        memory_info() and is considerably slower.
+        """
+        ...
+    def memory_percent(self, memtype: str = "rss") -> float:
+        """
+        Compare process memory to total physical system memory and
+        calculate process memory utilization as a percentage.
+        *memtype* argument is a string that dictates what type of
+        process memory you want to compare against (defaults to "rss").
+        The list of available strings can be obtained like this:
+
+        >>> psutil.Process().memory_info()._fields
+        ('rss', 'vms', 'shared', 'text', 'lib', 'data', 'dirty', 'uss', 'pss')
+        """
+        ...
+    def open_files(self) -> list[popenfile]:
+        """
+        Return files opened by process as a list of
+        (path, fd) namedtuples including the absolute file name
+        and file descriptor number.
+        """
+        ...
     @deprecated('use "net_connections" method instead')
     def connections(self, kind: str = "inet") -> list[pconn]:
         """connections() is deprecated and will be removed; use net_connections() instead"""
@@ -621,7 +748,7 @@ def wait_procs(
 def cpu_count(logical: bool = True) -> int | None:
     """
     Return the number of logical CPUs in the system (same as
-    os.cpu_count() in Python 3.4).
+    os.cpu_count()).
 
     If *logical* is False return the number of physical cores only
     (e.g. hyper thread CPUs are excluded).

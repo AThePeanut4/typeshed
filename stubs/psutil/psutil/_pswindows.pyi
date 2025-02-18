@@ -123,7 +123,14 @@ class pio(NamedTuple):
     other_count: Any
     other_bytes: Any
 
-def convert_dos_path(s): ...
+def convert_dos_path(s):
+    r"""
+    Convert paths using native DOS format like:
+        "\Device\HarddiskVolume1\Windows\systemew\file.txt"
+    into:
+        "C:\Windows\systemew\file.txt".
+    """
+    ...
 def getpagesize(): ...
 def virtual_memory() -> svmem:
     """System virtual memory as a namedtuple."""

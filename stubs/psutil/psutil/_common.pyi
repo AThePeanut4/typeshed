@@ -1,4 +1,9 @@
-"""Common objects shared by __init__.py and _ps*.py modules."""
+"""
+Common objects shared by __init__.py and _ps*.py modules.
+
+Note: this module is imported by setup.py, so it should not import
+psutil or third-party modules.
+"""
 
 import enum
 from _typeshed import Incomplete, StrOrBytesPath, SupportsWrite
@@ -431,9 +436,8 @@ def wrap_numbers(input_dict, name: str):
 def open_binary(fname): ...
 def open_text(fname):
     """
-    On Python 3 opens a file in text mode by using fs encoding and
-    a proper en/decoding errors handler.
-    On Python 2 this is just an alias for open(name, 'rt').
+    Open a file in text mode by using the proper FS encoding and
+    en/decoding error handlers.
     """
     ...
 def cat(fname, fallback=..., _open=...):
@@ -449,7 +453,7 @@ def bcat(fname, fallback=...):
     ...
 def bytes2human(n: int, format: str = "%(value).1f%(symbol)s") -> str:
     """
-    Used by various scripts. See: http://goo.gl/zeJZl.
+    Used by various scripts. See: https://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764.
 
     >>> bytes2human(10000)
     '9.8K'

@@ -8,56 +8,55 @@ from django.db.models import Model, QuerySet
 def format_datetime(value: datetime, datetime_format: str) -> str: ...
 
 class Widget:
-    """
-    A Widget takes care of converting between import and export representations.
-
-    This is achieved by the two methods,
-    :meth:`~import_export.widgets.Widget.clean` and
-    :meth:`~import_export.widgets.Widget.render`.
-    """
+    """A Widget handles converting between import and export representations."""
     coerce_to_string: bool
-    def __init__(self, coerce_to_string: bool = True) -> None: ...
+    def __init__(self, coerce_to_string: bool = True) -> None:
+        """
+        :param coerce_to_string: If True, :meth:`~import_export.widgets.Widget.render`
+          will return a string representation of the value, otherwise the value is
+          returned.
+        """
+        ...
     def clean(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> Any:
         """
-        Returns an appropriate Python object for an imported value.
+        Returns an appropriate python object for an imported value.
+        For example, a date string will be converted to a python datetime instance.
 
-        For example, if you import a value from a spreadsheet,
-        :meth:`~import_export.widgets.Widget.clean` handles conversion
-        of this value into the corresponding Python object.
-
-        Numbers or dates can be *cleaned* to their respective data types and
-        don't have to be imported as Strings.
+        :param value: The value to be converted to a native type.
+        :param row: A dict containing row key/value pairs.
+        :param **kwargs: Optional kwargs.
         """
         ...
     @overload
     @deprecated("The 'obj' parameter is deprecated and will be removed in a future release.")
     def render(self, value: Any, obj: Model, **kwargs: Any) -> Any:
         """
-        Returns an export representation of a Python value.
+        Returns an export representation of a python value.
 
-        For example, if you have an object you want to export,
-        :meth:`~import_export.widgets.Widget.render` takes care of converting
-        the object's field to a value that can be written to a spreadsheet.
+        :param value: The python value to be rendered.
+        :param obj: The model instance from which the value is taken.
+          This parameter is deprecated and will be removed in a future release.
+
+        :return: By default, this value will be a string, with ``None`` values returned
+          as empty strings.
         """
         ...
     @overload
     def render(self, value: Any, obj: None = None, **kwargs: Any) -> Any:
         """
-        Returns an export representation of a Python value.
+        Returns an export representation of a python value.
 
-        For example, if you have an object you want to export,
-        :meth:`~import_export.widgets.Widget.render` takes care of converting
-        the object's field to a value that can be written to a spreadsheet.
+        :param value: The python value to be rendered.
+        :param obj: The model instance from which the value is taken.
+          This parameter is deprecated and will be removed in a future release.
+
+        :return: By default, this value will be a string, with ``None`` values returned
+          as empty strings.
         """
         ...
 
 class NumberWidget(Widget):
-    """
-    Widget for converting numeric fields.
-
-    :param coerce_to_string: If True, render will return a string representation
-        of the value (None is returned as ""), otherwise the value is returned.
-    """
+    """Widget for converting numeric fields."""
     def is_empty(self, value: Any) -> bool: ...
 
 class FloatWidget(NumberWidget):
@@ -74,10 +73,8 @@ class CharWidget(Widget):
     """
     Widget for converting text fields.
 
-    :param coerce_to_string: If True, the value returned by clean() is cast to a
-      string.
-    :param allow_blank:  If True, and if coerce_to_string is True, then clean() will
-      return null values as empty strings, otherwise as null.
+    :param allow_blank:  If True, then :meth:`~import_export.widgets.Widget.clean`
+      will return null values as empty strings, otherwise as ``None``.
     """
     allow_blank: bool
     def __init__(self, coerce_to_string: bool = True, allow_blank: bool = True) -> None: ...
@@ -103,13 +100,13 @@ class BooleanWidget(Widget):
         class BooleanExample(resources.ModelResource):
             warn = fields.Field(widget=widgets.BooleanWidget())
 
-            def before_import_row(self, row, row_number=None, **kwargs):
+            def before_import_row(self, row, **kwargs):
                 if "warn" in row.keys():
                     # munge "warn" to "True"
                     if row["warn"] in ["warn", "WARN"]:
                         row["warn"] = True
 
-                return super().before_import_row(row, row_number, **kwargs)
+                return super().before_import_row(row, **kwargs)
     """
     TRUE_VALUES: ClassVar[list[str | int | bool]]
     FALSE_VALUES: ClassVar[list[str | int | bool]]
@@ -118,7 +115,7 @@ class BooleanWidget(Widget):
 
 class DateWidget(Widget):
     """
-    Widget for converting date fields.
+    Widget for converting date fields to Python date instances.
 
     Takes optional ``format`` parameter. If none is set, either
     ``settings.DATE_INPUT_FORMATS`` or ``"%Y-%m-%d"`` is used.
@@ -128,7 +125,7 @@ class DateWidget(Widget):
 
 class DateTimeWidget(Widget):
     """
-    Widget for converting date fields.
+    Widget for converting datetime fields to Python datetime instances.
 
     Takes optional ``format`` parameter. If none is set, either
     ``settings.DATETIME_INPUT_FORMATS`` or ``"%Y-%m-%d %H:%M:%S"`` is used.
@@ -222,14 +219,18 @@ class ForeignKeyWidget(Widget, Generic[_ModelT]):
         self, model: _ModelT, field: str = "pk", use_natural_foreign_keys: bool = False, key_is_id: bool = False, **kwargs: Any
     ) -> None: ...
     def get_queryset(self, value: Any, row: Mapping[str, Any], *args: Any, **kwargs: Any) -> QuerySet[_ModelT]:
-        """
+        r"""
         Returns a queryset of all objects for this Model.
 
         Overwrite this method if you want to limit the pool of objects from
         which the related object is retrieved.
 
-        :param value: The field's value in the datasource.
-        :param row: The datasource's current row.
+        :param value: The field's value in the dataset.
+        :param row: The dataset's current row.
+        :param \*args:
+            Optional args.
+        :param \**kwargs:
+            Optional kwargs.
 
         As an example; if you'd like to have ForeignKeyWidget look up a Person
         by their pre- **and** lastname column, you could subclass the widget
@@ -243,7 +244,17 @@ class ForeignKeyWidget(Widget, Generic[_ModelT]):
                     )
         """
         ...
-    def get_lookup_kwargs(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]: ...
+    def get_lookup_kwargs(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]:
+        r"""
+        :return: the key value pairs used to identify a model instance.
+          Override this to customize instance lookup.
+
+        :param value: The field's value in the dataset.
+        :param row: The dataset's current row.
+        :param \**kwargs:
+            Optional kwargs.
+        """
+        ...
 
 class ManyToManyWidget(Widget, Generic[_ModelT]):
     """

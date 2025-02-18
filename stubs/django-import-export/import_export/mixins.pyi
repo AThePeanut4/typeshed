@@ -32,7 +32,11 @@ class BaseImportExportMixin(Generic[_ModelT]):
     def import_formats(self) -> list[type[Format]]: ...
     def check_resource_classes(self, resource_classes: SupportsGetItem[int, type[Resource[_ModelT]]]) -> None: ...
     def get_resource_classes(self, request: HttpRequest) -> list[type[Resource[_ModelT]]]:
-        """Return subscriptable type (list, tuple, ...) containing resource classes"""
+        """
+        Return subscriptable type (list, tuple, ...) containing resource classes
+        :param request: The request object.
+        :returns: The Resource classes.
+        """
         ...
     def get_resource_kwargs(self, request: HttpRequest, *args: Any, **kwargs: Any) -> dict[str, Any]:
         """
@@ -40,7 +44,6 @@ class BaseImportExportMixin(Generic[_ModelT]):
         Can be overridden to provide additional kwarg params.
 
         :param request: The request object.
-        :param args: Positional arguments.
         :param kwargs: Keyword arguments.
         :returns: The Resource kwargs (by default, is the kwargs passed).
         """
@@ -57,13 +60,30 @@ class BaseImportExportMixin(Generic[_ModelT]):
 class BaseImportMixin(BaseImportExportMixin[_ModelT]):
     skip_import_confirm: bool
     def get_import_resource_classes(self, request: HttpRequest) -> list[type[Resource[_ModelT]]]:
-        """Returns ResourceClass subscriptable (list, tuple, ...) to use for import."""
+        """
+        :param request: The request object.
+        Returns ResourceClass subscriptable (list, tuple, ...) to use for import.
+        """
         ...
     def get_import_formats(self) -> list[Format]:
         """Returns available import formats."""
         ...
-    def get_import_resource_kwargs(self, request: HttpRequest, **kwargs: Any) -> dict[str, Any]: ...
-    def choose_import_resource_class(self, form: Form, request: HttpRequest) -> type[Resource[_ModelT]]: ...
+    def get_import_resource_kwargs(self, request: HttpRequest, **kwargs: Any) -> dict[str, Any]:
+        """
+        Returns kwargs which will be passed to the Resource constructor.
+        :param request: The request object.
+        :param kwargs: Keyword arguments.
+        :returns: The kwargs (dict)
+        """
+        ...
+    def choose_import_resource_class(self, form: Form, request: HttpRequest) -> type[Resource[_ModelT]]:
+        """
+        Identify which class should be used for import
+        :param form: The form object.
+        :param request: The request object.
+        :returns: The import Resource class.
+        """
+        ...
     def is_skip_import_confirm_enabled(self) -> bool: ...
 
 class BaseExportMixin(BaseImportExportMixin[_ModelT]):
@@ -74,10 +94,28 @@ class BaseExportMixin(BaseImportExportMixin[_ModelT]):
         """Returns available export formats."""
         ...
     def get_export_resource_classes(self, request: HttpRequest) -> list[Resource[_ModelT]]:
-        """Returns ResourceClass subscriptable (list, tuple, ...) to use for export."""
+        """
+        Returns ResourceClass subscriptable (list, tuple, ...) to use for export.
+        :param request: The request object.
+        :returns: The Resource classes.
+        """
         ...
-    def choose_export_resource_class(self, form: Form, request: HttpRequest) -> Resource[_ModelT]: ...
-    def get_export_resource_kwargs(self, request: HttpRequest, **kwargs: Any) -> dict[str, Any]: ...
+    def choose_export_resource_class(self, form: Form, request: HttpRequest) -> Resource[_ModelT]:
+        """
+        Identify which class should be used for export
+        :param request: The request object.
+        :param form: The form object.
+        :returns: The export Resource class.
+        """
+        ...
+    def get_export_resource_kwargs(self, request: HttpRequest, **kwargs: Any) -> dict[str, Any]:
+        """
+        Returns kwargs which will be passed to the Resource constructor.
+        :param request: The request object.
+        :param kwargs: Keyword arguments.
+        :returns: The kwargs (dict)
+        """
+        ...
     def get_data_for_export(self, request: HttpRequest, queryset: QuerySet[_ModelT], **kwargs: Any) -> Dataset: ...
     def get_export_filename(self, file_format: Format) -> str: ...
     def is_skip_export_form_enabled(self) -> bool: ...

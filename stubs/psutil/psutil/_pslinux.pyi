@@ -178,15 +178,72 @@ class scputimes(NamedTuple):
     guest: float
     guest_nice: float
 
-def calculate_avail_vmem(mems): ...
-def virtual_memory() -> svmem: ...
-def swap_memory(): ...
-def cpu_times(): ...
-def per_cpu_times(): ...
-def cpu_count_logical(): ...
-def cpu_count_cores() -> int | None: ...
-def cpu_stats(): ...
-def cpu_freq(): ...
+def calculate_avail_vmem(mems):
+    """
+    Fallback for kernels < 3.14 where /proc/meminfo does not provide
+    "MemAvailable", see:
+    https://blog.famzah.net/2014/09/24/.
+
+    This code reimplements the algorithm outlined here:
+    https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
+        commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773
+
+    We use this function also when "MemAvailable" returns 0 (possibly a
+    kernel bug, see: https://github.com/giampaolo/psutil/issues/1915).
+    In that case this routine matches "free" CLI tool result ("available"
+    column).
+
+    XXX: on recent kernels this calculation may differ by ~1.5% compared
+    to "MemAvailable:", as it's calculated slightly differently.
+    It is still way more realistic than doing (free + cached) though.
+    See:
+    * https://gitlab.com/procps-ng/procps/issues/42
+    * https://github.com/famzah/linux-memavailable-procfs/issues/2
+    """
+    ...
+def virtual_memory() -> svmem:
+    """
+    Report virtual memory stats.
+    This implementation mimics procps-ng-3.3.12, aka "free" CLI tool:
+    https://gitlab.com/procps-ng/procps/blob/
+        24fd2605c51fccc375ab0287cec33aa767f06718/proc/sysinfo.c#L778-791
+    The returned values are supposed to match both "free" and "vmstat -s"
+    CLI tools.
+    """
+    ...
+def swap_memory():
+    """Return swap memory metrics."""
+    ...
+def cpu_times():
+    """
+    Return a named tuple representing the following system-wide
+    CPU times:
+    (user, nice, system, idle, iowait, irq, softirq [steal, [guest,
+     [guest_nice]]])
+    Last 3 fields may not be available on all Linux kernel versions.
+    """
+    ...
+def per_cpu_times():
+    """
+    Return a list of namedtuple representing the CPU times
+    for every CPU available on the system.
+    """
+    ...
+def cpu_count_logical():
+    """Return the number of logical CPUs in the system."""
+    ...
+def cpu_count_cores() -> int | None:
+    """Return the number of CPU cores in the system."""
+    ...
+def cpu_stats():
+    """Return various CPU stats as a named tuple."""
+    ...
+def cpu_freq():
+    """
+    Alternate implementation using /proc/cpuinfo.
+    min and max frequencies are not available and are set to None.
+    """
+    ...
 
 net_if_addrs: Any
 
@@ -337,7 +394,7 @@ def ppid_map():
     ...
 def wrap_exceptions(fun):
     """
-    Decorator which translates bare OSError and IOError exceptions
+    Decorator which translates bare OSError and OSError exceptions
     into NoSuchProcess and AccessDenied.
     """
     ...
@@ -366,7 +423,7 @@ class Process:
         """
         Return process's mapped memory regions as a list of named
         tuples. Fields are explained in 'man proc'; here is an updated
-        (Apr 2012) version: http://goo.gl/fmebo.
+        (Apr 2012) version: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/proc.txt?id=b76437579d1344b612cf1851ae610c636cec7db0.
 
         /proc/{PID}/smaps does not exist on kernels < 2.6.14 or if
         CONFIG_MMU kernel configuration option is not enabled.
