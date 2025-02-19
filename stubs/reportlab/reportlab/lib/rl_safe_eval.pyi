@@ -90,7 +90,26 @@ class UntrustedAstTransformer(ast.NodeTransformer):
         """
         ...
     def protect_unpack_sequence(self, target, value): ...
-    def gen_unpack_wrapper(self, node, target, ctx: str = "store"): ...
+    def gen_unpack_wrapper(self, node, target, ctx: str = "store"):
+        """
+        Helper function to protect tuple unpacks.
+
+        node: used to copy the locations for the new nodes.
+        target: is the tuple which must be protected.
+        ctx: Defines the context of the returned temporary node.
+
+        It returns a tuple with two element.
+
+        Element 1: Is a temporary name node which must be used to
+                           replace the target.
+                           The context (store, param) is defined
+                           by the 'ctx' parameter..
+
+        Element 2: Is a try .. finally where the body performs the
+                           protected tuple unpack of the temporary variable
+                           into the original target.
+        """
+        ...
     def gen_lambda(self, args, body): ...
     def gen_del_stmt(self, name_to_del): ...
     def transform_slice(self, slice_):
@@ -122,13 +141,7 @@ class UntrustedAstTransformer(ast.NodeTransformer):
         """
         ...
     def visit_Constant(self, node):
-        """
-        Allow constant literals with restriction for Ellipsis.
-
-        Constant replaces Num, Str, Bytes, NameConstant and Ellipsis in
-        Python 3.8+.
-        :see: https://docs.python.org/dev/whatsnew/3.8.html#deprecated
-        """
+        """Visit the contents of a node."""
         ...
     def visit_Name(self, node): ...
     def visit_Call(self, node):
