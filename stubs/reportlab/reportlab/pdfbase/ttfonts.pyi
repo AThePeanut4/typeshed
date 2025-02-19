@@ -51,6 +51,7 @@ Canvas and TextObject have special support for dynamic fonts.
 
 from _typeshed import Incomplete
 from typing import Final, NamedTuple
+from typing_extensions import Self
 
 from reportlab.pdfbase import pdfdoc, pdfmetrics
 
@@ -331,39 +332,42 @@ class TTFont:
     encoding: Incomplete
     state: Incomplete
     def __init__(
-        self, name, filename, validate: int = 0, subfontIndex: int = 0, asciiReadable: Incomplete | None = None
-    ) -> None:
-        """
-        Loads a TrueType font from filename.
-
-        If validate is set to a false values, skips checksum validation.  This
-        can save time, especially if the font is large.
-        """
-        ...
+        self,
+        name,
+        filename,
+        validate: int = 0,
+        subfontIndex: int = 0,
+        asciiReadable: Incomplete | None = None,
+        shaped: Incomplete | None = None,
+    ) -> None: ...
     def stringWidth(self, text, size, encoding: str = "utf8"): ...
-    def splitString(self, text, doc, encoding: str = "utf-8"):
-        """
-        Splits text into a number of chunks, each of which belongs to a
-        single subset.  Returns a list of tuples (subset, string).  Use subset
-        numbers with getSubsetInternalName.  Doc is needed for distinguishing
-        subsets when building different documents at the same time.
-        """
-        ...
-    def getSubsetInternalName(self, subset, doc):
-        """
-        Returns the name of a PDF Font object corresponding to a given
-        subset of this dynamic font.  Use this function instead of
-        PDFDocument.getInternalFontName.
-        """
-        ...
-    def addObjects(self, doc) -> None:
-        """
-        Makes  one or more PDF objects to be added to the document.  The
-        caller supplies the internal name to be used (typically F1, F2, ... in
-        sequence).
+    def splitString(self, text, doc, encoding: str = "utf-8"): ...
+    def getSubsetInternalName(self, subset, doc): ...
+    def addObjects(self, doc) -> None: ...
+    @property
+    def hbFace(self) -> Incomplete | None: ...
+    def hbFont(self, fontSize: float = 10): ...
+    @property
+    def isShaped(self) -> bool: ...
+    @isShaped.setter
+    def isShaped(self, v) -> None: ...
+    def pdfScale(self, v): ...
+    def unregister(self) -> None: ...
 
-        This method creates a number of Font and FontDescriptor objects.  Every
-        FontDescriptor is a (no more than) 256 character subset of the original
-        TrueType font.
-        """
-        ...
+class ShapedFragWord(list[Incomplete]): ...
+
+class ShapeData(NamedTuple):
+    cluster: int
+    x_advance: float
+    y_advance: float
+    x_offset: float
+    y_offset: float
+    width: float
+
+class ShapedStr(str):
+    def __new__(cls, s, shapeData: ShapeData | None = None) -> Self: ...
+    def __radd__(self, other) -> Self: ...
+
+def freshTTFont(ttfn, ttfpath, **kwds) -> TTFont: ...
+def makeShapedFragWord(w, K: list[Incomplete] = [], V: list[Incomplete] = []) -> type[ShapedFragWord]: ...
+def shapeFragWord(w, features: Incomplete | None = None): ...
