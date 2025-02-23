@@ -117,7 +117,7 @@ colorama==0.4.*
 flake8-builtins==2.5.*
 pysftp==0.2.*
 decorator==5.1.*
-zxcvbn==4.4.*
+zxcvbn==4.5.*
 braintree==4.33.*
 TgCrypto==1.2.*
 WTForms~=3.2.1
