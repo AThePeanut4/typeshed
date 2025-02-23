@@ -1,35 +1,15 @@
-"""
-Virtually every Python programmer has used Python for wrangling
-disk contents, and ``fileutils`` collects solutions to some of the
-most commonly-found gaps in the standard library.
-"""
-
-from _typeshed import StrOrBytesPath
+from _typeshed import BytesPath, StrOrBytesPath, StrPath
 from collections.abc import Callable, Generator, Iterable
 from os import PathLike
 from types import TracebackType
-from typing import IO, Any, NoReturn
+from typing import IO, Any, NoReturn, TypeVar, overload
 from typing_extensions import Self
 
-def mkdir_p(path: StrOrBytesPath) -> None:
-    """
-    Creates a directory and any parent directories that may need to
-    be created along the way, without raising errors for any existing
-    directories. This function mimics the behavior of the ``mkdir -p``
-    command available in Linux/BSD environments, but also works on
-    Windows.
-    """
-    ...
-def rotate_file(filename: PathLike[str], *, keep: int = 5) -> None:
-    """
-    If *filename.ext* exists, it will be moved to *filename.1.ext*, 
-    with all conflicting filenames being moved up by one, dropping any files beyond *keep*.
+_StrPathT = TypeVar("_StrPathT", bound=StrPath)
+_BytesPathT = TypeVar("_BytesPathT", bound=BytesPath)
 
-    After rotation, *filename* will be available for creation as a new file.
-
-    Fails if *filename* is not a file or if *keep* is not > 0.
-    """
-    ...
+def mkdir_p(path: StrOrBytesPath) -> None: ...
+def rotate_file(filename: PathLike[str], *, keep: int = 5) -> None: ...
 
 class FilePerms:
     """
@@ -172,9 +152,9 @@ class AtomicSaver:
     """
     dest_path: str
     overwrite: bool
-    file_perms: int
+    file_perms: int | None
     overwrite_part: bool
-    part_filename: str
+    part_filename: str | None
     rm_part_on_exc: bool
     text_mode: bool
     buffering: int
@@ -211,71 +191,23 @@ def iter_find_files(
     ignored: str | Iterable[str] | None = None,
     include_dirs: bool = False,
     max_depth: int | None = None,
-) -> Generator[str, None, None]:
-    """
-    Returns a generator that yields file paths under a *directory*,
-    matching *patterns* using `glob`_ syntax (e.g., ``*.txt``). Also
-    supports *ignored* patterns.
-
-    Args:
-        directory (str): Path that serves as the root of the
-            search. Yielded paths will include this as a prefix.
-        patterns (str or list): A single pattern or list of
-            glob-formatted patterns to find under *directory*.
-        ignored (str or list): A single pattern or list of
-            glob-formatted patterns to ignore.
-        include_dirs (bool): Whether to include directories that match
-           patterns, as well. Defaults to ``False``.
-        max_depth (int): traverse up to this level of subdirectory.
-           I.e., 0 for the specified *directory* only, 1 for *directory* 
-           and one level of subdirectory.
-
-    For example, finding Python files in the current directory:
-
-    >>> _CUR_DIR = os.path.dirname(os.path.abspath(__file__))
-    >>> filenames = sorted(iter_find_files(_CUR_DIR, '*.py'))
-    >>> os.path.basename(filenames[-1])
-    'urlutils.py'
-
-    Or, Python files while ignoring emacs lockfiles:
-
-    >>> filenames = iter_find_files(_CUR_DIR, '*.py', ignored='.#*')
-
-    .. _glob: https://en.wikipedia.org/wiki/Glob_%28programming%29
-    """
-    ...
+) -> Generator[str, None, None]: ...
+@overload
 def copy_tree(
-    src: StrOrBytesPath,
-    dst: StrOrBytesPath,
+    src: _StrPathT, dst: _StrPathT, symlinks: bool = False, ignore: Callable[[_StrPathT, list[str]], Iterable[str]] | None = None
+) -> None: ...
+@overload
+def copy_tree(
+    src: _BytesPathT,
+    dst: _BytesPathT,
     symlinks: bool = False,
-    ignore: None | Callable[[str, list[str]], Iterable[str]] | Callable[[StrOrBytesPath, list[str]], Iterable[str]] = None,
-) -> None:
-    """
-    The ``copy_tree`` function is an exact copy of the built-in
-    :func:`shutil.copytree`, with one key difference: it will not
-    raise an exception if part of the tree already exists. It achieves
-    this by using :func:`mkdir_p`.
-
-    As of Python 3.8, you may pass :func:`shutil.copytree` the
-    `dirs_exist_ok=True` flag to achieve the same effect.
-
-    Args:
-        src (str): Path of the source directory to copy.
-        dst (str): Destination path. Existing directories accepted.
-        symlinks (bool): If ``True``, copy symlinks rather than their
-            contents.
-        ignore (callable): A callable that takes a path and directory
-            listing, returning the files within the listing to be ignored.
-
-    For more details, check out :func:`shutil.copytree` and
-    :func:`shutil.copy2`.
-    """
-    ...
+    ignore: Callable[[_BytesPathT, list[bytes]], Iterable[bytes]] | None = None,
+) -> None: ...
 
 copytree = copy_tree
 
 class DummyFile:
-    name: str
+    name: StrOrBytesPath
     mode: str
     closed: bool
     errors: None

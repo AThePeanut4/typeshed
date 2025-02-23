@@ -30,9 +30,10 @@ Learn more about `caching algorithms on Wikipedia
 """
 
 import weakref
-from _typeshed import Incomplete, Self, SupportsItems, SupportsKeysAndGetItem
+from _typeshed import Incomplete, SupportsItems, SupportsKeysAndGetItem
 from collections.abc import Callable, Generator, Hashable, Iterable, Iterator, Mapping
 from typing import Any, Generic, TypeVar, overload
+from typing_extensions import Self
 
 _KT = TypeVar("_KT")
 _VT = TypeVar("_VT")
@@ -71,8 +72,10 @@ class LRI(dict[_KT, _VT]):
     miss_count: int
     soft_miss_count: int
     max_size: int
-    on_miss: Callable[[_KT], _VT]
-    def __init__(self, max_size: int = 128, values: Incomplete | None = None, on_miss: Incomplete | None = None) -> None: ...
+    on_miss: Callable[[_KT], _VT] | None
+    def __init__(
+        self, max_size: int = 128, values: Incomplete | None = None, on_miss: Callable[[_KT], _VT] | None = None
+    ) -> None: ...
     def __setitem__(self, key: _KT, value: _VT) -> None: ...
     def __getitem__(self, key: _KT) -> _VT: ...
     @overload
@@ -86,9 +89,9 @@ class LRI(dict[_KT, _VT]):
     def pop(self, key: _KT, default: _T) -> _T | _VT: ...
     def popitem(self) -> tuple[_KT, _VT]: ...
     def clear(self) -> None: ...
-    def copy(self: Self) -> Self: ...
+    def copy(self) -> Self: ...
     @overload
-    def setdefault(self, key: _KT, default: None = None) -> _VT: ...
+    def setdefault(self, key: _KT, default: None = None) -> _VT | None: ...
     @overload
     def setdefault(self, key: _KT, default: _VT) -> _VT: ...
     def update(self, E: SupportsKeysAndGetItem[_KT, _VT] | Iterable[tuple[_KT, _VT]], **F: _VT) -> None: ...  # type: ignore[override]
@@ -167,7 +170,14 @@ class CachedFunction:
     scoped: Incomplete
     typed: Incomplete
     key_func: Incomplete
-    def __init__(self, func, cache, scoped: bool = True, typed: bool = False, key: Incomplete | None = None): ...
+    def __init__(
+        self,
+        func,
+        cache: Mapping[Any, Any] | Callable[..., Incomplete],
+        scoped: bool = True,
+        typed: bool = False,
+        key: Callable[..., Incomplete] | None = None,
+    ): ...
     def __call__(self, *args, **kwargs): ...
 
 class CachedMethod:
@@ -181,97 +191,37 @@ class CachedMethod:
     typed: Incomplete
     key_func: Incomplete
     bound_to: Incomplete
-    def __init__(self, func, cache, scoped: bool = True, typed: bool = False, key: Incomplete | None = None): ...
+    def __init__(
+        self,
+        func,
+        cache: Mapping[Any, Any] | Callable[..., Incomplete],
+        scoped: bool = True,
+        typed: bool = False,
+        key: Callable[..., Incomplete] | None = None,
+    ): ...
     def __get__(self, obj, objtype: Incomplete | None = None): ...
     def __call__(self, *args, **kwargs): ...
 
-def cached(cache: Mapping[Any, Any], scoped: bool = True, typed: bool = False, key: Incomplete | None = None):
-    """
-    Cache any function with the cache object of your choosing. Note
-    that the function wrapped should take only `hashable`_ arguments.
+def cached(
+    cache: Mapping[Any, Any] | Callable[..., Incomplete],
+    scoped: bool = True,
+    typed: bool = False,
+    key: Callable[..., Incomplete] | None = None,
+): ...
+def cachedmethod(
+    cache: Mapping[Any, Any] | Callable[..., Incomplete],
+    scoped: bool = True,
+    typed: bool = False,
+    key: Callable[..., Incomplete] | None = None,
+): ...
 
-    Args:
-        cache (Mapping): Any :class:`dict`-like object suitable for
-            use as a cache. Instances of the :class:`LRU` and
-            :class:`LRI` are good choices, but a plain :class:`dict`
-            can work in some cases, as well. This argument can also be
-            a callable which accepts no arguments and returns a mapping.
-        scoped (bool): Whether the function itself is part of the
-            cache key.  ``True`` by default, different functions will
-            not read one another's cache entries, but can evict one
-            another's results. ``False`` can be useful for certain
-            shared cache use cases. More advanced behavior can be
-            produced through the *key* argument.
-        typed (bool): Whether to factor argument types into the cache
-            check. Default ``False``, setting to ``True`` causes the
-            cache keys for ``3`` and ``3.0`` to be considered unequal.
-
-    >>> my_cache = LRU()
-    >>> @cached(my_cache)
-    ... def cached_lower(x):
-    ...     return x.lower()
-    ...
-    >>> cached_lower("CaChInG's FuN AgAiN!")
-    "caching's fun again!"
-    >>> len(my_cache)
-    1
-
-    .. _hashable: https://docs.python.org/2/glossary.html#term-hashable
-    """
-    ...
-def cachedmethod(cache, scoped: bool = True, typed: bool = False, key: Incomplete | None = None):
-    """
-    Similar to :func:`cached`, ``cachedmethod`` is used to cache
-    methods based on their arguments, using any :class:`dict`-like
-    *cache* object.
-
-    Args:
-        cache (str/Mapping/callable): Can be the name of an attribute
-            on the instance, any Mapping/:class:`dict`-like object, or
-            a callable which returns a Mapping.
-        scoped (bool): Whether the method itself and the object it is
-            bound to are part of the cache keys. ``True`` by default,
-            different methods will not read one another's cache
-            results. ``False`` can be useful for certain shared cache
-            use cases. More advanced behavior can be produced through
-            the *key* arguments.
-        typed (bool): Whether to factor argument types into the cache
-            check. Default ``False``, setting to ``True`` causes the
-            cache keys for ``3`` and ``3.0`` to be considered unequal.
-        key (callable): A callable with a signature that matches
-            :func:`make_cache_key` that returns a tuple of hashable
-            values to be used as the key in the cache.
-
-    >>> class Lowerer(object):
-    ...     def __init__(self):
-    ...         self.cache = LRI()
-    ...
-    ...     @cachedmethod('cache')
-    ...     def lower(self, text):
-    ...         return text.lower()
-    ...
-    >>> lowerer = Lowerer()
-    >>> lowerer.lower('WOW WHO COULD GUESS CACHING COULD BE SO NEAT')
-    'wow who could guess caching could be so neat'
-    >>> len(lowerer.cache)
-    1
-    """
-    ...
-
-class cachedproperty(Generic[_T]):
-    """
-    The ``cachedproperty`` is used similar to :class:`property`, except
-    that the wrapped method is only called once. This is commonly used
-    to implement lazy attributes.
-
-    After the property has been accessed, the value is stored on the
-    instance itself, using the same name as the cachedproperty. This
-    allows the cache to be cleared with :func:`delattr`, or through
-    manipulating the object's ``__dict__``.
-    """
-    func: Callable[[Incomplete], _T]
-    def __init__(self, func: Callable[[Incomplete], _T]) -> None: ...
-    def __get__(self, obj: _T, objtype: type | None = None): ...
+class cachedproperty(Generic[_KT, _VT]):
+    func: Callable[[_KT], _VT]
+    def __init__(self, func: Callable[[_KT], _VT]) -> None: ...
+    @overload
+    def __get__(self, obj: None, objtype: type | None = None) -> Self: ...
+    @overload
+    def __get__(self, obj: _KT, objtype: type | None = None) -> _VT: ...
 
 class ThresholdCounter(Generic[_T]):
     """
@@ -386,17 +336,8 @@ class ThresholdCounter(Generic[_T]):
         ...
 
 class MinIDMap(Generic[_T]):
-    """
-    Assigns arbitrary weakref-able objects the smallest possible unique
-    integer IDs, such that no two objects have the same ID at the same
-    time.
-
-    Maps arbitrary hashable objects to IDs.
-
-    Based on https://gist.github.com/kurtbrose/25b48114de216a5e55df
-    """
-    mapping: weakref.WeakKeyDictionary[_T, int]
-    ref_map: dict[_T, int]
+    mapping: weakref.WeakKeyDictionary[_T, tuple[int, weakref.ReferenceType[_T]]]
+    ref_map: dict[weakref.ReferenceType[_T], int]
     free: list[int]
     def __init__(self) -> None: ...
     def get(self, a: _T) -> int: ...

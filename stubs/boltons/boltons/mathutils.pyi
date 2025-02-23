@@ -1,73 +1,15 @@
-"""
-This module provides useful math functions on top of Python's
-built-in :mod:`math` module.
-"""
+from collections.abc import Iterable
+from typing import overload
 
-from collections.abc import Sequence
-
-def clamp(x: float, lower: float = ..., upper: float = ...) -> float:
-    """
-    Limit a value to a given range.
-
-    Args:
-        x (int or float): Number to be clamped.
-        lower (int or float): Minimum value for x.
-        upper (int or float): Maximum value for x.
-
-    The returned value is guaranteed to be between *lower* and
-    *upper*. Integers, floats, and other comparable types can be
-    mixed.
-
-    >>> clamp(1.0, 0, 5)
-    1.0
-    >>> clamp(-1.0, 0, 5)
-    0
-    >>> clamp(101.0, 0, 5)
-    5
-    >>> clamp(123, upper=5)
-    5
-
-    Similar to `numpy's clip`_ function.
-
-    .. _numpy's clip: http://docs.scipy.org/doc/numpy/reference/generated/numpy.clip.html
-    """
-    ...
-def ceil(x: float, options: Sequence[float] | None = None) -> float:
-    """
-    Return the ceiling of *x*. If *options* is set, return the smallest
-    integer or float from *options* that is greater than or equal to
-    *x*.
-
-    Args:
-        x (int or float): Number to be tested.
-        options (iterable): Optional iterable of arbitrary numbers
-          (ints or floats).
-
-    >>> VALID_CABLE_CSA = [1.5, 2.5, 4, 6, 10, 25, 35, 50]
-    >>> ceil(3.5, options=VALID_CABLE_CSA)
-    4
-    >>> ceil(4, options=VALID_CABLE_CSA)
-    4
-    """
-    ...
-def floor(x: float, options: Sequence[float] | None = None) -> float:
-    """
-    Return the floor of *x*. If *options* is set, return the largest
-    integer or float from *options* that is less than or equal to
-    *x*.
-
-    Args:
-        x (int or float): Number to be tested.
-        options (iterable): Optional iterable of arbitrary numbers
-          (ints or floats).
-
-    >>> VALID_CABLE_CSA = [1.5, 2.5, 4, 6, 10, 25, 35, 50]
-    >>> floor(3.5, options=VALID_CABLE_CSA)
-    2.5
-    >>> floor(2.5, options=VALID_CABLE_CSA)
-    2.5
-    """
-    ...
+def clamp(x: float, lower: float = ..., upper: float = ...) -> float: ...
+@overload
+def ceil(x: float, options: None = None) -> int: ...
+@overload
+def ceil(x: float, options: Iterable[float]) -> float: ...
+@overload
+def floor(x: float, options: None = None) -> int: ...
+@overload
+def floor(x: float, options: Iterable[float]) -> float: ...
 
 class Bits:
     """

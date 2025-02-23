@@ -25,12 +25,12 @@ from PyInstaller.utils.win32.versioninfo import VSVersionInfo
 
 if sys.platform == "darwin":
     _TargetArch: TypeAlias = Literal["x86_64", "arm64", "universal2"]
-    _SuportedTargetArchParam: TypeAlias = _TargetArch | None
+    _SupportedTargetArchParam: TypeAlias = _TargetArch | None
     _CodesignIdentity: TypeAlias = str | None
     _CodesignIdentityParam: TypeAlias = str | None
 else:
     _TargetArch: TypeAlias = None
-    _SuportedTargetArchParam: TypeAlias = Unused
+    _SupportedTargetArchParam: TypeAlias = Unused
     _CodesignIdentity: TypeAlias = None
     _CodesignIdentityParam: TypeAlias = Unused
 
@@ -105,7 +105,7 @@ class PKG(Target):
         strip_binaries: bool = False,
         upx_binaries: bool = False,
         upx_exclude: Iterable[str] | None = None,
-        target_arch: _SuportedTargetArchParam = None,
+        target_arch: _SupportedTargetArchParam = None,
         codesign_identity: _CodesignIdentityParam = None,
         entitlements_file: FileDescriptorOrPath | None = None,
     ) -> None:
@@ -184,7 +184,7 @@ class EXE(Target):
         uac_admin: bool = False,
         uac_uiaccess: bool = False,
         argv_emulation: bool = False,
-        target_arch: _SuportedTargetArchParam = None,
+        target_arch: _SupportedTargetArchParam = None,
         codesign_identity: _CodesignIdentityParam = None,
         entitlements_file: FileDescriptorOrPath | None = None,
         upx: bool = False,

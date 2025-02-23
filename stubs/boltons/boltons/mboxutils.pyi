@@ -6,6 +6,9 @@ mailboxes. Credit to Mark Williams for these.
 """
 
 import mailbox
+from _typeshed import StrPath
+from collections.abc import Callable
+from typing import IO, Any
 
 DEFAULT_MAXMEM: int
 
@@ -37,15 +40,11 @@ class mbox_readonlydir(mailbox.mbox):
     .. _Heirloom mailx: http://heirloom.sourceforge.net/mailx.html
     """
     maxmem: int
-    def __init__(self, path: str, factory: type | None = None, create: bool = True, maxmem: int = 1048576) -> None: ...
-    def flush(self) -> None:
-        """
-        Write any pending changes to disk. This is called on mailbox
-        close and is usually not called explicitly.
-
-        .. note::
-
-           This deletes messages via truncation. Interruptions may
-           corrupt your mailbox.
-        """
-        ...
+    def __init__(
+        self,
+        path: StrPath,
+        factory: Callable[[IO[Any]], mailbox.mboxMessage] | None = None,
+        create: bool = True,
+        maxmem: int = 1048576,
+    ) -> None: ...
+    def flush(self) -> None: ...
