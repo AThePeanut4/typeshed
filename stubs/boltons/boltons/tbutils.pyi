@@ -1,3 +1,25 @@
+"""
+One of the oft-cited tenets of Python is that it is better to ask
+forgiveness than permission. That is, there are many cases where it is
+more inclusive and correct to handle exceptions than spend extra lines
+and execution time checking for conditions. This philosophy makes good
+exception handling features all the more important. Unfortunately
+Python's :mod:`traceback` module is woefully behind the times.
+
+The ``tbutils`` module provides two disparate but complementary featuresets:
+
+  1. With :class:`ExceptionInfo` and :class:`TracebackInfo`, the
+     ability to extract, construct, manipulate, format, and serialize
+     exceptions, tracebacks, and callstacks.
+  2. With :class:`ParsedException`, the ability to find and parse tracebacks
+     from captured output such as logs and stdout.
+
+There is also the :class:`ContextualTracebackInfo` variant of
+:class:`TracebackInfo`, which includes much more information from each
+frame of the callstack, including values of locals and neighboring
+lines of code.
+"""
+
 from collections.abc import Iterable, Iterator, Mapping
 from types import FrameType, TracebackType
 from typing import Any, Generic, Literal, TypeVar
@@ -27,7 +49,9 @@ class Callpoint:
     def __init__(
         self, module_name: str, module_path: str, func_name: str, lineno: int, lasti: int, line: str | None = None
     ) -> None: ...
-    def to_dict(self) -> dict[str, Any]: ...
+    def to_dict(self) -> dict[str, Any]:
+        """Get a :class:`dict` copy of the Callpoint. Useful for serialization."""
+        ...
     @classmethod
     def from_current(cls, level: int = 1) -> Self:
         """Creates a Callpoint from the location of the calling function."""
@@ -58,6 +82,25 @@ class Callpoint:
 _CallpointT = TypeVar("_CallpointT", bound=Callpoint, covariant=True, default=Callpoint)
 
 class TracebackInfo(Generic[_CallpointT]):
+    """
+    The TracebackInfo class provides a basic representation of a stack
+    trace, be it from an exception being handled or just part of
+    normal execution. It is basically a wrapper around a list of
+    :class:`Callpoint` objects representing frames.
+
+    Args:
+        frames (list): A list of frame objects in the stack.
+
+    .. note ::
+
+      ``TracebackInfo`` can represent both exception tracebacks and
+      non-exception tracebacks (aka stack traces). As a result, there
+      is no ``TracebackInfo.from_current()``, as that would be
+      ambiguous. Instead, call :meth:`TracebackInfo.from_frame`
+      without the *frame* argument for a stack trace, or
+      :meth:`TracebackInfo.from_traceback` without the *tb* argument
+      for an exception traceback.
+    """
     callpoint_type: type[_CallpointT]
     frames: list[_CallpointT]
     def __init__(self, frames: list[_CallpointT]) -> None: ...
@@ -99,22 +142,66 @@ class TracebackInfo(Generic[_CallpointT]):
         """
         ...
     @classmethod
-    def from_dict(cls, d: Mapping[Literal["frames"], list[_CallpointT]]) -> Self: ...
-    def to_dict(self) -> dict[str, list[dict[str, _CallpointT]]]: ...
+    def from_dict(cls, d: Mapping[Literal["frames"], list[_CallpointT]]) -> Self:
+        """Complements :meth:`TracebackInfo.to_dict`."""
+        ...
+    def to_dict(self) -> dict[str, list[dict[str, _CallpointT]]]:
+        """
+        Returns a dict with a list of :class:`Callpoint` frames converted
+        to dicts.
+        """
+        ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[_CallpointT]: ...
-    def get_formatted(self) -> str: ...
+    def get_formatted(self) -> str:
+        """
+        Returns a string as formatted in the traditional Python
+        built-in style observable when an exception is not caught. In
+        other words, mimics :func:`traceback.format_tb` and
+        :func:`traceback.format_stack`.
+        """
+        ...
 
 _TracebackInfoT = TypeVar("_TracebackInfoT", bound=TracebackInfo, covariant=True, default=TracebackInfo)
 
 class ExceptionInfo(Generic[_TracebackInfoT]):
+    """
+    An ExceptionInfo object ties together three main fields suitable
+    for representing an instance of an exception: The exception type
+    name, a string representation of the exception itself (the
+    exception message), and information about the traceback (stored as
+    a :class:`TracebackInfo` object).
+
+    These fields line up with :func:`sys.exc_info`, but unlike the
+    values returned by that function, ExceptionInfo does not hold any
+    references to the real exception or traceback. This property makes
+    it suitable for serialization or long-term retention, without
+    worrying about formatting pitfalls, circular references, or leaking memory.
+
+    Args:
+
+        exc_type (str): The exception type name.
+        exc_msg (str): String representation of the exception value.
+        tb_info (TracebackInfo): Information about the stack trace of the
+            exception.
+
+    Like the :class:`TracebackInfo`, ExceptionInfo is most commonly
+    instantiated from one of its classmethods: :meth:`from_exc_info`
+    or :meth:`from_current`.
+    """
     tb_info_type: type[_TracebackInfoT]
     exc_type: str
     exc_msg: str
     tb_info: _TracebackInfoT
     def __init__(self, exc_type: str, exc_msg: str, tb_info: _TracebackInfoT) -> None: ...
     @classmethod
-    def from_exc_info(cls, exc_type: type[BaseException], exc_value: BaseException, traceback: TracebackType) -> Self: ...
+    def from_exc_info(cls, exc_type: type[BaseException], exc_value: BaseException, traceback: TracebackType) -> Self:
+        """
+        Create an :class:`ExceptionInfo` object from the exception's type,
+        value, and traceback, as returned by :func:`sys.exc_info`. See
+        also :meth:`from_current`.
+        """
+        ...
     @classmethod
     def from_current(cls) -> Self:
         """
@@ -182,9 +269,24 @@ class ContextualCallpoint(Callpoint):
         ...
 
 class ContextualTracebackInfo(TracebackInfo[ContextualCallpoint]):
+    """
+    The ContextualTracebackInfo type is a :class:`TracebackInfo`
+    subtype that is used by :class:`ContextualExceptionInfo` and uses
+    the :class:`ContextualCallpoint` as its frame-representing
+    primitive.
+    """
     callpoint_type: type[ContextualCallpoint]
 
 class ContextualExceptionInfo(ExceptionInfo[ContextualTracebackInfo]):
+    """
+    The ContextualTracebackInfo type is a :class:`TracebackInfo`
+    subtype that uses the :class:`ContextualCallpoint` as its
+    frame-representing primitive.
+
+    It carries with it most of the exception information required to
+    recreate the widely recognizable "500" page for debugging Django
+    applications.
+    """
     tb_info_type: type[ContextualTracebackInfo]
 
 def print_exception(
@@ -193,7 +295,19 @@ def print_exception(
     tb: TracebackType | None,
     limit: int | None = None,
     file: str | None = None,
-) -> None: ...
+) -> None:
+    """
+    Print exception up to 'limit' stack trace entries from 'tb' to 'file'.
+
+    This differs from print_tb() in the following ways: (1) if
+    traceback is not None, it prints a header "Traceback (most recent
+    call last):"; (2) it prints the exception type and value after the
+    stack trace; (3) if type is SyntaxError and value has the
+    appropriate format, it prints the line where the syntax error
+    occurred with a caret on the next line indicating the approximate
+    position of the error.
+    """
+    ...
 
 class ParsedException:
     """

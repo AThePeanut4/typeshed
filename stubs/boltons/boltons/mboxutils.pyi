@@ -47,4 +47,14 @@ class mbox_readonlydir(mailbox.mbox):
         create: bool = True,
         maxmem: int = 1048576,
     ) -> None: ...
-    def flush(self) -> None: ...
+    def flush(self) -> None:
+        """
+        Write any pending changes to disk. This is called on mailbox
+        close and is usually not called explicitly.
+
+        .. note::
+
+           This deletes messages via truncation. Interruptions may
+           corrupt your mailbox.
+        """
+        ...
