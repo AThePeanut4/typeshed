@@ -41,7 +41,7 @@ croniter==5.0.1
 xdgenvpy==3.0.*
 Markdown==3.7.*
 click-log==0.4.*
-python-jose==3.3.*
+python-jose==3.4.*
 lzstring==1.0.*
 commonmark==0.9.*
 Flask-Cors==5.0.*
@@ -92,7 +92,7 @@ beautifulsoup4[html5lib,lxml]==4.12.*
 Authlib==1.4.*
 whatthepatch==1.0.*
 pyasn1==0.6.*
-zstd==1.5.6.3
+zstd==1.5.6.4
 python-http-client==3.3.7
 RPi.GPIO==0.7.*
 gevent==24.11.*
@@ -116,7 +116,7 @@ slumber==0.7.*
 colorama==0.4.*
 flake8-builtins==2.5.*
 pysftp==0.2.*
-decorator==5.1.*
+decorator==5.2.*
 zxcvbn==4.5.*
 braintree==4.33.*
 TgCrypto==1.2.*
@@ -143,6 +143,7 @@ fpdf2==2.8.2
 wurlitzer==3.1.*
 flake8-docstrings==1.7.*
 python-dateutil==2.9.*
+hnswlib==0.8.*
 pycurl==7.45.4
 geopandas==1.0.1
 PyYAML==6.0.*
