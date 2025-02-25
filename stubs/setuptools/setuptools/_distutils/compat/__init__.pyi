@@ -1,7 +1,6 @@
-def consolidate_linker_args(args: list[str]) -> str | list[str]:
-    """
-    Ensure the return value is a string for backward compatibility.
+from collections.abc import Iterable
+from typing import TypeVar
 
-    Retain until at least 2025-04-31. See pypa/distutils#246
-    """
-    ...
+_IterableT = TypeVar("_IterableT", bound=Iterable[str])
+
+def consolidate_linker_args(args: _IterableT) -> _IterableT | str: ...
