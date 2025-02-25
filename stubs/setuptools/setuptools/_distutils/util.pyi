@@ -1,3 +1,10 @@
+"""
+distutils.util
+
+Miscellaneous utility functions -- anything that doesn't fit into
+one of the other *util.py modules.
+"""
+
 from _typeshed import GenericPath, StrPath, Unused
 from collections.abc import Callable, Iterable, Mapping
 from typing import AnyStr, Literal
@@ -13,13 +20,69 @@ def get_host_platform() -> str:
     """
     ...
 def get_platform() -> str: ...
-def get_macosx_target_ver_from_syscfg(): ...
-def get_macosx_target_ver(): ...
-def split_version(s: str) -> list[int]: ...
-def convert_path(pathname: StrPath) -> str: ...
-def change_root(new_root: GenericPath[AnyStr], pathname: GenericPath[AnyStr]) -> AnyStr: ...
-def check_environ() -> None: ...
-def subst_vars(s: str, local_vars: Mapping[str, object]) -> str: ...
+def get_macosx_target_ver_from_syscfg():
+    """
+    Get the version of macOS latched in the Python interpreter configuration.
+    Returns the version as a string or None if can't obtain one. Cached.
+    """
+    ...
+def get_macosx_target_ver():
+    """
+    Return the version of macOS for which we are building.
+
+    The target version defaults to the version in sysconfig latched at time
+    the Python interpreter was built, unless overridden by an environment
+    variable. If neither source has a value, then None is returned
+    """
+    ...
+def split_version(s: str) -> list[int]:
+    """Convert a dot-separated string into a list of numbers for comparisons"""
+    ...
+def convert_path(pathname: StrPath) -> str:
+    r"""
+    Allow for pathlib.Path inputs, coax to a native path string.
+
+    If None is passed, will just pass it through as
+    Setuptools relies on this behavior.
+
+    >>> convert_path(None) is None
+    True
+
+    Removes empty paths.
+
+    >>> convert_path('foo/./bar').replace('\\', '/')
+    'foo/bar'
+    """
+    ...
+def change_root(new_root: GenericPath[AnyStr], pathname: GenericPath[AnyStr]) -> AnyStr:
+    """
+    Return 'pathname' with 'new_root' prepended.  If 'pathname' is
+    relative, this is equivalent to "os.path.join(new_root,pathname)".
+    Otherwise, it requires making 'pathname' relative and then joining the
+    two, which is tricky on DOS/Windows and Mac OS.
+    """
+    ...
+def check_environ() -> None:
+    """
+    Ensure that 'os.environ' has all the environment variables we
+    guarantee that users can use in config files, command-line options,
+    etc.  Currently this includes:
+      HOME - user's home directory (Unix only)
+      PLAT - description of the current platform, including hardware
+             and OS (see 'get_platform()')
+    """
+    ...
+def subst_vars(s: str, local_vars: Mapping[str, object]) -> str:
+    """
+    Perform variable substitution on 'string'.
+    Variables are indicated by format-style braces ("{var}").
+    Variable is substituted by the value found in the 'local_vars'
+    dictionary or in 'os.environ' if it's not in 'local_vars'.
+    'os.environ' is first checked/augmented to guarantee that it contains
+    certain values: see 'check_environ()'.  Raise ValueError for any
+    variables not found in either 'local_vars' or 'os.environ'.
+    """
+    ...
 def grok_environment_error(exc: object, prefix: str = "error: ") -> str: ...
 def split_quoted(s: str) -> list[str]:
     """

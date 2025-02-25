@@ -1,12 +1,3 @@
-"""
-core
-~~~~
-Core functionality shared between the extension and the decorator.
-
-:copyright: (c) 2016 by Cory Dolphin.
-:license: MIT, see LICENSE for more details.
-"""
-
 from collections.abc import Iterable
 from datetime import timedelta
 from logging import Logger

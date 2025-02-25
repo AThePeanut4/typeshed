@@ -232,10 +232,37 @@ class Distribution:
     # NOTE: Because this is private setuptools implementation and we don't re-expose all commands here,
     # we're not overloading each and every command possibility.
     @overload
-    def get_command_obj(self, command: str, create: Literal[True] = True) -> Command: ...
+    def get_command_obj(self, command: str, create: Literal[True] = True) -> Command:
+        """
+        Return the command object for 'command'.  Normally this object
+        is cached on a previous call to 'get_command_obj()'; if no command
+        object for 'command' is in the cache, then we either create and
+        return it (if 'create' is true) or return None.
+        """
+        ...
     @overload
-    def get_command_obj(self, command: str, create: Literal[False]) -> Command | None: ...
-    def get_command_class(self, command: str) -> type[Command]: ...
+    def get_command_obj(self, command: str, create: Literal[False]) -> Command | None:
+        """
+        Return the command object for 'command'.  Normally this object
+        is cached on a previous call to 'get_command_obj()'; if no command
+        object for 'command' is in the cache, then we either create and
+        return it (if 'create' is true) or return None.
+        """
+        ...
+    def get_command_class(self, command: str) -> type[Command]:
+        """
+        Return the class that implements the Distutils command named by
+        'command'.  First we check the 'cmdclass' dictionary; if the
+        command is mentioned there, we fetch the class object from the
+        dictionary and return it.  Otherwise we load the command module
+        ("distutils.command." + command) and fetch the command class from
+        the module.  The loaded class is also stored in 'cmdclass'
+        to speed future calls to 'get_command_class()'.
+
+        Raises DistutilsModuleError if the expected module could not be
+        found, or if that module does not define the expected class.
+        """
+        ...
     @overload
     def reinitialize_command(self, command: str, reinit_subcommands: bool = False) -> Command:
         """

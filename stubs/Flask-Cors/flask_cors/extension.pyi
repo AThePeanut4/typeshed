@@ -1,13 +1,3 @@
-"""
-extension
-~~~~
-Flask-CORS is a simple extension to Flask allowing you to support cross
-origin resource sharing (CORS) using a simple decorator.
-
-:copyright: (c) 2016 by Cory Dolphin.
-:license: MIT, see LICENSE for more details.
-"""
-
 from collections.abc import Callable, Iterable
 from datetime import timedelta
 from logging import Logger
@@ -20,11 +10,11 @@ LOG: Logger
 class CORS:
     """
     Initializes Cross Origin Resource sharing for the application. The
-    arguments are identical to :py:func:`cross_origin`, with the addition of a
+    arguments are identical to `cross_origin`, with the addition of a
     `resources` parameter. The resources parameter defines a series of regular
     expressions for resource paths to match and optionally, the associated
     options to be applied to the particular resource. These options are
-    identical to the arguments to :py:func:`cross_origin`.
+    identical to the arguments to `cross_origin`.
 
     The settings for CORS are determined in the following order
 
@@ -137,7 +127,7 @@ class CORS:
         will be set with the value 'true' whenever the request header
         `Access-Control-Request-Private-Network` has a value 'true'.
 
-        If False, the reponse header `Access-Control-Allow-Private-Network`
+        If False, the response header `Access-Control-Allow-Private-Network`
         will be set with the value 'false' whenever the request header
         `Access-Control-Request-Private-Network` has a value of 'true'.
 

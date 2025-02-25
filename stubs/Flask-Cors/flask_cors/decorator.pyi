@@ -1,14 +1,3 @@
-"""
-decorator
-~~~~
-This unit exposes a single decorator which should be used to wrap a
-Flask route with. It accepts all parameters and options as
-the CORS extension.
-
-:copyright: (c) 2016 by Cory Dolphin.
-:license: MIT, see LICENSE for more details.
-"""
-
 from collections.abc import Callable, Iterable
 from datetime import timedelta
 from logging import Logger
