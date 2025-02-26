@@ -10,12 +10,7 @@ from typing import ClassVar, Final, Literal
 
 from setuptools import Command
 
-def safe_name(name: str) -> str:
-    """
-    Convert an arbitrary string to a standard distribution name
-    Any runs of non-alphanumeric/. characters are replaced with a single '-'.
-    """
-    ...
+def safe_name(name: str) -> str: ...
 def safe_version(version: str) -> str:
     """Convert an arbitrary string to a standard version string"""
     ...
@@ -37,7 +32,9 @@ def get_flag(var: str, fallback: bool, expected: bool = True, warn: bool = True)
 def get_abi_tag() -> str | None:
     """Return the ABI tag based on SOABI (if available) or emulate SOABI (PyPy2)."""
     ...
-def safer_name(name: str) -> str: ...
+def safer_name(name: str) -> str:
+    """Like ``safe_name`` but can be used as filename component for wheel"""
+    ...
 def safer_version(version: str) -> str: ...
 
 class bdist_wheel(Command):

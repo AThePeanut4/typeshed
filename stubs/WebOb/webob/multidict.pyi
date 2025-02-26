@@ -1,3 +1,5 @@
+"""Gives a multi-value dictionary object (MultiDict) plus several wrappers"""
+
 from _typeshed import SupportsKeysAndGetItem
 from _typeshed.wsgi import WSGIEnvironment
 from collections.abc import Collection, Iterable, Iterator, MutableMapping
@@ -46,9 +48,13 @@ class MultiDict(MutableMapping[_KT, _VT]):
         **kwargs: _VT,
     ) -> None: ...
     @classmethod
-    def view_list(cls, lst: list[tuple[_KT, _VT]]) -> Self: ...
+    def view_list(cls, lst: list[tuple[_KT, _VT]]) -> Self:
+        """Create a dict that is a view on the given list"""
+        ...
     @classmethod
-    def from_fieldstorage(cls, fs: cgi_FieldStorage) -> MultiDict[str, str | _FieldStorageWithFile]: ...
+    def from_fieldstorage(cls, fs: cgi_FieldStorage) -> MultiDict[str, str | _FieldStorageWithFile]:
+        """Create a dict from a cgi.FieldStorage instance"""
+        ...
     def __getitem__(self, key: _KT) -> _VT: ...
     def __setitem__(self, key: _KT, value: _VT) -> None: ...
     def add(self, key: _KT, value: _VT) -> None:
@@ -155,6 +161,7 @@ class GetDict(MultiDict[str, str]):
     def copy(self) -> MultiDict[str, str]: ...  # type: ignore[override]
 
 class NestedMultiDict(MultiDict[_KT, _VT]):
+    """Wraps several MultiDict objects, treating it as one large MultiDict"""
     # FIXME: It would be more accurate to use a Protocol here, which has a
     #        covariant _VT, instead of MultiDict
     dicts: tuple[MultiDict[_KT, _VT], ...]

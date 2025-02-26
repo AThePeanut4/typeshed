@@ -9,6 +9,10 @@ __all__ = ["ResponseHeaders", "EnvironHeaders"]
 _T = TypeVar("_T")
 
 class ResponseHeaders(MultiDict[str, str]):
+    """
+    Dictionary view on the response headerlist.
+    Keys are normalized for case and whitespace.
+    """
     def __getitem__(self, key: str) -> str: ...
     def getall(self, key: str) -> list[str]: ...
     def mixed(self) -> dict[str, str | list[str]]: ...

@@ -1,3 +1,9 @@
+"""
+Build packages using spec files.
+
+NOTE: All global variables, classes and imported modules create API for .spec files.
+"""
+
 from _typeshed import StrPath
 from collections.abc import Iterable
 from typing import Any, Literal

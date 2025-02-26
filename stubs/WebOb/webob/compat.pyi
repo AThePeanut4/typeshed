@@ -9,7 +9,13 @@ if sys.version_info >= (3, 13):
         filename: str
         file: IO[bytes]
 
-    def parse_header(line: str) -> tuple[str, dict[str, str]]: ...
+    def parse_header(line: str) -> tuple[str, dict[str, str]]:
+        """
+        Parse a Content-type like header.
+
+        Return the main content-type and a dictionary of options.
+        """
+        ...
 
 else:
     from cgi import FieldStorage as _cgi_FieldStorage, parse_header as parse_header

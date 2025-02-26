@@ -176,6 +176,32 @@ class Base64Serializer:
         ...
 
 class SignedSerializer:
+    """
+    A helper to cryptographically sign arbitrary content using HMAC.
+
+    The serializer accepts arbitrary functions for performing the actual
+    serialization and deserialization.
+
+    ``secret``
+      A string which is used to sign the cookie. The secret should be at
+      least as long as the block size of the selected hash algorithm. For
+      ``sha512`` this would mean a 512 bit (64 character) secret.
+
+    ``salt``
+      A namespace to avoid collisions between different uses of a shared
+      secret.
+
+    ``hashalg``
+      The HMAC digest algorithm to use for signing. The algorithm must be
+      supported by the :mod:`hashlib` library. Default: ``'sha512'``.
+
+    ``serializer``
+      An object with two methods: `loads`` and ``dumps``.  The ``loads`` method
+      should accept bytes and return a Python object.  The ``dumps`` method
+      should accept a Python object and return bytes.  A ``ValueError`` should
+      be raised for malformed inputs.  Default: ``None`, which will use a
+      derivation of :func:`json.dumps` and ``json.loads``.
+    """
     salt: str | bytes
     secret: str | bytes
     hashalg: str
@@ -185,8 +211,21 @@ class SignedSerializer:
     def __init__(
         self, secret: str | bytes, salt: str | bytes, hashalg: str = "sha512", serializer: _Serializer | None = None
     ) -> None: ...
-    def dumps(self, appstruct: Any) -> bytes: ...
-    def loads(self, bstruct: bytes) -> Any: ...
+    def dumps(self, appstruct: Any) -> bytes:
+        """
+        Given an ``appstruct``, serialize and sign the data.
+
+        Returns a bytestring.
+        """
+        ...
+    def loads(self, bstruct: bytes) -> Any:
+        """
+        Given a ``bstruct`` (a bytestring), verify the signature and then
+        deserialize and return the deserialized value.
+
+        A ``ValueError`` will be raised if the signature fails to validate.
+        """
+        ...
 
 class CookieProfile:
     """
@@ -254,9 +293,23 @@ class CookieProfile:
         domains: Collection[str] | None = None,
         serializer: _Serializer | None = None,
     ) -> None: ...
-    def __call__(self, request: BaseRequest) -> CookieProfile: ...
-    def bind(self, request: BaseRequest) -> CookieProfile: ...
-    def get_value(self) -> Any | None: ...
+    def __call__(self, request: BaseRequest) -> CookieProfile:
+        """Bind a request to a copy of this instance and return it"""
+        ...
+    def bind(self, request: BaseRequest) -> CookieProfile:
+        """Bind a request to a copy of this instance and return it"""
+        ...
+    def get_value(self) -> Any | None:
+        """
+        Looks for a cookie by name in the currently bound request, and
+        returns its value.  If the cookie profile is not bound to a request,
+        this method will raise a :exc:`ValueError`.
+
+        Looks for the cookie in the cookies jar, and if it can find it it will
+        attempt to deserialize it.  Returns ``None`` if there is no cookie or
+        if the value in the cookie cannot be successfully deserialized.
+        """
+        ...
     def set_cookies(
         self,
         response: Response,
@@ -289,6 +342,60 @@ class CookieProfile:
         ...
 
 class SignedCookieProfile(CookieProfile):
+    """
+    A helper for generating cookies that are signed to prevent tampering.
+
+    By default this will create a single cookie, given a value it will
+    serialize it, then use HMAC to cryptographically sign the data. Finally
+    the result is base64-encoded for transport. This way a remote user can
+    not tamper with the value without uncovering the secret/salt used.
+
+    ``secret``
+      A string which is used to sign the cookie. The secret should be at
+      least as long as the block size of the selected hash algorithm. For
+      ``sha512`` this would mean a 512 bit (64 character) secret.
+
+    ``salt``
+      A namespace to avoid collisions between different uses of a shared
+      secret.
+
+    ``hashalg``
+      The HMAC digest algorithm to use for signing. The algorithm must be
+      supported by the :mod:`hashlib` library. Default: ``'sha512'``.
+
+    ``cookie_name``
+      The name of the cookie used for sessioning. Default: ``'session'``.
+
+    ``max_age``
+      The maximum age of the cookie used for sessioning (in seconds).
+      Default: ``None`` (browser scope).
+
+    ``secure``
+      The 'secure' flag of the session cookie. Default: ``False``.
+
+    ``httponly``
+      Hide the cookie from Javascript by setting the 'HttpOnly' flag of the
+      session cookie. Default: ``False``.
+
+    ``samesite``
+      The 'SameSite' attribute of the cookie, can be either ``b"strict"``,
+      ``b"lax"``, ``b"none"``, or ``None``.
+
+    ``path``
+      The path used for the session cookie. Default: ``'/'``.
+
+    ``domains``
+      The domain(s) used for the session cookie. Default: ``None`` (no domain).
+      Can be passed an iterable containing multiple domains, this will set
+      multiple cookies one for each domain.
+
+    ``serializer``
+      An object with two methods: `loads`` and ``dumps``.  The ``loads`` method
+      should accept bytes and return a Python object.  The ``dumps`` method
+      should accept a Python object and return bytes.  A ``ValueError`` should
+      be raised for malformed inputs.  Default: ``None`, which will use a
+      derivation of :func:`json.dumps` and ``json.loads``.
+    """
     secret: str | bytes
     salt: str | bytes
     hashalg: str
@@ -307,5 +414,9 @@ class SignedCookieProfile(CookieProfile):
         hashalg: str = "sha512",
         serializer: _Serializer | None = None,
     ) -> None: ...
-    def __call__(self, request: BaseRequest) -> SignedCookieProfile: ...
-    def bind(self, request: BaseRequest) -> SignedCookieProfile: ...
+    def __call__(self, request: BaseRequest) -> SignedCookieProfile:
+        """Bind a request to a copy of this instance and return it"""
+        ...
+    def bind(self, request: BaseRequest) -> SignedCookieProfile:
+        """Bind a request to a copy of this instance and return it"""
+        ...
