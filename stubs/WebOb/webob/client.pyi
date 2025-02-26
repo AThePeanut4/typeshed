@@ -3,6 +3,8 @@ from collections.abc import Iterable
 from http.client import HTTPConnection, HTTPMessage, HTTPSConnection
 from typing import ClassVar
 
+__all__ = ["send_request_app", "SendRequest"]
+
 class SendRequest:
     """
     Sends the request, as described by the environ, over actual HTTP.

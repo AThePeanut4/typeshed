@@ -2,22 +2,21 @@ from _typeshed import SupportsItems, SupportsRead
 from _typeshed.wsgi import StartResponse, WSGIApplication, WSGIEnvironment
 from collections.abc import Iterable, Iterator, Sequence
 from datetime import timedelta
-from typing import IO, Any, Literal, Protocol, TypedDict
-from typing_extensions import TypeAlias
+from typing import IO, Any, Literal, Protocol, TypedDict, TypeVar, overload
+from typing_extensions import Self, TypeAlias
 
+from webob._types import AsymmetricProperty, AsymmetricPropertyWithDelete, SymmetricProperty, SymmetricPropertyWithDelete
 from webob.byterange import ContentRange
-from webob.cachecontrol import _ResponseCacheControl
+from webob.cachecontrol import CacheControl
 from webob.cookies import _SameSitePolicy
-from webob.descriptors import (
-    _AsymmetricProperty,
-    _AsymmetricPropertyWithDelete,
-    _authorization,
-    _ContentRangeParams,
-    _DateProperty,
-    _ListProperty,
-)
+from webob.descriptors import _authorization, _ContentRangeParams, _DateProperty, _ListProperty
 from webob.headers import ResponseHeaders
 from webob.request import Request
+
+__all__ = ["Response"]
+
+_ResponseT = TypeVar("_ResponseT", bound=Response)
+_ResponseCacheControl: TypeAlias = CacheControl[Literal["response"]]
 
 class _ResponseCacheExpires(Protocol):
     def __call__(
@@ -51,8 +50,6 @@ class _ResponseCacheControlDict(TypedDict, total=False):
     s_max_age: int
     stale_while_revalidate: int
     stale_if_error: int
-
-_HTTPHeader: TypeAlias = tuple[str, str]
 
 class Response:
     """
@@ -150,89 +147,68 @@ class Response:
     default_body_encoding: str
     request: Request | None
     environ: WSGIEnvironment | None
-    status: str
+    status: AsymmetricProperty[str, int | str | bytes]
     conditional_response: bool
-
     def __init__(
         self,
         body: bytes | str | None = None,
-        status: str | None = None,
-        headerlist: list[_HTTPHeader] | None = None,
-        app_iter: Iterator[bytes] | None = None,
+        status: int | str | bytes | None = None,
+        headerlist: list[tuple[str, str]] | None = None,
+        app_iter: Iterable[bytes] | None = None,
         content_type: str | None = None,
         conditional_response: bool | None = None,
         charset: str = ...,
         **kw: Any,
     ) -> None: ...
     @classmethod
-    def from_file(cls, fp: IO[str]) -> Response:
-        """
-        Reads a response from a file-like object (it must implement
-        ``.read(size)`` and ``.readline()``).
-
-        It will read up to the end of the response, not the end of the
-        file.
-
-        This reads the response as represented by ``str(resp)``; it
-        may not read every valid HTTP response properly.  Responses
-        must have a ``Content-Length``.
-        """
-        ...
-    def copy(self) -> Response:
-        """Makes a copy of the response."""
-        ...
-    status_code: int
-    status_int: int
-    headerlist: _AsymmetricPropertyWithDelete[list[_HTTPHeader], Iterable[_HTTPHeader] | SupportsItems[str, str]]
-    headers: _AsymmetricProperty[ResponseHeaders, SupportsItems[str, str] | Iterable[tuple[str, str]]]
-    body: bytes
-    json: Any
-    json_body: Any
+    def from_file(cls, fp: IO[str] | IO[bytes]) -> Response: ...
+    def copy(self) -> Response: ...
+    status_code: SymmetricProperty[int]
+    status_int: SymmetricProperty[int]
+    headerlist: AsymmetricPropertyWithDelete[list[tuple[str, str]], Iterable[tuple[str, str]] | SupportsItems[str, str]]
+    headers: AsymmetricProperty[ResponseHeaders, SupportsItems[str, str] | Iterable[tuple[str, str]]]
+    body: SymmetricPropertyWithDelete[bytes]
+    json: SymmetricPropertyWithDelete[Any]
+    json_body: SymmetricPropertyWithDelete[Any]
     @property
-    def has_body(self) -> bool:
-        """
-        Determine if the the response has a :attr:`~Response.body`. In
-        contrast to simply accessing :attr:`~Response.body`, this method
-        will **not** read the underlying :attr:`~Response.app_iter`.
-        """
-        ...
-    text: str
-    unicode_body: str  # deprecated
-    ubody: str  # deprecated
-    body_file: _AsymmetricPropertyWithDelete[ResponseBodyFile, SupportsRead[bytes]]
-    content_length: int | None
-    def write(self, text: str | bytes) -> None: ...
-    app_iter: Iterator[bytes]
+    def has_body(self) -> bool: ...
+    text: SymmetricPropertyWithDelete[str]
+    unicode_body: SymmetricPropertyWithDelete[str]  # deprecated
+    ubody: SymmetricPropertyWithDelete[str]  # deprecated
+    body_file: AsymmetricPropertyWithDelete[ResponseBodyFile, SupportsRead[bytes]]
+    content_length: AsymmetricPropertyWithDelete[int | None, int | str | bytes | None]
+    def write(self, text: str | bytes) -> int: ...
+    app_iter: SymmetricPropertyWithDelete[Iterable[bytes]]
     allow: _ListProperty
     vary: _ListProperty
-    content_encoding: str | None
-    content_language: _ListProperty
-    content_location: str | None
-    content_md5: str | None
-    content_disposition: str | None
-    accept_ranges: str | None
-    content_range: _AsymmetricPropertyWithDelete[ContentRange | None, _ContentRangeParams]
+    content_encoding: SymmetricPropertyWithDelete[str | None]
+    content_language: SymmetricPropertyWithDelete[str | None]
+    content_location: SymmetricPropertyWithDelete[str | None]
+    content_md5: SymmetricPropertyWithDelete[str | None]
+    content_disposition: SymmetricPropertyWithDelete[str | None]
+    accept_ranges: SymmetricPropertyWithDelete[str | None]
+    content_range: AsymmetricPropertyWithDelete[ContentRange | None, _ContentRangeParams]
     date: _DateProperty
     expires: _DateProperty
     last_modified: _DateProperty
-    etag: _AsymmetricPropertyWithDelete[str | None, tuple[str, bool] | str | None]
+    etag: AsymmetricPropertyWithDelete[str | None, tuple[str, bool] | str | None]
     @property
     def etag_strong(self) -> str | None: ...
-    location: str | None
-    pragma: str | None
-    age: int | None
+    location: SymmetricPropertyWithDelete[str | None]
+    pragma: SymmetricPropertyWithDelete[str | None]
+    age: SymmetricPropertyWithDelete[int | None]
     retry_after: _DateProperty
-    server: str | None
-    www_authenticate: _AsymmetricPropertyWithDelete[
+    server: SymmetricPropertyWithDelete[str | None]
+    www_authenticate: AsymmetricPropertyWithDelete[
         _authorization | None, tuple[str, str | dict[str, str]] | list[Any] | str | None
     ]
-    charset: str | None
-    content_type: str | None
-    content_type_params: _AsymmetricPropertyWithDelete[dict[str, str], SupportsItems[str, str] | None]
+    charset: SymmetricPropertyWithDelete[str | None]
+    content_type: SymmetricPropertyWithDelete[str | None]
+    content_type_params: AsymmetricPropertyWithDelete[dict[str, str], SupportsItems[str, str] | None]
     def set_cookie(
         self,
-        name: str,
-        value: str | None = "",
+        name: str | bytes,
+        value: str | bytes | None = "",
         max_age: int | timedelta | None = None,
         path: str = "/",
         domain: str | None = None,
@@ -241,123 +217,16 @@ class Response:
         comment: str | None = None,
         overwrite: bool = False,
         samesite: _SameSitePolicy | None = None,
-    ) -> None:
-        """
-        Set (add) a cookie for the response.
-
-        Arguments are:
-
-        ``name``
-
-           The cookie name.
-
-        ``value``
-
-           The cookie value, which should be a string or ``None``.  If
-           ``value`` is ``None``, it's equivalent to calling the
-           :meth:`webob.response.Response.unset_cookie` method for this
-           cookie key (it effectively deletes the cookie on the client).
-
-        ``max_age``
-
-           An integer representing a number of seconds, ``datetime.timedelta``,
-           or ``None``. This value is used as the ``Max-Age`` of the generated
-           cookie.  If ``expires`` is not passed and this value is not
-           ``None``, the ``max_age`` value will also influence the ``Expires``
-           value of the cookie (``Expires`` will be set to ``now`` +
-           ``max_age``).  If this value is ``None``, the cookie will not have a
-           ``Max-Age`` value (unless ``expires`` is set). If both ``max_age``
-           and ``expires`` are set, this value takes precedence.
-
-        ``path``
-
-           A string representing the cookie ``Path`` value.  It defaults to
-           ``/``.
-
-        ``domain``
-
-           A string representing the cookie ``Domain``, or ``None``.  If
-           domain is ``None``, no ``Domain`` value will be sent in the
-           cookie.
-
-        ``secure``
-
-           A boolean.  If it's ``True``, the ``secure`` flag will be sent in
-           the cookie, if it's ``False``, the ``secure`` flag will not be
-           sent in the cookie.
-
-        ``httponly``
-
-           A boolean.  If it's ``True``, the ``HttpOnly`` flag will be sent
-           in the cookie, if it's ``False``, the ``HttpOnly`` flag will not
-           be sent in the cookie.
-
-        ``samesite``
-
-          A string representing the ``SameSite`` attribute of the cookie or
-          ``None``. If samesite is ``None`` no ``SameSite`` value will be sent
-          in the cookie. Should only be ``"strict"``, ``"lax"``, or ``"none"``.
-
-        ``comment``
-
-           A string representing the cookie ``Comment`` value, or ``None``.
-           If ``comment`` is ``None``, no ``Comment`` value will be sent in
-           the cookie.
-
-        ``expires``
-
-           A ``datetime.timedelta`` object representing an amount of time,
-           ``datetime.datetime`` or ``None``. A non-``None`` value is used to
-           generate the ``Expires`` value of the generated cookie. If
-           ``max_age`` is not passed, but this value is not ``None``, it will
-           influence the ``Max-Age`` header. If this value is ``None``, the
-           ``Expires`` cookie value will be unset (unless ``max_age`` is set).
-           If ``max_age`` is set, it will be used to generate the ``expires``
-           and this value is ignored.
-
-           If a ``datetime.datetime`` is provided it has to either be timezone
-           aware or be based on UTC. ``datetime.datetime`` objects that are
-           local time are not supported. Timezone aware ``datetime.datetime``
-           objects are converted to UTC.
-
-           This argument will be removed in future versions of WebOb (version
-           1.9).
-
-        ``overwrite``
-
-           If this key is ``True``, before setting the cookie, unset any
-           existing cookie.
-        """
-        ...
-    def delete_cookie(self, name: str, path: str = "/", domain: str | None = None) -> None:
-        """
-        Delete a cookie from the client.  Note that ``path`` and ``domain``
-        must match how the cookie was originally set.
-
-        This sets the cookie to the empty string, and ``max_age=0`` so
-        that it should expire immediately.
-        """
-        ...
-    def unset_cookie(self, name: str, strict: bool = True) -> None:
-        """Unset a cookie with the given name (remove it from the response)."""
-        ...
-    def merge_cookies(self, resp: Response | WSGIApplication) -> None:
-        """
-        Merge the cookies that were set on this response with the
-        given ``resp`` object (which can be any WSGI application).
-
-        If the ``resp`` is a :class:`webob.Response` object, then the
-        other object will be modified in-place.
-        """
-        ...
-    cache_control: _AsymmetricProperty[_ResponseCacheControl, _ResponseCacheControl | _ResponseCacheControlDict | str | None]
-    cache_expires: _AsymmetricProperty[_ResponseCacheExpires, timedelta | int | bool | None]
-    def encode_content(self, encoding: Literal["gzip", "identity"] = "gzip", lazy: bool = False) -> None:
-        """
-        Encode the content with the given encoding (only ``gzip`` and
-        ``identity`` are supported).
-        """
-        ...
+    ) -> None: ...
+    def delete_cookie(self, name: str | bytes, path: str = "/", domain: str | None = None) -> None: ...
+    def unset_cookie(self, name: str | bytes, strict: bool = True) -> None: ...
+    @overload
+    def merge_cookies(self, resp: _ResponseT) -> _ResponseT: ...
+    @overload
+    def merge_cookies(self, resp: WSGIApplication) -> WSGIApplication: ...
+    cache_control: AsymmetricProperty[_ResponseCacheControl, _ResponseCacheControl | _ResponseCacheControlDict | str | None]
+    cache_expires: AsymmetricProperty[_ResponseCacheExpires, timedelta | int | bool | None]
+    def encode_content(self, encoding: Literal["gzip", "identity"] = "gzip", lazy: bool = False) -> None: ...
     def decode_content(self) -> None: ...
     def md5_etag(self, body: bytes | None = None, set_content_md5: bool = False) -> None:
         """
@@ -400,13 +269,10 @@ class ResponseBodyFile:
         """Represents a :class:`~Response` as a file like object."""
         ...
     @property
-    def encoding(self) -> str | None:
-        """The encoding of the file (inherited from response.charset)"""
-        ...
+    def encoding(self) -> str | None: ...
+    # NOTE: Technically this is an instance attribute and not a method
     def write(self, text: str | bytes) -> int: ...
-    def writelines(self, seq: Sequence[str | bytes]) -> int:
-        """Write a sequence of lines to the response."""
-        ...
+    def writelines(self, seq: Sequence[str | bytes]) -> None: ...
     def flush(self) -> None: ...
     def tell(self) -> int:
         """Provide the current location where we are going to start writing."""
@@ -417,21 +283,15 @@ class AppIterRange:
     app_iter: Iterator[bytes]
     start: int
     stop: int | None
-    def __init__(self, app_iter: Iterator[bytes], start: int, stop: int | None) -> None: ...
-    def __iter__(self) -> Iterator[bytes]: ...
+    def __init__(self, app_iter: Iterable[bytes], start: int, stop: int | None) -> None: ...
+    def __iter__(self) -> Self: ...
     def next(self) -> bytes: ...
     __next__ = next
     def close(self) -> None: ...
 
 class EmptyResponse:
-    """
-    An empty WSGI response.
-
-    An iterator that immediately stops. Optionally provides a close
-    method to close an underlying ``app_iter`` it replaces.
-    """
-    def __init__(self, app_iter: Iterator[bytes] | None = None) -> None: ...
-    def __iter__(self) -> Iterator[bytes]: ...
-    def __len__(self) -> int: ...
+    def __init__(self, app_iter: Iterable[bytes] | None = None) -> None: ...
+    def __iter__(self) -> Self: ...
+    def __len__(self) -> Literal[0]: ...
     def next(self) -> bytes: ...
     __next__ = next
