@@ -21,7 +21,62 @@ class NetworkXTreewidthBoundExceeded(NetworkXException):
     ...
 
 @_dispatchable
-def is_chordal(G: Graph[_Node]) -> bool: ...
+def is_chordal(G: Graph[_Node]) -> bool:
+    """
+    Checks whether G is a chordal graph.
+
+    A graph is chordal if every cycle of length at least 4 has a chord
+    (an edge joining two nodes not adjacent in the cycle).
+
+    Parameters
+    ----------
+    G : graph
+      A NetworkX graph.
+
+    Returns
+    -------
+    chordal : bool
+      True if G is a chordal graph and False otherwise.
+
+    Raises
+    ------
+    NetworkXNotImplemented
+        The algorithm does not support DiGraph, MultiGraph and MultiDiGraph.
+
+    Examples
+    --------
+    >>> e = [
+    ...     (1, 2),
+    ...     (1, 3),
+    ...     (2, 3),
+    ...     (2, 4),
+    ...     (3, 4),
+    ...     (3, 5),
+    ...     (3, 6),
+    ...     (4, 5),
+    ...     (4, 6),
+    ...     (5, 6),
+    ... ]
+    >>> G = nx.Graph(e)
+    >>> nx.is_chordal(G)
+    True
+
+    Notes
+    -----
+    The routine tries to go through every node following maximum cardinality
+    search. It returns False when it finds that the separator for any node
+    is not a clique.  Based on the algorithms in [1]_.
+
+    Self loops are ignored.
+
+    References
+    ----------
+    .. [1] R. E. Tarjan and M. Yannakakis, Simple linear-time algorithms
+       to test chordality of graphs, test acyclicity of hypergraphs, and
+       selectively reduce acyclic hypergraphs, SIAM J. Comput., 13 (1984),
+       pp. 566–579.
+    """
+    ...
 @_dispatchable
 def find_induced_nodes(G: Graph[_Node], s: _Node, t: _Node, treewidth_bound: float = sys.maxsize) -> set[_Node]:
     """
@@ -129,4 +184,49 @@ def chordal_graph_cliques(G: Graph[_Node]) -> Generator[frozenset[_Node], None, 
     """
     ...
 @_dispatchable
-def chordal_graph_treewidth(G: Graph[_Node]) -> int: ...
+def chordal_graph_treewidth(G: Graph[_Node]) -> int:
+    """
+    Returns the treewidth of the chordal graph G.
+
+    Parameters
+    ----------
+    G : graph
+      A NetworkX graph
+
+    Returns
+    -------
+    treewidth : int
+        The size of the largest clique in the graph minus one.
+
+    Raises
+    ------
+    NetworkXError
+        The algorithm does not support DiGraph, MultiGraph and MultiDiGraph.
+        The algorithm can only be applied to chordal graphs. If the input
+        graph is found to be non-chordal, a :exc:`NetworkXError` is raised.
+
+    Examples
+    --------
+    >>> e = [
+    ...     (1, 2),
+    ...     (1, 3),
+    ...     (2, 3),
+    ...     (2, 4),
+    ...     (3, 4),
+    ...     (3, 5),
+    ...     (3, 6),
+    ...     (4, 5),
+    ...     (4, 6),
+    ...     (5, 6),
+    ...     (7, 8),
+    ... ]
+    >>> G = nx.Graph(e)
+    >>> G.add_node(9)
+    >>> nx.chordal_graph_treewidth(G)
+    3
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Tree_decomposition#Treewidth
+    """
+    ...

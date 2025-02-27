@@ -9,7 +9,34 @@ from networkx.utils.backends import _dispatchable
 _G = TypeVar("_G", bound=Graph[Hashable])
 
 @_dispatchable
-def complement(G: Graph[_Node]): ...
+def complement(G: Graph[_Node]):
+    """
+    Returns the graph complement of G.
+
+    Parameters
+    ----------
+    G : graph
+       A NetworkX graph
+
+    Returns
+    -------
+    GC : A new graph.
+
+    Notes
+    -----
+    Note that `complement` does not create self-loops and also
+    does not produce parallel edges for MultiGraphs.
+
+    Graph, node, and edge data are not propagated to the new graph.
+
+    Examples
+    --------
+    >>> G = nx.Graph([(1, 2), (1, 3), (2, 3), (3, 4), (3, 5)])
+    >>> G_complement = nx.complement(G)
+    >>> G_complement.edges()  # This shows the edges of the complemented graph
+    EdgeView([(1, 4), (1, 5), (2, 4), (2, 5), (4, 5)])
+    """
+    ...
 @_dispatchable
 def reverse(G: _G, copy: bool = True) -> _G:
     """

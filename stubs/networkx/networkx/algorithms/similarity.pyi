@@ -1,3 +1,19 @@
+"""
+Functions measuring similarity using graph edit distance.
+
+The graph edit distance is the number of edge/node changes needed
+to make two graphs isomorphic.
+
+The default algorithm/implementation is sub-optimal for some graphs.
+The problem of finding the exact Graph Edit Distance (GED) is NP-hard
+so it is often slow. If the simple interface `graph_edit_distance`
+takes too long for your graph, try `optimize_graph_edit_distance`
+and/or `optimize_edit_paths`.
+
+At the same time, I encourage capable people to investigate
+alternative GED algorithms, in order to improve the choices available.
+"""
+
 from _typeshed import Incomplete, SupportsGetItem
 from collections.abc import Callable, Generator
 
@@ -20,7 +36,142 @@ def graph_edit_distance(
     roots=None,
     upper_bound: float | None = None,
     timeout: float | None = None,
-): ...
+):
+    """
+    Returns GED (graph edit distance) between graphs G1 and G2.
+
+    Graph edit distance is a graph similarity measure analogous to
+    Levenshtein distance for strings.  It is defined as minimum cost
+    of edit path (sequence of node and edge edit operations)
+    transforming graph G1 to graph isomorphic to G2.
+
+    Parameters
+    ----------
+    G1, G2: graphs
+        The two graphs G1 and G2 must be of the same type.
+
+    node_match : callable
+        A function that returns True if node n1 in G1 and n2 in G2
+        should be considered equal during matching.
+
+        The function will be called like
+
+           node_match(G1.nodes[n1], G2.nodes[n2]).
+
+        That is, the function will receive the node attribute
+        dictionaries for n1 and n2 as inputs.
+
+        Ignored if node_subst_cost is specified.  If neither
+        node_match nor node_subst_cost are specified then node
+        attributes are not considered.
+
+    edge_match : callable
+        A function that returns True if the edge attribute dictionaries
+        for the pair of nodes (u1, v1) in G1 and (u2, v2) in G2 should
+        be considered equal during matching.
+
+        The function will be called like
+
+           edge_match(G1[u1][v1], G2[u2][v2]).
+
+        That is, the function will receive the edge attribute
+        dictionaries of the edges under consideration.
+
+        Ignored if edge_subst_cost is specified.  If neither
+        edge_match nor edge_subst_cost are specified then edge
+        attributes are not considered.
+
+    node_subst_cost, node_del_cost, node_ins_cost : callable
+        Functions that return the costs of node substitution, node
+        deletion, and node insertion, respectively.
+
+        The functions will be called like
+
+           node_subst_cost(G1.nodes[n1], G2.nodes[n2]),
+           node_del_cost(G1.nodes[n1]),
+           node_ins_cost(G2.nodes[n2]).
+
+        That is, the functions will receive the node attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function node_subst_cost overrides node_match if specified.
+        If neither node_match nor node_subst_cost are specified then
+        default node substitution cost of 0 is used (node attributes
+        are not considered during matching).
+
+        If node_del_cost is not specified then default node deletion
+        cost of 1 is used.  If node_ins_cost is not specified then
+        default node insertion cost of 1 is used.
+
+    edge_subst_cost, edge_del_cost, edge_ins_cost : callable
+        Functions that return the costs of edge substitution, edge
+        deletion, and edge insertion, respectively.
+
+        The functions will be called like
+
+           edge_subst_cost(G1[u1][v1], G2[u2][v2]),
+           edge_del_cost(G1[u1][v1]),
+           edge_ins_cost(G2[u2][v2]).
+
+        That is, the functions will receive the edge attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function edge_subst_cost overrides edge_match if specified.
+        If neither edge_match nor edge_subst_cost are specified then
+        default edge substitution cost of 0 is used (edge attributes
+        are not considered during matching).
+
+        If edge_del_cost is not specified then default edge deletion
+        cost of 1 is used.  If edge_ins_cost is not specified then
+        default edge insertion cost of 1 is used.
+
+    roots : 2-tuple
+        Tuple where first element is a node in G1 and the second
+        is a node in G2.
+        These nodes are forced to be matched in the comparison to
+        allow comparison between rooted graphs.
+
+    upper_bound : numeric
+        Maximum edit distance to consider.  Return None if no edit
+        distance under or equal to upper_bound exists.
+
+    timeout : numeric
+        Maximum number of seconds to execute.
+        After timeout is met, the current best GED is returned.
+
+    Examples
+    --------
+    >>> G1 = nx.cycle_graph(6)
+    >>> G2 = nx.wheel_graph(7)
+    >>> nx.graph_edit_distance(G1, G2)
+    7.0
+
+    >>> G1 = nx.star_graph(5)
+    >>> G2 = nx.star_graph(5)
+    >>> nx.graph_edit_distance(G1, G2, roots=(0, 0))
+    0.0
+    >>> nx.graph_edit_distance(G1, G2, roots=(1, 0))
+    8.0
+
+    See Also
+    --------
+    optimal_edit_paths, optimize_graph_edit_distance,
+
+    is_isomorphic: test for graph edit distance of 0
+
+    References
+    ----------
+    .. [1] Zeina Abu-Aisheh, Romain Raveaux, Jean-Yves Ramel, Patrick
+       Martineau. An Exact Graph Edit Distance Algorithm for Solving
+       Pattern Recognition Problems. 4th International Conference on
+       Pattern Recognition Applications and Methods 2015, Jan 2015,
+       Lisbon, Portugal. 2015,
+       <10.5220/0005209202710278>. <hal-01168816>
+       https://hal.archives-ouvertes.fr/hal-01168816
+    """
+    ...
 @_dispatchable
 def optimal_edit_paths(
     G1: Graph[_Node],
@@ -34,7 +185,146 @@ def optimal_edit_paths(
     edge_del_cost: Callable[..., Incomplete] | None = None,
     edge_ins_cost: Callable[..., Incomplete] | None = None,
     upper_bound: float | None = None,
-): ...
+):
+    """
+    Returns all minimum-cost edit paths transforming G1 to G2.
+
+    Graph edit path is a sequence of node and edge edit operations
+    transforming graph G1 to graph isomorphic to G2.  Edit operations
+    include substitutions, deletions, and insertions.
+
+    Parameters
+    ----------
+    G1, G2: graphs
+        The two graphs G1 and G2 must be of the same type.
+
+    node_match : callable
+        A function that returns True if node n1 in G1 and n2 in G2
+        should be considered equal during matching.
+
+        The function will be called like
+
+           node_match(G1.nodes[n1], G2.nodes[n2]).
+
+        That is, the function will receive the node attribute
+        dictionaries for n1 and n2 as inputs.
+
+        Ignored if node_subst_cost is specified.  If neither
+        node_match nor node_subst_cost are specified then node
+        attributes are not considered.
+
+    edge_match : callable
+        A function that returns True if the edge attribute dictionaries
+        for the pair of nodes (u1, v1) in G1 and (u2, v2) in G2 should
+        be considered equal during matching.
+
+        The function will be called like
+
+           edge_match(G1[u1][v1], G2[u2][v2]).
+
+        That is, the function will receive the edge attribute
+        dictionaries of the edges under consideration.
+
+        Ignored if edge_subst_cost is specified.  If neither
+        edge_match nor edge_subst_cost are specified then edge
+        attributes are not considered.
+
+    node_subst_cost, node_del_cost, node_ins_cost : callable
+        Functions that return the costs of node substitution, node
+        deletion, and node insertion, respectively.
+
+        The functions will be called like
+
+           node_subst_cost(G1.nodes[n1], G2.nodes[n2]),
+           node_del_cost(G1.nodes[n1]),
+           node_ins_cost(G2.nodes[n2]).
+
+        That is, the functions will receive the node attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function node_subst_cost overrides node_match if specified.
+        If neither node_match nor node_subst_cost are specified then
+        default node substitution cost of 0 is used (node attributes
+        are not considered during matching).
+
+        If node_del_cost is not specified then default node deletion
+        cost of 1 is used.  If node_ins_cost is not specified then
+        default node insertion cost of 1 is used.
+
+    edge_subst_cost, edge_del_cost, edge_ins_cost : callable
+        Functions that return the costs of edge substitution, edge
+        deletion, and edge insertion, respectively.
+
+        The functions will be called like
+
+           edge_subst_cost(G1[u1][v1], G2[u2][v2]),
+           edge_del_cost(G1[u1][v1]),
+           edge_ins_cost(G2[u2][v2]).
+
+        That is, the functions will receive the edge attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function edge_subst_cost overrides edge_match if specified.
+        If neither edge_match nor edge_subst_cost are specified then
+        default edge substitution cost of 0 is used (edge attributes
+        are not considered during matching).
+
+        If edge_del_cost is not specified then default edge deletion
+        cost of 1 is used.  If edge_ins_cost is not specified then
+        default edge insertion cost of 1 is used.
+
+    upper_bound : numeric
+        Maximum edit distance to consider.
+
+    Returns
+    -------
+    edit_paths : list of tuples (node_edit_path, edge_edit_path)
+       - node_edit_path : list of tuples ``(u, v)`` indicating node transformations
+         between `G1` and `G2`. ``u`` is `None` for insertion, ``v`` is `None`
+         for deletion.
+       - edge_edit_path : list of tuples ``((u1, v1), (u2, v2))`` indicating edge
+         transformations between `G1` and `G2`. ``(None, (u2,v2))`` for insertion
+         and ``((u1,v1), None)`` for deletion.
+
+    cost : numeric
+        Optimal edit path cost (graph edit distance). When the cost
+        is zero, it indicates that `G1` and `G2` are isomorphic.
+
+    Examples
+    --------
+    >>> G1 = nx.cycle_graph(4)
+    >>> G2 = nx.wheel_graph(5)
+    >>> paths, cost = nx.optimal_edit_paths(G1, G2)
+    >>> len(paths)
+    40
+    >>> cost
+    5.0
+
+    Notes
+    -----
+    To transform `G1` into a graph isomorphic to `G2`, apply the node
+    and edge edits in the returned ``edit_paths``.
+    In the case of isomorphic graphs, the cost is zero, and the paths
+    represent different isomorphic mappings (isomorphisms). That is, the
+    edits involve renaming nodes and edges to match the structure of `G2`.
+
+    See Also
+    --------
+    graph_edit_distance, optimize_edit_paths
+
+    References
+    ----------
+    .. [1] Zeina Abu-Aisheh, Romain Raveaux, Jean-Yves Ramel, Patrick
+       Martineau. An Exact Graph Edit Distance Algorithm for Solving
+       Pattern Recognition Problems. 4th International Conference on
+       Pattern Recognition Applications and Methods 2015, Jan 2015,
+       Lisbon, Portugal. 2015,
+       <10.5220/0005209202710278>. <hal-01168816>
+       https://hal.archives-ouvertes.fr/hal-01168816
+    """
+    ...
 @_dispatchable
 def optimize_graph_edit_distance(
     G1: Graph[_Node],
@@ -48,7 +338,129 @@ def optimize_graph_edit_distance(
     edge_del_cost: Callable[..., Incomplete] | None = None,
     edge_ins_cost: Callable[..., Incomplete] | None = None,
     upper_bound: float | None = None,
-) -> Generator[Incomplete, None, None]: ...
+) -> Generator[Incomplete, None, None]:
+    """
+    Returns consecutive approximations of GED (graph edit distance)
+    between graphs G1 and G2.
+
+    Graph edit distance is a graph similarity measure analogous to
+    Levenshtein distance for strings.  It is defined as minimum cost
+    of edit path (sequence of node and edge edit operations)
+    transforming graph G1 to graph isomorphic to G2.
+
+    Parameters
+    ----------
+    G1, G2: graphs
+        The two graphs G1 and G2 must be of the same type.
+
+    node_match : callable
+        A function that returns True if node n1 in G1 and n2 in G2
+        should be considered equal during matching.
+
+        The function will be called like
+
+           node_match(G1.nodes[n1], G2.nodes[n2]).
+
+        That is, the function will receive the node attribute
+        dictionaries for n1 and n2 as inputs.
+
+        Ignored if node_subst_cost is specified.  If neither
+        node_match nor node_subst_cost are specified then node
+        attributes are not considered.
+
+    edge_match : callable
+        A function that returns True if the edge attribute dictionaries
+        for the pair of nodes (u1, v1) in G1 and (u2, v2) in G2 should
+        be considered equal during matching.
+
+        The function will be called like
+
+           edge_match(G1[u1][v1], G2[u2][v2]).
+
+        That is, the function will receive the edge attribute
+        dictionaries of the edges under consideration.
+
+        Ignored if edge_subst_cost is specified.  If neither
+        edge_match nor edge_subst_cost are specified then edge
+        attributes are not considered.
+
+    node_subst_cost, node_del_cost, node_ins_cost : callable
+        Functions that return the costs of node substitution, node
+        deletion, and node insertion, respectively.
+
+        The functions will be called like
+
+           node_subst_cost(G1.nodes[n1], G2.nodes[n2]),
+           node_del_cost(G1.nodes[n1]),
+           node_ins_cost(G2.nodes[n2]).
+
+        That is, the functions will receive the node attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function node_subst_cost overrides node_match if specified.
+        If neither node_match nor node_subst_cost are specified then
+        default node substitution cost of 0 is used (node attributes
+        are not considered during matching).
+
+        If node_del_cost is not specified then default node deletion
+        cost of 1 is used.  If node_ins_cost is not specified then
+        default node insertion cost of 1 is used.
+
+    edge_subst_cost, edge_del_cost, edge_ins_cost : callable
+        Functions that return the costs of edge substitution, edge
+        deletion, and edge insertion, respectively.
+
+        The functions will be called like
+
+           edge_subst_cost(G1[u1][v1], G2[u2][v2]),
+           edge_del_cost(G1[u1][v1]),
+           edge_ins_cost(G2[u2][v2]).
+
+        That is, the functions will receive the edge attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function edge_subst_cost overrides edge_match if specified.
+        If neither edge_match nor edge_subst_cost are specified then
+        default edge substitution cost of 0 is used (edge attributes
+        are not considered during matching).
+
+        If edge_del_cost is not specified then default edge deletion
+        cost of 1 is used.  If edge_ins_cost is not specified then
+        default edge insertion cost of 1 is used.
+
+    upper_bound : numeric
+        Maximum edit distance to consider.
+
+    Returns
+    -------
+    Generator of consecutive approximations of graph edit distance.
+
+    Examples
+    --------
+    >>> G1 = nx.cycle_graph(6)
+    >>> G2 = nx.wheel_graph(7)
+    >>> for v in nx.optimize_graph_edit_distance(G1, G2):
+    ...     minv = v
+    >>> minv
+    7.0
+
+    See Also
+    --------
+    graph_edit_distance, optimize_edit_paths
+
+    References
+    ----------
+    .. [1] Zeina Abu-Aisheh, Romain Raveaux, Jean-Yves Ramel, Patrick
+       Martineau. An Exact Graph Edit Distance Algorithm for Solving
+       Pattern Recognition Problems. 4th International Conference on
+       Pattern Recognition Applications and Methods 2015, Jan 2015,
+       Lisbon, Portugal. 2015,
+       <10.5220/0005209202710278>. <hal-01168816>
+       https://hal.archives-ouvertes.fr/hal-01168816
+    """
+    ...
 @_dispatchable
 def optimize_edit_paths(
     G1: Graph[_Node],
@@ -65,7 +477,138 @@ def optimize_edit_paths(
     strictly_decreasing: bool = True,
     roots=None,
     timeout: float | None = None,
-) -> Generator[Incomplete, None, Incomplete]: ...
+) -> Generator[Incomplete, None, Incomplete]:
+    """
+    GED (graph edit distance) calculation: advanced interface.
+
+    Graph edit path is a sequence of node and edge edit operations
+    transforming graph G1 to graph isomorphic to G2.  Edit operations
+    include substitutions, deletions, and insertions.
+
+    Graph edit distance is defined as minimum cost of edit path.
+
+    Parameters
+    ----------
+    G1, G2: graphs
+        The two graphs G1 and G2 must be of the same type.
+
+    node_match : callable
+        A function that returns True if node n1 in G1 and n2 in G2
+        should be considered equal during matching.
+
+        The function will be called like
+
+           node_match(G1.nodes[n1], G2.nodes[n2]).
+
+        That is, the function will receive the node attribute
+        dictionaries for n1 and n2 as inputs.
+
+        Ignored if node_subst_cost is specified.  If neither
+        node_match nor node_subst_cost are specified then node
+        attributes are not considered.
+
+    edge_match : callable
+        A function that returns True if the edge attribute dictionaries
+        for the pair of nodes (u1, v1) in G1 and (u2, v2) in G2 should
+        be considered equal during matching.
+
+        The function will be called like
+
+           edge_match(G1[u1][v1], G2[u2][v2]).
+
+        That is, the function will receive the edge attribute
+        dictionaries of the edges under consideration.
+
+        Ignored if edge_subst_cost is specified.  If neither
+        edge_match nor edge_subst_cost are specified then edge
+        attributes are not considered.
+
+    node_subst_cost, node_del_cost, node_ins_cost : callable
+        Functions that return the costs of node substitution, node
+        deletion, and node insertion, respectively.
+
+        The functions will be called like
+
+           node_subst_cost(G1.nodes[n1], G2.nodes[n2]),
+           node_del_cost(G1.nodes[n1]),
+           node_ins_cost(G2.nodes[n2]).
+
+        That is, the functions will receive the node attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function node_subst_cost overrides node_match if specified.
+        If neither node_match nor node_subst_cost are specified then
+        default node substitution cost of 0 is used (node attributes
+        are not considered during matching).
+
+        If node_del_cost is not specified then default node deletion
+        cost of 1 is used.  If node_ins_cost is not specified then
+        default node insertion cost of 1 is used.
+
+    edge_subst_cost, edge_del_cost, edge_ins_cost : callable
+        Functions that return the costs of edge substitution, edge
+        deletion, and edge insertion, respectively.
+
+        The functions will be called like
+
+           edge_subst_cost(G1[u1][v1], G2[u2][v2]),
+           edge_del_cost(G1[u1][v1]),
+           edge_ins_cost(G2[u2][v2]).
+
+        That is, the functions will receive the edge attribute
+        dictionaries as inputs.  The functions are expected to return
+        positive numeric values.
+
+        Function edge_subst_cost overrides edge_match if specified.
+        If neither edge_match nor edge_subst_cost are specified then
+        default edge substitution cost of 0 is used (edge attributes
+        are not considered during matching).
+
+        If edge_del_cost is not specified then default edge deletion
+        cost of 1 is used.  If edge_ins_cost is not specified then
+        default edge insertion cost of 1 is used.
+
+    upper_bound : numeric
+        Maximum edit distance to consider.
+
+    strictly_decreasing : bool
+        If True, return consecutive approximations of strictly
+        decreasing cost.  Otherwise, return all edit paths of cost
+        less than or equal to the previous minimum cost.
+
+    roots : 2-tuple
+        Tuple where first element is a node in G1 and the second
+        is a node in G2.
+        These nodes are forced to be matched in the comparison to
+        allow comparison between rooted graphs.
+
+    timeout : numeric
+        Maximum number of seconds to execute.
+        After timeout is met, the current best GED is returned.
+
+    Returns
+    -------
+    Generator of tuples (node_edit_path, edge_edit_path, cost)
+        node_edit_path : list of tuples (u, v)
+        edge_edit_path : list of tuples ((u1, v1), (u2, v2))
+        cost : numeric
+
+    See Also
+    --------
+    graph_edit_distance, optimize_graph_edit_distance, optimal_edit_paths
+
+    References
+    ----------
+    .. [1] Zeina Abu-Aisheh, Romain Raveaux, Jean-Yves Ramel, Patrick
+       Martineau. An Exact Graph Edit Distance Algorithm for Solving
+       Pattern Recognition Problems. 4th International Conference on
+       Pattern Recognition Applications and Methods 2015, Jan 2015,
+       Lisbon, Portugal. 2015,
+       <10.5220/0005209202710278>. <hal-01168816>
+       https://hal.archives-ouvertes.fr/hal-01168816
+    """
+    ...
 @_dispatchable
 def simrank_similarity(
     G: Graph[_Node],
@@ -191,7 +734,71 @@ def panther_similarity(
     delta: float = 0.1,
     eps=None,
     weight: str | None = "weight",
-): ...
+):
+    r"""
+    Returns the Panther similarity of nodes in the graph `G` to node ``v``.
+
+    Panther is a similarity metric that says "two objects are considered
+    to be similar if they frequently appear on the same paths." [1]_.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+    source : node
+        Source node for which to find the top `k` similar other nodes
+    k : int (default = 5)
+        The number of most similar nodes to return.
+    path_length : int (default = 5)
+        How long the randomly generated paths should be (``T`` in [1]_)
+    c : float (default = 0.5)
+        A universal positive constant used to scale the number
+        of sample random paths to generate.
+    delta : float (default = 0.1)
+        The probability that the similarity $S$ is not an epsilon-approximation to (R, phi),
+        where $R$ is the number of random paths and $\phi$ is the probability
+        that an element sampled from a set $A \subseteq D$, where $D$ is the domain.
+    eps : float or None (default = None)
+        The error bound. Per [1]_, a good value is ``sqrt(1/|E|)``. Therefore,
+        if no value is provided, the recommended computed value will be used.
+    weight : string or None, optional (default="weight")
+        The name of an edge attribute that holds the numerical value
+        used as a weight. If None then each edge has weight 1.
+
+    Returns
+    -------
+    similarity : dictionary
+        Dictionary of nodes to similarity scores (as floats). Note:
+        the self-similarity (i.e., ``v``) will not be included in
+        the returned dictionary. So, for ``k = 5``, a dictionary of
+        top 4 nodes and their similarity scores will be returned.
+
+    Raises
+    ------
+    NetworkXUnfeasible
+        If `source` is an isolated node.
+
+    NodeNotFound
+        If `source` is not in `G`.
+
+    Notes
+    -----
+        The isolated nodes in `G` are ignored.
+
+    Examples
+    --------
+    >>> G = nx.star_graph(10)
+    >>> sim = nx.panther_similarity(G, 0)
+
+    References
+    ----------
+    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
+           Panther: Fast top-k similarity search on large networks.
+           In Proceedings of the ACM SIGKDD International Conference
+           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
+           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
+    """
+    ...
 @_dispatchable
 def generate_random_paths(
     G: Graph[_Node],
@@ -200,4 +807,59 @@ def generate_random_paths(
     index_map: SupportsGetItem[Incomplete, Incomplete] | None = None,
     weight: str | None = "weight",
     seed: int | RandomState | None = None,
-) -> Generator[Incomplete, None, None]: ...
+) -> Generator[Incomplete, None, None]:
+    """
+    Randomly generate `sample_size` paths of length `path_length`.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+    sample_size : integer
+        The number of paths to generate. This is ``R`` in [1]_.
+    path_length : integer (default = 5)
+        The maximum size of the path to randomly generate.
+        This is ``T`` in [1]_. According to the paper, ``T >= 5`` is
+        recommended.
+    index_map : dictionary, optional
+        If provided, this will be populated with the inverted
+        index of nodes mapped to the set of generated random path
+        indices within ``paths``.
+    weight : string or None, optional (default="weight")
+        The name of an edge attribute that holds the numerical value
+        used as a weight. If None then each edge has weight 1.
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    paths : generator of lists
+        Generator of `sample_size` paths each with length `path_length`.
+
+    Examples
+    --------
+    Note that the return value is the list of paths:
+
+    >>> G = nx.star_graph(3)
+    >>> random_path = nx.generate_random_paths(G, 2)
+
+    By passing a dictionary into `index_map`, it will build an
+    inverted index mapping of nodes to the paths in which that node is present:
+
+    >>> G = nx.star_graph(3)
+    >>> index_map = {}
+    >>> random_path = nx.generate_random_paths(G, 3, index_map=index_map)
+    >>> paths_containing_node_0 = [
+    ...     random_path[path_idx] for path_idx in index_map.get(0, [])
+    ... ]
+
+    References
+    ----------
+    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
+           Panther: Fast top-k similarity search on large networks.
+           In Proceedings of the ACM SIGKDD International Conference
+           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
+           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
+    """
+    ...

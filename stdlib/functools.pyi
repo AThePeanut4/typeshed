@@ -185,12 +185,35 @@ if sys.version_info >= (3, 12):
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
         updated: Iterable[str] = ("__dict__",),
-    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
+    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]:
+        """
+        Update a wrapper function to look like the wrapped function
+
+        wrapper is the function to be updated
+        wrapped is the original function
+        assigned is a tuple naming the attributes assigned directly
+        from the wrapped function to the wrapper function (defaults to
+        functools.WRAPPER_ASSIGNMENTS)
+        updated is a tuple naming the attributes of the wrapper that
+        are updated with the corresponding attribute from the wrapped
+        function (defaults to functools.WRAPPER_UPDATES)
+        """
+        ...
     def wraps(
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
         updated: Iterable[str] = ("__dict__",),
-    ) -> _Wrapper[_PWrapped, _RWrapped]: ...
+    ) -> _Wrapper[_PWrapped, _RWrapped]:
+        """
+        Decorator factory to apply update_wrapper() to a wrapper function
+
+        Returns a decorator that invokes update_wrapper() with the decorated
+        function as the wrapper argument and the arguments to wraps() as the
+        remaining arguments. Default arguments are as for update_wrapper().
+        This is a convenience function to simplify applying partial() to
+        update_wrapper().
+        """
+        ...
 
 else:
     def update_wrapper(
@@ -198,12 +221,27 @@ else:
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
         updated: Iterable[str] = ("__dict__",),
-    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
+    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]:
+        """
+        Update a wrapper function to look like the wrapped function
+
+        wrapper is the function to be updated
+        wrapped is the original function
+        assigned is a tuple naming the attributes assigned directly
+        from the wrapped function to the wrapper function (defaults to
+        functools.WRAPPER_ASSIGNMENTS)
+        updated is a tuple naming the attributes of the wrapper that
+        are updated with the corresponding attribute from the wrapped
+        function (defaults to functools.WRAPPER_UPDATES)
+        """
+        ...
     def wraps(
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
         updated: Iterable[str] = ("__dict__",),
-    ) -> _Wrapper[_PWrapped, _RWrapped]: ...
+    ) -> _Wrapper[_PWrapped, _RWrapped]:
+        """
+        Decorator factory to apply update_wrapper() to a wrapper function
 
         Returns a decorator that invokes update_wrapper() with the decorated
         function as the wrapper argument and the arguments to wraps() as the

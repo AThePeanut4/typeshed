@@ -37,9 +37,44 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["treewidth_min_degree", "treewidth_min_fill_in"]
 
 @_dispatchable
-def treewidth_min_degree(G: Graph[_Node]): ...
+def treewidth_min_degree(G: Graph[_Node]):
+    """
+    Returns a treewidth decomposition using the Minimum Degree heuristic.
+
+    The heuristic chooses the nodes according to their degree, i.e., first
+    the node with the lowest degree is chosen, then the graph is updated
+    and the corresponding node is removed. Next, a new node with the lowest
+    degree is chosen, and so on.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    Returns
+    -------
+    Treewidth decomposition : (int, Graph) tuple
+          2-tuple with treewidth and the corresponding decomposed tree.
+    """
+    ...
 @_dispatchable
-def treewidth_min_fill_in(G: Graph[_Node]): ...
+def treewidth_min_fill_in(G: Graph[_Node]):
+    """
+    Returns a treewidth decomposition using the Minimum Fill-in heuristic.
+
+    The heuristic chooses a node from the graph, where the number of edges
+    added turning the neighborhood of the chosen node into clique is as
+    small as possible.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    Returns
+    -------
+    Treewidth decomposition : (int, Graph) tuple
+        2-tuple with treewidth and the corresponding decomposed tree.
+    """
+    ...
 
 class MinDegreeHeuristic:
     """

@@ -3254,13 +3254,94 @@ def softplus(features: TensorCompatible, name: str | None = None) -> Tensor:
     """
     ...
 @overload
-def softplus(features: RaggedTensor, name: str | None = None) -> RaggedTensor: ...
+def softplus(features: RaggedTensor, name: str | None = None) -> RaggedTensor:
+    """
+    Computes elementwise softplus: `softplus(x) = log(exp(x) + 1)`.
+
+    `softplus` is a smooth approximation of `relu`. Like `relu`, `softplus` always
+    takes on positive values.
+
+    <img style="width:100%" src="https://www.tensorflow.org/images/softplus.png">
+
+    Example:
+
+    >>> import tensorflow as tf
+    >>> tf.math.softplus(tf.range(0, 2, dtype=tf.float32)).numpy()
+    array([0.6931472, 1.3132616], dtype=float32)
+
+    Args:
+      features: `Tensor`
+      name: Optional: name to associate with this operation.
+    Returns:
+      `Tensor`
+    """
+    ...
 @overload
-def round(x: TensorCompatible, name: str | None = None) -> Tensor: ...
+def round(x: TensorCompatible, name: str | None = None) -> Tensor:
+    """
+    Rounds the values of a tensor to the nearest integer, element-wise.
+
+    Rounds half to even.  Also known as bankers rounding. If you want to round
+    according to the current system rounding mode use tf::cint.
+    For example:
+
+    ```python
+    x = tf.constant([0.9, 2.5, 2.3, 1.5, -4.5])
+    tf.round(x)  # [ 1.0, 2.0, 2.0, 2.0, -4.0 ]
+    ```
+
+    Args:
+      x: A `Tensor` of type `float16`, `float32`, `float64`, `int32`, or `int64`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor` of same shape and type as `x`.
+    """
+    ...
 @overload
-def round(x: SparseTensor, name: str | None = None) -> SparseTensor: ...
+def round(x: SparseTensor, name: str | None = None) -> SparseTensor:
+    """
+    Rounds the values of a tensor to the nearest integer, element-wise.
+
+    Rounds half to even.  Also known as bankers rounding. If you want to round
+    according to the current system rounding mode use tf::cint.
+    For example:
+
+    ```python
+    x = tf.constant([0.9, 2.5, 2.3, 1.5, -4.5])
+    tf.round(x)  # [ 1.0, 2.0, 2.0, 2.0, -4.0 ]
+    ```
+
+    Args:
+      x: A `Tensor` of type `float16`, `float32`, `float64`, `int32`, or `int64`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor` of same shape and type as `x`.
+    """
+    ...
 @overload
-def round(x: RaggedTensor, name: str | None = None) -> RaggedTensor: ...
+def round(x: RaggedTensor, name: str | None = None) -> RaggedTensor:
+    """
+    Rounds the values of a tensor to the nearest integer, element-wise.
+
+    Rounds half to even.  Also known as bankers rounding. If you want to round
+    according to the current system rounding mode use tf::cint.
+    For example:
+
+    ```python
+    x = tf.constant([0.9, 2.5, 2.3, 1.5, -4.5])
+    tf.round(x)  # [ 1.0, 2.0, 2.0, 2.0, -4.0 ]
+    ```
+
+    Args:
+      x: A `Tensor` of type `float16`, `float32`, `float64`, `int32`, or `int64`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor` of same shape and type as `x`.
+    """
+    ...
 
 # Depending on the method axis is either a rank 0 tensor or a rank 0/1 tensor.
 def reduce_mean(

@@ -1,8 +1,52 @@
+"""Provides functions for computing the efficiency of nodes and graphs."""
+
 from networkx.classes.graph import _Node
 from networkx.utils.backends import _dispatchable
 
 @_dispatchable
-def efficiency(G, u: _Node, v: _Node): ...
+def efficiency(G, u: _Node, v: _Node):
+    """
+    Returns the efficiency of a pair of nodes in a graph.
+
+    The *efficiency* of a pair of nodes is the multiplicative inverse of the
+    shortest path distance between the nodes [1]_. Returns 0 if no path
+    between nodes.
+
+    Parameters
+    ----------
+    G : :class:`networkx.Graph`
+        An undirected graph for which to compute the average local efficiency.
+    u, v : node
+        Nodes in the graph ``G``.
+
+    Returns
+    -------
+    float
+        Multiplicative inverse of the shortest path distance between the nodes.
+
+    Examples
+    --------
+    >>> G = nx.Graph([(0, 1), (0, 2), (0, 3), (1, 2), (1, 3)])
+    >>> nx.efficiency(G, 2, 3)  # this gives efficiency for node 2 and 3
+    0.5
+
+    Notes
+    -----
+    Edge weights are ignored when computing the shortest path distances.
+
+    See also
+    --------
+    local_efficiency
+    global_efficiency
+
+    References
+    ----------
+    .. [1] Latora, Vito, and Massimo Marchiori.
+           "Efficient behavior of small-world networks."
+           *Physical Review Letters* 87.19 (2001): 198701.
+           <https://doi.org/10.1103/PhysRevLett.87.198701>
+    """
+    ...
 @_dispatchable
 def global_efficiency(G):
     """

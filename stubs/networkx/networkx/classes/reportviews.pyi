@@ -761,6 +761,7 @@ class InEdgeView(OutEdgeView[_Node]):
     ...
 
 class OutMultiEdgeView(OutEdgeView[_Node]):
+    """A EdgeView class for outward edges of a MultiDiGraph"""
     def __iter__(self) -> Iterator[tuple[_Node, _Node, Incomplete]]: ...  # type: ignore[override]
     def __getitem__(self, e: tuple[_Node, _Node, Incomplete]) -> dict[str, Any]: ...  # type: ignore[override]
     @overload  # type: ignore[override]  # Has an additional `keys` keyword argument

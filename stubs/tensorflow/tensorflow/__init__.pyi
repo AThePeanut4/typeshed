@@ -3870,24 +3870,742 @@ def ones_like(
 @overload
 def ones_like(
     input: RaggedTensor, dtype: DTypeLike | None = None, name: str | None = None, layout: Layout | None = None
-) -> RaggedTensor: ...
-def reshape(tensor: TensorCompatible, shape: ShapeLike | Tensor, name: str | None = None) -> Tensor: ...
+) -> RaggedTensor:
+    """
+    Creates a tensor of all ones that has the same shape as the input.
+
+    See also `tf.ones`.
+
+    Given a single tensor (`tensor`), this operation returns a tensor of the
+    same type and shape as `tensor` with all elements set to 1. Optionally,
+    you can use `dtype` to specify a new type for the returned tensor.
+
+    For example:
+
+    >>> tensor = tf.constant([[1, 2, 3], [4, 5, 6]])
+    >>> tf.ones_like(tensor)
+    <tf.Tensor: shape=(2, 3), dtype=int32, numpy=
+      array([[1, 1, 1],
+             [1, 1, 1]], dtype=int32)>
+
+    Note that the layout of the input tensor is not preserved if the op
+    is used inside tf.function. To obtain a tensor with the same layout as the
+    input, chain the returned value to a `dtensor.relayout_like`.
+
+    Args:
+      input: A `Tensor`.
+      dtype: A type for the returned `Tensor`. Must be `float16`, `float32`,
+        `float64`, `int8`, `uint8`, `int16`, `uint16`, `int32`, `int64`,
+        `complex64`, `complex128`, `bool` or `string`.
+      name: A name for the operation (optional).
+      layout: Optional, `tf.experimental.dtensor.Layout`. If provided, the result
+        is a [DTensor](https://www.tensorflow.org/guide/dtensor_overview) with the
+        provided layout.
+
+    Returns:
+      A `Tensor` with all elements set to one.
+    """
+    ...
+def reshape(tensor: TensorCompatible, shape: ShapeLike | Tensor, name: str | None = None) -> Tensor:
+    """
+    Reshapes a tensor.
+
+    Given `tensor`, this operation returns a new `tf.Tensor` that has the same
+    values as `tensor` in the same order, except with a new shape given by
+    `shape`.
+
+    >>> t1 = [[1, 2, 3],
+    ...       [4, 5, 6]]
+    >>> print(tf.shape(t1).numpy())
+    [2 3]
+    >>> t2 = tf.reshape(t1, [6])
+    >>> t2
+    <tf.Tensor: shape=(6,), dtype=int32,
+      numpy=array([1, 2, 3, 4, 5, 6], dtype=int32)>
+    >>> tf.reshape(t2, [3, 2])
+    <tf.Tensor: shape=(3, 2), dtype=int32, numpy=
+      array([[1, 2],
+             [3, 4],
+             [5, 6]], dtype=int32)>
+
+    The `tf.reshape` does not change the order of or the total number of elements
+    in the tensor, and so it can reuse the underlying data buffer. This makes it
+    a fast operation independent of how big of a tensor it is operating on.
+
+    >>> tf.reshape([1, 2, 3], [2, 2])
+    Traceback (most recent call last):
+    ...
+    InvalidArgumentError: Input to reshape is a tensor with 3 values, but the
+    requested shape has 4
+
+    To instead reorder the data to rearrange the dimensions of a tensor, see
+    `tf.transpose`.
+
+    >>> t = [[1, 2, 3],
+    ...      [4, 5, 6]]
+    >>> tf.reshape(t, [3, 2]).numpy()
+    array([[1, 2],
+           [3, 4],
+           [5, 6]], dtype=int32)
+    >>> tf.transpose(t, perm=[1, 0]).numpy()
+    array([[1, 4],
+           [2, 5],
+           [3, 6]], dtype=int32)
+
+    If one component of `shape` is the special value -1, the size of that
+    dimension is computed so that the total size remains constant.  In particular,
+    a `shape` of `[-1]` flattens into 1-D.  At most one component of `shape` can
+    be -1.
+
+    >>> t = [[1, 2, 3],
+    ...      [4, 5, 6]]
+    >>> tf.reshape(t, [-1])
+    <tf.Tensor: shape=(6,), dtype=int32,
+      numpy=array([1, 2, 3, 4, 5, 6], dtype=int32)>
+    >>> tf.reshape(t, [3, -1])
+    <tf.Tensor: shape=(3, 2), dtype=int32, numpy=
+      array([[1, 2],
+             [3, 4],
+             [5, 6]], dtype=int32)>
+    >>> tf.reshape(t, [-1, 2])
+    <tf.Tensor: shape=(3, 2), dtype=int32, numpy=
+      array([[1, 2],
+             [3, 4],
+             [5, 6]], dtype=int32)>
+
+    `tf.reshape(t, [])` reshapes a tensor `t` with one element to a scalar.
+
+    >>> tf.reshape([7], []).numpy().item()
+    7
+
+    More examples:
+
+    >>> t = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    >>> print(tf.shape(t).numpy())
+    [9]
+    >>> tf.reshape(t, [3, 3])
+    <tf.Tensor: shape=(3, 3), dtype=int32, numpy=
+      array([[1, 2, 3],
+             [4, 5, 6],
+             [7, 8, 9]], dtype=int32)>
+
+    >>> t = [[[1, 1], [2, 2]],
+    ...      [[3, 3], [4, 4]]]
+    >>> print(tf.shape(t).numpy())
+    [2 2 2]
+    >>> tf.reshape(t, [2, 4])
+    <tf.Tensor: shape=(2, 4), dtype=int32, numpy=
+      array([[1, 1, 2, 2],
+             [3, 3, 4, 4]], dtype=int32)>
+
+    >>> t = [[[1, 1, 1],
+    ...       [2, 2, 2]],
+    ...      [[3, 3, 3],
+    ...       [4, 4, 4]],
+    ...      [[5, 5, 5],
+    ...       [6, 6, 6]]]
+    >>> print(tf.shape(t).numpy())
+    [3 2 3]
+    >>> # Pass '[-1]' to flatten 't'.
+    >>> tf.reshape(t, [-1])
+    <tf.Tensor: shape=(18,), dtype=int32,
+      numpy=array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6],
+      dtype=int32)>
+    >>> # -- Using -1 to infer the shape --
+    >>> # Here -1 is inferred to be 9:
+    >>> tf.reshape(t, [2, -1])
+    <tf.Tensor: shape=(2, 9), dtype=int32, numpy=
+      array([[1, 1, 1, 2, 2, 2, 3, 3, 3],
+             [4, 4, 4, 5, 5, 5, 6, 6, 6]], dtype=int32)>
+    >>> # -1 is inferred to be 2:
+    >>> tf.reshape(t, [-1, 9])
+    <tf.Tensor: shape=(2, 9), dtype=int32, numpy=
+      array([[1, 1, 1, 2, 2, 2, 3, 3, 3],
+             [4, 4, 4, 5, 5, 5, 6, 6, 6]], dtype=int32)>
+    >>> # -1 is inferred to be 3:
+    >>> tf.reshape(t, [ 2, -1, 3])
+    <tf.Tensor: shape=(2, 3, 3), dtype=int32, numpy=
+      array([[[1, 1, 1],
+              [2, 2, 2],
+              [3, 3, 3]],
+             [[4, 4, 4],
+              [5, 5, 5],
+              [6, 6, 6]]], dtype=int32)>
+
+    Args:
+      tensor: A `Tensor`.
+      shape: A `Tensor`. Must be one of the following types: `int32`, `int64`.
+        Defines the shape of the output tensor.
+      name: Optional string. A name for the operation.
+
+    Returns:
+      A `Tensor`. Has the same type as `tensor`.
+    """
+    ...
 def pad(
     tensor: TensorCompatible,
     paddings: Tensor | IntArray | Iterable[Iterable[int]],
     mode: Literal["CONSTANT", "constant", "REFLECT", "reflect", "SYMMETRIC", "symmectric"] = "CONSTANT",
     constant_values: ScalarTensorCompatible = 0,
     name: str | None = None,
-) -> Tensor: ...
-def shape(input: SparseTensorCompatible, out_type: DTypeLike | None = None, name: str | None = None) -> Tensor: ...
+) -> Tensor:
+    """
+    Pads a tensor.
+
+    This operation pads a `tensor` according to the `paddings` you specify.
+    `paddings` is an integer tensor with shape `[n, 2]`, where n is the rank of
+    `tensor`. For each dimension D of `input`, `paddings[D, 0]` indicates how
+    many values to add before the contents of `tensor` in that dimension, and
+    `paddings[D, 1]` indicates how many values to add after the contents of
+    `tensor` in that dimension. If `mode` is "REFLECT" then both `paddings[D, 0]`
+    and `paddings[D, 1]` must be no greater than `tensor.dim_size(D) - 1`. If
+    `mode` is "SYMMETRIC" then both `paddings[D, 0]` and `paddings[D, 1]` must be
+    no greater than `tensor.dim_size(D)`.
+
+    The padded size of each dimension D of the output is:
+
+    `paddings[D, 0] + tensor.dim_size(D) + paddings[D, 1]`
+
+    For example:
+
+    ```python
+    t = tf.constant([[1, 2, 3], [4, 5, 6]])
+    paddings = tf.constant([[1, 1,], [2, 2]])
+    # 'constant_values' is 0.
+    # rank of 't' is 2.
+    tf.pad(t, paddings, "CONSTANT")  # [[0, 0, 0, 0, 0, 0, 0],
+                                     #  [0, 0, 1, 2, 3, 0, 0],
+                                     #  [0, 0, 4, 5, 6, 0, 0],
+                                     #  [0, 0, 0, 0, 0, 0, 0]]
+
+    tf.pad(t, paddings, "REFLECT")  # [[6, 5, 4, 5, 6, 5, 4],
+                                    #  [3, 2, 1, 2, 3, 2, 1],
+                                    #  [6, 5, 4, 5, 6, 5, 4],
+                                    #  [3, 2, 1, 2, 3, 2, 1]]
+
+    tf.pad(t, paddings, "SYMMETRIC")  # [[2, 1, 1, 2, 3, 3, 2],
+                                      #  [2, 1, 1, 2, 3, 3, 2],
+                                      #  [5, 4, 4, 5, 6, 6, 5],
+                                      #  [5, 4, 4, 5, 6, 6, 5]]
+    ```
+
+    Args:
+      tensor: A `Tensor`.
+      paddings: A `Tensor` of type `int32`.
+      mode: One of "CONSTANT", "REFLECT", or "SYMMETRIC" (case-insensitive)
+      constant_values: In "CONSTANT" mode, the scalar pad value to use. Must be
+        same type as `tensor`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor`. Has the same type as `tensor`.
+
+    Raises:
+      ValueError: When mode is not one of "CONSTANT", "REFLECT", or "SYMMETRIC".
+    """
+    ...
+def shape(input: SparseTensorCompatible, out_type: DTypeLike | None = None, name: str | None = None) -> Tensor:
+    """
+    Returns a tensor containing the shape of the input tensor.
+
+    See also `tf.size`, `tf.rank`.
+
+    `tf.shape` returns a 1-D integer tensor representing the shape of `input`.
+    For a scalar input, the tensor returned has a shape of (0,) and its value is
+    the empty vector (i.e. []).
+
+    For example:
+
+    >>> tf.shape(1.)
+    <tf.Tensor: shape=(0,), dtype=int32, numpy=array([], dtype=int32)>
+
+    >>> t = tf.constant([[[1, 1, 1], [2, 2, 2]], [[3, 3, 3], [4, 4, 4]]])
+    >>> tf.shape(t)
+    <tf.Tensor: shape=(3,), dtype=int32, numpy=array([2, 2, 3], dtype=int32)>
+
+    Note: When using symbolic tensors, such as when using the Keras API,
+    tf.shape() will return the shape of the symbolic tensor.
+
+    >>> a = tf.keras.layers.Input((None, 10))
+    >>> tf.shape(a)
+    <... shape=(3,) dtype=int32...>
+
+    In these cases, using `tf.Tensor.shape` will return more informative results.
+
+    >>> a.shape
+    TensorShape([None, None, 10])
+
+    (The first `None` represents the as yet unknown batch size.)
+
+    `tf.shape` and `Tensor.shape` should be identical in eager mode.  Within
+    `tf.function` or within a `compat.v1` context, not all dimensions may be
+    known until execution time. Hence, when defining custom layers and models
+    for graph mode, prefer the dynamic `tf.shape(x)` over the static `x.shape`.
+
+    Args:
+      input: A `Tensor` or `SparseTensor`.
+      out_type: (Optional) The specified output type of the operation (`int32` or
+        `int64`). Defaults to `tf.int32`. (Note: there is an experimental
+        flag, `tf_shape_default_int64` that changes the default to `tf.int64`.
+        This is an unsupported, experimental setting that causes known breakages.)
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor` of type `out_type`.
+    """
+    ...
 def where(
     condition: TensorCompatible, x: TensorCompatible | None = None, y: TensorCompatible | None = None, name: str | None = None
-) -> Tensor: ...
+) -> Tensor:
+    """
+    Returns the indices of non-zero elements, or multiplexes `x` and `y`.
+
+    This operation has two modes:
+
+    1. **Return the indices of non-zero elements** - When only
+       `condition` is provided the result is an `int64` tensor where each row is
+       the index of a non-zero element of `condition`. The result's shape
+       is `[tf.math.count_nonzero(condition), tf.rank(condition)]`.
+    2. **Multiplex `x` and `y`** - When both `x` and `y` are provided the
+       result has the shape of `x`, `y`, and `condition` broadcast together. The
+       result is taken from `x` where `condition` is non-zero
+       or `y` where `condition` is zero.
+
+    #### 1. Return the indices of non-zero elements
+
+    Note: In this mode `condition` can have a dtype of `bool` or any numeric
+    dtype.
+
+    If `x` and `y` are not provided (both are None):
+
+    `tf.where` will return the indices of `condition` that are non-zero,
+    in the form of a 2-D tensor with shape `[n, d]`, where `n` is the number of
+    non-zero elements in `condition` (`tf.count_nonzero(condition)`), and `d` is
+    the number of axes of `condition` (`tf.rank(condition)`).
+
+    Indices are output in row-major order. The `condition` can have a `dtype` of
+    `tf.bool`, or any numeric `dtype`.
+
+    Here `condition` is a 1-axis `bool` tensor with 2 `True` values. The result
+    has a shape of `[2,1]`
+
+    >>> tf.where([True, False, False, True]).numpy()
+    array([[0],
+           [3]])
+
+    Here `condition` is a 2-axis integer tensor, with 3 non-zero values. The
+    result has a shape of `[3, 2]`.
+
+    >>> tf.where([[1, 0, 0], [1, 0, 1]]).numpy()
+    array([[0, 0],
+           [1, 0],
+           [1, 2]])
+
+    Here `condition` is a 3-axis float tensor, with 5 non-zero values. The output
+    shape is `[5, 3]`.
+
+    >>> float_tensor = [[[0.1, 0], [0, 2.2], [3.5, 1e6]],
+    ...                 [[0,   0], [0,   0], [99,    0]]]
+    >>> tf.where(float_tensor).numpy()
+    array([[0, 0, 0],
+           [0, 1, 1],
+           [0, 2, 0],
+           [0, 2, 1],
+           [1, 2, 0]])
+
+    These indices are the same that `tf.sparse.SparseTensor` would use to
+    represent the condition tensor:
+
+    >>> sparse = tf.sparse.from_dense(float_tensor)
+    >>> sparse.indices.numpy()
+    array([[0, 0, 0],
+           [0, 1, 1],
+           [0, 2, 0],
+           [0, 2, 1],
+           [1, 2, 0]])
+
+    A complex number is considered non-zero if either the real or imaginary
+    component is non-zero:
+
+    >>> tf.where([complex(0.), complex(1.), 0+1j, 1+1j]).numpy()
+    array([[1],
+           [2],
+           [3]])
+
+    #### 2. Multiplex `x` and `y`
+
+    Note: In this mode `condition` must have a dtype of `bool`.
+
+    If `x` and `y` are also provided (both have non-None values) the `condition`
+    tensor acts as a mask that chooses whether the corresponding
+    element / row in the output should be taken from `x` (if the element in
+    `condition` is `True`) or `y` (if it is `False`).
+
+    The shape of the result is formed by
+    [broadcasting](https://docs.scipy.org/doc/numpy/reference/ufuncs.html)
+    together the shapes of `condition`, `x`, and `y`.
+
+    When all three inputs have the same size, each is handled element-wise.
+
+    >>> tf.where([True, False, False, True],
+    ...          [1, 2, 3, 4],
+    ...          [100, 200, 300, 400]).numpy()
+    array([  1, 200, 300,   4], dtype=int32)
+
+    There are two main rules for broadcasting:
+
+    1. If a tensor has fewer axes than the others, length-1 axes are added to the
+       left of the shape.
+    2. Axes with length-1 are streched to match the coresponding axes of the other
+       tensors.
+
+    A length-1 vector is streched to match the other vectors:
+
+    >>> tf.where([True, False, False, True], [1, 2, 3, 4], [100]).numpy()
+    array([  1, 100, 100,   4], dtype=int32)
+
+    A scalar is expanded to match the other arguments:
+
+    >>> tf.where([[True, False], [False, True]], [[1, 2], [3, 4]], 100).numpy()
+    array([[  1, 100], [100,   4]], dtype=int32)
+    >>> tf.where([[True, False], [False, True]], 1, 100).numpy()
+    array([[  1, 100], [100,   1]], dtype=int32)
+
+    A scalar `condition` returns the complete `x` or `y` tensor, with
+    broadcasting applied.
+
+    >>> tf.where(True, [1, 2, 3, 4], 100).numpy()
+    array([1, 2, 3, 4], dtype=int32)
+    >>> tf.where(False, [1, 2, 3, 4], 100).numpy()
+    array([100, 100, 100, 100], dtype=int32)
+
+    For a non-trivial example of broadcasting, here `condition` has a shape of
+    `[3]`, `x` has a shape of `[3,3]`, and `y` has a shape of `[3,1]`.
+    Broadcasting first expands the shape of `condition` to `[1,3]`. The final
+    broadcast shape is `[3,3]`. `condition` will select columns from `x` and `y`.
+    Since `y` only has one column, all columns from `y` will be identical.
+
+    >>> tf.where([True, False, True],
+    ...          x=[[1, 2, 3],
+    ...             [4, 5, 6],
+    ...             [7, 8, 9]],
+    ...          y=[[100],
+    ...             [200],
+    ...             [300]]
+    ... ).numpy()
+    array([[ 1, 100, 3],
+           [ 4, 200, 6],
+           [ 7, 300, 9]], dtype=int32)
+
+    Note that if the gradient of either branch of the `tf.where` generates
+    a `NaN`, then the gradient of the entire `tf.where` will be `NaN`. This is
+    because the gradient calculation for `tf.where` combines the two branches, for
+    performance reasons.
+
+    A workaround is to use an inner `tf.where` to ensure the function has
+    no asymptote, and to avoid computing a value whose gradient is `NaN` by
+    replacing dangerous inputs with safe inputs.
+
+    Instead of this,
+
+    >>> x = tf.constant(0., dtype=tf.float32)
+    >>> with tf.GradientTape() as tape:
+    ...   tape.watch(x)
+    ...   y = tf.where(x < 1., 0., 1. / x)
+    >>> print(tape.gradient(y, x))
+    tf.Tensor(nan, shape=(), dtype=float32)
+
+    Although, the `1. / x` values are never used, its gradient is a `NaN` when
+    `x = 0`. Instead, we should guard that with another `tf.where`
+
+    >>> x = tf.constant(0., dtype=tf.float32)
+    >>> with tf.GradientTape() as tape:
+    ...   tape.watch(x)
+    ...   safe_x = tf.where(tf.equal(x, 0.), 1., x)
+    ...   y = tf.where(x < 1., 0., 1. / safe_x)
+    >>> print(tape.gradient(y, x))
+    tf.Tensor(0.0, shape=(), dtype=float32)
+
+    See also:
+
+    * `tf.sparse` - The indices returned by the first form of `tf.where` can be
+       useful in `tf.sparse.SparseTensor` objects.
+    * `tf.gather_nd`, `tf.scatter_nd`, and related ops - Given the
+      list of indices returned from `tf.where` the `scatter` and `gather` family
+      of ops can be used fetch values or insert values at those indices.
+    * `tf.strings.length` - `tf.string` is not an allowed dtype for the
+      `condition`. Use the string length instead.
+
+    Args:
+      condition: A `tf.Tensor` of dtype bool, or any numeric dtype. `condition`
+        must have dtype `bool` when `x` and `y` are provided.
+      x: If provided, a Tensor which is of the same type as `y`, and has a shape
+        broadcastable with `condition` and `y`.
+      y: If provided, a Tensor which is of the same type as `x`, and has a shape
+        broadcastable with `condition` and `x`.
+      name: A name of the operation (optional).
+
+    Returns:
+      If `x` and `y` are provided:
+        A `Tensor` with the same type as `x` and `y`, and shape that
+        is broadcast from `condition`, `x`, and `y`.
+      Otherwise, a `Tensor` with shape `[tf.math.count_nonzero(condition),
+      tf.rank(condition)]`.
+
+    Raises:
+      ValueError: When exactly one of `x` or `y` is non-None, or the shapes
+        are not all broadcastable.
+    """
+    ...
 def gather_nd(
     params: TensorCompatible,
     indices: UIntTensorCompatible,
     batch_dims: UIntTensorCompatible = 0,
     name: str | None = None,
     bad_indices_policy: Literal["", "DEFAULT", "ERROR", "IGNORE"] = "",
-) -> Tensor: ...
+) -> Tensor:
+    """
+    Gather slices from `params` into a Tensor with shape specified by `indices`.
+
+    `indices` is a `Tensor` of indices into `params`. The index vectors are
+    arranged along the last axis of `indices`.
+
+    This is similar to `tf.gather`, in which `indices` defines slices into the
+    first dimension of `params`. In `tf.gather_nd`, `indices` defines slices into
+    the first `N` dimensions of `params`, where `N = indices.shape[-1]`.
+
+    ## Gathering scalars
+
+    In the simplest case the vectors in `indices` index the full rank of `params`:
+
+    >>> tf.gather_nd(
+    ...     indices=[[0, 0],
+    ...              [1, 1]],
+    ...     params = [['a', 'b'],
+    ...               ['c', 'd']]).numpy()
+    array([b'a', b'd'], dtype=object)
+
+    In this case the result has 1-axis fewer than `indices`, and each index vector
+    is replaced by the scalar indexed from `params`.
+
+    In this case the shape relationship is:
+
+    ```
+    index_depth = indices.shape[-1]
+    assert index_depth == params.shape.rank
+    result_shape = indices.shape[:-1]
+    ```
+
+    If `indices` has a rank of `K`, it is helpful to think `indices` as a
+    (K-1)-dimensional tensor of indices into `params`.
+
+    ## Gathering slices
+
+    If the index vectors do not index the full rank of `params` then each location
+    in the result contains a slice of params. This example collects rows from a
+    matrix:
+
+    >>> tf.gather_nd(
+    ...     indices = [[1],
+    ...                [0]],
+    ...     params = [['a', 'b', 'c'],
+    ...               ['d', 'e', 'f']]).numpy()
+    array([[b'd', b'e', b'f'],
+           [b'a', b'b', b'c']], dtype=object)
+
+    Here `indices` contains `[2]` index vectors, each with a length of `1`.
+    The index vectors each refer to rows of the `params` matrix. Each
+    row has a shape of `[3]` so the output shape is `[2, 3]`.
+
+    In this case, the relationship between the shapes is:
+
+    ```
+    index_depth = indices.shape[-1]
+    outer_shape = indices.shape[:-1]
+    assert index_depth <= params.shape.rank
+    inner_shape = params.shape[index_depth:]
+    output_shape = outer_shape + inner_shape
+    ```
+
+    It is helpful to think of the results in this case as tensors-of-tensors.
+    The shape of the outer tensor is set by the leading dimensions of `indices`.
+    While the shape of the inner tensors is the shape of a single slice.
+
+    ## Batches
+
+    Additionally, both `params` and `indices` can have `M` leading batch
+    dimensions that exactly match. In this case `batch_dims` must be set to `M`.
+
+    For example, to collect one row from each of a batch of matrices you could
+    set the leading elements of the index vectors to be their location in the
+    batch:
+
+    >>> tf.gather_nd(
+    ...     indices = [[0, 1],
+    ...                [1, 0],
+    ...                [2, 4],
+    ...                [3, 2],
+    ...                [4, 1]],
+    ...     params=tf.zeros([5, 7, 3])).shape.as_list()
+    [5, 3]
+
+    The `batch_dims` argument lets you omit those leading location dimensions
+    from the index:
+
+    >>> tf.gather_nd(
+    ...     batch_dims=1,
+    ...     indices = [[1],
+    ...                [0],
+    ...                [4],
+    ...                [2],
+    ...                [1]],
+    ...     params=tf.zeros([5, 7, 3])).shape.as_list()
+    [5, 3]
+
+    This is equivalent to caling a separate `gather_nd` for each location in the
+    batch dimensions.
+
+
+    >>> params=tf.zeros([5, 7, 3])
+    >>> indices=tf.zeros([5, 1])
+    >>> batch_dims = 1
+    >>>
+    >>> index_depth = indices.shape[-1]
+    >>> batch_shape = indices.shape[:batch_dims]
+    >>> assert params.shape[:batch_dims] == batch_shape
+    >>> outer_shape = indices.shape[batch_dims:-1]
+    >>> assert index_depth <= params.shape.rank
+    >>> inner_shape = params.shape[batch_dims + index_depth:]
+    >>> output_shape = batch_shape + outer_shape + inner_shape
+    >>> output_shape.as_list()
+    [5, 3]
+
+    ### More examples
+
+    Indexing into a 3-tensor:
+
+    >>> tf.gather_nd(
+    ...     indices = [[1]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[b'a1', b'b1'],
+            [b'c1', b'd1']]], dtype=object)
+
+
+
+    >>> tf.gather_nd(
+    ...     indices = [[0, 1], [1, 0]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[b'c0', b'd0'],
+           [b'a1', b'b1']], dtype=object)
+
+
+    >>> tf.gather_nd(
+    ...     indices = [[0, 0, 1], [1, 0, 1]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([b'b0', b'b1'], dtype=object)
+
+    The examples below are for the case when only indices have leading extra
+    dimensions. If both 'params' and 'indices' have leading batch dimensions, use
+    the 'batch_dims' parameter to run gather_nd in batch mode.
+
+    Batched indexing into a matrix:
+
+    >>> tf.gather_nd(
+    ...     indices = [[[0, 0]], [[0, 1]]],
+    ...     params = [['a', 'b'], ['c', 'd']]).numpy()
+    array([[b'a'],
+           [b'b']], dtype=object)
+
+
+
+    Batched slice indexing into a matrix:
+
+    >>> tf.gather_nd(
+    ...     indices = [[[1]], [[0]]],
+    ...     params = [['a', 'b'], ['c', 'd']]).numpy()
+    array([[[b'c', b'd']],
+           [[b'a', b'b']]], dtype=object)
+
+
+    Batched indexing into a 3-tensor:
+
+    >>> tf.gather_nd(
+    ...     indices = [[[1]], [[0]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[[b'a1', b'b1'],
+             [b'c1', b'd1']]],
+           [[[b'a0', b'b0'],
+             [b'c0', b'd0']]]], dtype=object)
+
+
+    >>> tf.gather_nd(
+    ...     indices = [[[0, 1], [1, 0]], [[0, 0], [1, 1]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[b'c0', b'd0'],
+            [b'a1', b'b1']],
+           [[b'a0', b'b0'],
+            [b'c1', b'd1']]], dtype=object)
+
+    >>> tf.gather_nd(
+    ...     indices = [[[0, 0, 1], [1, 0, 1]], [[0, 1, 1], [1, 1, 0]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[b'b0', b'b1'],
+           [b'd0', b'c1']], dtype=object)
+
+
+    Examples with batched 'params' and 'indices':
+
+    >>> tf.gather_nd(
+    ...     batch_dims = 1,
+    ...     indices = [[1],
+    ...                [0]],
+    ...     params = [[['a0', 'b0'],
+    ...                ['c0', 'd0']],
+    ...               [['a1', 'b1'],
+    ...                ['c1', 'd1']]]).numpy()
+    array([[b'c0', b'd0'],
+           [b'a1', b'b1']], dtype=object)
+
+
+    >>> tf.gather_nd(
+    ...     batch_dims = 1,
+    ...     indices = [[[1]], [[0]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[b'c0', b'd0']],
+           [[b'a1', b'b1']]], dtype=object)
+
+    >>> tf.gather_nd(
+    ...     batch_dims = 1,
+    ...     indices = [[[1, 0]], [[0, 1]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[b'c0'],
+           [b'b1']], dtype=object)
+
+
+    See also `tf.gather`.
+
+    Args:
+      params: A `Tensor`. The tensor from which to gather values.
+      indices: A `Tensor`. Must be one of the following types: `int32`, `int64`.
+        Index tensor.
+      name: A name for the operation (optional).
+      batch_dims: An integer or a scalar 'Tensor'. The number of batch dimensions.
+      bad_indices_policy: A string. If `""` or `"DEFAULT"`, the default behavior
+        is used (error on CPU and ignore on GPU). If `"IGNORE"`, the bad indices
+        are ignored and 0 is stored in the corresponding output value. If
+        `"ERROR"`, an error is raised. Accelerators generally don't support
+        `"ERROR"`.
+
+    Returns:
+      A `Tensor`. Has the same type as `params`.
+    """
+    ...
 def __getattr__(name: str) -> Incomplete: ...

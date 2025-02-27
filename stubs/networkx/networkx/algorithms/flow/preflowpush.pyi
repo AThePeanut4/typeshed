@@ -1,3 +1,5 @@
+"""Highest-label preflow-push algorithm for maximum flow problems."""
+
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
