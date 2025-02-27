@@ -2,106 +2,15 @@ from _typeshed import Incomplete
 from collections.abc import Generator, Mapping, MutableSet, Reversible
 
 from networkx.classes.digraph import DiGraph
-from networkx.classes.graph import _Node
+from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
 __all__ = ["check_planarity", "is_planar", "PlanarEmbedding"]
 
 @_dispatchable
-def is_planar(G) -> bool:
-    """
-    Returns True if and only if `G` is planar.
-
-    A graph is *planar* iff it can be drawn in a plane without
-    any edge intersections.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    Returns
-    -------
-    bool
-       Whether the graph is planar.
-
-    Examples
-    --------
-    >>> G = nx.Graph([(0, 1), (0, 2)])
-    >>> nx.is_planar(G)
-    True
-    >>> nx.is_planar(nx.complete_graph(5))
-    False
-
-    See Also
-    --------
-    check_planarity :
-        Check if graph is planar *and* return a `PlanarEmbedding` instance if True.
-    """
-    ...
+def is_planar(G: Graph[_Node]) -> bool: ...
 @_dispatchable
-def check_planarity(G, counterexample: bool = False):
-    """
-    Check if a graph is planar and return a counterexample or an embedding.
-
-    A graph is planar iff it can be drawn in a plane without
-    any edge intersections.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-    counterexample : bool
-        A Kuratowski subgraph (to proof non planarity) is only returned if set
-        to true.
-
-    Returns
-    -------
-    (is_planar, certificate) : (bool, NetworkX graph) tuple
-        is_planar is true if the graph is planar.
-        If the graph is planar `certificate` is a PlanarEmbedding
-        otherwise it is a Kuratowski subgraph.
-
-    Examples
-    --------
-    >>> G = nx.Graph([(0, 1), (0, 2)])
-    >>> is_planar, P = nx.check_planarity(G)
-    >>> print(is_planar)
-    True
-
-    When `G` is planar, a `PlanarEmbedding` instance is returned:
-
-    >>> P.get_data()
-    {0: [1, 2], 1: [0], 2: [0]}
-
-    Notes
-    -----
-    A (combinatorial) embedding consists of cyclic orderings of the incident
-    edges at each vertex. Given such an embedding there are multiple approaches
-    discussed in literature to drawing the graph (subject to various
-    constraints, e.g. integer coordinates), see e.g. [2].
-
-    The planarity check algorithm and extraction of the combinatorial embedding
-    is based on the Left-Right Planarity Test [1].
-
-    A counterexample is only generated if the corresponding parameter is set,
-    because the complexity of the counterexample generation is higher.
-
-    See also
-    --------
-    is_planar :
-        Check for planarity without creating a `PlanarEmbedding` or counterexample.
-
-    References
-    ----------
-    .. [1] Ulrik Brandes:
-        The Left-Right Planarity Test
-        2009
-        http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.217.9208
-    .. [2] Takao Nishizeki, Md Saidur Rahman:
-        Planar graph drawing
-        Lecture Notes Series on Computing: Volume 12
-        2004
-    """
-    ...
+def check_planarity(G: Graph[_Node], counterexample: bool = False): ...
 
 class Interval:
     """
@@ -113,6 +22,7 @@ class Interval:
     """
     low: Incomplete
     high: Incomplete
+
     def __init__(self, low: Incomplete | None = None, high: Incomplete | None = None) -> None: ...
     def empty(self):
         """Check if the interval is empty"""
@@ -133,6 +43,7 @@ class ConflictPair:
     """
     left: Incomplete
     right: Incomplete
+
     def __init__(self, left=..., right=...) -> None: ...
     def swap(self) -> None:
         """Swap left and right intervals"""
@@ -161,6 +72,7 @@ class LRPlanarity:
     left_ref: Incomplete
     right_ref: Incomplete
     embedding: Incomplete
+
     def __init__(self, G) -> None: ...
     def lr_planarity(self):
         """

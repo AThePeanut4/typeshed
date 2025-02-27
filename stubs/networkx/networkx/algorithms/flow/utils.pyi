@@ -17,6 +17,7 @@ class Level:
     """Active and inactive nodes in a level."""
     active: Incomplete
     inactive: Incomplete
+
     def __init__(self) -> None: ...
 
 class GlobalRelabelThreshold:

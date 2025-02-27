@@ -3254,28 +3254,13 @@ def softplus(features: TensorCompatible, name: str | None = None) -> Tensor:
     """
     ...
 @overload
-def softplus(features: RaggedTensor, name: str | None = None) -> RaggedTensor:
-    """
-    Computes elementwise softplus: `softplus(x) = log(exp(x) + 1)`.
-
-    `softplus` is a smooth approximation of `relu`. Like `relu`, `softplus` always
-    takes on positive values.
-
-    <img style="width:100%" src="https://www.tensorflow.org/images/softplus.png">
-
-    Example:
-
-    >>> import tensorflow as tf
-    >>> tf.math.softplus(tf.range(0, 2, dtype=tf.float32)).numpy()
-    array([0.6931472, 1.3132616], dtype=float32)
-
-    Args:
-      features: `Tensor`
-      name: Optional: name to associate with this operation.
-    Returns:
-      `Tensor`
-    """
-    ...
+def softplus(features: RaggedTensor, name: str | None = None) -> RaggedTensor: ...
+@overload
+def round(x: TensorCompatible, name: str | None = None) -> Tensor: ...
+@overload
+def round(x: SparseTensor, name: str | None = None) -> SparseTensor: ...
+@overload
+def round(x: RaggedTensor, name: str | None = None) -> RaggedTensor: ...
 
 # Depending on the method axis is either a rank 0 tensor or a rank 0/1 tensor.
 def reduce_mean(

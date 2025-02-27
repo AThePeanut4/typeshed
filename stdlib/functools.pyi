@@ -3,7 +3,7 @@
 import sys
 import types
 from _typeshed import SupportsAllComparisons, SupportsItems
-from collections.abc import Callable, Hashable, Iterable, Sequence, Sized
+from collections.abc import Callable, Hashable, Iterable, Sized
 from typing import Any, Generic, Literal, NamedTuple, TypedDict, TypeVar, final, overload
 from typing_extensions import ParamSpec, Self, TypeAlias
 
@@ -183,65 +183,27 @@ if sys.version_info >= (3, 12):
     def update_wrapper(
         wrapper: Callable[_PWrapper, _RWrapper],
         wrapped: Callable[_PWrapped, _RWrapped],
-        assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
-        updated: Sequence[str] = ("__dict__",),
-    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]:
-        """
-        Update a wrapper function to look like the wrapped function
-
-        wrapper is the function to be updated
-        wrapped is the original function
-        assigned is a tuple naming the attributes assigned directly
-        from the wrapped function to the wrapper function (defaults to
-        functools.WRAPPER_ASSIGNMENTS)
-        updated is a tuple naming the attributes of the wrapper that
-        are updated with the corresponding attribute from the wrapped
-        function (defaults to functools.WRAPPER_UPDATES)
-        """
-        ...
+        assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
+        updated: Iterable[str] = ("__dict__",),
+    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
     def wraps(
         wrapped: Callable[_PWrapped, _RWrapped],
-        assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
-        updated: Sequence[str] = ("__dict__",),
-    ) -> _Wrapper[_PWrapped, _RWrapped]:
-        """
-        Decorator factory to apply update_wrapper() to a wrapper function
-
-        Returns a decorator that invokes update_wrapper() with the decorated
-        function as the wrapper argument and the arguments to wraps() as the
-        remaining arguments. Default arguments are as for update_wrapper().
-        This is a convenience function to simplify applying partial() to
-        update_wrapper().
-        """
-        ...
+        assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
+        updated: Iterable[str] = ("__dict__",),
+    ) -> _Wrapper[_PWrapped, _RWrapped]: ...
 
 else:
     def update_wrapper(
         wrapper: Callable[_PWrapper, _RWrapper],
         wrapped: Callable[_PWrapped, _RWrapped],
-        assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
-        updated: Sequence[str] = ("__dict__",),
-    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]:
-        """
-        Update a wrapper function to look like the wrapped function
-
-        wrapper is the function to be updated
-        wrapped is the original function
-        assigned is a tuple naming the attributes assigned directly
-        from the wrapped function to the wrapper function (defaults to
-        functools.WRAPPER_ASSIGNMENTS)
-        updated is a tuple naming the attributes of the wrapper that
-        are updated with the corresponding attribute from the wrapped
-        function (defaults to functools.WRAPPER_UPDATES)
-        """
-        ...
+        assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
+        updated: Iterable[str] = ("__dict__",),
+    ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
     def wraps(
         wrapped: Callable[_PWrapped, _RWrapped],
-        assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
-        updated: Sequence[str] = ("__dict__",),
-    ) -> _Wrapper[_PWrapped, _RWrapped]:
-        """
-        Decorator factory to apply update_wrapper() to a wrapper function
+        assigned: Iterable[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
+        updated: Iterable[str] = ("__dict__",),
+    ) -> _Wrapper[_PWrapped, _RWrapped]: ...
 
         Returns a decorator that invokes update_wrapper() with the decorated
         function as the wrapper argument and the arguments to wraps() as the
