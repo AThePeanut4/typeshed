@@ -17,7 +17,9 @@ class Name:
         additional: str | list[str] = "",
         prefix: str | list[str] = "",
         suffix: str | list[str] = "",
-    ) -> None: ...
+    ) -> None:
+        """Each name attribute can be a string or a list of strings."""
+        ...
     @staticmethod
     def toString(val):
         """Turn a string or array value into a string."""
@@ -41,7 +43,9 @@ class Address:
         country: str | list[str] = "",
         box: str | list[str] = "",
         extended: str | list[str] = "",
-    ) -> None: ...
+    ) -> None:
+        """Each name attribute can be a string or a list of strings."""
+        ...
     @staticmethod
     def toString(val, join_char: str = "\n"):
         """Turn a string or array value into a string."""

@@ -1,3 +1,5 @@
+"""Implementation of the DOM Level 3 'LS-Load' feature."""
+
 from _typeshed import SupportsRead
 from typing import Any, Literal, NoReturn
 from xml.dom.minidom import Document, Node, _DOMErrorHandler

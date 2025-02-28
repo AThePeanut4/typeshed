@@ -604,18 +604,57 @@ class tqdm(Comparable, Generic[_T]):
         ...
     def moveto(self, n) -> None: ...
     @property
-    def format_dict(self) -> MutableMapping[str, Any]: ...
-    def display(self, msg: str | None = None, pos: int | None = None) -> None: ...
+    def format_dict(self) -> MutableMapping[str, Any]:
+        """Public API for read-only member access."""
+        ...
+    def display(self, msg: str | None = None, pos: int | None = None) -> None:
+        """
+        Use `self.sp` to display `msg` in the specified `pos`.
+
+        Consider overloading this function when inheriting to use e.g.:
+        `self.some_frontend(**self.format_dict)` instead of `self.sp`.
+
+        Parameters
+        ----------
+        msg  : str, optional. What to display (default: `repr(self)`).
+        pos  : int, optional. Position to `moveto`
+          (default: `abs(self.pos)`).
+        """
+        ...
     @overload
     @classmethod
     def wrapattr(
         cls, stream: SupportsRead[_U], method: Literal["read"], total: float | None = None, bytes: bool = True, **tqdm_kwargs
-    ) -> contextlib._GeneratorContextManager[SupportsRead[_U]]: ...
+    ) -> contextlib._GeneratorContextManager[SupportsRead[_U]]:
+        """
+        stream  : file-like object.
+        method  : str, "read" or "write". The result of `read()` and
+            the first argument of `write()` should have a `len()`.
+
+        >>> with tqdm.wrapattr(file_obj, "read", total=file_obj.size) as fobj:
+        ...     while True:
+        ...         chunk = fobj.read(chunk_size)
+        ...         if not chunk:
+        ...             break
+        """
+        ...
     @overload
     @classmethod
     def wrapattr(
         cls, stream: SupportsWrite[_U], method: Literal["write"], total: float | None = None, bytes: bool = True, **tqdm_kwargs
-    ) -> contextlib._GeneratorContextManager[SupportsWrite[_U]]: ...
+    ) -> contextlib._GeneratorContextManager[SupportsWrite[_U]]:
+        """
+        stream  : file-like object.
+        method  : str, "read" or "write". The result of `read()` and
+            the first argument of `write()` should have a `len()`.
+
+        >>> with tqdm.wrapattr(file_obj, "read", total=file_obj.size) as fobj:
+        ...     while True:
+        ...         chunk = fobj.read(chunk_size)
+        ...         if not chunk:
+        ...             break
+        """
+        ...
 
 @overload
 def trange(

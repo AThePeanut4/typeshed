@@ -155,7 +155,19 @@ if sys.version_info >= (3, 11):
 
     def file_digest(
         fileobj: _BytesIOLike | _FileDigestFileObj, digest: str | Callable[[], _HashObject], /, *, _bufsize: int = 262144
-    ) -> HASH: ...
+    ) -> HASH:
+        """
+        Hash the contents of a file-like object. Returns a digest object.
+
+        *fileobj* must be a file-like object opened for reading in binary mode.
+        It accepts file objects from open(), io.BytesIO(), and SocketIO objects.
+        The function may bypass Python's I/O and use the file descriptor *fileno*
+        directly.
+
+        *digest* must either be a hash algorithm name as a *str*, a hash
+        constructor, or a callable that returns a hash object.
+        """
+        ...
 
 # Legacy typing-only alias
 _Hash = HASH

@@ -40,7 +40,13 @@ if sys.version_info >= (3, 10):
     class FileReader(abc.TraversableResources):
         path: pathlib.Path
         def __init__(self, loader: FileLoader) -> None: ...
-        def resource_path(self, resource: StrPath) -> str: ...
+        def resource_path(self, resource: StrPath) -> str:
+            """
+            Return the file system path to prevent
+            `resources.path()` from creating a temporary
+            copy.
+            """
+            ...
         def files(self) -> pathlib.Path: ...
 
     class ZipReader(abc.TraversableResources):
@@ -87,5 +93,11 @@ if sys.version_info >= (3, 10):
     class NamespaceReader(abc.TraversableResources):
         path: MultiplexedPath
         def __init__(self, namespace_path: Iterable[str]) -> None: ...
-        def resource_path(self, resource: str) -> str: ...
+        def resource_path(self, resource: str) -> str:
+            """
+            Return the file system path to prevent
+            `resources.path()` from creating a temporary
+            copy.
+            """
+            ...
         def files(self) -> MultiplexedPath: ...
