@@ -53,6 +53,7 @@ import sys
 from _blake2 import blake2b as blake2b, blake2s as blake2s
 from _hashlib import (
     HASH,
+    _HashObject,
     openssl_md5 as md5,
     openssl_sha1 as sha1,
     openssl_sha224 as sha224,
@@ -153,20 +154,8 @@ if sys.version_info >= (3, 11):
         def readable(self) -> bool: ...
 
     def file_digest(
-        fileobj: _BytesIOLike | _FileDigestFileObj, digest: str | Callable[[], HASH], /, *, _bufsize: int = 262144
-    ) -> HASH:
-        """
-        Hash the contents of a file-like object. Returns a digest object.
-
-        *fileobj* must be a file-like object opened for reading in binary mode.
-        It accepts file objects from open(), io.BytesIO(), and SocketIO objects.
-        The function may bypass Python's I/O and use the file descriptor *fileno*
-        directly.
-
-        *digest* must either be a hash algorithm name as a *str*, a hash
-        constructor, or a callable that returns a hash object.
-        """
-        ...
+        fileobj: _BytesIOLike | _FileDigestFileObj, digest: str | Callable[[], _HashObject], /, *, _bufsize: int = 262144
+    ) -> HASH: ...
 
 # Legacy typing-only alias
 _Hash = HASH

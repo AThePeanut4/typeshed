@@ -10,9 +10,14 @@ class Name:
     additional: Incomplete
     prefix: Incomplete
     suffix: Incomplete
-    def __init__(self, family: str = "", given: str = "", additional: str = "", prefix: str = "", suffix: str = "") -> None:
-        """Each name attribute can be a string or a list of strings."""
-        ...
+    def __init__(
+        self,
+        family: str | list[str] = "",
+        given: str | list[str] = "",
+        additional: str | list[str] = "",
+        prefix: str | list[str] = "",
+        suffix: str | list[str] = "",
+    ) -> None: ...
     @staticmethod
     def toString(val):
         """Turn a string or array value into a string."""
@@ -29,16 +34,14 @@ class Address:
     country: Incomplete
     def __init__(
         self,
-        street: str = "",
-        city: str = "",
-        region: str = "",
-        code: str = "",
-        country: str = "",
-        box: str = "",
-        extended: str = "",
-    ) -> None:
-        """Each name attribute can be a string or a list of strings."""
-        ...
+        street: str | list[str] = "",
+        city: str | list[str] = "",
+        region: str | list[str] = "",
+        code: str | list[str] = "",
+        country: str | list[str] = "",
+        box: str | list[str] = "",
+        extended: str | list[str] = "",
+    ) -> None: ...
     @staticmethod
     def toString(val, join_char: str = "\n"):
         """Turn a string or array value into a string."""

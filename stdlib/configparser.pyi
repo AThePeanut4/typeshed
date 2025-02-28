@@ -223,6 +223,19 @@ else:
         "MAX_INTERPOLATION_DEPTH",
     ]
 
+if sys.version_info >= (3, 13):
+    class _UNNAMED_SECTION: ...
+    UNNAMED_SECTION: _UNNAMED_SECTION
+
+    _SectionName: TypeAlias = str | _UNNAMED_SECTION
+    # A list of sections can only include an unnamed section if the parser was initialized with
+    # allow_unnamed_section=True. Any prevents users from having to use explicit
+    # type checks if allow_unnamed_section is False (the default).
+    _SectionNameList: TypeAlias = list[Any]
+else:
+    _SectionName: TypeAlias = str
+    _SectionNameList: TypeAlias = list[str]
+
 _Section: TypeAlias = Mapping[str, str]
 _Parser: TypeAlias = MutableMapping[str, _Section]
 _ConverterCallback: TypeAlias = Callable[[str], Any]
@@ -233,11 +246,10 @@ DEFAULTSECT: Final = "DEFAULT"
 MAX_INTERPOLATION_DEPTH: Final = 10
 
 class Interpolation:
-    """Dummy interpolation that passes the value through with no changes."""
-    def before_get(self, parser: _Parser, section: str, option: str, value: str, defaults: _Section) -> str: ...
-    def before_set(self, parser: _Parser, section: str, option: str, value: str) -> str: ...
-    def before_read(self, parser: _Parser, section: str, option: str, value: str) -> str: ...
-    def before_write(self, parser: _Parser, section: str, option: str, value: str) -> str: ...
+    def before_get(self, parser: _Parser, section: _SectionName, option: str, value: str, defaults: _Section) -> str: ...
+    def before_set(self, parser: _Parser, section: _SectionName, option: str, value: str) -> str: ...
+    def before_read(self, parser: _Parser, section: _SectionName, option: str, value: str) -> str: ...
+    def before_write(self, parser: _Parser, section: _SectionName, option: str, value: str) -> str: ...
 
 class BasicInterpolation(Interpolation):
     """
@@ -265,11 +277,7 @@ class ExtendedInterpolation(Interpolation):
 
 if sys.version_info < (3, 13):
     class LegacyInterpolation(Interpolation):
-        """
-        Deprecated interpolation used in old versions of ConfigParser.
-        Use BasicInterpolation or ExtendedInterpolation instead.
-        """
-        def before_get(self, parser: _Parser, section: str, option: str, value: str, vars: _Section) -> str: ...
+        def before_get(self, parser: _Parser, section: _SectionName, option: str, value: str, vars: _Section) -> str: ...
 
 class RawConfigParser(_Parser):
     """ConfigParser that does not do interpolation."""
@@ -393,76 +401,15 @@ class RawConfigParser(_Parser):
     def __iter__(self) -> Iterator[str]: ...
     def __contains__(self, key: object) -> bool: ...
     def defaults(self) -> _Section: ...
-    def sections(self) -> list[str]:
-        """Return a list of section names, excluding [DEFAULT]"""
-        ...
-    def add_section(self, section: str) -> None:
-        """
-        Create a new section in the configuration.
-
-        Raise DuplicateSectionError if a section by the specified name
-        already exists. Raise ValueError if name is DEFAULT.
-        """
-        ...
-    def has_section(self, section: str) -> bool:
-        """
-        Indicate whether the named section is present in the configuration.
-
-        The DEFAULT section is not acknowledged.
-        """
-        ...
-    def options(self, section: str) -> list[str]:
-        """Return a list of option names for the given section name."""
-        ...
-    def has_option(self, section: str, option: str) -> bool:
-        """
-        Check for the existence of a given option in a given section.
-        If the specified `section` is None or an empty string, DEFAULT is
-        assumed. If the specified `section` does not exist, returns False.
-        """
-        ...
-    def read(self, filenames: StrOrBytesPath | Iterable[StrOrBytesPath], encoding: str | None = None) -> list[str]:
-        """
-        Read and parse a filename or an iterable of filenames.
-
-        Files that cannot be opened are silently ignored; this is
-        designed so that you can specify an iterable of potential
-        configuration file locations (e.g. current directory, user's
-        home directory, systemwide directory), and all existing
-        configuration files in the iterable will be read.  A single
-        filename may also be given.
-
-        Return list of successfully read files.
-        """
-        ...
-    def read_file(self, f: Iterable[str], source: str | None = None) -> None:
-        """
-        Like read() but the argument must be a file-like object.
-
-        The `f` argument must be iterable, returning one line at a time.
-        Optional second argument is the `source` specifying the name of the
-        file being read. If not given, it is taken from f.name. If `f` has no
-        `name` attribute, `<???>` is used.
-        """
-        ...
-    def read_string(self, string: str, source: str = "<string>") -> None:
-        """Read configuration from a given string."""
-        ...
-    def read_dict(self, dictionary: Mapping[str, Mapping[str, Any]], source: str = "<dict>") -> None:
-        """
-        Read configuration from a dictionary.
-
-        Keys are section names, values are dictionaries with keys and values
-        that should be present in the section. If the used dictionary type
-        preserves order, sections and their keys will be added in order.
-
-        All types held in the dictionary are converted to strings during
-        reading, including section names, option names and keys.
-
-        Optional second argument is the `source` specifying the name of the
-        dictionary being read.
-        """
-        ...
+    def sections(self) -> _SectionNameList: ...
+    def add_section(self, section: _SectionName) -> None: ...
+    def has_section(self, section: _SectionName) -> bool: ...
+    def options(self, section: _SectionName) -> list[str]: ...
+    def has_option(self, section: _SectionName, option: str) -> bool: ...
+    def read(self, filenames: StrOrBytesPath | Iterable[StrOrBytesPath], encoding: str | None = None) -> list[str]: ...
+    def read_file(self, f: Iterable[str], source: str | None = None) -> None: ...
+    def read_string(self, string: str, source: str = "<string>") -> None: ...
+    def read_dict(self, dictionary: Mapping[str, Mapping[str, Any]], source: str = "<dict>") -> None: ...
     if sys.version_info < (3, 12):
         def readfp(self, fp: Iterable[str], filename: str | None = None) -> None:
             """Deprecated, use read_file instead."""
@@ -470,26 +417,26 @@ class RawConfigParser(_Parser):
     # These get* methods are partially applied (with the same names) in
     # SectionProxy; the stubs should be kept updated together
     @overload
-    def getint(self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None) -> int: ...
+    def getint(self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None) -> int: ...
     @overload
     def getint(
-        self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T = ...
+        self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T = ...
     ) -> int | _T: ...
     @overload
-    def getfloat(self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None) -> float: ...
+    def getfloat(self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None) -> float: ...
     @overload
     def getfloat(
-        self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T = ...
+        self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T = ...
     ) -> float | _T: ...
     @overload
-    def getboolean(self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None) -> bool: ...
+    def getboolean(self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None) -> bool: ...
     @overload
     def getboolean(
-        self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T = ...
+        self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T = ...
     ) -> bool | _T: ...
     def _get_conv(
         self,
-        section: str,
+        section: _SectionName,
         option: str,
         conv: Callable[[str], _T],
         *,
@@ -499,43 +446,11 @@ class RawConfigParser(_Parser):
     ) -> _T: ...
     # This is incompatible with MutableMapping so we ignore the type
     @overload  # type: ignore[override]
-    def get(self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None) -> str | MaybeNone:
-        """
-        Get an option value for a given section.
-
-        If `vars` is provided, it must be a dictionary. The option is looked up
-        in `vars` (if provided), `section`, and in `DEFAULTSECT` in that order.
-        If the key is not found and `fallback` is provided, it is used as
-        a fallback value. `None` can be provided as a `fallback` value.
-
-        If interpolation is enabled and the optional argument `raw` is False,
-        all interpolations are expanded in the return values.
-
-        Arguments `raw`, `vars`, and `fallback` are keyword only.
-
-        The section DEFAULT is special.
-        """
-        ...
+    def get(self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None) -> str | MaybeNone: ...
     @overload
     def get(
-        self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T
-    ) -> str | _T | MaybeNone:
-        """
-        Get an option value for a given section.
-
-        If `vars` is provided, it must be a dictionary. The option is looked up
-        in `vars` (if provided), `section`, and in `DEFAULTSECT` in that order.
-        If the key is not found and `fallback` is provided, it is used as
-        a fallback value. `None` can be provided as a `fallback` value.
-
-        If interpolation is enabled and the optional argument `raw` is False,
-        all interpolations are expanded in the return values.
-
-        Arguments `raw`, `vars`, and `fallback` are keyword only.
-
-        The section DEFAULT is special.
-        """
-        ...
+        self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T
+    ) -> str | _T | MaybeNone: ...
     @overload
     def items(self, *, raw: bool = False, vars: _Section | None = None) -> ItemsView[str, SectionProxy]:
         """
@@ -551,39 +466,11 @@ class RawConfigParser(_Parser):
         """
         ...
     @overload
-    def items(self, section: str, raw: bool = False, vars: _Section | None = None) -> list[tuple[str, str]]:
-        """
-        Return a list of (name, value) tuples for each option in a section.
-
-        All % interpolations are expanded in the return values, based on the
-        defaults passed into the constructor, unless the optional argument
-        `raw` is true.  Additional substitutions may be provided using the
-        `vars` argument, which must be a dictionary whose contents overrides
-        any pre-existing defaults.
-
-        The section DEFAULT is special.
-        """
-        ...
-    def set(self, section: str, option: str, value: str | None = None) -> None:
-        """Set an option."""
-        ...
-    def write(self, fp: SupportsWrite[str], space_around_delimiters: bool = True) -> None:
-        """
-        Write an .ini-format representation of the configuration state.
-
-        If `space_around_delimiters` is True (the default), delimiters
-        between keys and values are surrounded by spaces.
-
-        Please note that comments in the original configuration file are not
-        preserved when writing the configuration back.
-        """
-        ...
-    def remove_option(self, section: str, option: str) -> bool:
-        """Remove an option."""
-        ...
-    def remove_section(self, section: str) -> bool:
-        """Remove a file section."""
-        ...
+    def items(self, section: _SectionName, raw: bool = False, vars: _Section | None = None) -> list[tuple[str, str]]: ...
+    def set(self, section: _SectionName, option: str, value: str | None = None) -> None: ...
+    def write(self, fp: SupportsWrite[str], space_around_delimiters: bool = True) -> None: ...
+    def remove_option(self, section: _SectionName, option: str) -> bool: ...
+    def remove_section(self, section: _SectionName) -> bool: ...
     def optionxform(self, optionstr: str) -> str: ...
     @property
     def converters(self) -> ConverterMapping: ...
@@ -592,41 +479,11 @@ class ConfigParser(RawConfigParser):
     """ConfigParser implementing interpolation."""
     # This is incompatible with MutableMapping so we ignore the type
     @overload  # type: ignore[override]
-    def get(self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None) -> str:
-        """
-        Get an option value for a given section.
-
-        If `vars` is provided, it must be a dictionary. The option is looked up
-        in `vars` (if provided), `section`, and in `DEFAULTSECT` in that order.
-        If the key is not found and `fallback` is provided, it is used as
-        a fallback value. `None` can be provided as a `fallback` value.
-
-        If interpolation is enabled and the optional argument `raw` is False,
-        all interpolations are expanded in the return values.
-
-        Arguments `raw`, `vars`, and `fallback` are keyword only.
-
-        The section DEFAULT is special.
-        """
-        ...
+    def get(self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None) -> str: ...
     @overload
-    def get(self, section: str, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T) -> str | _T:
-        """
-        Get an option value for a given section.
-
-        If `vars` is provided, it must be a dictionary. The option is looked up
-        in `vars` (if provided), `section`, and in `DEFAULTSECT` in that order.
-        If the key is not found and `fallback` is provided, it is used as
-        a fallback value. `None` can be provided as a `fallback` value.
-
-        If interpolation is enabled and the optional argument `raw` is False,
-        all interpolations are expanded in the return values.
-
-        Arguments `raw`, `vars`, and `fallback` are keyword only.
-
-        The section DEFAULT is special.
-        """
-        ...
+    def get(
+        self, section: _SectionName, option: str, *, raw: bool = False, vars: _Section | None = None, fallback: _T
+    ) -> str | _T: ...
 
 if sys.version_info < (3, 12):
     class SafeConfigParser(ConfigParser):
@@ -717,56 +574,39 @@ class Error(Exception):
     def __init__(self, msg: str = "") -> None: ...
 
 class NoSectionError(Error):
-    """Raised when no section matches a requested option."""
-    section: str
-    def __init__(self, section: str) -> None: ...
+    section: _SectionName
+    def __init__(self, section: _SectionName) -> None: ...
 
 class DuplicateSectionError(Error):
-    """
-    Raised when a section is repeated in an input source.
-
-    Possible repetitions that raise this exception are: multiple creation
-    using the API or in strict parsers when a section is found more than once
-    in a single input file, string or dictionary.
-    """
-    section: str
+    section: _SectionName
     source: str | None
     lineno: int | None
-    def __init__(self, section: str, source: str | None = None, lineno: int | None = None) -> None: ...
+    def __init__(self, section: _SectionName, source: str | None = None, lineno: int | None = None) -> None: ...
 
 class DuplicateOptionError(Error):
-    """
-    Raised by strict parsers when an option is repeated in an input source.
-
-    Current implementation raises this exception only when an option is found
-    more than once in a single file, string or dictionary.
-    """
-    section: str
+    section: _SectionName
     option: str
     source: str | None
     lineno: int | None
-    def __init__(self, section: str, option: str, source: str | None = None, lineno: int | None = None) -> None: ...
+    def __init__(self, section: _SectionName, option: str, source: str | None = None, lineno: int | None = None) -> None: ...
 
 class NoOptionError(Error):
-    """A requested option was not found."""
-    section: str
+    section: _SectionName
     option: str
-    def __init__(self, option: str, section: str) -> None: ...
+    def __init__(self, option: str, section: _SectionName) -> None: ...
 
 class InterpolationError(Error):
-    """Base class for interpolation-related exceptions."""
-    section: str
+    section: _SectionName
     option: str
-    def __init__(self, option: str, section: str, msg: str) -> None: ...
+    def __init__(self, option: str, section: _SectionName, msg: str) -> None: ...
 
 class InterpolationDepthError(InterpolationError):
-    """Raised when substitutions are nested too deeply."""
-    def __init__(self, option: str, section: str, rawval: object) -> None: ...
+    def __init__(self, option: str, section: _SectionName, rawval: object) -> None: ...
 
 class InterpolationMissingOptionError(InterpolationError):
     """A string substitution required a setting which was not available."""
     reference: str
-    def __init__(self, option: str, section: str, rawval: object, reference: str) -> None: ...
+    def __init__(self, option: str, section: _SectionName, rawval: object, reference: str) -> None: ...
 
 class InterpolationSyntaxError(InterpolationError):
     """
@@ -798,9 +638,6 @@ class MissingSectionHeaderError(ParsingError):
     def __init__(self, filename: str, lineno: int, line: str) -> None: ...
 
 if sys.version_info >= (3, 13):
-    class _UNNAMED_SECTION: ...
-    UNNAMED_SECTION: _UNNAMED_SECTION
-
     class MultilineContinuationError(ParsingError):
         """Raised when a key without value is followed by continuation line"""
         lineno: int
