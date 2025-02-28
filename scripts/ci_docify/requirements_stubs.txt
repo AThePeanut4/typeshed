@@ -80,6 +80,7 @@ jwcrypto==1.5.*
 inifile==0.4.*
 RPi.GPIO==0.7.*
 nanoid==2.0.0
+dirhash==0.5.*
 fpdf2==2.8.2
 slumber==0.7.*
 pytz==2025.1
