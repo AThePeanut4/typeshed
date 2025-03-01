@@ -666,15 +666,15 @@ class SectionProxy(MutableMapping[str, str]):
     # This is incompatible with MutableMapping so we ignore the type
     @overload  # type: ignore[override]
     def get(
-        self, option: str, *, raw: bool = False, vars: _Section | None = None, _impl: Any | None = None, **kwargs: Any
-    ) -> str | None:
-        """
-        Get an option value.
-
-        Unless `fallback` is provided, `None` will be returned if the option
-        is not found.
-        """
-        ...
+        self,
+        option: str,
+        fallback: None = None,
+        *,
+        raw: bool = False,
+        vars: _Section | None = None,
+        _impl: Any | None = None,
+        **kwargs: Any,  # passed to the underlying parser's get() method
+    ) -> str | None: ...
     @overload
     def get(
         self,
@@ -684,15 +684,8 @@ class SectionProxy(MutableMapping[str, str]):
         raw: bool = False,
         vars: _Section | None = None,
         _impl: Any | None = None,
-        **kwargs: Any,
-    ) -> str | _T:
-        """
-        Get an option value.
-
-        Unless `fallback` is provided, `None` will be returned if the option
-        is not found.
-        """
-        ...
+        **kwargs: Any,  # passed to the underlying parser's get() method
+    ) -> str | _T: ...
     # These are partially-applied version of the methods with the same names in
     # RawConfigParser; the stubs should be kept updated together
     @overload

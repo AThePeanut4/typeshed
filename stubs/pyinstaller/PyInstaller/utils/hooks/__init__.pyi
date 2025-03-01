@@ -441,91 +441,9 @@ def collect_all(
     exclude_datas: Iterable[str] | None = None,
     include_datas: Iterable[str] | None = None,
     on_error: Literal["ignore", "warn once", "warn", "raise"] = "warn once",
-) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[str]]:
-    """
-    Collect everything for a given package name.
-
-    Arguments:
-        package_name:
-            An ``import``-able package name.
-        include_py_files:
-            Forwarded to :func:`collect_data_files`.
-        filter_submodules:
-            Forwarded to :func:`collect_submodules`.
-        exclude_datas:
-            Forwarded to :func:`collect_data_files`.
-        include_datas:
-            Forwarded to :func:`collect_data_files`.
-        on_error:
-            Forwarded onto :func:`collect_submodules`.
-
-    Returns:
-        tuple: A ``(datas, binaries, hiddenimports)`` triplet containing:
-
-        - All data files, raw Python files (if **include_py_files**), and distribution metadata directories (if
-          applicable).
-        - All dynamic libraries as returned by :func:`collect_dynamic_libs`.
-        - All submodules of **package_name**.
-
-    Typical use::
-
-        datas, binaries, hiddenimports = collect_all('my_package_name')
-    """
-    ...
-def collect_entry_point(name: str) -> tuple[tuple[str, str], list[str]]:
-    """
-    Collect modules and metadata for all exporters of a given entry point.
-
-    Args:
-        name:
-            The name of the entry point. Check the documentation for the library that uses the entry point to find
-            its name.
-    Returns:
-        A ``(datas, hiddenimports)`` pair that should be assigned to the ``datas`` and ``hiddenimports``, respectively.
-
-    For libraries, such as ``pytest`` or ``keyring``, that rely on plugins to extend their behaviour.
-
-    Examples:
-        Pytest uses an entry point called ``'pytest11'`` for its extensions.
-        To collect all those extensions use::
-
-            datas, hiddenimports = collect_entry_point("pytest11")
-
-        These values may be used in a hook or added to the ``datas`` and ``hiddenimports`` arguments in the ``.spec``
-        file. See :ref:`using spec files`.
-
-    .. versionadded:: 4.3
-    """
-    ...
-def get_hook_config(hook_api: PostGraphAPI, module_name: str, key: str) -> None:
-    """
-    Get user settings for hooks.
-
-    Args:
-        module_name:
-            The module/package for which the key setting belong to.
-        key:
-            A key for the config.
-    Returns:
-        The value for the config. ``None`` if not set.
-
-    The ``get_hook_config`` function will lookup settings in the ``Analysis.hooksconfig`` dict.
-
-    The hook settings can be added to ``.spec`` file in the form of::
-
-        a = Analysis(["my-app.py"],
-            ...
-            hooksconfig = {
-                "gi": {
-                    "icons": ["Adwaita"],
-                    "themes": ["Adwaita"],
-                    "languages": ["en_GB", "zh_CN"],
-                },
-            },
-            ...
-        )
-    """
-    ...
+) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[str]]: ...
+def collect_entry_point(name: str) -> tuple[list[tuple[str, str]], list[str]]: ...
+def get_hook_config(hook_api: PostGraphAPI, module_name: str, key: str) -> None: ...
 def include_or_exclude_file(
     filename: StrOrBytesPath,
     include_list: Iterable[StrOrBytesPath] | None = None,
