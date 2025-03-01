@@ -3178,6 +3178,12 @@ class bool(int):
 
 @final
 class slice(Generic[_StartT_co, _StopT_co, _StepT_co]):
+    """
+    slice(stop)
+    slice(start, stop[, step])
+
+    Create a slice object.  This is used for extended slicing (e.g. a[0:10:2]).
+    """
     @property
     def start(self) -> _StartT_co: ...
     @property

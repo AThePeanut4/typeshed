@@ -320,12 +320,208 @@ class Tensor:
     def __ror__(self, other: TensorCompatible) -> Tensor: ...
     def __eq__(self, other: TensorCompatible) -> Tensor: ...  # type: ignore[override]
     def __ne__(self, other: TensorCompatible) -> Tensor: ...  # type: ignore[override]
-    def __ge__(self, other: TensorCompatible, name: str | None = None) -> Tensor: ...
-    def __gt__(self, other: TensorCompatible, name: str | None = None) -> Tensor: ...
-    def __le__(self, other: TensorCompatible, name: str | None = None) -> Tensor: ...
-    def __lt__(self, other: TensorCompatible, name: str | None = None) -> Tensor: ...
-    def __bool__(self) -> _bool: ...
-    def __getitem__(self, slice_spec: Slice | tuple[Slice, ...]) -> Tensor: ...
+    def __ge__(self, other: TensorCompatible, name: str | None = None) -> Tensor:
+        """
+        Returns the truth value of (x >= y) element-wise.
+
+        *NOTE*: `math.greater_equal` supports broadcasting. More about broadcasting
+        [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
+
+        Example:
+
+        ```python
+        x = tf.constant([5, 4, 6, 7])
+        y = tf.constant([5, 2, 5, 10])
+        tf.math.greater_equal(x, y) ==> [True, True, True, False]
+
+        x = tf.constant([5, 4, 6, 7])
+        y = tf.constant([5])
+        tf.math.greater_equal(x, y) ==> [True, False, True, True]
+        ```
+
+        Args:
+          x: A `Tensor`. Must be one of the following types: `float32`, `float64`, `int32`, `uint8`, `int16`, `int8`, `int64`, `bfloat16`, `uint16`, `half`, `uint32`, `uint64`.
+          y: A `Tensor`. Must have the same type as `x`.
+          name: A name for the operation (optional).
+
+        Returns:
+          A `Tensor` of type `bool`.
+        """
+        ...
+    def __gt__(self, other: TensorCompatible, name: str | None = None) -> Tensor:
+        """
+        Returns the truth value of (x > y) element-wise.
+
+        *NOTE*: `math.greater` supports broadcasting. More about broadcasting
+        [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
+
+        Example:
+
+        ```python
+        x = tf.constant([5, 4, 6])
+        y = tf.constant([5, 2, 5])
+        tf.math.greater(x, y) ==> [False, True, True]
+
+        x = tf.constant([5, 4, 6])
+        y = tf.constant([5])
+        tf.math.greater(x, y) ==> [False, False, True]
+        ```
+
+        Args:
+          x: A `Tensor`. Must be one of the following types: `float32`, `float64`, `int32`, `uint8`, `int16`, `int8`, `int64`, `bfloat16`, `uint16`, `half`, `uint32`, `uint64`.
+          y: A `Tensor`. Must have the same type as `x`.
+          name: A name for the operation (optional).
+
+        Returns:
+          A `Tensor` of type `bool`.
+        """
+        ...
+    def __le__(self, other: TensorCompatible, name: str | None = None) -> Tensor:
+        """
+        Returns the truth value of (x <= y) element-wise.
+
+        *NOTE*: `math.less_equal` supports broadcasting. More about broadcasting
+        [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
+
+        Example:
+
+        ```python
+        x = tf.constant([5, 4, 6])
+        y = tf.constant([5])
+        tf.math.less_equal(x, y) ==> [True, True, False]
+
+        x = tf.constant([5, 4, 6])
+        y = tf.constant([5, 6, 6])
+        tf.math.less_equal(x, y) ==> [True, True, True]
+        ```
+
+        Args:
+          x: A `Tensor`. Must be one of the following types: `float32`, `float64`, `int32`, `uint8`, `int16`, `int8`, `int64`, `bfloat16`, `uint16`, `half`, `uint32`, `uint64`.
+          y: A `Tensor`. Must have the same type as `x`.
+          name: A name for the operation (optional).
+
+        Returns:
+          A `Tensor` of type `bool`.
+        """
+        ...
+    def __lt__(self, other: TensorCompatible, name: str | None = None) -> Tensor:
+        """
+        Returns the truth value of (x < y) element-wise.
+
+        *NOTE*: `math.less` supports broadcasting. More about broadcasting
+        [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
+
+        Example:
+
+        ```python
+        x = tf.constant([5, 4, 6])
+        y = tf.constant([5])
+        tf.math.less(x, y) ==> [False, True, False]
+
+        x = tf.constant([5, 4, 6])
+        y = tf.constant([5, 6, 7])
+        tf.math.less(x, y) ==> [False, True, True]
+        ```
+
+        Args:
+          x: A `Tensor`. Must be one of the following types: `float32`, `float64`, `int32`, `uint8`, `int16`, `int8`, `int64`, `bfloat16`, `uint16`, `half`, `uint32`, `uint64`.
+          y: A `Tensor`. Must have the same type as `x`.
+          name: A name for the operation (optional).
+
+        Returns:
+          A `Tensor` of type `bool`.
+        """
+        ...
+    def __bool__(self) -> _bool:
+        """
+        Dummy method to prevent a tensor from being used as a Python `bool`.
+
+        This overload raises a `TypeError` when the user inadvertently
+        treats a `Tensor` as a boolean (most commonly in an `if` or `while`
+        statement), in code that was not converted by AutoGraph. For example:
+
+        ```python
+        if tf.constant(True):  # Will raise.
+          # ...
+
+        if tf.constant(5) < tf.constant(7):  # Will raise.
+          # ...
+        ```
+
+        Raises:
+          `TypeError`.
+        """
+        ...
+    def __getitem__(self, slice_spec: Slice | tuple[Slice, ...]) -> Tensor:
+        """
+        Overload for Tensor.__getitem__.
+
+        This operation extracts the specified region from the tensor.
+        The notation is similar to NumPy with the restriction that
+        currently only support basic indexing. That means that
+        using a non-scalar tensor as input is not currently allowed.
+
+        Some useful examples:
+
+        ```python
+        # Strip leading and trailing 2 elements
+        foo = tf.constant([1,2,3,4,5,6])
+        print(foo[2:-2])  # => [3,4]
+
+        # Skip every other row and reverse the order of the columns
+        foo = tf.constant([[1,2,3], [4,5,6], [7,8,9]])
+        print(foo[::2,::-1])  # => [[3,2,1], [9,8,7]]
+
+        # Use scalar tensors as indices on both dimensions
+        print(foo[tf.constant(0), tf.constant(2)])  # => 3
+
+        # Insert another dimension
+        foo = tf.constant([[1,2,3], [4,5,6], [7,8,9]])
+        print(foo[tf.newaxis, :, :]) # => [[[1,2,3], [4,5,6], [7,8,9]]]
+        print(foo[:, tf.newaxis, :]) # => [[[1,2,3]], [[4,5,6]], [[7,8,9]]]
+        print(foo[:, :, tf.newaxis]) # => [[[1],[2],[3]], [[4],[5],[6]],
+        [[7],[8],[9]]]
+
+        # Ellipses (3 equivalent operations)
+        foo = tf.constant([[1,2,3], [4,5,6], [7,8,9]])
+        print(foo[tf.newaxis, :, :])  # => [[[1,2,3], [4,5,6], [7,8,9]]]
+        print(foo[tf.newaxis, ...])  # => [[[1,2,3], [4,5,6], [7,8,9]]]
+        print(foo[tf.newaxis])  # => [[[1,2,3], [4,5,6], [7,8,9]]]
+
+        # Masks
+        foo = tf.constant([[1,2,3], [4,5,6], [7,8,9]])
+        print(foo[foo > 2])  # => [3, 4, 5, 6, 7, 8, 9]
+        ```
+
+        Notes:
+          - `tf.newaxis` is `None` as in NumPy.
+          - An implicit ellipsis is placed at the end of the `slice_spec`
+          - NumPy advanced indexing is currently not supported.
+
+        Purpose in the API:
+
+          This method is exposed in TensorFlow's API so that library developers
+          can register dispatching for `Tensor.__getitem__` to allow it to handle
+          custom composite tensors & other custom objects.
+
+          The API symbol is not intended to be called by users directly and does
+          appear in TensorFlow's generated documentation.
+
+        Args:
+          tensor: An tensor.Tensor object.
+          slice_spec: The arguments to Tensor.__getitem__.
+          var: In the case of variable slice assignment, the Variable object to slice
+            (i.e. tensor is the read-only view of this variable).
+
+        Returns:
+          The appropriate slice of "tensor", based on "slice_spec".
+
+        Raises:
+          ValueError: If a slice range is negative size.
+          TypeError: If the slice indices aren't int, slice, ellipsis,
+            tf.newaxis or scalar int32/int64 tensors.
+        """
+        ...
     def __len__(self) -> int: ...
     # This only works for rank 0 tensors.
     def __index__(self) -> int: ...

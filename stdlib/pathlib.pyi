@@ -334,10 +334,21 @@ class Path(PurePath):
             ...
 
     if sys.version_info >= (3, 13):
-        def glob(self, pattern: str, *, case_sensitive: bool | None = None, recurse_symlinks: bool = False) -> Iterator[Self]: ...
+        def glob(self, pattern: str, *, case_sensitive: bool | None = None, recurse_symlinks: bool = False) -> Iterator[Self]:
+            """
+            Iterate over this subtree and yield all existing files (of any
+            kind, including directories) matching the given relative pattern.
+            """
+            ...
         def rglob(
             self, pattern: str, *, case_sensitive: bool | None = None, recurse_symlinks: bool = False
-        ) -> Iterator[Self]: ...
+        ) -> Iterator[Self]:
+            """
+            Recursively yield all existing files (of any kind, including
+            directories) matching the given relative pattern, anywhere in
+            this subtree.
+            """
+            ...
     elif sys.version_info >= (3, 12):
         def glob(self, pattern: str, *, case_sensitive: bool | None = None) -> Generator[Self, None, None]:
             """

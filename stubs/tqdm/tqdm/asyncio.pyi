@@ -1,3 +1,13 @@
+"""
+Asynchronous progressbar decorator for iterators.
+Includes a default `range` iterator printing to `stderr`.
+
+Usage:
+>>> from tqdm.asyncio import trange, tqdm
+>>> async for i in trange(10):
+...     ...
+"""
+
 from _typeshed import SupportsWrite
 from asyncio import Future
 from collections.abc import AsyncIterator, Awaitable, Callable, Iterable, Iterator, Mapping
@@ -50,7 +60,9 @@ class tqdm_asyncio(std_tqdm[_T]):
         nrows: int | None = ...,
         colour: str | None = ...,
         delay: float | None = ...,
-    ) -> Iterator[Future[_T]]: ...
+    ) -> Iterator[Future[_T]]:
+        """Wrapper for `asyncio.as_completed`."""
+        ...
     @classmethod
     async def gather(
         cls,
