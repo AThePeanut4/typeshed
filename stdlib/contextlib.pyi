@@ -93,6 +93,7 @@ class ContextDecorator:
     def __call__(self, func: _F) -> _F: ...
 
 class _GeneratorContextManagerBase(Generic[_G_co]):
+    """Shared functionality for @contextmanager and @asynccontextmanager."""
     # Ideally this would use ParamSpec, but that requires (*args, **kwargs), which this isn't. see #6676
     def __init__(self, func: Callable[..., _G_co], args: tuple[Any, ...], kwds: dict[str, Any]) -> None: ...
     gen: _G_co

@@ -82,6 +82,25 @@ class Callpoint:
 _CallpointT_co = TypeVar("_CallpointT_co", bound=Callpoint, covariant=True, default=Callpoint)
 
 class TracebackInfo(Generic[_CallpointT_co]):
+    """
+    The TracebackInfo class provides a basic representation of a stack
+    trace, be it from an exception being handled or just part of
+    normal execution. It is basically a wrapper around a list of
+    :class:`Callpoint` objects representing frames.
+
+    Args:
+        frames (list): A list of frame objects in the stack.
+
+    .. note ::
+
+      ``TracebackInfo`` can represent both exception tracebacks and
+      non-exception tracebacks (aka stack traces). As a result, there
+      is no ``TracebackInfo.from_current()``, as that would be
+      ambiguous. Instead, call :meth:`TracebackInfo.from_frame`
+      without the *frame* argument for a stack trace, or
+      :meth:`TracebackInfo.from_traceback` without the *tb* argument
+      for an exception traceback.
+    """
     callpoint_type: type[_CallpointT_co]
     frames: list[_CallpointT_co]
     def __init__(self, frames: list[_CallpointT_co]) -> None: ...
@@ -123,15 +142,53 @@ class TracebackInfo(Generic[_CallpointT_co]):
         """
         ...
     @classmethod
-    def from_dict(cls, d: Mapping[Literal["frames"], list[_CallpointT_co]]) -> Self: ...
-    def to_dict(self) -> dict[str, list[dict[str, _CallpointT_co]]]: ...
+    def from_dict(cls, d: Mapping[Literal["frames"], list[_CallpointT_co]]) -> Self:
+        """Complements :meth:`TracebackInfo.to_dict`."""
+        ...
+    def to_dict(self) -> dict[str, list[dict[str, _CallpointT_co]]]:
+        """
+        Returns a dict with a list of :class:`Callpoint` frames converted
+        to dicts.
+        """
+        ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[_CallpointT_co]: ...
-    def get_formatted(self) -> str: ...
+    def get_formatted(self) -> str:
+        """
+        Returns a string as formatted in the traditional Python
+        built-in style observable when an exception is not caught. In
+        other words, mimics :func:`traceback.format_tb` and
+        :func:`traceback.format_stack`.
+        """
+        ...
 
 _TracebackInfoT_co = TypeVar("_TracebackInfoT_co", bound=TracebackInfo, covariant=True, default=TracebackInfo)
 
 class ExceptionInfo(Generic[_TracebackInfoT_co]):
+    """
+    An ExceptionInfo object ties together three main fields suitable
+    for representing an instance of an exception: The exception type
+    name, a string representation of the exception itself (the
+    exception message), and information about the traceback (stored as
+    a :class:`TracebackInfo` object).
+
+    These fields line up with :func:`sys.exc_info`, but unlike the
+    values returned by that function, ExceptionInfo does not hold any
+    references to the real exception or traceback. This property makes
+    it suitable for serialization or long-term retention, without
+    worrying about formatting pitfalls, circular references, or leaking memory.
+
+    Args:
+
+        exc_type (str): The exception type name.
+        exc_msg (str): String representation of the exception value.
+        tb_info (TracebackInfo): Information about the stack trace of the
+            exception.
+
+    Like the :class:`TracebackInfo`, ExceptionInfo is most commonly
+    instantiated from one of its classmethods: :meth:`from_exc_info`
+    or :meth:`from_current`.
+    """
     tb_info_type: type[_TracebackInfoT_co]
     exc_type: str
     exc_msg: str

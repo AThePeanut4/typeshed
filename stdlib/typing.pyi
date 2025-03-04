@@ -904,11 +904,17 @@ _SendT_nd_contra = TypeVar("_SendT_nd_contra", contravariant=True)
 _ReturnT_nd_co = TypeVar("_ReturnT_nd_co", covariant=True)
 
 class Coroutine(Awaitable[_ReturnT_nd_co], Generic[_YieldT_co, _SendT_nd_contra, _ReturnT_nd_co]):
+    """A generic version of collections.abc.Coroutine."""
     __name__: str
     __qualname__: str
 
     @abstractmethod
-    def send(self, value: _SendT_nd_contra, /) -> _YieldT_co: ...
+    def send(self, value: _SendT_nd_contra, /) -> _YieldT_co:
+        """
+        Send a value into the coroutine.
+        Return next yielded value or raise StopIteration.
+        """
+        ...
     @overload
     @abstractmethod
     def throw(

@@ -1,3 +1,16 @@
+"""
+Built-in functions, types, exceptions, and other objects.
+
+This module provides direct access to all 'built-in'
+identifiers of Python; for example, builtins.len is
+the full name for the built-in function len().
+
+This module is not normally accessed explicitly by most
+applications, but can be useful in modules that provide
+objects with the same name as a built-in value, but in
+which the built-in of that name is also needed.
+"""
+
 import _ast
 import _sitebuiltins
 import _typeshed
@@ -2987,7 +3000,9 @@ class memoryview(Sequence[_I]):
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
         /,
-    ) -> None: ...
+    ) -> None:
+        """Release the underlying buffer exposed by the memoryview object."""
+        ...
     @overload
     def cast(self, format: Literal["c", "@c"], shape: list[int] | tuple[int, ...] = ...) -> memoryview[bytes]:
         """Cast a memoryview to a new format or shape."""
@@ -4050,7 +4065,9 @@ class _PathLike(Protocol[AnyStr_co]):
     def __fspath__(self) -> AnyStr_co: ...
 
 if sys.version_info >= (3, 10):
-    def aiter(async_iterable: SupportsAiter[_SupportsAnextT_co], /) -> _SupportsAnextT_co: ...
+    def aiter(async_iterable: SupportsAiter[_SupportsAnextT_co], /) -> _SupportsAnextT_co:
+        """Return an AsyncIterator for an AsyncIterable object."""
+        ...
 
     class _SupportsSynchronousAnext(Protocol[_AwaitableT_co]):
         def __anext__(self) -> _AwaitableT_co: ...
@@ -4476,7 +4493,16 @@ class _GetItemIterable(Protocol[_T_co]):
     def __getitem__(self, i: int, /) -> _T_co: ...
 
 @overload
-def iter(object: SupportsIter[_SupportsNextT_co], /) -> _SupportsNextT_co: ...
+def iter(object: SupportsIter[_SupportsNextT_co], /) -> _SupportsNextT_co:
+    """
+    iter(iterable) -> iterator
+    iter(callable, sentinel) -> iterator
+
+    Get an iterator from an object.  In the first form, the argument must
+    supply its own iterator, or be a sequence.
+    In the second form, the callable is called until it returns the sentinel.
+    """
+    ...
 @overload
 def iter(object: _GetItemIterable[_T], /) -> Iterator[_T]:
     """
@@ -5841,11 +5867,32 @@ def pow(base: complex, exp: complex | _SupportsSomeKindOfPow, mod: None = None) 
     """
     ...
 @overload
-def pow(base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co: ...  # type: ignore[overload-overlap]
+def pow(base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co:
+    """
+    Equivalent to base**exp with 2 arguments or base**exp % mod with 3 arguments
+
+    Some types, such as ints, are able to use a more efficient algorithm when
+    invoked using the three argument form.
+    """
+    ...
 @overload
-def pow(base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co: ...  # type: ignore[overload-overlap]
+def pow(base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co:
+    """
+    Equivalent to base**exp with 2 arguments or base**exp % mod with 3 arguments
+
+    Some types, such as ints, are able to use a more efficient algorithm when
+    invoked using the three argument form.
+    """
+    ...
 @overload
-def pow(base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -> _T_co: ...
+def pow(base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -> _T_co:
+    """
+    Equivalent to base**exp with 2 arguments or base**exp % mod with 3 arguments
+
+    Some types, such as ints, are able to use a more efficient algorithm when
+    invoked using the three argument form.
+    """
+    ...
 @overload
 def pow(base: _SupportsSomeKindOfPow, exp: float, mod: None = None) -> Any:
     """

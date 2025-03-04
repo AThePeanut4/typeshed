@@ -158,4 +158,48 @@ def deprecated(
     action: _Actions | None = ...,
     category: type[Warning] | None = ...,
     extra_stacklevel: int = 0,
-) -> Callable[[_F], _F]: ...
+) -> Callable[[_F], _F]:
+    """
+    This decorator can be used to insert a "deprecated" directive
+    in your function/class docstring in order to document the
+    version of the project which deprecates this functionality in your library.
+
+    :param str reason:
+        Reason message which documents the deprecation in your library (can be omitted).
+
+    :param str version:
+        Version of your project which deprecates this feature.
+        If you follow the `Semantic Versioning <https://semver.org/>`_,
+        the version number has the format "MAJOR.MINOR.PATCH".
+
+    :type  line_length: int
+    :param line_length:
+        Max line length of the directive text. If non nul, a long text is wrapped in several lines.
+
+    Keyword arguments can be:
+
+    -   "action":
+        A warning filter used to activate or not the deprecation warning.
+        Can be one of "error", "ignore", "always", "default", "module", or "once".
+        If ``None``, empty or missing, the global filtering mechanism is used.
+
+    -   "category":
+        The warning category to use for the deprecation warning.
+        By default, the category class is :class:`~DeprecationWarning`,
+        you can inherit this class to define your own deprecation warning category.
+
+    -   "extra_stacklevel":
+        Number of additional stack levels to consider instrumentation rather than user code.
+        With the default value of 0, the warning refers to where the class was instantiated
+        or the function was called.
+
+
+    :return: a decorator used to deprecate a function.
+
+    .. versionchanged:: 1.2.13
+       Change the signature of the decorator to reflect the valid use cases.
+
+    .. versionchanged:: 1.2.15
+        Add the *extra_stacklevel* parameter.
+    """
+    ...

@@ -156,6 +156,10 @@ class AbstractListener(threading.Thread):
     def join(self, timeout: float | None = None, *args: Any) -> None: ...
 
 class Events(Generic[_T, _AbstractListenerT]):
+    """
+    A base class to enable iterating over events.
+    
+    """
     _Listener: type[_AbstractListenerT] | None  # undocumented
 
     class Event:
