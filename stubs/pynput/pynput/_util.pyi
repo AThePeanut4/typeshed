@@ -9,7 +9,7 @@ from typing import Any, ClassVar, Generic, TypedDict, TypeVar
 from typing_extensions import ParamSpec, Self
 
 _T = TypeVar("_T")
-_AbstractListener_T = TypeVar("_AbstractListener_T", bound=AbstractListener)
+_AbstractListenerT = TypeVar("_AbstractListenerT", bound=AbstractListener)
 _P = ParamSpec("_P")
 
 class _RESOLUTIONS(TypedDict):
@@ -155,19 +155,15 @@ class AbstractListener(threading.Thread):
         ...
     def join(self, timeout: float | None = None, *args: Any) -> None: ...
 
-class Events(Generic[_T, _AbstractListener_T]):
-    """
-    A base class to enable iterating over events.
-    
-    """
-    _Listener: type[_AbstractListener_T] | None  # undocumented
+class Events(Generic[_T, _AbstractListenerT]):
+    _Listener: type[_AbstractListenerT] | None  # undocumented
 
     class Event:
         def __eq__(self, other: object) -> bool: ...
 
     _event_queue: Queue[_T]  # undocumented
     _sentinel: object  # undocumented
-    _listener: _AbstractListener_T  # undocumented
+    _listener: _AbstractListenerT  # undocumented
     start: Callable[[], None]
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def __enter__(self) -> Self: ...

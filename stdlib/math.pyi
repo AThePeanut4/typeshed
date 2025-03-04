@@ -4,8 +4,9 @@ defined by the C standard.
 """
 
 import sys
+from _typeshed import SupportsMul, SupportsRMul
 from collections.abc import Iterable
-from typing import Final, Protocol, SupportsFloat, SupportsIndex, TypeVar, overload
+from typing import Any, Final, Literal, Protocol, SupportsFloat, SupportsIndex, TypeVar, overload
 from typing_extensions import TypeAlias
 
 _T = TypeVar("_T")
@@ -329,65 +330,35 @@ elif sys.version_info >= (3, 9):
         """Return the next floating-point value after x towards y."""
         ...
 
-def perm(n: SupportsIndex, k: SupportsIndex | None = None, /) -> int:
-    """
-    Number of ways to choose k items from n items without repetition and with order.
+def perm(n: SupportsIndex, k: SupportsIndex | None = None, /) -> int: ...
+def pow(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float: ...
 
-    Evaluates to n! / (n - k)! when k <= n and evaluates
-    to zero when k > n.
+_PositiveInteger: TypeAlias = Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+_NegativeInteger: TypeAlias = Literal[-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20]
+_LiteralInteger = _PositiveInteger | _NegativeInteger | Literal[0]  # noqa: Y026  # TODO: Use TypeAlias once mypy bugs are fixed
 
-    If k is not specified or is None, then k defaults to n
-    and the function returns n!.
+_MultiplicableT1 = TypeVar("_MultiplicableT1", bound=SupportsMul[Any, Any])
+_MultiplicableT2 = TypeVar("_MultiplicableT2", bound=SupportsMul[Any, Any])
 
-    Raises TypeError if either of the arguments are not integers.
-    Raises ValueError if either of the arguments are negative.
-    """
-    ...
-def pow(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float:
-    """Return x**y (x to the power of y)."""
-    ...
+class _SupportsProdWithNoDefaultGiven(SupportsMul[Any, Any], SupportsRMul[int, Any], Protocol): ...
+
+_SupportsProdNoDefaultT = TypeVar("_SupportsProdNoDefaultT", bound=_SupportsProdWithNoDefaultGiven)
+
+# This stub is based on the type stub for `builtins.sum`.
+# Like `builtins.sum`, it cannot be precisely represented in a type stub
+# without introducing many false positives.
+# For more details on its limitations and false positives, see #13572.
+# Instead, just like `builtins.sum`, we explicitly handle several useful cases.
 @overload
-def prod(iterable: Iterable[SupportsIndex], /, *, start: SupportsIndex = 1) -> int:
-    """
-    Calculate the product of all the elements in the input iterable.
-
-    The default start value for the product is 1.
-
-    When the iterable is empty, return the start value.  This function is
-    intended specifically for use with numeric values and may reject
-    non-numeric types.
-    """
-    ...
+def prod(iterable: Iterable[bool | _LiteralInteger], /, *, start: int = 1) -> int: ...  # type: ignore[overload-overlap]
 @overload
-def prod(iterable: Iterable[_SupportsFloatOrIndex], /, *, start: _SupportsFloatOrIndex = 1) -> float:
-    """
-    Calculate the product of all the elements in the input iterable.
-
-    The default start value for the product is 1.
-
-    When the iterable is empty, return the start value.  This function is
-    intended specifically for use with numeric values and may reject
-    non-numeric types.
-    """
-    ...
-def radians(x: _SupportsFloatOrIndex, /) -> float:
-    """Convert angle x from degrees to radians."""
-    ...
-def remainder(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float:
-    """
-    Difference between x and the closest integer multiple of y.
-
-    Return x - n*y where n*y is the closest integer multiple of y.
-    In the case where x is exactly halfway between two multiples of
-    y, the nearest even value of n is used. The result is always exact.
-    """
-    ...
-def sin(x: _SupportsFloatOrIndex, /) -> float:
-    """Return the sine of x (measured in radians)."""
-    ...
-def sinh(x: _SupportsFloatOrIndex, /) -> float:
-    """Return the hyperbolic sine of x."""
-    ...
+def prod(iterable: Iterable[_SupportsProdNoDefaultT], /) -> _SupportsProdNoDefaultT | Literal[1]: ...
+@overload
+def prod(iterable: Iterable[_MultiplicableT1], /, *, start: _MultiplicableT2) -> _MultiplicableT1 | _MultiplicableT2: ...
+def radians(x: _SupportsFloatOrIndex, /) -> float: ...
+def remainder(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float: ...
+def sin(x: _SupportsFloatOrIndex, /) -> float: ...
+def sinh(x: _SupportsFloatOrIndex, /) -> float: ...
 
 if sys.version_info >= (3, 12):
     def sumprod(p: Iterable[float], q: Iterable[float], /) -> float:

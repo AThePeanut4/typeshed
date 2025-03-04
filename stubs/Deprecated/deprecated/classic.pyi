@@ -224,84 +224,10 @@ def deprecated(wrapped: _F, /) -> _F:
     ...
 @overload
 def deprecated(
-    reason: str = ..., *, version: str = ..., action: _Actions | None = ..., category: type[Warning] | None = ...
-) -> Callable[[_F], _F]:
-    """
-    This is a decorator which can be used to mark functions
-    as deprecated. It will result in a warning being emitted
-    when the function is used.
-
-    **Classic usage:**
-
-    To use this, decorate your deprecated function with **@deprecated** decorator:
-
-    .. code-block:: python
-
-       from deprecated import deprecated
-
-
-       @deprecated
-       def some_old_function(x, y):
-           return x + y
-
-    You can also decorate a class or a method:
-
-    .. code-block:: python
-
-       from deprecated import deprecated
-
-
-       class SomeClass(object):
-           @deprecated
-           def some_old_method(self, x, y):
-               return x + y
-
-
-       @deprecated
-       class SomeOldClass(object):
-           pass
-
-    You can give a *reason* message to help the developer to choose another function/class,
-    and a *version* number to specify the starting version number of the deprecation.
-
-    .. code-block:: python
-
-       from deprecated import deprecated
-
-
-       @deprecated(reason="use another function", version='1.2.0')
-       def some_old_function(x, y):
-           return x + y
-
-    The *category* keyword argument allow you to specify the deprecation warning class of your choice.
-    By default, :exc:`DeprecationWarning` is used, but you can choose :exc:`FutureWarning`,
-    :exc:`PendingDeprecationWarning` or a custom subclass.
-
-    .. code-block:: python
-
-       from deprecated import deprecated
-
-
-       @deprecated(category=PendingDeprecationWarning)
-       def some_old_function(x, y):
-           return x + y
-
-    The *action* keyword argument allow you to locally change the warning filtering.
-    *action* can be one of "error", "ignore", "always", "default", "module", or "once".
-    If ``None``, empty or missing, the global filtering mechanism is used.
-    See: `The Warnings Filter`_ in the Python documentation.
-
-    .. code-block:: python
-
-       from deprecated import deprecated
-
-
-       @deprecated(action="error")
-       def some_old_function(x, y):
-           return x + y
-
-    The *extra_stacklevel* keyword argument allows you to specify additional stack levels
-    to consider instrumentation rather than user code. With the default value of 0, the
-    warning refers to where the class was instantiated or the function was called.
-    """
-    ...
+    reason: str = ...,
+    *,
+    version: str = ...,
+    action: _Actions | None = ...,
+    category: type[Warning] | None = ...,
+    extra_stacklevel: int = 0,
+) -> Callable[[_F], _F]: ...

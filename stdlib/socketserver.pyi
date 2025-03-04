@@ -158,135 +158,23 @@ _AfInetAddress: TypeAlias = tuple[str | bytes | bytearray, int]  # address accep
 
 # This can possibly be generic at some point:
 class BaseServer:
-    """
-    Base class for server classes.
-
-    Methods for the caller:
-
-    - __init__(server_address, RequestHandlerClass)
-    - serve_forever(poll_interval=0.5)
-    - shutdown()
-    - handle_request()  # if you do not use serve_forever()
-    - fileno() -> int   # for selector
-
-    Methods that may be overridden:
-
-    - server_bind()
-    - server_activate()
-    - get_request() -> request, client_address
-    - handle_timeout()
-    - verify_request(request, client_address)
-    - server_close()
-    - process_request(request, client_address)
-    - shutdown_request(request)
-    - close_request(request)
-    - service_actions()
-    - handle_error()
-
-    Methods for derived classes:
-
-    - finish_request(request, client_address)
-
-    Class variables that may be overridden by derived classes or
-    instances:
-
-    - timeout
-    - address_family
-    - socket_type
-    - allow_reuse_address
-    - allow_reuse_port
-
-    Instance variables:
-
-    - RequestHandlerClass
-    - socket
-    """
-    address_family: int
     server_address: _Address
-    socket: _socket
-    allow_reuse_address: bool
-    request_queue_size: int
-    socket_type: int
     timeout: float | None
     RequestHandlerClass: Callable[[Any, _RetAddress, Self], BaseRequestHandler]
     def __init__(
         self, server_address: _Address, RequestHandlerClass: Callable[[Any, _RetAddress, Self], BaseRequestHandler]
-    ) -> None:
-        """Constructor.  May be extended, do not override."""
-        ...
-    def fileno(self) -> int: ...
-    def handle_request(self) -> None:
-        """
-        Handle one request, possibly blocking.
-
-        Respects self.timeout.
-        """
-        ...
-    def serve_forever(self, poll_interval: float = 0.5) -> None:
-        """
-        Handle one request at a time until shutdown.
-
-        Polls for shutdown every poll_interval seconds. Ignores
-        self.timeout. If you need to do periodic tasks, do them in
-        another thread.
-        """
-        ...
-    def shutdown(self) -> None:
-        """
-        Stops the serve_forever loop.
-
-        Blocks until the loop has finished. This must be called while
-        serve_forever() is running in another thread, or it will
-        deadlock.
-        """
-        ...
-    def server_close(self) -> None:
-        """
-        Called to clean-up the server.
-
-        May be overridden.
-        """
-        ...
-    def finish_request(self, request: _RequestType, client_address: _RetAddress) -> None:
-        """Finish one request by instantiating RequestHandlerClass."""
-        ...
-    def get_request(self) -> tuple[Any, Any]: ...
-    def handle_error(self, request: _RequestType, client_address: _RetAddress) -> None:
-        """
-        Handle an error gracefully.  May be overridden.
-
-        The default is to print a traceback and continue.
-        """
-        ...
-    def handle_timeout(self) -> None:
-        """
-        Called if no new request arrives within self.timeout.
-
-        Overridden by ForkingMixIn.
-        """
-        ...
-    def process_request(self, request: _RequestType, client_address: _RetAddress) -> None:
-        """
-        Call finish_request.
-
-        Overridden by ForkingMixIn and ThreadingMixIn.
-        """
-        ...
-    def server_activate(self) -> None:
-        """
-        Called by constructor to activate the server.
-
-        May be overridden.
-        """
-        ...
-    def server_bind(self) -> None: ...
-    def verify_request(self, request: _RequestType, client_address: _RetAddress) -> bool:
-        """
-        Verify the request.  May be overridden.
-
-        Return True if we should proceed with this request.
-        """
-        ...
+    ) -> None: ...
+    def handle_request(self) -> None: ...
+    def serve_forever(self, poll_interval: float = 0.5) -> None: ...
+    def shutdown(self) -> None: ...
+    def server_close(self) -> None: ...
+    def finish_request(self, request: _RequestType, client_address: _RetAddress) -> None: ...
+    def get_request(self) -> tuple[Any, Any]: ...  # Not implemented here, but expected to exist on subclasses
+    def handle_error(self, request: _RequestType, client_address: _RetAddress) -> None: ...
+    def handle_timeout(self) -> None: ...
+    def process_request(self, request: _RequestType, client_address: _RetAddress) -> None: ...
+    def server_activate(self) -> None: ...
+    def verify_request(self, request: _RequestType, client_address: _RetAddress) -> bool: ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: types.TracebackType | None
@@ -307,51 +195,11 @@ class BaseServer:
         ...
 
 class TCPServer(BaseServer):
-    """
-    Base class for various socket-based server classes.
-
-    Defaults to synchronous IP stream (i.e., TCP).
-
-    Methods for the caller:
-
-    - __init__(server_address, RequestHandlerClass, bind_and_activate=True)
-    - serve_forever(poll_interval=0.5)
-    - shutdown()
-    - handle_request()  # if you don't use serve_forever()
-    - fileno() -> int   # for selector
-
-    Methods that may be overridden:
-
-    - server_bind()
-    - server_activate()
-    - get_request() -> request, client_address
-    - handle_timeout()
-    - verify_request(request, client_address)
-    - process_request(request, client_address)
-    - shutdown_request(request)
-    - close_request(request)
-    - handle_error()
-
-    Methods for derived classes:
-
-    - finish_request(request, client_address)
-
-    Class variables that may be overridden by derived classes or
-    instances:
-
-    - timeout
-    - address_family
-    - socket_type
-    - request_queue_size (only for stream sockets)
-    - allow_reuse_address
-    - allow_reuse_port
-
-    Instance variables:
-
-    - server_address
-    - RequestHandlerClass
-    - socket
-    """
+    address_family: int
+    socket: _socket
+    allow_reuse_address: bool
+    request_queue_size: int
+    socket_type: int
     if sys.version_info >= (3, 11):
         allow_reuse_port: bool
     server_address: _AfInetAddress
@@ -360,16 +208,10 @@ class TCPServer(BaseServer):
         server_address: _AfInetAddress,
         RequestHandlerClass: Callable[[Any, _RetAddress, Self], BaseRequestHandler],
         bind_and_activate: bool = True,
-    ) -> None:
-        """Constructor.  May be extended, do not override."""
-        ...
-    def get_request(self) -> tuple[_socket, _RetAddress]:
-        """
-        Get the request and client address from the socket.
-
-        May be overridden.
-        """
-        ...
+    ) -> None: ...
+    def fileno(self) -> int: ...
+    def get_request(self) -> tuple[_socket, _RetAddress]: ...
+    def server_bind(self) -> None: ...
 
 class UDPServer(TCPServer):
     """UDP server class."""
