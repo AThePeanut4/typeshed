@@ -114,12 +114,10 @@ class Layer(tf.Module, Generic[_InputT_contra, _OutputT_co]):
         trainable: Boolean, whether the layer's variables should be trainable.
         name: String name of the layer.
         dtype: The dtype of the layer's computations and weights. Can also be a
-            `keras.DTypePolicy`,
-            which allows the computation and
-            weight dtype to differ. Defaults to `None`. `None` means to use
-            `keras.config.dtype_policy()`,
-            which is a `float32` policy unless set to different value
-            (via `keras.config.set_dtype_policy()`).
+            `keras.DTypePolicy`, which allows the computation and weight dtype
+            to differ. Defaults to `None`. `None` means to use
+            `keras.config.dtype_policy()`, which is a `float32` policy unless
+            set to different value (via `keras.config.set_dtype_policy()`).
 
     Attributes:
         name: The name of the layer (string).
@@ -1548,6 +1546,15 @@ class Conv2D(Layer[tf.Tensor, tf.Tensor]):
     and added to the outputs. Finally, if `activation` is not `None`, it is
     applied to the outputs as well.
 
+    Note on numerical precision: While in general Keras operation execution
+    results are identical across backends up to 1e-7 precision in float32,
+    `Conv2D` operations may show larger variations. Due to the large
+    number of element-wise multiplications and additions in convolution
+    operations, especially with large inputs or kernel sizes, accumulated
+    floating-point differences can exceed this 1e-7 threshold. These variations
+    are particularly noticeable when using different backends (e.g., TensorFlow
+    vs JAX) or different hardware.
+
     Args:
         filters: int, the dimension of the output space (the number of filters
             in the convolution).
@@ -1746,7 +1753,9 @@ class LayerNormalization(Layer[tf.Tensor, tf.Tensor]):
         rms_scaling: If True, `center` and `scale` are ignored, and the
             inputs are scaled by `gamma` and the inverse square root
             of the square of all inputs. This is an approximate and faster
-            approach that avoids ever computing the mean of the input.
+            approach that avoids ever computing the mean of the input. Note that
+            this *isn't* equivalent to the computation that the
+            `keras.layers.RMSNormalization` layer performs.
         beta_initializer: Initializer for the beta weight. Defaults to zeros.
         gamma_initializer: Initializer for the gamma weight. Defaults to ones.
         beta_regularizer: Optional regularizer for the beta weight.

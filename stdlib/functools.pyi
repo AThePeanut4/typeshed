@@ -366,7 +366,13 @@ class singledispatchmethod(Generic[_T]):
     @property
     def __isabstractmethod__(self) -> bool: ...
     @overload
-    def register(self, cls: _RegType, method: None = None) -> Callable[[Callable[..., _T]], Callable[..., _T]]: ...
+    def register(self, cls: _RegType, method: None = None) -> Callable[[Callable[..., _T]], Callable[..., _T]]:
+        """
+        generic_method.register(cls, func) -> func
+
+        Registers a new implementation for the given *cls* on a *generic_method*.
+        """
+        ...
     @overload
     def register(self, cls: Callable[..., _T], method: None = None) -> Callable[..., _T]:
         """
@@ -376,7 +382,13 @@ class singledispatchmethod(Generic[_T]):
         """
         ...
     @overload
-    def register(self, cls: _RegType, method: Callable[..., _T]) -> Callable[..., _T]: ...
+    def register(self, cls: _RegType, method: Callable[..., _T]) -> Callable[..., _T]:
+        """
+        generic_method.register(cls, func) -> func
+
+        Registers a new implementation for the given *cls* on a *generic_method*.
+        """
+        ...
     def __get__(self, obj: _S, cls: type[_S] | None = None) -> Callable[..., _T]: ...
 
 class cached_property(Generic[_T_co]):

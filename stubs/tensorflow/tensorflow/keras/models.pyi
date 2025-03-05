@@ -673,7 +673,8 @@ class Model(Layer[_InputT_contra, _OutputT_co]):
                 `"tf_saved_model"` and `"onnx"`.  Defaults to
                 `"tf_saved_model"`.
             verbose: `bool`. Whether to print a message during export. Defaults
-                to `True`.
+                to `None`, which uses the default value set by different
+                backends and formats.
             input_signature: Optional. Specifies the shape and dtype of the
                 model inputs. Can be a structure of `keras.InputSpec`,
                 `tf.TensorSpec`, `backend.KerasTensor`, or backend tensor. If
@@ -693,6 +694,10 @@ class Model(Layer[_InputT_contra, _OutputT_co]):
 
         **Note:** This feature is currently supported only with TensorFlow, JAX
         and Torch backends.
+
+        **Note:** Be aware that the exported artifact may contain information
+        from the local file system when using `format="onnx"`, `verbose=True`
+        and Torch backend.
 
         Examples:
 
