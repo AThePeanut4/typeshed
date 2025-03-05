@@ -319,20 +319,25 @@ class partialmethod(Generic[_T]):
             """
             ...
 
+if sys.version_info >= (3, 11):
+    _RegType: TypeAlias = type[Any] | types.UnionType
+else:
+    _RegType: TypeAlias = type[Any]
+
 class _SingleDispatchCallable(Generic[_T]):
     registry: types.MappingProxyType[Any, Callable[..., _T]]
     def dispatch(self, cls: Any) -> Callable[..., _T]: ...
     # @fun.register(complex)
     # def _(arg, verbose=False): ...
     @overload
-    def register(self, cls: type[Any], func: None = None) -> Callable[[Callable[..., _T]], Callable[..., _T]]: ...
+    def register(self, cls: _RegType, func: None = None) -> Callable[[Callable[..., _T]], Callable[..., _T]]: ...
     # @fun.register
     # def _(arg: int, verbose=False):
     @overload
     def register(self, cls: Callable[..., _T], func: None = None) -> Callable[..., _T]: ...
     # fun.register(int, lambda x: x)
     @overload
-    def register(self, cls: type[Any], func: Callable[..., _T]) -> Callable[..., _T]: ...
+    def register(self, cls: _RegType, func: Callable[..., _T]) -> Callable[..., _T]: ...
     def _clear_cache(self) -> None: ...
     def __call__(self, /, *args: Any, **kwargs: Any) -> _T: ...
 
@@ -361,13 +366,7 @@ class singledispatchmethod(Generic[_T]):
     @property
     def __isabstractmethod__(self) -> bool: ...
     @overload
-    def register(self, cls: type[Any], method: None = None) -> Callable[[Callable[..., _T]], Callable[..., _T]]:
-        """
-        generic_method.register(cls, func) -> func
-
-        Registers a new implementation for the given *cls* on a *generic_method*.
-        """
-        ...
+    def register(self, cls: _RegType, method: None = None) -> Callable[[Callable[..., _T]], Callable[..., _T]]: ...
     @overload
     def register(self, cls: Callable[..., _T], method: None = None) -> Callable[..., _T]:
         """
@@ -377,13 +376,7 @@ class singledispatchmethod(Generic[_T]):
         """
         ...
     @overload
-    def register(self, cls: type[Any], method: Callable[..., _T]) -> Callable[..., _T]:
-        """
-        generic_method.register(cls, func) -> func
-
-        Registers a new implementation for the given *cls* on a *generic_method*.
-        """
-        ...
+    def register(self, cls: _RegType, method: Callable[..., _T]) -> Callable[..., _T]: ...
     def __get__(self, obj: _S, cls: type[_S] | None = None) -> Callable[..., _T]: ...
 
 class cached_property(Generic[_T_co]):

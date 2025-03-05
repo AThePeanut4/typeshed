@@ -217,7 +217,7 @@ This module also defines an exception 'error'.
 """
 
 import sys
-from _typeshed import ReadableBuffer
+from _typeshed import ReadableBuffer, Unused
 from collections.abc import Callable, Mapping
 from typing import Any, AnyStr, Generic, Literal, TypeVar, final, overload
 from typing_extensions import Self
@@ -1115,7 +1115,7 @@ class Pattern(Generic[AnyStr]):
         """
         ...
     def __copy__(self) -> Self: ...
-    def __deepcopy__(self) -> Self: ...
+    def __deepcopy__(self, memo: Unused, /) -> Self: ...
     if sys.version_info >= (3, 9):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias:
             """See PEP 585"""
@@ -1435,7 +1435,7 @@ class Match(Generic[AnyStr]):
     @overload
     def __getitem__(self, key: int | str, /) -> AnyStr | Any: ...
     def __copy__(self) -> Self: ...
-    def __deepcopy__(self) -> Self: ...
+    def __deepcopy__(self, memo: Unused, /) -> Self: ...
     if sys.version_info >= (3, 9):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias:
             """See PEP 585"""
