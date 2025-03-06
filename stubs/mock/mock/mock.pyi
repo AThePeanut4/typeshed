@@ -148,10 +148,38 @@ class NonCallableMock(Base, Any):
         **kwargs: Any,
     ) -> None: ...
     def __getattr__(self, name: str) -> Any: ...
-    def _calls_repr(self) -> str: ...
-    def assert_called_with(_mock_self, *args: Any, **kwargs: Any) -> None: ...
-    def assert_not_called(_mock_self) -> None: ...
-    def assert_called_once_with(_mock_self, *args: Any, **kwargs: Any) -> None: ...
+    def _calls_repr(self) -> str:
+        """
+        Renders self.mock_calls as a string.
+
+                Example: "
+        Calls: [call(1), call(2)]."
+
+                If self.mock_calls is empty, an empty string is returned. The
+                output will be truncated if very long.
+        
+        """
+        ...
+    def assert_called_with(_mock_self, *args: Any, **kwargs: Any) -> None:
+        """
+        assert that the last call was made with the specified arguments.
+
+        Raises an AssertionError if the args and keyword args passed in are
+        different to the last call to the mock.
+        """
+        ...
+    def assert_not_called(_mock_self) -> None:
+        """
+        assert that the mock was never called.
+        
+        """
+        ...
+    def assert_called_once_with(_mock_self, *args: Any, **kwargs: Any) -> None:
+        """
+        assert that the mock was called exactly once and that that call was
+        with the specified arguments.
+        """
+        ...
     def _format_mock_failure_message(self, args: Any, kwargs: Any, action: str = "call") -> str: ...
     def assert_called(_mock_self) -> None:
         """
@@ -382,7 +410,8 @@ class _patch(Generic[_T]):
 class _patch_dict:
     """
     Patch a dictionary, or dictionary like object, and restore the dictionary
-    to its original state after the test.
+    to its original state after the test, where the restored dictionary is
+    a copy of the dictionary as it was before the test.
 
     `in_dict` can be a dictionary or a mapping like container. If it is a
     mapping then it must at least support getting, setting and deleting items
