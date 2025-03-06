@@ -455,7 +455,17 @@ if sys.platform == "win32" and sys.version_info < (3, 12):
     def which(cmd: os.PathLike[str], mode: int = 1, path: StrPath | None = None) -> NoReturn: ...
 
 @overload
-def which(cmd: StrPath, mode: int = 1, path: StrPath | None = None) -> str | None: ...
+def which(cmd: StrPath, mode: int = 1, path: StrPath | None = None) -> str | None:
+    """
+    Given a command, mode, and a PATH string, return the path which
+    conforms to the given mode on the PATH, or None if there is no such
+    file.
+
+    `mode` defaults to os.F_OK | os.X_OK. `path` defaults to the result
+    of os.environ.get("PATH"), or can be overridden with a custom search
+    path.
+    """
+    ...
 @overload
 def which(cmd: bytes, mode: int = 1, path: StrPath | None = None) -> bytes | None:
     """
