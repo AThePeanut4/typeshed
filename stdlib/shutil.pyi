@@ -9,7 +9,7 @@ import sys
 from _typeshed import BytesPath, ExcInfo, FileDescriptorOrPath, StrOrBytesPath, StrPath, SupportsRead, SupportsWrite
 from collections.abc import Callable, Iterable, Sequence
 from tarfile import _TarfileFilter
-from typing import Any, AnyStr, NamedTuple, Protocol, TypeVar, overload
+from typing import Any, AnyStr, NamedTuple, NoReturn, Protocol, TypeVar, overload
 from typing_extensions import TypeAlias, deprecated
 
 __all__ = [
@@ -42,7 +42,6 @@ __all__ = [
 ]
 
 _StrOrBytesPathT = TypeVar("_StrOrBytesPathT", bound=StrOrBytesPath)
-_StrPathT = TypeVar("_StrPathT", bound=StrPath)
 # Return value of some functions that may either return a path-like object that was passed in or
 # a string
 _PathReturn: TypeAlias = Any
@@ -450,18 +449,13 @@ else:
         """
         ...
 
-@overload
-def which(cmd: _StrPathT, mode: int = 1, path: StrPath | None = None) -> str | _StrPathT | None:
-    """
-    Given a command, mode, and a PATH string, return the path which
-    conforms to the given mode on the PATH, or None if there is no such
-    file.
+if sys.platform == "win32" and sys.version_info < (3, 12):
+    @overload
+    @deprecated("On Windows before Python 3.12, using a PathLike as `cmd` would always fail or return `None`.")
+    def which(cmd: os.PathLike[str], mode: int = 1, path: StrPath | None = None) -> NoReturn: ...
 
-    `mode` defaults to os.F_OK | os.X_OK. `path` defaults to the result
-    of os.environ.get("PATH"), or can be overridden with a custom search
-    path.
-    """
-    ...
+@overload
+def which(cmd: StrPath, mode: int = 1, path: StrPath | None = None) -> str | None: ...
 @overload
 def which(cmd: bytes, mode: int = 1, path: StrPath | None = None) -> bytes | None:
     """
