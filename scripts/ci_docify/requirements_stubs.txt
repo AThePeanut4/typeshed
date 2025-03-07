@@ -102,7 +102,7 @@ flake8-simplify==0.21.*
 tabulate==0.9.*
 workalendar==17.0.*
 first==2.0.*
-fanstatic==1.4.*
+fanstatic==1.5.*
 assertpy==1.1.*
 console-menu==0.8.*
 Jetson.GPIO==2.1.*
