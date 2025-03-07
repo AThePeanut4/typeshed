@@ -105,490 +105,6 @@ PAX_NAME_FIELDS: set[str]
 
 ENCODING: str
 
-@overload
-def open(
-    name: StrOrBytesPath | None = None,
-    mode: Literal["r", "r:*", "r:", "r:gz", "r:bz2", "r:xz"] = "r",
-    fileobj: IO[bytes] | None = None,
-    bufsize: int = 10240,
-    *,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | None,
-    mode: Literal["x", "x:", "a", "a:", "w", "w:", "w:tar"],
-    fileobj: _Fileobj | None = None,
-    bufsize: int = 10240,
-    *,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | None = None,
-    *,
-    mode: Literal["x", "x:", "a", "a:", "w", "w:", "w:tar"],
-    fileobj: _Fileobj | None = None,
-    bufsize: int = 10240,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | None,
-    mode: Literal["x:gz", "x:bz2", "w:gz", "w:bz2"],
-    fileobj: _Fileobj | None = None,
-    bufsize: int = 10240,
-    *,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-    compresslevel: int = 9,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | None = None,
-    *,
-    mode: Literal["x:gz", "x:bz2", "w:gz", "w:bz2"],
-    fileobj: _Fileobj | None = None,
-    bufsize: int = 10240,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-    compresslevel: int = 9,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | None,
-    mode: Literal["x:xz", "w:xz"],
-    fileobj: _Fileobj | None = None,
-    bufsize: int = 10240,
-    *,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-    preset: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | None = None,
-    *,
-    mode: Literal["x:xz", "w:xz"],
-    fileobj: _Fileobj | None = None,
-    bufsize: int = 10240,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-    preset: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | ReadableBuffer | None = None,
-    *,
-    mode: Literal["r|*", "r|", "r|gz", "r|bz2", "r|xz"],
-    fileobj: IO[bytes] | None = None,
-    bufsize: int = 10240,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-    preset: int | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-@overload
-def open(
-    name: StrOrBytesPath | WriteableBuffer | None = None,
-    *,
-    mode: Literal["w|", "w|gz", "w|bz2", "w|xz"],
-    fileobj: IO[bytes] | None = None,
-    bufsize: int = 10240,
-    format: int | None = ...,
-    tarinfo: type[TarInfo] | None = ...,
-    dereference: bool | None = ...,
-    ignore_zeros: bool | None = ...,
-    encoding: str | None = ...,
-    errors: str = ...,
-    pax_headers: Mapping[str, str] | None = ...,
-    debug: int | None = ...,
-    errorlevel: int | None = ...,
-    preset: int | None = ...,
-) -> TarFile:
-    """
-    Open a tar archive for reading, writing or appending. Return
-    an appropriate TarFile class.
-
-    mode:
-    'r' or 'r:*' open for reading with transparent compression
-    'r:'         open for reading exclusively uncompressed
-    'r:gz'       open for reading with gzip compression
-    'r:bz2'      open for reading with bzip2 compression
-    'r:xz'       open for reading with lzma compression
-    'a' or 'a:'  open for appending, creating the file if necessary
-    'w' or 'w:'  open for writing without compression
-    'w:gz'       open for writing with gzip compression
-    'w:bz2'      open for writing with bzip2 compression
-    'w:xz'       open for writing with lzma compression
-
-    'x' or 'x:'  create a tarfile exclusively without compression, raise
-                 an exception if the file is already created
-    'x:gz'       create a gzip compressed tarfile, raise an exception
-                 if the file is already created
-    'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                 if the file is already created
-    'x:xz'       create an lzma compressed tarfile, raise an exception
-                 if the file is already created
-
-    'r|*'        open a stream of tar blocks with transparent compression
-    'r|'         open an uncompressed stream of tar blocks for reading
-    'r|gz'       open a gzip compressed stream of tar blocks
-    'r|bz2'      open a bzip2 compressed stream of tar blocks
-    'r|xz'       open an lzma compressed stream of tar blocks
-    'w|'         open an uncompressed stream for writing
-    'w|gz'       open a gzip compressed stream for writing
-    'w|bz2'      open a bzip2 compressed stream for writing
-    'w|xz'       open an lzma compressed stream for writing
-    """
-    ...
-
 class ExFileObject(io.BufferedReader):
     def __init__(self, tarfile: TarFile, tarinfo: TarInfo) -> None: ...
 
@@ -674,18 +190,14 @@ class TarFile:
     def __exit__(
         self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
     ) -> None: ...
-    def __iter__(self) -> Iterator[TarInfo]:
-        """
-        Provide an iterator object.
-        
-        """
-        ...
+    def __iter__(self) -> Iterator[TarInfo]: ...
+    @overload
     @classmethod
     def open(
         cls,
         name: StrOrBytesPath | None = None,
-        mode: str = "r",
-        fileobj: IO[bytes] | None = None,  # depends on mode
+        mode: Literal["r", "r:*", "r:", "r:gz", "r:bz2", "r:xz"] = "r",
+        fileobj: _Fileobj | None = None,
         bufsize: int = 10240,
         *,
         format: int | None = ...,
@@ -697,43 +209,183 @@ class TarFile:
         pax_headers: Mapping[str, str] | None = ...,
         debug: int | None = ...,
         errorlevel: int | None = ...,
-    ) -> Self:
-        """
-        Open a tar archive for reading, writing or appending. Return
-        an appropriate TarFile class.
-
-        mode:
-        'r' or 'r:*' open for reading with transparent compression
-        'r:'         open for reading exclusively uncompressed
-        'r:gz'       open for reading with gzip compression
-        'r:bz2'      open for reading with bzip2 compression
-        'r:xz'       open for reading with lzma compression
-        'a' or 'a:'  open for appending, creating the file if necessary
-        'w' or 'w:'  open for writing without compression
-        'w:gz'       open for writing with gzip compression
-        'w:bz2'      open for writing with bzip2 compression
-        'w:xz'       open for writing with lzma compression
-
-        'x' or 'x:'  create a tarfile exclusively without compression, raise
-                     an exception if the file is already created
-        'x:gz'       create a gzip compressed tarfile, raise an exception
-                     if the file is already created
-        'x:bz2'      create a bzip2 compressed tarfile, raise an exception
-                     if the file is already created
-        'x:xz'       create an lzma compressed tarfile, raise an exception
-                     if the file is already created
-
-        'r|*'        open a stream of tar blocks with transparent compression
-        'r|'         open an uncompressed stream of tar blocks for reading
-        'r|gz'       open a gzip compressed stream of tar blocks
-        'r|bz2'      open a bzip2 compressed stream of tar blocks
-        'r|xz'       open an lzma compressed stream of tar blocks
-        'w|'         open an uncompressed stream for writing
-        'w|gz'       open a gzip compressed stream for writing
-        'w|bz2'      open a bzip2 compressed stream for writing
-        'w|xz'       open an lzma compressed stream for writing
-        """
-        ...
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | None,
+        mode: Literal["x", "x:", "a", "a:", "w", "w:", "w:tar"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        *,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | None = None,
+        *,
+        mode: Literal["x", "x:", "a", "a:", "w", "w:", "w:tar"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | None,
+        mode: Literal["x:gz", "x:bz2", "w:gz", "w:bz2"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        *,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+        compresslevel: int = 9,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | None = None,
+        *,
+        mode: Literal["x:gz", "x:bz2", "w:gz", "w:bz2"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+        compresslevel: int = 9,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | None,
+        mode: Literal["x:xz", "w:xz"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        *,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+        preset: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None = ...,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | None = None,
+        *,
+        mode: Literal["x:xz", "w:xz"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+        preset: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None = ...,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | ReadableBuffer | None = None,
+        *,
+        mode: Literal["r|*", "r|", "r|gz", "r|bz2", "r|xz"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | WriteableBuffer | None = None,
+        *,
+        mode: Literal["w|", "w|xz"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+    ) -> Self: ...
+    @overload
+    @classmethod
+    def open(
+        cls,
+        name: StrOrBytesPath | WriteableBuffer | None = None,
+        *,
+        mode: Literal["w|gz", "w|bz2"],
+        fileobj: _Fileobj | None = None,
+        bufsize: int = 10240,
+        format: int | None = ...,
+        tarinfo: type[TarInfo] | None = ...,
+        dereference: bool | None = ...,
+        ignore_zeros: bool | None = ...,
+        encoding: str | None = ...,
+        errors: str = ...,
+        pax_headers: Mapping[str, str] | None = ...,
+        debug: int | None = ...,
+        errorlevel: int | None = ...,
+        compresslevel: int = 9,
+    ) -> Self: ...
     @classmethod
     def taropen(
         cls,
@@ -1073,6 +725,8 @@ class TarFile:
         appended to the archive.
         """
         ...
+
+open = TarFile.open
 
 if sys.version_info >= (3, 9):
     def is_tarfile(name: StrOrBytesPath | IO[bytes]) -> bool:
