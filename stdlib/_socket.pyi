@@ -1172,24 +1172,126 @@ def getaddrinfo(
     type: int = ...,
     proto: int = ...,
     flags: int = ...,
-) -> list[tuple[int, int, int, str, tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes]]]: ...
-def gethostbyname(hostname: str, /) -> str: ...
-def gethostbyname_ex(hostname: str, /) -> tuple[str, list[str], list[str]]: ...
-def gethostname() -> str: ...
-def gethostbyaddr(ip_address: str, /) -> tuple[str, list[str], list[str]]: ...
-def getnameinfo(sockaddr: tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes], flags: int, /) -> tuple[str, str]: ...
-def getprotobyname(protocolname: str, /) -> int: ...
-def getservbyname(servicename: str, protocolname: str = ..., /) -> int: ...
-def getservbyport(port: int, protocolname: str = ..., /) -> str: ...
-def ntohl(x: int, /) -> int: ...  # param & ret val are 32-bit ints
-def ntohs(x: int, /) -> int: ...  # param & ret val are 16-bit ints
-def htonl(x: int, /) -> int: ...  # param & ret val are 32-bit ints
-def htons(x: int, /) -> int: ...  # param & ret val are 16-bit ints
-def inet_aton(ip_addr: str, /) -> bytes: ...  # ret val 4 bytes in length
-def inet_ntoa(packed_ip: ReadableBuffer, /) -> str: ...
-def inet_pton(address_family: int, ip_string: str, /) -> bytes: ...
-def inet_ntop(address_family: int, packed_ip: ReadableBuffer, /) -> str: ...
-def getdefaulttimeout() -> float | None: ...
+) -> list[tuple[int, int, int, str, tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes]]]:
+    """
+    getaddrinfo(host, port [, family, type, proto, flags])
+        -> list of (family, type, proto, canonname, sockaddr)
+
+    Resolve host and port into addrinfo struct.
+    """
+    ...
+def gethostbyname(hostname: str, /) -> str:
+    """
+    gethostbyname(host) -> address
+
+    Return the IP address (a string of the form '255.255.255.255') for a host.
+    """
+    ...
+def gethostbyname_ex(hostname: str, /) -> tuple[str, list[str], list[str]]:
+    """
+    gethostbyname_ex(host) -> (name, aliaslist, addresslist)
+
+    Return the true host name, a list of aliases, and a list of IP addresses,
+    for a host.  The host argument is a string giving a host name or IP number.
+    """
+    ...
+def gethostname() -> str:
+    """
+    gethostname() -> string
+
+    Return the current host name.
+    """
+    ...
+def gethostbyaddr(ip_address: str, /) -> tuple[str, list[str], list[str]]:
+    """
+    gethostbyaddr(host) -> (name, aliaslist, addresslist)
+
+    Return the true host name, a list of aliases, and a list of IP addresses,
+    for a host.  The host argument is a string giving a host name or IP number.
+    """
+    ...
+def getnameinfo(sockaddr: tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes], flags: int, /) -> tuple[str, str]:
+    """
+    getnameinfo(sockaddr, flags) --> (host, port)
+
+    Get host and port for a sockaddr.
+    """
+    ...
+def getprotobyname(protocolname: str, /) -> int:
+    """
+    getprotobyname(name) -> integer
+
+    Return the protocol number for the named protocol.  (Rarely used.)
+    """
+    ...
+def getservbyname(servicename: str, protocolname: str = ..., /) -> int:
+    """
+    getservbyname(servicename[, protocolname]) -> integer
+
+    Return a port number from a service name and protocol name.
+    The optional protocol name, if given, should be 'tcp' or 'udp',
+    otherwise any protocol will match.
+    """
+    ...
+def getservbyport(port: int, protocolname: str = ..., /) -> str:
+    """
+    getservbyport(port[, protocolname]) -> string
+
+    Return the service name from a port number and protocol name.
+    The optional protocol name, if given, should be 'tcp' or 'udp',
+    otherwise any protocol will match.
+    """
+    ...
+def ntohl(x: int, /) -> int:
+    """
+    ntohl(integer) -> integer
+
+    Convert a 32-bit integer from network to host byte order.
+    """
+    ...
+def ntohs(x: int, /) -> int:
+    """Convert a 16-bit unsigned integer from network to host byte order."""
+    ...
+def htonl(x: int, /) -> int:
+    """
+    htonl(integer) -> integer
+
+    Convert a 32-bit integer from host to network byte order.
+    """
+    ...
+def htons(x: int, /) -> int:
+    """Convert a 16-bit unsigned integer from host to network byte order."""
+    ...
+def inet_aton(ip_addr: str, /) -> bytes:
+    """Convert an IP address in string format (123.45.67.89) to the 32-bit packed binary format used in low-level network functions."""
+    ...
+def inet_ntoa(packed_ip: ReadableBuffer, /) -> str:
+    """Convert an IP address from 32-bit packed binary format to string format."""
+    ...
+def inet_pton(address_family: int, ip_string: str, /) -> bytes:
+    """
+    inet_pton(af, ip) -> packed IP address string
+
+    Convert an IP address from string format to a packed string suitable
+    for use with low-level network functions.
+    """
+    ...
+def inet_ntop(address_family: int, packed_ip: ReadableBuffer, /) -> str:
+    """
+    inet_ntop(af, packed_ip) -> string formatted IP address
+
+    Convert a packed IP address of the given family to string format.
+    """
+    ...
+def getdefaulttimeout() -> float | None:
+    """
+    getdefaulttimeout() -> timeout
+
+    Returns the default timeout in seconds (float) for new socket objects.
+    A value of None indicates that new socket objects have no timeout.
+    When the socket module is first imported, the default is None.
+    """
+    ...
 
 # F811: "Redefinition of unused `timeout`"
 def setdefaulttimeout(timeout: float | None, /) -> None:
