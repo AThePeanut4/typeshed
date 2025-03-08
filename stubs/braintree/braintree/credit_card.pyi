@@ -133,6 +133,7 @@ class CreditCard(Resource):
     Payroll: type[CardTypeIndicator]
     Prepaid: type[CardTypeIndicator]
     ProductId: type[CardTypeIndicator]
+    PrepaidReloadable: type[CardTypeIndicator]
     @staticmethod
     def create(params: Incomplete | None = None):
         """

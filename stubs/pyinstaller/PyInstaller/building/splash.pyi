@@ -1,4 +1,4 @@
-from _typeshed import Incomplete, StrPath
+from _typeshed import StrPath
 
 from PyInstaller.building.datastruct import Target, _TOCTuple
 
@@ -14,20 +14,22 @@ class Splash(Target):
     build targets in order to enable the splash screen.
     """
     image_file: str
-    full_tk: Incomplete
-    name: Incomplete
-    script_name: Incomplete
-    minify_script: Incomplete
-    max_img_size: Incomplete
-    text_pos: Incomplete
-    text_size: Incomplete
-    text_font: Incomplete
-    text_color: Incomplete
-    text_default: Incomplete
-    always_on_top: Incomplete
-    uses_tkinter: Incomplete
-    script: Incomplete
-    splash_requirements: Incomplete
+    full_tk: bool
+    tcl_lib: str
+    tk_lib: str
+    name: str
+    script_name: StrPath
+    minify_script: bool
+    max_img_size: tuple[int, int]
+    text_pos: tuple[int, int] | None
+    text_size: int
+    text_font: str
+    text_color: str
+    text_default: str
+    always_on_top: bool
+    uses_tkinter: bool
+    script: str
+    splash_requirements: set[str]
     binaries: list[_TOCTuple]
     def __init__(
         self,
@@ -43,7 +45,7 @@ class Splash(Target):
         full_tk: bool = False,
         minify_script: bool = True,
         name: str = ...,
-        script_name: str = ...,
+        script_name: StrPath = ...,
         max_img_size: tuple[int, int] | None = (760, 480),
         always_on_top: bool = True,
     ) -> None:
