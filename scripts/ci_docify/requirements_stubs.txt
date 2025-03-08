@@ -23,7 +23,7 @@ vobject~=0.9.9
 qrcode[pil]==8.0.*
 pycocotools==2.0.*
 uWSGI==2.0.*
-braintree==4.33.*
+braintree==4.34.*
 whatthepatch==1.0.*
 python-http-client==3.3.7
 portpicker==1.6.*
