@@ -195,6 +195,8 @@ class Curl:
 
         - ``SHARE`` option accepts a :ref:`curlshareobject`.
 
+        - ``STDERR`` option is not currently supported.
+
         It is possible to set integer options - and only them - that PycURL does
         not know about by using the numeric value of the option constant directly.
         For example, ``pycurl.VERBOSE`` has the value 42, and may be set as follows::
