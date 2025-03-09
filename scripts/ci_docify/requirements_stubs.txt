@@ -61,7 +61,7 @@ opentracing==2.4.*
 bleach[css]==6.2.*
 mock==5.2.*
 antlr4-python3-runtime==4.13.*
-pycurl==7.45.4
+pycurl==7.45.6
 Send2Trash==1.8.*
 html5lib[all]==1.1.*
 peewee==3.17.9
