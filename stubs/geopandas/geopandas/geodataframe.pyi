@@ -2676,17 +2676,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         dtype: AstypeArg | Mapping[Any, Dtype] | pd.Series[Any],  # any because of mapping invariance and series typevar bounds
         copy: bool | None = None,
         errors: Literal["ignore", "raise"] = "raise",
-    ) -> GeoDataFrame | pd.DataFrame:
-        """
-        Cast a pandas object to a specified dtype ``dtype``.
-        Returns a GeoDataFrame when the geometry column is kept as geometries,
-        otherwise returns a pandas DataFrame.
-        See the pandas.DataFrame.astype docstring for more details.
-        Returns
-        -------
-        GeoDataFrame or DataFrame
-        """
-        ...
+    ) -> GeoDataFrame: ...
     def to_postgis(
         self,
         name: str,

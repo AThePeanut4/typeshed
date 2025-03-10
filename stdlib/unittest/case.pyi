@@ -22,7 +22,7 @@ from typing import (
     TypeVar,
     overload,
 )
-from typing_extensions import ParamSpec, Self, TypeAlias
+from typing_extensions import Never, ParamSpec, Self, TypeAlias
 from warnings import WarningMessage
 
 if sys.version_info >= (3, 9):
@@ -908,6 +908,10 @@ class TestCase:
         ) -> None:
             """Checks whether dictionary is a superset of subset."""
             ...
+
+    if sys.version_info >= (3, 10):
+        # Runtime has *args, **kwargs, but will error if any are supplied
+        def __init_subclass__(cls, *args: Never, **kwargs: Never) -> None: ...
 
 class FunctionTestCase(TestCase):
     """
