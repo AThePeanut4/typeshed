@@ -1,7 +1,7 @@
 """
 Constants used by COM Controls
 
-Hand created version of OLECTL.H constants.
+Hand created version of olectl.h constants.
 """
 
 FACILITY_CONTROL: int
