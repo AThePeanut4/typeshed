@@ -3,7 +3,7 @@
 from win32.lib.pywintypes import error as error
 
 def GetHandle(*args): ...  # incomplete
-def GetTracer(*args): ...  # incomplete
+def GetTracer(): ...
 def InitRead(*args): ...  # incomplete
 def InitWrite(*args): ...  # incomplete
 def TermRead(*args): ...  # incomplete
