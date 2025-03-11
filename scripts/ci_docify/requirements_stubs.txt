@@ -53,7 +53,7 @@ greenlet==3.1.*
 Flask-Migrate==4.1.*
 docker==7.1.*
 pyserial[cp2110]==3.5.*
-pywin32==308.*
+pywin32==309.*
 mypy-extensions==1.0.*
 pytest-lazy-fixture==0.6.*
 docutils==0.21.*
@@ -119,7 +119,7 @@ Pygments==2.19.*
 polib==1.2.*
 objgraph==3.6.*
 jsonschema[format]==4.23.*
-ibm-db==3.2.5
+ibm-db==3.2.6
 pyjks==20.0.*
 six==1.17.*
 singledispatch==4.1.*
