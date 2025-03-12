@@ -24,7 +24,7 @@ from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWra
 from os import PathLike, stat_result
 from types import TracebackType
 from typing import IO, Any, BinaryIO, ClassVar, Literal, overload
-from typing_extensions import Self, deprecated
+from typing_extensions import Never, Self, deprecated
 
 if sys.version_info >= (3, 9):
     from types import GenericAlias
@@ -533,15 +533,14 @@ class Path(PurePath):
     @overload
     def open(
         self, mode: str, buffering: int = -1, encoding: str | None = None, errors: str | None = None, newline: str | None = None
-    ) -> IO[Any]:
-        """
-        Open the file pointed to by this path and return a file object, as
-        the built-in open() function does.
-        """
-        ...
-    if sys.platform != "win32":
-        # These methods do "exist" on Windows, but they always raise NotImplementedError,
-        # so it's safer to pretend they don't exist
+    ) -> IO[Any]: ...
+
+    # These methods do "exist" on Windows on <3.13, but they always raise NotImplementedError.
+    if sys.platform == "win32":
+        if sys.version_info < (3, 13):
+            def owner(self: Never) -> str: ...  # type: ignore[misc]
+            def group(self: Never) -> str: ...  # type: ignore[misc]
+    else:
         if sys.version_info >= (3, 13):
             def owner(self, *, follow_symlinks: bool = True) -> str:
                 """Return the login name of the file owner."""
@@ -559,10 +558,10 @@ class Path(PurePath):
 
     # This method does "exist" on Windows on <3.12, but always raises NotImplementedError
     # On py312+, it works properly on Windows, as with all other platforms
-    if sys.platform != "win32" or sys.version_info >= (3, 12):
-        def is_mount(self) -> bool:
-            """Check if this path is a mount point"""
-            ...
+    if sys.platform == "win32" and sys.version_info < (3, 12):
+        def is_mount(self: Never) -> bool: ...  # type: ignore[misc]
+    else:
+        def is_mount(self) -> bool: ...
 
     if sys.version_info >= (3, 9):
         def readlink(self) -> Self:

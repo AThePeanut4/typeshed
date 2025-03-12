@@ -20,7 +20,7 @@ from importlib.machinery import ModuleSpec
 
 # pytype crashes if types.MappingProxyType inherits from collections.abc.Mapping instead of typing.Mapping
 from typing import Any, ClassVar, Literal, Mapping, TypeVar, final, overload  # noqa: Y022
-from typing_extensions import ParamSpec, Self, TypeVarTuple, deprecated
+from typing_extensions import ParamSpec, Self, TypeAliasType, TypeVarTuple, deprecated
 
 __all__ = [
     "FunctionType",
@@ -949,7 +949,7 @@ if sys.version_info >= (3, 9):
         E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
         """
         @property
-        def __origin__(self) -> type: ...
+        def __origin__(self) -> type | TypeAliasType: ...
         @property
         def __args__(self) -> tuple[Any, ...]: ...
         @property
