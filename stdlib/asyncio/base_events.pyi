@@ -235,7 +235,9 @@ class BaseEventLoop(AbstractEventLoop):
     # Methods for interacting with threads
     def call_soon_threadsafe(
         self, callback: Callable[[Unpack[_Ts]], object], *args: Unpack[_Ts], context: Context | None = None
-    ) -> Handle: ...
+    ) -> Handle:
+        """Like call_soon(), but thread-safe."""
+        ...
     def run_in_executor(self, executor: Executor | None, func: Callable[[Unpack[_Ts]], _T], *args: Unpack[_Ts]) -> Future[_T]: ...
     def set_default_executor(self, executor: ThreadPoolExecutor) -> None: ...  # type: ignore[override]
     # Network I/O methods returning Futures.

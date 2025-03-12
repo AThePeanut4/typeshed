@@ -533,7 +533,12 @@ class Path(PurePath):
     @overload
     def open(
         self, mode: str, buffering: int = -1, encoding: str | None = None, errors: str | None = None, newline: str | None = None
-    ) -> IO[Any]: ...
+    ) -> IO[Any]:
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        ...
 
     # These methods do "exist" on Windows on <3.13, but they always raise NotImplementedError.
     if sys.platform == "win32":
@@ -561,7 +566,9 @@ class Path(PurePath):
     if sys.platform == "win32" and sys.version_info < (3, 12):
         def is_mount(self: Never) -> bool: ...  # type: ignore[misc]
     else:
-        def is_mount(self) -> bool: ...
+        def is_mount(self) -> bool:
+            """Check if this path is a mount point"""
+            ...
 
     if sys.version_info >= (3, 9):
         def readlink(self) -> Self:
