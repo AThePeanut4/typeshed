@@ -355,11 +355,27 @@ class FieldDescriptor(DescriptorBase):
     @property
     def label(self): ...
     @property
-    def camelcase_name(self) -> str: ...
+    def camelcase_name(self) -> str:
+        """
+        Camelcase name of this field.
+
+        Returns:
+          str: the name in CamelCase.
+        """
+        ...
     @property
-    def has_presence(self) -> bool: ...
+    def has_presence(self) -> bool:
+        """
+        Whether the field distinguishes between unpopulated and default values.
+
+        Raises:
+          RuntimeError: singular field that is not linked with message nor file.
+        """
+        ...
     @property
-    def is_packed(self) -> bool: ...
+    def is_packed(self) -> bool:
+        """Returns if the field is packed."""
+        ...
     has_default_value: Any
     default_value: Any
     containing_type: Any
