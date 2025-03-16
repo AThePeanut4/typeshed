@@ -108,7 +108,7 @@ from _typeshed import SupportsRichComparisonT
 from collections.abc import Callable, Hashable, Iterable, Sequence
 from decimal import Decimal
 from fractions import Fraction
-from typing import Any, Literal, NamedTuple, SupportsFloat, TypeVar
+from typing import Literal, NamedTuple, SupportsFloat, SupportsIndex, TypeVar
 from typing_extensions import Self, TypeAlias
 
 __all__ = [
@@ -142,6 +142,9 @@ _NumberT = TypeVar("_NumberT", float, Decimal, Fraction)
 
 # Used in mode, multimode
 _HashableT = TypeVar("_HashableT", bound=Hashable)
+
+# Used in NormalDist.samples and kde_random
+_Seed: TypeAlias = int | float | str | bytes | bytearray  # noqa: Y041
 
 class StatisticsError(ValueError): ...
 
@@ -544,135 +547,31 @@ class NormalDist:
         """Return the median of the normal distribution"""
         ...
     @property
-    def mode(self) -> float:
-        """
-        Return the mode of the normal distribution
-
-        The mode is the value x where which the probability density
-        function (pdf) takes its maximum value.
-        """
-        ...
+    def mode(self) -> float: ...
     @property
-    def stdev(self) -> float:
-        """Standard deviation of the normal distribution."""
-        ...
+    def stdev(self) -> float: ...
     @property
-    def variance(self) -> float:
-        """Square of the standard deviation."""
-        ...
+    def variance(self) -> float: ...
     @classmethod
-    def from_samples(cls, data: Iterable[SupportsFloat]) -> Self:
-        """Make a normal distribution instance from sample data."""
-        ...
-    def samples(self, n: int, *, seed: Any | None = None) -> list[float]:
-        """Generate *n* samples for a given mean and standard deviation."""
-        ...
-    def pdf(self, x: float) -> float:
-        """Probability density function.  P(x <= X < x+dx) / dx"""
-        ...
-    def cdf(self, x: float) -> float:
-        """Cumulative distribution function.  P(X <= x)"""
-        ...
-    def inv_cdf(self, p: float) -> float:
-        """
-        Inverse cumulative distribution function.  x : P(X <= x) = p
-
-        Finds the value of the random variable such that the probability of
-        the variable being less than or equal to that value equals the given
-        probability.
-
-        This function is also called the percent point function or quantile
-        function.
-        """
-        ...
-    def overlap(self, other: NormalDist) -> float:
-        """
-        Compute the overlapping coefficient (OVL) between two normal distributions.
-
-        Measures the agreement between two normal probability distributions.
-        Returns a value between 0.0 and 1.0 giving the overlapping area in
-        the two underlying probability density functions.
-
-            >>> N1 = NormalDist(2.4, 1.6)
-            >>> N2 = NormalDist(3.2, 2.0)
-            >>> N1.overlap(N2)
-            0.8035050657330205
-        """
-        ...
-    def quantiles(self, n: int = 4) -> list[float]:
-        """
-        Divide into *n* continuous intervals with equal probability.
-
-        Returns a list of (n - 1) cut points separating the intervals.
-
-        Set *n* to 4 for quartiles (the default).  Set *n* to 10 for deciles.
-        Set *n* to 100 for percentiles which gives the 99 cuts points that
-        separate the normal distribution in to 100 equal sized groups.
-        """
-        ...
+    def from_samples(cls, data: Iterable[SupportsFloat]) -> Self: ...
+    def samples(self, n: SupportsIndex, *, seed: _Seed | None = None) -> list[float]: ...
+    def pdf(self, x: float) -> float: ...
+    def cdf(self, x: float) -> float: ...
+    def inv_cdf(self, p: float) -> float: ...
+    def overlap(self, other: NormalDist) -> float: ...
+    def quantiles(self, n: int = 4) -> list[float]: ...
     if sys.version_info >= (3, 9):
-        def zscore(self, x: float) -> float:
-            """
-            Compute the Standard Score.  (x - mean) / stdev
+        def zscore(self, x: float) -> float: ...
 
-            Describes *x* in terms of the number of standard deviations
-            above or below the mean of the normal distribution.
-            """
-            ...
-
-    def __eq__(self, x2: object) -> bool:
-        """Two NormalDist objects are equal if their mu and sigma are both equal."""
-        ...
-    def __add__(self, x2: float | NormalDist) -> NormalDist:
-        """
-        Add a constant or another NormalDist instance.
-
-        If *other* is a constant, translate mu by the constant,
-        leaving sigma unchanged.
-
-        If *other* is a NormalDist, add both the means and the variances.
-        Mathematically, this works only if the two distributions are
-        independent or if they are jointly normally distributed.
-        """
-        ...
-    def __sub__(self, x2: float | NormalDist) -> NormalDist:
-        """
-        Subtract a constant or another NormalDist instance.
-
-        If *other* is a constant, translate by the constant mu,
-        leaving sigma unchanged.
-
-        If *other* is a NormalDist, subtract the means and add the variances.
-        Mathematically, this works only if the two distributions are
-        independent or if they are jointly normally distributed.
-        """
-        ...
-    def __mul__(self, x2: float) -> NormalDist:
-        """
-        Multiply both mu and sigma by a constant.
-
-        Used for rescaling, perhaps to change measurement units.
-        Sigma is scaled with the absolute value of the constant.
-        """
-        ...
-    def __truediv__(self, x2: float) -> NormalDist:
-        """
-        Divide both mu and sigma by a constant.
-
-        Used for rescaling, perhaps to change measurement units.
-        Sigma is scaled with the absolute value of the constant.
-        """
-        ...
-    def __pos__(self) -> NormalDist:
-        """Return a copy of the instance."""
-        ...
-    def __neg__(self) -> NormalDist:
-        """Negates mu while keeping sigma the same."""
-        ...
+    def __eq__(x1, x2: object) -> bool: ...
+    def __add__(x1, x2: float | NormalDist) -> NormalDist: ...
+    def __sub__(x1, x2: float | NormalDist) -> NormalDist: ...
+    def __mul__(x1, x2: float) -> NormalDist: ...
+    def __truediv__(x1, x2: float) -> NormalDist: ...
+    def __pos__(x1) -> NormalDist: ...
+    def __neg__(x1) -> NormalDist: ...
     __radd__ = __add__
-    def __rsub__(self, x2: float | NormalDist) -> NormalDist:
-        """Subtract a NormalDist from a constant or another NormalDist."""
-        ...
+    def __rsub__(x1, x2: float | NormalDist) -> NormalDist: ...
     __rmul__ = __mul__
     def __hash__(self) -> int:
         """NormalDist objects hash equal if their mu and sigma are both equal."""
@@ -942,27 +841,5 @@ if sys.version_info >= (3, 13):
         """
         ...
     def kde_random(
-        data: Sequence[float],
-        h: float,
-        kernel: _Kernel = "normal",
-        *,
-        seed: int | float | str | bytes | bytearray | None = None,  # noqa: Y041
-    ) -> Callable[[], float]:
-        """
-        Return a function that makes a random selection from the estimated
-        probability density function created by kde(data, h, kernel).
-
-        Providing a *seed* allows reproducible selections within a single
-        thread.  The seed may be an integer, float, str, or bytes.
-
-        A StatisticsError will be raised if the *data* sequence is empty.
-
-        Example:
-
-        >>> data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2]
-        >>> rand = kde_random(data, h=1.5, seed=8675309)
-        >>> new_selections = [rand() for i in range(10)]
-        >>> [round(x, 1) for x in new_selections]
-        [0.7, 6.2, 1.2, 6.9, 7.0, 1.8, 2.5, -0.5, -1.8, 5.6]
-        """
-        ...
+        data: Sequence[float], h: float, kernel: _Kernel = "normal", *, seed: _Seed | None = None
+    ) -> Callable[[], float]: ...
