@@ -31,7 +31,8 @@ class Events(_util.Events[Any, Listener]):
         
         """
         key: Key | KeyCode | None
-        def __init__(self, key: Key | KeyCode | None) -> None: ...
+        injected: bool
+        def __init__(self, key: Key | KeyCode | None, injected: bool) -> None: ...
 
     class Release(_util.Events.Event):
         """
@@ -39,7 +40,8 @@ class Events(_util.Events[Any, Listener]):
         
         """
         key: Key | KeyCode | None
-        def __init__(self, key: Key | KeyCode | None) -> None: ...
+        injected: bool
+        def __init__(self, key: Key | KeyCode | None, injected: bool) -> None: ...
 
     def __init__(self) -> None: ...
     def __next__(self) -> Press | Release: ...

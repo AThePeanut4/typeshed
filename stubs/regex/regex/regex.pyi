@@ -1357,30 +1357,9 @@ class Match(Generic[AnyStr]):
         """
         ...
     @overload
-    def ends(self, group1: int | str, group2: int | str, /, *groups: int | str) -> tuple[list[int], ...]:
-        """
-        ends([group1, ...]) --> list of ints or tuple of list of ints.
-        Return the indices of the ends of the captures of one or more subgroups of
-        the match.  If there is a single argument, the result is a list of indices;
-        if there are multiple arguments, the result is a tuple of lists with one
-        item per argument; if there are no arguments, the indices of the ends of the
-        captures of the whole match is returned.  Group 0 is the whole match.
-        """
-        ...
-    def expand(self, template: AnyStr) -> AnyStr:
-        """
-        expand(template) --> string.
-        Return the string obtained by doing backslash substitution on the template,
-        as done by the sub() method.
-        """
-        ...
-    def expandf(self, format: AnyStr) -> AnyStr:
-        """
-        expandf(format) --> string.
-        Return the string obtained by using the format, as done by the subf()
-        method.
-        """
-        ...
+    def ends(self, group1: int | str, group2: int | str, /, *groups: int | str) -> tuple[list[int], ...]: ...
+    def expand(self, template: AnyStr, /) -> AnyStr: ...
+    def expandf(self, format: AnyStr, /) -> AnyStr: ...
     @overload
     def captures(self, group: int | str = ..., /) -> list[AnyStr]:
         """

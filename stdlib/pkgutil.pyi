@@ -1,7 +1,7 @@
 """Utilities to support packages."""
 
 import sys
-from _typeshed import SupportsRead
+from _typeshed import StrOrBytesPath, SupportsRead
 from _typeshed.importlib import LoaderProtocol, MetaPathFinderProtocol, PathEntryFinderProtocol
 from collections.abc import Callable, Iterable, Iterator
 from typing import IO, Any, NamedTuple, TypeVar
@@ -67,138 +67,23 @@ def extend_path(path: _PathT, name: str) -> _PathT:
 
 if sys.version_info < (3, 12):
     class ImpImporter:
-        """
-        PEP 302 Finder that wraps Python's "classic" import algorithm
-
-        ImpImporter(dirname) produces a PEP 302 finder that searches that
-        directory.  ImpImporter(None) produces a PEP 302 finder that searches
-        the current sys.path, plus any modules that are frozen or built-in.
-
-        Note that ImpImporter does not currently support being used by placement
-        on sys.meta_path.
-        """
-        def __init__(self, path: str | None = None) -> None: ...
+        def __init__(self, path: StrOrBytesPath | None = None) -> None: ...
 
     class ImpLoader:
-        """
-        PEP 302 Loader that wraps Python's "classic" import algorithm
-    
-        """
-        def __init__(self, fullname: str, file: IO[str], filename: str, etc: tuple[str, str, int]) -> None: ...
+        def __init__(self, fullname: str, file: IO[str], filename: StrOrBytesPath, etc: tuple[str, str, int]) -> None: ...
 
 @deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
-def find_loader(fullname: str) -> LoaderProtocol | None:
-    """
-    Find a "loader" object for fullname
-
-    This is a backwards compatibility wrapper around
-    importlib.util.find_spec that converts most failures to ImportError
-    and only returns the loader rather than the full spec
-    """
-    ...
-def get_importer(path_item: str) -> PathEntryFinderProtocol | None:
-    """
-    Retrieve a finder for the given path item
-
-    The returned finder is cached in sys.path_importer_cache
-    if it was newly created by a path hook.
-
-    The cache (or part of it) can be cleared manually if a
-    rescan of sys.path_hooks is necessary.
-    """
-    ...
+def find_loader(fullname: str) -> LoaderProtocol | None: ...
+def get_importer(path_item: StrOrBytesPath) -> PathEntryFinderProtocol | None: ...
 @deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
-def get_loader(module_or_name: str) -> LoaderProtocol | None:
-    """
-    Get a "loader" object for module_or_name
-
-    Returns None if the module cannot be found or imported.
-    If the named module is not already imported, its containing package
-    (if any) is imported, in order to establish the package __path__.
-    """
-    ...
-def iter_importers(fullname: str = "") -> Iterator[MetaPathFinderProtocol | PathEntryFinderProtocol]:
-    """
-    Yield finders for the given module name
-
-    If fullname contains a '.', the finders will be for the package
-    containing fullname, otherwise they will be all registered top level
-    finders (i.e. those on both sys.meta_path and sys.path_hooks).
-
-    If the named module is in a package, that package is imported as a side
-    effect of invoking this function.
-
-    If no module name is specified, all top level finders are produced.
-    """
-    ...
-def iter_modules(path: Iterable[str] | None = None, prefix: str = "") -> Iterator[ModuleInfo]:
-    """
-    Yields ModuleInfo for all submodules on path,
-    or, if path is None, all top-level modules on sys.path.
-
-    'path' should be either None or a list of paths to look for
-    modules in.
-
-    'prefix' is a string to output on the front of every module name
-    on output.
-    """
-    ...
+def get_loader(module_or_name: str) -> LoaderProtocol | None: ...
+def iter_importers(fullname: str = "") -> Iterator[MetaPathFinderProtocol | PathEntryFinderProtocol]: ...
+def iter_modules(path: Iterable[StrOrBytesPath] | None = None, prefix: str = "") -> Iterator[ModuleInfo]: ...
 def read_code(stream: SupportsRead[bytes]) -> Any: ...  # undocumented
 def walk_packages(
-    path: Iterable[str] | None = None, prefix: str = "", onerror: Callable[[str], object] | None = None
-) -> Iterator[ModuleInfo]:
-    """
-    Yields ModuleInfo for all modules recursively
-    on path, or, if path is None, all accessible modules.
-
-    'path' should be either None or a list of paths to look for
-    modules in.
-
-    'prefix' is a string to output on the front of every module name
-    on output.
-
-    Note that this function must import all *packages* (NOT all
-    modules!) on the given path, in order to access the __path__
-    attribute to find submodules.
-
-    'onerror' is a function which gets called with one argument (the
-    name of the package which was being imported) if any exception
-    occurs while trying to import a package.  If no onerror function is
-    supplied, ImportErrors are caught and ignored, while all other
-    exceptions are propagated, terminating the search.
-
-    Examples:
-
-    # list all modules python can access
-    walk_packages()
-
-    # list all submodules of ctypes
-    walk_packages(ctypes.__path__, ctypes.__name__+'.')
-    """
-    ...
-def get_data(package: str, resource: str) -> bytes | None:
-    """
-    Get a resource from a package.
-
-    This is a wrapper round the PEP 302 loader get_data API. The package
-    argument should be the name of a package, in standard module format
-    (foo.bar). The resource argument should be in the form of a relative
-    filename, using '/' as the path separator. The parent directory name '..'
-    is not allowed, and nor is a rooted name (starting with a '/').
-
-    The function returns a binary string, which is the contents of the
-    specified resource.
-
-    For packages located in the filesystem, which have already been imported,
-    this is the rough equivalent of
-
-        d = os.path.dirname(sys.modules[package].__file__)
-        data = open(os.path.join(d, resource), 'rb').read()
-
-    If the package cannot be located or loaded, or it uses a PEP 302 loader
-    which does not support get_data(), then None is returned.
-    """
-    ...
+    path: Iterable[StrOrBytesPath] | None = None, prefix: str = "", onerror: Callable[[str], object] | None = None
+) -> Iterator[ModuleInfo]: ...
+def get_data(package: str, resource: str) -> bytes | None: ...
 
 if sys.version_info >= (3, 9):
     def resolve_name(name: str) -> Any:
