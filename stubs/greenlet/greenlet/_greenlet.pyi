@@ -151,15 +151,84 @@ class UnswitchableGreenlet(greenlet):  # undocumented
     force_switch_error: bool
     force_slp_switch_error: bool
 
-def enable_optional_cleanup(enabled: bool, /) -> None: ...
-def get_clocks_used_doing_optional_cleanup() -> int: ...
-def get_pending_cleanup_count() -> int: ...
-def get_total_main_greenlets() -> int: ...
+def enable_optional_cleanup(enabled: bool, /) -> None:
+    """
+    mod_enable_optional_cleanup(bool) -> None
+
+    Enable or disable optional cleanup operations.
+    See ``get_clocks_used_doing_optional_cleanup()`` for details.
+    """
+    ...
+def get_clocks_used_doing_optional_cleanup() -> int:
+    """
+    get_clocks_used_doing_optional_cleanup() -> Integer
+
+    Get the number of clock ticks the program has used doing optional greenlet cleanup.
+    Beginning in greenlet 2.0, greenlet tries to find and dispose of greenlets
+    that leaked after a thread exited. This requires invoking Python's garbage collector,
+    which may have a performance cost proportional to the number of live objects.
+    This function returns the amount of processor time
+    greenlet has used to do this. In programs that run with very large amounts of live
+    objects, this metric can be used to decide whether the cost of doing this cleanup
+    is worth the memory leak being corrected. If not, you can disable the cleanup
+    using ``enable_optional_cleanup(False)``.
+    The units are arbitrary and can only be compared to themselves (similarly to ``time.clock()``);
+    for example, to see how it scales with your heap. You can attempt to convert them into seconds
+    by dividing by the value of CLOCKS_PER_SEC.If cleanup has been disabled, returns None.
+    This is an implementation specific, provisional API. It may be changed or removed
+    in the future.
+    .. versionadded:: 2.0
+    """
+    ...
+def get_pending_cleanup_count() -> int:
+    """
+    get_pending_cleanup_count() -> Integer
+
+    Get the number of greenlet cleanup operations pending. Testing only.
+    """
+    ...
+def get_total_main_greenlets() -> int:
+    """
+    get_total_main_greenlets() -> Integer
+
+    Quickly return the number of main greenlets that exist. Testing only.
+    """
+    ...
 
 if sys.version_info < (3, 13):
-    def get_tstate_trash_delete_nesting() -> int: ...
+    def get_tstate_trash_delete_nesting() -> int:
+        """
+        get_tstate_trash_delete_nesting() -> Integer
 
-def getcurrent() -> greenlet: ...
-def gettrace() -> _TraceCallback | None: ...
-def set_thread_local(key: object, value: object, /) -> None: ...
-def settrace(callback: _TraceCallback | None, /) -> _TraceCallback | None: ...
+        Return the 'trash can' nesting level. Testing only.
+        """
+        ...
+
+def getcurrent() -> greenlet:
+    """
+    getcurrent() -> greenlet
+
+    Returns the current greenlet (i.e. the one which called this function).
+    """
+    ...
+def gettrace() -> _TraceCallback | None:
+    """
+    gettrace() -> object
+
+    Returns the currently set tracing function, or None.
+    """
+    ...
+def set_thread_local(key: object, value: object, /) -> None:
+    """
+    set_thread_local(key, value) -> None
+
+    Set a value in the current thread-local dictionary. Debugging only.
+    """
+    ...
+def settrace(callback: _TraceCallback | None, /) -> _TraceCallback | None:
+    """
+    settrace(callback) -> object
+
+    Sets a new tracing function and returns the previous one.
+    """
+    ...

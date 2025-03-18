@@ -1,3 +1,5 @@
+"""passlib.hosts"""
+
 import sys
 from typing import Any
 
