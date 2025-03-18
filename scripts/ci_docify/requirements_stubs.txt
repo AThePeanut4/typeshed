@@ -3,7 +3,7 @@ docify==1.1.0
 typing-extensions==4.12.2
 
 click-web==0.8.*
-pynput==1.8.*
+pynput~=1.8.1
 boltons==25.0.*
 ldap3==2.9.*
 caldav==1.3.*
