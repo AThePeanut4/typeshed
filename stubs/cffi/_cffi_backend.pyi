@@ -517,14 +517,100 @@ class FFI:
     @overload
     def new_allocator(
         self, alloc: Callable[[int], CData], free: Callable[[CData], Any], should_clear_after_alloc: bool = ...
-    ) -> _Allocator: ...
-    def new_handle(self, x: Any, /) -> CData: ...
-    def offsetof(self, cdecl: str | CType, field_or_index: str | int, /, *__fields_or_indexes: str | int) -> int: ...
-    def release(self, cdata: CData, /) -> None: ...
-    def sizeof(self, cdecl: str | CType | CData, /) -> int: ...
-    def string(self, cdata: CData, maxlen: int = -1) -> bytes | str: ...
-    def typeof(self, cdecl: str | CData, /) -> CType: ...
-    def unpack(self, cdata: CData, length: int) -> bytes | str | list[Any]: ...
+    ) -> _Allocator:
+        """
+        Return a new allocator, i.e. a function that behaves like ffi.new()
+        but uses the provided low-level 'alloc' and 'free' functions.
+
+        'alloc' is called with the size as argument.  If it returns NULL, a
+        MemoryError is raised.  'free' is called with the result of 'alloc'
+        as argument.  Both can be either Python functions or directly C
+        functions.  If 'free' is None, then no free function is called.
+        If both 'alloc' and 'free' are None, the default is used.
+
+        If 'should_clear_after_alloc' is set to False, then the memory
+        returned by 'alloc' is assumed to be already cleared (or you are
+        fine with garbage); otherwise CFFI will clear it.
+        """
+        ...
+    def new_handle(self, x: Any, /) -> CData:
+        """
+        Return a non-NULL cdata of type 'void *' that contains an opaque
+        reference to the argument, which can be any Python object.  To cast it
+        back to the original object, use from_handle().  You must keep alive
+        the cdata object returned by new_handle()!
+        """
+        ...
+    def offsetof(self, cdecl: str | CType, field_or_index: str | int, /, *__fields_or_indexes: str | int) -> int:
+        """
+        Return the offset of the named field inside the given structure or
+        array, which must be given as a C type name.  You can give several
+        field names in case of nested structures.  You can also give numeric
+        values which correspond to array items, in case of an array type.
+        """
+        ...
+    def release(self, cdata: CData, /) -> None:
+        """
+        Release now the resources held by a 'cdata' object from ffi.new(),
+        ffi.gc() or ffi.from_buffer().  The cdata object must not be used
+        afterwards.
+
+        'ffi.release(cdata)' is equivalent to 'cdata.__exit__()'.
+
+        Note that on CPython this method has no effect (so far) on objects
+        returned by ffi.new(), because the memory is allocated inline with the
+        cdata object and cannot be freed independently.  It might be fixed in
+        future releases of cffi.
+        """
+        ...
+    def sizeof(self, cdecl: str | CType | CData, /) -> int:
+        """
+        Return the size in bytes of the argument.
+        It can be a string naming a C type, or a 'cdata' instance.
+        """
+        ...
+    def string(self, cdata: CData, maxlen: int = -1) -> bytes | str:
+        """
+        Return a Python string (or unicode string) from the 'cdata'.  If
+        'cdata' is a pointer or array of characters or bytes, returns the
+        null-terminated string.  The returned string extends until the first
+        null character, or at most 'maxlen' characters.  If 'cdata' is an
+        array then 'maxlen' defaults to its length.
+
+        If 'cdata' is a pointer or array of wchar_t, returns a unicode string
+        following the same rules.
+
+        If 'cdata' is a single character or byte or a wchar_t, returns it as a
+        string or unicode string.
+
+        If 'cdata' is an enum, returns the value of the enumerator as a
+        string, or 'NUMBER' if the value is out of range.
+        """
+        ...
+    def typeof(self, cdecl: str | CData, /) -> CType:
+        """
+        Parse the C type given as a string and return the
+        corresponding <ctype> object.
+        It can also be used on 'cdata' instance to get its C type.
+        """
+        ...
+    def unpack(self, cdata: CData, length: int) -> bytes | str | list[Any]:
+        """
+        Unpack an array of C data of the given length,
+        returning a Python string/unicode/list.
+
+        If 'cdata' is a pointer to 'char', returns a byte string.
+        It does not stop at the first null.  This is equivalent to:
+        ffi.buffer(cdata, length)[:]
+
+        If 'cdata' is a pointer to 'wchar_t', returns a unicode string.
+        'length' is measured in wchar_t's; it is not the size in bytes.
+
+        If 'cdata' is a pointer to anything else, returns a list of
+        'length' items.  This is a faster equivalent to:
+        [cdata[i] for i in range(length)]
+        """
+        ...
 
 def alignof(cdecl: CType, /) -> int: ...
 def callback(

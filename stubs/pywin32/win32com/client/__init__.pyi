@@ -115,7 +115,6 @@ def DispatchWithEvents(clsid, user_event_class):
     >>> ie = DispatchWithEvents("InternetExplorer.Application", IEEvents)
     >>> ie.Visible = 1
     Visible changed: 1
-    >>>
     """
     ...
 def WithEvents(disp, user_event_class):
