@@ -40,6 +40,7 @@ import sys
 from _typeshed import StrPath, SupportsRead, SupportsWrite
 from collections.abc import Mapping, Sequence
 from typing import Any, AnyStr, BinaryIO, ClassVar
+from typing_extensions import deprecated
 
 __all__ = ["HTTPServer", "ThreadingHTTPServer", "BaseHTTPRequestHandler", "SimpleHTTPRequestHandler", "CGIHTTPRequestHandler"]
 
@@ -326,67 +327,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         """
         Common code for GET and HEAD commands.
 
-        This sends the response code and MIME headers.
-
-        Return value is either a file object (which has to be copied
-        to the outputfile by the caller unless the command was HEAD,
-        and must be closed by the caller under all circumstances), or
-        None, in which case the caller has nothing further to do.
-        """
-        ...
-    def list_directory(self, path: StrPath) -> io.BytesIO | None:
-        """
-        Helper to produce a directory listing (absent index.html).
-
-        Return value is either a file object, or None (indicating an
-        error).  In either case, the headers are sent, making the
-        interface the same as for send_head().
-        """
-        ...
-    def translate_path(self, path: str) -> str:
-        """
-        Translate a /-separated PATH to the local filename syntax.
-
-        Components that mean special things to the local file system
-        (e.g. drive or directory names) are ignored.  (XXX They should
-        probably be diagnosed.)
-        """
-        ...
-    def copyfile(self, source: SupportsRead[AnyStr], outputfile: SupportsWrite[AnyStr]) -> None:
-        """
-        Copy all data between two file objects.
-
-        The SOURCE argument is a file object open for reading
-        (or anything with a read() method) and the DESTINATION
-        argument is a file object open for writing (or
-        anything with a write() method).
-
-        The only reason for overriding this would be to change
-        the block size or perhaps to replace newlines by CRLF
-        -- note however that this the default server uses this
-        to copy binary data as well.
-        """
-        ...
-    def guess_type(self, path: StrPath) -> str:
-        """
-        Guess the type of a file.
-
-        Argument is a PATH (a filename).
-
-        Return value is a string of the form type/subtype,
-        usable for a MIME Content-type header.
-
-        The default implementation looks the file's extension
-        up in the table self.extensions_map, using application/octet-stream
-        as a default; however it would be permissible (if
-        slow) to look inside the data to make a better guess.
-        """
-        ...
-
-def executable(path: StrPath) -> bool:
-    """Test for executable file."""
-    ...
-
+def executable(path: StrPath) -> bool: ...  # undocumented
+@deprecated("Deprecated in Python 3.13; removal scheduled for Python 3.15")
 class CGIHTTPRequestHandler(SimpleHTTPRequestHandler):
     """
     Complete HTTP server with GET, HEAD and POST commands.

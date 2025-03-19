@@ -13,23 +13,13 @@ _U = TypeVar("_U")
 _V = TypeVar("_V")
 
 class AtlasView(Mapping[_T, dict[_U, _V]]):
-    """
-    An AtlasView is a Read-only Mapping of Mappings.
-
-    It is a View into a dict-of-dict data structure.
-    The inner level of dict is read-write. But the
-    outer level is read-only.
-
-    See Also
-    ========
-    AdjacencyView: View into dict-of-dict-of-dict
-    MultiAdjacencyView: View into dict-of-dict-of-dict-of-dict
-    """
+    def __getstate__(self) -> dict[str, Mapping[_T, dict[_U, _V]]]: ...
+    def __setstate__(self, state: dict[str, Mapping[_T, dict[_U, _V]]]) -> None: ...
     def __init__(self, d: Mapping[_T, dict[_U, _V]]) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[_T]: ...
     def __getitem__(self, key: _T) -> dict[_U, _V]: ...
-    def copy(self) -> Self: ...
+    def copy(self) -> dict[_T, dict[_U, _V]]: ...
 
 class AdjacencyView(AtlasView[_T, _U, _V]):
     """
