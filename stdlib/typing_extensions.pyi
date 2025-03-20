@@ -767,8 +767,56 @@ if sys.version_info >= (3, 12):
         override as override,
     )
 else:
-    def override(arg: _F, /) -> _F: ...
-    def get_original_bases(cls: type, /) -> tuple[Any, ...]: ...
+    def override(arg: _F, /) -> _F:
+        """
+        Indicate that a method is intended to override a method in a base class.
+
+        Usage:
+
+            class Base:
+                def method(self) -> None:
+                    pass
+
+            class Child(Base):
+                @override
+                def method(self) -> None:
+                    super().method()
+
+        When this decorator is applied to a method, the type checker will
+        validate that it overrides a method with the same name on a base class.
+        This helps prevent bugs that may occur when a base class is changed
+        without an equivalent change to a child class.
+
+        There is no runtime checking of these properties. The decorator
+        sets the ``__override__`` attribute to ``True`` on the decorated object
+        to allow runtime introspection.
+
+        See PEP 698 for details.
+        """
+        ...
+    def get_original_bases(cls: type, /) -> tuple[Any, ...]:
+        """
+        Return the class's "original" bases prior to modification by `__mro_entries__`.
+
+        Examples::
+
+            from typing import TypeVar, Generic
+            from typing_extensions import NamedTuple, TypedDict
+
+            T = TypeVar("T")
+            class Foo(Generic[T]): ...
+            class Bar(Foo[int], float): ...
+            class Baz(list[str]): ...
+            Eggs = NamedTuple("Eggs", [("a", int), ("b", str)])
+            Spam = TypedDict("Spam", {"a": int, "b": str})
+
+            assert get_original_bases(Bar) == (Foo[int], float)
+            assert get_original_bases(Baz) == (list[str],)
+            assert get_original_bases(Eggs) == (NamedTuple,)
+            assert get_original_bases(Spam) == (TypedDict,)
+            assert get_original_bases(int) == (object,)
+        """
+        ...
 
     # mypy and pyright object to this being both ABC and Protocol.
     # At runtime it inherits from ABC and is not a Protocol, but it is on the
@@ -1052,6 +1100,30 @@ if sys.version_info >= (3, 14):
 else:
     @final
     class TypeAliasType:
+        """
+        Type alias.
+
+        Type aliases are created through the type statement::
+
+            type Alias = int
+
+        In this example, Alias and int will be treated equivalently by static
+        type checkers.
+
+        At runtime, Alias is an instance of TypeAliasType. The __name__
+        attribute holds the name of the type alias. The value of the type alias
+        is stored in the __value__ attribute. It is evaluated lazily, so the
+        value is computed only if the attribute is accessed.
+
+        Type aliases can also be generic::
+
+            type ListOrSet[T] = list[T] | set[T]
+
+        In this case, the type parameters of the alias are stored in the
+        __type_params__ attribute.
+
+        See PEP 695 for more information.
+        """
         def __init__(
             self, name: str, value: Any, *, type_params: tuple[TypeVar | ParamSpec | TypeVarTuple, ...] = ()
         ) -> None: ...  # value is a type expression
@@ -1069,11 +1141,24 @@ else:
         @property
         def __module__(self) -> str | None: ...  # type: ignore[override]
         # Returns typing._GenericAlias, which isn't stubbed.
-        def __getitem__(self, parameters: Incomplete | tuple[Incomplete, ...]) -> Any: ...
-        def __init_subclass__(cls, *args: Unused, **kwargs: Unused) -> NoReturn: ...
+        def __getitem__(self, parameters: Incomplete | tuple[Incomplete, ...]) -> Any:
+            """Return self[key]."""
+            ...
+        def __init_subclass__(cls, *args: Unused, **kwargs: Unused) -> NoReturn:
+            """
+            This method is called when a class is subclassed.
+
+            The default implementation does nothing. It may be
+            overridden to extend subclasses.
+            """
+            ...
         if sys.version_info >= (3, 10):
-            def __or__(self, right: Any) -> _SpecialForm: ...
-            def __ror__(self, left: Any) -> _SpecialForm: ...
+            def __or__(self, right: Any) -> _SpecialForm:
+                """Return self|value."""
+                ...
+            def __ror__(self, left: Any) -> _SpecialForm:
+                """Return value|self."""
+                ...
 
 # PEP 727
 class Doc:

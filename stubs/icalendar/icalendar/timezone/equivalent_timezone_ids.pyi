@@ -10,6 +10,10 @@ You can regenerate the information from this module.
 
 See also:
 - https://stackoverflow.com/questions/79185519/which-timezones-are-equivalent
+
+Run this module:
+
+    python -m icalendar.timezone.equivalent_timezone_ids
 """
 
 import datetime
