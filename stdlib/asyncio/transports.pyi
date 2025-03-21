@@ -58,16 +58,10 @@ class ReadTransport(BaseTransport):
         ...
 
 class WriteTransport(BaseTransport):
-    def set_write_buffer_limits(self, high: int | None = None, low: int | None = None) -> None: ...
-    def get_write_buffer_size(self) -> int: ...
-    def get_write_buffer_limits(self) -> tuple[int, int]: ...
-    def write(self, data: bytes | bytearray | memoryview[Any]) -> None: ...  # any memoryview format or shape
-    def writelines(
-        self, list_of_data: Iterable[bytes | bytearray | memoryview[Any]]
-    ) -> None: ...  # any memoryview format or shape
-    def write_eof(self) -> None: ...
-    def can_write_eof(self) -> bool: ...
-    def abort(self) -> None: ...
+    """Interface for write-only transports."""
+    def set_write_buffer_limits(self, high: int | None = None, low: int | None = None) -> None:
+        """
+        Set the high- and low-water limits for write flow control.
 
         These two values control when to call the protocol's
         pause_writing() and resume_writing() methods.  If specified,
@@ -96,7 +90,7 @@ class WriteTransport(BaseTransport):
         positive number of bytes.
         """
         ...
-    def write(self, data: bytes | bytearray | memoryview) -> None:
+    def write(self, data: bytes | bytearray | memoryview[Any]) -> None:
         """
         Write some data bytes to the transport.
 
@@ -104,7 +98,9 @@ class WriteTransport(BaseTransport):
         to be sent out asynchronously.
         """
         ...
-    def writelines(self, list_of_data: Iterable[bytes | bytearray | memoryview]) -> None:
+    def writelines(
+        self, list_of_data: Iterable[bytes | bytearray | memoryview[Any]]
+    ) -> None:
         """
         Write a list (or any iterable) of data bytes to the transport.
 

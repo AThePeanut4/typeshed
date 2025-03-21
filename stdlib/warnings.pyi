@@ -101,6 +101,24 @@ class WarningMessage:
     ) -> None: ...
 
 class catch_warnings(Generic[_W_co]):
+    """
+    A context manager that copies and restores the warnings filter upon
+    exiting the context.
+
+    The 'record' argument specifies whether warnings should be captured by a
+    custom implementation of warnings.showwarning() and be appended to a list
+    returned by the context manager. Otherwise None is returned by the context
+    manager. The objects appended to the list are arguments whose attributes
+    mirror the arguments to showwarning().
+
+    The 'module' argument is to specify an alternative module to the module
+    named 'warnings' and imported under that name. This argument is only useful
+    when testing the warnings module itself.
+
+    If the 'action' argument is not None, the remaining arguments are passed
+    to warnings.simplefilter() as if it were called immediately on entering the
+    context.
+    """
     if sys.version_info >= (3, 11):
         @overload
         def __init__(
@@ -183,7 +201,15 @@ class catch_warnings(Generic[_W_co]):
             """
             ...
         @overload
-        def __init__(self, *, record: bool, module: ModuleType | None = None) -> None: ...
+        def __init__(self, *, record: bool, module: ModuleType | None = None) -> None:
+            """
+            Specify whether to record warnings and if an alternative module
+            should be used other than sys.modules['warnings'].
+
+            For compatibility with Python 3.0, please consider all arguments to be
+            keyword-only.
+            """
+            ...
 
     def __enter__(self) -> _W_co: ...
     def __exit__(

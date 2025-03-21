@@ -28,4 +28,11 @@ DISTANCE_FROM_TIMEZONE_CHANGE: Final[datetime.timedelta]
 
 DTS: Final[list[datetime.datetime]]
 
-def main(create_timezones: list[Callable[[str], datetime.tzinfo]], name: str) -> None: ...
+def main(create_timezones: list[Callable[[str], datetime.tzinfo]], name: str) -> None:
+    """
+    Generate a lookup table for timezone information if unknown timezones.
+
+    We cannot create one lookup for all because they seem to be all equivalent
+    if we mix timezone implementations.
+    """
+    ...
