@@ -74,7 +74,7 @@ reportlab[pycairo]==4.3.1
 libsass==0.23.*
 python-jenkins==1.8.*
 shapely==2.0.*
-icalendar==6.1.*
+icalendar~=6.1.2
 flake8-typing-imports==1.16.*
 jwcrypto==1.5.*
 inifile==0.4.*
