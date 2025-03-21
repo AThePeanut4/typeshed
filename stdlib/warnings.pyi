@@ -5,8 +5,8 @@ import sys
 from _warnings import warn as warn, warn_explicit as warn_explicit
 from collections.abc import Sequence
 from types import ModuleType, TracebackType
-from typing import Any, Generic, Literal, TextIO, TypeVar, overload
-from typing_extensions import LiteralString, TypeAlias
+from typing import Any, Generic, Literal, TextIO, overload
+from typing_extensions import LiteralString, TypeAlias, TypeVar
 
 __all__ = [
     "warn",
@@ -23,7 +23,8 @@ if sys.version_info >= (3, 13):
     __all__ += ["deprecated"]
 
 _T = TypeVar("_T")
-_W = TypeVar("_W", bound=list[WarningMessage] | None)
+_W_co = TypeVar("_W_co", bound=list[WarningMessage] | None, default=list[WarningMessage] | None, covariant=True)
+
 if sys.version_info >= (3, 14):
     _ActionKind: TypeAlias = Literal["default", "error", "ignore", "always", "module", "once"]
 else:
@@ -99,25 +100,7 @@ class WarningMessage:
         source: Any | None = None,
     ) -> None: ...
 
-class catch_warnings(Generic[_W]):
-    """
-    A context manager that copies and restores the warnings filter upon
-    exiting the context.
-
-    The 'record' argument specifies whether warnings should be captured by a
-    custom implementation of warnings.showwarning() and be appended to a list
-    returned by the context manager. Otherwise None is returned by the context
-    manager. The objects appended to the list are arguments whose attributes
-    mirror the arguments to showwarning().
-
-    The 'module' argument is to specify an alternative module to the module
-    named 'warnings' and imported under that name. This argument is only useful
-    when testing the warnings module itself.
-
-    If the 'action' argument is not None, the remaining arguments are passed
-    to warnings.simplefilter() as if it were called immediately on entering the
-    context.
-    """
+class catch_warnings(Generic[_W_co]):
     if sys.version_info >= (3, 11):
         @overload
         def __init__(
@@ -159,7 +142,7 @@ class catch_warnings(Generic[_W]):
             ...
         @overload
         def __init__(
-            self: catch_warnings[list[WarningMessage] | None],
+            self,
             *,
             record: bool,
             module: ModuleType | None = None,
@@ -200,19 +183,9 @@ class catch_warnings(Generic[_W]):
             """
             ...
         @overload
-        def __init__(
-            self: catch_warnings[list[WarningMessage] | None], *, record: bool, module: ModuleType | None = None
-        ) -> None:
-            """
-            Specify whether to record warnings and if an alternative module
-            should be used other than sys.modules['warnings'].
+        def __init__(self, *, record: bool, module: ModuleType | None = None) -> None: ...
 
-            For compatibility with Python 3.0, please consider all arguments to be
-            keyword-only.
-            """
-            ...
-
-    def __enter__(self) -> _W: ...
+    def __enter__(self) -> _W_co: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> None: ...

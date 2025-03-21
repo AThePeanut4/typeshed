@@ -52,48 +52,9 @@ class SocketIOTestClient:
         query_string: str | None = None,
         headers: dict[str, Incomplete] | None = None,
         auth: dict[str, Incomplete] | None = None,
-    ) -> None:
-        """
-        Connect the client.
-
-        :param namespace: The namespace for the client. If not provided, the
-                          client connects to the server on the global
-                          namespace.
-        :param query_string: A string with custom query string arguments.
-        :param headers: A dictionary with custom HTTP headers.
-        :param auth: Optional authentication data, given as a dictionary.
-
-        Note that it is usually not necessary to explicitly call this method,
-        since a connection is automatically established when an instance of
-        this class is created. An example where it this method would be useful
-        is when the application accepts multiple namespace connections.
-        """
-        ...
-    def disconnect(self, namespace: str | None = None) -> None:
-        """
-        Disconnect the client.
-
-        :param namespace: The namespace to disconnect. The global namespace is
-                         assumed if this argument is not provided.
-        """
-        ...
-    def emit(self, event: str, *args, callback: bool = True, namespace: str | None = None) -> Incomplete | None:
-        """
-        Emit an event to the server.
-
-        :param event: The event name.
-        :param *args: The event arguments.
-        :param callback: ``True`` if the client requests a callback, ``False``
-                         if not. Note that client-side callbacks are not
-                         implemented, a callback request will just tell the
-                         server to provide the arguments to invoke the
-                         callback, but no callback is invoked. Instead, the
-                         arguments that the server provided for the callback
-                         are returned by this function.
-        :param namespace: The namespace of the event. The global namespace is
-                          assumed if this argument is not provided.
-        """
-        ...
+    ) -> None: ...
+    def disconnect(self, namespace: str | None = None) -> None: ...
+    def emit(self, event: str, *args, callback: bool = False, namespace: str | None = None) -> Incomplete | None: ...
     def send(
         self,
         data: str | dict[str, Incomplete] | list[Incomplete],
