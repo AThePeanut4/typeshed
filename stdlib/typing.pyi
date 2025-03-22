@@ -151,8 +151,22 @@ if sys.version_info >= (3, 12):
 if sys.version_info >= (3, 13):
     __all__ += ["get_protocol_members", "is_protocol", "NoDefault", "TypeIs", "ReadOnly"]
 
-class Any: ...
-class _Final: ...
+class Any:
+    """
+    Special type indicating an unconstrained type.
+
+    - Any is compatible with every type.
+    - Any assumed to have all methods.
+    - All values assumed to be instances of Any.
+
+    Note that all the above statements are true from the point of view of
+    static type checkers. At runtime, Any should not be used with instance
+    checks.
+    """
+    ...
+class _Final:
+    """Mixin to prohibit subclassing."""
+    ...
 
 def final(f: _T) -> _T:
     """
