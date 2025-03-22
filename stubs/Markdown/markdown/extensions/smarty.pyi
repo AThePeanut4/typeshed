@@ -7,7 +7,6 @@ for details.
 """
 
 from collections.abc import Mapping, Sequence
-from typing import Any
 from xml.etree.ElementTree import Element
 
 from markdown import inlinepatterns, util
@@ -42,8 +41,7 @@ class SubstituteTextPattern(HtmlInlineProcessor):
         ...
 
 class SmartyExtension(Extension):
-    """Add Smarty to Markdown. """
-    substitutions: Any
+    substitutions: dict[str, str]
     def __init__(self, **kwargs) -> None: ...
     def educateDashes(self, md: Markdown) -> None: ...
     def educateEllipses(self, md: Markdown) -> None: ...
