@@ -163,6 +163,7 @@ PyAutoGUI==0.9.*
 pika==1.3.*
 TgCrypto==1.2.*
 pep8-naming==0.14.*
+rfc3339-validator==0.1.*
 parsimonious==0.10.*
 pyfarmhash==0.4.*
 python-datemath==3.0.1
