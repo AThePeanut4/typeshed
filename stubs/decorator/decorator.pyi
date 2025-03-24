@@ -79,12 +79,30 @@ class FunctionMaker:
         """
         ...
 
-def fix(args: tuple[Any, ...], kwargs: dict[str, Any], sig: Signature) -> tuple[tuple[Any, ...], dict[str, Any]]: ...
-def decorate(func: _Func, caller: Callable[..., Any], extras: tuple[Any, ...] = ..., kwsyntax: bool = False) -> _Func: ...
-def decoratorx(caller: Callable[..., Any]) -> Callable[..., Any]: ...
+def fix(args: tuple[Any, ...], kwargs: dict[str, Any], sig: Signature) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """Fix args and kwargs to be consistent with the signature"""
+    ...
+def decorate(func: _Func, caller: Callable[..., Any], extras: tuple[Any, ...] = ..., kwsyntax: bool = False) -> _Func:
+    """
+    Decorates a function/generator/coroutine using a caller.
+    If kwsyntax is True calling the decorated functions with keyword
+    syntax will pass the named arguments inside the ``kw`` dictionary,
+    even if such argument are positional, similarly to what functools.wraps
+    does. By default kwsyntax is False and the the arguments are untouched.
+    """
+    ...
+def decoratorx(caller: Callable[..., Any]) -> Callable[..., Any]:
+    """
+    A version of "decorator" implemented via "exec" and not via the
+    Signature object. Use this if you are want to preserve the `.__code__`
+    object properties (https://github.com/micheles/decorator/issues/129).
+    """
+    ...
 def decorator(
     caller: Callable[..., Any], _func: Callable[..., Any] | None = None, kwsyntax: bool = False
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]: ...
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """decorator(caller) converts a caller function into a decorator"""
+    ...
 
 class ContextManager(_GeneratorContextManager[_T]):
     def __init__(self, g: Callable[..., Generator[_T]], *a: Any, **k: Any) -> None: ...
