@@ -6,11 +6,11 @@ for the documentation.
 
 import inspect
 from builtins import dict as _dict  # alias to avoid conflicts with attribute name
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator, Iterator
 from contextlib import _GeneratorContextManager
 from inspect import Signature, getfullargspec as getfullargspec, iscoroutinefunction as iscoroutinefunction
 from re import Pattern
-from typing import Any, Literal, TypeVar
+from typing import Any, Final, Literal, TypeVar
 from typing_extensions import ParamSpec
 
 _C = TypeVar("_C", bound=Callable[..., Any])
@@ -18,10 +18,9 @@ _Func = TypeVar("_Func", bound=Callable[..., Any])
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
 
-def get_init(cls: type) -> None: ...
-
-DEF: Pattern[str]
-POS: Literal[inspect._ParameterKind.POSITIONAL_OR_KEYWORD]
+DEF: Final[Pattern[str]]
+POS: Final[Literal[inspect._ParameterKind.POSITIONAL_OR_KEYWORD]]
+EMPTY: Final[type[inspect._empty]]
 
 class FunctionMaker:
     """
@@ -80,32 +79,15 @@ class FunctionMaker:
         """
         ...
 
-def fix(args: tuple[Any, ...], kwargs: dict[str, Any], sig: Signature) -> tuple[tuple[Any, ...], dict[str, Any]]:
-    """Fix args and kwargs to be consistent with the signature"""
-    ...
-def decorate(func: _Func, caller: Callable[..., Any], extras: Any = ...) -> _Func:
-    """
-    Decorates a function/generator/coroutine using a caller.
-    If kwsyntax is True calling the decorated functions with keyword
-    syntax will pass the named arguments inside the ``kw`` dictionary,
-    even if such argument are positional, similarly to what functools.wraps
-    does. By default kwsyntax is False and the the arguments are untouched.
-    """
-    ...
-def decoratorx(caller: Callable[..., Any]) -> Callable[..., Any]:
-    """
-    A version of "decorator" implemented via "exec" and not via the
-    Signature object. Use this if you are want to preserve the `.__code__`
-    object properties (https://github.com/micheles/decorator/issues/129).
-    """
-    ...
+def fix(args: tuple[Any, ...], kwargs: dict[str, Any], sig: Signature) -> tuple[tuple[Any, ...], dict[str, Any]]: ...
+def decorate(func: _Func, caller: Callable[..., Any], extras: tuple[Any, ...] = ..., kwsyntax: bool = False) -> _Func: ...
+def decoratorx(caller: Callable[..., Any]) -> Callable[..., Any]: ...
 def decorator(
-    caller: Callable[..., Any], _func: Callable[..., Any] | None = ...
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """decorator(caller) converts a caller function into a decorator"""
-    ...
+    caller: Callable[..., Any], _func: Callable[..., Any] | None = None, kwsyntax: bool = False
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]: ...
 
 class ContextManager(_GeneratorContextManager[_T]):
+    def __init__(self, g: Callable[..., Generator[_T]], *a: Any, **k: Any) -> None: ...
     def __call__(self, func: _C) -> _C: ...
 
 def contextmanager(func: Callable[_P, Iterator[_T]]) -> Callable[_P, ContextManager[_T]]: ...
