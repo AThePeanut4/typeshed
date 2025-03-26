@@ -1,5 +1,6 @@
 from _typeshed import Incomplete
 from collections.abc import Mapping
+from typing import Any
 from typing_extensions import deprecated
 
 from jwcrypto.common import JWException, JWKeyNotFound
@@ -69,16 +70,11 @@ class JWTMissingKey(JWKeyNotFound):
     def __init__(self, message: str | None = None, exception: BaseException | None = None) -> None: ...
 
 class JWT:
-    """
-    JSON Web token object
-
-    This object represent a generic token.
-    """
-    deserializelog: Incomplete
+    deserializelog: list[str] | None
     def __init__(
         self,
-        header: dict[Incomplete, Incomplete] | str | None = None,
-        claims: dict[Incomplete, Incomplete] | str | None = None,
+        header: dict[str, Any] | str | None = None,
+        claims: dict[str, Any] | str | None = None,
         jwt: Incomplete | None = None,
         key: JWK | JWKSet | None = None,
         algs: Incomplete | None = None,
@@ -121,9 +117,9 @@ class JWT:
         """
         ...
     @property
-    def header(self): ...
+    def header(self) -> str: ...
     @header.setter
-    def header(self, h) -> None: ...
+    def header(self, h: dict[str, Any] | str) -> None: ...
     @property
     def claims(self): ...
     @claims.setter

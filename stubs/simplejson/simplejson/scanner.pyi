@@ -27,3 +27,5 @@ class JSONDecodeError(ValueError):
     endcolno: int | None
 
 def make_scanner(context: JSONDecoder) -> Callable[[str, int], tuple[bool, int]]: ...
+
+__all__ = ["make_scanner", "JSONDecodeError"]

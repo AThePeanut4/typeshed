@@ -157,50 +157,8 @@ class Table:
         with_newlines: bool = True,
         with_metadata: bool = False,
         max_depth: int = 1,
-    ):
-        """
-        Render this Table to HTML. Configure the structure of Table
-        HTML by subclassing and overriding ``_html_*`` class
-        attributes.
+    ): ...
+    def get_cell_html(self, value): ...
+    def to_text(self, with_headers: bool = True, maxlen: Incomplete | None = None): ...
 
-        Args:
-            orientation (str): one of 'auto', 'horizontal', or
-                'vertical' (or the first letter of any of
-                those). Default 'auto'.
-            wrapped (bool): whether or not to include the wrapping
-                '<table></table>' tags. Default ``True``, set to
-                ``False`` if appending multiple Table outputs or an
-                otherwise customized HTML wrapping tag is needed.
-            with_newlines (bool): Set to ``True`` if output should
-                include added newlines to make the HTML more
-                readable. Default ``False``.
-            with_metadata (bool/str): Set to ``True`` if output should
-                be preceded with a Table of preset metadata, if it
-                exists. Set to special value ``'bottom'`` if the
-                metadata Table HTML should come *after* the main HTML output.
-            max_depth (int): Indicate how deeply to nest HTML tables
-                before simply reverting to :func:`repr`-ing the nested
-                data.
-
-        Returns:
-            A text string of the HTML of the rendered table.
-        """
-        ...
-    def get_cell_html(self, value):
-        """
-        Called on each value in an HTML table. By default it simply escapes
-        the HTML. Override this method to add additional conditions
-        and behaviors, but take care to ensure the final output is
-        HTML escaped.
-        """
-        ...
-    def to_text(self, with_headers: bool = True, maxlen: Incomplete | None = None):
-        """
-        Get the Table's textual representation. Only works well
-        for Tables with non-recursive data.
-
-        Args:
-            with_headers (bool): Whether to include a header row at the top.
-            maxlen (int): Max length of data in each cell.
-        """
-        ...
+__all__ = ["Table"]

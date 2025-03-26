@@ -109,15 +109,6 @@ class JSONDecoder:
         ...
     def raw_decode(
         self, s: str, idx: int = ..., _w: Callable[[str, int], Match[str]] = ..., _PY3: Literal[True] = ...
-    ) -> tuple[Any, int]:
-        """
-        Decode a JSON document from ``s`` (a ``str`` or ``unicode``
-        beginning with a JSON document) and return a 2-tuple of the Python
-        representation and the index in ``s`` where the document ended.
-        Optionally, ``idx`` can be used to specify an offset in ``s`` where
-        the JSON document begins.
+    ) -> tuple[Any, int]: ...
 
-        This can be used to decode a JSON document from a string that may
-        have extraneous data at the end.
-        """
-        ...
+__all__ = ["JSONDecoder"]

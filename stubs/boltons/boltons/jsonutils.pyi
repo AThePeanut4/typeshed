@@ -131,3 +131,5 @@ class JSONLIterator:
         """
         ...
     __next__ = next
+
+__all__ = ["JSONLIterator", "reverse_iter_lines"]

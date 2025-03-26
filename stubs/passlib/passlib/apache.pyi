@@ -527,121 +527,16 @@ class HtdigestFile(_CommonFile):
         encoding: str = "utf-8",
         return_unicode: bool = True,
     ) -> None: ...
-    def realms(self) -> list[str | bytes]:
-        """Return list of all realms in database"""
-        ...
-    def users(self, realm: str | None = None) -> list[str | bytes]:
-        """
-        Return list of all users in specified realm.
+    def realms(self) -> list[str | bytes]: ...
+    def users(self, realm: str | None = None) -> list[str | bytes]: ...
+    def set_password(self, user: str, realm: str | None = None, password: str | bytes = ...) -> bool: ...
+    def update(self, user: str, realm: str | None, password: str | bytes) -> bool: ...
+    def get_hash(self, user: str, realm: str | None = None) -> htdigest | None: ...
+    def set_hash(self, user: str, realm: str | None = None, hash: str | bytes = ...) -> bool: ...
+    def find(self, user: str, realm: str | None) -> htdigest | None: ...
+    def delete(self, user: str, realm: str | None = None) -> bool: ...
+    def delete_realm(self, realm: str | None) -> int: ...
+    def check_password(self, user: str, realm: str | None = None, password: str | bytes = ...) -> bool | None: ...
+    def verify(self, user: str, realm: str | None, password: str | bytes) -> bool | None: ...
 
-        * uses ``self.default_realm`` if no realm explicitly provided.
-        * returns empty list if realm not found.
-        """
-        ...
-    def set_password(self, user: str, realm: str | None = None, password: str | bytes = ...) -> bool:
-        """
-        Set password for user; adds user & realm if needed.
-
-        If ``self.default_realm`` has been set, this may be called
-        with the syntax ``set_password(user, password)``,
-        otherwise it must be called with all three arguments:
-        ``set_password(user, realm, password)``.
-
-        :returns:
-            * ``True`` if existing user was updated
-            * ``False`` if user account added.
-        """
-        ...
-    def update(self, user: str, realm: str | None, password: str | bytes) -> bool:
-        """
-        set password for user
-
-        .. deprecated:: 1.6
-            and will be removed in version 1.8, use set_password instead.
-        """
-        ...
-    def get_hash(self, user: str, realm: str | None = None) -> htdigest | None:
-        """
-        Return :class:`~passlib.hash.htdigest` hash stored for user.
-
-        * uses ``self.default_realm`` if no realm explicitly provided.
-        * returns ``None`` if user or realm not found.
-
-        .. versionchanged:: 1.6
-            This method was previously named ``find``, it was renamed
-            for clarity. The old name is deprecated, and will be removed
-            in Passlib 1.8.
-        """
-        ...
-    def set_hash(self, user: str, realm: str | None = None, hash: str | bytes = ...) -> bool:
-        """
-        semi-private helper which allows writing a hash directly;
-        adds user & realm if needed.
-
-        If ``self.default_realm`` has been set, this may be called
-        with the syntax ``set_hash(user, hash)``,
-        otherwise it must be called with all three arguments:
-        ``set_hash(user, realm, hash)``.
-
-        .. warning::
-            does not (currently) do any validation of the hash string
-
-        .. versionadded:: 1.7
-        """
-        ...
-    def find(self, user: str, realm: str | None) -> htdigest | None:
-        """
-        return hash for user
-
-        .. deprecated:: 1.6
-            and will be removed in version 1.8, use get_hash instead.
-        """
-        ...
-    def delete(self, user: str, realm: str | None = None) -> bool:
-        """
-        Delete user's entry for specified realm.
-
-        if realm is not specified, uses ``self.default_realm``.
-
-        :returns:
-            * ``True`` if user deleted,
-            * ``False`` if user not found in realm.
-        """
-        ...
-    def delete_realm(self, realm: str | None) -> int:
-        """
-        Delete all users for specified realm.
-
-        if realm is not specified, uses ``self.default_realm``.
-
-        :returns: number of users deleted (0 if realm not found)
-        """
-        ...
-    def check_password(self, user: str, realm: str | None = None, password: str | bytes = ...) -> bool | None:
-        """
-        Verify password for specified user + realm.
-
-        If ``self.default_realm`` has been set, this may be called
-        with the syntax ``check_password(user, password)``,
-        otherwise it must be called with all three arguments:
-        ``check_password(user, realm, password)``.
-
-        :returns:
-            * ``None`` if user or realm not found.
-            * ``False`` if user found, but password does not match.
-            * ``True`` if user found and password matches.
-
-        .. versionchanged:: 1.6
-            This method was previously called ``verify``, it was renamed
-            to prevent ambiguity with the :class:`!CryptContext` method.
-            The old alias is deprecated, and will be removed in Passlib 1.8.
-        """
-        ...
-    def verify(self, user: str, realm: str | None, password: str | bytes) -> bool | None:
-        """
-        verify password for user
-
-        .. deprecated:: 1.6
-            and will be removed in version 1.8, use check_password instead.
-        """
-        ...
+__all__ = ["HtpasswdFile", "HtdigestFile"]

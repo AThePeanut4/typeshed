@@ -44,30 +44,6 @@ def pdb_on_exception(limit: int = 100) -> None:
     ...
 def wrap_trace(
     obj, hook: Callable[..., Any] = ..., which: str | None = None, events: str | None = None, label: str | None = None
-):
-    """
-    Monitor an object for interactions. Whenever code calls a method,
-    gets an attribute, or sets an attribute, an event is called. By
-    default the trace output is printed, but a custom tracing *hook*
-    can be passed.
+): ...
 
-    Args:
-       obj (object): New- or old-style object to be traced. Built-in
-           objects like lists and dicts also supported.
-       hook (callable): A function called once for every event. See
-           below for details.
-       which (str): One or more attribute names to trace, or a
-           function accepting attribute name and value, and returning
-           True/False.
-       events (str): One or more kinds of events to call *hook*
-           on. Expected values are ``['get', 'set', 'del', 'call',
-           'raise', 'return']``. Defaults to all events.
-       label (str): A name to associate with the traced object
-           Defaults to hexadecimal memory address, similar to repr.
-
-    The object returned is not the same object as the one passed
-    in. It will not pass identity checks. However, it will pass
-    :func:`isinstance` checks, as it is a new instance of a new
-    subtype of the object passed.
-    """
-    ...
+__all__ = ["pdb_on_signal", "pdb_on_exception", "wrap_trace"]

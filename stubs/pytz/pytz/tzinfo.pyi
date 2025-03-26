@@ -269,59 +269,7 @@ class DstTzInfo(BaseTzInfo):
         """
         ...
     @overload
-    def utcoffset(self, dt: datetime.datetime, is_dst: bool | None = None) -> datetime.timedelta:
-        """
-        See datetime.tzinfo.utcoffset
+    def utcoffset(self, dt: datetime.datetime, is_dst: bool | None = None) -> datetime.timedelta: ...
+    def dst(self, dt: datetime.datetime | None, is_dst: bool | None = None) -> datetime.timedelta | None: ...
 
-        The is_dst parameter may be used to remove ambiguity during DST
-        transitions.
-
-        >>> from pytz import timezone
-        >>> tz = timezone('America/St_Johns')
-        >>> ambiguous = datetime(2009, 10, 31, 23, 30)
-
-        >>> str(tz.utcoffset(ambiguous, is_dst=False))
-        '-1 day, 20:30:00'
-
-        >>> str(tz.utcoffset(ambiguous, is_dst=True))
-        '-1 day, 21:30:00'
-
-        >>> try:
-        ...     tz.utcoffset(ambiguous)
-        ... except AmbiguousTimeError:
-        ...     print('Ambiguous')
-        Ambiguous
-        """
-        ...
-    def dst(self, dt: datetime.datetime | None, is_dst: bool | None = None) -> datetime.timedelta | None:
-        """
-        See datetime.tzinfo.dst
-
-        The is_dst parameter may be used to remove ambiguity during DST
-        transitions.
-
-        >>> from pytz import timezone
-        >>> tz = timezone('America/St_Johns')
-
-        >>> normal = datetime(2009, 9, 1)
-
-        >>> str(tz.dst(normal))
-        '1:00:00'
-        >>> str(tz.dst(normal, is_dst=False))
-        '1:00:00'
-        >>> str(tz.dst(normal, is_dst=True))
-        '1:00:00'
-
-        >>> ambiguous = datetime(2009, 10, 31, 23, 30)
-
-        >>> str(tz.dst(ambiguous, is_dst=False))
-        '0:00:00'
-        >>> str(tz.dst(ambiguous, is_dst=True))
-        '1:00:00'
-        >>> try:
-        ...     tz.dst(ambiguous)
-        ... except AmbiguousTimeError:
-        ...     print('Ambiguous')
-        Ambiguous
-        """
-        ...
+__all__: list[str] = []

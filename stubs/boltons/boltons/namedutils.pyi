@@ -17,51 +17,7 @@ skinnier approach, you'll probably have to look to C.
 
 from collections.abc import Iterable
 
-def namedtuple(typename: str, field_names: str | Iterable[str], verbose: bool = False, rename: bool = False):
-    """
-    Returns a new subclass of tuple with named fields.
+def namedtuple(typename: str, field_names: str | Iterable[str], verbose: bool = False, rename: bool = False): ...
+def namedlist(typename: str, field_names: str | Iterable[str], verbose: bool = False, rename: bool = False): ...
 
-    >>> Point = namedtuple('Point', ['x', 'y'])
-    >>> Point.__doc__                   # docstring for the new class
-    'Point(x, y)'
-    >>> p = Point(11, y=22)             # instantiate with pos args or keywords
-    >>> p[0] + p[1]                     # indexable like a plain tuple
-    33
-    >>> x, y = p                        # unpack like a regular tuple
-    >>> x, y
-    (11, 22)
-    >>> p.x + p.y                       # fields also accessible by name
-    33
-    >>> d = p._asdict()                 # convert to a dictionary
-    >>> d['x']
-    11
-    >>> Point(**d)                      # convert from a dictionary
-    Point(x=11, y=22)
-    >>> p._replace(x=100)               # _replace() is like str.replace() but targets named fields
-    Point(x=100, y=22)
-    """
-    ...
-def namedlist(typename: str, field_names: str | Iterable[str], verbose: bool = False, rename: bool = False):
-    """
-    Returns a new subclass of list with named fields.
-
-    >>> Point = namedlist('Point', ['x', 'y'])
-    >>> Point.__doc__                   # docstring for the new class
-    'Point(x, y)'
-    >>> p = Point(11, y=22)             # instantiate with pos args or keywords
-    >>> p[0] + p[1]                     # indexable like a plain list
-    33
-    >>> x, y = p                        # unpack like a regular list
-    >>> x, y
-    (11, 22)
-    >>> p.x + p.y                       # fields also accessible by name
-    33
-    >>> d = p._asdict()                 # convert to a dictionary
-    >>> d['x']
-    11
-    >>> Point(**d)                      # convert from a dictionary
-    Point(x=11, y=22)
-    >>> p._replace(x=100)               # _replace() is like str.replace() but targets named fields
-    Point(x=100, y=22)
-    """
-    ...
+__all__ = ["namedlist", "namedtuple"]

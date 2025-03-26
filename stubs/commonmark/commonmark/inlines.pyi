@@ -1,31 +1,34 @@
 import html
-from typing import Any
+import re
+from typing import Any, Final, Literal
+
+from .node import Node
 
 HTMLunescape = html.unescape
-ESCAPED_CHAR: Any
-rePunctuation: Any
-reLinkTitle: Any
-reLinkDestinationBraces: Any
-reEscapable: Any
-reEntityHere: Any
-reTicks: Any
-reTicksHere: Any
-reEllipses: Any
-reDash: Any
-reEmailAutolink: Any
-reAutolink: Any
-reSpnl: Any
-reWhitespaceChar: Any
-reWhitespace: Any
-reUnicodeWhitespaceChar: Any
-reFinalSpace: Any
-reInitialSpace: Any
-reSpaceAtEndOfLine: Any
-reLinkLabel: Any
-reMain: Any
+ESCAPED_CHAR: Final[str]
+rePunctuation: Final[re.Pattern[str]]
+reLinkTitle: Final[re.Pattern[str]]
+reLinkDestinationBraces: Final[re.Pattern[str]]
+reEscapable: Final[re.Pattern[str]]
+reEntityHere: Final[re.Pattern[str]]
+reTicks: Final[re.Pattern[str]]
+reTicksHere: Final[re.Pattern[str]]
+reEllipses: Final[re.Pattern[str]]
+reDash: Final[re.Pattern[str]]
+reEmailAutolink: Final[re.Pattern[str]]
+reAutolink: Final[re.Pattern[str]]
+reSpnl: Final[re.Pattern[str]]
+reWhitespaceChar: Final[re.Pattern[str]]
+reWhitespace: Final[re.Pattern[str]]
+reUnicodeWhitespaceChar: Final[re.Pattern[str]]
+reFinalSpace: Final[re.Pattern[str]]
+reInitialSpace: Final[re.Pattern[str]]
+reSpaceAtEndOfLine: Final[re.Pattern[str]]
+reLinkLabel: Final[re.Pattern[str]]
+reMain: Final[re.Pattern[str]]
 
-def text(s): ...
-def smart_dashes(chars): ...
+def text(s: str) -> Node: ...
+def smart_dashes(chars: str) -> str: ...
 
 class InlineParser:
     """
@@ -36,137 +39,37 @@ class InlineParser:
     parsed) and a position in that subject.
     """
     subject: str
-    brackets: Any
+    brackets: dict[str, Any] | None
     pos: int
-    refmap: Any
-    options: Any
-    def __init__(self, options=...) -> None: ...
-    def match(self, regexString):
-        """
-        If regexString matches at current position in the subject, advance
-        position in subject and return the match; otherwise return None.
-        """
-        ...
-    def peek(self):
-        """
-        Returns the character at the current subject position, or None if
-        there are no more characters.
-        """
-        ...
-    def spnl(self):
-        """
-        Parse zero or more space characters, including at
-        most one newline.
-        """
-        ...
-    def parseBackticks(self, block):
-        """
-        Attempt to parse backticks, adding either a backtick code span or a
-        literal sequence of backticks to the 'inlines' list.
-        """
-        ...
-    def parseBackslash(self, block):
-        """
-        Parse a backslash-escaped special character, adding either the
-        escaped character, a hard line break (if the backslash is followed
-        by a newline), or a literal backslash to the block's children.
-        Assumes current character is a backslash.
-        """
-        ...
-    def parseAutolink(self, block):
-        """Attempt to parse an autolink (URL or email in pointy brackets)."""
-        ...
-    def parseHtmlTag(self, block):
-        """Attempt to parse a raw HTML tag."""
-        ...
-    def scanDelims(self, c):
-        """
-        Scan a sequence of characters == c, and return information about
-        the number of delimiters and whether they are positioned such that
-        they can open and/or close emphasis or strong emphasis.  A utility
-        function for strong/emph parsing.
-        """
-        ...
-    delimiters: Any
-    def handleDelim(self, cc, block):
-        """Handle a delimiter marker for emphasis or a quote."""
-        ...
-    def removeDelimiter(self, delim) -> None: ...
+    refmap: dict[str, Any]
+    options: dict[str, Any]
+    def __init__(self, options: dict[str, Any] = {}) -> None: ...
+    def match(self, regexString: str | re.Pattern[str]) -> str | None: ...
+    def peek(self) -> str | None: ...
+    def spnl(self) -> Literal[True]: ...
+    def parseBackticks(self, block: Node) -> bool: ...
+    def parseBackslash(self, block: Node) -> Literal[True]: ...
+    def parseAutolink(self, block: Node) -> bool: ...
+    def parseHtmlTag(self, block: Node) -> bool: ...
+    def scanDelims(self, c: str) -> dict[str, Any] | None: ...
+    delimiters: dict[str, Any]
+    def handleDelim(self, cc: str, block: Node) -> bool: ...
+    def removeDelimiter(self, delim: dict[str, Any]) -> None: ...
     @staticmethod
-    def removeDelimitersBetween(bottom, top) -> None: ...
+    def removeDelimitersBetween(bottom: dict[str, Any], top: dict[str, Any]) -> None: ...
     def processEmphasis(self, stack_bottom) -> None: ...
-    def parseLinkTitle(self):
-        """
-        Attempt to parse link title (sans quotes), returning the string
-        or None if no match.
-        """
-        ...
-    def parseLinkDestination(self):
-        """
-        Attempt to parse link destination, returning the string or
-        None if no match.
-        """
-        ...
-    def parseLinkLabel(self):
-        """
-        Attempt to parse a link label, returning number of
-        characters parsed.
-        """
-        ...
-    def parseOpenBracket(self, block):
-        """
-        Add open bracket to delimiter stack and add a text node to
-        block's children.
-        """
-        ...
-    def parseBang(self, block):
-        """
-        If next character is [, and ! delimiter to delimiter stack and
-        add a text node to block's children. Otherwise just add a text
-        node.
-        """
-        ...
-    def parseCloseBracket(self, block):
-        """
-        Try to match close bracket against an opening in the delimiter
-        stack. Add either a link or image, or a plain [ character,
-        to block's children. If there is a matching delimiter,
-        remove it from the delimiter stack.
-        """
-        ...
+    def parseLinkTitle(self) -> str | None: ...
+    def parseLinkDestination(self) -> str | None: ...
+    def parseLinkLabel(self) -> int: ...
+    def parseOpenBracket(self, block: Node) -> Literal[True]: ...
+    def parseBang(self, block: Node) -> Literal[True]: ...
+    def parseCloseBracket(self, block: Node) -> Literal[True]: ...
     def addBracket(self, node, index, image) -> None: ...
     def removeBracket(self) -> None: ...
-    def parseEntity(self, block):
-        """Attempt to parse an entity."""
-        ...
-    def parseString(self, block):
-        """
-        Parse a run of ordinary characters, or a single character with
-        a special meaning in markdown, as a plain string.
-        """
-        ...
-    def parseNewline(self, block):
-        """
-        Parse a newline.  If it was preceded by two spaces, return a hard
-        line break; otherwise a soft line break.
-        """
-        ...
-    def parseReference(self, s, refmap):
-        """Attempt to parse a link reference, modifying refmap."""
-        ...
-    def parseInline(self, block):
-        """
-        Parse the next inline element in subject, advancing subject
-        position.
-
-        On success, add the result to block's children and return True.
-        On failure, return False.
-        """
-        ...
-    def parseInlines(self, block) -> None:
-        """
-        Parse string content in block into inline children,
-        using refmap to resolve references.
-        """
-        ...
-    parse: Any
+    def parseEntity(self, block: Node) -> bool: ...
+    def parseString(self, block: Node) -> bool: ...
+    def parseNewline(self, block: Node) -> Literal[True]: ...
+    def parseReference(self, s: str, refmap: dict[str, Any]) -> int: ...
+    def parseInline(self, block: Node) -> bool: ...
+    def parseInlines(self, block: Node) -> None: ...
+    parse = parseInlines

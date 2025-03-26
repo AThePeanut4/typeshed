@@ -143,10 +143,6 @@ class DisabledHash(PasswordHash, metaclass=ABCMeta):
         """
         ...
     @classmethod
-    def enable(cls, hash: str) -> str:
-        """
-        given a disabled-hash string,
-        extract previously-enabled hash if one is present,
-        otherwise raises ValueError
-        """
-        ...
+    def enable(cls, hash: str) -> str: ...
+
+__all__ = ["PasswordHash"]

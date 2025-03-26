@@ -1,8 +1,8 @@
-from _typeshed import Incomplete, SupportsRead, SupportsWrite
+from _typeshed import SupportsRead, SupportsWrite
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Final
 
-__version__: str
+__version__: Final[str]
 
 def encode(
     obj: Any,
@@ -14,7 +14,7 @@ def encode(
     indent: int = ...,
     allow_nan: bool = ...,
     reject_bytes: bool = ...,
-    default: Callable[[Incomplete], Incomplete] | None = None,
+    default: Callable[[Any], Any] | None = None,  # Specify how to serialize arbitrary types
     separators: tuple[str, str] | None = None,
 ) -> str:
     """Converts arbitrary object recursively into JSON. Use ensure_ascii=false to output UTF-8. Set encode_html_chars=True to encode < > & as unicode escape sequences. Set escape_forward_slashes=False to prevent escaping / characters.Set allow_nan=False to raise an exception when NaN or Infinity would be serialized.Set reject_bytes=True to raise TypeError on bytes."""
@@ -29,7 +29,7 @@ def dumps(
     indent: int = ...,
     allow_nan: bool = ...,
     reject_bytes: bool = ...,
-    default: Callable[[Incomplete], Incomplete] | None = None,
+    default: Callable[[Any], Any] | None = None,  # Specify how to serialize arbitrary types
     separators: tuple[str, str] | None = None,
 ) -> str:
     """Converts arbitrary object recursively into JSON. Use ensure_ascii=false to output UTF-8. Set encode_html_chars=True to encode < > & as unicode escape sequences. Set escape_forward_slashes=False to prevent escaping / characters.Set allow_nan=False to raise an exception when NaN or Infinity would be serialized.Set reject_bytes=True to raise TypeError on bytes."""
@@ -46,7 +46,7 @@ def dump(
     indent: int = ...,
     allow_nan: bool = ...,
     reject_bytes: bool = ...,
-    default: Callable[[Incomplete], Incomplete] | None = None,
+    default: Callable[[Any], Any] | None = None,  # Specify how to serialize arbitrary types
     separators: tuple[str, str] | None = None,
 ) -> None:
     """Converts arbitrary object recursively into JSON file. Use ensure_ascii=false to output UTF-8. Set encode_html_chars=True to encode < > & as unicode escape sequences. Set escape_forward_slashes=False to prevent escaping / characters.Set allow_nan=False to raise an exception when NaN or Infinity would be serialized.Set reject_bytes=True to raise TypeError on bytes."""
