@@ -46,8 +46,55 @@ def register_crypt_handler_path(name: str, path: str) -> None:
     ...
 def register_crypt_handler(
     handler: Any, force: bool = False, _attr: str | None = None
-) -> None: ...  # expected handler is object with attr handler.name
-def get_crypt_handler(name: str, default: Any = ...) -> Any: ...  # returns handler or default
-def list_crypt_handlers(loaded_only: bool = False) -> list[str]: ...
+) -> None:
+    """
+    register password hash handler.
+
+    this method immediately registers a handler with the internal passlib registry,
+    so that it will be returned by :func:`get_crypt_handler` when requested.
+
+    :arg handler: the password hash handler to register
+    :param force: force override of existing handler (defaults to False)
+    :param _attr:
+        [internal kwd] if specified, ensures ``handler.name``
+        matches this value, or raises :exc:`ValueError`.
+
+    :raises TypeError:
+        if the specified object does not appear to be a valid handler.
+
+    :raises ValueError:
+        if the specified object's name (or other required attributes)
+        contain invalid values.
+
+    :raises KeyError:
+        if a (different) handler was already registered with
+        the same name, and ``force=True`` was not specified.
+    """
+    ...
+def get_crypt_handler(name: str, default: Any = ...) -> Any:
+    """
+    return handler for specified password hash scheme.
+
+    this method looks up a handler for the specified scheme.
+    if the handler is not already loaded,
+    it checks if the location is known, and loads it first.
+
+    :arg name: name of handler to return
+    :param default: optional default value to return if no handler with specified name is found.
+
+    :raises KeyError: if no handler matching that name is found, and no default specified, a KeyError will be raised.
+
+    :returns: handler attached to name, or default value (if specified).
+    """
+    ...
+def list_crypt_handlers(loaded_only: bool = False) -> list[str]:
+    """
+    return sorted list of all known crypt handler names.
+
+    :param loaded_only: if ``True``, only returns names of handlers which have actually been loaded.
+
+    :returns: list of names of all known handlers
+    """
+    ...
 
 __all__ = ["register_crypt_handler_path", "register_crypt_handler", "get_crypt_handler", "list_crypt_handlers"]

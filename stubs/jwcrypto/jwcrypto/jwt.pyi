@@ -70,6 +70,11 @@ class JWTMissingKey(JWKeyNotFound):
     def __init__(self, message: str | None = None, exception: BaseException | None = None) -> None: ...
 
 class JWT:
+    """
+    JSON Web token object
+
+    This object represent a generic token.
+    """
     deserializelog: list[str] | None
     def __init__(
         self,

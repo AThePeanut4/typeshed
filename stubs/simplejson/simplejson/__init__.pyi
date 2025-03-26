@@ -764,8 +764,62 @@ def load(
     object_pairs_hook: Callable[[list[tuple[Any, Any]]], Any] | None = ...,
     use_decimal: bool = ...,
     allow_nan: bool = ...,
-) -> Any: ...
-def simple_first(kv: tuple[_T, object]) -> tuple[bool, _T]: ...
+) -> Any:
+    """
+    Deserialize ``fp`` (a ``.read()``-supporting file-like object containing
+    a JSON document as `str` or `bytes`) to a Python object.
+
+    *encoding* determines the encoding used to interpret any
+    `bytes` objects decoded by this instance (``'utf-8'`` by
+    default). It has no effect when decoding `str` objects.
+
+    *object_hook*, if specified, will be called with the result of every
+    JSON object decoded and its return value will be used in place of the
+    given :class:`dict`.  This can be used to provide custom
+    deserializations (e.g. to support JSON-RPC class hinting).
+
+    *object_pairs_hook* is an optional function that will be called with
+    the result of any object literal decode with an ordered list of pairs.
+    The return value of *object_pairs_hook* will be used instead of the
+    :class:`dict`.  This feature can be used to implement custom decoders
+    that rely on the order that the key and value pairs are decoded (for
+    example, :func:`collections.OrderedDict` will remember the order of
+    insertion). If *object_hook* is also defined, the *object_pairs_hook*
+    takes priority.
+
+    *parse_float*, if specified, will be called with the string of every
+    JSON float to be decoded. By default, this is equivalent to
+    ``float(num_str)``. This can be used to use another datatype or parser
+    for JSON floats (e.g. :class:`decimal.Decimal`).
+
+    *parse_int*, if specified, will be called with the string of every
+    JSON int to be decoded. By default, this is equivalent to
+    ``int(num_str)``.  This can be used to use another datatype or parser
+    for JSON integers (e.g. :class:`float`).
+
+    *allow_nan*, if True (default false), will allow the parser to
+    accept the non-standard floats ``NaN``, ``Infinity``, and ``-Infinity``
+    and enable the use of the deprecated *parse_constant*.
+
+    If *use_decimal* is true (default: ``False``) then it implies
+    parse_float=decimal.Decimal for parity with ``dump``.
+
+    *parse_constant*, if specified, will be
+    called with one of the following strings: ``'-Infinity'``,
+    ``'Infinity'``, ``'NaN'``. It is not recommended to use this feature,
+    as it is rare to parse non-compliant JSON containing these values.
+
+    To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+    kwarg. NOTE: You should use *object_hook* or *object_pairs_hook* instead
+    of subclassing whenever possible.
+    """
+    ...
+def simple_first(kv: tuple[_T, object]) -> tuple[bool, _T]:
+    """
+    Helper function to pass to item_sort_key to sort simple
+    elements to the top, then container elements.
+    """
+    ...
 
 __all__ = [
     "dump",

@@ -70,7 +70,15 @@ class nthash(uh.StaticHandler):
     checksum_chars: ClassVar[str]
     checksum_size: ClassVar[int]
     @classmethod
-    def raw(cls, secret): ...
+    def raw(cls, secret):
+        """
+        encode password using MD4-based NTHASH algorithm
+
+        :arg secret: secret as unicode or utf-8 encoded bytes
+
+        :returns: returns string of raw bytes
+        """
+        ...
     @overload
     @classmethod
     def raw_nthash(cls, secret: str | bytes, hex: Literal[True]) -> str: ...

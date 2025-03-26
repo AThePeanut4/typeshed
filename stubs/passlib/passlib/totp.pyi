@@ -821,7 +821,9 @@ class TotpMatch(SequenceMixin):
         """
         ...
     @property
-    def cache_time(self) -> int: ...
+    def cache_time(self) -> int:
+        """Timestamp marking when counter has passed outside of verification window."""
+        ...
 
 __all__ = [
     "AppWallet",
