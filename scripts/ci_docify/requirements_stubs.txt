@@ -53,6 +53,7 @@ Flask-Migrate==4.1.*
 docker==7.1.*
 pyserial[cp2110]==3.5.*
 pywin32==310.*
+xlrd==2.0.*
 mypy-extensions==1.0.*
 pytest-lazy-fixture==0.6.*
 docutils==0.21.*
@@ -82,7 +83,7 @@ nanoid==2.0.0
 dirhash==0.5.*
 fpdf2==2.8.2
 slumber==0.7.*
-pytz==2025.1
+pytz==2025.2
 aws-xray-sdk==2.14.*
 ttkthemes==3.2.*
 pysftp==0.2.*
