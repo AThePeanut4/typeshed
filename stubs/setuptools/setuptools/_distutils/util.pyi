@@ -104,13 +104,13 @@ def execute(
     dry_run: bool = False,
 ) -> None:
     """
-    Perform some action that affects the outside world (eg.  by
-    writing to the filesystem).  Such actions are special because they
-    are disabled by the 'dry_run' flag.  This method takes care of all
-    that bureaucracy for you; all you have to do is supply the
+    Perform some action that affects the outside world (e.g. by
+    writing to the filesystem). Such actions are special because they
+    are disabled by the 'dry_run' flag. This method handles that
+    complication; simply supply the
     function to call and an argument tuple for it (to embody the
-    "external action" being performed), and an optional message to
-    print.
+    "external action" being performed) and an optional message to
+    emit.
     """
     ...
 def strtobool(val: str) -> Literal[0, 1]:
