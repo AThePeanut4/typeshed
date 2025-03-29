@@ -40,7 +40,9 @@ class install(Command):
     build_base: Incomplete
     build_lib: Incomplete
     record: Incomplete
-    def initialize_options(self) -> None: ...
+    def initialize_options(self) -> None:
+        """Initializes options."""
+        ...
     config_vars: ChainMap[str, Any]  # Any: Same as sysconfig.get_config_vars
     install_libbase: Incomplete
     def finalize_options(self) -> None:

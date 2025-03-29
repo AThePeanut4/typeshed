@@ -60,5 +60,16 @@ if sys.version_info >= (3, 11):
             """
             Take a package name or module object and return the module.
 
-    def from_package(package: types.ModuleType) -> Traversable: ...
-    def as_file(path: Traversable) -> AbstractContextManager[Path, Literal[False]]: ...
+            Raise an exception if the resolved module is not a package.
+            """
+            ...
+
+    def from_package(package: types.ModuleType) -> Traversable:
+        """Return a Traversable object for the given package."""
+        ...
+    def as_file(path: Traversable) -> AbstractContextManager[Path, Literal[False]]:
+        """
+        Given a Traversable object, return that object as a
+        path on the local file system in a context manager.
+        """
+        ...
