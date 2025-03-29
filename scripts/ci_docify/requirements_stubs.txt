@@ -95,7 +95,7 @@ openpyxl==3.1.5
 PyScreeze==1.0.1
 PyYAML==6.0.*
 tree-sitter-languages==1.10.*
-setuptools~=77.0.2
+setuptools==78.1.*
 django-import-export==4.3.*
 pyaudio==0.2.*
 flake8-simplify==0.21.*
