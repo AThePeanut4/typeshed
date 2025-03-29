@@ -10,7 +10,7 @@ if sys.version_info >= (3, 13):
     from importlib.resources._common import Anchor
     from io import TextIOWrapper
     from pathlib import Path
-    from typing import BinaryIO, overload
+    from typing import BinaryIO, Literal, overload
     from typing_extensions import Unpack
 
     def open_binary(anchor: Anchor, *path_names: StrPath) -> BinaryIO:
@@ -36,24 +36,7 @@ if sys.version_info >= (3, 13):
         """Read and return contents of *resource* within *package* as str."""
         ...
     @overload
-    def read_text(anchor: Anchor, *path_names: StrPath, encoding: str | None, errors: str | None = "strict") -> str:
-        """Read and return contents of *resource* within *package* as str."""
-        ...
-    def path(anchor: Anchor, *path_names: StrPath) -> AbstractContextManager[Path]:
-        """Return the path to the *resource* as an actual file system path."""
-        ...
-    def is_resource(anchor: Anchor, *path_names: StrPath) -> bool:
-        """
-        Return ``True`` if there is a resource named *name* in the package,
-
-        Otherwise returns ``False``.
-        """
-        ...
-    def contents(anchor: Anchor, *path_names: StrPath) -> Iterator[str]:
-        """
-        Return an iterable over the named resources within the package.
-
-        The iterable returns :class:`str` resources (e.g. files).
-        The iterable does not recurse into subdirectories.
-        """
-        ...
+    def read_text(anchor: Anchor, *path_names: StrPath, encoding: str | None, errors: str | None = "strict") -> str: ...
+    def path(anchor: Anchor, *path_names: StrPath) -> AbstractContextManager[Path, Literal[False]]: ...
+    def is_resource(anchor: Anchor, *path_names: StrPath) -> bool: ...
+    def contents(anchor: Anchor, *path_names: StrPath) -> Iterator[str]: ...

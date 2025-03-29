@@ -7,7 +7,7 @@ if sys.version_info >= (3, 11):
     from contextlib import AbstractContextManager
     from importlib.abc import ResourceReader, Traversable
     from pathlib import Path
-    from typing import overload
+    from typing import Literal, overload
     from typing_extensions import TypeAlias, deprecated
 
     Package: TypeAlias = str | types.ModuleType
@@ -60,16 +60,5 @@ if sys.version_info >= (3, 11):
             """
             Take a package name or module object and return the module.
 
-            Raise an exception if the resolved module is not a package.
-            """
-            ...
-
-    def from_package(package: types.ModuleType) -> Traversable:
-        """Return a Traversable object for the given package."""
-        ...
-    def as_file(path: Traversable) -> AbstractContextManager[Path]:
-        """
-        Given a Traversable object, return that object as a
-        path on the local file system in a context manager.
-        """
-        ...
+    def from_package(package: types.ModuleType) -> Traversable: ...
+    def as_file(path: Traversable) -> AbstractContextManager[Path, Literal[False]]: ...
