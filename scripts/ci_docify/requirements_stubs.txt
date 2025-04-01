@@ -68,7 +68,7 @@ peewee==3.17.9
 Flask-Cors==5.0.*
 python-dateutil==2.9.*
 usersettings==1.1.*
-pyflakes==3.2.*
+pyflakes==3.3.*
 psycopg2~=2.9.10
 reportlab[pycairo]==4.3.1
 libsass==0.23.*
