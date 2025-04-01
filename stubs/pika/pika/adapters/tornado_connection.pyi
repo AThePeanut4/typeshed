@@ -1,10 +1,11 @@
 """Use pika with the Tornado IOLoop"""
 
 from _typeshed import Incomplete
+from logging import Logger
 
 from pika.adapters import base_connection
 
-LOGGER: Incomplete
+LOGGER: Logger
 
 class TornadoConnection(base_connection.BaseConnection):
     """

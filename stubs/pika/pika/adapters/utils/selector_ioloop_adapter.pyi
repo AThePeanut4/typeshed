@@ -6,10 +6,11 @@ select_connection's I/O loops.
 
 import abc
 from _typeshed import Incomplete
+from logging import Logger
 
 from pika.adapters.utils import io_services_utils, nbio_interface
 
-LOGGER: Incomplete
+LOGGER: Logger
 
 class AbstractSelectorIOLoop(metaclass=abc.ABCMeta):
     """

@@ -197,3 +197,5 @@ class ThreadPoolExecutor(concurrent.futures.ThreadPoolExecutor):
        This is a provisional API.
     """
     kill = concurrent.futures.ThreadPoolExecutor.shutdown
+
+__all__ = ["ThreadPool", "ThreadResult", "ThreadPoolExecutor"]

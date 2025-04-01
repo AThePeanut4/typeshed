@@ -151,16 +151,6 @@ class msdcc2(uh.HasUserContext, uh.StaticHandler):
     checksum_chars: ClassVar[str]
     checksum_size: ClassVar[int]
     @classmethod
-    def raw(cls, secret, user):
-        """
-        encode password using msdcc v2 algorithm
+    def raw(cls, secret, user): ...
 
-        :type secret: unicode or utf-8 bytes
-        :arg secret: secret
-
-        :type user: str
-        :arg user: username to use as salt
-
-        :returns: returns string of raw bytes
-        """
-        ...
+__all__ = ["lmhash", "nthash", "bsd_nthash", "msdcc", "msdcc2"]

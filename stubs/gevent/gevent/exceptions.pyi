@@ -99,3 +99,5 @@ class HubDestroyed(GreenletExit):
     """
     destroy_loop: bool
     def __init__(self, destroy_loop: bool) -> None: ...
+
+__all__ = ["LoopExit"]

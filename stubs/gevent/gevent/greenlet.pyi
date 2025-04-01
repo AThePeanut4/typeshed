@@ -505,40 +505,6 @@ def killall(
     exception: type[BaseException] | BaseException = ...,
     block: bool = True,
     timeout: float | None = None,
-) -> None:
-    """
-    killall(greenlets, exception=GreenletExit, block=True, timeout=None)
+) -> None: ...
 
-    Forceably terminate all the *greenlets* by causing them to raise *exception*.
-
-    .. caution:: Use care when killing greenlets. If they are not prepared for exceptions,
-       this could result in corrupted state.
-
-    :param greenlets: A **bounded** iterable of the non-None greenlets to terminate.
-       *All* the items in this iterable must be greenlets that belong to the same hub,
-       which should be the hub for this current thread. If this is a generator or iterator
-       that switches greenlets, the results are undefined.
-    :keyword exception: The type of exception to raise in the greenlets. By default this is
-        :class:`GreenletExit`.
-    :keyword bool block: If True (the default) then this function only returns when all the
-        greenlets are dead; the current greenlet is unscheduled during that process.
-        If greenlets ignore the initial exception raised in them,
-        then they will be joined (with :func:`gevent.joinall`) and allowed to die naturally.
-        If False, this function returns immediately and greenlets will raise
-        the exception asynchronously.
-    :keyword float timeout: A time in seconds to wait for greenlets to die. If given, it is
-        only honored when ``block`` is True.
-    :raise Timeout: If blocking and a timeout is given that elapses before
-        all the greenlets are dead.
-
-    .. versionchanged:: 1.1a2
-        *greenlets* can be any iterable of greenlets, like an iterator or a set.
-        Previously it had to be a list or tuple.
-    .. versionchanged:: 1.5a3
-        Any :class:`Greenlet` in the *greenlets* list that hadn't been switched to before
-        calling this method will never be switched to. This makes this function
-        behave like :meth:`Greenlet.kill`. This does not apply to raw greenlets.
-    .. versionchanged:: 1.5a3
-        Now accepts raw greenlets created by :func:`gevent.spawn_raw`.
-    """
-    ...
+__all__ = ["Greenlet", "joinall", "killall"]

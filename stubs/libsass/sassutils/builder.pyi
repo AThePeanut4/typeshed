@@ -64,69 +64,9 @@ class Manifest:
     def __init__(
         self, sass_path: str, css_path: str | None = None, wsgi_path: str | None = None, strip_extension: bool | None = None
     ) -> None: ...
-    def resolve_filename(self, package_dir: str, filename: str) -> tuple[str, str]:
-        """
-        Gets a proper full relative path of Sass source and
-        CSS source that will be generated, according to ``package_dir``
-        and ``filename``.
+    def resolve_filename(self, package_dir: str, filename: str) -> tuple[str, str]: ...
+    def unresolve_filename(self, package_dir: str, filename: str) -> str: ...
+    def build(self, package_dir: str, output_style: _OutputStyle = "nested") -> frozenset[str]: ...
+    def build_one(self, package_dir: str, filename: str, source_map: bool = False) -> str: ...
 
-        :param package_dir: the path of package directory
-        :type package_dir: :class:`str`, :class:`basestring`
-        :param filename: the filename of Sass/SCSS source to compile
-        :type filename: :class:`str`, :class:`basestring`
-        :returns: a pair of (sass, css) path
-        :rtype: :class:`tuple`
-        """
-        ...
-    def unresolve_filename(self, package_dir: str, filename: str) -> str:
-        """
-        Retrieves the probable source path from the output filename.  Pass
-        in a .css path to get out a .scss path.
-
-        :param package_dir: the path of the package directory
-        :type package_dir: :class:`str`
-        :param filename: the css filename
-        :type filename: :class:`str`
-        :returns: the scss filename
-        :rtype: :class:`str`
-        """
-        ...
-    def build(self, package_dir: str, output_style: _OutputStyle = "nested") -> frozenset[str]:
-        """
-        Builds the Sass/SCSS files in the specified :attr:`sass_path`.
-        It finds :attr:`sass_path` and locates :attr:`css_path`
-        as relative to the given ``package_dir``.
-
-        :param package_dir: the path of package directory
-        :type package_dir: :class:`str`, :class:`basestring`
-        :param output_style: an optional coding style of the compiled result.
-                             choose one of: ``'nested'`` (default),
-                             ``'expanded'``, ``'compact'``, ``'compressed'``
-        :type output_style: :class:`str`
-        :returns: the set of compiled CSS filenames
-        :rtype: :class:`frozenset`
-
-        .. versionadded:: 0.6.0
-           The ``output_style`` parameter.
-        """
-        ...
-    def build_one(self, package_dir: str, filename: str, source_map: bool = False) -> str:
-        """
-        Builds one Sass/SCSS file.
-
-        :param package_dir: the path of package directory
-        :type package_dir: :class:`str`, :class:`basestring`
-        :param filename: the filename of Sass/SCSS source to compile
-        :type filename: :class:`str`, :class:`basestring`
-        :param source_map: whether to use source maps.  if :const:`True`
-                           it also write a source map to a ``filename``
-                           followed by :file:`.map` suffix.
-                           default is :const:`False`
-        :type source_map: :class:`bool`
-        :returns: the filename of compiled CSS
-        :rtype: :class:`str`, :class:`basestring`
-
-        .. versionadded:: 0.4.0
-           Added optional ``source_map`` parameter.
-        """
-        ...
+__all__ = ("SUFFIXES", "SUFFIX_PATTERN", "Manifest", "build_directory")

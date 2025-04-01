@@ -264,14 +264,6 @@ def with_timeout(
     """
     ...
 @overload
-def with_timeout(seconds: float | None, function: Callable[_P, _T], *args: _P.args, **kwds: _P.kwargs) -> _T:
-    """
-    Wrap a call to *function* with a timeout; if the called
-    function fails to return before the timeout, cancel it and return a
-    flag value, provided by *timeout_value* keyword argument.
+def with_timeout(seconds: float | None, function: Callable[_P, _T], *args: _P.args, **kwds: _P.kwargs) -> _T: ...
 
-    If timeout expires but *timeout_value* is not provided, raise :class:`Timeout`.
-
-    Keyword argument *timeout_value* is not passed to *function*.
-    """
-    ...
+__all__ = ["Timeout", "with_timeout"]

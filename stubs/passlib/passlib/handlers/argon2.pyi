@@ -197,3 +197,5 @@ class argon2(_NoBackend, _Argon2Common):  # type: ignore[misc]
         * Support configurable threading limits.
     """
     backends: ClassVar[tuple[str, ...]]
+
+__all__ = ["argon2"]

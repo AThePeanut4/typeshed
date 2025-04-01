@@ -110,12 +110,6 @@ class cisco_type7(uh.GenericHandler):
     salt: int
     def __init__(self, salt: int | None = None, **kwds) -> None: ...
     @classmethod
-    def decode(cls, hash, encoding: str = "utf-8"):
-        """
-        decode hash, returning original password.
+    def decode(cls, hash, encoding: str = "utf-8"): ...
 
-        :arg hash: encoded password
-        :param encoding: optional encoding to use (defaults to ``UTF-8``).
-        :returns: password as unicode
-        """
-        ...
+__all__ = ["cisco_pix", "cisco_asa", "cisco_type7"]

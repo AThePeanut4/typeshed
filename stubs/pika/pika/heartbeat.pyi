@@ -1,8 +1,6 @@
-"""Handle AMQP Heartbeats"""
+from logging import Logger
 
-from _typeshed import Incomplete
-
-LOGGER: Incomplete
+LOGGER: Logger
 
 class HeartbeatChecker:
     """

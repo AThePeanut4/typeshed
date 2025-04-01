@@ -5,12 +5,13 @@ platform pika is running on.
 
 import abc
 from _typeshed import Incomplete
+from logging import Logger
 
 import pika.compat
 from pika.adapters.base_connection import BaseConnection
 from pika.adapters.utils.selector_ioloop_adapter import AbstractSelectorIOLoop
 
-LOGGER: Incomplete
+LOGGER: Logger
 SELECT_TYPE: Incomplete
 
 class SelectConnection(BaseConnection):

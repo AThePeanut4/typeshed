@@ -13,6 +13,7 @@ classes.
 
 from _typeshed import Incomplete, Unused
 from collections.abc import Generator, Sequence
+from logging import Logger
 from types import TracebackType
 from typing import NamedTuple
 from typing_extensions import Self
@@ -22,7 +23,7 @@ from ..data import _ArgumentMapping
 from ..exchange_type import ExchangeType
 from ..spec import BasicProperties
 
-LOGGER: Incomplete
+LOGGER: Logger
 
 class _CallbackResult:
     """

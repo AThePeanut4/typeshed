@@ -7,18 +7,18 @@ Also, it models the Bindings and Scopes.
 
 import ast
 import sys
+from _typeshed import Incomplete
 from collections.abc import Callable, Generator, Iterable, Iterator
 from contextlib import contextmanager
 from re import Pattern
 from typing import Any, ClassVar, Literal, TypeVar, overload
-from typing_extensions import ParamSpec, TypeAlias
+from typing_extensions import Never, ParamSpec, TypeAlias
 
 from pyflakes.messages import Message
 
 _AnyFunction: TypeAlias = Callable[..., Any]
 _F = TypeVar("_F", bound=_AnyFunction)
 _P = ParamSpec("_P")
-_T = TypeVar("_T")
 
 PYPY: bool
 
@@ -47,13 +47,6 @@ class _FieldsOrder(dict[type[ast.AST], tuple[str, ...]]):
     """Fix order of AST node fields."""
     def __missing__(self, node_class: type[ast.AST]) -> tuple[str, ...]: ...
 
-def counter(items: Iterable[_T]) -> dict[_T, int]:
-    """
-    Simplest required implementation of collections.Counter. Required as 2.6
-    does not have Counter in collections.
-    """
-    ...
-
 _OmitType: TypeAlias = str | tuple[str, ...] | None
 
 def iter_child_nodes(node: ast.AST, omit: _OmitType = None, _fields_order: _FieldsOrder = ...) -> Iterator[ast.AST]:
@@ -69,13 +62,11 @@ def iter_child_nodes(node: ast.AST, omit: _OmitType = None, _fields_order: _Fiel
     """
     ...
 @overload
-def convert_to_value(item: ast.Str) -> str: ...  # type: ignore[overload-overlap]
+def convert_to_value(item: ast.Constant) -> Any: ...  # type: ignore[overload-overlap]  # See ast.Constant.value for possible return types
 @overload
-def convert_to_value(item: ast.Bytes) -> bytes: ...  # type: ignore[overload-overlap]
+def convert_to_value(item: ast.Tuple) -> tuple[Any, ...]: ...  # type: ignore[overload-overlap]  # Tuple items depend on their ast type
 @overload
-def convert_to_value(item: ast.Tuple) -> tuple[Any, ...]: ...  # type: ignore[overload-overlap]
-@overload
-def convert_to_value(item: ast.Name | ast.NameConstant) -> Any: ...
+def convert_to_value(item: ast.Name) -> VariableKey: ...  # type: ignore[overload-overlap]
 @overload
 def convert_to_value(item: ast.AST) -> UnhandledKeyType: ...
 def is_notimplemented_name_node(node: object) -> bool: ...
@@ -93,7 +84,7 @@ class Binding:
     """
     name: str
     source: ast.AST | None
-    used: Literal[False] | tuple[Any, ast.AST]
+    used: Literal[False] | tuple[Incomplete, ast.AST]
     def __init__(self, name: str, source: ast.AST | None) -> None: ...
     def redefines(self, other: Binding) -> bool: ...
 
@@ -129,7 +120,7 @@ class Importation(Definition):
     @type fullName: C{str}
     """
     fullName: str
-    redefined: list[Any]
+    redefined: list[Incomplete]
     def __init__(self, name: str, source: ast.AST | None, full_name: str | None = None) -> None: ...
     @property
     def source_statement(self) -> str:
@@ -164,12 +155,7 @@ class StarImportation(Importation):
     def __init__(self, name: str, source: ast.AST) -> None: ...
 
 class FutureImportation(ImportationFrom):
-    """
-    A binding created by a from `__future__` import statement.
-
-    `__future__` imports are implicitly used.
-    """
-    used: tuple[Any, ast.AST]
+    used: tuple[Incomplete, ast.AST]
     def __init__(self, name: str, source: ast.AST, scope) -> None: ...
 
 class Argument(Binding):
@@ -231,7 +217,7 @@ class FunctionScope(Scope):
     usesLocals: bool
     alwaysUsed: ClassVar[set[str]]
     globals: set[str]
-    returnValue: Any
+    returnValue: Incomplete
     isGenerator: bool
     def __init__(self) -> None: ...
     def unused_assignments(self) -> Iterator[tuple[str, Binding]]:
@@ -279,35 +265,37 @@ if sys.version_info >= (3, 10):
     _MatchAs: TypeAlias = ast.MatchAs
     _MatchOr: TypeAlias = ast.MatchOr
 else:
-    _Match: TypeAlias = Any
-    _MatchCase: TypeAlias = Any
-    _MatchValue: TypeAlias = Any
-    _MatchSingleton: TypeAlias = Any
-    _MatchSequence: TypeAlias = Any
-    _MatchStar: TypeAlias = Any
-    _MatchMapping: TypeAlias = Any
-    _MatchClass: TypeAlias = Any
-    _MatchAs: TypeAlias = Any
-    _MatchOr: TypeAlias = Any
+    # The methods using these should never be called on Python < 3.10.
+    _Match: TypeAlias = Never
+    _MatchCase: TypeAlias = Never
+    _MatchValue: TypeAlias = Never
+    _MatchSingleton: TypeAlias = Never
+    _MatchSequence: TypeAlias = Never
+    _MatchStar: TypeAlias = Never
+    _MatchMapping: TypeAlias = Never
+    _MatchClass: TypeAlias = Never
+    _MatchAs: TypeAlias = Never
+    _MatchOr: TypeAlias = Never
 
 if sys.version_info >= (3, 12):
     _TypeVar: TypeAlias = ast.TypeVar
     _TypeAlias: TypeAlias = ast.TypeAlias
 else:
-    _TypeVar: TypeAlias = Any
-    _TypeAlias: TypeAlias = Any
+    # The methods using these should never be called on Python < 3.12.
+    _TypeVar: TypeAlias = Never
+    _TypeAlias: TypeAlias = Never
 
 class Checker:
     """I check the cleanliness and sanity of Python code."""
     nodeDepth: int
     offset: tuple[int, int] | None
     builtIns: set[str]
-    deadScopes: list[Any]
-    messages: list[Any]
+    deadScopes: list[Incomplete]
+    messages: list[Incomplete]
     filename: str
     withDoctest: bool
     scopeStack: list[Scope]
-    exceptHandlers: list[Any]
+    exceptHandlers: list[Incomplete]
     root: ast.AST
     def __init__(
         self,
@@ -315,7 +303,7 @@ class Checker:
         filename: str = "(none)",
         builtins: Iterable[str] | None = None,
         withDoctest: bool = False,
-        file_tokens: tuple[Any, ...] = (),
+        file_tokens: tuple[Incomplete, ...] = (),
     ) -> None: ...
     def deferFunction(self, callable: _AnyFunction) -> None:
         """

@@ -14,6 +14,7 @@ TwistedChannel class for details.
 """
 
 from _typeshed import Incomplete
+from logging import Logger
 from typing import Generic, NamedTuple, TypeVar
 
 import pika.connection
@@ -29,7 +30,7 @@ from twisted.python.failure import Failure  # type: ignore[import-not-found]  # 
 
 _T = TypeVar("_T")
 
-LOGGER: Incomplete
+LOGGER: Logger
 
 class ClosableDeferredQueue(DeferredQueue[_T], Generic[_T]):  # pyright: ignore[reportUntypedBaseClass]  # noqa: Y060
     """

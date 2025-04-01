@@ -50,14 +50,6 @@ released under the BSD license::
 
 from passlib.crypto._blowfish.unrolled import BlowfishEngine as BlowfishEngine
 
-def raw_bcrypt(password, ident, salt, log_rounds):
-    """
-    perform central password hashing step in bcrypt scheme.
+def raw_bcrypt(password, ident, salt, log_rounds): ...
 
-    :param password: the password to hash
-    :param ident: identifier w/ minor version (e.g. 2, 2a)
-    :param salt: the binary salt to use (encoded in bcrypt-base64)
-    :param log_rounds: the log2 of the number of rounds (as int)
-    :returns: bcrypt-base64 encoded checksum
-    """
-    ...
+__all__ = ["BlowfishEngine", "raw_bcrypt"]

@@ -1,6 +1,7 @@
 """Core connection objects"""
 
 import abc
+import ssl
 from _typeshed import Incomplete
 from collections.abc import Callable
 from logging import Logger
@@ -25,13 +26,13 @@ class Parameters:
     """
     DEFAULT_USERNAME: str
     DEFAULT_PASSWORD: str
-    DEFAULT_BLOCKED_CONNECTION_TIMEOUT: Incomplete
-    DEFAULT_CHANNEL_MAX: Incomplete
-    DEFAULT_CLIENT_PROPERTIES: Incomplete
+    DEFAULT_BLOCKED_CONNECTION_TIMEOUT: None
+    DEFAULT_CHANNEL_MAX: int
+    DEFAULT_CLIENT_PROPERTIES: None
     DEFAULT_CREDENTIALS: Incomplete
     DEFAULT_CONNECTION_ATTEMPTS: int
-    DEFAULT_FRAME_MAX: Incomplete
-    DEFAULT_HEARTBEAT_TIMEOUT: Incomplete
+    DEFAULT_FRAME_MAX: int
+    DEFAULT_HEARTBEAT_TIMEOUT: None
     DEFAULT_HOST: str
     DEFAULT_LOCALE: str
     DEFAULT_PORT: int
@@ -39,10 +40,10 @@ class Parameters:
     DEFAULT_SOCKET_TIMEOUT: float
     DEFAULT_STACK_TIMEOUT: float
     DEFAULT_SSL: bool
-    DEFAULT_SSL_OPTIONS: Incomplete
+    DEFAULT_SSL_OPTIONS: None
     DEFAULT_SSL_PORT: int
     DEFAULT_VIRTUAL_HOST: str
-    DEFAULT_TCP_OPTIONS: Incomplete
+    DEFAULT_TCP_OPTIONS: None
     def __init__(self) -> None: ...
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
@@ -430,19 +431,9 @@ class URLParameters(Parameters):
         ...
 
 class SSLOptions:
-    """
-    Class used to provide parameters for optional fine grained control of SSL
-    socket wrapping.
-    """
-    context: Incomplete
-    server_hostname: Incomplete
-    def __init__(self, context, server_hostname: Incomplete | None = None) -> None:
-        """
-        :param ssl.SSLContext context: SSLContext instance
-        :param str|None server_hostname: SSLContext.wrap_socket, used to enable
-            SNI
-        """
-        ...
+    context: ssl.SSLContext
+    server_hostname: str | None
+    def __init__(self, context: ssl.SSLContext, server_hostname: str | None = None) -> None: ...
 
 class Connection(AbstractBase, metaclass=abc.ABCMeta):
     """

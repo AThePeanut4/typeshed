@@ -9,9 +9,7 @@ with optimized versions, and leaves the other base.py methods alone.
 from passlib.crypto._blowfish.base import BlowfishEngine as _BlowfishEngine
 
 class BlowfishEngine(_BlowfishEngine):
-    def encipher(self, l, r):
-        """blowfish encipher a single 64-bit block encoded as two 32-bit ints"""
-        ...
-    def expand(self, key_words) -> None:
-        """unrolled version of blowfish key expansion"""
-        ...
+    def encipher(self, l, r): ...
+    def expand(self, key_words) -> None: ...
+
+__all__ = ["BlowfishEngine"]

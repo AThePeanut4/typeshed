@@ -182,132 +182,16 @@ def patch_time() -> None:
     ...
 def patch_thread(
     threading: bool = True, _threading_local: bool = True, Event: bool = True, logging: bool = True, existing_locks: bool = True
-) -> None:
-    """
-    patch_thread(threading=True, _threading_local=True, Event=True, logging=True, existing_locks=True) -> None
-
-    Replace the standard :mod:`thread` module to make it greenlet-based.
-
-    :keyword bool threading: When True (the default),
-        also patch :mod:`threading`.
-    :keyword bool _threading_local: When True (the default),
-        also patch :class:`_threading_local.local`.
-    :keyword bool logging: When True (the default), also patch locks
-        taken if the logging module has been configured.
-
-    :keyword bool existing_locks: When True (the default), and the
-        process is still single threaded, make sure that any
-        :class:`threading.RLock` (and, under Python 3, :class:`importlib._bootstrap._ModuleLock`)
-        instances that are currently locked can be properly unlocked. **Important**: This is a
-        best-effort attempt and, on certain implementations, may not detect all
-        locks. It is important to monkey-patch extremely early in the startup process.
-        Setting this to False is not recommended, especially on Python 2.
-
-    .. caution::
-        Monkey-patching :mod:`thread` and using
-        :class:`multiprocessing.Queue` or
-        :class:`concurrent.futures.ProcessPoolExecutor` (which uses a
-        ``Queue``) will hang the process.
-
-        Monkey-patching with this function and using
-        sub-interpreters (and advanced C-level API) and threads may be
-        unstable on certain platforms.
-
-    .. versionchanged:: 1.1b1
-        Add *logging* and *existing_locks* params.
-    .. versionchanged:: 1.3a2
-        ``Event`` defaults to True.
-    """
-    ...
-def patch_socket(dns: bool = True, aggressive: bool = True) -> None:
-    """
-    Replace the standard socket object with gevent's cooperative
-    sockets.
-
-    :keyword bool dns: When true (the default), also patch address
-        resolution functions in :mod:`socket`. See :doc:`/dns` for details.
-    """
-    ...
-def patch_dns() -> None:
-    """
-    Replace :doc:`DNS functions </dns>` in :mod:`socket` with
-    cooperative versions.
-
-    This is only useful if :func:`patch_socket` has been called and is
-    done automatically by that method if requested.
-    """
-    ...
-def patch_ssl() -> None:
-    """
-    patch_ssl() -> None
-
-    Replace :class:`ssl.SSLSocket` object and socket wrapping functions in
-    :mod:`ssl` with cooperative versions.
-
-    This is only useful if :func:`patch_socket` has been called.
-    """
-    ...
-def patch_select(aggressive: bool = True) -> None:
-    """
-    Replace :func:`select.select` with :func:`gevent.select.select`
-    and :func:`select.poll` with :class:`gevent.select.poll` (where available).
-
-    If ``aggressive`` is true (the default), also remove other
-    blocking functions from :mod:`select` .
-
-    - :func:`select.epoll`
-    - :func:`select.kqueue`
-    - :func:`select.kevent`
-    - :func:`select.devpoll` (Python 3.5+)
-    """
-    ...
-def patch_selectors(aggressive: bool = True) -> None:
-    """
-    Replace :class:`selectors.DefaultSelector` with
-    :class:`gevent.selectors.GeventSelector`.
-
-    If ``aggressive`` is true (the default), also remove other
-    blocking classes :mod:`selectors`:
-
-    - :class:`selectors.EpollSelector`
-    - :class:`selectors.KqueueSelector`
-    - :class:`selectors.DevpollSelector` (Python 3.5+)
-
-    On Python 2, the :mod:`selectors2` module is used instead
-    of :mod:`selectors` if it is available. If this module cannot
-    be imported, no patching is done and :mod:`gevent.selectors` is
-    not available.
-
-    In :func:`patch_all`, the *select* argument controls both this function
-    and :func:`patch_select`.
-
-    .. versionadded:: 20.6.0
-    """
-    ...
-def patch_subprocess() -> None:
-    """
-    Replace :func:`subprocess.call`, :func:`subprocess.check_call`,
-    :func:`subprocess.check_output` and :class:`subprocess.Popen` with
-    :mod:`cooperative versions <gevent.subprocess>`.
-
-    .. note::
-       On Windows under Python 3, the API support may not completely match
-       the standard library.
-    """
-    ...
-def patch_signal() -> None:
-    """
-    Make the :func:`signal.signal` function work with a :func:`monkey-patched os <patch_os>`.
-
-    .. caution:: This method must be used with :func:`patch_os` to have proper ``SIGCHLD``
-         handling. :func:`patch_all` calls both by default.
-
-    .. caution:: For proper ``SIGCHLD`` handling, you must yield to the event loop.
-         Using :func:`patch_all` is the easiest way to ensure this.
-
-    .. seealso:: :mod:`gevent.signal`
-    """
-    ...
+) -> None: ...
+def patch_socket(dns: bool = True, aggressive: bool = True) -> None: ...
+def patch_builtins() -> None: ...
+def patch_dns() -> None: ...
+def patch_ssl() -> None: ...
+def patch_select(aggressive: bool = True) -> None: ...
+def patch_selectors(aggressive: bool = True) -> None: ...
+def patch_subprocess() -> None: ...
+def patch_sys(stdin: bool = True, stdout: bool = True, stderr: bool = True) -> None: ...
+def patch_signal() -> None: ...
 def patch_all(
     socket: bool = True,
     dns: bool = True,
@@ -325,63 +209,31 @@ def patch_all(
     queue: bool = True,
     contextvars: bool = True,  # does nothing on Python 3.7+
     **kwargs: object,
-) -> bool | None:
-    """
-    Do all of the default monkey patching (calls every other applicable
-    function in this module).
+) -> bool | None: ...
+def main() -> dict[str, Any]: ...
 
-    :return: A true value if patching all modules wasn't cancelled, a false
-      value if it was.
-
-    .. versionchanged:: 1.1
-       Issue a :mod:`warning <warnings>` if this function is called multiple times
-       with different arguments. The second and subsequent calls will only add more
-       patches, they can never remove existing patches by setting an argument to ``False``.
-    .. versionchanged:: 1.1
-       Issue a :mod:`warning <warnings>` if this function is called with ``os=False``
-       and ``signal=True``. This will cause SIGCHLD handlers to not be called. This may
-       be an error in the future.
-    .. versionchanged:: 1.3a2
-       ``Event`` defaults to True.
-    .. versionchanged:: 1.3b1
-       Defined the return values.
-    .. versionchanged:: 1.3b1
-       Add ``**kwargs`` for the benefit of event subscribers. CAUTION: gevent may add
-       and interpret additional arguments in the future, so it is suggested to use prefixes
-       for kwarg values to be interpreted by plugins, for example, `patch_all(mylib_futures=True)`.
-    .. versionchanged:: 1.3.5
-       Add *queue*, defaulting to True, for Python 3.7.
-    .. versionchanged:: 1.5
-       Remove the ``httplib`` argument. Previously, setting it raised a ``ValueError``.
-    .. versionchanged:: 1.5a3
-       Add the ``contextvars`` argument.
-    .. versionchanged:: 1.5
-       Better handling of patching more than once.
-    """
-    ...
-def main() -> dict[str, Any]:
-    """
-    gevent.monkey - monkey patch the standard modules to use gevent.
-
-    USAGE: ``python -m gevent.monkey [MONKEY OPTIONS] [--module] (script|module) [SCRIPT OPTIONS]``
-
-    If no MONKEY OPTIONS are present, monkey patches all the modules as if by calling ``patch_all()``.
-    You can exclude a module with --no-<module>, e.g. --no-thread. You can
-    specify a module to patch with --<module>, e.g. --socket. In the latter
-    case only the modules specified on the command line will be patched.
-
-    The default behavior is to execute the script passed as argument. If you wish
-    to run a module instead, pass the `--module` argument before the module name.
-
-    .. versionchanged:: 1.3b1
-        The *script* argument can now be any argument that can be passed to `runpy.run_path`,
-        just like the interpreter itself does, for example a package directory containing ``__main__.py``.
-        Previously it had to be the path to
-        a .py source file.
-
-    .. versionchanged:: 1.5
-        The `--module` option has been added.
-
-    MONKEY OPTIONS: ``--verbose ``
-    """
-    ...
+__all__ = [
+    "patch_all",
+    "patch_builtins",
+    "patch_dns",
+    "patch_os",
+    "patch_queue",
+    "patch_select",
+    "patch_signal",
+    "patch_socket",
+    "patch_ssl",
+    "patch_subprocess",
+    "patch_sys",
+    "patch_thread",
+    "patch_time",
+    # query functions
+    "get_original",
+    "is_module_patched",
+    "is_object_patched",
+    # plugin API
+    "patch_module",
+    # module functions
+    "main",
+    # Errors and warnings
+    "MonkeyPatchWarning",
+]

@@ -41,26 +41,8 @@ class Resolver:
         ...
     def getaddrinfo(
         self, host: str, port: int, family: int = 0, socktype: int = 0, proto: int = 0, flags: int = 0
-    ) -> _AddrinfoResult:
-        """
-        getaddrinfo(host, port [, family, type, proto, flags])
-            -> list of (family, type, proto, canonname, sockaddr)
+    ) -> _AddrinfoResult: ...
+    def gethostbyaddr(self, ip_address: str) -> tuple[str, list[str], list[str]]: ...
+    def getnameinfo(self, sockaddr: _SockAddr, flags: int) -> _NameinfoResult: ...
 
-        Resolve host and port into addrinfo struct.
-        """
-        ...
-    def gethostbyaddr(self, ip_address: str) -> tuple[str, list[str], list[str]]:
-        """
-        gethostbyaddr(host) -> (name, aliaslist, addresslist)
-
-        Return the true host name, a list of aliases, and a list of IP addresses,
-        for a host.  The host argument is a string giving a host name or IP number.
-        """
-        ...
-    def getnameinfo(self, sockaddr: _SockAddr, flags: int) -> _NameinfoResult:
-        """
-        getnameinfo(sockaddr, flags) --> (host, port)
-
-        Get host and port for a sockaddr.
-        """
-        ...
+__all__ = ["Resolver"]

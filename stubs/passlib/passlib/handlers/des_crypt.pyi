@@ -167,3 +167,5 @@ class crypt16(uh.TruncateMixin, uh.HasSalt, uh.GenericHandler):  # type: ignore[
     truncate_size: ClassVar[int]
     @classmethod
     def from_string(cls, hash): ...
+
+__all__ = ["des_crypt", "bsdi_crypt", "bigcrypt", "crypt16"]
