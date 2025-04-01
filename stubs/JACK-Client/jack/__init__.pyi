@@ -1,3 +1,9 @@
+"""
+JACK Client for Python.
+
+http://jackclient-python.readthedocs.io/
+"""
+
 from _typeshed import Unused
 from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
 from typing import Any, Final, Literal, NoReturn, overload

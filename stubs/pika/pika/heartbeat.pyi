@@ -1,3 +1,5 @@
+"""Handle AMQP Heartbeats"""
+
 from logging import Logger
 
 LOGGER: Logger

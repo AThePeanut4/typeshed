@@ -1,3 +1,5 @@
+"""Pika specific exceptions"""
+
 from collections.abc import Sequence
 
 from pika.adapters.blocking_connection import ReturnedMessage
@@ -20,11 +22,29 @@ class ConnectionWrongStateError(AMQPConnectionError):
     ...
 
 class ConnectionClosed(AMQPConnectionError):
-    def __init__(self, reply_code: int, reply_text: str) -> None: ...
+    def __init__(self, reply_code: int, reply_text: str) -> None:
+        """
+        :param int reply_code: reply-code that was used in user's or broker's
+            `Connection.Close` method. NEW in v1.0.0
+        :param str reply_text: reply-text that was used in user's or broker's
+            `Connection.Close` method. Human-readable string corresponding to
+            `reply_code`. NEW in v1.0.0
+        """
+        ...
     @property
-    def reply_code(self) -> int: ...
+    def reply_code(self) -> int:
+        """
+        NEW in v1.0.0
+        :rtype: int
+        """
+        ...
     @property
-    def reply_text(self) -> str: ...
+    def reply_text(self) -> str:
+        """
+        NEW in v1.0.0
+        :rtype: str
+        """
+        ...
 
 class ConnectionClosedByBroker(ConnectionClosed):
     """Connection.Close from broker."""
@@ -44,15 +64,12 @@ class ChannelWrongStateError(AMQPChannelError):
     ...
 
 class ChannelClosed(AMQPChannelError):
-    def __init__(self, reply_code: int, reply_text: str) -> None: ...
-    @property
-    def reply_code(self) -> int: ...
-    @property
-    def reply_text(self) -> str: ...
+    """
+    The channel closed by client or by broker
 
     
     """
-    def __init__(self, reply_code, reply_text) -> None:
+    def __init__(self, reply_code: int, reply_text: str) -> None:
         """
         :param int reply_code: reply-code that was used in user's or broker's
             `Channel.Close` method. One of the AMQP-defined Channel Errors.
@@ -64,14 +81,14 @@ class ChannelClosed(AMQPChannelError):
         """
         ...
     @property
-    def reply_code(self):
+    def reply_code(self) -> int:
         """
         NEW in v1.0.0
         :rtype: int
         """
         ...
     @property
-    def reply_text(self):
+    def reply_text(self) -> str:
         """
         NEW in v1.0.0
         :rtype: str
@@ -100,12 +117,38 @@ class DuplicateConsumerTag(AMQPChannelError): ...
 class ConsumerCancelled(AMQPChannelError): ...
 
 class UnroutableError(AMQPChannelError):
+    """
+    Exception containing one or more unroutable messages returned by broker
+    via Basic.Return.
+
+    Used by BlockingChannel.
+
+    In publisher-acknowledgements mode, this is raised upon receipt of Basic.Ack
+    from broker; in the event of Basic.Nack from broker, `NackError` is raised
+    instead
+    """
     messages: Sequence[ReturnedMessage]
-    def __init__(self, messages: Sequence[ReturnedMessage]) -> None: ...
+    def __init__(self, messages: Sequence[ReturnedMessage]) -> None:
+        """
+        :param sequence(blocking_connection.ReturnedMessage) messages: Sequence
+            of returned unroutable messages
+        """
+        ...
 
 class NackError(AMQPChannelError):
+    """
+    This exception is raised when a message published in
+    publisher-acknowledgements mode is Nack'ed by the broker.
+
+    Used by BlockingChannel.
+    """
     messages: Sequence[ReturnedMessage]
-    def __init__(self, messages: Sequence[ReturnedMessage]) -> None: ...
+    def __init__(self, messages: Sequence[ReturnedMessage]) -> None:
+        """
+        :param sequence(blocking_connection.ReturnedMessage) messages: Sequence
+            of returned unroutable messages
+        """
+        ...
 
 class InvalidChannelNumber(AMQPError): ...
 class ProtocolSyntaxError(AMQPError): ...

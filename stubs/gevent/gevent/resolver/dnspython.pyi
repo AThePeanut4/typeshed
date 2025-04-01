@@ -54,6 +54,18 @@ class Resolver(AbstractResolver):
     """
     def __init__(self, hub: Hub | None = ...) -> None: ...
     @property
-    def resolver(self) -> Any: ...  # this is a custom dnspython Resolver
+    def resolver(self) -> Any:
+        """
+        The dnspython resolver object we use.
+
+        This object has several useful attributes that can be used to
+        adjust the behaviour of the DNS system:
+
+        * ``cache`` is a :class:`dns.resolver.LRUCache`. Its maximum size
+          can be configured by calling :meth:`resolver.cache.set_max_size`
+        * ``nameservers`` controls which nameservers to talk to
+        * ``lifetime`` configures a timeout for each individual query.
+        """
+        ...
 
 __all__ = ["Resolver"]

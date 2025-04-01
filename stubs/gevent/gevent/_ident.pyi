@@ -19,7 +19,16 @@ class IdentRegistry:
     also uniquely hashable.
     """
     def __init__(self) -> None: ...
-    def get_ident(self, obj: object) -> int: ...
-    def __len__(self) -> int: ...
+    def get_ident(self, obj: object) -> int:
+        """
+        IdentRegistry.get_ident(self, obj)
+
+        Retrieve the identifier for *obj*, creating one
+        if necessary.
+        """
+        ...
+    def __len__(self) -> int:
+        """Return len(self)."""
+        ...
 
 __all__ = ["IdentRegistry"]

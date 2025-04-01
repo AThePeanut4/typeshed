@@ -431,9 +431,19 @@ class URLParameters(Parameters):
         ...
 
 class SSLOptions:
+    """
+    Class used to provide parameters for optional fine grained control of SSL
+    socket wrapping.
+    """
     context: ssl.SSLContext
     server_hostname: str | None
-    def __init__(self, context: ssl.SSLContext, server_hostname: str | None = None) -> None: ...
+    def __init__(self, context: ssl.SSLContext, server_hostname: str | None = None) -> None:
+        """
+        :param ssl.SSLContext context: SSLContext instance
+        :param str|None server_hostname: SSLContext.wrap_socket, used to enable
+            SNI
+        """
+        ...
 
 class Connection(AbstractBase, metaclass=abc.ABCMeta):
     """

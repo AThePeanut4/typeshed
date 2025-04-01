@@ -155,6 +155,11 @@ class StarImportation(Importation):
     def __init__(self, name: str, source: ast.AST) -> None: ...
 
 class FutureImportation(ImportationFrom):
+    """
+    A binding created by a from `__future__` import statement.
+
+    `__future__` imports are implicitly used.
+    """
     used: tuple[Incomplete, ast.AST]
     def __init__(self, name: str, source: ast.AST, scope) -> None: ...
 

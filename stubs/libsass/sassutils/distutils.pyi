@@ -87,6 +87,15 @@ class build_sass(Command):
     def initialize_options(self) -> None: ...
     def finalize_options(self) -> None: ...
     def run(self) -> None: ...
-    def get_package_dir(self, package: str) -> str: ...
+    def get_package_dir(self, package: str) -> str:
+        """
+        Returns the directory, relative to the top of the source
+        distribution, where package ``package`` should be found
+        (at least according to the :attr:`package_dir` option, if any).
+
+        Copied from :meth:`distutils.command.build_py.get_package_dir()`
+        method.
+        """
+        ...
 
 __all__ = ("build_sass", "validate_manifests")

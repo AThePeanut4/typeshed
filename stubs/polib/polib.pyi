@@ -664,9 +664,36 @@ class _MOFileParser(Generic[_TM]):
     """A class to parse binary mo files."""
     fhandle: IO[bytes]
     instance: _TM
-    def __init__(self, mofile: str, *args: Any, **kwargs: Any) -> None: ...
-    def __del__(self) -> None: ...
-    def parse(self) -> _TM: ...
+    def __init__(self, mofile: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Constructor.
+
+        Keyword arguments:
+
+        ``mofile``
+            string, path to the mo file or its content
+
+        ``encoding``
+            string, the encoding to use, defaults to ``default_encoding``
+            global variable (optional).
+
+        ``check_for_duplicates``
+            whether to check for duplicate entries when adding entries to the
+            file (optional, default: ``False``).
+        """
+        ...
+    def __del__(self) -> None:
+        """
+        Make sure the file is closed, this prevents warnings on unclosed file
+        when running tests with python >= 3.2.
+        """
+        ...
+    def parse(self) -> _TM:
+        """
+        Build the instance with the file handle provided in the
+        constructor.
+        """
+        ...
 
 __all__ = [
     "pofile",

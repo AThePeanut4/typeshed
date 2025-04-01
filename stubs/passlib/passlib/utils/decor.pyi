@@ -77,7 +77,17 @@ def deprecated_method(
     removed: Incomplete | None = None,
     updoc: bool = True,
     replacement: Incomplete | None = None,
-): ...
+):
+    """
+    decorator to deprecate a method.
+
+    :arg msg: optional msg, default chosen if omitted
+    :kwd deprecated: version when method was first deprecated
+    :kwd removed: version when method will be removed
+    :kwd replacement: alternate name / instructions for replacing this method.
+    :kwd updoc: add notice to docstring (default ``True``)
+    """
+    ...
 
 __all__ = [
     "classproperty",
