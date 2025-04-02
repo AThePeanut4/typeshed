@@ -211,7 +211,8 @@ class ExportBinding(Binding):
 class Scope(dict[str, Binding]):
     importStarred: bool
 
-class ClassScope(Scope): ...
+class ClassScope(Scope):
+    def __init__(self) -> None: ...
 
 class FunctionScope(Scope):
     """
