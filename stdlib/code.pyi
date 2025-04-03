@@ -9,15 +9,18 @@ from typing import Any
 __all__ = ["InteractiveInterpreter", "InteractiveConsole", "interact", "compile_command"]
 
 class InteractiveInterpreter:
+    """
+    Base class for InteractiveConsole.
+
+    This class deals with parsing and interpreter state (the user's
+    namespace); it doesn't deal with input buffering or prompting or
+    input file naming (the filename is always passed in explicitly).
+    """
     locals: dict[str, Any]  # undocumented
     compile: CommandCompiler  # undocumented
-    def __init__(self, locals: dict[str, Any] | None = None) -> None: ...
-    def runsource(self, source: str, filename: str = "<input>", symbol: str = "single") -> bool: ...
-    def runcode(self, code: CodeType) -> None: ...
-    if sys.version_info >= (3, 13):
-        def showsyntaxerror(self, filename: str | None = None, *, source: str = "") -> None: ...
-    else:
-        def showsyntaxerror(self, filename: str | None = None) -> None: ...
+    def __init__(self, locals: dict[str, Any] | None = None) -> None:
+        """
+        Constructor.
 
         The optional 'locals' argument specifies a mapping to use as the
         namespace in which code will be executed; it defaults to a newly
@@ -122,11 +125,9 @@ class InteractiveConsole(InteractiveInterpreter):
     if sys.version_info >= (3, 13):
         def __init__(
             self, locals: dict[str, Any] | None = None, filename: str = "<console>", *, local_exit: bool = False
-        ) -> None: ...
-        def push(self, line: str, filename: str | None = None) -> bool: ...
-    else:
-        def __init__(self, locals: dict[str, Any] | None = None, filename: str = "<console>") -> None: ...
-        def push(self, line: str) -> bool: ...
+        ) -> None:
+            """
+            Constructor.
 
             The optional locals argument will be passed to the
             InteractiveInterpreter base class.
@@ -151,7 +152,7 @@ class InteractiveConsole(InteractiveInterpreter):
             """
             ...
     else:
-        def __init__(self, locals: Mapping[str, Any] | None = None, filename: str = "<console>") -> None:
+        def __init__(self, locals: dict[str, Any] | None = None, filename: str = "<console>") -> None:
             """
             Constructor.
 

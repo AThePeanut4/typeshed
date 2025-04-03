@@ -45,20 +45,88 @@ class Future(Awaitable[_T]):
         ...
     @property
     def _callbacks(self) -> list[tuple[Callable[[Self], Any], Context]]: ...
-    def add_done_callback(self, fn: Callable[[Self], object], /, *, context: Context | None = None) -> None: ...
-    def cancel(self, msg: Any | None = None) -> bool: ...
-    def cancelled(self) -> bool: ...
-    def done(self) -> bool: ...
-    def result(self) -> _T: ...
-    def exception(self) -> BaseException | None: ...
-    def remove_done_callback(self, fn: Callable[[Self], object], /) -> int: ...
-    def set_result(self, result: _T, /) -> None: ...
-    def set_exception(self, exception: type | BaseException, /) -> None: ...
-    def __iter__(self) -> Generator[Any, None, _T]: ...
-    def __await__(self) -> Generator[Any, None, _T]: ...
+    def add_done_callback(self, fn: Callable[[Self], object], /, *, context: Context | None = None) -> None:
+        """
+        Add a callback to be run when the future becomes done.
+
+        The callback is called with a single argument - the future object. If
+        the future is already done when this is called, the callback is
+        scheduled with call_soon.
+        """
+        ...
+    def cancel(self, msg: Any | None = None) -> bool:
+        """
+        Cancel the future and schedule callbacks.
+
+        If the future is already done or cancelled, return False.  Otherwise,
+        change the future's state to cancelled, schedule the callbacks and
+        return True.
+        """
+        ...
+    def cancelled(self) -> bool:
+        """Return True if the future was cancelled."""
+        ...
+    def done(self) -> bool:
+        """
+        Return True if the future is done.
+
+        Done means either that a result / exception are available, or that the
+        future was cancelled.
+        """
+        ...
+    def result(self) -> _T:
+        """
+        Return the result this future represents.
+
+        If the future has been cancelled, raises CancelledError.  If the
+        future's result isn't yet available, raises InvalidStateError.  If
+        the future is done and has an exception set, this exception is raised.
+        """
+        ...
+    def exception(self) -> BaseException | None:
+        """
+        Return the exception that was set on this future.
+
+        The exception (or None if no exception was set) is returned only if
+        the future is done.  If the future has been cancelled, raises
+        CancelledError.  If the future isn't done yet, raises
+        InvalidStateError.
+        """
+        ...
+    def remove_done_callback(self, fn: Callable[[Self], object], /) -> int:
+        """
+        Remove all instances of a callback from the "call when done" list.
+
+        Returns the number of callbacks removed.
+        """
+        ...
+    def set_result(self, result: _T, /) -> None:
+        """
+        Mark the future done and set its result.
+
+        If the future is already done when this method is called, raises
+        InvalidStateError.
+        """
+        ...
+    def set_exception(self, exception: type | BaseException, /) -> None:
+        """
+        Mark the future done and set an exception.
+
+        If the future is already done when this method is called, raises
+        InvalidStateError.
+        """
+        ...
+    def __iter__(self) -> Generator[Any, None, _T]:
+        """Implement iter(self)."""
+        ...
+    def __await__(self) -> Generator[Any, None, _T]:
+        """Return an iterator to be used in await expression."""
+        ...
     @property
     def _loop(self) -> AbstractEventLoop: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """See PEP 585"""
+        ...
 
 if sys.version_info >= (3, 12):
     _TaskCompatibleCoro: TypeAlias = Coroutine[Any, Any, _T_co]
@@ -140,10 +208,28 @@ class Task(Future[_T_co]):  # type: ignore[type-var]  # pyright: ignore[reportIn
         """
         ...
     if sys.version_info >= (3, 11):
-        def cancelling(self) -> int: ...
-        def uncancel(self) -> int: ...
+        def cancelling(self) -> int:
+            """
+            Return the count of the task's cancellation requests.
 
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+            This count is incremented when .cancel() is called
+            and may be decremented using .uncancel().
+            """
+            ...
+        def uncancel(self) -> int:
+            """
+            Decrement the task's count of cancellation requests.
+
+            This should be used by tasks that catch CancelledError
+            and wish to continue indefinitely until they are cancelled again.
+
+            Returns the remaining number of cancellation requests.
+            """
+            ...
+
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """See PEP 585"""
+        ...
 
 def get_event_loop() -> AbstractEventLoop:
     """

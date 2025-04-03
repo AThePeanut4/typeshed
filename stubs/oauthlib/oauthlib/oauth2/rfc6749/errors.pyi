@@ -30,7 +30,30 @@ class OAuth2Error(Exception):
         state: Incomplete | None = None,
         status_code: int | None = None,
         request: Request | None = None,
-    ) -> None: ...
+    ) -> None:
+        """
+        :param description: A human-readable ASCII [USASCII] text providing
+                            additional information, used to assist the client
+                            developer in understanding the error that occurred.
+                            Values for the "error_description" parameter
+                            MUST NOT include characters outside the set
+                            x20-21 / x23-5B / x5D-7E.
+
+        :param uri: A URI identifying a human-readable web page with information
+                    about the error, used to provide the client developer with
+                    additional information about the error.  Values for the
+                    "error_uri" parameter MUST conform to the URI- Reference
+                    syntax, and thus MUST NOT include characters outside the set
+                    x21 / x23-5B / x5D-7E.
+
+        :param state: A CSRF protection value received from the client.
+
+        :param status_code:
+
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        """
+        ...
     def in_uri(self, uri: str) -> str: ...
     @property
     def twotuples(self) -> list[tuple[str, Incomplete | str | None]]: ...
@@ -270,6 +293,10 @@ class LoginRequired(OAuth2Error):
     error: str
 
 class CustomOAuth2Error(OAuth2Error):
+    """
+    This error is a placeholder for all custom errors not described by the RFC.
+    Some of the popular OAuth2 providers are using custom errors.
+    """
     def __init__(
         self,
         error: str,

@@ -1,3 +1,5 @@
+"""Context Variables"""
+
 from collections.abc import Callable, Iterator, Mapping
 from types import GenericAlias
 from typing import Any, ClassVar, Generic, TypeVar, final, overload
@@ -43,10 +45,38 @@ class ContextVar(Generic[_T]):
         """
         ...
     @overload
-    def get(self, default: _D, /) -> _D | _T: ...
-    def set(self, value: _T, /) -> Token[_T]: ...
-    def reset(self, token: Token[_T], /) -> None: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def get(self, default: _D, /) -> _D | _T:
+        """
+        Return a value for the context variable for the current context.
+
+        If there is no value for the variable in the current context, the method will:
+         * return the value of the default argument of the method, if provided; or
+         * return the default value for the context variable, if it was created
+           with one; or
+         * raise a LookupError.
+        """
+        ...
+    def set(self, value: _T, /) -> Token[_T]:
+        """
+        Call to set a new value for the context variable in the current context.
+
+        The required value argument is the new value for the context variable.
+
+        Returns a Token object that can be used to restore the variable to its previous
+        value via the `ContextVar.reset()` method.
+        """
+        ...
+    def reset(self, token: Token[_T], /) -> None:
+        """
+        Reset the context variable.
+
+        The variable is reset to the value it had before the `ContextVar.set()` that
+        created the token was used.
+        """
+        ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """See PEP 585"""
+        ...
 
 @final
 class Token(Generic[_T]):
@@ -56,7 +86,9 @@ class Token(Generic[_T]):
     def old_value(self) -> Any: ...  # returns either _T or MISSING, but that's hard to express
     MISSING: ClassVar[object]
     __hash__: ClassVar[None]  # type: ignore[assignment]
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """See PEP 585"""
+        ...
 
 def copy_context() -> Context: ...
 
