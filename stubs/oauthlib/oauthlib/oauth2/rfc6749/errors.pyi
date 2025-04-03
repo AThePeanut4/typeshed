@@ -7,13 +7,15 @@ defined error responses for all four core grant types.
 """
 
 from _typeshed import Incomplete
-from typing import Any
+from typing import Any, NoReturn
+
+from oauthlib.common import Request
 
 class OAuth2Error(Exception):
-    error: Any
+    error: str | None
     status_code: int
     description: str
-    uri: Any
+    uri: str | None
     state: Any
     redirect_uri: Any
     client_id: Any
@@ -23,44 +25,21 @@ class OAuth2Error(Exception):
     grant_type: Any
     def __init__(
         self,
-        description: Incomplete | None = None,
-        uri: Incomplete | None = None,
+        description: str | None = None,
+        uri: str | None = None,
         state: Incomplete | None = None,
-        status_code: Incomplete | None = None,
-        request: Incomplete | None = None,
-    ) -> None:
-        """
-        :param description: A human-readable ASCII [USASCII] text providing
-                            additional information, used to assist the client
-                            developer in understanding the error that occurred.
-                            Values for the "error_description" parameter
-                            MUST NOT include characters outside the set
-                            x20-21 / x23-5B / x5D-7E.
-
-        :param uri: A URI identifying a human-readable web page with information
-                    about the error, used to provide the client developer with
-                    additional information about the error.  Values for the
-                    "error_uri" parameter MUST conform to the URI- Reference
-                    syntax, and thus MUST NOT include characters outside the set
-                    x21 / x23-5B / x5D-7E.
-
-        :param state: A CSRF protection value received from the client.
-
-        :param status_code:
-
-        :param request: OAuthlib request.
-        :type request: oauthlib.common.Request
-        """
-        ...
-    def in_uri(self, uri): ...
+        status_code: int | None = None,
+        request: Request | None = None,
+    ) -> None: ...
+    def in_uri(self, uri: str) -> str: ...
     @property
-    def twotuples(self): ...
+    def twotuples(self) -> list[tuple[str, Incomplete | str | None]]: ...
     @property
-    def urlencoded(self): ...
+    def urlencoded(self) -> str: ...
     @property
-    def json(self): ...
+    def json(self) -> str: ...
     @property
-    def headers(self): ...
+    def headers(self) -> dict[str, str]: ...
 
 class TokenExpiredError(OAuth2Error):
     error: str
@@ -291,11 +270,14 @@ class LoginRequired(OAuth2Error):
     error: str
 
 class CustomOAuth2Error(OAuth2Error):
-    """
-    This error is a placeholder for all custom errors not described by the RFC.
-    Some of the popular OAuth2 providers are using custom errors.
-    """
-    error: Any
-    def __init__(self, error, *args, **kwargs) -> None: ...
+    def __init__(
+        self,
+        error: str,
+        description: str | None = None,
+        uri: str | None = None,
+        state: Incomplete | None = None,
+        status_code: int | None = None,
+        request: Request | None = None,
+    ) -> None: ...
 
-def raise_from_error(error, params: Incomplete | None = None) -> None: ...
+def raise_from_error(error: str, params: dict[str, Incomplete] | None = None) -> NoReturn: ...

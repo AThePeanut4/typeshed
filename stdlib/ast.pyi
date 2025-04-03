@@ -1298,8 +1298,7 @@ class Tuple(expr):
         __match_args__ = ("elts", "ctx")
     elts: list[expr]
     ctx: expr_context  # Not present in Python < 3.13 if not passed to `__init__`
-    if sys.version_info >= (3, 9):
-        dims: list[expr]
+    dims: list[expr]
     if sys.version_info >= (3, 13):
         def __init__(self, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
@@ -1309,18 +1308,10 @@ class Tuple(expr):
         def __replace__(self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
 
 @deprecated("Deprecated since Python 3.9.")
-class slice(AST):
-    """Deprecated AST node class."""
-    ...
+class slice(AST): ...
 
-if sys.version_info >= (3, 9):
-    _Slice: typing_extensions.TypeAlias = expr
-    _SliceAttributes: typing_extensions.TypeAlias = _Attributes
-else:
-    # alias for use with variables named slice
-    _Slice: typing_extensions.TypeAlias = slice
-
-    class _SliceAttributes(TypedDict): ...
+_Slice: typing_extensions.TypeAlias = expr
+_SliceAttributes: typing_extensions.TypeAlias = _Attributes
 
 class Slice(_Slice):
     """Slice(expr? lower, expr? upper, expr? step)"""
@@ -1344,48 +1335,28 @@ class Slice(_Slice):
         ) -> Self: ...
 
 @deprecated("Deprecated since Python 3.9. Use ast.Tuple instead.")
-class ExtSlice(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
-    """Deprecated AST node class. Use ast.Tuple instead."""
-    if sys.version_info >= (3, 9):
-        def __new__(cls, dims: Iterable[slice] = (), **kwargs: Unpack[_SliceAttributes]) -> Tuple: ...  # type: ignore[misc]
-    else:
-        dims: list[slice]
-        def __init__(self, dims: list[slice], **kwargs: Unpack[_SliceAttributes]) -> None: ...
+class ExtSlice(slice):
+    def __new__(cls, dims: Iterable[slice] = (), **kwargs: Unpack[_SliceAttributes]) -> Tuple: ...  # type: ignore[misc]
 
 @deprecated("Deprecated since Python 3.9. Use the index value directly instead.")
-class Index(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
-    """Deprecated AST node class. Use the index value directly instead."""
-    if sys.version_info >= (3, 9):
-        def __new__(cls, value: expr, **kwargs: Unpack[_SliceAttributes]) -> expr: ...  # type: ignore[misc]
-    else:
-        value: expr
-        def __init__(self, value: expr, **kwargs: Unpack[_SliceAttributes]) -> None: ...
+class Index(slice):
+    def __new__(cls, value: expr, **kwargs: Unpack[_SliceAttributes]) -> expr: ...  # type: ignore[misc]
 
 class expr_context(AST):
     """expr_context = Load | Store | Del"""
     ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class AugLoad(expr_context):
-    """Deprecated AST node class.  Unused in Python 3."""
-    ...
+class AugLoad(expr_context): ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class AugStore(expr_context):
-    """Deprecated AST node class.  Unused in Python 3."""
-    ...
+class AugStore(expr_context): ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class Param(expr_context):
-    """Deprecated AST node class.  Unused in Python 3."""
-    ...
+class Param(expr_context): ...
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
-class Suite(mod):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
-    """Deprecated AST node class.  Unused in Python 3."""
-    if sys.version_info < (3, 9):
-        body: list[stmt]
-        def __init__(self, body: list[stmt]) -> None: ...
+class Suite(mod): ...
 
 class Load(expr_context):
     """Load"""
@@ -1980,8 +1951,7 @@ if sys.version_info >= (3, 12):
             ) -> Self: ...
 
 class _ABC(type):
-    if sys.version_info >= (3, 9):
-        def __init__(cls, *args: Unused) -> None: ...
+    def __init__(cls, *args: Unused) -> None: ...
 
 if sys.version_info < (3, 14):
     @deprecated("Replaced by ast.Constant; removed in Python 3.14")
@@ -2298,7 +2268,7 @@ if sys.version_info >= (3, 13):
         """
         ...
 
-elif sys.version_info >= (3, 9):
+else:
     def dump(
         node: AST, annotate_fields: bool = True, include_attributes: bool = False, *, indent: int | str | None = None
     ) -> str:
@@ -2315,71 +2285,14 @@ elif sys.version_info >= (3, 9):
         """
         ...
 
-else:
-    def dump(node: AST, annotate_fields: bool = True, include_attributes: bool = False) -> str: ...
-
-def copy_location(new_node: _T, old_node: AST) -> _T:
-    """
-    Copy source location (`lineno`, `col_offset`, `end_lineno`, and `end_col_offset`
-    attributes) from *old_node* to *new_node* if possible, and return *new_node*.
-    """
-    ...
-def fix_missing_locations(node: _T) -> _T:
-    """
-    When you compile a node tree with compile(), the compiler expects lineno and
-    col_offset attributes for every node that supports them.  This is rather
-    tedious to fill in for generated nodes, so this helper adds these attributes
-    recursively where not already set, by setting them to the values of the
-    parent node.  It works recursively starting at *node*.
-    """
-    ...
-def increment_lineno(node: _T, n: int = 1) -> _T:
-    """
-    Increment the line number and end line number of each node in the tree
-    starting at *node* by *n*. This is useful to "move code" to a different
-    location in a file.
-    """
-    ...
-def iter_fields(node: AST) -> Iterator[tuple[str, Any]]:
-    """
-    Yield a tuple of ``(fieldname, value)`` for each field in ``node._fields``
-    that is present on *node*.
-    """
-    ...
-def iter_child_nodes(node: AST) -> Iterator[AST]:
-    """
-    Yield all direct child nodes of *node*, that is, all fields that are nodes
-    and all items of fields that are lists of nodes.
-    """
-    ...
-def get_docstring(node: AsyncFunctionDef | FunctionDef | ClassDef | Module, clean: bool = True) -> str | None:
-    """
-    Return the docstring for the given node or None if no docstring can
-    be found.  If the node provided does not have docstrings a TypeError
-    will be raised.
-
-    If *clean* is `True`, all tabs are expanded to spaces and any whitespace
-    that can be uniformly removed from the second line onwards is removed.
-    """
-    ...
-def get_source_segment(source: str, node: AST, *, padded: bool = False) -> str | None:
-    """
-    Get source code segment of the *source* that generated *node*.
-
-    If some location information (`lineno`, `end_lineno`, `col_offset`,
-    or `end_col_offset`) is missing, return None.
-
-    If *padded* is `True`, the first line of a multi-line statement will
-    be padded with spaces to match its original position.
-    """
-    ...
-def walk(node: AST) -> Iterator[AST]:
-    """
-    Recursively yield all descendant nodes in the tree starting at *node*
-    (including *node* itself), in no specified order.  This is useful if you
-    only want to modify nodes in place and don't care about the context.
-    """
-    ...
+def copy_location(new_node: _T, old_node: AST) -> _T: ...
+def fix_missing_locations(node: _T) -> _T: ...
+def increment_lineno(node: _T, n: int = 1) -> _T: ...
+def iter_fields(node: AST) -> Iterator[tuple[str, Any]]: ...
+def iter_child_nodes(node: AST) -> Iterator[AST]: ...
+def get_docstring(node: AsyncFunctionDef | FunctionDef | ClassDef | Module, clean: bool = True) -> str | None: ...
+def get_source_segment(source: str, node: AST, *, padded: bool = False) -> str | None: ...
+def walk(node: AST) -> Iterator[AST]: ...
 
 if sys.version_info >= (3, 14):
     def compare(left: AST, right: AST, /, *, compare_attributes: bool = False) -> bool: ...
@@ -2585,8 +2498,5 @@ class NodeTransformer(NodeVisitor):
     #       The usual return type is AST | None, but Iterable[AST]
     #       is also allowed in some cases -- this needs to be mapped.
 
-if sys.version_info >= (3, 9):
-    def unparse(ast_obj: AST) -> str: ...
-
-if sys.version_info >= (3, 9):
-    def main() -> None: ...
+def unparse(ast_obj: AST) -> str: ...
+def main() -> None: ...

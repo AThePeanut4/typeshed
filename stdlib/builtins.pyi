@@ -45,7 +45,7 @@ from _typeshed import (
 )
 from collections.abc import Awaitable, Callable, Iterable, Iterator, MutableSet, Reversible, Set as AbstractSet, Sized
 from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWrapper
-from types import CellType, CodeType, TracebackType
+from types import CellType, CodeType, GenericAlias, TracebackType
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping}
 # are imported from collections.abc in builtins.pyi
@@ -84,9 +84,6 @@ from typing_extensions import (  # noqa: Y023
     TypeVarTuple,
     deprecated,
 )
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 _T = TypeVar("_T")
 _I = TypeVar("_I", default=int)
@@ -851,17 +848,9 @@ class float:
         """Return pow(value, self, mod)."""
         ...
     def __getnewargs__(self) -> tuple[float]: ...
-    def __trunc__(self) -> int:
-        """Return the Integral closest to x between 0 and x."""
-        ...
-    if sys.version_info >= (3, 9):
-        def __ceil__(self) -> int:
-            """Return the ceiling as an Integral."""
-            ...
-        def __floor__(self) -> int:
-            """Return the floor as an Integral."""
-            ...
-
+    def __trunc__(self) -> int: ...
+    def __ceil__(self) -> int: ...
+    def __floor__(self) -> int: ...
     @overload
     def __round__(self, ndigits: None = None, /) -> int:
         """
@@ -1385,74 +1374,18 @@ class str(Sequence[str]):
             """
             ...
         @overload
-        def replace(self, old: str, new: str, count: SupportsIndex = -1, /) -> str:
-            """
-            Return a copy with all occurrences of substring old replaced by new.
+        def replace(self, old: str, new: str, count: SupportsIndex = -1, /) -> str: ...  # type: ignore[misc]
 
-              count
-                Maximum number of occurrences to replace.
-                -1 (the default value) means replace all occurrences.
-
-            If the optional argument count is given, only the first count occurrences are
-            replaced.
-            """
-            ...
-    if sys.version_info >= (3, 9):
-        @overload
-        def removeprefix(self: LiteralString, prefix: LiteralString, /) -> LiteralString:
-            """
-            Return a str with the given prefix string removed if present.
-
-            If the string starts with the prefix string, return string[len(prefix):].
-            Otherwise, return a copy of the original string.
-            """
-            ...
-        @overload
-        def removeprefix(self, prefix: str, /) -> str:
-            """
-            Return a str with the given prefix string removed if present.
-
-            If the string starts with the prefix string, return string[len(prefix):].
-            Otherwise, return a copy of the original string.
-            """
-            ...
-        @overload
-        def removesuffix(self: LiteralString, suffix: LiteralString, /) -> LiteralString:
-            """
-            Return a str with the given suffix string removed if present.
-
-            If the string ends with the suffix string and that suffix is not empty,
-            return string[:-len(suffix)]. Otherwise, return a copy of the original
-            string.
-            """
-            ...
-        @overload
-        def removesuffix(self, suffix: str, /) -> str:
-            """
-            Return a str with the given suffix string removed if present.
-
-            If the string ends with the suffix string and that suffix is not empty,
-            return string[:-len(suffix)]. Otherwise, return a copy of the original
-            string.
-            """
-            ...
-
-    def rfind(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        Return -1 on failure.
-        """
-        ...
-    def rindex(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        Raises ValueError when the substring is not found.
-        """
-        ...
+    @overload
+    def removeprefix(self: LiteralString, prefix: LiteralString, /) -> LiteralString: ...
+    @overload
+    def removeprefix(self, prefix: str, /) -> str: ...  # type: ignore[misc]
+    @overload
+    def removesuffix(self: LiteralString, suffix: LiteralString, /) -> LiteralString: ...
+    @overload
+    def removesuffix(self, suffix: str, /) -> str: ...  # type: ignore[misc]
+    def rfind(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int: ...
+    def rindex(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int: ...
     @overload
     def rjust(self: LiteralString, width: SupportsIndex, fillchar: LiteralString = " ", /) -> LiteralString:
         """
@@ -1949,159 +1882,23 @@ class bytes(Sequence[int]):
         ...
     def index(
         self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the lowest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start,end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Raise ValueError if the subsection is not found.
-        """
-        ...
-    def isalnum(self) -> bool:
-        """
-        B.isalnum() -> bool
-
-        Return True if all characters in B are alphanumeric
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isalpha(self) -> bool:
-        """
-        B.isalpha() -> bool
-
-        Return True if all characters in B are alphabetic
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isascii(self) -> bool:
-        """
-        B.isascii() -> bool
-
-        Return True if B is empty or all characters in B are ASCII,
-        False otherwise.
-        """
-        ...
-    def isdigit(self) -> bool:
-        """
-        B.isdigit() -> bool
-
-        Return True if all characters in B are digits
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def islower(self) -> bool:
-        """
-        B.islower() -> bool
-
-        Return True if all cased characters in B are lowercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def isspace(self) -> bool:
-        """
-        B.isspace() -> bool
-
-        Return True if all characters in B are whitespace
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def istitle(self) -> bool:
-        """
-        B.istitle() -> bool
-
-        Return True if B is a titlecased string and there is at least one
-        character in B, i.e. uppercase characters may only follow uncased
-        characters and lowercase characters only cased ones. Return False
-        otherwise.
-        """
-        ...
-    def isupper(self) -> bool:
-        """
-        B.isupper() -> bool
-
-        Return True if all cased characters in B are uppercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytes:
-        """
-        Concatenate any number of bytes objects.
-
-        The bytes whose method is called is inserted in between each pair.
-
-        The result is returned as a new bytes object.
-
-        Example: b'.'.join([b'ab', b'pq', b'rs']) -> b'ab.pq.rs'.
-        """
-        ...
-    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytes:
-        """
-        Return a left-justified string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
-    def lower(self) -> bytes:
-        """
-        B.lower() -> copy of B
-
-        Return a copy of B with all ASCII characters converted to lowercase.
-        """
-        ...
-    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytes:
-        """
-        Strip leading bytes contained in the argument.
-
-        If the argument is omitted or None, strip leading  ASCII whitespace.
-        """
-        ...
-    def partition(self, sep: ReadableBuffer, /) -> tuple[bytes, bytes, bytes]:
-        """
-        Partition the bytes into three parts using the given separator.
-
-        This will search for the separator sep in the bytes. If the separator is found,
-        returns a 3-tuple containing the part before the separator, the separator
-        itself, and the part after it.
-
-        If the separator is not found, returns a 3-tuple containing the original bytes
-        object and two empty bytes objects.
-        """
-        ...
-    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytes:
-        """
-        Return a copy with all occurrences of substring old replaced by new.
-
-          count
-            Maximum number of occurrences to replace.
-            -1 (the default value) means replace all occurrences.
-
-        If the optional argument count is given, only the first count occurrences are
-        replaced.
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def removeprefix(self, prefix: ReadableBuffer, /) -> bytes:
-            """
-            Return a bytes object with the given prefix string removed if present.
-
-            If the bytes starts with the prefix string, return bytes[len(prefix):].
-            Otherwise, return a copy of the original bytes.
-            """
-            ...
-        def removesuffix(self, suffix: ReadableBuffer, /) -> bytes:
-            """
-            Return a bytes object with the given suffix string removed if present.
-
-            If the bytes ends with the suffix string and that suffix is not empty,
-            return bytes[:-len(prefix)].  Otherwise, return a copy of the original
-            bytes.
-            """
-            ...
-
+    ) -> int: ...
+    def isalnum(self) -> bool: ...
+    def isalpha(self) -> bool: ...
+    def isascii(self) -> bool: ...
+    def isdigit(self) -> bool: ...
+    def islower(self) -> bool: ...
+    def isspace(self) -> bool: ...
+    def istitle(self) -> bool: ...
+    def isupper(self) -> bool: ...
+    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytes: ...
+    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytes: ...
+    def lower(self) -> bytes: ...
+    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytes: ...
+    def partition(self, sep: ReadableBuffer, /) -> tuple[bytes, bytes, bytes]: ...
+    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytes: ...
+    def removeprefix(self, prefix: ReadableBuffer, /) -> bytes: ...
+    def removesuffix(self, suffix: ReadableBuffer, /) -> bytes: ...
     def rfind(
         self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
     ) -> int:
@@ -2483,187 +2280,26 @@ class bytearray(MutableSequence[int]):
         ...
     def index(
         self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the lowest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start:end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Raise ValueError if the subsection is not found.
-        """
-        ...
-    def insert(self, index: SupportsIndex, item: SupportsIndex, /) -> None:
-        """
-        Insert a single item into the bytearray before the given index.
-
-        index
-          The index where the value is to be inserted.
-        item
-          The item to be inserted.
-        """
-        ...
-    def isalnum(self) -> bool:
-        """
-        B.isalnum() -> bool
-
-        Return True if all characters in B are alphanumeric
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isalpha(self) -> bool:
-        """
-        B.isalpha() -> bool
-
-        Return True if all characters in B are alphabetic
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isascii(self) -> bool:
-        """
-        B.isascii() -> bool
-
-        Return True if B is empty or all characters in B are ASCII,
-        False otherwise.
-        """
-        ...
-    def isdigit(self) -> bool:
-        """
-        B.isdigit() -> bool
-
-        Return True if all characters in B are digits
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def islower(self) -> bool:
-        """
-        B.islower() -> bool
-
-        Return True if all cased characters in B are lowercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def isspace(self) -> bool:
-        """
-        B.isspace() -> bool
-
-        Return True if all characters in B are whitespace
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def istitle(self) -> bool:
-        """
-        B.istitle() -> bool
-
-        Return True if B is a titlecased string and there is at least one
-        character in B, i.e. uppercase characters may only follow uncased
-        characters and lowercase characters only cased ones. Return False
-        otherwise.
-        """
-        ...
-    def isupper(self) -> bool:
-        """
-        B.isupper() -> bool
-
-        Return True if all cased characters in B are uppercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytearray:
-        """
-        Concatenate any number of bytes/bytearray objects.
-
-        The bytearray whose method is called is inserted in between each pair.
-
-        The result is returned as a new bytearray object.
-        """
-        ...
-    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytearray:
-        """
-        Return a left-justified string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
-    def lower(self) -> bytearray:
-        """
-        B.lower() -> copy of B
-
-        Return a copy of B with all ASCII characters converted to lowercase.
-        """
-        ...
-    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytearray:
-        """
-        Strip leading bytes contained in the argument.
-
-        If the argument is omitted or None, strip leading ASCII whitespace.
-        """
-        ...
-    def partition(self, sep: ReadableBuffer, /) -> tuple[bytearray, bytearray, bytearray]:
-        """
-        Partition the bytearray into three parts using the given separator.
-
-        This will search for the separator sep in the bytearray. If the separator is
-        found, returns a 3-tuple containing the part before the separator, the
-        separator itself, and the part after it as new bytearray objects.
-
-        If the separator is not found, returns a 3-tuple containing the copy of the
-        original bytearray object and two empty bytearray objects.
-        """
-        ...
-    def pop(self, index: int = -1, /) -> int:
-        """
-        Remove and return a single item from B.
-
-          index
-            The index from where to remove the item.
-            -1 (the default value) means remove the last item.
-
-        If no index argument is given, will pop the last item.
-        """
-        ...
-    def remove(self, value: int, /) -> None:
-        """
-        Remove the first occurrence of a value in the bytearray.
-
-        value
-          The value to remove.
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def removeprefix(self, prefix: ReadableBuffer, /) -> bytearray:
-            """
-            Return a bytearray with the given prefix string removed if present.
-
-            If the bytearray starts with the prefix string, return
-            bytearray[len(prefix):].  Otherwise, return a copy of the original
-            bytearray.
-            """
-            ...
-        def removesuffix(self, suffix: ReadableBuffer, /) -> bytearray:
-            """
-            Return a bytearray with the given suffix string removed if present.
-
-            If the bytearray ends with the suffix string and that suffix is not
-            empty, return bytearray[:-len(suffix)].  Otherwise, return a copy of
-            the original bytearray.
-            """
-            ...
-
-    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytearray:
-        """
-        Return a copy with all occurrences of substring old replaced by new.
-
-          count
-            Maximum number of occurrences to replace.
-            -1 (the default value) means replace all occurrences.
-
-        If the optional argument count is given, only the first count occurrences are
-        replaced.
-        """
-        ...
+    ) -> int: ...
+    def insert(self, index: SupportsIndex, item: SupportsIndex, /) -> None: ...
+    def isalnum(self) -> bool: ...
+    def isalpha(self) -> bool: ...
+    def isascii(self) -> bool: ...
+    def isdigit(self) -> bool: ...
+    def islower(self) -> bool: ...
+    def isspace(self) -> bool: ...
+    def istitle(self) -> bool: ...
+    def isupper(self) -> bool: ...
+    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytearray: ...
+    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytearray: ...
+    def lower(self) -> bytearray: ...
+    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytearray: ...
+    def partition(self, sep: ReadableBuffer, /) -> tuple[bytearray, bytearray, bytearray]: ...
+    def pop(self, index: int = -1, /) -> int: ...
+    def remove(self, value: int, /) -> None: ...
+    def removeprefix(self, prefix: ReadableBuffer, /) -> bytearray: ...
+    def removesuffix(self, suffix: ReadableBuffer, /) -> bytearray: ...
+    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytearray: ...
     def rfind(
         self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
     ) -> int:
@@ -3287,29 +2923,12 @@ class tuple(Sequence[_T_co]):
         """Return self+value."""
         ...
     @overload
-    def __add__(self, value: tuple[_T, ...], /) -> tuple[_T_co | _T, ...]:
-        """Return self+value."""
-        ...
-    def __mul__(self, value: SupportsIndex, /) -> tuple[_T_co, ...]:
-        """Return self*value."""
-        ...
-    def __rmul__(self, value: SupportsIndex, /) -> tuple[_T_co, ...]:
-        """Return value*self."""
-        ...
-    def count(self, value: Any, /) -> int:
-        """Return number of occurrences of value."""
-        ...
-    def index(self, value: Any, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -> int:
-        """
-        Return first index of value.
-
-        Raises ValueError if the value is not present.
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
+    def __add__(self, value: tuple[_T, ...], /) -> tuple[_T_co | _T, ...]: ...
+    def __mul__(self, value: SupportsIndex, /) -> tuple[_T_co, ...]: ...
+    def __rmul__(self, value: SupportsIndex, /) -> tuple[_T_co, ...]: ...
+    def count(self, value: Any, /) -> int: ...
+    def index(self, value: Any, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -> int: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 # Doesn't exist at runtime, but deleting this breaks mypy and pyright. See:
 # https://github.com/python/typeshed/issues/7580
@@ -3453,46 +3072,19 @@ class list(MutableSequence[_T]):
         """Return self+value."""
         ...
     @overload
-    def __add__(self, value: list[_S], /) -> list[_S | _T]:
-        """Return self+value."""
-        ...
-    def __iadd__(self, value: Iterable[_T], /) -> Self:
-        """Implement self+=value."""
-        ...
-    def __mul__(self, value: SupportsIndex, /) -> list[_T]:
-        """Return self*value."""
-        ...
-    def __rmul__(self, value: SupportsIndex, /) -> list[_T]:
-        """Return value*self."""
-        ...
-    def __imul__(self, value: SupportsIndex, /) -> Self:
-        """Implement self*=value."""
-        ...
-    def __contains__(self, key: object, /) -> bool:
-        """Return bool(key in self)."""
-        ...
-    def __reversed__(self) -> Iterator[_T]:
-        """Return a reverse iterator over the list."""
-        ...
-    def __gt__(self, value: list[_T], /) -> bool:
-        """Return self>value."""
-        ...
-    def __ge__(self, value: list[_T], /) -> bool:
-        """Return self>=value."""
-        ...
-    def __lt__(self, value: list[_T], /) -> bool:
-        """Return self<value."""
-        ...
-    def __le__(self, value: list[_T], /) -> bool:
-        """Return self<=value."""
-        ...
-    def __eq__(self, value: object, /) -> bool:
-        """Return self==value."""
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
+    def __add__(self, value: list[_S], /) -> list[_S | _T]: ...
+    def __iadd__(self, value: Iterable[_T], /) -> Self: ...  # type: ignore[misc]
+    def __mul__(self, value: SupportsIndex, /) -> list[_T]: ...
+    def __rmul__(self, value: SupportsIndex, /) -> list[_T]: ...
+    def __imul__(self, value: SupportsIndex, /) -> Self: ...
+    def __contains__(self, key: object, /) -> bool: ...
+    def __reversed__(self) -> Iterator[_T]: ...
+    def __gt__(self, value: list[_T], /) -> bool: ...
+    def __ge__(self, value: list[_T], /) -> bool: ...
+    def __lt__(self, value: list[_T], /) -> bool: ...
+    def __le__(self, value: list[_T], /) -> bool: ...
+    def __eq__(self, value: object, /) -> bool: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class dict(MutableMapping[_KT, _VT]):
     """
@@ -3625,35 +3217,20 @@ class dict(MutableMapping[_KT, _VT]):
         """Return a reverse iterator over the dict keys."""
         ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
-        @overload
-        def __or__(self, value: dict[_KT, _VT], /) -> dict[_KT, _VT]:
-            """Return self|value."""
-            ...
-        @overload
-        def __or__(self, value: dict[_T1, _T2], /) -> dict[_KT | _T1, _VT | _T2]:
-            """Return self|value."""
-            ...
-        @overload
-        def __ror__(self, value: dict[_KT, _VT], /) -> dict[_KT, _VT]:
-            """Return value|self."""
-            ...
-        @overload
-        def __ror__(self, value: dict[_T1, _T2], /) -> dict[_KT | _T1, _VT | _T2]:
-            """Return value|self."""
-            ...
-        # dict.__ior__ should be kept roughly in line with MutableMapping.update()
-        @overload  # type: ignore[misc]
-        def __ior__(self, value: SupportsKeysAndGetItem[_KT, _VT], /) -> Self:
-            """Return self|=value."""
-            ...
-        @overload
-        def __ior__(self, value: Iterable[tuple[_KT, _VT]], /) -> Self:
-            """Return self|=value."""
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    @overload
+    def __or__(self, value: dict[_KT, _VT], /) -> dict[_KT, _VT]: ...
+    @overload
+    def __or__(self, value: dict[_T1, _T2], /) -> dict[_KT | _T1, _VT | _T2]: ...
+    @overload
+    def __ror__(self, value: dict[_KT, _VT], /) -> dict[_KT, _VT]: ...
+    @overload
+    def __ror__(self, value: dict[_T1, _T2], /) -> dict[_KT | _T1, _VT | _T2]: ...
+    # dict.__ior__ should be kept roughly in line with MutableMapping.update()
+    @overload  # type: ignore[misc]
+    def __ior__(self, value: SupportsKeysAndGetItem[_KT, _VT], /) -> Self: ...
+    @overload
+    def __ior__(self, value: Iterable[tuple[_KT, _VT]], /) -> Self: ...
 
 class set(MutableSet[_T]):
     """Build an unordered collection of unique elements."""
@@ -3768,10 +3345,7 @@ class set(MutableSet[_T]):
         """Return self==value."""
         ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class frozenset(AbstractSet[_T_co]):
     """Build an immutable unordered collection of unique elements."""
@@ -3779,73 +3353,28 @@ class frozenset(AbstractSet[_T_co]):
     def __new__(cls) -> Self: ...
     @overload
     def __new__(cls, iterable: Iterable[_T_co], /) -> Self: ...
-    def copy(self) -> frozenset[_T_co]:
-        """Return a shallow copy of a set."""
-        ...
-    def difference(self, *s: Iterable[object]) -> frozenset[_T_co]:
-        """Return a new set with elements in the set that are not in the others."""
-        ...
-    def intersection(self, *s: Iterable[object]) -> frozenset[_T_co]:
-        """Return a new set with elements common to the set and all others."""
-        ...
-    def isdisjoint(self, s: Iterable[_T_co], /) -> bool:
-        """Return True if two sets have a null intersection."""
-        ...
-    def issubset(self, s: Iterable[object], /) -> bool:
-        """Report whether another set contains this set."""
-        ...
-    def issuperset(self, s: Iterable[object], /) -> bool:
-        """Report whether this set contains another set."""
-        ...
-    def symmetric_difference(self, s: Iterable[_T_co], /) -> frozenset[_T_co]:
-        """Return a new set with elements in either the set or other but not both."""
-        ...
-    def union(self, *s: Iterable[_S]) -> frozenset[_T_co | _S]:
-        """Return a new set with elements from the set and all others."""
-        ...
-    def __len__(self) -> int:
-        """Return len(self)."""
-        ...
-    def __contains__(self, o: object, /) -> bool:
-        """x.__contains__(y) <==> y in x."""
-        ...
-    def __iter__(self) -> Iterator[_T_co]:
-        """Implement iter(self)."""
-        ...
-    def __and__(self, value: AbstractSet[_T_co], /) -> frozenset[_T_co]:
-        """Return self&value."""
-        ...
-    def __or__(self, value: AbstractSet[_S], /) -> frozenset[_T_co | _S]:
-        """Return self|value."""
-        ...
-    def __sub__(self, value: AbstractSet[_T_co], /) -> frozenset[_T_co]:
-        """Return self-value."""
-        ...
-    def __xor__(self, value: AbstractSet[_S], /) -> frozenset[_T_co | _S]:
-        """Return self^value."""
-        ...
-    def __le__(self, value: AbstractSet[object], /) -> bool:
-        """Return self<=value."""
-        ...
-    def __lt__(self, value: AbstractSet[object], /) -> bool:
-        """Return self<value."""
-        ...
-    def __ge__(self, value: AbstractSet[object], /) -> bool:
-        """Return self>=value."""
-        ...
-    def __gt__(self, value: AbstractSet[object], /) -> bool:
-        """Return self>value."""
-        ...
-    def __eq__(self, value: object, /) -> bool:
-        """Return self==value."""
-        ...
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
+    def copy(self) -> frozenset[_T_co]: ...
+    def difference(self, *s: Iterable[object]) -> frozenset[_T_co]: ...
+    def intersection(self, *s: Iterable[object]) -> frozenset[_T_co]: ...
+    def isdisjoint(self, s: Iterable[_T_co], /) -> bool: ...
+    def issubset(self, s: Iterable[object], /) -> bool: ...
+    def issuperset(self, s: Iterable[object], /) -> bool: ...
+    def symmetric_difference(self, s: Iterable[_T_co], /) -> frozenset[_T_co]: ...
+    def union(self, *s: Iterable[_S]) -> frozenset[_T_co | _S]: ...
+    def __len__(self) -> int: ...
+    def __contains__(self, o: object, /) -> bool: ...
+    def __iter__(self) -> Iterator[_T_co]: ...
+    def __and__(self, value: AbstractSet[_T_co], /) -> frozenset[_T_co]: ...
+    def __or__(self, value: AbstractSet[_S], /) -> frozenset[_T_co | _S]: ...
+    def __sub__(self, value: AbstractSet[_T_co], /) -> frozenset[_T_co]: ...
+    def __xor__(self, value: AbstractSet[_S], /) -> frozenset[_T_co | _S]: ...
+    def __le__(self, value: AbstractSet[object], /) -> bool: ...
+    def __lt__(self, value: AbstractSet[object], /) -> bool: ...
+    def __ge__(self, value: AbstractSet[object], /) -> bool: ...
+    def __gt__(self, value: AbstractSet[object], /) -> bool: ...
+    def __eq__(self, value: object, /) -> bool: ...
+    def __hash__(self) -> int: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class enumerate(Generic[_T]):
     """
@@ -3861,16 +3390,9 @@ class enumerate(Generic[_T]):
         (0, seq[0]), (1, seq[1]), (2, seq[2]), ...
     """
     def __new__(cls, iterable: Iterable[_T], start: int = 0) -> Self: ...
-    def __iter__(self) -> Self:
-        """Implement iter(self)."""
-        ...
-    def __next__(self) -> tuple[int, _T]:
-        """Implement next(self)."""
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
+    def __iter__(self) -> Self: ...
+    def __next__(self) -> tuple[int, _T]: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 @final
 class range(Sequence[int]):
@@ -3979,24 +3501,15 @@ class property:
         fdel: Callable[[Any], None] | None = ...,
         doc: str | None = ...,
     ) -> None: ...
-    def getter(self, fget: Callable[[Any], Any], /) -> property:
-        """Descriptor to obtain a copy of the property with a different getter."""
-        ...
-    def setter(self, fset: Callable[[Any, Any], None], /) -> property:
-        """Descriptor to obtain a copy of the property with a different setter."""
-        ...
-    def deleter(self, fdel: Callable[[Any], None], /) -> property:
-        """Descriptor to obtain a copy of the property with a different deleter."""
-        ...
-    def __get__(self, instance: Any, owner: type | None = None, /) -> Any:
-        """Return an attribute of instance, which is of type owner."""
-        ...
-    def __set__(self, instance: Any, value: Any, /) -> None:
-        """Set an attribute of instance to value."""
-        ...
-    def __delete__(self, instance: Any, /) -> None:
-        """Delete an attribute of instance."""
-        ...
+    def getter(self, fget: Callable[[Any], Any], /) -> property: ...
+    def setter(self, fset: Callable[[Any, Any], None], /) -> property: ...
+    def deleter(self, fdel: Callable[[Any], None], /) -> property: ...
+    @overload
+    def __get__(self, instance: None, owner: type, /) -> Self: ...
+    @overload
+    def __get__(self, instance: Any, owner: type | None = None, /) -> Any: ...
+    def __set__(self, instance: Any, value: Any, /) -> None: ...
+    def __delete__(self, instance: Any, /) -> None: ...
 
 @final
 class _NotImplementedType(Any):

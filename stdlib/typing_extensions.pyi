@@ -5,7 +5,7 @@ import typing
 from _collections_abc import dict_items, dict_keys, dict_values
 from _typeshed import IdentityFunction, Incomplete, Unused
 from contextlib import AbstractAsyncContextManager as AsyncContextManager, AbstractContextManager as ContextManager
-from types import ModuleType
+from types import GenericAlias, ModuleType
 from typing import (  # noqa: Y022,Y037,Y038,Y039
     IO as IO,
     TYPE_CHECKING as TYPE_CHECKING,
@@ -67,8 +67,6 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
 
 if sys.version_info >= (3, 10):
     from types import UnionType
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 # Please keep order the same as at runtime.
 __all__ = [
@@ -301,26 +299,17 @@ class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
     def keys(self) -> dict_keys[str, object]: ...
     def values(self) -> dict_values[str, object]: ...
     def __delitem__(self, k: Never) -> None: ...
-    if sys.version_info >= (3, 9):
-        @overload
-        def __or__(self, value: Self, /) -> Self:
-            """Return self|value."""
-            ...
-        @overload
-        def __or__(self, value: dict[str, Any], /) -> dict[str, object]:
-            """Return self|value."""
-            ...
-        @overload
-        def __ror__(self, value: Self, /) -> Self:
-            """Return value|self."""
-            ...
-        @overload
-        def __ror__(self, value: dict[str, Any], /) -> dict[str, object]:
-            """Return value|self."""
-            ...
-        # supposedly incompatible definitions of `__ior__` and `__or__`:
-        # Since this module defines "Self" it is not recognized by Ruff as typing_extensions.Self
-        def __ior__(self, value: Self, /) -> Self: ...  # type: ignore[misc]
+    @overload
+    def __or__(self, value: Self, /) -> Self: ...
+    @overload
+    def __or__(self, value: dict[str, Any], /) -> dict[str, object]: ...
+    @overload
+    def __ror__(self, value: Self, /) -> Self: ...
+    @overload
+    def __ror__(self, value: dict[str, Any], /) -> dict[str, object]: ...
+    # supposedly incompatible definitions of `__ior__` and `__or__`:
+    # Since this module defines "Self" it is not recognized by Ruff as typing_extensions.Self
+    def __ior__(self, value: Self, /) -> Self: ...  # type: ignore[misc]
 
 OrderedDict = _Alias()
 
@@ -402,29 +391,8 @@ if sys.version_info >= (3, 10):
         """
         ...
 
-if sys.version_info >= (3, 9):
-    @overload
-    def get_origin(tp: GenericAlias) -> type:
-        """
-        Get the unsubscripted version of a type.
-
-        This supports generic types, Callable, Tuple, Union, Literal, Final, ClassVar,
-        Annotated, and others. Return None for unsupported types.
-
-        Examples::
-
-            >>> P = ParamSpec('P')
-            >>> assert get_origin(Literal[42]) is Literal
-            >>> assert get_origin(int) is None
-            >>> assert get_origin(ClassVar[int]) is ClassVar
-            >>> assert get_origin(Generic) is Generic
-            >>> assert get_origin(Generic[T]) is Generic
-            >>> assert get_origin(Union[T, int]) is Union
-            >>> assert get_origin(List[Tuple[T, T]][int]) is list
-            >>> assert get_origin(P.args) is P
-        """
-        ...
-
+@overload
+def get_origin(tp: GenericAlias) -> type: ...
 @overload
 def get_origin(tp: ParamSpecArgs | ParamSpecKwargs) -> ParamSpec:
     """
@@ -694,28 +662,6 @@ else:
         ...
 
     class NamedTuple(tuple[Any, ...]):
-        """
-        Typed version of namedtuple.
-
-        Usage::
-
-            class Employee(NamedTuple):
-                name: str
-                id: int
-
-        This is equivalent to::
-
-            Employee = collections.namedtuple('Employee', ['name', 'id'])
-
-        The resulting class has an extra __annotations__ attribute, giving a
-        dict that maps field names to types.  (The field names are also in
-        the _fields attribute, which is part of the namedtuple API.)
-        An alternative equivalent functional syntax is also accepted::
-
-            Employee = NamedTuple('Employee', [('name', str), ('id', int)])
-        """
-        if sys.version_info < (3, 9):
-            _field_types: ClassVar[dict[str, type]]
         _field_defaults: ClassVar[dict[str, Any]]
         _fields: ClassVar[tuple[str, ...]]
         __orig_bases__: ClassVar[tuple[Any, ...]]

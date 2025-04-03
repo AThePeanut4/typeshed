@@ -34,6 +34,7 @@ from types import (
     BuiltinFunctionType,
     CodeType,
     FunctionType,
+    GenericAlias,
     MethodDescriptorType,
     MethodType,
     MethodWrapperType,
@@ -43,13 +44,12 @@ from types import (
 )
 from typing_extensions import Never as _Never, ParamSpec as _ParamSpec, deprecated
 
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 if sys.version_info >= (3, 10):
     from types import UnionType
 
 __all__ = [
     "AbstractSet",
+    "Annotated",
     "Any",
     "AnyStr",
     "AsyncContextManager",
@@ -57,6 +57,7 @@ __all__ = [
     "AsyncIterable",
     "AsyncIterator",
     "Awaitable",
+    "BinaryIO",
     "ByteString",
     "Callable",
     "ChainMap",
@@ -70,10 +71,12 @@ __all__ = [
     "Deque",
     "Dict",
     "Final",
+    "ForwardRef",
     "FrozenSet",
     "Generator",
     "Generic",
     "Hashable",
+    "IO",
     "ItemsView",
     "Iterable",
     "Iterator",
@@ -82,12 +85,16 @@ __all__ = [
     "Literal",
     "Mapping",
     "MappingView",
+    "Match",
     "MutableMapping",
     "MutableSequence",
     "MutableSet",
     "NamedTuple",
     "NewType",
+    "NoReturn",
     "Optional",
+    "OrderedDict",
+    "Pattern",
     "Protocol",
     "Reversible",
     "Sequence",
@@ -101,6 +108,7 @@ __all__ = [
     "SupportsInt",
     "SupportsRound",
     "Text",
+    "TextIO",
     "Tuple",
     "Type",
     "TypeVar",
@@ -117,13 +125,7 @@ __all__ = [
     "no_type_check_decorator",
     "overload",
     "runtime_checkable",
-    "ForwardRef",
-    "NoReturn",
-    "OrderedDict",
 ]
-
-if sys.version_info >= (3, 9):
-    __all__ += ["Annotated", "BinaryIO", "IO", "Match", "Pattern", "TextIO"]
 
 if sys.version_info >= (3, 10):
     __all__ += ["Concatenate", "ParamSpec", "ParamSpecArgs", "ParamSpecKwargs", "TypeAlias", "TypeGuard", "is_typeddict"]
@@ -314,7 +316,6 @@ class _SpecialForm(_Final):
 
 Union: _SpecialForm
 Generic: _SpecialForm
-# Protocol is only present in 3.8 and later, but mypy needs it unconditionally
 Protocol: _SpecialForm
 Callable: _SpecialForm
 Type: _SpecialForm
@@ -723,8 +724,7 @@ ChainMap = _Alias()
 
 OrderedDict = _Alias()
 
-if sys.version_info >= (3, 9):
-    Annotated: _SpecialForm
+Annotated: _SpecialForm
 
 # Predefined type variables.
 AnyStr = TypeVar("AnyStr", str, bytes)  # noqa: Y001
@@ -1457,67 +1457,13 @@ _get_type_hints_obj_allowed_types: typing_extensions.TypeAlias = (  # noqa: Y042
     | MethodDescriptorType
 )
 
-if sys.version_info >= (3, 9):
-    def get_type_hints(
-        obj: _get_type_hints_obj_allowed_types,
-        globalns: dict[str, Any] | None = None,
-        localns: Mapping[str, Any] | None = None,
-        include_extras: bool = False,
-    ) -> dict[str, Any]:
-        """
-        Return type hints for an object.
-
-        This is often the same as obj.__annotations__, but it handles
-        forward references encoded as string literals and recursively replaces all
-        'Annotated[T, ...]' with 'T' (unless 'include_extras=True').
-
-        The argument may be a module, class, method, or function. The annotations
-        are returned as a dictionary. For classes, annotations include also
-        inherited members.
-
-        TypeError is raised if the argument is not of a type that can contain
-        annotations, and an empty dictionary is returned if no annotations are
-        present.
-
-        BEWARE -- the behavior of globalns and localns is counterintuitive
-        (unless you are familiar with how eval() and exec() work).  The
-        search order is locals first, then globals.
-
-        - If no dict arguments are passed, an attempt is made to use the
-          globals from obj (or the respective module's globals for classes),
-          and these are also used as the locals.  If the object does not appear
-          to have globals, an empty dictionary is used.  For classes, the search
-          order is globals first then locals.
-
-        - If one dict argument is passed, it is used for both globals and
-          locals.
-
-        - If two dict arguments are passed, they specify globals and
-          locals, respectively.
-        """
-        ...
-
-else:
-    def get_type_hints(
-        obj: _get_type_hints_obj_allowed_types, globalns: dict[str, Any] | None = None, localns: Mapping[str, Any] | None = None
-    ) -> dict[str, Any]: ...
-
-def get_args(tp: Any) -> tuple[Any, ...]:
-    """
-    Get type arguments with all substitutions performed.
-
-    For unions, basic simplifications used by Union constructor are performed.
-
-    Examples::
-
-        >>> T = TypeVar('T')
-        >>> assert get_args(Dict[str, int]) == (str, int)
-        >>> assert get_args(int) == ()
-        >>> assert get_args(Union[int, Union[T, int], str][int]) == (int, str)
-        >>> assert get_args(Union[int, Tuple[T, int]][str]) == (int, Tuple[str, int])
-        >>> assert get_args(Callable[[], T][int]) == ([], int)
-    """
-    ...
+def get_type_hints(
+    obj: _get_type_hints_obj_allowed_types,
+    globalns: dict[str, Any] | None = None,
+    localns: Mapping[str, Any] | None = None,
+    include_extras: bool = False,
+) -> dict[str, Any]: ...
+def get_args(tp: Any) -> tuple[Any, ...]: ...
 
 if sys.version_info >= (3, 10):
     @overload
@@ -1563,53 +1509,10 @@ if sys.version_info >= (3, 10):
         """
         ...
 
-if sys.version_info >= (3, 9):
-    @overload
-    def get_origin(tp: GenericAlias) -> type:
-        """
-        Get the unsubscripted version of a type.
-
-        This supports generic types, Callable, Tuple, Union, Literal, Final, ClassVar,
-        Annotated, and others. Return None for unsupported types.
-
-        Examples::
-
-            >>> P = ParamSpec('P')
-            >>> assert get_origin(Literal[42]) is Literal
-            >>> assert get_origin(int) is None
-            >>> assert get_origin(ClassVar[int]) is ClassVar
-            >>> assert get_origin(Generic) is Generic
-            >>> assert get_origin(Generic[T]) is Generic
-            >>> assert get_origin(Union[T, int]) is Union
-            >>> assert get_origin(List[Tuple[T, T]][int]) is list
-            >>> assert get_origin(P.args) is P
-        """
-        ...
-    @overload
-    def get_origin(tp: Any) -> Any | None:
-        """
-        Get the unsubscripted version of a type.
-
-        This supports generic types, Callable, Tuple, Union, Literal, Final, ClassVar,
-        Annotated, and others. Return None for unsupported types.
-
-        Examples::
-
-            >>> P = ParamSpec('P')
-            >>> assert get_origin(Literal[42]) is Literal
-            >>> assert get_origin(int) is None
-            >>> assert get_origin(ClassVar[int]) is ClassVar
-            >>> assert get_origin(Generic) is Generic
-            >>> assert get_origin(Generic[T]) is Generic
-            >>> assert get_origin(Union[T, int]) is Union
-            >>> assert get_origin(List[Tuple[T, T]][int]) is list
-            >>> assert get_origin(P.args) is P
-        """
-        ...
-
-else:
-    def get_origin(tp: Any) -> Any | None: ...
-
+@overload
+def get_origin(tp: GenericAlias) -> type: ...
+@overload
+def get_origin(tp: Any) -> Any | None: ...
 @overload
 def cast(typ: type[_T], val: Any) -> _T:
     """
@@ -1781,28 +1684,6 @@ if sys.version_info >= (3, 11):
 # Type constructors
 
 class NamedTuple(tuple[Any, ...]):
-    """
-    Typed version of namedtuple.
-
-    Usage::
-
-        class Employee(NamedTuple):
-            name: str
-            id: int
-
-    This is equivalent to::
-
-        Employee = collections.namedtuple('Employee', ['name', 'id'])
-
-    The resulting class has an extra __annotations__ attribute, giving a
-    dict that maps field names to types.  (The field names are also in
-    the _fields attribute, which is part of the namedtuple API.)
-    An alternative equivalent functional syntax is also accepted::
-
-        Employee = NamedTuple('Employee', [('name', str), ('id', int)])
-    """
-    if sys.version_info < (3, 9):
-        _field_types: ClassVar[dict[str, type]]
     _field_defaults: ClassVar[dict[str, Any]]
     _fields: ClassVar[tuple[str, ...]]
     # __orig_bases__ sometimes exists on <3.12, but not consistently
@@ -1833,9 +1714,8 @@ class NamedTuple(tuple[Any, ...]):
 @type_check_only
 class _TypedDict(Mapping[str, object], metaclass=ABCMeta):
     __total__: ClassVar[bool]
-    if sys.version_info >= (3, 9):
-        __required_keys__: ClassVar[frozenset[str]]
-        __optional_keys__: ClassVar[frozenset[str]]
+    __required_keys__: ClassVar[frozenset[str]]
+    __optional_keys__: ClassVar[frozenset[str]]
     # __orig_bases__ sometimes exists on <3.12, but not consistently,
     # so we only add it to the stub on 3.12+
     if sys.version_info >= (3, 12):
@@ -1855,25 +1735,16 @@ class _TypedDict(Mapping[str, object], metaclass=ABCMeta):
     def items(self) -> dict_items[str, object]: ...
     def keys(self) -> dict_keys[str, object]: ...
     def values(self) -> dict_values[str, object]: ...
-    if sys.version_info >= (3, 9):
-        @overload
-        def __or__(self, value: typing_extensions.Self, /) -> typing_extensions.Self:
-            """Return self|value."""
-            ...
-        @overload
-        def __or__(self, value: dict[str, Any], /) -> dict[str, object]:
-            """Return self|value."""
-            ...
-        @overload
-        def __ror__(self, value: typing_extensions.Self, /) -> typing_extensions.Self:
-            """Return value|self."""
-            ...
-        @overload
-        def __ror__(self, value: dict[str, Any], /) -> dict[str, object]:
-            """Return value|self."""
-            ...
-        # supposedly incompatible definitions of __or__ and __ior__
-        def __ior__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...  # type: ignore[misc]
+    @overload
+    def __or__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...
+    @overload
+    def __or__(self, value: dict[str, Any], /) -> dict[str, object]: ...
+    @overload
+    def __ror__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...
+    @overload
+    def __ror__(self, value: dict[str, Any], /) -> dict[str, object]: ...
+    # supposedly incompatible definitions of __or__ and __ior__
+    def __ior__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...  # type: ignore[misc]
 
 @final
 class ForwardRef(_Final):
@@ -1885,11 +1756,8 @@ class ForwardRef(_Final):
     __forward_is_argument__: bool
     __forward_is_class__: bool
     __forward_module__: Any | None
-    if sys.version_info >= (3, 9):
-        # The module and is_class arguments were added in later Python 3.9 versions.
-        def __init__(self, arg: str, is_argument: bool = True, module: Any | None = None, *, is_class: bool = False) -> None: ...
-    else:
-        def __init__(self, arg: str, is_argument: bool = True) -> None: ...
+
+    def __init__(self, arg: str, is_argument: bool = True, module: Any | None = None, *, is_class: bool = False) -> None: ...
 
     if sys.version_info >= (3, 13):
         @overload
@@ -1919,12 +1787,10 @@ class ForwardRef(_Final):
             *,
             recursive_guard: frozenset[str],
         ) -> Any | None: ...
-    elif sys.version_info >= (3, 9):
+    else:
         def _evaluate(
             self, globalns: dict[str, Any] | None, localns: Mapping[str, Any] | None, recursive_guard: frozenset[str]
         ) -> Any | None: ...
-    else:
-        def _evaluate(self, globalns: dict[str, Any] | None, localns: Mapping[str, Any] | None) -> Any | None: ...
 
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
