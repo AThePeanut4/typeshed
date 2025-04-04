@@ -1,3 +1,21 @@
+"""
+Simple implementation of the Level 1 DOM.
+
+Namespaces and other minor Level 2 features are also supported.
+
+parse("foo.xml")
+
+parseString("<foo><bar/></foo>")
+
+Todo:
+=====
+ * convenience methods for getting elements and text.
+ * more testing
+ * bring some of the writer and linearizer code into conformance with this
+        interface
+ * SAX 2 namespaces
+"""
+
 import xml.dom
 from _collections_abc import dict_keys, dict_values
 from _typeshed import Incomplete, ReadableBuffer, SupportsRead, SupportsWrite

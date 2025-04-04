@@ -547,27 +547,129 @@ class NormalDist:
         """Return the median of the normal distribution"""
         ...
     @property
-    def mode(self) -> float: ...
+    def mode(self) -> float:
+        """
+        Return the mode of the normal distribution
+
+        The mode is the value x where which the probability density
+        function (pdf) takes its maximum value.
+        """
+        ...
     @property
-    def stdev(self) -> float: ...
+    def stdev(self) -> float:
+        """Standard deviation of the normal distribution."""
+        ...
     @property
-    def variance(self) -> float: ...
+    def variance(self) -> float:
+        """Square of the standard deviation."""
+        ...
     @classmethod
-    def from_samples(cls, data: Iterable[SupportsFloat]) -> Self: ...
-    def samples(self, n: SupportsIndex, *, seed: _Seed | None = None) -> list[float]: ...
-    def pdf(self, x: float) -> float: ...
-    def cdf(self, x: float) -> float: ...
-    def inv_cdf(self, p: float) -> float: ...
-    def overlap(self, other: NormalDist) -> float: ...
-    def quantiles(self, n: int = 4) -> list[float]: ...
-    def zscore(self, x: float) -> float: ...
-    def __eq__(x1, x2: object) -> bool: ...
-    def __add__(x1, x2: float | NormalDist) -> NormalDist: ...
-    def __sub__(x1, x2: float | NormalDist) -> NormalDist: ...
-    def __mul__(x1, x2: float) -> NormalDist: ...
-    def __truediv__(x1, x2: float) -> NormalDist: ...
-    def __pos__(x1) -> NormalDist: ...
-    def __neg__(x1) -> NormalDist: ...
+    def from_samples(cls, data: Iterable[SupportsFloat]) -> Self:
+        """Make a normal distribution instance from sample data."""
+        ...
+    def samples(self, n: SupportsIndex, *, seed: _Seed | None = None) -> list[float]:
+        """Generate *n* samples for a given mean and standard deviation."""
+        ...
+    def pdf(self, x: float) -> float:
+        """Probability density function.  P(x <= X < x+dx) / dx"""
+        ...
+    def cdf(self, x: float) -> float:
+        """Cumulative distribution function.  P(X <= x)"""
+        ...
+    def inv_cdf(self, p: float) -> float:
+        """
+        Inverse cumulative distribution function.  x : P(X <= x) = p
+
+        Finds the value of the random variable such that the probability of
+        the variable being less than or equal to that value equals the given
+        probability.
+
+        This function is also called the percent point function or quantile
+        function.
+        """
+        ...
+    def overlap(self, other: NormalDist) -> float:
+        """
+        Compute the overlapping coefficient (OVL) between two normal distributions.
+
+        Measures the agreement between two normal probability distributions.
+        Returns a value between 0.0 and 1.0 giving the overlapping area in
+        the two underlying probability density functions.
+
+            >>> N1 = NormalDist(2.4, 1.6)
+            >>> N2 = NormalDist(3.2, 2.0)
+            >>> N1.overlap(N2)
+            0.8035050657330205
+        """
+        ...
+    def quantiles(self, n: int = 4) -> list[float]:
+        """
+        Divide into *n* continuous intervals with equal probability.
+
+        Returns a list of (n - 1) cut points separating the intervals.
+
+        Set *n* to 4 for quartiles (the default).  Set *n* to 10 for deciles.
+        Set *n* to 100 for percentiles which gives the 99 cuts points that
+        separate the normal distribution in to 100 equal sized groups.
+        """
+        ...
+    def zscore(self, x: float) -> float:
+        """
+        Compute the Standard Score.  (x - mean) / stdev
+
+        Describes *x* in terms of the number of standard deviations
+        above or below the mean of the normal distribution.
+        """
+        ...
+    def __eq__(x1, x2: object) -> bool:
+        """Two NormalDist objects are equal if their mu and sigma are both equal."""
+        ...
+    def __add__(x1, x2: float | NormalDist) -> NormalDist:
+        """
+        Add a constant or another NormalDist instance.
+
+        If *other* is a constant, translate mu by the constant,
+        leaving sigma unchanged.
+
+        If *other* is a NormalDist, add both the means and the variances.
+        Mathematically, this works only if the two distributions are
+        independent or if they are jointly normally distributed.
+        """
+        ...
+    def __sub__(x1, x2: float | NormalDist) -> NormalDist:
+        """
+        Subtract a constant or another NormalDist instance.
+
+        If *other* is a constant, translate by the constant mu,
+        leaving sigma unchanged.
+
+        If *other* is a NormalDist, subtract the means and add the variances.
+        Mathematically, this works only if the two distributions are
+        independent or if they are jointly normally distributed.
+        """
+        ...
+    def __mul__(x1, x2: float) -> NormalDist:
+        """
+        Multiply both mu and sigma by a constant.
+
+        Used for rescaling, perhaps to change measurement units.
+        Sigma is scaled with the absolute value of the constant.
+        """
+        ...
+    def __truediv__(x1, x2: float) -> NormalDist:
+        """
+        Divide both mu and sigma by a constant.
+
+        Used for rescaling, perhaps to change measurement units.
+        Sigma is scaled with the absolute value of the constant.
+        """
+        ...
+    def __pos__(x1) -> NormalDist:
+        """Return a copy of the instance."""
+        ...
+    def __neg__(x1) -> NormalDist:
+        """Negates mu while keeping sigma the same."""
+        ...
     __radd__ = __add__
     def __rsub__(x1, x2: float | NormalDist) -> NormalDist:
         """Subtract a NormalDist from a constant or another NormalDist."""

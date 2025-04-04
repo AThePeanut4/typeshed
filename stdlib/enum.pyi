@@ -125,8 +125,12 @@ class EnumMeta(type):
 
     @classmethod
     def __prepare__(metacls, cls: str, bases: tuple[type, ...], **kwds: Any) -> _EnumDict: ...  # type: ignore[override]
-    def __iter__(self: type[_EnumMemberT]) -> Iterator[_EnumMemberT]: ...
-    def __reversed__(self: type[_EnumMemberT]) -> Iterator[_EnumMemberT]: ...
+    def __iter__(self: type[_EnumMemberT]) -> Iterator[_EnumMemberT]:
+        """Return members in definition order."""
+        ...
+    def __reversed__(self: type[_EnumMemberT]) -> Iterator[_EnumMemberT]:
+        """Return members in reverse definition order."""
+        ...
     if sys.version_info >= (3, 12):
         def __contains__(self: type[Any], value: object) -> bool:
             """

@@ -106,6 +106,7 @@ class _GeneratorContextManager(
     AbstractContextManager[_T_co, bool | None],
     ContextDecorator,
 ):
+    """Helper for @contextmanager decorator."""
     def __exit__(
         self, typ: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
     ) -> bool | None: ...

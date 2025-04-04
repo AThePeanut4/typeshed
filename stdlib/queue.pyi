@@ -142,8 +142,32 @@ class Queue(Generic[_T]):
         """Return the approximate size of the queue (not reliable!)."""
         ...
     def _qsize(self) -> int: ...
-    def task_done(self) -> None: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def task_done(self) -> None:
+        """
+        Indicate that a formerly enqueued task is complete.
+
+        Used by Queue consumer threads.  For each get() used to fetch a task,
+        a subsequent call to task_done() tells the queue that the processing
+        on the task is complete.
+
+        If a join() is currently blocking, it will resume when all items
+        have been processed (meaning that a task_done() call was received
+        for every item that had been put() into the queue).
+
+        shutdown(immediate=True) calls task_done() for each remaining item in
+        the queue.
+
+        Raises a ValueError if called more times than there were items
+        placed in the queue.
+        """
+        ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """
+        Represent a PEP 585 generic type
+
+        E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+        """
+        ...
 
 class PriorityQueue(Queue[_T]):
     """

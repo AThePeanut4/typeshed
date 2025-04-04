@@ -219,6 +219,17 @@ else:
         ...
 
 class _ExecutorManagerThread(Thread):
+    """
+    Manages the communication between this process and the worker processes.
+
+    The manager is run in a local thread.
+
+    Args:
+        executor: A reference to the ProcessPoolExecutor that owns
+            this thread. A weakref will be own by the manager as well as
+            references to internal objects used to introspect the state of
+            the executor.
+    """
     thread_wakeup: _ThreadWakeup
     shutdown_lock: Lock
     executor_reference: ref[Any]
@@ -416,7 +427,20 @@ class ProcessPoolExecutor(Executor):
             mp_context: BaseContext | None,
             initializer: Callable[[Unpack[_Ts]], object],
             initargs: tuple[Unpack[_Ts]],
-        ) -> None: ...
+        ) -> None:
+            """
+            Initializes a new ProcessPoolExecutor instance.
+
+            Args:
+                max_workers: The maximum number of processes that can be used to
+                    execute the given calls. If None or not given then as many
+                    worker processes will be created as the machine has processors.
+                mp_context: A multiprocessing context to launch the workers. This
+                    object should provide SimpleQueue, Queue and Process.
+                initializer: A callable used to initialize worker processes.
+                initargs: A tuple of arguments to pass to the initializer.
+            """
+            ...
 
     def _start_executor_manager_thread(self) -> None: ...
     def _adjust_process_count(self) -> None: ...

@@ -100,7 +100,12 @@ if sys.version_info >= (3, 13):
         ...
 
 else:
-    def load(fp: IO[bytes], *, fmt: PlistFormat | None = None, dict_type: type[MutableMapping[str, Any]] = ...) -> Any: ...
+    def load(fp: IO[bytes], *, fmt: PlistFormat | None = None, dict_type: type[MutableMapping[str, Any]] = ...) -> Any:
+        """
+        Read a .plist file. 'fp' should be a readable and binary file object.
+        Return the unpacked root object (which usually is a dictionary).
+        """
+        ...
     def loads(
         value: ReadableBuffer, *, fmt: PlistFormat | None = None, dict_type: type[MutableMapping[str, Any]] = ...
     ) -> Any:

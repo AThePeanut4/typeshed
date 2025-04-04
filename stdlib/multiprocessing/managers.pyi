@@ -64,7 +64,13 @@ class ValueProxy(BaseProxy, Generic[_T]):
     def get(self) -> _T: ...
     def set(self, value: _T) -> None: ...
     value: _T
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """
+        Represent a PEP 585 generic type
+
+        E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+        """
+        ...
 
 if sys.version_info >= (3, 13):
     class _BaseDictProxy(BaseProxy, MutableMapping[_KT, _VT]):

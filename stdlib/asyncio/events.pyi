@@ -1108,7 +1108,9 @@ class AbstractEventLoop:
     @abstractmethod
     def set_debug(self, enabled: bool) -> None: ...
     @abstractmethod
-    async def shutdown_default_executor(self) -> None: ...
+    async def shutdown_default_executor(self) -> None:
+        """Schedule the shutdown of the default executor."""
+        ...
 
 class AbstractEventLoopPolicy:
     """Abstract policy for accessing the event loop."""

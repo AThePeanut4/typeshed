@@ -112,6 +112,10 @@ class Trace:
     def __hash__(self) -> int: ...
 
 class Traceback(Sequence[Frame]):
+    """
+    Sequence of Frame instances sorted from the oldest frame
+    to the most recent frame.
+    """
     @property
     def total_nframe(self) -> int | None: ...
     def __init__(self, frames: Sequence[_FrameTuple], total_nframe: int | None = None) -> None: ...

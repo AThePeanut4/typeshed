@@ -466,6 +466,17 @@ if sys.platform != "win32":
             def attach_loop(self, loop: AbstractEventLoop | None) -> None: ...
 
         class PidfdChildWatcher(AbstractChildWatcher):
+            """
+            Child watcher implementation using Linux's pid file descriptors.
+
+            This child watcher polls process file descriptors (pidfds) to await child
+            process termination. In some respects, PidfdChildWatcher is a "Goldilocks"
+            child watcher implementation. It doesn't require signals or threads, doesn't
+            interfere with any processes launched outside the event loop, and scales
+            linearly with the number of subprocesses launched by the event loop. The
+            main disadvantage is that pidfds are specific to Linux, and only work on
+            recent (5.3+) kernels.
+            """
             def __enter__(self) -> Self: ...
             def __exit__(
                 self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: types.TracebackType | None

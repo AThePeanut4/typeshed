@@ -100,17 +100,60 @@ class Random(_random.Random):
     can cover arbitrarily large ranges.
     """
     VERSION: ClassVar[int]
-    def __init__(self, x: int | float | str | bytes | bytearray | None = None) -> None: ...  # noqa: Y041
+    def __init__(self, x: int | float | str | bytes | bytearray | None = None) -> None:
+        """
+        Initialize an instance.
+
+        Optional argument x controls seeding, as for Random.seed().
+        """
+        ...
     # Using other `seed` types is deprecated since 3.9 and removed in 3.11
     # Ignore Y041, since random.seed doesn't treat int like a float subtype. Having an explicit
     # int better documents conventional usage of random.seed.
-    def seed(self, a: int | float | str | bytes | bytearray | None = None, version: int = 2) -> None: ...  # type: ignore[override]  # noqa: Y041
-    def getstate(self) -> tuple[Any, ...]: ...
-    def setstate(self, state: tuple[Any, ...]) -> None: ...
-    def randrange(self, start: int, stop: int | None = None, step: int = 1) -> int: ...
-    def randint(self, a: int, b: int) -> int: ...
-    def randbytes(self, n: int) -> bytes: ...
-    def choice(self, seq: SupportsLenAndGetItem[_T]) -> _T: ...
+    def seed(self, a: int | float | str | bytes | bytearray | None = None, version: int = 2) -> None:
+        """
+        Initialize internal state from a seed.
+
+        The only supported seed types are None, int, float,
+        str, bytes, and bytearray.
+
+        None or no argument seeds from current time or from an operating
+        system specific randomness source if available.
+
+        If *a* is an int, all bits are used.
+
+        For version 2 (the default), all of the bits are used if *a* is a str,
+        bytes, or bytearray.  For version 1 (provided for reproducing random
+        sequences from older versions of Python), the algorithm for str and
+        bytes generates a narrower range of seeds.
+        """
+        ...
+    def getstate(self) -> tuple[Any, ...]:
+        """Return internal state; can be passed to setstate() later."""
+        ...
+    def setstate(self, state: tuple[Any, ...]) -> None:
+        """Restore internal state from object returned by getstate()."""
+        ...
+    def randrange(self, start: int, stop: int | None = None, step: int = 1) -> int:
+        """
+        Choose a random item from range(stop) or range(start, stop[, step]).
+
+        Roughly equivalent to ``choice(range(start, stop, step))`` but
+        supports arbitrarily large ranges and is optimized for common cases.
+        """
+        ...
+    def randint(self, a: int, b: int) -> int:
+        """
+        Return random integer in range [a, b], including both end points.
+        
+        """
+        ...
+    def randbytes(self, n: int) -> bytes:
+        """Generate n random bytes."""
+        ...
+    def choice(self, seq: SupportsLenAndGetItem[_T]) -> _T:
+        """Choose a random element from a non-empty sequence."""
+        ...
     def choices(
         self,
         population: SupportsLenAndGetItem[_T],
@@ -141,11 +184,69 @@ class Random(_random.Random):
             """
             ...
     if sys.version_info >= (3, 11):
-        def sample(self, population: Sequence[_T], k: int, *, counts: Iterable[int] | None = None) -> list[_T]: ...
+        def sample(self, population: Sequence[_T], k: int, *, counts: Iterable[int] | None = None) -> list[_T]:
+            """
+            Chooses k unique random elements from a population sequence.
+
+            Returns a new list containing elements from the population while
+            leaving the original population unchanged.  The resulting list is
+            in selection order so that all sub-slices will also be valid random
+            samples.  This allows raffle winners (the sample) to be partitioned
+            into grand prize and second place winners (the subslices).
+
+            Members of the population need not be hashable or unique.  If the
+            population contains repeats, then each occurrence is a possible
+            selection in the sample.
+
+            Repeated elements can be specified one at a time or with the optional
+            counts parameter.  For example:
+
+                sample(['red', 'blue'], counts=[4, 2], k=5)
+
+            is equivalent to:
+
+                sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5)
+
+            To choose a sample from a range of integers, use range() for the
+            population argument.  This is especially fast and space efficient
+            for sampling from a large population:
+
+                sample(range(10000000), 60)
+            """
+            ...
     else:
         def sample(
             self, population: Sequence[_T] | AbstractSet[_T], k: int, *, counts: Iterable[int] | None = None
-        ) -> list[_T]: ...
+        ) -> list[_T]:
+            """
+            Chooses k unique random elements from a population sequence or set.
+
+            Returns a new list containing elements from the population while
+            leaving the original population unchanged.  The resulting list is
+            in selection order so that all sub-slices will also be valid random
+            samples.  This allows raffle winners (the sample) to be partitioned
+            into grand prize and second place winners (the subslices).
+
+            Members of the population need not be hashable or unique.  If the
+            population contains repeats, then each occurrence is a possible
+            selection in the sample.
+
+            Repeated elements can be specified one at a time or with the optional
+            counts parameter.  For example:
+
+                sample(['red', 'blue'], counts=[4, 2], k=5)
+
+            is equivalent to:
+
+                sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5)
+
+            To choose a sample from a range of integers, use range() for the
+            population argument.  This is especially fast and space efficient
+            for sampling from a large population:
+
+                sample(range(10000000), 60)
+            """
+            ...
 
     def uniform(self, a: float, b: float) -> float:
         """

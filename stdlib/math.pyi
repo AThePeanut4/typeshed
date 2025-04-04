@@ -170,32 +170,139 @@ def floor(x: _SupportsFloor[_T], /) -> _T:
     """
     ...
 @overload
-def floor(x: _SupportsFloatOrIndex, /) -> int: ...
-def fmod(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float: ...
-def frexp(x: _SupportsFloatOrIndex, /) -> tuple[float, int]: ...
-def fsum(seq: Iterable[_SupportsFloatOrIndex], /) -> float: ...
-def gamma(x: _SupportsFloatOrIndex, /) -> float: ...
-def gcd(*integers: SupportsIndex) -> int: ...
-def hypot(*coordinates: _SupportsFloatOrIndex) -> float: ...
+def floor(x: _SupportsFloatOrIndex, /) -> int:
+    """
+    Return the floor of x as an Integral.
+
+    This is the largest integer <= x.
+    """
+    ...
+def fmod(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float:
+    """
+    Return fmod(x, y), according to platform C.
+
+    x % y may differ.
+    """
+    ...
+def frexp(x: _SupportsFloatOrIndex, /) -> tuple[float, int]:
+    """
+    Return the mantissa and exponent of x, as pair (m, e).
+
+    m is a float and e is an int, such that x = m * 2.**e.
+    If x is 0, m and e are both 0.  Else 0.5 <= abs(m) < 1.0.
+    """
+    ...
+def fsum(seq: Iterable[_SupportsFloatOrIndex], /) -> float:
+    """
+    Return an accurate floating-point sum of values in the iterable seq.
+
+    Assumes IEEE-754 floating-point arithmetic.
+    """
+    ...
+def gamma(x: _SupportsFloatOrIndex, /) -> float:
+    """Gamma function at x."""
+    ...
+def gcd(*integers: SupportsIndex) -> int:
+    """Greatest Common Divisor."""
+    ...
+def hypot(*coordinates: _SupportsFloatOrIndex) -> float:
+    """
+    hypot(*coordinates) -> value
+
+    Multidimensional Euclidean distance from the origin to a point.
+
+    Roughly equivalent to:
+        sqrt(sum(x**2 for x in coordinates))
+
+    For a two dimensional point (x, y), gives the hypotenuse
+    using the Pythagorean theorem:  sqrt(x*x + y*y).
+
+    For example, the hypotenuse of a 3/4/5 right triangle is:
+
+        >>> hypot(3.0, 4.0)
+        5.0
+    """
+    ...
 def isclose(
     a: _SupportsFloatOrIndex,
     b: _SupportsFloatOrIndex,
     *,
     rel_tol: _SupportsFloatOrIndex = 1e-09,
     abs_tol: _SupportsFloatOrIndex = 0.0,
-) -> bool: ...
-def isinf(x: _SupportsFloatOrIndex, /) -> bool: ...
-def isfinite(x: _SupportsFloatOrIndex, /) -> bool: ...
-def isnan(x: _SupportsFloatOrIndex, /) -> bool: ...
-def isqrt(n: SupportsIndex, /) -> int: ...
-def lcm(*integers: SupportsIndex) -> int: ...
-def ldexp(x: _SupportsFloatOrIndex, i: int, /) -> float: ...
-def lgamma(x: _SupportsFloatOrIndex, /) -> float: ...
-def log(x: _SupportsFloatOrIndex, base: _SupportsFloatOrIndex = ...) -> float: ...
-def log10(x: _SupportsFloatOrIndex, /) -> float: ...
-def log1p(x: _SupportsFloatOrIndex, /) -> float: ...
-def log2(x: _SupportsFloatOrIndex, /) -> float: ...
-def modf(x: _SupportsFloatOrIndex, /) -> tuple[float, float]: ...
+) -> bool:
+    """
+    Determine whether two floating-point numbers are close in value.
+
+      rel_tol
+        maximum difference for being considered "close", relative to the
+        magnitude of the input values
+      abs_tol
+        maximum difference for being considered "close", regardless of the
+        magnitude of the input values
+
+    Return True if a is close in value to b, and False otherwise.
+
+    For the values to be considered close, the difference between them
+    must be smaller than at least one of the tolerances.
+
+    -inf, inf and NaN behave similarly to the IEEE 754 Standard.  That
+    is, NaN is not close to anything, even itself.  inf and -inf are
+    only close to themselves.
+    """
+    ...
+def isinf(x: _SupportsFloatOrIndex, /) -> bool:
+    """Return True if x is a positive or negative infinity, and False otherwise."""
+    ...
+def isfinite(x: _SupportsFloatOrIndex, /) -> bool:
+    """Return True if x is neither an infinity nor a NaN, and False otherwise."""
+    ...
+def isnan(x: _SupportsFloatOrIndex, /) -> bool:
+    """Return True if x is a NaN (not a number), and False otherwise."""
+    ...
+def isqrt(n: SupportsIndex, /) -> int:
+    """Return the integer part of the square root of the input."""
+    ...
+def lcm(*integers: SupportsIndex) -> int:
+    """Least Common Multiple."""
+    ...
+def ldexp(x: _SupportsFloatOrIndex, i: int, /) -> float:
+    """
+    Return x * (2**i).
+
+    This is essentially the inverse of frexp().
+    """
+    ...
+def lgamma(x: _SupportsFloatOrIndex, /) -> float:
+    """Natural logarithm of absolute value of Gamma function at x."""
+    ...
+def log(x: _SupportsFloatOrIndex, base: _SupportsFloatOrIndex = ...) -> float:
+    """
+    log(x, [base=math.e])
+    Return the logarithm of x to the given base.
+
+    If the base is not specified, returns the natural logarithm (base e) of x.
+    """
+    ...
+def log10(x: _SupportsFloatOrIndex, /) -> float:
+    """Return the base 10 logarithm of x."""
+    ...
+def log1p(x: _SupportsFloatOrIndex, /) -> float:
+    """
+    Return the natural logarithm of 1+x (base e).
+
+    The result is computed in a way which is accurate for x near zero.
+    """
+    ...
+def log2(x: _SupportsFloatOrIndex, /) -> float:
+    """Return the base 2 logarithm of x."""
+    ...
+def modf(x: _SupportsFloatOrIndex, /) -> tuple[float, float]:
+    """
+    Return the fractional and integer parts of x.
+
+    Both results carry the sign of x and are floats.
+    """
+    ...
 
 if sys.version_info >= (3, 12):
     def nextafter(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /, *, steps: SupportsIndex | None = None) -> float:
@@ -210,7 +317,9 @@ if sys.version_info >= (3, 12):
         ...
 
 else:
-    def nextafter(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float: ...
+    def nextafter(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, /) -> float:
+        """Return the next floating-point value after x towards y."""
+        ...
 
 def perm(n: SupportsIndex, k: SupportsIndex | None = None, /) -> int:
     """
@@ -329,8 +438,16 @@ def tanh(x: _SupportsFloatOrIndex, /) -> float:
 class _SupportsTrunc(Protocol[_T_co]):
     def __trunc__(self) -> _T_co: ...
 
-def trunc(x: _SupportsTrunc[_T], /) -> _T: ...
-def ulp(x: _SupportsFloatOrIndex, /) -> float: ...
+def trunc(x: _SupportsTrunc[_T], /) -> _T:
+    """
+    Truncates the Real x to the nearest Integral toward 0.
+
+    Uses the __trunc__ magic method.
+    """
+    ...
+def ulp(x: _SupportsFloatOrIndex, /) -> float:
+    """Return the value of the least significant bit of the float x."""
+    ...
 
 if sys.version_info >= (3, 13):
     def fma(x: _SupportsFloatOrIndex, y: _SupportsFloatOrIndex, z: _SupportsFloatOrIndex, /) -> float:

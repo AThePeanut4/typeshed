@@ -1503,8 +1503,22 @@ def fromfd(fd: SupportsIndex, family: AddressFamily | int, type: SocketKind | in
 if sys.platform != "win32":
     def send_fds(
         sock: socket, buffers: Iterable[ReadableBuffer], fds: Iterable[int], flags: Unused = 0, address: Unused = None
-    ) -> int: ...
-    def recv_fds(sock: socket, bufsize: int, maxfds: int, flags: int = 0) -> tuple[bytes, list[int], int, Any]: ...
+    ) -> int:
+        """
+        send_fds(sock, buffers, fds[, flags[, address]]) -> integer
+
+        Send the list of file descriptors fds over an AF_UNIX socket.
+        """
+        ...
+    def recv_fds(sock: socket, bufsize: int, maxfds: int, flags: int = 0) -> tuple[bytes, list[int], int, Any]:
+        """
+        recv_fds(sock, bufsize, maxfds[, flags]) -> (data, list of file
+        descriptors, msg_flags, address)
+
+        Receive up to maxfds file descriptors returning the message
+        data and a list containing the descriptors.
+        """
+        ...
 
 if sys.platform == "win32":
     def fromshare(info: bytes) -> socket: ...

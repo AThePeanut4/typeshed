@@ -149,9 +149,19 @@ class PurePath(PathLike[str]):
         """
         ...
     if sys.version_info >= (3, 12):
-        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool: ...
+        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool:
+            """
+            Return True if the path is relative to another path or False.
+        
+            """
+            ...
     else:
-        def is_relative_to(self, *other: StrPath) -> bool: ...
+        def is_relative_to(self, *other: StrPath) -> bool:
+            """
+            Return True if the path is relative to another path or False.
+        
+            """
+            ...
 
     if sys.version_info >= (3, 12):
         def match(self, path_pattern: str, *, case_sensitive: bool | None = None) -> bool:
@@ -174,16 +184,48 @@ class PurePath(PathLike[str]):
             arguments.  If the operation is not possible (because this is not
             related to the other path), raise ValueError.
 
-    def with_name(self, name: str) -> Self: ...
-    def with_stem(self, stem: str) -> Self: ...
-    def with_suffix(self, suffix: str) -> Self: ...
-    def joinpath(self, *other: StrPath) -> Self: ...
+            The *walk_up* parameter controls whether `..` may be used to resolve
+            the path.
+            """
+            ...
+    else:
+        def relative_to(self, *other: StrPath) -> Self:
+            """
+            Return the relative path to another path identified by the passed
+            arguments.  If the operation is not possible (because this is not
+            a subpath of the other path), raise ValueError.
+            """
+            ...
+
+    def with_name(self, name: str) -> Self:
+        """Return a new path with the file name changed."""
+        ...
+    def with_stem(self, stem: str) -> Self:
+        """Return a new path with the stem changed."""
+        ...
+    def with_suffix(self, suffix: str) -> Self:
+        """
+        Return a new path with the file suffix changed.  If the path
+        has no suffix, add given suffix.  If the given suffix is an empty
+        string, remove the suffix from the path.
+        """
+        ...
+    def joinpath(self, *other: StrPath) -> Self:
+        """
+        Combine this path with one or several arguments, and return a
+        new path representing either a subpath (if all arguments are relative
+        paths) or a totally different path (if one of the arguments is
+        anchored).
+        """
+        ...
     @property
     def parents(self) -> Sequence[Self]:
         """A sequence of this path's logical parents."""
         ...
     @property
-    def parent(self) -> Self: ...
+    def parent(self) -> Self:
+        """The logical parent of the path."""
+        ...
     if sys.version_info < (3, 11):
         def __class_getitem__(cls, type: Any) -> GenericAlias: ...
 
@@ -523,7 +565,9 @@ class Path(PurePath):
             """Check if this path is a mount point"""
             ...
 
-    def readlink(self) -> Self: ...
+    def readlink(self) -> Self:
+        """Return the path to which the symbolic link points."""
+        ...
 
     if sys.version_info >= (3, 10):
         def rename(self, target: StrPath) -> Self:

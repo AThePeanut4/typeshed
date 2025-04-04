@@ -39,16 +39,84 @@ class SymbolTable:
             """
             Return the type of the symbol table.
 
-    def get_id(self) -> int: ...
-    def get_name(self) -> str: ...
-    def get_lineno(self) -> int: ...
-    def is_optimized(self) -> bool: ...
-    def is_nested(self) -> bool: ...
-    def has_children(self) -> bool: ...
-    def get_identifiers(self) -> dict_keys[str, int]: ...
-    def lookup(self, name: str) -> Symbol: ...
-    def get_symbols(self) -> list[Symbol]: ...
-    def get_children(self) -> list[SymbolTable]: ...
+            The value returned is one of the values in
+            the ``SymbolTableType`` enumeration.
+            """
+            ...
+    else:
+        def get_type(self) -> str:
+            """
+            Return the type of the symbol table.
+
+            The values returned are 'class', 'module', 'function',
+            'annotation', 'TypeVar bound', 'type alias', and 'type parameter'.
+            """
+            ...
+
+    def get_id(self) -> int:
+        """
+        Return an identifier for the table.
+        
+        """
+        ...
+    def get_name(self) -> str:
+        """
+        Return the table's name.
+
+        This corresponds to the name of the class, function
+        or 'top' if the table is for a class, function or
+        global respectively.
+        """
+        ...
+    def get_lineno(self) -> int:
+        """
+        Return the number of the first line in the
+        block for the table.
+        """
+        ...
+    def is_optimized(self) -> bool:
+        """
+        Return *True* if the locals in the table
+        are optimizable.
+        """
+        ...
+    def is_nested(self) -> bool:
+        """
+        Return *True* if the block is a nested class
+        or function.
+        """
+        ...
+    def has_children(self) -> bool:
+        """
+        Return *True* if the block has nested namespaces.
+        
+        """
+        ...
+    def get_identifiers(self) -> dict_keys[str, int]:
+        """
+        Return a view object containing the names of symbols in the table.
+        
+        """
+        ...
+    def lookup(self, name: str) -> Symbol:
+        """
+        Lookup a *name* in the table.
+
+        Returns a *Symbol* instance.
+        """
+        ...
+    def get_symbols(self) -> list[Symbol]:
+        """
+        Return a list of *Symbol* instances for
+        names in the table.
+        """
+        ...
+    def get_children(self) -> list[SymbolTable]:
+        """
+        Return a list of the nested symbol tables.
+        
+        """
+        ...
 
 class Function(SymbolTable):
     def get_parameters(self) -> tuple[str, ...]:
@@ -84,7 +152,12 @@ class Function(SymbolTable):
 
 class Class(SymbolTable):
     @deprecated("deprecated in Python 3.14, will be removed in Python 3.16")
-    def get_methods(self) -> tuple[str, ...]: ...
+    def get_methods(self) -> tuple[str, ...]:
+        """
+        Return a tuple of methods declared in the class.
+        
+        """
+        ...
 
 class Symbol:
     def __init__(

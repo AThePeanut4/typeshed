@@ -273,8 +273,23 @@ class Thread:
         """
         ...
     @property
-    def native_id(self) -> int | None: ...  # only available on some platforms
-    def is_alive(self) -> bool: ...
+    def native_id(self) -> int | None:
+        """
+        Native integral thread ID of this thread, or None if it has not been started.
+
+        This is a non-negative integer. See the get_native_id() function.
+        This represents the Thread ID as reported by the kernel.
+        """
+        ...
+    def is_alive(self) -> bool:
+        """
+        Return whether the thread is alive.
+
+        This method returns True just before the run() method starts until just
+        after the run() method terminates. See also the module function
+        enumerate().
+        """
+        ...
     # the following methods are all deprecated
     def getName(self) -> str:
         """
@@ -462,9 +477,64 @@ class Semaphore:
     _value: int
     def __init__(self, value: int = 1) -> None: ...
     def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
-    def acquire(self, blocking: bool = True, timeout: float | None = None) -> bool: ...
-    def __enter__(self, blocking: bool = True, timeout: float | None = None) -> bool: ...
-    def release(self, n: int = 1) -> None: ...
+    def acquire(self, blocking: bool = True, timeout: float | None = None) -> bool:
+        """
+        Acquire a semaphore, decrementing the internal counter by one.
+
+        When invoked without arguments: if the internal counter is larger than
+        zero on entry, decrement it by one and return immediately. If it is zero
+        on entry, block, waiting until some other thread has called release() to
+        make it larger than zero. This is done with proper interlocking so that
+        if multiple acquire() calls are blocked, release() will wake exactly one
+        of them up. The implementation may pick one at random, so the order in
+        which blocked threads are awakened should not be relied on. There is no
+        return value in this case.
+
+        When invoked with blocking set to true, do the same thing as when called
+        without arguments, and return true.
+
+        When invoked with blocking set to false, do not block. If a call without
+        an argument would block, return false immediately; otherwise, do the
+        same thing as when called without arguments, and return true.
+
+        When invoked with a timeout other than None, it will block for at
+        most timeout seconds.  If acquire does not complete successfully in
+        that interval, return false.  Return true otherwise.
+        """
+        ...
+    def __enter__(self, blocking: bool = True, timeout: float | None = None) -> bool:
+        """
+        Acquire a semaphore, decrementing the internal counter by one.
+
+        When invoked without arguments: if the internal counter is larger than
+        zero on entry, decrement it by one and return immediately. If it is zero
+        on entry, block, waiting until some other thread has called release() to
+        make it larger than zero. This is done with proper interlocking so that
+        if multiple acquire() calls are blocked, release() will wake exactly one
+        of them up. The implementation may pick one at random, so the order in
+        which blocked threads are awakened should not be relied on. There is no
+        return value in this case.
+
+        When invoked with blocking set to true, do the same thing as when called
+        without arguments, and return true.
+
+        When invoked with blocking set to false, do not block. If a call without
+        an argument would block, return false immediately; otherwise, do the
+        same thing as when called without arguments, and return true.
+
+        When invoked with a timeout other than None, it will block for at
+        most timeout seconds.  If acquire does not complete successfully in
+        that interval, return false.  Return true otherwise.
+        """
+        ...
+    def release(self, n: int = 1) -> None:
+        """
+        Release a semaphore, incrementing the internal counter by one or more.
+
+        When the counter is zero on entry and another thread is waiting for it
+        to become larger than zero again, wake up that thread.
+        """
+        ...
 
 class BoundedSemaphore(Semaphore):
     """

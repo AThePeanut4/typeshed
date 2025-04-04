@@ -102,13 +102,71 @@ class EnvBuilder:
         ...
     def symlink_or_copy(
         self, src: StrOrBytesPath, dst: StrOrBytesPath, relative_symlinks_ok: bool = False
-    ) -> None: ...  # undocumented
-    def setup_python(self, context: SimpleNamespace) -> None: ...
-    def _setup_pip(self, context: SimpleNamespace) -> None: ...  # undocumented
-    def setup_scripts(self, context: SimpleNamespace) -> None: ...
-    def post_setup(self, context: SimpleNamespace) -> None: ...
-    def replace_variables(self, text: str, context: SimpleNamespace) -> str: ...  # undocumented
-    def install_scripts(self, context: SimpleNamespace, path: str) -> None: ...
+    ) -> None:
+        """
+        Try symlinking a file, and if that fails, fall back to copying.
+        (Unused on Windows, because we can't just copy a failed symlink file: we
+        switch to a different set of files instead.)
+        """
+        ...
+    def setup_python(self, context: SimpleNamespace) -> None:
+        """
+        Set up a Python executable in the environment.
+
+        :param context: The information for the environment creation request
+                        being processed.
+        """
+        ...
+    def _setup_pip(self, context: SimpleNamespace) -> None:
+        """Installs or upgrades pip in a virtual environment"""
+        ...
+    def setup_scripts(self, context: SimpleNamespace) -> None:
+        """
+        Set up scripts into the created environment from a directory.
+
+        This method installs the default scripts into the environment
+        being created. You can prevent the default installation by overriding
+        this method if you really need to, or if you need to specify
+        a different location for the scripts to install. By default, the
+        'scripts' directory in the venv package is used as the source of
+        scripts to install.
+        """
+        ...
+    def post_setup(self, context: SimpleNamespace) -> None:
+        """
+        Hook for post-setup modification of the venv. Subclasses may install
+        additional packages or scripts here, add activation shell scripts, etc.
+
+        :param context: The information for the environment creation request
+                        being processed.
+        """
+        ...
+    def replace_variables(self, text: str, context: SimpleNamespace) -> str:
+        """
+        Replace variable placeholders in script text with context-specific
+        variables.
+
+        Return the text passed in , but with variables replaced.
+
+        :param text: The text in which to replace placeholder variables.
+        :param context: The information for the environment creation request
+                        being processed.
+        """
+        ...
+    def install_scripts(self, context: SimpleNamespace, path: str) -> None:
+        """
+        Install scripts into the created environment from a directory.
+
+        :param context: The information for the environment creation request
+                        being processed.
+        :param path:    Absolute pathname of a directory containing script.
+                        Scripts in the 'common' subdirectory of this directory,
+                        and those in the directory named for the platform
+                        being run on, are installed in the created environment.
+                        Placeholder variables are replaced with environment-
+                        specific values.
+        """
+        ...
     def upgrade_dependencies(self, context: SimpleNamespace) -> None: ...
     if sys.version_info >= (3, 13):
         def create_git_ignore_file(self, context: SimpleNamespace) -> None:

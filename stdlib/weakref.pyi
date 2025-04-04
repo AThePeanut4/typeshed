@@ -1,3 +1,11 @@
+"""
+Weak reference support for Python.
+
+This module is an implementation of PEP 205:
+
+https://peps.python.org/pep-0205/
+"""
+
 from _typeshed import SupportsKeysAndGetItem
 from _weakref import getweakrefcount as getweakrefcount, getweakrefs as getweakrefs, proxy as proxy
 from _weakrefset import WeakSet as WeakSet
@@ -59,10 +67,18 @@ class ProxyType(Generic[_T]):  # "weakproxy"
 class ReferenceType(Generic[_T]):  # "weakref"
     __callback__: Callable[[Self], Any]
     def __new__(cls, o: _T, callback: Callable[[Self], Any] | None = ..., /) -> Self: ...
-    def __call__(self) -> _T | None: ...
-    def __eq__(self, value: object, /) -> bool: ...
-    def __hash__(self) -> int: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __call__(self) -> _T | None:
+        """Call self as a function."""
+        ...
+    def __eq__(self, value: object, /) -> bool:
+        """Return self==value."""
+        ...
+    def __hash__(self) -> int:
+        """Return hash(self)."""
+        ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """See PEP 585"""
+        ...
 
 ref = ReferenceType
 

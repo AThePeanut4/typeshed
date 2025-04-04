@@ -52,8 +52,18 @@ class _AssertRaisesBaseContext(_BaseTestCaseContext):
         """
         ...
 
-def addModuleCleanup(function: Callable[_P, object], /, *args: _P.args, **kwargs: _P.kwargs) -> None: ...
-def doModuleCleanups() -> None: ...
+def addModuleCleanup(function: Callable[_P, object], /, *args: _P.args, **kwargs: _P.kwargs) -> None:
+    """
+    Same as addCleanup, except the cleanup items are called even if
+    setUpModule fails (unlike tearDownModule).
+    """
+    ...
+def doModuleCleanups() -> None:
+    """
+    Execute all module cleanup functions. Normally called for you after
+    tearDownModule.
+    """
+    ...
 
 if sys.version_info >= (3, 11):
     def enterModuleContext(cm: AbstractContextManager[_T]) -> _T:
@@ -892,7 +902,13 @@ class _AssertRaisesContext(_AssertRaisesBaseContext, Generic[_E]):
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, tb: TracebackType | None
     ) -> bool: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """
+        Represent a PEP 585 generic type
+
+        E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+        """
+        ...
 
 class _AssertWarnsContext(_AssertRaisesBaseContext):
     """A context manager used to implement TestCase.assertWarns* methods."""

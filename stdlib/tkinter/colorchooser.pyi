@@ -24,4 +24,11 @@ class Chooser(Dialog):
 
 def askcolor(
     color: str | bytes | None = None, *, initialcolor: str = ..., parent: Misc = ..., title: str = ...
-) -> tuple[None, None] | tuple[tuple[int, int, int], str]: ...
+) -> tuple[None, None] | tuple[tuple[int, int, int], str]:
+    """
+    Display dialog window for selection of a color.
+
+    Convenience wrapper for the Chooser class.  Displays the color
+    chooser dialog with color as the initial value.
+    """
+    ...

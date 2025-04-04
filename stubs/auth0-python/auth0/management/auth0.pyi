@@ -34,6 +34,19 @@ from .users import Users as Users
 from .users_by_email import UsersByEmail as UsersByEmail
 
 class Auth0:
+    """
+    Provides easy access to all endpoint classes
+
+    Args:
+        domain (str): Your Auth0 domain, e.g: 'username.auth0.com'
+
+        token (str): Management API v2 Token
+
+        rest_options (RestClientOptions): Pass an instance of
+            RestClientOptions to configure additional RestClient
+            options, such as rate-limit retries.
+            (defaults to None)
+    """
     actions: Incomplete
     attack_protection: Incomplete
     blacklists: Incomplete

@@ -105,7 +105,14 @@ class FTP:
         source_address: tuple[str, int] | None = None,
         *,
         encoding: str = "utf-8",
-    ) -> None: ...
+    ) -> None:
+        """
+        Initialization method (called by class instantiation).
+        Initialize host to localhost, port to standard ftp port.
+        Optional arguments are host (for connect()),
+        and user, passwd, acct (for login()).
+        """
+        ...
     def connect(
         self, host: str = "", port: int = 0, timeout: float = -999, source_address: tuple[str, int] | None = None
     ) -> str:

@@ -163,8 +163,16 @@ class Mailbox(Generic[_MessageT]):
         """Unlock the mailbox if it is locked."""
         ...
     @abstractmethod
-    def close(self) -> None: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def close(self) -> None:
+        """Flush and close the mailbox."""
+        ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """
+        Represent a PEP 585 generic type
+
+        E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+        """
+        ...
 
 class Maildir(Mailbox[MaildirMessage]):
     """A qmail-style Maildir mailbox."""
@@ -542,7 +550,13 @@ class _ProxyFile(Generic[AnyStr]):
     def flush(self) -> None: ...
     @property
     def closed(self) -> bool: ...
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """
+        Represent a PEP 585 generic type
+
+        E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
+        """
+        ...
 
 class _PartialFile(_ProxyFile[AnyStr]):
     """A read-only wrapper of part of a file."""

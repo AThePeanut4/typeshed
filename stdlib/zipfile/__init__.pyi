@@ -644,9 +644,21 @@ else:
             write_through: bool = ...,
             *,
             pwd: bytes | None = None,
-        ) -> TextIOWrapper: ...
+        ) -> TextIOWrapper:
+            """
+            Open this entry as text or binary following the semantics
+            of ``pathlib.Path.open()`` by passing arguments through
+            to io.TextIOWrapper().
+            """
+            ...
         @overload
-        def open(self, mode: Literal["rb", "wb"], *, pwd: bytes | None = None) -> IO[bytes]: ...
+        def open(self, mode: Literal["rb", "wb"], *, pwd: bytes | None = None) -> IO[bytes]:
+            """
+            Open this entry as text or binary following the semantics
+            of ``pathlib.Path.open()`` by passing arguments through
+            to io.TextIOWrapper().
+            """
+            ...
 
         if sys.version_info >= (3, 10):
             def iterdir(self) -> Iterator[Self]: ...
