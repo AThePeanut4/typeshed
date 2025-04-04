@@ -86,48 +86,29 @@ def architecture(executable: str = sys.executable, bits: str = "", linkage: str 
     """
     ...
 
-if sys.version_info >= (3, 9):
-    # This class is not exposed. It calls itself platform.uname_result_base.
-    # At runtime it only has 5 fields.
-    @type_check_only
-    class _uname_result_base(NamedTuple):
-        system: str
-        node: str
-        release: str
-        version: str
-        machine: str
-        # This base class doesn't have this field at runtime, but claiming it
-        # does is the least bad way to handle the situation. Nobody really
-        # sees this class anyway. See #13068
-        processor: str
+# This class is not exposed. It calls itself platform.uname_result_base.
+# At runtime it only has 5 fields.
+@type_check_only
+class _uname_result_base(NamedTuple):
+    system: str
+    node: str
+    release: str
+    version: str
+    machine: str
+    # This base class doesn't have this field at runtime, but claiming it
+    # does is the least bad way to handle the situation. Nobody really
+    # sees this class anyway. See #13068
+    processor: str
 
-    # uname_result emulates a 6-field named tuple, but the processor field
-    # is lazily evaluated rather than being passed in to the constructor.
-    class uname_result(_uname_result_base):
-        """
-        A uname_result that's largely compatible with a
-        simple namedtuple except that 'processor' is
-        resolved late and cached to avoid calling "uname"
-        except when needed.
-        """
-        if sys.version_info >= (3, 10):
-            __match_args__ = ("system", "node", "release", "version", "machine")  # pyright: ignore[reportAssignmentType]
+# uname_result emulates a 6-field named tuple, but the processor field
+# is lazily evaluated rather than being passed in to the constructor.
+class uname_result(_uname_result_base):
+    if sys.version_info >= (3, 10):
+        __match_args__ = ("system", "node", "release", "version", "machine")  # pyright: ignore[reportAssignmentType]
 
-        def __new__(_cls, system: str, node: str, release: str, version: str, machine: str) -> Self:
-            """Create new instance of uname_result_base(system, node, release, version, machine)"""
-            ...
-        @property
-        def processor(self) -> str: ...
-
-else:
-    # On 3.8, uname_result is actually just a regular NamedTuple.
-    class uname_result(NamedTuple):
-        system: str
-        node: str
-        release: str
-        version: str
-        machine: str
-        processor: str
+    def __new__(_cls, system: str, node: str, release: str, version: str, machine: str) -> Self: ...
+    @property
+    def processor(self) -> str: ...
 
 def uname() -> uname_result:
     """

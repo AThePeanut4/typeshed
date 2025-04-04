@@ -61,12 +61,10 @@ from _typeshed import ReadableBuffer
 from collections.abc import Mapping, MutableMapping
 from datetime import datetime
 from enum import Enum
-from typing import IO, Any, ClassVar
+from typing import IO, Any
 from typing_extensions import Self
 
 __all__ = ["InvalidFileException", "FMT_XML", "FMT_BINARY", "load", "dump", "loads", "dumps", "UID"]
-if sys.version_info < (3, 9):
-    __all__ += ["readPlist", "writePlist", "readPlistFromBytes", "writePlistToBytes", "Data"]
 
 class PlistFormat(Enum):
     """An enumeration."""
@@ -101,13 +99,8 @@ if sys.version_info >= (3, 13):
         """
         ...
 
-elif sys.version_info >= (3, 9):
-    def load(fp: IO[bytes], *, fmt: PlistFormat | None = None, dict_type: type[MutableMapping[str, Any]] = ...) -> Any:
-        """
-        Read a .plist file. 'fp' should be a readable and binary file object.
-        Return the unpacked root object (which usually is a dictionary).
-        """
-        ...
+else:
+    def load(fp: IO[bytes], *, fmt: PlistFormat | None = None, dict_type: type[MutableMapping[str, Any]] = ...) -> Any: ...
     def loads(
         value: ReadableBuffer, *, fmt: PlistFormat | None = None, dict_type: type[MutableMapping[str, Any]] = ...
     ) -> Any:
@@ -116,22 +109,6 @@ elif sys.version_info >= (3, 9):
         Return the unpacked root object (which usually is a dictionary).
         """
         ...
-
-else:
-    def load(
-        fp: IO[bytes],
-        *,
-        fmt: PlistFormat | None = None,
-        use_builtin_types: bool = True,
-        dict_type: type[MutableMapping[str, Any]] = ...,
-    ) -> Any: ...
-    def loads(
-        value: ReadableBuffer,
-        *,
-        fmt: PlistFormat | None = None,
-        use_builtin_types: bool = True,
-        dict_type: type[MutableMapping[str, Any]] = ...,
-    ) -> Any: ...
 
 if sys.version_info >= (3, 13):
     def dump(
@@ -188,18 +165,6 @@ else:
     
         """
         ...
-
-if sys.version_info < (3, 9):
-    def readPlist(pathOrFile: str | IO[bytes]) -> Any: ...
-    def writePlist(value: Mapping[str, Any], pathOrFile: str | IO[bytes]) -> None: ...
-    def readPlistFromBytes(data: ReadableBuffer) -> Any: ...
-    def writePlistToBytes(value: Mapping[str, Any]) -> bytes: ...
-
-if sys.version_info < (3, 9):
-    class Data:
-        data: bytes
-        def __init__(self, data: bytes) -> None: ...
-        __hash__: ClassVar[None]  # type: ignore[assignment]
 
 class UID:
     data: int

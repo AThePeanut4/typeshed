@@ -7,11 +7,9 @@ documentation for details.
 
 import sys
 from collections.abc import Iterable
+from types import GenericAlias
 from typing import Any, Generic, TypeVar, overload
 from typing_extensions import Self
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = ["SharedMemory", "ShareableList"]
 
@@ -95,23 +93,7 @@ class ShareableList(Generic[_SLT]):
     def __reduce__(self) -> tuple[Self, tuple[_SLT, ...]]: ...
     def __len__(self) -> int: ...
     @property
-    def format(self) -> str:
-        """The struct packing format used by all currently stored items."""
-        ...
-    def count(self, value: _SLT) -> int:
-        """L.count(value) -> integer -- return number of occurrences of value."""
-        ...
-    def index(self, value: _SLT) -> int:
-        """
-        L.index(value) -> integer -- return first index of value.
-        Raises ValueError if the value is not present.
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def format(self) -> str: ...
+    def count(self, value: _SLT) -> int: ...
+    def index(self, value: _SLT) -> int: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...

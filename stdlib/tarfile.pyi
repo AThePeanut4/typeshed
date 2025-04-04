@@ -1093,18 +1093,7 @@ class TarFile:
 
 open = TarFile.open
 
-if sys.version_info >= (3, 9):
-    def is_tarfile(name: StrOrBytesPath | IO[bytes]) -> bool:
-        """
-        Return True if name points to a tar archive that we
-        are able to handle, else return False.
-
-        'name' should be a string, file, or file-like object.
-        """
-        ...
-
-else:
-    def is_tarfile(name: StrOrBytesPath) -> bool: ...
+def is_tarfile(name: StrOrBytesPath | IO[bytes]) -> bool: ...
 
 class TarError(Exception):
     """Base exception."""

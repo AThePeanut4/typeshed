@@ -4,6 +4,7 @@ import sys
 from _typeshed import StrOrBytesPath
 from collections.abc import Iterable
 from cProfile import Profile as _cProfile
+from dataclasses import dataclass
 from profile import Profile
 from typing import IO, Any, Literal, overload
 from typing_extensions import Self, TypeAlias
@@ -13,10 +14,7 @@ if sys.version_info >= (3, 11):
 else:
     from enum import Enum
 
-if sys.version_info >= (3, 9):
-    __all__ = ["Stats", "SortKey", "FunctionProfile", "StatsProfile"]
-else:
-    __all__ = ["Stats", "SortKey"]
+__all__ = ["Stats", "SortKey", "FunctionProfile", "StatsProfile"]
 
 _Selector: TypeAlias = str | float | int
 
@@ -46,25 +44,20 @@ else:
         STDNAME = "stdname"
         TIME = "time"
 
-if sys.version_info >= (3, 9):
-    from dataclasses import dataclass
+@dataclass(unsafe_hash=True)
+class FunctionProfile:
+    ncalls: str
+    tottime: float
+    percall_tottime: float
+    cumtime: float
+    percall_cumtime: float
+    file_name: str
+    line_number: int
 
-    @dataclass(unsafe_hash=True)
-    class FunctionProfile:
-        """FunctionProfile(ncalls: str, tottime: float, percall_tottime: float, cumtime: float, percall_cumtime: float, file_name: str, line_number: int)"""
-        ncalls: str
-        tottime: float
-        percall_tottime: float
-        cumtime: float
-        percall_cumtime: float
-        file_name: str
-        line_number: int
-
-    @dataclass(unsafe_hash=True)
-    class StatsProfile:
-        """Class for keeping track of an item in inventory."""
-        total_tt: float
-        func_profiles: dict[str, FunctionProfile]
+@dataclass(unsafe_hash=True)
+class StatsProfile:
+    total_tt: float
+    func_profiles: dict[str, FunctionProfile]
 
 _SortArgDict: TypeAlias = dict[str, tuple[tuple[tuple[int, int], ...], str]]
 
@@ -127,16 +120,7 @@ class Stats:
     def strip_dirs(self) -> Self: ...
     def calc_callees(self) -> None: ...
     def eval_print_amount(self, sel: _Selector, list: list[str], msg: str) -> tuple[list[str], str]: ...
-    if sys.version_info >= (3, 9):
-        def get_stats_profile(self) -> StatsProfile:
-            """
-            This method returns an instance of StatsProfile, which contains a mapping
-            of function names to instances of FunctionProfile. Each FunctionProfile
-            instance holds information related to the function's profile such as how
-            long the function took to run, how many times it was called, etc...
-            """
-            ...
-
+    def get_stats_profile(self) -> StatsProfile: ...
     def get_print_list(self, sel_list: Iterable[_Selector]) -> tuple[int, list[str]]: ...
     def print_stats(self, *amount: _Selector) -> Self: ...
     def print_callees(self, *amount: _Selector) -> Self: ...

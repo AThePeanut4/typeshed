@@ -47,7 +47,6 @@ Typical usage:
 
 import builtins
 import sys
-from _typeshed import Unused
 from enum import Enum
 from typing_extensions import TypeAlias
 
@@ -194,29 +193,8 @@ class UUID:
     def __ge__(self, other: UUID) -> bool: ...
     def __hash__(self) -> builtins.int: ...
 
-if sys.version_info >= (3, 9):
-    def getnode() -> int:
-        """
-        Get the hardware address as a 48-bit positive integer.
-
-        The first time this runs, it may launch a separate program, which could
-        be quite slow.  If all attempts to obtain the hardware address fail, we
-        choose a random 48-bit number with its eighth bit set to 1 as recommended
-        in RFC 4122.
-        """
-        ...
-
-else:
-    def getnode(*, getters: Unused = None) -> int: ...  # undocumented
-
-def uuid1(node: int | None = None, clock_seq: int | None = None) -> UUID:
-    """
-    Generate a UUID from a host ID, sequence number, and the current time.
-    If 'node' is not given, getnode() is used to obtain the hardware
-    address.  If 'clock_seq' is given, it is used as the sequence number;
-    otherwise a random 14-bit sequence number is chosen.
-    """
-    ...
+def getnode() -> int: ...
+def uuid1(node: int | None = None, clock_seq: int | None = None) -> UUID: ...
 
 if sys.version_info >= (3, 12):
     def uuid3(namespace: UUID, name: str | bytes) -> UUID:

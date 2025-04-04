@@ -4,11 +4,9 @@ import sys
 import types
 from _typeshed import SupportsAllComparisons, SupportsItems
 from collections.abc import Callable, Hashable, Iterable, Sized
+from types import GenericAlias
 from typing import Any, Generic, Literal, NamedTuple, TypedDict, TypeVar, final, overload
 from typing_extensions import ParamSpec, Self, TypeAlias
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = [
     "update_wrapper",
@@ -24,10 +22,8 @@ __all__ = [
     "singledispatch",
     "cached_property",
     "singledispatchmethod",
+    "cache",
 ]
-
-if sys.version_info >= (3, 9):
-    __all__ += ["cache"]
 
 _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
@@ -71,10 +67,9 @@ class _CacheInfo(NamedTuple):
     maxsize: int | None
     currsize: int
 
-if sys.version_info >= (3, 9):
-    class _CacheParameters(TypedDict):
-        maxsize: int
-        typed: bool
+class _CacheParameters(TypedDict):
+    maxsize: int
+    typed: bool
 
 @final
 class _lru_cache_wrapper(Generic[_T]):
@@ -94,18 +89,10 @@ class _lru_cache_wrapper(Generic[_T]):
                             hits misses currsize maxsize
     """
     __wrapped__: Callable[..., _T]
-    def __call__(self, *args: Hashable, **kwargs: Hashable) -> _T:
-        """Call self as a function."""
-        ...
-    def cache_info(self) -> _CacheInfo:
-        """Report cache statistics"""
-        ...
-    def cache_clear(self) -> None:
-        """Clear the cache and cache statistics"""
-        ...
-    if sys.version_info >= (3, 9):
-        def cache_parameters(self) -> _CacheParameters: ...
-
+    def __call__(self, *args: Hashable, **kwargs: Hashable) -> _T: ...
+    def cache_info(self) -> _CacheInfo: ...
+    def cache_clear(self) -> None: ...
+    def cache_parameters(self) -> _CacheParameters: ...
     def __copy__(self) -> _lru_cache_wrapper[_T]: ...
     def __deepcopy__(self, memo: Any, /) -> _lru_cache_wrapper[_T]: ...
 
@@ -281,13 +268,8 @@ class partial(Generic[_T]):
         """dictionary of keyword arguments to future partial calls"""
         ...
     def __new__(cls, func: Callable[..., _T], /, *args: Any, **kwargs: Any) -> Self: ...
-    def __call__(self, /, *args: Any, **kwargs: Any) -> _T:
-        """Call self as a function."""
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """See PEP 585"""
-            ...
+    def __call__(self, /, *args: Any, **kwargs: Any) -> _T: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 # With protocols, this could change into a generic protocol that defines __get__ and returns _T
 _Descriptor: TypeAlias = Any
@@ -310,14 +292,7 @@ class partialmethod(Generic[_T]):
     def __get__(self, obj: Any, cls: type[Any] | None = None) -> Callable[..., _T]: ...
     @property
     def __isabstractmethod__(self) -> bool: ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 if sys.version_info >= (3, 11):
     _RegType: TypeAlias = type[Any] | types.UnionType
@@ -402,20 +377,9 @@ class cached_property(Generic[_T_co]):
     def __set_name__(self, owner: type[Any], name: str) -> None: ...
     # __set__ is not defined at runtime, but @cached_property is designed to be settable
     def __set__(self, instance: object, value: _T_co) -> None: ...  # type: ignore[misc]  # pyright: ignore[reportGeneralTypeIssues]
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
-
-if sys.version_info >= (3, 9):
-    def cache(user_function: Callable[..., _T], /) -> _lru_cache_wrapper[_T]:
-        """Simple lightweight unbounded cache.  Sometimes called "memoize"."""
-        ...
-
+def cache(user_function: Callable[..., _T], /) -> _lru_cache_wrapper[_T]: ...
 def _make_key(
     args: tuple[Hashable, ...],
     kwds: SupportsItems[Any, Any],

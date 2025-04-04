@@ -1,10 +1,7 @@
-import sys
 from collections.abc import Iterable, Iterator, MutableSet
+from types import GenericAlias
 from typing import Any, ClassVar, TypeVar, overload
 from typing_extensions import Self
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = ["WeakSet"]
 
@@ -48,11 +45,4 @@ class WeakSet(MutableSet[_T]):
     def union(self, other: Iterable[_S]) -> WeakSet[_S | _T]: ...
     def __or__(self, other: Iterable[_S]) -> WeakSet[_S | _T]: ...
     def isdisjoint(self, other: Iterable[_T]) -> bool: ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...

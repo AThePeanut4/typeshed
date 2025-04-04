@@ -43,7 +43,7 @@ def logging_redirect_tqdm(
     """
     ...
 
-# TODO type *args, **kwargs here more precisely
+# TODO: type *args, **kwargs here more precisely
 @overload
 def tqdm_logging_redirect(*args, tqdm_class: Callable[..., _TqdmT], **kwargs) -> _GeneratorContextManager[_TqdmT]:
     """

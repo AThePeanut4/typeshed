@@ -229,10 +229,6 @@ def decodebytes(s: ReadableBuffer) -> bytes:
     """Decode a bytestring of base-64 data into a bytes object."""
     ...
 
-if sys.version_info < (3, 9):
-    def encodestring(s: ReadableBuffer) -> bytes: ...
-    def decodestring(s: ReadableBuffer) -> bytes: ...
-
 if sys.version_info >= (3, 13):
     def z85encode(s: ReadableBuffer) -> bytes:
         """Encode bytes-like object b in z85 format and return a bytes object."""

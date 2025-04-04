@@ -115,22 +115,7 @@ class _BaseAddress(_IPAddressBase):
     def __hash__(self) -> int: ...
     def __int__(self) -> int: ...
     def __sub__(self, other: int) -> Self: ...
-    if sys.version_info >= (3, 9):
-        def __format__(self, fmt: str) -> str:
-            """
-            Returns an IP address as a formatted string.
-
-            Supported presentation types are:
-            's': returns the IP address as a string (default)
-            'b': converts to binary and returns a zero-padded string
-            'X' or 'x': converts to upper- or lower-case hex and returns a zero-padded string
-            'n': the same as 'b' for IPv4 and 'x' for IPv6
-
-            For binary and hex presentation types, the alternate form specifier
-            '#' and the grouping option '_' are supported.
-            """
-            ...
-
+    def __format__(self, fmt: str) -> str: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: Self) -> bool: ...
     if sys.version_info >= (3, 11):
@@ -758,29 +743,9 @@ class IPv6Address(_BaseV6, _BaseAddress):
         """
         ...
     @property
-    def teredo(self) -> tuple[IPv4Address, IPv4Address] | None:
-        """
-        Tuple of embedded teredo IPs.
-
-        Returns:
-            Tuple of the (server, client) IPs or None if the address
-            doesn't appear to be a teredo address (doesn't start with
-            2001::/32)
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        @property
-        def scope_id(self) -> str | None:
-            """
-            Identifier of a particular zone of the address's scope.
-
-            See RFC 4007 for details.
-
-            Returns:
-                A string identifying the zone of the address if specified, else None.
-            """
-            ...
-
+    def teredo(self) -> tuple[IPv4Address, IPv4Address] | None: ...
+    @property
+    def scope_id(self) -> str | None: ...
     def __hash__(self) -> int: ...
     def __eq__(self, other: object) -> bool: ...
 

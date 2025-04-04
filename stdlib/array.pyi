@@ -7,14 +7,10 @@ except that the type of objects stored in them is constrained.
 
 import sys
 from _typeshed import ReadableBuffer, SupportsRead, SupportsWrite
-from collections.abc import Iterable
-
-# pytype crashes if array inherits from collections.abc.MutableSequence instead of typing.MutableSequence
-from typing import Any, ClassVar, Literal, MutableSequence, SupportsIndex, TypeVar, overload  # noqa: Y022
+from collections.abc import Iterable, MutableSequence
+from types import GenericAlias
+from typing import Any, ClassVar, Literal, SupportsIndex, TypeVar, overload
 from typing_extensions import Self, TypeAlias
-
-if sys.version_info >= (3, 12):
-    from types import GenericAlias
 
 _IntTypeCode: TypeAlias = Literal["b", "B", "h", "H", "i", "I", "l", "L", "q", "Q"]
 _FloatTypeCode: TypeAlias = Literal["f", "d"]
@@ -115,89 +111,13 @@ class array(MutableSequence[_T]):
         """
         Return a tuple (address, length) giving the current memory address and the length in items of the buffer used to hold array's contents.
 
-        The length should be multiplied by the itemsize attribute to calculate
-        the buffer length in bytes.
-        """
-        ...
-    def byteswap(self) -> None:
-        """
-        Byteswap all items of the array.
-
-        If the items in the array are not 1, 2, 4, or 8 bytes in size, RuntimeError is
-        raised.
-        """
-        ...
-    def count(self, v: _T, /) -> int:
-        """Return number of occurrences of v in the array."""
-        ...
-    def extend(self, bb: Iterable[_T], /) -> None:
-        """Append items to the end of the array."""
-        ...
-    def frombytes(self, buffer: ReadableBuffer, /) -> None:
-        """Appends items from the string, interpreting it as an array of machine values, as if it had been read from a file using the fromfile() method."""
-        ...
-    def fromfile(self, f: SupportsRead[bytes], n: int, /) -> None:
-        """Read n objects from the file object f and append them to the end of the array."""
-        ...
-    def fromlist(self, list: list[_T], /) -> None:
-        """Append items to array from list."""
-        ...
-    def fromunicode(self, ustr: str, /) -> None:
-        """
-        Extends this array with data from the unicode string ustr.
-
-        The array must be a unicode type array; otherwise a ValueError is raised.
-        Use array.frombytes(ustr.encode(...)) to append Unicode data to an array of
-        some other type.
-        """
-        ...
-    if sys.version_info >= (3, 10):
-        def index(self, v: _T, start: int = 0, stop: int = sys.maxsize, /) -> int:
-            """
-            Return index of first occurrence of v in the array.
-
-            Raise ValueError if the value is not present.
-            """
-            ...
-    else:
-        def index(self, v: _T, /) -> int:
-            """Return index of first occurrence of v in the array."""
-            ...
-
-    def insert(self, i: int, v: _T, /) -> None:
-        """Insert a new item v into the array before position i."""
-        ...
-    def pop(self, i: int = -1, /) -> _T:
-        """
-        Return the i-th element and delete it from the array.
-
-        i defaults to -1.
-        """
-        ...
-    def remove(self, v: _T, /) -> None:
-        """Remove the first occurrence of v in the array."""
-        ...
-    def tobytes(self) -> bytes:
-        """Convert the array to an array of machine values and return the bytes representation."""
-        ...
-    def tofile(self, f: SupportsWrite[bytes], /) -> None:
-        """Write all items (as machine values) to the file object f."""
-        ...
-    def tolist(self) -> list[_T]:
-        """Convert array to an ordinary list with the same items."""
-        ...
-    def tounicode(self) -> str:
-        """
-        Extends this array with data from the unicode string ustr.
-
-        Convert the array to a unicode string.  The array must be a unicode type array;
-        otherwise a ValueError is raised.  Use array.tobytes().decode() to obtain a
-        unicode string from an array of some other type.
-        """
-        ...
-    if sys.version_info < (3, 9):
-        def fromstring(self, buffer: str | ReadableBuffer, /) -> None: ...
-        def tostring(self) -> bytes: ...
+    def insert(self, i: int, v: _T, /) -> None: ...
+    def pop(self, i: int = -1, /) -> _T: ...
+    def remove(self, v: _T, /) -> None: ...
+    def tobytes(self) -> bytes: ...
+    def tofile(self, f: SupportsWrite[bytes], /) -> None: ...
+    def tolist(self) -> list[_T]: ...
+    def tounicode(self) -> str: ...
 
     __hash__: ClassVar[None]  # type: ignore[assignment]
     def __len__(self) -> int:

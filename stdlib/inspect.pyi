@@ -1417,8 +1417,7 @@ def classify_class_attrs(cls: type) -> list[Attribute]:
     """
     ...
 
-if sys.version_info >= (3, 9):
-    class ClassFoundException(Exception): ...
+class ClassFoundException(Exception): ...
 
 if sys.version_info >= (3, 12):
     class BufferFlags(enum.IntFlag):

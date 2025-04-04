@@ -4,6 +4,7 @@ import os
 import sys
 from collections.abc import Iterator
 from contextlib import AbstractContextManager
+from importlib.abc import Traversable
 from pathlib import Path
 from types import ModuleType
 from typing import Any, BinaryIO, Literal, TextIO
@@ -14,13 +15,18 @@ if sys.version_info >= (3, 11):
 else:
     Package: TypeAlias = str | ModuleType
 
-if sys.version_info >= (3, 9):
-    from importlib.abc import Traversable
-
-__all__ = ["Package", "contents", "is_resource", "open_binary", "open_text", "path", "read_binary", "read_text"]
-
-if sys.version_info >= (3, 9):
-    __all__ += ["as_file", "files"]
+__all__ = [
+    "Package",
+    "as_file",
+    "contents",
+    "files",
+    "is_resource",
+    "open_binary",
+    "open_text",
+    "path",
+    "read_binary",
+    "read_text",
+]
 
 if sys.version_info >= (3, 10):
     __all__ += ["ResourceReader"]
@@ -96,21 +102,13 @@ else:
 
 if sys.version_info >= (3, 11):
     from importlib.resources._common import as_file as as_file
-elif sys.version_info >= (3, 9):
-    def as_file(path: Traversable) -> AbstractContextManager[Path, Literal[False]]:
-        """
-        Given a Traversable object, return that object as a
-        path on the local file system in a context manager.
-        """
-        ...
+else:
+    def as_file(path: Traversable) -> AbstractContextManager[Path, Literal[False]]: ...
 
 if sys.version_info >= (3, 11):
     from importlib.resources._common import files as files
-
-elif sys.version_info >= (3, 9):
-    def files(package: Package) -> Traversable:
-        """Get a Traversable resource from a package"""
-        ...
+else:
+    def files(package: Package) -> Traversable: ...
 
 if sys.version_info >= (3, 10):
     from importlib.abc import ResourceReader as ResourceReader

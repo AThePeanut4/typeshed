@@ -31,10 +31,7 @@ from typing import IO, Any, Literal, TypeVar, overload
 from typing_extensions import TypeAlias, TypeVarTuple, Unpack
 
 # Keep asyncio.__all__ updated with any changes to __all__ here
-if sys.version_info >= (3, 9):
-    __all__ = ("BaseEventLoop", "Server")
-else:
-    __all__ = ("BaseEventLoop",)
+__all__ = ("BaseEventLoop", "Server")
 
 _T = TypeVar("_T")
 _Ts = TypeVarTuple("_Ts")
@@ -914,18 +911,8 @@ class BaseEventLoop(AbstractEventLoop):
     def get_debug(self) -> bool: ...
     def set_debug(self, enabled: bool) -> None: ...
     if sys.version_info >= (3, 12):
-        async def shutdown_default_executor(self, timeout: float | None = None) -> None:
-            """
-            Schedule the shutdown of the default executor.
-
-            The timeout parameter specifies the amount of time the executor will
-            be given to finish joining. The default value is None, which means
-            that the executor will be given an unlimited amount of time.
-            """
-            ...
-    elif sys.version_info >= (3, 9):
-        async def shutdown_default_executor(self) -> None:
-            """Schedule the shutdown of the default executor."""
-            ...
+        async def shutdown_default_executor(self, timeout: float | None = None) -> None: ...
+    else:
+        async def shutdown_default_executor(self) -> None: ...
 
     def __del__(self) -> None: ...

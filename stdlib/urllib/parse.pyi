@@ -34,11 +34,9 @@ It serves as a useful guide when making changes.
 
 import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from types import GenericAlias
 from typing import Any, AnyStr, Generic, Literal, NamedTuple, TypeVar, overload
 from typing_extensions import TypeAlias
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = [
     "urlparse",
@@ -92,14 +90,7 @@ class _NetlocResultMixinBase(Generic[AnyStr]):
     def hostname(self) -> AnyStr | None: ...
     @property
     def port(self) -> int | None: ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class _NetlocResultMixinStr(_NetlocResultMixinBase[str], _ResultMixinStr): ...
 class _NetlocResultMixinBytes(_NetlocResultMixinBase[bytes], _ResultMixinBytes): ...
@@ -337,42 +328,10 @@ def quote_plus(string: str, safe: str | Iterable[int] = "", encoding: str | None
     """
     ...
 @overload
-def quote_plus(string: bytes | bytearray, safe: str | Iterable[int] = "") -> str:
-    """
-    Like quote(), but also replace ' ' with '+', as required for quoting
-    HTML form values. Plus signs in the original string are escaped unless
-    they are included in safe. It also does not have safe default to '/'.
-    """
-    ...
-
-if sys.version_info >= (3, 9):
-    def unquote(string: str | bytes, encoding: str = "utf-8", errors: str = "replace") -> str:
-        """
-        Replace %xx escapes by their single-character equivalent. The optional
-        encoding and errors parameters specify how to decode percent-encoded
-        sequences into Unicode characters, as accepted by the bytes.decode()
-        method.
-        By default, percent-encoded sequences are decoded with UTF-8, and invalid
-        sequences are replaced by a placeholder character.
-
-        unquote('abc%20def') -> 'abc def'.
-        """
-        ...
-
-else:
-    def unquote(string: str, encoding: str = "utf-8", errors: str = "replace") -> str: ...
-
-def unquote_to_bytes(string: str | bytes | bytearray) -> bytes:
-    """unquote_to_bytes('abc%20def') -> b'abc def'."""
-    ...
-def unquote_plus(string: str, encoding: str = "utf-8", errors: str = "replace") -> str:
-    """
-    Like unquote(), but also replace plus signs by spaces, as required for
-    unquoting HTML form values.
-
-    unquote_plus('%7e/abc+def') -> '~/abc def'
-    """
-    ...
+def quote_plus(string: bytes | bytearray, safe: str | Iterable[int] = "") -> str: ...
+def unquote(string: str | bytes, encoding: str = "utf-8", errors: str = "replace") -> str: ...
+def unquote_to_bytes(string: str | bytes | bytearray) -> bytes: ...
+def unquote_plus(string: str, encoding: str = "utf-8", errors: str = "replace") -> str: ...
 @overload
 def urldefrag(url: str) -> DefragResult:
     """

@@ -6,7 +6,7 @@ XXX The functions here don't copy the resource fork or other metadata on Mac.
 
 import os
 import sys
-from _typeshed import BytesPath, ExcInfo, FileDescriptorOrPath, StrOrBytesPath, StrPath, SupportsRead, SupportsWrite
+from _typeshed import BytesPath, ExcInfo, FileDescriptorOrPath, MaybeNone, StrOrBytesPath, StrPath, SupportsRead, SupportsWrite
 from collections.abc import Callable, Iterable, Sequence
 from tarfile import _TarfileFilter
 from typing import Any, AnyStr, NamedTuple, NoReturn, Protocol, TypeVar, overload
@@ -42,9 +42,8 @@ __all__ = [
 ]
 
 _StrOrBytesPathT = TypeVar("_StrOrBytesPathT", bound=StrOrBytesPath)
-# Return value of some functions that may either return a path-like object that was passed in or
-# a string
-_PathReturn: TypeAlias = Any
+_StrPathT = TypeVar("_StrPathT", bound=StrPath)
+_BytesPathT = TypeVar("_BytesPathT", bound=BytesPath)
 
 class Error(OSError): ...
 class SameFileError(Error):
@@ -104,118 +103,23 @@ def copystat(src: StrOrBytesPath, dst: StrOrBytesPath, *, follow_symlinks: bool 
     """
     ...
 @overload
-def copy(src: StrPath, dst: StrPath, *, follow_symlinks: bool = True) -> _PathReturn:
-    """
-    Copy data and mode bits ("cp src dst"). Return the file's destination.
-
-    The destination may be a directory.
-
-    If follow_symlinks is false, symlinks won't be followed. This
-    resembles GNU's "cp -P src dst".
-
-    If source and destination are the same file, a SameFileError will be
-    raised.
-    """
-    ...
+def copy(src: StrPath, dst: _StrPathT, *, follow_symlinks: bool = True) -> _StrPathT | str: ...
 @overload
-def copy(src: BytesPath, dst: BytesPath, *, follow_symlinks: bool = True) -> _PathReturn:
-    """
-    Copy data and mode bits ("cp src dst"). Return the file's destination.
-
-    The destination may be a directory.
-
-    If follow_symlinks is false, symlinks won't be followed. This
-    resembles GNU's "cp -P src dst".
-
-    If source and destination are the same file, a SameFileError will be
-    raised.
-    """
-    ...
+def copy(src: BytesPath, dst: _BytesPathT, *, follow_symlinks: bool = True) -> _BytesPathT | bytes: ...
 @overload
-def copy2(src: StrPath, dst: StrPath, *, follow_symlinks: bool = True) -> _PathReturn:
-    """
-    Copy data and metadata. Return the file's destination.
-
-    Metadata is copied with copystat(). Please see the copystat function
-    for more information.
-
-    The destination may be a directory.
-
-    If follow_symlinks is false, symlinks won't be followed. This
-    resembles GNU's "cp -P src dst".
-    """
-    ...
+def copy2(src: StrPath, dst: _StrPathT, *, follow_symlinks: bool = True) -> _StrPathT | str: ...
 @overload
-def copy2(src: BytesPath, dst: BytesPath, *, follow_symlinks: bool = True) -> _PathReturn:
-    """
-    Copy data and metadata. Return the file's destination.
-
-    Metadata is copied with copystat(). Please see the copystat function
-    for more information.
-
-    The destination may be a directory.
-
-    If follow_symlinks is false, symlinks won't be followed. This
-    resembles GNU's "cp -P src dst".
-    """
-    ...
-def ignore_patterns(*patterns: StrPath) -> Callable[[Any, list[str]], set[str]]:
-    """
-    Function that can be used as copytree() ignore parameter.
-
-    Patterns is a sequence of glob-style patterns
-    that are used to exclude files
-    """
-    ...
+def copy2(src: BytesPath, dst: _BytesPathT, *, follow_symlinks: bool = True) -> _BytesPathT | bytes: ...
+def ignore_patterns(*patterns: StrPath) -> Callable[[Any, list[str]], set[str]]: ...
 def copytree(
     src: StrPath,
-    dst: StrPath,
+    dst: _StrPathT,
     symlinks: bool = False,
     ignore: None | Callable[[str, list[str]], Iterable[str]] | Callable[[StrPath, list[str]], Iterable[str]] = None,
     copy_function: Callable[[str, str], object] = ...,
     ignore_dangling_symlinks: bool = False,
     dirs_exist_ok: bool = False,
-) -> _PathReturn:
-    """
-    Recursively copy a directory tree and return the destination directory.
-
-    If exception(s) occur, an Error is raised with a list of reasons.
-
-    If the optional symlinks flag is true, symbolic links in the
-    source tree result in symbolic links in the destination tree; if
-    it is false, the contents of the files pointed to by symbolic
-    links are copied. If the file pointed to by the symlink doesn't
-    exist, an exception will be added in the list of errors raised in
-    an Error exception at the end of the copy process.
-
-    You can set the optional ignore_dangling_symlinks flag to true if you
-    want to silence this exception. Notice that this has no effect on
-    platforms that don't support os.symlink.
-
-    The optional ignore argument is a callable. If given, it
-    is called with the `src` parameter, which is the directory
-    being visited by copytree(), and `names` which is the list of
-    `src` contents, as returned by os.listdir():
-
-        callable(src, names) -> ignored_names
-
-    Since copytree() is called recursively, the callable will be
-    called once for each directory that is copied. It returns a
-    list of names relative to the `src` directory that should
-    not be copied.
-
-    The optional copy_function argument is a callable that will be used
-    to copy each file. It will be called with the source path and the
-    destination path as arguments. By default, copy2() is used, but any
-    function that supports the same signature (like copy()) can be used.
-
-    If dirs_exist_ok is false (the default) and `dst` already exists, a
-    `FileExistsError` is raised. If `dirs_exist_ok` is true, the copying
-    operation will continue if it encounters existing directories, and files
-    within the `dst` tree will be overwritten by corresponding files from the
-    `src` tree.
-    """
-    ...
+) -> _StrPathT: ...
 
 _OnErrorCallback: TypeAlias = Callable[[Callable[..., Any], str, ExcInfo], object]
 _OnExcCallback: TypeAlias = Callable[[Callable[..., Any], str, BaseException], object]
@@ -276,38 +180,7 @@ _CopyFn: TypeAlias = Callable[[str, str], object] | Callable[[StrPath, StrPath],
 # N.B. shutil.move appears to take bytes arguments, however,
 # this does not work when dst is (or is within) an existing directory.
 # (#6832)
-if sys.version_info >= (3, 9):
-    def move(src: StrPath, dst: StrPath, copy_function: _CopyFn = ...) -> _PathReturn:
-        """
-        Recursively move a file or directory to another location. This is
-        similar to the Unix "mv" command. Return the file or directory's
-        destination.
-
-        If dst is an existing directory or a symlink to a directory, then src is
-        moved inside that directory. The destination path in that directory must
-        not already exist.
-
-        If dst already exists but is not a directory, it may be overwritten
-        depending on os.rename() semantics.
-
-        If the destination is on our current filesystem, then rename() is used.
-        Otherwise, src is copied to the destination and then removed. Symlinks are
-        recreated under the new name if os.rename() fails because of cross
-        filesystem renames.
-
-        The optional `copy_function` argument is a callable that will be used
-        to copy the source or it will be delegated to `copytree`.
-        By default, copy2() is used, but any function that supports the same
-        signature (like copy()) can be used.
-
-        A lot more could be done here...  A look at a mv.c shows a lot of
-        the issues this implementation glosses over.
-        """
-        ...
-
-else:
-    # See https://bugs.python.org/issue32689
-    def move(src: str, dst: StrPath, copy_function: _CopyFn = ...) -> _PathReturn: ...
+def move(src: StrPath, dst: _StrPathT, copy_function: _CopyFn = ...) -> _StrPathT | str | MaybeNone: ...
 
 class _ntuple_diskusage(NamedTuple):
     """usage(total, used, free)"""

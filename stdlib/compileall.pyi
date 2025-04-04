@@ -106,7 +106,7 @@ if sys.version_info >= (3, 10):
         """
         ...
 
-elif sys.version_info >= (3, 9):
+else:
     def compile_dir(
         dir: StrPath,
         maxlevels: int | None = None,
@@ -189,30 +189,6 @@ elif sys.version_info >= (3, 9):
         hardlink_dupes: hardlink duplicated pyc files
         """
         ...
-
-else:
-    def compile_dir(
-        dir: StrPath,
-        maxlevels: int = 10,
-        ddir: StrPath | None = None,
-        force: bool = False,
-        rx: _SupportsSearch | None = None,
-        quiet: int = 0,
-        legacy: bool = False,
-        optimize: int = -1,
-        workers: int = 1,
-        invalidation_mode: PycInvalidationMode | None = None,
-    ) -> bool: ...
-    def compile_file(
-        fullname: StrPath,
-        ddir: StrPath | None = None,
-        force: bool = False,
-        rx: _SupportsSearch | None = None,
-        quiet: int = 0,
-        legacy: bool = False,
-        optimize: int = -1,
-        invalidation_mode: PycInvalidationMode | None = None,
-    ) -> bool: ...
 
 def compile_path(
     skip_curdir: bool = ...,

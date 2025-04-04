@@ -379,77 +379,15 @@ def erasechar() -> bytes:
     """Return the user's current erase character."""
     ...
 def filter() -> None: ...
-def flash() -> None:
-    """
-    Flash the screen.
-
-    That is, change it to reverse-video and then change it back in a short interval.
-    """
-    ...
-def flushinp() -> None:
-    """
-    Flush all input buffers.
-
-    This throws away any typeahead that has been typed by the user and has not
-    yet been processed by the program.
-    """
-    ...
-
-if sys.version_info >= (3, 9):
-    def get_escdelay() -> int:
-        """
-        Gets the curses ESCDELAY setting.
-
-        Gets the number of milliseconds to wait after reading an escape character,
-        to distinguish between an individual escape character entered on the
-        keyboard from escape sequences sent by cursor and function keys.
-        """
-        ...
-    def get_tabsize() -> int:
-        """
-        Gets the curses TABSIZE setting.
-
-        Gets the number of columns used by the curses library when converting a tab
-        character to spaces as it adds the tab to a window.
-        """
-        ...
-
-def getmouse() -> tuple[int, int, int, int, int]:
-    """
-    Retrieve the queued mouse event.
-
-    After getch() returns KEY_MOUSE to signal a mouse event, this function
-    returns a 5-tuple (id, x, y, z, bstate).
-    """
-    ...
-def getsyx() -> tuple[int, int]:
-    """
-    Return the current coordinates of the virtual screen cursor.
-
-    Return a (y, x) tuple.  If leaveok is currently true, return (-1, -1).
-    """
-    ...
-def getwin(file: SupportsRead[bytes], /) -> window:
-    """
-    Read window related data stored in the file by an earlier putwin() call.
-
-    The routine then creates and initializes a new window using that data,
-    returning the new window object.
-    """
-    ...
-def halfdelay(tenths: int, /) -> None:
-    """
-    Enter half-delay mode.
-
-      tenths
-        Maximal blocking delay in tenths of seconds (1 - 255).
-
-    Use nocbreak() to leave half-delay mode.
-    """
-    ...
-def has_colors() -> bool:
-    """Return True if the terminal can display colors; otherwise, return False."""
-    ...
+def flash() -> None: ...
+def flushinp() -> None: ...
+def get_escdelay() -> int: ...
+def get_tabsize() -> int: ...
+def getmouse() -> tuple[int, int, int, int, int]: ...
+def getsyx() -> tuple[int, int]: ...
+def getwin(file: SupportsRead[bytes], /) -> window: ...
+def halfdelay(tenths: int, /) -> None: ...
+def has_colors() -> bool: ...
 
 if sys.version_info >= (3, 10):
     def has_extended_color_support() -> bool:
@@ -516,339 +454,44 @@ def initscr() -> window:
     """
     ...
 def intrflush(flag: bool, /) -> None: ...
-def is_term_resized(nlines: int, ncols: int, /) -> bool:
-    """
-    Return True if resize_term() would modify the window structure, False otherwise.
-
-    nlines
-      Height.
-    ncols
-      Width.
-    """
-    ...
-def isendwin() -> bool:
-    """Return True if endwin() has been called."""
-    ...
-def keyname(key: int, /) -> bytes:
-    """
-    Return the name of specified key.
-
-    key
-      Key number.
-    """
-    ...
-def killchar() -> bytes:
-    """Return the user's current line kill character."""
-    ...
-def longname() -> bytes:
-    """
-    Return the terminfo long name field describing the current terminal.
-
-    The maximum length of a verbose description is 128 characters.  It is defined
-    only after the call to initscr().
-    """
-    ...
-def meta(yes: bool, /) -> None:
-    """
-    Enable/disable meta keys.
-
-    If yes is True, allow 8-bit characters to be input.  If yes is False,
-    allow only 7-bit characters.
-    """
-    ...
-def mouseinterval(interval: int, /) -> None:
-    """
-    Set and retrieve the maximum time between press and release in a click.
-
-      interval
-        Time in milliseconds.
-
-    Set the maximum time that can elapse between press and release events in
-    order for them to be recognized as a click, and return the previous interval
-    value.
-    """
-    ...
-def mousemask(newmask: int, /) -> tuple[int, int]:
-    """
-    Set the mouse events to be reported, and return a tuple (availmask, oldmask).
-
-    Return a tuple (availmask, oldmask).  availmask indicates which of the
-    specified mouse events can be reported; on complete failure it returns 0.
-    oldmask is the previous value of the given window's mouse event mask.
-    If this function is never called, no mouse events are ever reported.
-    """
-    ...
-def napms(ms: int, /) -> int:
-    """
-    Sleep for specified time.
-
-    ms
-      Duration in milliseconds.
-    """
-    ...
-def newpad(nlines: int, ncols: int, /) -> window:
-    """
-    Create and return a pointer to a new pad data structure.
-
-    nlines
-      Height.
-    ncols
-      Width.
-    """
-    ...
-def newwin(nlines: int, ncols: int, begin_y: int = ..., begin_x: int = ..., /) -> window:
-    """
-    newwin(nlines, ncols, [begin_y=0, begin_x=0])
-    Return a new window.
-
-      nlines
-        Height.
-      ncols
-        Width.
-      begin_y
-        Top side y-coordinate.
-      begin_x
-        Left side x-coordinate.
-
-    By default, the window will extend from the specified position to the lower
-    right corner of the screen.
-    """
-    ...
-def nl(flag: bool = True, /) -> None:
-    """
-    Enter newline mode.
-
-      flag
-        If false, the effect is the same as calling nonl().
-
-    This mode translates the return key into newline on input, and translates
-    newline into return and line-feed on output.  Newline mode is initially on.
-    """
-    ...
-def nocbreak() -> None:
-    """
-    Leave cbreak mode.
-
-    Return to normal "cooked" mode with line buffering.
-    """
-    ...
-def noecho() -> None:
-    """
-    Leave echo mode.
-
-    Echoing of input characters is turned off.
-    """
-    ...
-def nonl() -> None:
-    """
-    Leave newline mode.
-
-    Disable translation of return into newline on input, and disable low-level
-    translation of newline into newline/return on output.
-    """
-    ...
-def noqiflush() -> None:
-    """
-    Disable queue flushing.
-
-    When queue flushing is disabled, normal flush of input and output queues
-    associated with the INTR, QUIT and SUSP characters will not be done.
-    """
-    ...
-def noraw() -> None:
-    """
-    Leave raw mode.
-
-    Return to normal "cooked" mode with line buffering.
-    """
-    ...
-def pair_content(pair_number: int, /) -> tuple[int, int]:
-    """
-    Return a tuple (fg, bg) containing the colors for the requested color pair.
-
-    pair_number
-      The number of the color pair (0 - (COLOR_PAIRS-1)).
-    """
-    ...
-def pair_number(attr: int, /) -> int:
-    """
-    Return the number of the color-pair set by the specified attribute value.
-
-    color_pair() is the counterpart to this function.
-    """
-    ...
-def putp(string: ReadOnlyBuffer, /) -> None:
-    """
-    Emit the value of a specified terminfo capability for the current terminal.
-
-    Note that the output of putp() always goes to standard output.
-    """
-    ...
-def qiflush(flag: bool = True, /) -> None:
-    """
-    Enable queue flushing.
-
-      flag
-        If false, the effect is the same as calling noqiflush().
-
-    If queue flushing is enabled, all output in the display driver queue
-    will be flushed when the INTR, QUIT and SUSP characters are read.
-    """
-    ...
-def raw(flag: bool = True, /) -> None:
-    """
-    Enter raw mode.
-
-      flag
-        If false, the effect is the same as calling noraw().
-
-    In raw mode, normal line buffering and processing of interrupt, quit,
-    suspend, and flow control keys are turned off; characters are presented to
-    curses input functions one by one.
-    """
-    ...
-def reset_prog_mode() -> None:
-    """Restore the terminal to "program" mode, as previously saved by def_prog_mode()."""
-    ...
-def reset_shell_mode() -> None:
-    """Restore the terminal to "shell" mode, as previously saved by def_shell_mode()."""
-    ...
-def resetty() -> None:
-    """Restore terminal mode."""
-    ...
-def resize_term(nlines: int, ncols: int, /) -> None:
-    """
-    Backend function used by resizeterm(), performing most of the work.
-
-      nlines
-        Height.
-      ncols
-        Width.
-
-    When resizing the windows, resize_term() blank-fills the areas that are
-    extended.  The calling application should fill in these areas with appropriate
-    data.  The resize_term() function attempts to resize all windows.  However,
-    due to the calling convention of pads, it is not possible to resize these
-    without additional interaction with the application.
-    """
-    ...
-def resizeterm(nlines: int, ncols: int, /) -> None:
-    """
-    Resize the standard and current windows to the specified dimensions.
-
-      nlines
-        Height.
-      ncols
-        Width.
-
-    Adjusts other bookkeeping data used by the curses library that record the
-    window dimensions (in particular the SIGWINCH handler).
-    """
-    ...
-def savetty() -> None:
-    """Save terminal mode."""
-    ...
-
-if sys.version_info >= (3, 9):
-    def set_escdelay(ms: int, /) -> None:
-        """
-        Sets the curses ESCDELAY setting.
-
-          ms
-            length of the delay in milliseconds.
-
-        Sets the number of milliseconds to wait after reading an escape character,
-        to distinguish between an individual escape character entered on the
-        keyboard from escape sequences sent by cursor and function keys.
-        """
-        ...
-    def set_tabsize(size: int, /) -> None:
-        """
-        Sets the curses TABSIZE setting.
-
-          size
-            rendered cell width of a tab character.
-
-        Sets the number of columns used by the curses library when converting a tab
-        character to spaces as it adds the tab to a window.
-        """
-        ...
-
-def setsyx(y: int, x: int, /) -> None:
-    """
-    Set the virtual screen cursor.
-
-      y
-        Y-coordinate.
-      x
-        X-coordinate.
-
-    If y and x are both -1, then leaveok is set.
-    """
-    ...
-def setupterm(term: str | None = None, fd: int = -1) -> None:
-    """
-    Initialize the terminal.
-
-    term
-      Terminal name.
-      If omitted, the value of the TERM environment variable will be used.
-    fd
-      File descriptor to which any initialization sequences will be sent.
-      If not supplied, the file descriptor for sys.stdout will be used.
-    """
-    ...
-def start_color() -> None:
-    """
-    Initializes eight basic colors and global variables COLORS and COLOR_PAIRS.
-
-    Must be called if the programmer wants to use colors, and before any other
-    color manipulation routine is called.  It is good practice to call this
-    routine right after initscr().
-
-    It also restores the colors on the terminal to the values they had when the
-    terminal was just turned on.
-    """
-    ...
-def termattrs() -> int:
-    """Return a logical OR of all video attributes supported by the terminal."""
-    ...
-def termname() -> bytes:
-    """Return the value of the environment variable TERM, truncated to 14 characters."""
-    ...
-def tigetflag(capname: str, /) -> int:
-    """
-    Return the value of the Boolean capability.
-
-      capname
-        The terminfo capability name.
-
-    The value -1 is returned if capname is not a Boolean capability, or 0 if
-    it is canceled or absent from the terminal description.
-    """
-    ...
-def tigetnum(capname: str, /) -> int:
-    """
-    Return the value of the numeric capability.
-
-      capname
-        The terminfo capability name.
-
-    The value -2 is returned if capname is not a numeric capability, or -1 if
-    it is canceled or absent from the terminal description.
-    """
-    ...
-def tigetstr(capname: str, /) -> bytes | None:
-    """
-    Return the value of the string capability.
-
-      capname
-        The terminfo capability name.
-
-    None is returned if capname is not a string capability, or is canceled or
-    absent from the terminal description.
-    """
-    ...
+def is_term_resized(nlines: int, ncols: int, /) -> bool: ...
+def isendwin() -> bool: ...
+def keyname(key: int, /) -> bytes: ...
+def killchar() -> bytes: ...
+def longname() -> bytes: ...
+def meta(yes: bool, /) -> None: ...
+def mouseinterval(interval: int, /) -> None: ...
+def mousemask(newmask: int, /) -> tuple[int, int]: ...
+def napms(ms: int, /) -> int: ...
+def newpad(nlines: int, ncols: int, /) -> window: ...
+def newwin(nlines: int, ncols: int, begin_y: int = ..., begin_x: int = ..., /) -> window: ...
+def nl(flag: bool = True, /) -> None: ...
+def nocbreak() -> None: ...
+def noecho() -> None: ...
+def nonl() -> None: ...
+def noqiflush() -> None: ...
+def noraw() -> None: ...
+def pair_content(pair_number: int, /) -> tuple[int, int]: ...
+def pair_number(attr: int, /) -> int: ...
+def putp(string: ReadOnlyBuffer, /) -> None: ...
+def qiflush(flag: bool = True, /) -> None: ...
+def raw(flag: bool = True, /) -> None: ...
+def reset_prog_mode() -> None: ...
+def reset_shell_mode() -> None: ...
+def resetty() -> None: ...
+def resize_term(nlines: int, ncols: int, /) -> None: ...
+def resizeterm(nlines: int, ncols: int, /) -> None: ...
+def savetty() -> None: ...
+def set_escdelay(ms: int, /) -> None: ...
+def set_tabsize(size: int, /) -> None: ...
+def setsyx(y: int, x: int, /) -> None: ...
+def setupterm(term: str | None = None, fd: int = -1) -> None: ...
+def start_color() -> None: ...
+def termattrs() -> int: ...
+def termname() -> bytes: ...
+def tigetflag(capname: str, /) -> int: ...
+def tigetnum(capname: str, /) -> int: ...
+def tigetstr(capname: str, /) -> bytes | None: ...
 def tparm(
     str: ReadOnlyBuffer,
     i1: int = 0,

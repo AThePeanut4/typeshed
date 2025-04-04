@@ -7,26 +7,11 @@ from _typeshed import SupportsDunderGE, SupportsDunderGT, SupportsDunderLE, Supp
 from collections.abc import Callable, Container, Iterable, Mapping, Sequence, Set as AbstractSet
 from contextlib import AbstractContextManager
 from re import Pattern
-from types import TracebackType
-from typing import (
-    Any,
-    AnyStr,
-    ClassVar,
-    Final,
-    Generic,
-    NamedTuple,
-    NoReturn,
-    Protocol,
-    SupportsAbs,
-    SupportsRound,
-    TypeVar,
-    overload,
-)
+from types import GenericAlias, TracebackType
+from typing import Any, AnyStr, Final, Generic, NoReturn, Protocol, SupportsAbs, SupportsRound, TypeVar, overload
 from typing_extensions import Never, ParamSpec, Self, TypeAlias
+from unittest._log import _AssertLogsContext, _LoggingWatcher
 from warnings import WarningMessage
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 if sys.version_info >= (3, 10):
     from types import UnionType
@@ -67,41 +52,8 @@ class _AssertRaisesBaseContext(_BaseTestCaseContext):
         """
         ...
 
-if sys.version_info >= (3, 9):
-    from unittest._log import _AssertLogsContext, _LoggingWatcher
-else:
-    # Unused dummy for _AssertLogsContext. Starting with Python 3.10,
-    # this is generic over the logging watcher, but in lower versions
-    # the watcher is hard-coded.
-    _L = TypeVar("_L")
-
-    class _LoggingWatcher(NamedTuple):
-        records: list[logging.LogRecord]
-        output: list[str]
-
-    class _AssertLogsContext(_BaseTestCaseContext, Generic[_L]):
-        LOGGING_FORMAT: ClassVar[str]
-        logger_name: str
-        level: int
-        msg: None
-        def __init__(self, test_case: TestCase, logger_name: str, level: int) -> None: ...
-        def __enter__(self) -> _LoggingWatcher: ...
-        def __exit__(
-            self, exc_type: type[BaseException] | None, exc_value: BaseException | None, tb: TracebackType | None
-        ) -> bool | None: ...
-
-def addModuleCleanup(function: Callable[_P, object], /, *args: _P.args, **kwargs: _P.kwargs) -> None:
-    """
-    Same as addCleanup, except the cleanup items are called even if
-    setUpModule fails (unlike tearDownModule).
-    """
-    ...
-def doModuleCleanups() -> None:
-    """
-    Execute all module cleanup functions. Normally called for you after
-    tearDownModule.
-    """
-    ...
+def addModuleCleanup(function: Callable[_P, object], /, *args: _P.args, **kwargs: _P.kwargs) -> None: ...
+def doModuleCleanups() -> None: ...
 
 if sys.version_info >= (3, 11):
     def enterModuleContext(cm: AbstractContextManager[_T]) -> _T:
@@ -940,14 +892,7 @@ class _AssertRaisesContext(_AssertRaisesBaseContext, Generic[_E]):
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, tb: TracebackType | None
     ) -> bool: ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class _AssertWarnsContext(_AssertRaisesBaseContext):
     """A context manager used to implement TestCase.assertWarns* methods."""

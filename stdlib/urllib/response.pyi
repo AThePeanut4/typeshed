@@ -1,13 +1,3 @@
-"""
-Response classes used by urllib.
-
-The base class, addbase, defines a minimal file-like interface,
-including read() and readline().  The typical response object is an
-addinfourl instance, which defines an info() method that returns
-headers and a geturl() method that returns the url.
-"""
-
-import sys
 import tempfile
 from _typeshed import ReadableBuffer
 from collections.abc import Callable, Iterable
@@ -47,10 +37,8 @@ class addinfourl(addinfo):
     """class to add info() and geturl() methods to an open file."""
     url: str
     code: int | None
-    if sys.version_info >= (3, 9):
-        @property
-        def status(self) -> int | None: ...
-
+    @property
+    def status(self) -> int | None: ...
     def __init__(self, fp: IO[bytes], headers: Message, url: str, code: int | None = None) -> None: ...
     def geturl(self) -> str: ...
     def getcode(self) -> int | None: ...

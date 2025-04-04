@@ -69,12 +69,9 @@ does not work for MS-DOS 8+3 filesystems.
 import sys
 from _typeshed import AnyStr_co, StrOrBytesPath
 from collections.abc import Callable, Iterable
-from types import TracebackType
+from types import GenericAlias, TracebackType
 from typing import IO, Any, AnyStr, Generic, Literal, Protocol, overload
 from typing_extensions import Self, TypeAlias
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = [
     "input",
@@ -371,14 +368,7 @@ class FileInput(Generic[AnyStr]):
     def fileno(self) -> int: ...
     def isfirstline(self) -> bool: ...
     def isstdin(self) -> bool: ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 if sys.version_info >= (3, 10):
     def hook_compressed(

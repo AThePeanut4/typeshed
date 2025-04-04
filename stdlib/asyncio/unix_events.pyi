@@ -32,7 +32,7 @@ if sys.platform != "win32":
             "DefaultEventLoopPolicy",
             "EventLoop",
         )
-    elif sys.version_info >= (3, 9):
+    else:
         # adds PidfdChildWatcher
         __all__ = (
             "SelectorEventLoop",
@@ -40,16 +40,6 @@ if sys.platform != "win32":
             "SafeChildWatcher",
             "FastChildWatcher",
             "PidfdChildWatcher",
-            "MultiLoopChildWatcher",
-            "ThreadedChildWatcher",
-            "DefaultEventLoopPolicy",
-        )
-    else:
-        __all__ = (
-            "SelectorEventLoop",
-            "AbstractChildWatcher",
-            "SafeChildWatcher",
-            "FastChildWatcher",
             "MultiLoopChildWatcher",
             "ThreadedChildWatcher",
             "DefaultEventLoopPolicy",
@@ -475,27 +465,15 @@ if sys.platform != "win32":
             def remove_child_handler(self, pid: int) -> bool: ...
             def attach_loop(self, loop: AbstractEventLoop | None) -> None: ...
 
-        if sys.version_info >= (3, 9):
-            class PidfdChildWatcher(AbstractChildWatcher):
-                """
-                Child watcher implementation using Linux's pid file descriptors.
-
-                This child watcher polls process file descriptors (pidfds) to await child
-                process termination. In some respects, PidfdChildWatcher is a "Goldilocks"
-                child watcher implementation. It doesn't require signals or threads, doesn't
-                interfere with any processes launched outside the event loop, and scales
-                linearly with the number of subprocesses launched by the event loop. The
-                main disadvantage is that pidfds are specific to Linux, and only work on
-                recent (5.3+) kernels.
-                """
-                def __enter__(self) -> Self: ...
-                def __exit__(
-                    self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: types.TracebackType | None
-                ) -> None: ...
-                def is_active(self) -> bool: ...
-                def close(self) -> None: ...
-                def attach_loop(self, loop: AbstractEventLoop | None) -> None: ...
-                def add_child_handler(
-                    self, pid: int, callback: Callable[[int, int, Unpack[_Ts]], object], *args: Unpack[_Ts]
-                ) -> None: ...
-                def remove_child_handler(self, pid: int) -> bool: ...
+        class PidfdChildWatcher(AbstractChildWatcher):
+            def __enter__(self) -> Self: ...
+            def __exit__(
+                self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: types.TracebackType | None
+            ) -> None: ...
+            def is_active(self) -> bool: ...
+            def close(self) -> None: ...
+            def attach_loop(self, loop: AbstractEventLoop | None) -> None: ...
+            def add_child_handler(
+                self, pid: int, callback: Callable[[int, int, Unpack[_Ts]], object], *args: Unpack[_Ts]
+            ) -> None: ...
+            def remove_child_handler(self, pid: int) -> bool: ...

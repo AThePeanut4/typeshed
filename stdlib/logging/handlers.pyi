@@ -49,13 +49,9 @@ class WatchedFileHandler(FileHandler):
     """
     dev: int  # undocumented
     ino: int  # undocumented
-    if sys.version_info >= (3, 9):
-        def __init__(
-            self, filename: StrPath, mode: str = "a", encoding: str | None = None, delay: bool = False, errors: str | None = None
-        ) -> None: ...
-    else:
-        def __init__(self, filename: StrPath, mode: str = "a", encoding: str | None = None, delay: bool = False) -> None: ...
-
+    def __init__(
+        self, filename: StrPath, mode: str = "a", encoding: str | None = None, delay: bool = False, errors: str | None = None
+    ) -> None: ...
     def _statstream(self) -> None: ...  # undocumented
     def reopenIfNeeded(self) -> None:
         """
@@ -75,44 +71,11 @@ class BaseRotatingHandler(FileHandler):
     """
     namer: Callable[[str], str] | None
     rotator: Callable[[str, str], None] | None
-    if sys.version_info >= (3, 9):
-        def __init__(
-            self, filename: StrPath, mode: str, encoding: str | None = None, delay: bool = False, errors: str | None = None
-        ) -> None:
-            """Use the specified filename for streamed logging"""
-            ...
-    else:
-        def __init__(self, filename: StrPath, mode: str, encoding: str | None = None, delay: bool = False) -> None: ...
-
-    def rotation_filename(self, default_name: str) -> str:
-        """
-        Modify the filename of a log file when rotating.
-
-        This is provided so that a custom filename can be provided.
-
-        The default implementation calls the 'namer' attribute of the
-        handler, if it's callable, passing the default name to
-        it. If the attribute isn't callable (the default is None), the name
-        is returned unchanged.
-
-        :param default_name: The default name for the log file.
-        """
-        ...
-    def rotate(self, source: str, dest: str) -> None:
-        """
-        When rotating, rotate the current log.
-
-        The default implementation calls the 'rotator' attribute of the
-        handler, if it's callable, passing the source and dest arguments to
-        it. If the attribute isn't callable (the default is None), the source
-        is simply renamed to the destination.
-
-        :param source: The source filename. This is normally the base
-                       filename, e.g. 'test.log'
-        :param dest:   The destination filename. This is normally
-                       what the source is rotated to, e.g. 'test.log.1'.
-        """
-        ...
+    def __init__(
+        self, filename: StrPath, mode: str, encoding: str | None = None, delay: bool = False, errors: str | None = None
+    ) -> None: ...
+    def rotation_filename(self, default_name: str) -> str: ...
+    def rotate(self, source: str, dest: str) -> None: ...
 
 class RotatingFileHandler(BaseRotatingHandler):
     """
@@ -121,60 +84,18 @@ class RotatingFileHandler(BaseRotatingHandler):
     """
     maxBytes: int  # undocumented
     backupCount: int  # undocumented
-    if sys.version_info >= (3, 9):
-        def __init__(
-            self,
-            filename: StrPath,
-            mode: str = "a",
-            maxBytes: int = 0,
-            backupCount: int = 0,
-            encoding: str | None = None,
-            delay: bool = False,
-            errors: str | None = None,
-        ) -> None:
-            """
-            Open the specified file and use it as the stream for logging.
-
-            By default, the file grows indefinitely. You can specify particular
-            values of maxBytes and backupCount to allow the file to rollover at
-            a predetermined size.
-
-            Rollover occurs whenever the current log file is nearly maxBytes in
-            length. If backupCount is >= 1, the system will successively create
-            new files with the same pathname as the base file, but with extensions
-            ".1", ".2" etc. appended to it. For example, with a backupCount of 5
-            and a base file name of "app.log", you would get "app.log",
-            "app.log.1", "app.log.2", ... through to "app.log.5". The file being
-            written to is always "app.log" - when it gets filled up, it is closed
-            and renamed to "app.log.1", and if files "app.log.1", "app.log.2" etc.
-            exist, then they are renamed to "app.log.2", "app.log.3" etc.
-            respectively.
-
-            If maxBytes is zero, rollover never occurs.
-            """
-            ...
-    else:
-        def __init__(
-            self,
-            filename: StrPath,
-            mode: str = "a",
-            maxBytes: int = 0,
-            backupCount: int = 0,
-            encoding: str | None = None,
-            delay: bool = False,
-        ) -> None: ...
-
-    def doRollover(self) -> None:
-        """Do a rollover, as described in __init__()."""
-        ...
-    def shouldRollover(self, record: LogRecord) -> int:
-        """
-        Determine if rollover should occur.
-
-        Basically, see if the supplied record would cause the file to exceed
-        the size limit we have.
-        """
-        ...
+    def __init__(
+        self,
+        filename: StrPath,
+        mode: str = "a",
+        maxBytes: int = 0,
+        backupCount: int = 0,
+        encoding: str | None = None,
+        delay: bool = False,
+        errors: str | None = None,
+    ) -> None: ...
+    def doRollover(self) -> None: ...
+    def shouldRollover(self, record: LogRecord) -> int: ...  # undocumented
 
 class TimedRotatingFileHandler(BaseRotatingHandler):
     """
@@ -193,59 +114,22 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
     dayOfWeek: int  # undocumented
     rolloverAt: int  # undocumented
     extMatch: Pattern[str]  # undocumented
-    if sys.version_info >= (3, 9):
-        def __init__(
-            self,
-            filename: StrPath,
-            when: str = "h",
-            interval: int = 1,
-            backupCount: int = 0,
-            encoding: str | None = None,
-            delay: bool = False,
-            utc: bool = False,
-            atTime: datetime.time | None = None,
-            errors: str | None = None,
-        ) -> None: ...
-    else:
-        def __init__(
-            self,
-            filename: StrPath,
-            when: str = "h",
-            interval: int = 1,
-            backupCount: int = 0,
-            encoding: str | None = None,
-            delay: bool = False,
-            utc: bool = False,
-            atTime: datetime.time | None = None,
-        ) -> None: ...
-
-    def doRollover(self) -> None:
-        """
-        do a rollover; in this case, a date/time stamp is appended to the filename
-        when the rollover happens.  However, you want the file to be named for the
-        start of the interval, not the current time.  If there is a backup count,
-        then we have to get a list of matching filenames, sort them and remove
-        the one with the oldest suffix.
-        """
-        ...
-    def shouldRollover(self, record: LogRecord) -> int:
-        """
-        Determine if rollover should occur.
-
-        record is not used, as we are just comparing times, but it is needed so
-        the method signatures are the same
-        """
-        ...
-    def computeRollover(self, currentTime: int) -> int:
-        """Work out the rollover time based on the specified time."""
-        ...
-    def getFilesToDelete(self) -> list[str]:
-        """
-        Determine the files to delete when rolling over.
-
-        More specific than the earlier method, which just used glob.glob().
-        """
-        ...
+    def __init__(
+        self,
+        filename: StrPath,
+        when: str = "h",
+        interval: int = 1,
+        backupCount: int = 0,
+        encoding: str | None = None,
+        delay: bool = False,
+        utc: bool = False,
+        atTime: datetime.time | None = None,
+        errors: str | None = None,
+    ) -> None: ...
+    def doRollover(self) -> None: ...
+    def shouldRollover(self, record: LogRecord) -> int: ...  # undocumented
+    def computeRollover(self, currentTime: int) -> int: ...  # undocumented
+    def getFilesToDelete(self) -> list[str]: ...  # undocumented
 
 class SocketHandler(Handler):
     """
@@ -351,13 +235,10 @@ class SysLogHandler(Handler):
     LOG_CRON: int
     LOG_AUTHPRIV: int
     LOG_FTP: int
-
-    if sys.version_info >= (3, 9):
-        LOG_NTP: int
-        LOG_SECURITY: int
-        LOG_CONSOLE: int
-        LOG_SOLCRON: int
-
+    LOG_NTP: int
+    LOG_SECURITY: int
+    LOG_CONSOLE: int
+    LOG_SOLCRON: int
     LOG_LOCAL0: int
     LOG_LOCAL1: int
     LOG_LOCAL2: int
@@ -430,36 +311,10 @@ class NTEventLogHandler(Handler):
     which contains the message definitions you want to use in the event log.
     """
     def __init__(self, appname: str, dllname: str | None = None, logtype: str = "Application") -> None: ...
-    def getEventCategory(self, record: LogRecord) -> int:
-        """
-        Return the event category for the record.
-
-        Override this if you want to specify your own categories. This version
-        returns 0.
-        """
-        ...
-    # TODO correct return value?
-    def getEventType(self, record: LogRecord) -> int:
-        """
-        Return the event type for the record.
-
-        Override this if you want to specify your own types. This version does
-        a mapping using the handler's typemap attribute, which is set up in
-        __init__() to a dictionary which contains mappings for DEBUG, INFO,
-        WARNING, ERROR and CRITICAL. If you are using your own levels you will
-        either need to override this method or place a suitable dictionary in
-        the handler's typemap attribute.
-        """
-        ...
-    def getMessageID(self, record: LogRecord) -> int:
-        """
-        Return the message ID for the event record. If you are using your
-        own messages, you could do this by having the msg passed to the
-        logger being an ID rather than a formatting string. Then, in here,
-        you could use a dictionary lookup to get the message ID. This
-        version returns 1, which is the base message ID in win32service.pyd.
-        """
-        ...
+    def getEventCategory(self, record: LogRecord) -> int: ...
+    # TODO: correct return value?
+    def getEventType(self, record: LogRecord) -> int: ...
+    def getMessageID(self, record: LogRecord) -> int: ...
 
 class SMTPHandler(Handler):
     """A handler class which sends an SMTP email for each logging event."""
@@ -576,28 +431,9 @@ class HTTPHandler(Handler):
         secure: bool = False,
         credentials: tuple[str, str] | None = None,
         context: ssl.SSLContext | None = None,
-    ) -> None:
-        """
-        Initialize the instance with the host, the request URL, and the method
-        ("GET" or "POST")
-        """
-        ...
-    def mapLogRecord(self, record: LogRecord) -> dict[str, Any]:
-        """
-        Default implementation of mapping the log record into a dict
-        that is sent as the CGI data. Overwrite in your class.
-        Contributed by Franz Glasner.
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def getConnection(self, host: str, secure: bool) -> http.client.HTTPConnection:
-            """
-            get a HTTP[S]Connection.
-
-            Override when a custom connection is required, for example if
-            there is a proxy.
-            """
-            ...
+    ) -> None: ...
+    def mapLogRecord(self, record: LogRecord) -> dict[str, Any]: ...
+    def getConnection(self, host: str, secure: bool) -> http.client.HTTPConnection: ...  # undocumented
 
 class _QueueLike(Protocol[_T]):
     def get(self) -> _T: ...

@@ -3,10 +3,8 @@
 import sys
 from _queue import Empty as Empty, SimpleQueue as SimpleQueue
 from threading import Condition, Lock
+from types import GenericAlias
 from typing import Any, Generic, TypeVar
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = ["Empty", "Full", "Queue", "PriorityQueue", "LifoQueue", "SimpleQueue"]
 if sys.version_info >= (3, 13):
@@ -144,33 +142,8 @@ class Queue(Generic[_T]):
         """Return the approximate size of the queue (not reliable!)."""
         ...
     def _qsize(self) -> int: ...
-    def task_done(self) -> None:
-        """
-        Indicate that a formerly enqueued task is complete.
-
-        Used by Queue consumer threads.  For each get() used to fetch a task,
-        a subsequent call to task_done() tells the queue that the processing
-        on the task is complete.
-
-        If a join() is currently blocking, it will resume when all items
-        have been processed (meaning that a task_done() call was received
-        for every item that had been put() into the queue).
-
-        shutdown(immediate=True) calls task_done() for each remaining item in
-        the queue.
-
-        Raises a ValueError if called more times than there were items
-        placed in the queue.
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def task_done(self) -> None: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class PriorityQueue(Queue[_T]):
     """

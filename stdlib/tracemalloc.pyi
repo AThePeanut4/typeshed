@@ -97,10 +97,7 @@ class Frame:
             """Return a <= b.  Computed by @total_ordering from (a < b) or (a == b)."""
             ...
 
-if sys.version_info >= (3, 9):
-    _TraceTuple: TypeAlias = tuple[int, int, Sequence[_FrameTuple], int | None] | tuple[int, int, Sequence[_FrameTuple]]
-else:
-    _TraceTuple: TypeAlias = tuple[int, int, Sequence[_FrameTuple]]
+_TraceTuple: TypeAlias = tuple[int, int, Sequence[_FrameTuple], int | None] | tuple[int, int, Sequence[_FrameTuple]]
 
 class Trace:
     """Trace of a memory block."""
@@ -115,17 +112,9 @@ class Trace:
     def __hash__(self) -> int: ...
 
 class Traceback(Sequence[Frame]):
-    """
-    Sequence of Frame instances sorted from the oldest frame
-    to the most recent frame.
-    """
-    if sys.version_info >= (3, 9):
-        @property
-        def total_nframe(self) -> int | None: ...
-        def __init__(self, frames: Sequence[_FrameTuple], total_nframe: int | None = None) -> None: ...
-    else:
-        def __init__(self, frames: Sequence[_FrameTuple]) -> None: ...
-
+    @property
+    def total_nframe(self) -> int | None: ...
+    def __init__(self, frames: Sequence[_FrameTuple], total_nframe: int | None = None) -> None: ...
     def format(self, limit: int | None = None, most_recent_first: bool = False) -> list[str]: ...
     @overload
     def __getitem__(self, index: SupportsIndex) -> Frame: ...

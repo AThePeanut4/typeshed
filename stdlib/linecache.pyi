@@ -1,20 +1,8 @@
-"""
-Cache lines from Python source files.
-
-This is intended to read lines from modules imported -- hence if a filename
-is not found, it will look down the module search path for a file by
-that name.
-"""
-
-import sys
 from collections.abc import Callable
 from typing import Any
 from typing_extensions import TypeAlias
 
-if sys.version_info >= (3, 9):
-    __all__ = ["getline", "clearcache", "checkcache", "lazycache"]
-else:
-    __all__ = ["getline", "clearcache", "checkcache"]
+__all__ = ["getline", "clearcache", "checkcache", "lazycache"]
 
 _ModuleGlobals: TypeAlias = dict[str, Any]
 _ModuleMetadata: TypeAlias = tuple[int, float | None, list[str], str]

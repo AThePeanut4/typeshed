@@ -6,12 +6,9 @@ import sys
 from _typeshed import StrPath, SupportsNoArgReadline, SupportsRead
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
-from types import TracebackType
+from types import GenericAlias, TracebackType
 from typing import IO, Any, AnyStr, Generic, Literal, Protocol, TypeVar, overload
 from typing_extensions import Self, TypeAlias
-
-if sys.version_info >= (3, 9):
-    from types import GenericAlias
 
 __all__ = [
     "Mailbox",
@@ -166,17 +163,8 @@ class Mailbox(Generic[_MessageT]):
         """Unlock the mailbox if it is locked."""
         ...
     @abstractmethod
-    def close(self) -> None:
-        """Flush and close the mailbox."""
-        ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def close(self) -> None: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class Maildir(Mailbox[MaildirMessage]):
     """A qmail-style Maildir mailbox."""
@@ -554,14 +542,7 @@ class _ProxyFile(Generic[AnyStr]):
     def flush(self) -> None: ...
     @property
     def closed(self) -> bool: ...
-    if sys.version_info >= (3, 9):
-        def __class_getitem__(cls, item: Any, /) -> GenericAlias:
-            """
-            Represent a PEP 585 generic type
-
-            E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
-            """
-            ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 class _PartialFile(_ProxyFile[AnyStr]):
     """A read-only wrapper of part of a file."""

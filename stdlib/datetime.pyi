@@ -8,7 +8,7 @@ from typing_extensions import CapsuleType, Self, TypeAlias, deprecated
 
 if sys.version_info >= (3, 11):
     __all__ = ("date", "datetime", "time", "timedelta", "timezone", "tzinfo", "MINYEAR", "MAXYEAR", "UTC")
-elif sys.version_info >= (3, 9):
+else:
     __all__ = ("date", "datetime", "time", "timedelta", "timezone", "tzinfo", "MINYEAR", "MAXYEAR")
 
 MINYEAR: Final = 1
@@ -61,18 +61,17 @@ class timezone(tzinfo):
 if sys.version_info >= (3, 11):
     UTC: timezone
 
-if sys.version_info >= (3, 9):
-    # This class calls itself datetime.IsoCalendarDate. It's neither
-    # NamedTuple nor structseq.
-    @final
-    @type_check_only
-    class _IsoCalendarDate(tuple[int, int, int]):
-        @property
-        def year(self) -> int: ...
-        @property
-        def week(self) -> int: ...
-        @property
-        def weekday(self) -> int: ...
+# This class calls itself datetime.IsoCalendarDate. It's neither
+# NamedTuple nor structseq.
+@final
+@type_check_only
+class _IsoCalendarDate(tuple[int, int, int]):
+    @property
+    def year(self) -> int: ...
+    @property
+    def week(self) -> int: ...
+    @property
+    def weekday(self) -> int: ...
 
 class date:
     """date(year, month, day) --> date object"""
@@ -180,30 +179,11 @@ class date:
         """Return self-value."""
         ...
     @overload
-    def __sub__(self, value: timedelta, /) -> Self:
-        """Return self-value."""
-        ...
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
-    def weekday(self) -> int:
-        """
-        Return the day of the week represented by the date.
-        Monday == 0 ... Sunday == 6
-        """
-        ...
-    def isoweekday(self) -> int:
-        """
-        Return the day of the week represented by the date.
-        Monday == 1 ... Sunday == 7
-        """
-        ...
-    if sys.version_info >= (3, 9):
-        def isocalendar(self) -> _IsoCalendarDate:
-            """Return a named tuple containing ISO year, week number, and weekday."""
-            ...
-    else:
-        def isocalendar(self) -> tuple[int, int, int]: ...
+    def __sub__(self, value: timedelta, /) -> Self: ...
+    def __hash__(self) -> int: ...
+    def weekday(self) -> int: ...
+    def isoweekday(self) -> int: ...
+    def isocalendar(self) -> _IsoCalendarDate: ...
 
 class time:
     """
