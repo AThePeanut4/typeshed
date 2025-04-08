@@ -1,3 +1,12 @@
+"""
+oauthlib.oauth2.rfc6749.endpoint.metadata
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An implementation of the `OAuth 2.0 Authorization Server Metadata`.
+
+.. _`OAuth 2.0 Authorization Server Metadata`: https://tools.ietf.org/html/rfc8414
+"""
+
 from logging import Logger
 from typing import Any
 
@@ -28,7 +37,12 @@ class MetadataEndpoint(BaseEndpoint):
     def __init__(self, endpoints, claims={}, raise_errors: bool = True) -> None: ...
     def create_metadata_response(
         self, uri: str, http_method: str = "GET", body: str | None = None, headers: dict[str, str] | None = None
-    ): ...
+    ):
+        """
+        Create metadata response
+        
+        """
+        ...
     def validate_metadata(
         self, array, key, is_required: bool = False, is_list: bool = False, is_url: bool = False, is_issuer: bool = False
     ) -> None: ...

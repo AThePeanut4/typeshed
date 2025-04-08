@@ -40,6 +40,7 @@ SIGNATURE_TYPE_BODY: Final[str]
 CONTENT_TYPE_FORM_URLENCODED: Final[str]
 
 class Client:
+    """A client used to sign OAuth 1.0 RFC 5849 requests."""
     SIGNATURE_METHODS: dict[str, Callable[[str, Incomplete], str]]
     @classmethod
     def register_signature_method(cls, method_name, method_callback) -> None: ...

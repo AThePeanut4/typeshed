@@ -55,5 +55,16 @@ class ResourceEndpoint(BaseEndpoint):
         body: str | None = None,
         headers: dict[str, str] | None = None,
         scopes: Incomplete | None = None,
-    ): ...
-    def find_token_type(self, request: Request): ...
+    ):
+        """Validate client, code etc, return body + headers"""
+        ...
+    def find_token_type(self, request: Request):
+        """
+        Token type identification.
+
+        RFC 6749 does not provide a method for easily differentiating between
+        different token types during protected resource access. We estimate
+        the most likely token type (if any) by asking each known token type
+        to give an estimation based on the request.
+        """
+        ...

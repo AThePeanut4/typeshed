@@ -1,3 +1,5 @@
+"""passlib.utils.binary - binary data encoding/decoding/manipulation"""
+
 from _typeshed import ReadableBuffer
 from logging import Logger
 from typing import Any, Final
@@ -14,13 +16,63 @@ UPPER_HEX_CHARS: Final[str]
 LOWER_HEX_CHARS: Final[str]
 ALL_BYTE_VALUES: Final[bytes]
 
-def compile_byte_translation(mapping: dict[str | bytes | int, str | bytes], source: bytes | None = None) -> bytes: ...
-def b64s_encode(data: ReadableBuffer) -> bytes: ...
-def b64s_decode(data: str | ReadableBuffer) -> bytes: ...
-def ab64_encode(data: ReadableBuffer) -> bytes: ...
-def ab64_decode(data: str | ReadableBuffer) -> bytes: ...
-def b32encode(source: ReadableBuffer) -> str: ...
-def b32decode(source: str | bytes) -> bytes: ...
+def compile_byte_translation(mapping: dict[str | bytes | int, str | bytes], source: bytes | None = None) -> bytes:
+    """
+    return a 256-byte string for translating bytes using specified mapping.
+    bytes not specified by mapping will be left alone.
+
+    :param mapping:
+        dict mapping input byte (str or int) -> output byte (str or int).
+
+    :param source:
+        optional existing byte translation string to use as base.
+        (must be 255-length byte string).  defaults to identity mapping.
+
+    :returns:
+        255-length byte string for passing to bytes().translate.
+    """
+    ...
+def b64s_encode(data: ReadableBuffer) -> bytes:
+    """
+    encode using shortened base64 format which omits padding & whitespace.
+    uses default ``+/`` altchars.
+    """
+    ...
+def b64s_decode(data: str | ReadableBuffer) -> bytes:
+    """
+    decode from shortened base64 format which omits padding & whitespace.
+    uses default ``+/`` altchars.
+    """
+    ...
+def ab64_encode(data: ReadableBuffer) -> bytes:
+    """
+    encode using shortened base64 format which omits padding & whitespace.
+    uses custom ``./`` altchars.
+
+    it is primarily used by Passlib's custom pbkdf2 hashes.
+    """
+    ...
+def ab64_decode(data: str | ReadableBuffer) -> bytes:
+    """
+    decode from shortened base64 format which omits padding & whitespace.
+    uses custom ``./`` altchars, but supports decoding normal ``+/`` altchars as well.
+
+    it is primarily used by Passlib's custom pbkdf2 hashes.
+    """
+    ...
+def b32encode(source: ReadableBuffer) -> str:
+    """
+    wrapper around :func:`base64.b32encode` which strips padding,
+    and returns a native string.
+    """
+    ...
+def b32decode(source: str | bytes) -> bytes:
+    """
+    wrapper around :func:`base64.b32decode`
+    which handles common mistyped chars.
+    padding optional, ignored if present.
+    """
+    ...
 
 class Base64Engine:
     """

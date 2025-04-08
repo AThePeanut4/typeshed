@@ -31,11 +31,51 @@ class Dictionary:
     def __contains__(self, key): ...
     def __getitem__(self, key): ...
     def __iter__(self) -> Any: ...
-    def are_tokens_valid(self, tokens: list[str]) -> bool: ...
+    def are_tokens_valid(self, tokens: list[str]) -> bool:
+        """
+        Check if tokens are valid tokens for the locale.
+
+        :param tokens:
+            a list of string tokens.
+        :type tokens: list
+
+        :return: True if tokens are valid, False otherwise.
+        """
+        ...
     @overload
-    def split(self, string: None, keep_formatting: bool = False) -> None: ...
+    def split(self, string: None, keep_formatting: bool = False) -> None:
+        """
+        Split the date string using translations in locale info.
+
+        :param string:
+            Date string to be splitted.
+        :type string:
+            str
+
+        :param keep_formatting:
+            If True, retain formatting of the date string.
+        :type keep_formatting: bool
+
+        :return: A list of string tokens formed after splitting the date string.
+        """
+        ...
     @overload
-    def split(self, string: str, keep_formatting: bool = False) -> list[str]: ...
+    def split(self, string: str, keep_formatting: bool = False) -> list[str]:
+        """
+        Split the date string using translations in locale info.
+
+        :param string:
+            Date string to be splitted.
+        :type string:
+            str
+
+        :param keep_formatting:
+            If True, retain formatting of the date string.
+        :type keep_formatting: bool
+
+        :return: A list of string tokens formed after splitting the date string.
+        """
+        ...
 
 class NormalizedDictionary(Dictionary):
     def __init__(self, locale_info: dict[str, Incomplete], settings: Incomplete | None = None) -> None: ...

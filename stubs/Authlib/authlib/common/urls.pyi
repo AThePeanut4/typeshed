@@ -1,3 +1,10 @@
+"""
+authlib.util.urls
+~~~~~~~~~~~~~~~~~
+
+Wrapper functions for URL encoding and decoding.
+"""
+
 from re import Pattern
 from typing import Final
 from typing_extensions import TypeAlias
