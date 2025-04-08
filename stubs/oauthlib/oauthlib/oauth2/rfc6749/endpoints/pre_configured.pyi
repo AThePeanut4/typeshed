@@ -9,11 +9,11 @@ for providing OAuth 2.0 RFC6749 servers.
 from _typeshed import Incomplete
 from typing import Any
 
-from .authorization import AuthorizationEndpoint as AuthorizationEndpoint
-from .introspect import IntrospectEndpoint as IntrospectEndpoint
-from .resource import ResourceEndpoint as ResourceEndpoint
-from .revocation import RevocationEndpoint as RevocationEndpoint
-from .token import TokenEndpoint as TokenEndpoint
+from .authorization import AuthorizationEndpoint
+from .introspect import IntrospectEndpoint
+from .resource import ResourceEndpoint
+from .revocation import RevocationEndpoint
+from .token import TokenEndpoint
 
 class Server(AuthorizationEndpoint, IntrospectEndpoint, TokenEndpoint, ResourceEndpoint, RevocationEndpoint):
     """An all-in-one endpoint featuring all four major grant types."""

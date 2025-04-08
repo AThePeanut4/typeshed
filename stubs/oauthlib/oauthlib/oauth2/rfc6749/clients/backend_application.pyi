@@ -1,14 +1,4 @@
-"""
-oauthlib.oauth2.rfc6749
-~~~~~~~~~~~~~~~~~~~~~~~
-
-This module is an implementation of various logic needed
-for consuming and providing OAuth 2.0 RFC6749.
-"""
-
-from _typeshed import Incomplete
-
-from .base import Client as Client
+from .base import Client
 
 class BackendApplicationClient(Client):
     """
@@ -29,42 +19,13 @@ class BackendApplicationClient(Client):
     """
     grant_type: str
     def prepare_request_body(
-        self, body: str = "", scope: Incomplete | None = None, include_client_id: bool = False, **kwargs
-    ):
-        """
-        Add the client credentials to the request body.
-
-        The client makes a request to the token endpoint by adding the
-        following parameters using the "application/x-www-form-urlencoded"
-        format per `Appendix B`_ in the HTTP request entity-body:
-
-        :param body: Existing request body (URL encoded string) to embed parameters
-                     into. This may contain extra parameters. Default ''.
-        :param scope:   The scope of the access request as described by
-                        `Section 3.3`_.
-
-        :param include_client_id: `True` to send the `client_id` in the
-                                  body of the upstream request. This is required
-                                  if the client is not authenticating with the
-                                  authorization server as described in
-                                  `Section 3.2.1`_. False otherwise (default).
-        :type include_client_id: Boolean
-
-        :param kwargs:  Extra credentials to include in the token request.
-
-        The client MUST authenticate with the authorization server as
-        described in `Section 3.2.1`_.
-
-        The prepared body will include all provided credentials as well as
-        the ``grant_type`` parameter set to ``client_credentials``::
-
-            >>> from oauthlib.oauth2 import BackendApplicationClient
-            >>> client = BackendApplicationClient('your_id')
-            >>> client.prepare_request_body(scope=['hello', 'world'])
-            'grant_type=client_credentials&scope=hello+world'
-
-        .. _`Appendix B`: https://tools.ietf.org/html/rfc6749#appendix-B
-        .. _`Section 3.3`: https://tools.ietf.org/html/rfc6749#section-3.3
-        .. _`Section 3.2.1`: https://tools.ietf.org/html/rfc6749#section-3.2.1
-        """
-        ...
+        self,
+        body: str = "",
+        scope: str | set[object] | tuple[object] | list[object] | None = None,
+        include_client_id: bool = False,
+        *,
+        code_verifier: str | None = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        **kwargs,
+    ) -> str: ...

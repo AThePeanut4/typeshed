@@ -6,11 +6,12 @@ This module is an implementation of userinfo endpoint.
 """
 
 from _typeshed import Incomplete
+from logging import Logger
 from typing import Any
 
 from oauthlib.oauth2.rfc6749.endpoints.base import BaseEndpoint as BaseEndpoint
 
-log: Any
+log: Logger
 
 class UserInfoEndpoint(BaseEndpoint):
     """

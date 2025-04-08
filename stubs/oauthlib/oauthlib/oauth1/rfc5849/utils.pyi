@@ -1,40 +1,18 @@
-"""
-oauthlib.utils
-~~~~~~~~~~~~~~
+from collections.abc import Callable, Iterable
+from typing import Any, Final, TypeVar
 
-This module contains utility methods used by various parts of the OAuth
-spec.
-"""
+_T = TypeVar("_T")
 
-UNICODE_ASCII_CHARACTER_SET: str
+UNICODE_ASCII_CHARACTER_SET: Final[str]
 
-def filter_params(target):
-    """
-    Decorator which filters params to remove non-oauth_* parameters
-
-    Assumes the decorated method takes a params dict or list of tuples as its
-    first argument.
-    """
-    ...
-def filter_oauth_params(params):
-    """Removes all non oauth parameters from a dict or a list of params."""
-    ...
-def escape(u):
-    """
-    Escape a unicode string in an OAuth-compatible fashion.
-
-    Per `section 3.6`_ of the spec.
-
-    .. _`section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    """
-    ...
-def unescape(u): ...
-def parse_keqv_list(l):
-    """A unicode-safe version of urllib2.parse_keqv_list"""
-    ...
-def parse_http_list(u):
-    """A unicode-safe version of urllib2.parse_http_list"""
-    ...
-def parse_authorization_header(authorization_header):
-    """Parse an OAuth authorization header into a list of 2-tuples"""
-    ...
+def filter_params(
+    target: Callable[[dict[str, Any] | Iterable[tuple[str, Any]], _T], object],
+) -> Callable[[list[str], _T], object]: ...
+def filter_oauth_params(
+    params: dict[str, Any] | Iterable[tuple[str, Any]],
+) -> list[str]: ...  # we don't care about second (Any) part
+def escape(u: str) -> str: ...
+def unescape(u: str) -> str: ...
+def parse_keqv_list(l: list[str]) -> dict[str, str]: ...
+def parse_http_list(u: str) -> list[str]: ...
+def parse_authorization_header(authorization_header: str) -> list[tuple[str, str]]: ...

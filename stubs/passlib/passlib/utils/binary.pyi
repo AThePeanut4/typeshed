@@ -1,75 +1,26 @@
-"""passlib.utils.binary - binary data encoding/decoding/manipulation"""
+from _typeshed import ReadableBuffer
+from logging import Logger
+from typing import Any, Final
 
-from _typeshed import Incomplete
-from typing import Any
+log: Logger
 
-BASE64_CHARS: Any
-AB64_CHARS: Any
-HASH64_CHARS: Any
-BCRYPT_CHARS: Any
-PADDED_BASE64_CHARS: Any
-HEX_CHARS: Any
-UPPER_HEX_CHARS: Any
-LOWER_HEX_CHARS: Any
-ALL_BYTE_VALUES: Any
+BASE64_CHARS: Final[str]
+AB64_CHARS: Final[str]
+HASH64_CHARS: Final[str]
+BCRYPT_CHARS: Final[str]
+PADDED_BASE64_CHARS: Final[str]
+HEX_CHARS: Final[str]
+UPPER_HEX_CHARS: Final[str]
+LOWER_HEX_CHARS: Final[str]
+ALL_BYTE_VALUES: Final[bytes]
 
-def compile_byte_translation(mapping, source: Incomplete | None = None):
-    """
-    return a 256-byte string for translating bytes using specified mapping.
-    bytes not specified by mapping will be left alone.
-
-    :param mapping:
-        dict mapping input byte (str or int) -> output byte (str or int).
-
-    :param source:
-        optional existing byte translation string to use as base.
-        (must be 255-length byte string).  defaults to identity mapping.
-
-    :returns:
-        255-length byte string for passing to bytes().translate.
-    """
-    ...
-def b64s_encode(data):
-    """
-    encode using shortened base64 format which omits padding & whitespace.
-    uses default ``+/`` altchars.
-    """
-    ...
-def b64s_decode(data):
-    """
-    decode from shortened base64 format which omits padding & whitespace.
-    uses default ``+/`` altchars.
-    """
-    ...
-def ab64_encode(data):
-    """
-    encode using shortened base64 format which omits padding & whitespace.
-    uses custom ``./`` altchars.
-
-    it is primarily used by Passlib's custom pbkdf2 hashes.
-    """
-    ...
-def ab64_decode(data):
-    """
-    decode from shortened base64 format which omits padding & whitespace.
-    uses custom ``./`` altchars, but supports decoding normal ``+/`` altchars as well.
-
-    it is primarily used by Passlib's custom pbkdf2 hashes.
-    """
-    ...
-def b32encode(source):
-    """
-    wrapper around :func:`base64.b32encode` which strips padding,
-    and returns a native string.
-    """
-    ...
-def b32decode(source):
-    """
-    wrapper around :func:`base64.b32decode`
-    which handles common mistyped chars.
-    padding optional, ignored if present.
-    """
-    ...
+def compile_byte_translation(mapping: dict[str | bytes | int, str | bytes], source: bytes | None = None) -> bytes: ...
+def b64s_encode(data: ReadableBuffer) -> bytes: ...
+def b64s_decode(data: str | ReadableBuffer) -> bytes: ...
+def ab64_encode(data: ReadableBuffer) -> bytes: ...
+def ab64_decode(data: str | ReadableBuffer) -> bytes: ...
+def b32encode(source: ReadableBuffer) -> str: ...
+def b32decode(source: str | bytes) -> bytes: ...
 
 class Base64Engine:
     """
@@ -224,9 +175,9 @@ class LazyBase64Engine(Base64Engine):
     def __init__(self, *args, **kwds) -> None: ...
     def __getattribute__(self, attr: str): ...
 
-h64: Any
-h64big: Any
-bcrypt64: Any
+h64: Base64Engine
+h64big: Base64Engine
+bcrypt64: Base64Engine
 
 __all__ = [
     # constants

@@ -78,6 +78,8 @@ def prepare_token_request(
     scope: str | set[object] | tuple[object] | list[object] | None = None,
     client_id: str | None = None,
     client_secret: str | None = None,
+    code: str | None = None,
+    redirect_uri: str | None = None,
     **kwargs,
 ) -> str:
     """

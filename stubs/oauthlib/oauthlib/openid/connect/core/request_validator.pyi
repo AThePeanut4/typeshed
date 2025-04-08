@@ -1,13 +1,8 @@
-"""
-oauthlib.openid.connect.core.request_validator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
-
-from typing import Any
+from logging import Logger
 
 from oauthlib.oauth2.rfc6749.request_validator import RequestValidator as OAuth2RequestValidator
 
-log: Any
+log: Logger
 
 class RequestValidator(OAuth2RequestValidator):
     def get_authorization_code_scopes(self, client_id, code, redirect_uri, request) -> None:

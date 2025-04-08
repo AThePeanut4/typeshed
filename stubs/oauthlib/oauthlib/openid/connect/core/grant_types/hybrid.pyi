@@ -4,6 +4,7 @@ oauthlib.openid.connect.core.grant_types
 """
 
 from _typeshed import Incomplete
+from logging import Logger
 from typing import Any
 
 from oauthlib.oauth2.rfc6749.errors import InvalidRequestError as InvalidRequestError
@@ -11,7 +12,7 @@ from oauthlib.oauth2.rfc6749.errors import InvalidRequestError as InvalidRequest
 from ..request_validator import RequestValidator as RequestValidator
 from .base import GrantTypeBase as GrantTypeBase
 
-log: Any
+log: Logger
 
 class HybridGrant(GrantTypeBase):
     request_validator: Any

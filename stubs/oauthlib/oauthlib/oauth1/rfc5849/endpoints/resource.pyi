@@ -7,11 +7,11 @@ OAuth 1.0 RFC 5849.
 """
 
 from _typeshed import Incomplete
-from typing import Any
+from logging import Logger
 
 from .base import BaseEndpoint as BaseEndpoint
 
-log: Any
+log: Logger
 
 class ResourceEndpoint(BaseEndpoint):
     """

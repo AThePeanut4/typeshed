@@ -4,10 +4,11 @@ oauthlib.openid.connect.core.grant_types
 """
 
 from _typeshed import Incomplete
+from logging import Logger
 
 from .base import GrantTypeBase
 
-log: Incomplete
+log: Logger
 
 class RefreshTokenGrant(GrantTypeBase):
     proxy_target: Incomplete

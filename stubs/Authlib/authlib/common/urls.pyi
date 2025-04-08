@@ -1,17 +1,10 @@
-"""
-authlib.util.urls
-~~~~~~~~~~~~~~~~~
-
-Wrapper functions for URL encoding and decoding.
-"""
-
-from collections.abc import Collection
 from re import Pattern
+from typing import Final
 from typing_extensions import TypeAlias
 
-always_safe: str
-urlencoded: Collection[str]
-INVALID_HEX_PATTERN: Pattern[str]
+always_safe: Final[str]
+urlencoded: Final[set[str]]
+INVALID_HEX_PATTERN: Final[Pattern[str]]
 
 _ExplodedQueryString: TypeAlias = list[tuple[str, str]]
 

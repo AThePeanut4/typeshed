@@ -1,10 +1,11 @@
+import re
 from collections import OrderedDict
 from collections.abc import Iterator
-from typing import Any
+from typing import Any, Final
 
 from .locale import Locale
 
-LOCALE_SPLIT_PATTERN: Any
+LOCALE_SPLIT_PATTERN: Final[re.Pattern[str]]
 
 class LocaleDataLoader:
     """Class that handles loading of locale instances."""
@@ -99,4 +100,4 @@ class LocaleDataLoader:
         """
         ...
 
-default_loader: Any
+default_loader: LocaleDataLoader
