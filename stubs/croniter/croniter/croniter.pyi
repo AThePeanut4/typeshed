@@ -20,7 +20,13 @@ class _AllIter(Protocol[_R_co]):
         self, ret_type: None = None, start_time: float | datetime.datetime | None = None, update_current: bool | None = None
     ) -> Generator[_R_co]: ...
 
-def is_32bit() -> bool: ...
+def is_32bit() -> bool:
+    """
+    Detect if Python is running in 32-bit mode.
+    Compatible with Python 2.6 and later versions.
+    Returns True if running on 32-bit Python, False for 64-bit.
+    """
+    ...
 
 OVERFLOW32B_MODE: Final[bool]
 
@@ -64,22 +70,22 @@ def timedelta_to_seconds(td: datetime.timedelta) -> float: ...
 def datetime_to_timestamp(d: datetime.datetime) -> float: ...
 
 class CroniterError(ValueError):
-    """General top-level Croniter base exception """
+    """General top-level Croniter base exception"""
     ...
 class CroniterBadTypeRangeError(TypeError):
     """."""
     ...
 class CroniterBadCronError(CroniterError):
-    """Syntax, unknown value, or range error within a cron expression """
+    """Syntax, unknown value, or range error within a cron expression"""
     ...
 class CroniterUnsupportedSyntaxError(CroniterBadCronError):
-    """Valid cron syntax, but likely to produce inaccurate results """
+    """Valid cron syntax, but likely to produce inaccurate results"""
     ...
 class CroniterBadDateError(CroniterError):
-    """Unable to find next/prev timestamp match """
+    """Unable to find next/prev timestamp match"""
     ...
 class CroniterNotAlphaError(CroniterError):
-    """Cron syntax contains an invalid day or month abbreviation """
+    """Cron syntax contains an invalid day or month abbreviation"""
     ...
 
 class croniter(Generic[_R_co]):
@@ -219,26 +225,55 @@ class croniter(Generic[_R_co]):
     def get_current(self, ret_type: None = None) -> _R_co: ...
     def set_current(self, start_time: float | datetime.datetime | None, force: bool = True) -> float: ...
     @staticmethod
-    def datetime_to_timestamp(d: datetime.datetime) -> float: ...
-    def timestamp_to_datetime(self, timestamp: float, tzinfo: datetime.tzinfo | None = ...) -> datetime.datetime: ...
+    def datetime_to_timestamp(d: datetime.datetime) -> float:
+        """Converts a `datetime` object `d` into a UNIX timestamp."""
+        ...
+    def timestamp_to_datetime(self, timestamp: float, tzinfo: datetime.tzinfo | None = ...) -> datetime.datetime:
+        """Converts a UNIX `timestamp` into a `datetime` object."""
+        ...
     @staticmethod
-    def timedelta_to_seconds(td: datetime.timedelta) -> float: ...
+    def timedelta_to_seconds(td: datetime.timedelta) -> float:
+        """
+        Converts a 'datetime.timedelta' object `td` into seconds contained in
+        the duration.
+        Note: We cannot use `timedelta.total_seconds()` because this is not
+        supported by Python 2.6.
+        """
+        ...
     @overload
     def all_next(
         self, ret_type: type[_R2_co], start_time: float | datetime.datetime | None = None, update_current: bool | None = None
-    ) -> Generator[_R2_co]: ...
+    ) -> Generator[_R2_co]:
+        """
+        Returns a generator yielding consecutive dates.
+
+        May be used instead of an implicit call to __iter__ whenever a
+        non-default `ret_type` needs to be specified.
+        """
+        ...
     @overload
     def all_next(
         self, ret_type: None = None, start_time: float | datetime.datetime | None = None, update_current: bool | None = None
-    ) -> Generator[_R_co]: ...
+    ) -> Generator[_R_co]:
+        """
+        Returns a generator yielding consecutive dates.
+
+        May be used instead of an implicit call to __iter__ whenever a
+        non-default `ret_type` needs to be specified.
+        """
+        ...
     @overload
     def all_prev(
         self, ret_type: type[_R2_co], start_time: float | datetime.datetime | None = None, update_current: bool | None = None
-    ) -> Generator[_R2_co]: ...
+    ) -> Generator[_R2_co]:
+        """Returns a generator yielding previous dates."""
+        ...
     @overload
     def all_prev(
         self, ret_type: None = None, start_time: float | datetime.datetime | None = None, update_current: bool | None = None
-    ) -> Generator[_R_co]: ...
+    ) -> Generator[_R_co]:
+        """Returns a generator yielding previous dates."""
+        ...
     def iter(self, *args: Unused, **kwargs: Unused) -> _AllIter[_R_co]: ...
     def __iter__(self) -> Self: ...
     @overload
@@ -275,7 +310,44 @@ class croniter(Generic[_R_co]):
         second_at_beginning: bool = False,
         from_timestamp: float | None = None,
     ) -> tuple[list[list[str]], dict[str, set[int]]]:
-        """Shallow non Croniter ValueError inside a nice CroniterBadCronError"""
+        """
+        Expand a cron expression format into a noramlized format of
+        list[list[int | 'l' | '*']]. The first list representing each element
+        of the epxression, and each sub-list representing the allowed values
+        for that expression component.
+
+        A tuple is returned, the first value being the expanded epxression
+        list, and the second being a `nth_weekday_of_month` mapping.
+
+        Examples:
+
+        # Every minute
+        >>> croniter.expand('* * * * *')
+        ([['*'], ['*'], ['*'], ['*'], ['*']], {})
+
+        # On the hour
+        >>> croniter.expand('0 0 * * *')
+        ([[0], [0], ['*'], ['*'], ['*']], {})
+
+        # Hours 0-5 and 10 monday through friday
+        >>> croniter.expand('0-5,10 * * * mon-fri')
+        ([[0, 1, 2, 3, 4, 5, 10], ['*'], ['*'], ['*'], [1, 2, 3, 4, 5]], {})
+
+        Note that some special values such as nth day of week are expanded to a
+        special mapping format for later processing:
+
+        # Every minute on the 3rd tuesday of the month
+        >>> croniter.expand('* * * * 2#3')
+        ([['*'], ['*'], ['*'], ['*'], [2]], {2: {3}})
+
+        # Every hour on the last day of the month
+        >>> croniter.expand('0 * l * *')
+        ([[0], ['*'], ['l'], ['*'], ['*']], {})
+
+        # On the hour every 15 seconds
+        >>> croniter.expand('0 0 * * * */15')
+        ([[0], [0], ['*'], ['*'], ['*'], [0, 15, 30, 45]], {})
+        """
         ...
     @classmethod
     def is_valid(
@@ -310,7 +382,16 @@ def croniter_range(
     _croniter: type[croniter] | None = None,
     second_at_beginning: bool = False,
     expand_from_start_time: bool = False,
-) -> Generator[_R2_co, None, None]: ...
+) -> Generator[_R2_co, None, None]:
+    """
+    Generator that provides all times from start to stop matching the given cron expression.
+    If the cron expression matches either 'start' and/or 'stop', those times will be returned as
+    well unless 'exclude_ends=True' is passed.
+
+    You can think of this function as sibling to the builtin range function for datetime objects.
+    Like range(start,stop,step), except that here 'step' is a cron expression.
+    """
+    ...
 @overload
 def croniter_range(
     start: float,
@@ -322,7 +403,16 @@ def croniter_range(
     _croniter: type[croniter] | None = None,
     second_at_beginning: bool = False,
     expand_from_start_time: bool = False,
-) -> Generator[float, None, None]: ...
+) -> Generator[float, None, None]:
+    """
+    Generator that provides all times from start to stop matching the given cron expression.
+    If the cron expression matches either 'start' and/or 'stop', those times will be returned as
+    well unless 'exclude_ends=True' is passed.
+
+    You can think of this function as sibling to the builtin range function for datetime objects.
+    Like range(start,stop,step), except that here 'step' is a cron expression.
+    """
+    ...
 @overload
 def croniter_range(
     start: datetime.datetime,
@@ -334,7 +424,16 @@ def croniter_range(
     _croniter: type[croniter] | None = None,
     second_at_beginning: bool = False,
     expand_from_start_time: bool = False,
-) -> Generator[datetime.datetime, None, None]: ...
+) -> Generator[datetime.datetime, None, None]:
+    """
+    Generator that provides all times from start to stop matching the given cron expression.
+    If the cron expression matches either 'start' and/or 'stop', those times will be returned as
+    well unless 'exclude_ends=True' is passed.
+
+    You can think of this function as sibling to the builtin range function for datetime objects.
+    Like range(start,stop,step), except that here 'step' is a cron expression.
+    """
+    ...
 
 class HashExpander:
     cron: croniter
