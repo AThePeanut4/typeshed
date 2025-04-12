@@ -1,17 +1,18 @@
-from typing import Any
+from typing import Any, ClassVar, Final
 
 import click
+from click_web.web_click_types import EmailParamType, PasswordParamType, TextAreaParamType
 
 class FieldId:
-    """
-    Extract/serialize information from the encoded form input field name
-    the parts:
-        [command_index].[opt_or_arg_index].[click_type].[html_input_type].[opt_or_arg_name]
-    e.g.
-        "0.0.option.text.text.--an-option"
-        "0.1.argument.file[rb].text.an-argument"
-    """
-    SEPARATOR: str
+    SEPARATOR: ClassVar[str]
+    command_index: int
+    param_index: int
+    param_type: str
+    click_type: str
+    nargs: int
+    form_type: str
+    name: str
+    key: str
 
     def __init__(
         self,
@@ -32,7 +33,11 @@ class FieldId:
 class NotSupported(ValueError): ...
 
 class BaseInput:
-    param_type_cls: type | None
+    param_type_cls: type[click.types.ParamType] | None
+    ctx: click.Context
+    param: click.Parameter
+    command_index: int
+    param_index: int
     def __init__(self, ctx: click.Context, param: click.Parameter, command_index: int, param_index: int) -> None: ...
     def is_supported(self) -> bool: ...
     @property
@@ -49,19 +54,38 @@ class BaseInput:
         """
         ...
 
-class ChoiceInput(BaseInput): ...
-class FlagInput(BaseInput): ...
-class IntInput(BaseInput): ...
-class FloatInput(BaseInput): ...
-class FolderInput(BaseInput): ...
-class FileInput(BaseInput): ...
-class EmailInput(BaseInput): ...
-class PasswordInput(BaseInput): ...
-class TextAreaInput(BaseInput): ...
-class DefaultInput(BaseInput): ...
+class ChoiceInput(BaseInput):
+    param_type_cls: type[click.Choice]
 
-INPUT_TYPES: list[type]
-_DEFAULT_INPUT: list[type]
+class FlagInput(BaseInput):
+    param_type_cls: None
+
+class IntInput(BaseInput):
+    param_type_cls: type[click.types.IntParamType]
+
+class FloatInput(BaseInput):
+    param_type_cls: type[click.types.FloatParamType]
+
+class FolderInput(BaseInput):
+    param_type_cls: None
+
+class FileInput(BaseInput):
+    param_type_cls: None
+
+class EmailInput(BaseInput):
+    param_type_cls: type[EmailParamType]
+
+class PasswordInput(BaseInput):
+    param_type_cls: type[PasswordParamType]
+
+class TextAreaInput(BaseInput):
+    param_type_cls: type[TextAreaParamType]
+
+class DefaultInput(BaseInput):
+    param_type_cls: type[click.ParamType]
+
+INPUT_TYPES: Final[list[type[BaseInput]]]
+_DEFAULT_INPUT: Final[list[type[DefaultInput]]]
 
 def get_input_field(ctx: click.Context, param: click.Parameter, command_index, param_index) -> dict[str, Any]:
     """Convert a click.Parameter into a dict structure describing a html form option"""
