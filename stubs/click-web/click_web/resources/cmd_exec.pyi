@@ -17,11 +17,13 @@ class Executor:
 
     def __init__(self) -> None: ...
     def exec(self, command_path: str) -> Response: ...
-    def _exec_raw(self, command: list[str]) -> Response: ...  # undocumented
-    def _exec_html(self, command_path: str) -> Response: ...  # undocumented
-    def _run_script_and_generate_stream(self) -> Generator[str]: ...  # undocumented
-    def _create_cmd_header(self, commands: list[CmdPart]) -> str: ...  # undocumented
-    def _create_result_footer(self) -> Generator[str]: ...  # undocumented
+    def _exec_raw(self, command: list[str]) -> Response:
+        """
+        This is for providing an API that is easy to call from scripts etc.
+        Execute the command as provided in the post data and stream the text output from it as response
+        Note: This does not support posting of files and or generating output links to files.
+              Also, it does not obfuscate secrets in the logs at the moment.
+        Last returned line is a json object with status and return code (exit code) of the command executed.
 
         :param command: the command line after the root command.
                         For example:
@@ -34,7 +36,7 @@ class Executor:
         :param command_path:
         """
         ...
-    def _run_script_and_generate_stream(self) -> None:
+    def _run_script_and_generate_stream(self) -> Generator[str]:
         """Execute the command the via Popen and yield output"""
         ...
     def _create_cmd_header(self, commands: list[CmdPart]) -> str:
@@ -45,7 +47,7 @@ class Executor:
             This way the JS frontend can insert it in the correct place in the DOM.
         """
         ...
-    def _create_result_footer(self) -> str:
+    def _create_result_footer(self) -> Generator[str]:
         """
         Generate a footer.
         Note:
@@ -104,6 +106,14 @@ class FormToCommandLineBuilder:
     def _process_option(self, field_info: FieldInfo) -> None: ...
 
 class FieldInfo:
+    """
+    Extract information from the encoded form input field name
+    the parts:
+        [command_index].[opt_or_arg_index].[click_type].[html_input_type].[opt_or_arg_name]
+    e.g.
+        "0.0.option.text.text.--an-option"
+        "0.1.argument.file[rb].text.an-argument"
+    """
     param: FieldId
     key: str
     is_file: bool
@@ -118,6 +128,10 @@ class FieldInfo:
     def __eq__(self, other: object) -> bool: ...
 
 class FieldFileInfo(FieldInfo):
+    """
+    Use for processing input fields of file type.
+    Saves the posted data to a temp file.
+    """
     mode: str
     generate_download_link: bool
     link_name: str
@@ -129,6 +143,10 @@ class FieldFileInfo(FieldInfo):
     def save(self) -> None: ...
 
 class FieldOutFileInfo(FieldFileInfo):
+    """
+    Used when file option is just for output and form posted it as hidden or text field.
+    Just create a empty temp file to give it's path to command.
+    """
     file_suffix: str
     def __init__(self, fimeta: FieldId) -> None: ...
     def save(self) -> None: ...

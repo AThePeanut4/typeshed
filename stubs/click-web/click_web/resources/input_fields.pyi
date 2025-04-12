@@ -4,6 +4,14 @@ import click
 from click_web.web_click_types import EmailParamType, PasswordParamType, TextAreaParamType
 
 class FieldId:
+    """
+    Extract/serialize information from the encoded form input field name
+    the parts:
+        [command_index].[opt_or_arg_index].[click_type].[html_input_type].[opt_or_arg_name]
+    e.g.
+        "0.0.option.text.text.--an-option"
+        "0.1.argument.file[rb].text.an-argument"
+    """
     SEPARATOR: ClassVar[str]
     command_index: int
     param_index: int
