@@ -1,3 +1,23 @@
+"""
+Wikipedia Extractor:
+Extracts and cleans text from a Wikipedia database dump and stores output in a
+number of files of similar size in a given directory.
+Each file will contain several documents in the format:
+
+    <doc id="" revid="" url="" title="">
+        ...
+        </doc>
+
+If the program is invoked with the --json flag, then each file will
+contain several documents formatted as json ojects, one per line, with
+the following structure
+
+    {"id": "", "revid": "", "url":"", "title": "", "text": "..."}
+
+Template expansion requires preprocesssng first the whole dump and
+collecting template definitions.
+"""
+
 from _typeshed import Incomplete
 from collections.abc import Generator
 from math import (

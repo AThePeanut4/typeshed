@@ -1,3 +1,5 @@
+"""Token Verifier module"""
+
 from .. import TokenValidationError as TokenValidationError
 from ..rest_async import AsyncRestClient as AsyncRestClient
 from .token_verifier import (
@@ -60,6 +62,17 @@ class AsyncJwksFetcher(JwksFetcher):
         ...
 
 class AsyncTokenVerifier(TokenVerifier):
+    """
+    Class that verifies ID tokens following the steps defined in the OpenID Connect spec.
+    An OpenID Connect ID token is not meant to be consumed until it's verified.
+
+    Args:
+        signature_verifier (AsyncAsymmetricSignatureVerifier): The instance that knows how to verify the signature.
+        issuer (str): The expected issuer claim value.
+        audience (str): The expected audience claim value.
+        leeway (int, optional): The clock skew to accept when verifying date related claims in seconds.
+        Defaults to 60 seconds.
+    """
     iss: str
     aud: str
     leeway: int

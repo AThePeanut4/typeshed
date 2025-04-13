@@ -1,5 +1,5 @@
 """
-Added parsing of tables to Python-Markdown.
+Adds parsing of tables to Python-Markdown.
 
 See the [documentation](https://Python-Markdown.github.io/extensions/tables)
 for details.

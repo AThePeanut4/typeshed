@@ -1,5 +1,6 @@
 """
-Adds rST-style admonitions. Inspired by [rST][] feature with the same name.
+Adds rST-style admonitions to Python-Markdown.
+Inspired by [rST][] feature with the same name.
 
 [rST]: http://docutils.sourceforge.net/docs/ref/rst/directives.html#specific-admonitions
 
