@@ -1,33 +1,21 @@
 from _typeshed import Incomplete
+from typing import Final
 
 from auth0.rest import RestClient as RestClient, RestClientOptions as RestClientOptions
 from auth0.types import RequestData as RequestData
 
 from .client_authentication import add_client_authentication as add_client_authentication
 
-UNKNOWN_ERROR: str
+UNKNOWN_ERROR: Final[str]
 
 class AuthenticationBase:
-    """
-    Base authentication object providing simple REST methods.
-
-    Args:
-        domain (str): The domain of your Auth0 tenant
-        client_id (str): Your application's client ID
-        client_secret (str, optional): Your application's client secret
-        client_assertion_signing_key (str, optional): Private key used to sign the client assertion JWT.
-        client_assertion_signing_alg (str, optional): Algorithm used to sign the client assertion JWT (defaults to 'RS256').
-        telemetry (bool, optional): Enable or disable telemetry (defaults to True)
-        timeout (float or tuple, optional): Change the requests connect and read timeout. Pass a tuple to specify both values separately or a float to set both to it. (defaults to 5.0 for both)
-        protocol (str, optional): Useful for testing. (defaults to 'https')
-    """
-    domain: Incomplete
-    client_id: Incomplete
-    client_secret: Incomplete
-    client_assertion_signing_key: Incomplete
-    client_assertion_signing_alg: Incomplete
-    protocol: Incomplete
-    client: Incomplete
+    domain: str
+    client_id: str
+    client_secret: str | None
+    client_assertion_signing_key: str | None
+    client_assertion_signing_alg: str | None
+    protocol: str
+    client: RestClient
     def __init__(
         self,
         domain: str,

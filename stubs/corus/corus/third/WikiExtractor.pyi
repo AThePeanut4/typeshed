@@ -1,24 +1,3 @@
-"""
-Wikipedia Extractor:
-Extracts and cleans text from a Wikipedia database dump and stores output in a
-number of files of similar size in a given directory.
-Each file will contain several documents in the format:
-
-    <doc id="" revid="" url="" title="">
-        ...
-        </doc>
-
-If the program is invoked with the --json flag, then each file will
-contain several documents formatted as json ojects, one per line, with
-the following structure
-
-    {"id": "", "revid": "", "url":"", "title": "", "text": "..."}
-
-Template expansion requires preprocesssng first the whole dump and
-collecting template definitions.
-"""
-
-import typing
 from _typeshed import Incomplete
 from collections.abc import Generator
 from math import (
@@ -34,6 +13,7 @@ from math import (
     tan as tan,
     trunc as trunc,
 )
+from typing import TypeVar
 
 PY2: Incomplete
 text_type = str
@@ -81,7 +61,7 @@ quote_quote: Incomplete
 spaces: Incomplete
 dots: Incomplete
 
-_T = typing.TypeVar("_T")
+_T = TypeVar("_T")
 
 class Template(list[_T]):
     """A Template is a list of TemplateText or TemplateArgs"""

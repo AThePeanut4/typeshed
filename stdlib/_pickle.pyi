@@ -1,6 +1,3 @@
-"""Optimized C implementation for the Python pickle module."""
-
-import sys
 from _typeshed import ReadableBuffer, SupportsWrite
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from pickle import PickleBuffer as PickleBuffer
@@ -200,23 +197,11 @@ class Pickler:
     def memo(self) -> PicklerMemoProxy: ...
     @memo.setter
     def memo(self, value: PicklerMemoProxy | dict[int, tuple[int, Any]]) -> None: ...
-    def dump(self, obj: Any, /) -> None:
-        """Write a pickled representation of the given object to the open file."""
-        ...
-    def clear_memo(self) -> None:
-        """
-        Clears the pickler's "memo".
+    def dump(self, obj: Any, /) -> None: ...
+    def clear_memo(self) -> None: ...
 
-        The memo is the data structure that remembers which objects the
-        pickler has already seen, so that shared or recursive objects are
-        pickled by reference and not by value.  This method is useful when
-        re-using picklers.
-        """
-        ...
-    if sys.version_info >= (3, 13):
-        def persistent_id(self, obj: Any, /) -> Any: ...
-    else:
-        persistent_id: Callable[[Any], Any]
+    # this method has no default implementation for Python < 3.13
+    def persistent_id(self, obj: Any, /) -> Any: ...
 
 @type_check_only
 class UnpicklerMemoProxy:
@@ -259,28 +244,8 @@ class Unpickler:
     def memo(self) -> UnpicklerMemoProxy: ...
     @memo.setter
     def memo(self, value: UnpicklerMemoProxy | dict[int, tuple[int, Any]]) -> None: ...
-    def load(self) -> Any:
-        """
-        Load a pickle.
+    def load(self) -> Any: ...
+    def find_class(self, module_name: str, global_name: str, /) -> Any: ...
 
-        Read a pickled object representation from the open file object given
-        in the constructor, and return the reconstituted object hierarchy
-        specified therein.
-        """
-        ...
-    def find_class(self, module_name: str, global_name: str, /) -> Any:
-        """
-        Return an object from a specified module.
-
-        If necessary, the module will be imported. Subclasses may override
-        this method (e.g. to restrict unpickling of arbitrary classes and
-        functions).
-
-        This method is called whenever a class or a function object is
-        needed.  Both arguments passed are str objects.
-        """
-        ...
-    if sys.version_info >= (3, 13):
-        def persistent_load(self, pid: Any, /) -> Any: ...
-    else:
-        persistent_load: Callable[[Any], Any]
+    # this method has no default implementation for Python < 3.13
+    def persistent_load(self, pid: Any, /) -> Any: ...

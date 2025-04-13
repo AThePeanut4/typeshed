@@ -1,6 +1,6 @@
 from _typeshed import Incomplete
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, SupportsInt
 from typing_extensions import deprecated
 
 from jwcrypto.common import JWException, JWKeyNotFound
@@ -126,86 +126,31 @@ class JWT:
     @header.setter
     def header(self, h: dict[str, Any] | str) -> None: ...
     @property
-    def claims(self): ...
+    def claims(self) -> str: ...
     @claims.setter
-    def claims(self, data) -> None: ...
+    def claims(self, data: str) -> None: ...
     @property
     def token(self): ...
     @token.setter
     def token(self, t) -> None: ...
     @property
-    def leeway(self): ...
+    def leeway(self) -> int: ...
     @leeway.setter
-    def leeway(self, lwy) -> None: ...
+    def leeway(self, lwy: SupportsInt) -> None: ...
     @property
-    def validity(self): ...
+    def validity(self) -> int: ...
     @validity.setter
-    def validity(self, v) -> None: ...
+    def validity(self, v: SupportsInt) -> None: ...
     @property
     def expected_type(self): ...
     @expected_type.setter
     def expected_type(self, v) -> None: ...
     def norm_typ(self, val): ...
-    def make_signed_token(self, key) -> None:
-        """
-        Signs the payload.
-
-        Creates a JWS token with the header as the JWS protected header and
-        the claims as the payload. See (:class:`jwcrypto.jws.JWS`) for
-        details on the exceptions that may be raised.
-
-        :param key: A (:class:`jwcrypto.jwk.JWK`) key.
-        """
-        ...
-    def make_encrypted_token(self, key) -> None:
-        """
-        Encrypts the payload.
-
-        Creates a JWE token with the header as the JWE protected header and
-        the claims as the plaintext. See (:class:`jwcrypto.jwe.JWE`) for
-        details on the exceptions that may be raised.
-
-        :param key: A (:class:`jwcrypto.jwk.JWK`) key.
-        """
-        ...
-    def validate(self, key) -> None:
-        """
-        Validate a JWT token that was deserialized w/o providing a key
-
-        :param key: A (:class:`jwcrypto.jwk.JWK`) verification or
-         decryption key, or a (:class:`jwcrypto.jwk.JWKSet`) that
-         contains a key indexed by the 'kid' header.
-        """
-        ...
-    def deserialize(self, jwt, key: Incomplete | None = None) -> None:
-        """
-        Deserialize a JWT token.
-
-        NOTE: Destroys any current status and tries to import the raw
-        token provided.
-
-        :param jwt: a 'raw' JWT token.
-        :param key: A (:class:`jwcrypto.jwk.JWK`) verification or
-         decryption key, or a (:class:`jwcrypto.jwk.JWKSet`) that
-         contains a key indexed by the 'kid' header.
-        """
-        ...
-    def serialize(self, compact: bool = True):
-        """
-        Serializes the object into a JWS token.
-
-        :param compact(boolean): must be True.
-
-        Note: the compact parameter is provided for general compatibility
-        with the serialize() functions of :class:`jwcrypto.jws.JWS` and
-        :class:`jwcrypto.jwe.JWE` so that these objects can all be used
-        interchangeably. However the only valid JWT representation is the
-        compact representation.
-
-        :return: A json formatted string or a compact representation string
-        :rtype: `str`
-        """
-        ...
+    def make_signed_token(self, key: JWK) -> None: ...
+    def make_encrypted_token(self, key: JWK) -> None: ...
+    def validate(self, key: JWK | JWKSet) -> None: ...
+    def deserialize(self, jwt, key: Incomplete | None = None) -> None: ...
+    def serialize(self, compact: bool = True) -> str: ...
     @classmethod
     def from_jose_token(cls, token):
         """

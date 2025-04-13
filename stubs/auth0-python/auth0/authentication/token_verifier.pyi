@@ -76,20 +76,9 @@ class AsymmetricSignatureVerifier(SignatureVerifier):
     def __init__(self, jwks_url: str, algorithm: str = "RS256", cache_ttl: int = ...) -> None: ...
 
 class TokenVerifier:
-    """
-    Class that verifies ID tokens following the steps defined in the OpenID Connect spec.
-    An OpenID Connect ID token is not meant to be consumed until it's verified.
-
-    Args:
-        signature_verifier (SignatureVerifier): The instance that knows how to verify the signature.
-        issuer (str): The expected issuer claim value.
-        audience (str): The expected audience claim value.
-        leeway (int, optional): The clock skew to accept when verifying date related claims in seconds.
-        Defaults to 60 seconds.
-    """
-    iss: Incomplete
-    aud: Incomplete
-    leeway: Incomplete
+    iss: str
+    aud: str
+    leeway: int
     def __init__(self, signature_verifier: SignatureVerifier, issuer: str, audience: str, leeway: int = 0) -> None: ...
     def verify(
         self, token: str, nonce: str | None = None, max_age: int | None = None, organization: str | None = None

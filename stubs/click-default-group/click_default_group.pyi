@@ -1,50 +1,5 @@
-"""
-click_default_group
-~~~~~~~~~~~~~~~~~~~
-
-Define a default subcommand by `default=True`:
-
-.. sourcecode:: python
-
-   import click
-   from click_default_group import DefaultGroup
-
-   @click.group(cls=DefaultGroup, default_if_no_args=True)
-   def cli():
-       pass
-
-   @cli.command(default=True)
-   def foo():
-       click.echo('foo')
-
-   @cli.command()
-   def bar():
-       click.echo('bar')
-
-Then you can invoke that without explicit subcommand name:
-
-.. sourcecode:: console
-
-   $ cli.py --help
-   Usage: cli.py [OPTIONS] COMMAND [ARGS]...
-
-   Options:
-     --help    Show this message and exit.
-
-   Command:
-     foo*
-     bar
-
-   $ cli.py
-   foo
-   $ cli.py foo
-   foo
-   $ cli.py bar
-   bar
-"""
-
-import typing as t
 from _typeshed import Incomplete
+from collections.abc import Sequence
 
 import click
 
@@ -78,7 +33,7 @@ class DefaultCommandFormatter:
     formatter: click.HelpFormatter
     mark: str
     def __init__(self, group: click.Group, formatter: click.HelpFormatter, mark: str = ...) -> None: ...
-    def write_dl(self, rows: t.Sequence[tuple[str, str]], col_max: int = 30, col_spacing: int = -2) -> None: ...
+    def write_dl(self, rows: Sequence[tuple[str, str]], col_max: int = 30, col_spacing: int = -2) -> None: ...
     def __getattr__(self, attr: str) -> Incomplete: ...
     # __getattr__ used to ala-derive from click.HelpFormatter:
     # indent_increment: int
