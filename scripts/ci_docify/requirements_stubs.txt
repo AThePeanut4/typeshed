@@ -152,7 +152,7 @@ python-crontab==3.2.*
 requests[socks]==2.32.*
 psutil==7.0.*
 ExifRead==3.0.*
-auth0-python==4.8.*
+auth0-python==4.9.*
 defusedxml==0.7.*
 nanoleafapi==2.1.*
 tqdm[slack,telegram]==4.67.*
@@ -169,7 +169,7 @@ python-datemath==3.0.1
 WebOb==1.8.*
 pyasn1==0.6.*
 flake8==7.2.*
-Markdown==3.7.*
+Markdown==3.8.*
 watchpoints==0.2.5
 flake8-builtins==2.5.*
 simplejson==3.20.*
