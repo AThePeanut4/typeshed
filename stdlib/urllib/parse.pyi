@@ -411,8 +411,29 @@ def urlencode(
     encoding: str | None = None,
     errors: str | None = None,
     quote_via: _QuoteVia = ...,
-) -> str: ...
-def urljoin(base: AnyStr, url: AnyStr | None, allow_fragments: bool = True) -> AnyStr: ...
+) -> str:
+    """
+    Encode a dict or sequence of two-element tuples into a URL query string.
+
+    If any values in the query arg are sequences and doseq is true, each
+    sequence element is converted to a separate parameter.
+
+    If the query arg is a sequence of two-element tuples, the order of the
+    parameters in the output will match the order of parameters in the
+    input.
+
+    The components of a query arg may each be either a string or a bytes type.
+
+    The safe, encoding, and errors parameters are passed down to the function
+    specified by quote_via (encoding and errors only if a component is a str).
+    """
+    ...
+def urljoin(base: AnyStr, url: AnyStr | None, allow_fragments: bool = True) -> AnyStr:
+    """
+    Join a base URL and a possibly relative URL to form an absolute
+    interpretation of the latter.
+    """
+    ...
 @overload
 def urlparse(url: str, scheme: str = "", allow_fragments: bool = True) -> ParseResult:
     """
