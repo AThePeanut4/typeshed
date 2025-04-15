@@ -33,9 +33,9 @@ It serves as a useful guide when making changes.
 """
 
 import sys
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from types import GenericAlias
-from typing import Any, AnyStr, Generic, Literal, NamedTuple, TypeVar, overload
+from typing import Any, AnyStr, Generic, Literal, NamedTuple, Protocol, overload, type_check_only
 from typing_extensions import TypeAlias
 
 __all__ = [
@@ -385,93 +385,34 @@ def urldefrag(url: bytes | bytearray | None) -> DefragResultBytes:
     """
     ...
 
-_Q = TypeVar("_Q", bound=str | Iterable[int])
+# The values are passed through `str()` (unless they are bytes), so anything is valid.
 _QueryType: TypeAlias = (
-    Mapping[Any, Any] | Mapping[Any, Sequence[Any]] | Sequence[tuple[Any, Any]] | Sequence[tuple[Any, Sequence[Any]]]
+    Mapping[str, object]
+    | Mapping[bytes, object]
+    | Mapping[str | bytes, object]
+    | Mapping[str, Sequence[object]]
+    | Mapping[bytes, Sequence[object]]
+    | Mapping[str | bytes, Sequence[object]]
+    | Sequence[tuple[str | bytes, object]]
+    | Sequence[tuple[str | bytes, Sequence[object]]]
 )
 
-@overload
+@type_check_only
+class _QuoteVia(Protocol):
+    @overload
+    def __call__(self, string: str, safe: str | bytes, encoding: str, errors: str, /) -> str: ...
+    @overload
+    def __call__(self, string: bytes, safe: str | bytes, /) -> str: ...
+
 def urlencode(
     query: _QueryType,
     doseq: bool = False,
-    safe: str = "",
+    safe: str | bytes = "",
     encoding: str | None = None,
     errors: str | None = None,
-    quote_via: Callable[[AnyStr, str, str, str], str] = ...,
-) -> str:
-    """
-    Encode a dict or sequence of two-element tuples into a URL query string.
-
-    If any values in the query arg are sequences and doseq is true, each
-    sequence element is converted to a separate parameter.
-
-    If the query arg is a sequence of two-element tuples, the order of the
-    parameters in the output will match the order of parameters in the
-    input.
-
-    The components of a query arg may each be either a string or a bytes type.
-
-    The safe, encoding, and errors parameters are passed down to the function
-    specified by quote_via (encoding and errors only if a component is a str).
-    """
-    ...
-@overload
-def urlencode(
-    query: _QueryType,
-    doseq: bool,
-    safe: _Q,
-    encoding: str | None = None,
-    errors: str | None = None,
-    quote_via: Callable[[AnyStr, _Q, str, str], str] = ...,
-) -> str:
-    """
-    Encode a dict or sequence of two-element tuples into a URL query string.
-
-    If any values in the query arg are sequences and doseq is true, each
-    sequence element is converted to a separate parameter.
-
-    If the query arg is a sequence of two-element tuples, the order of the
-    parameters in the output will match the order of parameters in the
-    input.
-
-    The components of a query arg may each be either a string or a bytes type.
-
-    The safe, encoding, and errors parameters are passed down to the function
-    specified by quote_via (encoding and errors only if a component is a str).
-    """
-    ...
-@overload
-def urlencode(
-    query: _QueryType,
-    doseq: bool = False,
-    *,
-    safe: _Q,
-    encoding: str | None = None,
-    errors: str | None = None,
-    quote_via: Callable[[AnyStr, _Q, str, str], str] = ...,
-) -> str:
-    """
-    Encode a dict or sequence of two-element tuples into a URL query string.
-
-    If any values in the query arg are sequences and doseq is true, each
-    sequence element is converted to a separate parameter.
-
-    If the query arg is a sequence of two-element tuples, the order of the
-    parameters in the output will match the order of parameters in the
-    input.
-
-    The components of a query arg may each be either a string or a bytes type.
-
-    The safe, encoding, and errors parameters are passed down to the function
-    specified by quote_via (encoding and errors only if a component is a str).
-    """
-    ...
-def urljoin(base: AnyStr, url: AnyStr | None, allow_fragments: bool = True) -> AnyStr:
-    """
-    Join a base URL and a possibly relative URL to form an absolute
-    interpretation of the latter.
-    """
-    ...
+    quote_via: _QuoteVia = ...,
+) -> str: ...
+def urljoin(base: AnyStr, url: AnyStr | None, allow_fragments: bool = True) -> AnyStr: ...
 @overload
 def urlparse(url: str, scheme: str = "", allow_fragments: bool = True) -> ParseResult:
     """

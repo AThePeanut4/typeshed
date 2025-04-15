@@ -1,8 +1,4 @@
-"""
-This module contains various contacts, classes and functions which get referenced and used
-throughout the code base.
-"""
-
+import sys
 from collections.abc import Iterator
 from re import Pattern
 from typing import Final, Generic, TypedDict, TypeVar, overload
@@ -23,12 +19,20 @@ HTML_PLACEHOLDER_RE: Final[Pattern[str]]
 TAG_PLACEHOLDER: Final[str]
 RTL_BIDI_RANGES: Final[tuple[tuple[str, str], tuple[str, str]]]
 
-def get_installed_extensions():
-    """Return all entry_points in the `markdown.extensions` group. """
-    ...
-def deprecated(message: str, stacklevel: int = 2):
-    """
-    Raise a [`DeprecationWarning`][] when wrapped function/method is called.
+if sys.version_info >= (3, 10):
+    from importlib import metadata
+    def get_installed_extensions() -> metadata.EntryPoints: ...
+
+else:
+    def get_installed_extensions(): ...
+
+def deprecated(message: str, stacklevel: int = 2): ...
+@overload
+def parseBoolValue(value: str) -> bool: ...
+@overload
+def parseBoolValue(value: str | None, fail_on_errors: bool = True, preserve_none: bool = False) -> bool | None: ...
+def code_escape(text: str) -> str: ...
+def nearing_recursion_limit() -> bool: ...
 
     Usage:
 
