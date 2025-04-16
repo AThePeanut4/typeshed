@@ -26,8 +26,8 @@ class OAuth2Request:
     @property
     def datalist(self) -> dict[str, list[Incomplete]]:
         """
-        Return all the data in query parameters and the body of the request as a dictionary with all the values
-        in lists. 
+        Return all the data in query parameters and the body of the request as a dictionary
+        with all the values in lists.
         """
         ...
     @property

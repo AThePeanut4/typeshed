@@ -18,7 +18,8 @@ class BaseServer:
                 # verify this request, return True or False
                 return True
 
-            Server.register_signature_method('custom-name', verify_custom_method)
+
+            Server.register_signature_method("custom-name", verify_custom_method)
         """
         ...
     def validate_timestamp_and_nonce(self, request) -> None:

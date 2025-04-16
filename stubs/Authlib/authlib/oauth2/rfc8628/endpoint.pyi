@@ -67,7 +67,7 @@ class DeviceAuthorizationEndpoint:
 
             class MyDeviceAuthorizationEndpoint(DeviceAuthorizationEndpoint):
                 # only support ``client_secret_basic`` auth method
-                CLIENT_AUTH_METHODS = ['client_secret_basic']
+                CLIENT_AUTH_METHODS = ["client_secret_basic"]
         """
         ...
     def create_endpoint_response(self, request): ...
@@ -91,7 +91,7 @@ class DeviceAuthorizationEndpoint:
         Developers MUST implement this method in subclass::
 
             def get_verification_uri(self):
-                return 'https://your-company.com/active'
+                return "https://your-company.com/active"
         """
         ...
     def save_device_credential(self, client_id, scope, data) -> None:
@@ -100,11 +100,7 @@ class DeviceAuthorizationEndpoint:
         implement this method in subclass::
 
             def save_device_credential(self, client_id, scope, data):
-                item = DeviceCredential(
-                    client_id=client_id,
-                    scope=scope,
-                    **data
-                )
+                item = DeviceCredential(client_id=client_id, scope=scope, **data)
                 item.save()
         """
         ...

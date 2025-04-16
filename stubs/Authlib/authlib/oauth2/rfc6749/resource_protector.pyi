@@ -1,5 +1,5 @@
 """
-authlib.oauth2.rfc6749.resource_protector
+authlib.oauth2.rfc6749.resource_protector.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Implementation of Accessing Protected Resources per `Section 7`_.
@@ -39,7 +39,7 @@ class TokenValidator:
         "X-Device-Version" in the header::
 
             def validate_request(self, request):
-                if 'X-Device-Version' not in request.headers:
+                if "X-Device-Version" not in request.headers:
                     raise InvalidRequestError()
 
         Usually, you don't have to detect if the request is valid or not. If you have

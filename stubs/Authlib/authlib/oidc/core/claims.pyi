@@ -91,7 +91,15 @@ class CodeIDToken(IDToken):
 class ImplicitIDToken(IDToken):
     RESPONSE_TYPES: Incomplete
     ESSENTIAL_CLAIMS: Incomplete
-    def validate_at_hash(self) -> None: ...
+    def validate_at_hash(self) -> None:
+        """
+        If the ID Token is issued from the Authorization Endpoint with an
+        access_token value, which is the case for the response_type value
+        id_token token, this is REQUIRED; it MAY NOT be used when no Access
+        Token is issued, which is the case for the response_type value
+        id_token.
+        """
+        ...
 
 class HybridIDToken(ImplicitIDToken):
     RESPONSE_TYPES: Incomplete

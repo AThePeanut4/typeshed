@@ -37,8 +37,8 @@ class JWSHeader(dict[str, object]):
     Header object for JWS. It combine the protected header and unprotected
     header together. JWSHeader itself is a dict of the combined dict. e.g.
 
-        >>> protected = {'alg': 'HS256'}
-        >>> header = {'kid': 'a'}
+        >>> protected = {"alg": "HS256"}
+        >>> header = {"kid": "a"}
         >>> jws_header = JWSHeader(protected, header)
         >>> print(jws_header)
         {'alg': 'HS256', 'kid': 'a'}

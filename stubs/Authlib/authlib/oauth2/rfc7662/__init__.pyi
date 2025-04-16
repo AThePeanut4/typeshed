@@ -1,5 +1,5 @@
 """
-authlib.oauth2.rfc7662
+authlib.oauth2.rfc7662.
 ~~~~~~~~~~~~~~~~~~~~~~
 
 This module represents a direct implementation of

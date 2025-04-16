@@ -6,7 +6,7 @@ class JWTBearerTokenGenerator:
     This token generator can be registered into authorization server::
 
         authorization_server.register_token_generator(
-            'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            "urn:ietf:params:oauth:grant-type:jwt-bearer",
             JWTBearerTokenGenerator(private_rsa_key),
         )
 

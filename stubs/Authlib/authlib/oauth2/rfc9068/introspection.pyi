@@ -10,17 +10,16 @@ class JWTIntrospectionEndpoint(IntrospectionEndpoint):
 
     :param issuer: The issuer identifier for which tokens will be introspected.
 
-    :param \*\*kwargs: Other parameters are inherited from
+    :param \\*\\*kwargs: Other parameters are inherited from
         :class:`~authlib.oauth2.rfc7662.introspection.IntrospectionEndpoint`.
 
     ::
 
         class MyJWTAccessTokenIntrospectionEndpoint(JWTIntrospectionEndpoint):
-            def get_jwks(self):
-                ...
+            def get_jwks(self): ...
 
-            def get_username(self, user_id):
-                ...
+            def get_username(self, user_id): ...
+
 
         # endpoint dedicated to JWT access token introspection
         authorization_server.register_endpoint(

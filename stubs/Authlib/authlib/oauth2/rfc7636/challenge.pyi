@@ -20,10 +20,7 @@ class CodeChallenge:
     ``code_challenge_method`` into database when ``save_authorization_code``.
     Then register this extension via::
 
-        server.register_grant(
-            AuthorizationCodeGrant,
-            [CodeChallenge(required=True)]
-        )
+        server.register_grant(AuthorizationCodeGrant, [CodeChallenge(required=True)])
     """
     DEFAULT_CODE_CHALLENGE_METHOD: str
     SUPPORTED_CODE_CHALLENGE_METHOD: Incomplete

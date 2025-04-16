@@ -1,5 +1,5 @@
 """
-authlib.oidc.core.grants.code
+authlib.oidc.core.grants.code.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Implementation of Authentication using the Authorization Code Flow
@@ -21,10 +21,10 @@ class OpenIDToken:
 
             def get_jwt_config(self, grant):
                 return {
-                    'key': read_private_key_file(key_path),
-                    'alg': 'RS256',
-                    'iss': 'issuer-identity',
-                    'exp': 3600
+                    "key": read_private_key_file(key_path),
+                    "alg": "RS256",
+                    "iss": "issuer-identity",
+                    "exp": 3600,
                 }
 
         :param grant: AuthorizationCodeGrant instance
@@ -38,10 +38,11 @@ class OpenIDToken:
 
             from authlib.oidc.core import UserInfo
 
+
             def generate_user_info(self, user, scope):
                 user_info = UserInfo(sub=user.id, name=user.name)
-                if 'email' in scope:
-                    user_info['email'] = user.email
+                if "email" in scope:
+                    user_info["email"] = user.email
                 return user_info
 
         :param user: user instance
@@ -75,7 +76,9 @@ class OpenIDCode(OpenIDToken):
 
     The register this extension with AuthorizationCodeGrant::
 
-        authorization_server.register_grant(AuthorizationCodeGrant, extensions=[MyOpenIDCode()])
+        authorization_server.register_grant(
+            AuthorizationCodeGrant, extensions=[MyOpenIDCode()]
+        )
     """
     require_nonce: bool
     def __init__(self, require_nonce: bool = False) -> None: ...

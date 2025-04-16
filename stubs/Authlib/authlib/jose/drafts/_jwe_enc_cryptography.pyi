@@ -1,5 +1,5 @@
 """
-authlib.jose.draft
+authlib.jose.draft.
 ~~~~~~~~~~~~~~~~~~~~
 
 Content Encryption per `Section 4`_.
@@ -20,7 +20,7 @@ class C20PEncAlgorithm(JWEEncAlgorithm):
     def __init__(self, key_size) -> None: ...
     def encrypt(self, msg, aad, iv, key):
         """
-        Content Encryption with AEAD_CHACHA20_POLY1305
+        Content Encryption with AEAD_CHACHA20_POLY1305.
 
         :param msg: text to be encrypt in bytes
         :param aad: additional authenticated data in bytes
@@ -31,7 +31,7 @@ class C20PEncAlgorithm(JWEEncAlgorithm):
         ...
     def decrypt(self, ciphertext, aad, iv, tag, key):
         """
-        Content Decryption with AEAD_CHACHA20_POLY1305
+        Content Decryption with AEAD_CHACHA20_POLY1305.
 
         :param ciphertext: ciphertext in bytes
         :param aad: additional authenticated data in bytes

@@ -3,6 +3,10 @@ from typing import Final
 ASSERTION_TYPE: Final[str]
 
 class JWTBearerClientAssertion:
+    """
+    Implementation of Using JWTs for Client Authentication, which is
+    defined by RFC7523.
+    """
     CLIENT_ASSERTION_TYPE: Final[str]
     CLIENT_AUTH_METHOD: Final[str]
     token_url: str
@@ -36,7 +40,7 @@ class JWTBearerClientAssertion:
         MUST implement this method::
 
             def validate_jti(self, claims, jti):
-                key = 'jti:{}-{}'.format(claims['sub'], jti)
+                key = "jti:{}-{}".format(claims["sub"], jti)
                 if redis.get(key):
                     return False
                 redis.set(key, 1, ex=3600)

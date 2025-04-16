@@ -13,15 +13,15 @@ class JWTRevocationEndpoint(RevocationEndpoint):
 
     :param issuer: The issuer identifier.
 
-    :param \*\*kwargs: Other parameters are inherited from
+    :param \\*\\*kwargs: Other parameters are inherited from
         :class:`~authlib.oauth2.rfc7009.RevocationEndpoint`.
 
     Plain text access tokens and other kind of tokens such as refresh_tokens
     will be ignored by this endpoint and passed to the next revocation endpoint::
 
         class MyJWTAccessTokenRevocationEndpoint(JWTRevocationEndpoint):
-            def get_jwks(self):
-                ...
+            def get_jwks(self): ...
+
 
         # endpoint dedicated to JWT access token revokation
         authorization_server.register_endpoint(

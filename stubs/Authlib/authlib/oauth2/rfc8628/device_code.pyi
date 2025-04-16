@@ -108,7 +108,7 @@ class DeviceCodeGrant(BaseGrant, TokenEndpointMixin):
 
             def query_user_grant(self, user_code):
                 # e.g. we saved user grant info in redis
-                data = redis.get('oauth_user_grant:' + user_code)
+                data = redis.get("oauth_user_grant:" + user_code)
                 if not data:
                     return None
 

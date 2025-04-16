@@ -10,7 +10,7 @@ class BaseApp:
 
         If ``api_base_url`` configured, shortcut is available::
 
-            client.get('users/lepture')
+            client.get("users/lepture")
         """
         ...
     def post(self, url, **kwargs):
@@ -19,7 +19,7 @@ class BaseApp:
 
         If ``api_base_url`` configured, shortcut is available::
 
-            client.post('timeline', json={'text': 'Hi'})
+            client.post("timeline", json={"text": "Hi"})
         """
         ...
     def patch(self, url, **kwargs):
@@ -28,7 +28,7 @@ class BaseApp:
 
         If ``api_base_url`` configured, shortcut is available::
 
-            client.patch('profile', json={'name': 'Hsiaoming Yang'})
+            client.patch("profile", json={"name": "Hsiaoming Yang"})
         """
         ...
     def put(self, url, **kwargs):
@@ -37,7 +37,7 @@ class BaseApp:
 
         If ``api_base_url`` configured, shortcut is available::
 
-            client.put('profile', json={'name': 'Hsiaoming Yang'})
+            client.put("profile", json={"name": "Hsiaoming Yang"})
         """
         ...
     def delete(self, url, **kwargs):
@@ -46,7 +46,7 @@ class BaseApp:
 
         If ``api_base_url`` configured, shortcut is available::
 
-            client.delete('posts/123')
+            client.delete("posts/123")
         """
         ...
 

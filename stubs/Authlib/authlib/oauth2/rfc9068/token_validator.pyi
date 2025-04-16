@@ -1,5 +1,5 @@
 """
-authlib.oauth2.rfc9068.token_validator
+authlib.oauth2.rfc9068.token_validator.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Implementation of Validating JWT Access Tokens per `Section 4`_.
@@ -22,14 +22,14 @@ class JWTBearerTokenValidator(BearerTokenValidator):
     Developers needs to implement the missing methods::
 
         class MyJWTBearerTokenValidator(JWTBearerTokenValidator):
-            def get_jwks(self):
-                ...
+            def get_jwks(self): ...
+
 
         require_oauth = ResourceProtector()
         require_oauth.register_token_validator(
             MyJWTBearerTokenValidator(
-                issuer='https://authorization-server.example.org',
-                resource_server='https://resource-server.example.org',
+                issuer="https://authorization-server.example.org",
+                resource_server="https://resource-server.example.org",
             )
         )
 
@@ -37,13 +37,12 @@ class JWTBearerTokenValidator(BearerTokenValidator):
     `roles` or `entitlements` claims::
 
         @require_oauth(
-            scope='profile',
-            groups='admins',
-            roles='student',
-            entitlements='captain',
+            scope="profile",
+            groups="admins",
+            roles="student",
+            entitlements="captain",
         )
-        def resource_endpoint():
-            ...
+        def resource_endpoint(): ...
     """
     issuer: Incomplete
     resource_server: Incomplete
@@ -56,13 +55,13 @@ class JWTBearerTokenValidator(BearerTokenValidator):
         cached using :ref:`specs/rfc8414`::
 
             def get_jwks(self):
-                if 'jwks' in cache:
-                    return cache.get('jwks')
+                if "jwks" in cache:
+                    return cache.get("jwks")
 
                 server_metadata = get_server_metadata(self.issuer)
-                jwks_uri = server_metadata.get('jwks_uri')
-                cache['jwks'] = requests.get(jwks_uri).json()
-                return cache['jwks']
+                jwks_uri = server_metadata.get("jwks_uri")
+                cache["jwks"] = requests.get(jwks_uri).json()
+                return cache["jwks"]
         """
         ...
     def validate_iss(self, claims, iss: str) -> bool: ...

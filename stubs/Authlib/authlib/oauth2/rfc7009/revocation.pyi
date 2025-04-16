@@ -65,8 +65,8 @@ class RevocationEndpoint(TokenEndpoint):
         It would be secure to mark a token as revoked::
 
             def revoke_token(self, token, request):
-                hint = request.form.get('token_type_hint')
-                if hint == 'access_token':
+                hint = request.form.get("token_type_hint")
+                if hint == "access_token":
                     token.access_token_revoked = True
                 else:
                     token.access_token_revoked = True

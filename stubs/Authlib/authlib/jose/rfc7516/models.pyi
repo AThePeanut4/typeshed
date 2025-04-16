@@ -2,10 +2,7 @@ from _typeshed import Incomplete
 from abc import ABCMeta
 
 class JWEAlgorithmBase(metaclass=ABCMeta):
-    """
-    Base interface for all JWE algorithms.
-    
-    """
+    """Base interface for all JWE algorithms."""
     EXTRA_HEADERS: Incomplete
     name: Incomplete
     description: Incomplete
@@ -17,14 +14,16 @@ class JWEAlgorithmBase(metaclass=ABCMeta):
 class JWEAlgorithm(JWEAlgorithmBase, metaclass=ABCMeta):
     """
     Interface for JWE algorithm conforming to RFC7518.
-    JWA specification (RFC7518) SHOULD implement the algorithms for JWE with this base implementation.
+    JWA specification (RFC7518) SHOULD implement the algorithms for JWE
+    with this base implementation.
     """
     def wrap(self, enc_alg, headers, key, preset: Incomplete | None = None) -> None: ...
     def unwrap(self, enc_alg, ek, headers, key) -> None: ...
 
 class JWEAlgorithmWithTagAwareKeyAgreement(JWEAlgorithmBase, metaclass=ABCMeta):
     """
-    Interface for JWE algorithm with tag-aware key agreement (in key agreement with key wrapping mode).
+    Interface for JWE algorithm with tag-aware key agreement (in key agreement
+    with key wrapping mode).
     ECDH-1PU is an example of such an algorithm.
     """
     def generate_keys_and_prepare_headers(self, enc_alg, key, sender_key, preset: Incomplete | None = None) -> None: ...
@@ -91,7 +90,8 @@ class JWEHeader(dict[str, object]):
     """
     Header object for JWE.
 
-    Combines protected header, shared unprotected header and specific recipient's unprotected header together.
+    Combines protected header, shared unprotected header
+    and specific recipient's unprotected header together.
     """
     protected: Incomplete
     unprotected: Incomplete

@@ -2,6 +2,10 @@ from _typeshed import Incomplete
 from typing import Final
 
 class ClientRegistrationEndpoint:
+    """
+    The client registration endpoint is an OAuth 2.0 endpoint designed to
+    allow a client to be registered with the authorization server.
+    """
     ENDPOINT_NAME: Final = "client_registration"
     software_statement_alg_values_supported: Incomplete
     server: Incomplete
@@ -44,7 +48,7 @@ class ClientRegistrationEndpoint:
         Developers MUST implement this method in subclass::
 
             def authenticate_token(self, request):
-                auth = request.headers.get('Authorization')
+                auth = request.headers.get("Authorization")
                 return get_token_by_auth(auth)
 
         :return: token instance

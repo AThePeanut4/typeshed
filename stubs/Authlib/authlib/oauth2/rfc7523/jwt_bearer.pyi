@@ -92,7 +92,7 @@ class JWTBearerGrant(BaseGrant, TokenEndpointMixin):
                 # from authlib.jose import JsonWebKey
 
                 key_set = JsonWebKey.import_key_set(client.jwks)
-                return key_set.find_by_kid(headers['kid'])
+                return key_set.find_by_kid(headers["kid"])
 
         :param client: instance of OAuth client model
         :param headers: headers part of the JWT

@@ -1,5 +1,5 @@
 """
-authlib.oauth2.rfc6749.models
+authlib.oauth2.rfc6749.models.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module defines how to construct Client, AuthorizationCode and Token.
@@ -48,7 +48,7 @@ class ClientMixin:
 
             def get_allowed_scope(self, scope):
                 if not scope:
-                    return ''
+                    return ""
                 allowed = set(scope_to_list(self.scope))
                 return list_to_scope([s for s in scope.split() if s in allowed])
 
@@ -76,6 +76,7 @@ class ClientMixin:
 
             import secrets
 
+
             def check_client_secret(self, client_secret):
                 return secrets.compare_digest(self.client_secret, client_secret)
 
@@ -90,7 +91,7 @@ class ClientMixin:
         Developers MAY re-implement this method with::
 
             def check_endpoint_auth_method(self, method, endpoint):
-                if endpoint == 'token':
+                if endpoint == "token":
                     # if client table has ``token_endpoint_auth_method``
                     return self.token_endpoint_auth_method == method
                 return True

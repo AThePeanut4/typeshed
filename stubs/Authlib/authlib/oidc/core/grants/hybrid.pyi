@@ -28,7 +28,7 @@ class OpenIDHybridGrant(OpenIDImplicitGrant):
                     client_id=client.client_id,
                     redirect_uri=request.redirect_uri,
                     scope=request.scope,
-                    nonce=request.data.get('nonce'),
+                    nonce=request.data.get("nonce"),
                     user_id=request.user.id,
                 )
                 auth_code.save()

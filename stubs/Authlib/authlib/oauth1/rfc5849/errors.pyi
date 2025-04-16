@@ -1,5 +1,5 @@
 """
-authlib.oauth1.rfc5849.errors
+authlib.oauth1.rfc5849.errors.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 RFC5849 has no definition on errors. This module is designed by

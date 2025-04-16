@@ -1,5 +1,5 @@
 """
-authlib.oidc.core
+authlib.oidc.core.
 ~~~~~~~~~~~~~~~~~
 
 OpenID Connect Core 1.0 Implementation.

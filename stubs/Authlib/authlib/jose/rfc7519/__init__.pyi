@@ -1,5 +1,5 @@
 """
-authlib.jose.rfc7519
+authlib.jose.rfc7519.
 ~~~~~~~~~~~~~~~~~~~~
 
 This module represents a direct implementation of

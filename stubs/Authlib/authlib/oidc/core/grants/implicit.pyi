@@ -29,10 +29,10 @@ class OpenIDImplicitGrant(ImplicitGrant):
 
             def get_jwt_config(self):
                 return {
-                    'key': read_private_key_file(key_path),
-                    'alg': 'RS256',
-                    'iss': 'issuer-identity',
-                    'exp': 3600
+                    "key": read_private_key_file(key_path),
+                    "alg": "RS256",
+                    "iss": "issuer-identity",
+                    "exp": 3600,
                 }
 
         :return: dict
@@ -45,10 +45,11 @@ class OpenIDImplicitGrant(ImplicitGrant):
 
             from authlib.oidc.core import UserInfo
 
+
             def generate_user_info(self, user, scope):
                 user_info = UserInfo(sub=user.id, name=user.name)
-                if 'email' in scope:
-                    user_info['email'] = user.email
+                if "email" in scope:
+                    user_info["email"] = user.email
                 return user_info
 
         :param user: user instance

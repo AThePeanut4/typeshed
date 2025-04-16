@@ -1,5 +1,5 @@
 """
-authlib.jose.rfc7518
+authlib.jose.rfc7518.
 ~~~~~~~~~~~~~~~~~~~~
 
 Cryptographic Algorithms for Cryptographic Algorithms for Content
@@ -54,7 +54,7 @@ class GCMEncAlgorithm(JWEEncAlgorithm):
     def __init__(self, key_size) -> None: ...
     def encrypt(self, msg, aad, iv, key):
         """
-        Key Encryption with AES GCM
+        Key Encryption with AES GCM.
 
         :param msg: text to be encrypt in bytes
         :param aad: additional authenticated data in bytes
@@ -65,7 +65,7 @@ class GCMEncAlgorithm(JWEEncAlgorithm):
         ...
     def decrypt(self, ciphertext, aad, iv, tag, key):
         """
-        Key Decryption with AES GCM
+        Key Decryption with AES GCM.
 
         :param ciphertext: ciphertext in bytes
         :param aad: additional authenticated data in bytes

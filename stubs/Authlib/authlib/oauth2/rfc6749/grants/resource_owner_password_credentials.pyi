@@ -4,7 +4,7 @@ class ResourceOwnerPasswordCredentialsGrant(BaseGrant, TokenEndpointMixin):
     """
     The resource owner password credentials grant type is suitable in
     cases where the resource owner has a trust relationship with the
-    client, such as the device operating system or a highly privileged
+    client, such as the device operating system or a highly privileged.
 
     application.  The authorization server should take special care when
     enabling this grant type and only allow it when other flows are not
@@ -105,12 +105,12 @@ class ResourceOwnerPasswordCredentialsGrant(BaseGrant, TokenEndpointMixin):
         ...
     def authenticate_user(self, username, password) -> None:
         """
-        validate the resource owner password credentials using its
+        Validate the resource owner password credentials using its
         existing password validation algorithm::
 
             def authenticate_user(self, username, password):
                 user = get_user_by_username(username)
                 if user.check_password(password):
-                   return user
+                    return user
         """
         ...

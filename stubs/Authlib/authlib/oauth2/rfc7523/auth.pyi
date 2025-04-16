@@ -10,10 +10,11 @@ class ClientSecretJWT:
 
         from authlib.integrations.requests_client import OAuth2Session
 
-        token_endpoint = 'https://example.com/oauth/token'
+        token_endpoint = "https://example.com/oauth/token"
         session = OAuth2Session(
-            'your-client-id', 'your-client-secret',
-            token_endpoint_auth_method='client_secret_jwt'
+            "your-client-id",
+            "your-client-secret",
+            token_endpoint_auth_method="client_secret_jwt",
         )
         session.register_client_auth_method(ClientSecretJWT(token_endpoint))
         session.fetch_token(token_endpoint)
@@ -48,10 +49,11 @@ class PrivateKeyJWT(ClientSecretJWT):
 
         from authlib.integrations.requests_client import OAuth2Session
 
-        token_endpoint = 'https://example.com/oauth/token'
+        token_endpoint = "https://example.com/oauth/token"
         session = OAuth2Session(
-            'your-client-id', 'your-client-private-key',
-            token_endpoint_auth_method='private_key_jwt'
+            "your-client-id",
+            "your-client-private-key",
+            token_endpoint_auth_method="private_key_jwt",
         )
         session.register_client_auth_method(PrivateKeyJWT(token_endpoint))
         session.fetch_token(token_endpoint)

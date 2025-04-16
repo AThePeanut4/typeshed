@@ -1,5 +1,5 @@
 """
-authlib.spec.rfc5849.parameters
+authlib.spec.rfc5849.parameters.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains methods related to `section 3.5`_ of the OAuth 1.0a spec.

@@ -1,5 +1,5 @@
 """
-authlib.util.urls
+authlib.util.urls.
 ~~~~~~~~~~~~~~~~~
 
 Wrapper functions for URL encoding and decoding.

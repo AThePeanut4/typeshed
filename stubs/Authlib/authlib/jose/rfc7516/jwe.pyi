@@ -122,24 +122,14 @@ class JsonWebEncryption:
                     "alg": "ECDH-1PU+A128KW",
                     "enc": "A256CBC-HS512",
                     "apu": "QWxpY2U",
-                    "apv": "Qm9iIGFuZCBDaGFybGll"
+                    "apv": "Qm9iIGFuZCBDaGFybGll",
                 },
-                "unprotected": {
-                    "jku": "https://alice.example.com/keys.jwks"
-                },
+                "unprotected": {"jku": "https://alice.example.com/keys.jwks"},
                 "recipients": [
-                    {
-                        "header": {
-                            "kid": "bob-key-2"
-                        }
-                    },
-                    {
-                        "header": {
-                            "kid": "2021-05-06"
-                        }
-                    }
+                    {"header": {"kid": "bob-key-2"}},
+                    {"header": {"kid": "2021-05-06"}},
                 ],
-                "aad": b'Authenticate me too.'
+                "aad": b"Authenticate me too.",
             }
         """
         ...

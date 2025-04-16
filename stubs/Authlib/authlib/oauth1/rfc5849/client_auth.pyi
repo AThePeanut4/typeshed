@@ -17,9 +17,10 @@ class ClientAuth:
 
             def custom_sign_method(client, request):
                 # client is the instance of Client.
-                return 'your-signed-string'
+                return "your-signed-string"
 
-            Client.register_signature_method('custom-name', custom_sign_method)
+
+            Client.register_signature_method("custom-name", custom_sign_method)
         """
         ...
     client_id: Incomplete
@@ -49,7 +50,7 @@ class ClientAuth:
     ) -> None: ...
     def get_oauth_signature(self, method, uri, headers, body):
         """
-        Get an OAuth signature to be used in signing a request
+        Get an OAuth signature to be used in signing a request.
 
         To satisfy `section 3.4.1.2`_ item 2, if the request argument's
         headers dict attribute contains a Host item, its value will

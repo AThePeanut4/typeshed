@@ -54,20 +54,32 @@ class AuthorizationServer:
         Developers MUST register a default token generator with a special
         ``grant_type=default``::
 
-            def generate_bearer_token(grant_type, client, user=None, scope=None,
-                                      expires_in=None, include_refresh_token=True):
-                token = {'token_type': 'Bearer', 'access_token': ...}
+            def generate_bearer_token(
+                grant_type,
+                client,
+                user=None,
+                scope=None,
+                expires_in=None,
+                include_refresh_token=True,
+            ):
+                token = {"token_type": "Bearer", "access_token": ...}
                 if include_refresh_token:
-                    token['refresh_token'] = ...
+                    token["refresh_token"] = ...
                 ...
                 return token
 
-            authorization_server.register_token_generator('default', generate_bearer_token)
+
+            authorization_server.register_token_generator(
+                "default", generate_bearer_token
+            )
 
         If you register a generator for a certain grant type, that generator will only works
         for the given grant type::
 
-            authorization_server.register_token_generator('client_credentials', generate_bearer_token)
+            authorization_server.register_token_generator(
+                "client_credentials",
+                generate_bearer_token,
+            )
 
         :param grant_type: string name of the grant type
         :param func: a function to generate token
@@ -94,13 +106,15 @@ class AuthorizationServer:
         an example for this method::
 
             def authenticate_client_via_custom(query_client, request):
-                client_id = request.headers['X-Client-Id']
+                client_id = request.headers["X-Client-Id"]
                 client = query_client(client_id)
                 do_some_validation(client)
                 return client
 
+
             authorization_server.register_client_auth_method(
-                'custom', authenticate_client_via_custom)
+                "custom", authenticate_client_via_custom
+            )
         """
         ...
     def get_error_uri(self, request, error) -> None:

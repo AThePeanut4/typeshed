@@ -140,7 +140,7 @@ class AuthorizationServer(BaseServer):
         ``TemporaryCredentialMixin``::
 
             def get_temporary_credential(self, request):
-                key = 'a-key-prefix:{}'.format(request.token)
+                key = "a-key-prefix:{}".format(request.token)
                 data = cache.get(key)
                 # TemporaryCredential shares methods from TemporaryCredentialMixin
                 return TemporaryCredential(data)
@@ -155,7 +155,7 @@ class AuthorizationServer(BaseServer):
         if temporary credential is saved in cache::
 
             def delete_temporary_credential(self, request):
-                key = 'a-key-prefix:{}'.format(request.token)
+                key = "a-key-prefix:{}".format(request.token)
                 cache.delete(key)
 
         :param request: OAuth1Request instance
@@ -198,7 +198,7 @@ class AuthorizationServer(BaseServer):
                     oauth_token=oauth_token,
                     oauth_token_secret=oauth_token_secret,
                     client_id=temporary_credential.get_client_id(),
-                    user_id=temporary_credential.get_user_id()
+                    user_id=temporary_credential.get_user_id(),
                 )
                 # if the credential has a save method
                 token_credential.save()

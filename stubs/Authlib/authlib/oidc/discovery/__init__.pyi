@@ -1,5 +1,5 @@
 """
-authlib.oidc.discover
+authlib.oidc.discover.
 ~~~~~~~~~~~~~~~~~~~~~
 
 OpenID Connect Discovery 1.0 Implementation.

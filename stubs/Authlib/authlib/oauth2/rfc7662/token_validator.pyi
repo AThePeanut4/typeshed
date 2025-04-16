@@ -12,8 +12,8 @@ class IntrospectTokenValidator(TokenValidator):
                 # for example, introspection token endpoint has limited
                 # internal IPs to access, so there is no need to add
                 # authentication.
-                url = 'https://example.com/oauth/introspect'
-                resp = requests.post(url, data={'token': token_string})
+                url = "https://example.com/oauth/introspect"
+                resp = requests.post(url, data={"token": token_string})
                 resp.raise_for_status()
                 return resp.json()
         """

@@ -38,7 +38,7 @@ class ClientConfigurationEndpoint:
         Developers MUST implement this method in subclass::
 
             def authenticate_token(self, request):
-                auth = request.headers.get('Authorization')
+                auth = request.headers.get("Authorization")
                 return get_token_by_auth(auth)
 
         :return: token instance
@@ -50,7 +50,7 @@ class ClientConfigurationEndpoint:
         Developers MUST implement this method in subclass::
 
             def authenticate_client(self, request):
-                client_id = request.data.get('client_id')
+                client_id = request.data.get("client_id")
                 return Client.get(client_id=client_id)
 
         :return: client instance
@@ -95,7 +95,9 @@ class ClientConfigurationEndpoint:
         in subclass::
 
             def update_client(self, client, client_metadata, request):
-                client.set_client_metadata({**client.client_metadata, **client_metadata})
+                client.set_client_metadata(
+                    {**client.client_metadata, **client_metadata}
+                )
                 client.save()
                 return client
 

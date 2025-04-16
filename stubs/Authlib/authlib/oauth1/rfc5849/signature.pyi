@@ -1,5 +1,5 @@
 """
-authlib.oauth1.rfc5849.signature
+authlib.oauth1.rfc5849.signature.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module represents a direct implementation of `section 3.4`_ of the spec.
@@ -151,7 +151,7 @@ def hmac_sha1_signature(base_string, client_secret, token_secret):
     The "HMAC-SHA1" signature method uses the HMAC-SHA1 signature
     algorithm as defined in `RFC2104`_::
 
-        digest = HMAC-SHA1 (key, text)
+        digest = HMAC - SHA1(key, text)
 
     .. _`RFC2104`: https://tools.ietf.org/html/rfc2104
     .. _`Section 3.4.2`: https://tools.ietf.org/html/rfc5849#section-3.4.2

@@ -27,7 +27,7 @@ class BaseOAuth:
         OAuth registry has ``.register`` a twitter client, developers may
         access the client with::
 
-            client = oauth.create_client('twitter')
+            client = oauth.create_client("twitter")
 
         :param: name: Name of the remote application
         :return: OAuth remote app

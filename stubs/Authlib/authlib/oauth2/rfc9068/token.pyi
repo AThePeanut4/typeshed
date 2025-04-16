@@ -8,21 +8,22 @@ class JWTBearerTokenGenerator(BearerTokenGenerator):
 
     :param issuer: The issuer identifier. Will appear in the JWT ``iss`` claim.
 
-    :param \*\*kwargs: Other parameters are inherited from
+    :param \\*\\*kwargs: Other parameters are inherited from
         :class:`~authlib.oauth2.rfc6750.token.BearerTokenGenerator`.
 
     This token generator can be registered into the authorization server::
 
         class MyJWTBearerTokenGenerator(JWTBearerTokenGenerator):
-            def get_jwks(self):
-                ...
+            def get_jwks(self): ...
 
-            def get_extra_claims(self, client, grant_type, user, scope):
-                ...
+            def get_extra_claims(self, client, grant_type, user, scope): ...
+
 
         authorization_server.register_token_generator(
-            'default',
-            MyJWTBearerTokenGenerator(issuer='https://authorization-server.example.org'),
+            "default",
+            MyJWTBearerTokenGenerator(
+                issuer="https://authorization-server.example.org"
+            ),
         )
     """
     issuer: Incomplete
@@ -78,8 +79,8 @@ class JWTBearerTokenGenerator(BearerTokenGenerator):
 
             def get_acr(self, user):
                 if user.insecure_session():
-                    return '0'
-                return 'urn:mace:incommon:iap:silver'
+                    return "0"
+                return "urn:mace:incommon:iap:silver"
 
         .. _ISO29115: https://www.iso.org/standard/45138.html
         """
@@ -103,7 +104,7 @@ class JWTBearerTokenGenerator(BearerTokenGenerator):
         the user. Developers MAY re-implement this method::
 
             def get_amr(self, user):
-                return ['2FA'] if user.has_2fa_enabled() else []
+                return ["2FA"] if user.has_2fa_enabled() else []
         """
         ...
     def get_jti(self, client, grant_type, user, scope) -> str:

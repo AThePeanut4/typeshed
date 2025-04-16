@@ -1,5 +1,5 @@
 """
-authlib.rfc6750.errors
+authlib.rfc6750.errors.
 ~~~~~~~~~~~~~~~~~~~~~~
 
 OAuth Extensions Error Registration. When a request fails,

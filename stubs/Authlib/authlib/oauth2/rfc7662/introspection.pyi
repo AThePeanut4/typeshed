@@ -45,7 +45,7 @@ class IntrospectionEndpoint(TokenEndpoint):
 
             def check_permission(self, token, client, request):
                 # only allow a special client to introspect the token
-                return client.client_id == 'introspection_client'
+                return client.client_id == "introspection_client"
 
         :return: bool
         """
@@ -56,9 +56,9 @@ class IntrospectionEndpoint(TokenEndpoint):
         Developers should implement this method::
 
             def query_token(self, token_string, token_type_hint):
-                if token_type_hint == 'access_token':
+                if token_type_hint == "access_token":
                     tok = Token.query_by_access_token(token_string)
-                elif token_type_hint == 'refresh_token':
+                elif token_type_hint == "refresh_token":
                     tok = Token.query_by_refresh_token(token_string)
                 else:
                     tok = Token.query_by_access_token(token_string)
@@ -74,16 +74,16 @@ class IntrospectionEndpoint(TokenEndpoint):
 
             def introspect_token(self, token):
                 return {
-                    'active': True,
-                    'client_id': token.client_id,
-                    'token_type': token.token_type,
-                    'username': get_token_username(token),
-                    'scope': token.get_scope(),
-                    'sub': get_token_user_sub(token),
-                    'aud': token.client_id,
-                    'iss': 'https://server.example.com/',
-                    'exp': token.expires_at,
-                    'iat': token.issued_at,
+                    "active": True,
+                    "client_id": token.client_id,
+                    "token_type": token.token_type,
+                    "username": get_token_username(token),
+                    "scope": token.get_scope(),
+                    "sub": get_token_user_sub(token),
+                    "aud": token.client_id,
+                    "iss": "https://server.example.com/",
+                    "exp": token.expires_at,
+                    "iat": token.issued_at,
                 }
 
         .. _`Section 2.2`: https://tools.ietf.org/html/rfc7662#section-2.2
