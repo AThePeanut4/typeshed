@@ -1,4 +1,4 @@
-from .base import AuthenticationBase as AuthenticationBase
+from .base import AuthenticationBase
 
 class PushedAuthorizationRequests(AuthenticationBase):
     """Pushed Authorization Request (PAR) endpoint"""

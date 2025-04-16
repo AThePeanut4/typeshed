@@ -3,8 +3,6 @@
 from _typeshed import Incomplete
 from typing import ClassVar
 
-from auth0.exceptions import TokenValidationError as TokenValidationError
-
 class SignatureVerifier:
     """
     Abstract class that will verify a given JSON web token's signature

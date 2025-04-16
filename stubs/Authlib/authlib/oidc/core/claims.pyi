@@ -87,25 +87,14 @@ class IDToken(JWTClaims):
 
 class CodeIDToken(IDToken):
     RESPONSE_TYPES: Incomplete
-    REGISTERED_CLAIMS: Incomplete
 
 class ImplicitIDToken(IDToken):
     RESPONSE_TYPES: Incomplete
     ESSENTIAL_CLAIMS: Incomplete
-    REGISTERED_CLAIMS: Incomplete
-    def validate_at_hash(self) -> None:
-        """
-        If the ID Token is issued from the Authorization Endpoint with an
-        access_token value, which is the case for the response_type value
-        id_token token, this is REQUIRED; it MAY NOT be used when no Access
-        Token is issued, which is the case for the response_type value
-        id_token.
-        """
-        ...
+    def validate_at_hash(self) -> None: ...
 
 class HybridIDToken(ImplicitIDToken):
     RESPONSE_TYPES: Incomplete
-    REGISTERED_CLAIMS: Incomplete
     def validate(self, now: Incomplete | None = None, leeway: int = 0) -> None: ...
     def validate_c_hash(self) -> None:
         """

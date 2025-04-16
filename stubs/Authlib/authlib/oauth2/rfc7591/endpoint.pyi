@@ -1,24 +1,16 @@
 from _typeshed import Incomplete
-
-from authlib.oauth2.rfc7591 import ClientMetadataClaims
+from typing import Final
 
 class ClientRegistrationEndpoint:
-    """
-    The client registration endpoint is an OAuth 2.0 endpoint designed to
-    allow a client to be registered with the authorization server.
-    """
-    ENDPOINT_NAME: str
-    claims_class = ClientMetadataClaims
+    ENDPOINT_NAME: Final = "client_registration"
     software_statement_alg_values_supported: Incomplete
     server: Incomplete
-    def __init__(self, server) -> None: ...
-    def __call__(self, request): ...
+    claims_classes: list[type[Incomplete]]
+    def __init__(self, server: Incomplete | None = None, claims_classes: list[type[Incomplete]] | None = None) -> None: ...
+    def __call__(self, request) -> dict[Incomplete, Incomplete]: ...
     def create_registration_response(self, request): ...
     def extract_client_metadata(self, request): ...
     def extract_software_statement(self, software_statement, request): ...
-    def get_claims_options(self):
-        """Generate claims options validation from Authorization Server metadata."""
-        ...
     def generate_client_info(self): ...
     def generate_client_registration_info(self, client, request) -> None:
         """

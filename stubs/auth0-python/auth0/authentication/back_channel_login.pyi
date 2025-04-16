@@ -1,4 +1,4 @@
-from .base import AuthenticationBase as AuthenticationBase
+from .base import AuthenticationBase
 
 class BackChannelLogin(AuthenticationBase):
     """Back-Channel Login endpoint"""

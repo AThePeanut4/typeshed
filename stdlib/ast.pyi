@@ -2364,30 +2364,12 @@ if sys.version_info >= (3, 14):
     def compare(left: AST, right: AST, /, *, compare_attributes: bool = False) -> bool: ...
 
 class NodeVisitor:
-    """
-    A node visitor base class that walks the abstract syntax tree and calls a
-    visitor function for every node found.  This function may return a value
-    which is forwarded by the `visit` method.
-
-    This class is meant to be subclassed, with the subclass adding visitor
-    methods.
-
-    Per default the visitor functions for the nodes are ``'visit_'`` +
-    class name of the node.  So a `TryFinally` node visit function would
-    be `visit_TryFinally`.  This behavior can be changed by overriding
-    the `visit` method.  If no visitor function exists for a node
-    (return value `None`) the `generic_visit` visitor is used instead.
-
-    Don't use the `NodeVisitor` if you want to apply changes to nodes during
-    traversing.  For this a special visitor exists (`NodeTransformer`) that
-    allows modifications.
-    """
-    def visit(self, node: AST) -> Any:
-        """Visit a node."""
-        ...
-    def generic_visit(self, node: AST) -> Any:
-        """Called if no explicit visitor function exists for a node."""
-        ...
+    # All visit methods below can be overwritten by subclasses and return an
+    # arbitrary value, which is passed to the caller.
+    def visit(self, node: AST) -> Any: ...
+    def generic_visit(self, node: AST) -> Any: ...
+    # The following visit methods are not defined on NodeVisitor, but can
+    # be implemented by subclasses and are called during a visit if defined.
     def visit_Module(self, node: Module) -> Any: ...
     def visit_Interactive(self, node: Interactive) -> Any: ...
     def visit_Expression(self, node: Expression) -> Any: ...
