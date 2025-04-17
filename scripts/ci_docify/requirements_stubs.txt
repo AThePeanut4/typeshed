@@ -17,7 +17,7 @@ networkx==3.4.2
 beautifulsoup4[html5lib,lxml]==4.12.*
 click-default-group==1.2.*
 toml==0.10.*
-pyinstaller==6.12.*
+pyinstaller==6.13.*
 vobject~=0.9.9
 qrcode[pil]==8.1.*
 pycocotools==2.0.*
@@ -48,7 +48,7 @@ dockerfile-parse==2.0.*
 lupa==2.4.*
 gevent==24.11.*
 Authlib==1.5.0
-greenlet==3.1.*
+greenlet==3.2.*
 Flask-Migrate==4.1.*
 docker==7.1.*
 pyserial[cp2110]==3.5.*
