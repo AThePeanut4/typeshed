@@ -36,6 +36,29 @@ class VSVersionInfo:
     def __str__(self, indent: str = "") -> str: ...
 
 class FixedFileInfo:
+    """
+    DWORD dwSignature;        //Contains the value 0xFEEFO4BD
+    DWORD dwStrucVersion;     // binary version number of this structure.
+                              // The high-order word of this member contains
+                              // the major version number, and the low-order
+                              // word contains the minor version number.
+    DWORD dwFileVersionMS;    // most significant 32 bits of the file's binary
+                              // version number
+    DWORD dwFileVersionLS;    //
+    DWORD dwProductVersionMS; // most significant 32 bits of the binary version
+                              // number of the product with which this file was
+                              // distributed
+    DWORD dwProductVersionLS; //
+    DWORD dwFileFlagsMask;    // bitmask that specifies the valid bits in
+                              // dwFileFlags. A bit is valid only if it was
+                              // defined when the file was created.
+    DWORD dwFileFlags;        // VS_FF_DEBUG, VS_FF_PATCHED etc.
+    DWORD dwFileOS;           // VOS_NT, VOS_WINDOWS32 etc.
+    DWORD dwFileType;         // VFT_APP etc.
+    DWORD dwFileSubtype;      // 0 unless VFT_DRV or VFT_FONT or VFT_VXD
+    DWORD dwFileDateMS;
+    DWORD dwFileDateLS;
+    """
     sig: int
     strucVersion: int
     fileVersionMS: int
@@ -65,6 +88,15 @@ class FixedFileInfo:
     def __str__(self, indent: str = "") -> str: ...
 
 class StringFileInfo:
+    """
+    WORD        wLength;      // length of the version resource
+    WORD        wValueLength; // length of the Value member in the current
+                              // VS_VERSION_INFO structure
+    WORD        wType;        // 1 means text, 0 means binary
+    WCHAR       szKey[];      // Contains the Unicode string 'StringFileInfo'.
+    WORD        Padding[];
+    StringTable Children[];   // list of zero or more String structures
+    """
     name: str
     kids: list[_Kid]
     def __init__(self, kids: list[_Kid] | None = None) -> None: ...
@@ -73,6 +105,13 @@ class StringFileInfo:
     def __str__(self, indent: str = "") -> str: ...
 
 class StringTable:
+    """
+    WORD   wLength;
+    WORD   wValueLength;
+    WORD   wType;
+    WCHAR  szKey[];
+    String Children[];    // list of zero or more String structures.
+    """
     name: str
     kids: list[_Kid]
     def __init__(self, name: str | None = None, kids: list[_Kid] | None = None) -> None: ...
@@ -81,6 +120,14 @@ class StringTable:
     def __str__(self, indent: str = "") -> str: ...
 
 class StringStruct:
+    """
+    WORD   wLength;
+    WORD   wValueLength;
+    WORD   wType;
+    WCHAR  szKey[];
+    WORD   Padding[];
+    String Value[];
+    """
     name: str
     val: str
     def __init__(self, name: str | None = None, val: str | None = None) -> None: ...
@@ -89,6 +136,15 @@ class StringStruct:
     def __str__(self, indent: Unused = "") -> str: ...
 
 class VarFileInfo:
+    """
+    WORD  wLength;        // length of the version resource
+    WORD  wValueLength;   // length of the Value member in the current
+                          // VS_VERSION_INFO structure
+    WORD  wType;          // 1 means text, 0 means binary
+    WCHAR szKey[];        // Contains the Unicode string 'VarFileInfo'.
+    WORD  Padding[];
+    Var   Children[];     // list of zero or more Var structures
+    """
     kids: list[_Kid]
     def __init__(self, kids: list[_Kid] | None = None) -> None: ...
     sublen: int
@@ -100,6 +156,17 @@ class VarFileInfo:
     def __str__(self, indent: str = "") -> str: ...
 
 class VarStruct:
+    """
+    WORD  wLength;        // length of the version resource
+    WORD  wValueLength;   // length of the Value member in the current
+                          // VS_VERSION_INFO structure
+    WORD  wType;          // 1 means text, 0 means binary
+    WCHAR szKey[];        // Contains the Unicode string 'Translation'
+                          // or a user-defined key string value
+    WORD  Padding[];      //
+    WORD  Value[];        // list of one or more values that are language
+                          // and code-page identifiers
+    """
     name: str
     kids: list[Any]  # Whatever can be passed to struct.pack
     def __init__(self, name: str | None = None, kids: list[Any] | None = None) -> None: ...

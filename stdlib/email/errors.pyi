@@ -22,7 +22,9 @@ class CharsetError(MessageError):
     ...
 
 # Added in Python 3.9.20, 3.10.15, 3.11.10, 3.12.5
-class HeaderWriteError(MessageError): ...
+class HeaderWriteError(MessageError):
+    """Error while writing headers."""
+    ...
 
 class MessageDefect(ValueError):
     """Base class for a message defect."""

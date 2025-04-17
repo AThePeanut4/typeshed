@@ -43,11 +43,43 @@ def unquote(str: str) -> str:
     ...
 
 # `strict` parameter added in Python 3.9.20, 3.10.15, 3.11.10, 3.12.5
-def parseaddr(addr: str | list[str], *, strict: bool = True) -> tuple[str, str]: ...
-def formataddr(pair: tuple[str | None, str], charset: str | Charset = "utf-8") -> str: ...
+def parseaddr(addr: str | list[str], *, strict: bool = True) -> tuple[str, str]:
+    """
+    Parse addr into its constituent realname and email address parts.
+
+    Return a tuple of realname and email address, unless the parse fails, in
+    which case return a 2-tuple of ('', '').
+
+    If strict is True, use a strict parser which rejects malformed inputs.
+    """
+    ...
+def formataddr(pair: tuple[str | None, str], charset: str | Charset = "utf-8") -> str:
+    """
+    The inverse of parseaddr(), this takes a 2-tuple of the form
+    (realname, email_address) and returns the string value suitable
+    for an RFC 2822 From, To or Cc header.
+
+    If the first element of pair is false, then the second element is
+    returned unmodified.
+
+    The optional charset is the character set that is used to encode
+    realname in case realname is not ASCII safe.  Can be an instance of str or
+    a Charset-like object which has a header_encode method.  Default is
+    'utf-8'.
+    """
+    ...
 
 # `strict` parameter added in Python 3.9.20, 3.10.15, 3.11.10, 3.12.5
-def getaddresses(fieldvalues: Iterable[str], *, strict: bool = True) -> list[tuple[str, str]]: ...
+def getaddresses(fieldvalues: Iterable[str], *, strict: bool = True) -> list[tuple[str, str]]:
+    """
+    Return a list of (REALNAME, EMAIL) or ('','') for each fieldvalue.
+
+    When parsing fails for a fieldvalue, a 2-tuple of ('', '') is returned in
+    its place.
+
+    If strict is true, use a strict parser which rejects malformed inputs.
+    """
+    ...
 @overload
 def parsedate(data: None) -> None:
     """Convert a time string to a time tuple."""

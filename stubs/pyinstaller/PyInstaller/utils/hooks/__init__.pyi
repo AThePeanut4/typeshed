@@ -369,9 +369,80 @@ def collect_data_files(
     ...
 def collect_system_data_files(
     path: str, destdir: StrPath | None = None, include_py_files: bool = False
-) -> list[tuple[str, str]]: ...
-def copy_metadata(package_name: str, recursive: bool = False) -> list[tuple[str, str]]: ...
-def get_installer(dist_name: str) -> str | None: ...
+) -> list[tuple[str, str]]:
+    """
+    This function produces a list of (source, dest) non-Python (i.e., data) files that reside somewhere on the system.
+    Its output can be directly assigned to ``datas`` in a hook script.
+
+    This function is intended to be used by hook scripts, not by main PyInstaller code.
+    """
+    ...
+def copy_metadata(package_name: str, recursive: bool = False) -> list[tuple[str, str]]:
+    r"""
+    Collect distribution metadata so that ``importlib.metadata.distribution()`` or ``pkg_resources.get_distribution()``
+    can find it.
+
+    This function returns a list to be assigned to the ``datas`` global variable. This list instructs PyInstaller to
+    copy the metadata for the given package to the frozen application's data directory.
+
+    Parameters
+    ----------
+    package_name : str
+        Specifies the name of the package for which metadata should be copied.
+    recursive : bool
+        If true, collect metadata for the package's dependencies too. This enables use of
+        ``importlib.metadata.requires('package')`` or ``pkg_resources.require('package')`` inside the frozen
+        application.
+
+    Returns
+    -------
+    list
+        This should be assigned to ``datas``.
+
+    Examples
+    --------
+        >>> from PyInstaller.utils.hooks import copy_metadata
+        >>> copy_metadata('sphinx')
+        [('c:\python27\lib\site-packages\Sphinx-1.3.2.dist-info',
+          'Sphinx-1.3.2.dist-info')]
+
+
+    Some packages rely on metadata files accessed through the ``importlib.metadata`` (or the now-deprecated
+    ``pkg_resources``) module. PyInstaller does not collect these metadata files by default.
+    If a package fails without the metadata (either its own, or of another package that it depends on), you can use this
+    function in a hook to collect the corresponding metadata files into the frozen application. The tuples in the
+    returned list contain two strings. The first is the full path to the package's metadata directory on the system. The
+    second is the destination name, which typically corresponds to the basename of the metadata directory. Adding these
+    tuples the the ``datas`` hook global variable, the metadata is collected into top-level application directory (where
+    it is usually searched for).
+
+    .. versionchanged:: 4.3.1
+
+        Prevent ``dist-info`` metadata folders being renamed to ``egg-info`` which broke ``pkg_resources.require`` with
+        *extras* (see :issue:`#3033`).
+
+    .. versionchanged:: 4.4.0
+
+        Add the **recursive** option.
+    """
+    ...
+def get_installer(dist_name: str) -> str | None:
+    """
+    Try to find which package manager installed the specified distribution (e.g., pip, conda, rpm) by reading INSTALLER
+    file from distribution's metadata.
+
+    If the specified distribution does not exist, fall back to treating the passed name as importable package/module
+    name, and attempt to look up its associated distribution name; this matches the behavior of implementation found
+    in older PyInstaller versions (<= v6.12.0).
+
+    :param dist_name: Name of distribution to look up
+    :return: Name of package manager or None
+
+    .. versionchanged:: 6.13
+        The passed name is now first treated as a distribution name (direct look-up), and only if that fails, it is
+        treated as importable package/module name.
+    """
+    ...
 def collect_all(
     package_name: str,
     include_py_files: bool = True,
