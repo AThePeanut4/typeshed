@@ -1,3 +1,5 @@
+"""Methods that yield new objects not derived from set-theoretic analysis."""
+
 from collections.abc import Sequence
 from typing import Any, Literal, SupportsIndex, overload
 from typing_extensions import TypeAlias
@@ -46,13 +48,35 @@ __all__ = [
 _Method: TypeAlias = Literal["linework", "structure"]
 
 class BufferCapStyle(ParamEnum):
-    """An enumeration."""
+    """
+    Enumeration of buffer cap styles.
+
+    Attributes
+    ----------
+    round : int
+        Represents a round cap style.
+    flat : int
+        Represents a flat cap style.
+    square : int
+        Represents a square cap style.
+    """
     round = 1
     flat = 2
     square = 3
 
 class BufferJoinStyle(ParamEnum):
-    """An enumeration."""
+    """
+    Enumeration of buffer join styles.
+
+    Attributes
+    ----------
+    round : int
+        Specifies a round join style.
+    mitre : int
+        Specifies a mitre join style.
+    bevel : int
+        Specifies a bevel join style.
+    """
     round = 1
     mitre = 2
     bevel = 3
@@ -60,186 +84,204 @@ class BufferJoinStyle(ParamEnum):
 @overload
 def boundary(geometry: Point | MultiPoint, **kwargs) -> GeometryCollection:
     """
-    Returns the topological boundary of a geometry.
+    Return the topological boundary of a geometry.
+
+    This function will return None for geometrycollections.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        This function will return None for geometrycollections.
+        Geometry for which to return the boundary.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, Point, Polygon
-    >>> boundary(Point(0, 0))
+    >>> shapely.boundary(Point(0, 0))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(LineString([(0, 0), (1, 1), (1, 2)]))
-    <MULTIPOINT (0 0, 1 2)>
-    >>> boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(LineString([(0, 0), (1, 1), (1, 2)]))
+    <MULTIPOINT ((0 0), (1 2))>
+    >>> shapely.boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <MULTIPOINT EMPTY>
-    >>> boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)>
-    >>> boundary(MultiPoint([(0, 0), (1, 2)]))
+    >>> shapely.boundary(MultiPoint([(0, 0), (1, 2)]))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
-    <MULTIPOINT (0 0, 0 1, 1 0, 1 1)>
-    >>> boundary(GeometryCollection([Point(0, 0)])) is None
+    >>> shapely.boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
+    <MULTIPOINT ((0 0), (0 1), (1 0), (1 1))>
+    >>> shapely.boundary(GeometryCollection([Point(0, 0)])) is None
     True
     """
     ...
 @overload
 def boundary(geometry: LineString | MultiLineString, **kwargs) -> MultiPoint:
     """
-    Returns the topological boundary of a geometry.
+    Return the topological boundary of a geometry.
+
+    This function will return None for geometrycollections.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        This function will return None for geometrycollections.
+        Geometry for which to return the boundary.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, Point, Polygon
-    >>> boundary(Point(0, 0))
+    >>> shapely.boundary(Point(0, 0))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(LineString([(0, 0), (1, 1), (1, 2)]))
-    <MULTIPOINT (0 0, 1 2)>
-    >>> boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(LineString([(0, 0), (1, 1), (1, 2)]))
+    <MULTIPOINT ((0 0), (1 2))>
+    >>> shapely.boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <MULTIPOINT EMPTY>
-    >>> boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)>
-    >>> boundary(MultiPoint([(0, 0), (1, 2)]))
+    >>> shapely.boundary(MultiPoint([(0, 0), (1, 2)]))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
-    <MULTIPOINT (0 0, 0 1, 1 0, 1 1)>
-    >>> boundary(GeometryCollection([Point(0, 0)])) is None
+    >>> shapely.boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
+    <MULTIPOINT ((0 0), (0 1), (1 0), (1 1))>
+    >>> shapely.boundary(GeometryCollection([Point(0, 0)])) is None
     True
     """
     ...
 @overload
 def boundary(geometry: Polygon | MultiPolygon, **kwargs) -> MultiLineString:
     """
-    Returns the topological boundary of a geometry.
+    Return the topological boundary of a geometry.
+
+    This function will return None for geometrycollections.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        This function will return None for geometrycollections.
+        Geometry for which to return the boundary.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, Point, Polygon
-    >>> boundary(Point(0, 0))
+    >>> shapely.boundary(Point(0, 0))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(LineString([(0, 0), (1, 1), (1, 2)]))
-    <MULTIPOINT (0 0, 1 2)>
-    >>> boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(LineString([(0, 0), (1, 1), (1, 2)]))
+    <MULTIPOINT ((0 0), (1 2))>
+    >>> shapely.boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <MULTIPOINT EMPTY>
-    >>> boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)>
-    >>> boundary(MultiPoint([(0, 0), (1, 2)]))
+    >>> shapely.boundary(MultiPoint([(0, 0), (1, 2)]))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
-    <MULTIPOINT (0 0, 0 1, 1 0, 1 1)>
-    >>> boundary(GeometryCollection([Point(0, 0)])) is None
+    >>> shapely.boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
+    <MULTIPOINT ((0 0), (0 1), (1 0), (1 1))>
+    >>> shapely.boundary(GeometryCollection([Point(0, 0)])) is None
     True
     """
     ...
 @overload
 def boundary(geometry: GeometryCollection | None, **kwargs) -> None:
     """
-    Returns the topological boundary of a geometry.
+    Return the topological boundary of a geometry.
+
+    This function will return None for geometrycollections.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        This function will return None for geometrycollections.
+        Geometry for which to return the boundary.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, Point, Polygon
-    >>> boundary(Point(0, 0))
+    >>> shapely.boundary(Point(0, 0))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(LineString([(0, 0), (1, 1), (1, 2)]))
-    <MULTIPOINT (0 0, 1 2)>
-    >>> boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(LineString([(0, 0), (1, 1), (1, 2)]))
+    <MULTIPOINT ((0 0), (1 2))>
+    >>> shapely.boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <MULTIPOINT EMPTY>
-    >>> boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)>
-    >>> boundary(MultiPoint([(0, 0), (1, 2)]))
+    >>> shapely.boundary(MultiPoint([(0, 0), (1, 2)]))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
-    <MULTIPOINT (0 0, 0 1, 1 0, 1 1)>
-    >>> boundary(GeometryCollection([Point(0, 0)])) is None
+    >>> shapely.boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
+    <MULTIPOINT ((0 0), (0 1), (1 0), (1 1))>
+    >>> shapely.boundary(GeometryCollection([Point(0, 0)])) is None
     True
     """
     ...
 @overload
 def boundary(geometry: Geometry, **kwargs) -> BaseMultipartGeometry | Any:
     """
-    Returns the topological boundary of a geometry.
+    Return the topological boundary of a geometry.
+
+    This function will return None for geometrycollections.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        This function will return None for geometrycollections.
+        Geometry for which to return the boundary.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, Point, Polygon
-    >>> boundary(Point(0, 0))
+    >>> shapely.boundary(Point(0, 0))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(LineString([(0, 0), (1, 1), (1, 2)]))
-    <MULTIPOINT (0 0, 1 2)>
-    >>> boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(LineString([(0, 0), (1, 1), (1, 2)]))
+    <MULTIPOINT ((0 0), (1 2))>
+    >>> shapely.boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <MULTIPOINT EMPTY>
-    >>> boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)>
-    >>> boundary(MultiPoint([(0, 0), (1, 2)]))
+    >>> shapely.boundary(MultiPoint([(0, 0), (1, 2)]))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
-    <MULTIPOINT (0 0, 0 1, 1 0, 1 1)>
-    >>> boundary(GeometryCollection([Point(0, 0)])) is None
+    >>> shapely.boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
+    <MULTIPOINT ((0 0), (0 1), (1 0), (1 1))>
+    >>> shapely.boundary(GeometryCollection([Point(0, 0)])) is None
     True
     """
     ...
 @overload
 def boundary(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns the topological boundary of a geometry.
+    Return the topological boundary of a geometry.
+
+    This function will return None for geometrycollections.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        This function will return None for geometrycollections.
+        Geometry for which to return the boundary.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, Point, Polygon
-    >>> boundary(Point(0, 0))
+    >>> shapely.boundary(Point(0, 0))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(LineString([(0, 0), (1, 1), (1, 2)]))
-    <MULTIPOINT (0 0, 1 2)>
-    >>> boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(LineString([(0, 0), (1, 1), (1, 2)]))
+    <MULTIPOINT ((0 0), (1 2))>
+    >>> shapely.boundary(LinearRing([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <MULTIPOINT EMPTY>
-    >>> boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.boundary(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)>
-    >>> boundary(MultiPoint([(0, 0), (1, 2)]))
+    >>> shapely.boundary(MultiPoint([(0, 0), (1, 2)]))
     <GEOMETRYCOLLECTION EMPTY>
-    >>> boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
-    <MULTIPOINT (0 0, 0 1, 1 0, 1 1)>
-    >>> boundary(GeometryCollection([Point(0, 0)])) is None
+    >>> shapely.boundary(MultiLineString([[(0, 0), (1, 1)], [(0, 1), (1, 0)]]))
+    <MULTIPOINT ((0 0), (0 1), (1 0), (1 1))>
+    >>> shapely.boundary(GeometryCollection([Point(0, 0)])) is None
     True
     """
     ...
@@ -255,7 +297,7 @@ def buffer(
     **kwargs,
 ) -> Polygon:
     """
-    Computes the buffer of a geometry for positive and negative buffer distance.
+    Compute the buffer of a geometry for positive and negative buffer distance.
 
     The buffer of a geometry is defined as the Minkowski sum (or difference,
     for negative distance) of the geometry with a circle with radius equal
@@ -267,6 +309,7 @@ def buffer(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the buffer.
     distance : float or array_like
         Specifies the circle radius in the Minkowski sum (or difference).
     quad_segs : int, default 8
@@ -291,37 +334,47 @@ def buffer(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``,  ``cap_style``,
+        ``join_style``, ``mitre_limit`` or ``single_sided`` are
+        specified as positional arguments. In a future release, these will
+        need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, BufferCapStyle, BufferJoinStyle
-    >>> buffer(Point(10, 10), 2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=1)
     <POLYGON ((12 10, 10 8, 8 10, 10 12, 12 10))>
-    >>> buffer(Point(10, 10), 2, quad_segs=2)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=2)
     <POLYGON ((12 10, 11.414 8.586, 10 8, 8.586 8.586, 8 10, 8.5...>
-    >>> buffer(Point(10, 10), -2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), -2, quad_segs=1)
     <POLYGON EMPTY>
     >>> line = LineString([(10, 10), (20, 10)])
-    >>> buffer(line, 2, cap_style="square")
+    >>> shapely.buffer(line, 2, cap_style="square")
     <POLYGON ((20 12, 22 12, 22 8, 10 8, 8 8, 8 12, 20 12))>
-    >>> buffer(line, 2, cap_style="flat")
+    >>> shapely.buffer(line, 2, cap_style="flat")
     <POLYGON ((20 12, 20 8, 10 8, 10 12, 20 12))>
-    >>> buffer(line, 2, single_sided=True, cap_style="flat")
+    >>> shapely.buffer(line, 2, single_sided=True, cap_style="flat")
     <POLYGON ((20 10, 10 10, 10 12, 20 12, 20 10))>
     >>> line2 = LineString([(10, 10), (20, 10), (20, 20)])
-    >>> buffer(line2, 2, cap_style="flat", join_style="bevel")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="bevel")
     <POLYGON ((18 12, 18 20, 22 20, 22 10, 20 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre")
     <POLYGON ((18 12, 18 20, 22 20, 22 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
     <POLYGON ((18 12, 18 20, 22 20, 22 9.172, 20.828 8, 10 8, 10 12, 18 12))>
     >>> square = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> buffer(square, 2, join_style="mitre")
+    >>> shapely.buffer(square, 2, join_style="mitre")
     <POLYGON ((-2 -2, -2 12, 12 12, 12 -2, -2 -2))>
-    >>> buffer(square, -2, join_style="mitre")
+    >>> shapely.buffer(square, -2, join_style="mitre")
     <POLYGON ((2 2, 2 8, 8 8, 8 2, 2 2))>
-    >>> buffer(square, -5, join_style="mitre")
+    >>> shapely.buffer(square, -5, join_style="mitre")
     <POLYGON EMPTY>
-    >>> buffer(line, float("nan")) is None
+    >>> shapely.buffer(line, float("nan")) is None
     True
     """
     ...
@@ -337,7 +390,7 @@ def buffer(
     **kwargs,
 ) -> None:
     """
-    Computes the buffer of a geometry for positive and negative buffer distance.
+    Compute the buffer of a geometry for positive and negative buffer distance.
 
     The buffer of a geometry is defined as the Minkowski sum (or difference,
     for negative distance) of the geometry with a circle with radius equal
@@ -349,6 +402,7 @@ def buffer(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the buffer.
     distance : float or array_like
         Specifies the circle radius in the Minkowski sum (or difference).
     quad_segs : int, default 8
@@ -373,37 +427,47 @@ def buffer(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``,  ``cap_style``,
+        ``join_style``, ``mitre_limit`` or ``single_sided`` are
+        specified as positional arguments. In a future release, these will
+        need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, BufferCapStyle, BufferJoinStyle
-    >>> buffer(Point(10, 10), 2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=1)
     <POLYGON ((12 10, 10 8, 8 10, 10 12, 12 10))>
-    >>> buffer(Point(10, 10), 2, quad_segs=2)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=2)
     <POLYGON ((12 10, 11.414 8.586, 10 8, 8.586 8.586, 8 10, 8.5...>
-    >>> buffer(Point(10, 10), -2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), -2, quad_segs=1)
     <POLYGON EMPTY>
     >>> line = LineString([(10, 10), (20, 10)])
-    >>> buffer(line, 2, cap_style="square")
+    >>> shapely.buffer(line, 2, cap_style="square")
     <POLYGON ((20 12, 22 12, 22 8, 10 8, 8 8, 8 12, 20 12))>
-    >>> buffer(line, 2, cap_style="flat")
+    >>> shapely.buffer(line, 2, cap_style="flat")
     <POLYGON ((20 12, 20 8, 10 8, 10 12, 20 12))>
-    >>> buffer(line, 2, single_sided=True, cap_style="flat")
+    >>> shapely.buffer(line, 2, single_sided=True, cap_style="flat")
     <POLYGON ((20 10, 10 10, 10 12, 20 12, 20 10))>
     >>> line2 = LineString([(10, 10), (20, 10), (20, 20)])
-    >>> buffer(line2, 2, cap_style="flat", join_style="bevel")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="bevel")
     <POLYGON ((18 12, 18 20, 22 20, 22 10, 20 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre")
     <POLYGON ((18 12, 18 20, 22 20, 22 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
     <POLYGON ((18 12, 18 20, 22 20, 22 9.172, 20.828 8, 10 8, 10 12, 18 12))>
     >>> square = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> buffer(square, 2, join_style="mitre")
+    >>> shapely.buffer(square, 2, join_style="mitre")
     <POLYGON ((-2 -2, -2 12, 12 12, 12 -2, -2 -2))>
-    >>> buffer(square, -2, join_style="mitre")
+    >>> shapely.buffer(square, -2, join_style="mitre")
     <POLYGON ((2 2, 2 8, 8 8, 8 2, 2 2))>
-    >>> buffer(square, -5, join_style="mitre")
+    >>> shapely.buffer(square, -5, join_style="mitre")
     <POLYGON EMPTY>
-    >>> buffer(line, float("nan")) is None
+    >>> shapely.buffer(line, float("nan")) is None
     True
     """
     ...
@@ -419,7 +483,7 @@ def buffer(
     **kwargs,
 ) -> Polygon | None:
     """
-    Computes the buffer of a geometry for positive and negative buffer distance.
+    Compute the buffer of a geometry for positive and negative buffer distance.
 
     The buffer of a geometry is defined as the Minkowski sum (or difference,
     for negative distance) of the geometry with a circle with radius equal
@@ -431,6 +495,7 @@ def buffer(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the buffer.
     distance : float or array_like
         Specifies the circle radius in the Minkowski sum (or difference).
     quad_segs : int, default 8
@@ -455,37 +520,47 @@ def buffer(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``,  ``cap_style``,
+        ``join_style``, ``mitre_limit`` or ``single_sided`` are
+        specified as positional arguments. In a future release, these will
+        need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, BufferCapStyle, BufferJoinStyle
-    >>> buffer(Point(10, 10), 2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=1)
     <POLYGON ((12 10, 10 8, 8 10, 10 12, 12 10))>
-    >>> buffer(Point(10, 10), 2, quad_segs=2)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=2)
     <POLYGON ((12 10, 11.414 8.586, 10 8, 8.586 8.586, 8 10, 8.5...>
-    >>> buffer(Point(10, 10), -2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), -2, quad_segs=1)
     <POLYGON EMPTY>
     >>> line = LineString([(10, 10), (20, 10)])
-    >>> buffer(line, 2, cap_style="square")
+    >>> shapely.buffer(line, 2, cap_style="square")
     <POLYGON ((20 12, 22 12, 22 8, 10 8, 8 8, 8 12, 20 12))>
-    >>> buffer(line, 2, cap_style="flat")
+    >>> shapely.buffer(line, 2, cap_style="flat")
     <POLYGON ((20 12, 20 8, 10 8, 10 12, 20 12))>
-    >>> buffer(line, 2, single_sided=True, cap_style="flat")
+    >>> shapely.buffer(line, 2, single_sided=True, cap_style="flat")
     <POLYGON ((20 10, 10 10, 10 12, 20 12, 20 10))>
     >>> line2 = LineString([(10, 10), (20, 10), (20, 20)])
-    >>> buffer(line2, 2, cap_style="flat", join_style="bevel")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="bevel")
     <POLYGON ((18 12, 18 20, 22 20, 22 10, 20 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre")
     <POLYGON ((18 12, 18 20, 22 20, 22 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
     <POLYGON ((18 12, 18 20, 22 20, 22 9.172, 20.828 8, 10 8, 10 12, 18 12))>
     >>> square = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> buffer(square, 2, join_style="mitre")
+    >>> shapely.buffer(square, 2, join_style="mitre")
     <POLYGON ((-2 -2, -2 12, 12 12, 12 -2, -2 -2))>
-    >>> buffer(square, -2, join_style="mitre")
+    >>> shapely.buffer(square, -2, join_style="mitre")
     <POLYGON ((2 2, 2 8, 8 8, 8 2, 2 2))>
-    >>> buffer(square, -5, join_style="mitre")
+    >>> shapely.buffer(square, -5, join_style="mitre")
     <POLYGON EMPTY>
-    >>> buffer(line, float("nan")) is None
+    >>> shapely.buffer(line, float("nan")) is None
     True
     """
     ...
@@ -501,7 +576,7 @@ def buffer(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes the buffer of a geometry for positive and negative buffer distance.
+    Compute the buffer of a geometry for positive and negative buffer distance.
 
     The buffer of a geometry is defined as the Minkowski sum (or difference,
     for negative distance) of the geometry with a circle with radius equal
@@ -513,6 +588,7 @@ def buffer(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the buffer.
     distance : float or array_like
         Specifies the circle radius in the Minkowski sum (or difference).
     quad_segs : int, default 8
@@ -537,37 +613,47 @@ def buffer(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``,  ``cap_style``,
+        ``join_style``, ``mitre_limit`` or ``single_sided`` are
+        specified as positional arguments. In a future release, these will
+        need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, BufferCapStyle, BufferJoinStyle
-    >>> buffer(Point(10, 10), 2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=1)
     <POLYGON ((12 10, 10 8, 8 10, 10 12, 12 10))>
-    >>> buffer(Point(10, 10), 2, quad_segs=2)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=2)
     <POLYGON ((12 10, 11.414 8.586, 10 8, 8.586 8.586, 8 10, 8.5...>
-    >>> buffer(Point(10, 10), -2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), -2, quad_segs=1)
     <POLYGON EMPTY>
     >>> line = LineString([(10, 10), (20, 10)])
-    >>> buffer(line, 2, cap_style="square")
+    >>> shapely.buffer(line, 2, cap_style="square")
     <POLYGON ((20 12, 22 12, 22 8, 10 8, 8 8, 8 12, 20 12))>
-    >>> buffer(line, 2, cap_style="flat")
+    >>> shapely.buffer(line, 2, cap_style="flat")
     <POLYGON ((20 12, 20 8, 10 8, 10 12, 20 12))>
-    >>> buffer(line, 2, single_sided=True, cap_style="flat")
+    >>> shapely.buffer(line, 2, single_sided=True, cap_style="flat")
     <POLYGON ((20 10, 10 10, 10 12, 20 12, 20 10))>
     >>> line2 = LineString([(10, 10), (20, 10), (20, 20)])
-    >>> buffer(line2, 2, cap_style="flat", join_style="bevel")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="bevel")
     <POLYGON ((18 12, 18 20, 22 20, 22 10, 20 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre")
     <POLYGON ((18 12, 18 20, 22 20, 22 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
     <POLYGON ((18 12, 18 20, 22 20, 22 9.172, 20.828 8, 10 8, 10 12, 18 12))>
     >>> square = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> buffer(square, 2, join_style="mitre")
+    >>> shapely.buffer(square, 2, join_style="mitre")
     <POLYGON ((-2 -2, -2 12, 12 12, 12 -2, -2 -2))>
-    >>> buffer(square, -2, join_style="mitre")
+    >>> shapely.buffer(square, -2, join_style="mitre")
     <POLYGON ((2 2, 2 8, 8 8, 8 2, 2 2))>
-    >>> buffer(square, -5, join_style="mitre")
+    >>> shapely.buffer(square, -5, join_style="mitre")
     <POLYGON EMPTY>
-    >>> buffer(line, float("nan")) is None
+    >>> shapely.buffer(line, float("nan")) is None
     True
     """
     ...
@@ -583,7 +669,7 @@ def buffer(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes the buffer of a geometry for positive and negative buffer distance.
+    Compute the buffer of a geometry for positive and negative buffer distance.
 
     The buffer of a geometry is defined as the Minkowski sum (or difference,
     for negative distance) of the geometry with a circle with radius equal
@@ -595,6 +681,7 @@ def buffer(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the buffer.
     distance : float or array_like
         Specifies the circle radius in the Minkowski sum (or difference).
     quad_segs : int, default 8
@@ -619,37 +706,47 @@ def buffer(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``,  ``cap_style``,
+        ``join_style``, ``mitre_limit`` or ``single_sided`` are
+        specified as positional arguments. In a future release, these will
+        need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, BufferCapStyle, BufferJoinStyle
-    >>> buffer(Point(10, 10), 2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=1)
     <POLYGON ((12 10, 10 8, 8 10, 10 12, 12 10))>
-    >>> buffer(Point(10, 10), 2, quad_segs=2)
+    >>> shapely.buffer(Point(10, 10), 2, quad_segs=2)
     <POLYGON ((12 10, 11.414 8.586, 10 8, 8.586 8.586, 8 10, 8.5...>
-    >>> buffer(Point(10, 10), -2, quad_segs=1)
+    >>> shapely.buffer(Point(10, 10), -2, quad_segs=1)
     <POLYGON EMPTY>
     >>> line = LineString([(10, 10), (20, 10)])
-    >>> buffer(line, 2, cap_style="square")
+    >>> shapely.buffer(line, 2, cap_style="square")
     <POLYGON ((20 12, 22 12, 22 8, 10 8, 8 8, 8 12, 20 12))>
-    >>> buffer(line, 2, cap_style="flat")
+    >>> shapely.buffer(line, 2, cap_style="flat")
     <POLYGON ((20 12, 20 8, 10 8, 10 12, 20 12))>
-    >>> buffer(line, 2, single_sided=True, cap_style="flat")
+    >>> shapely.buffer(line, 2, single_sided=True, cap_style="flat")
     <POLYGON ((20 10, 10 10, 10 12, 20 12, 20 10))>
     >>> line2 = LineString([(10, 10), (20, 10), (20, 20)])
-    >>> buffer(line2, 2, cap_style="flat", join_style="bevel")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="bevel")
     <POLYGON ((18 12, 18 20, 22 20, 22 10, 20 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre")
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre")
     <POLYGON ((18 12, 18 20, 22 20, 22 8, 10 8, 10 12, 18 12))>
-    >>> buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
+    >>> shapely.buffer(line2, 2, cap_style="flat", join_style="mitre", mitre_limit=1)
     <POLYGON ((18 12, 18 20, 22 20, 22 9.172, 20.828 8, 10 8, 10 12, 18 12))>
     >>> square = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> buffer(square, 2, join_style="mitre")
+    >>> shapely.buffer(square, 2, join_style="mitre")
     <POLYGON ((-2 -2, -2 12, 12 12, 12 -2, -2 -2))>
-    >>> buffer(square, -2, join_style="mitre")
+    >>> shapely.buffer(square, -2, join_style="mitre")
     <POLYGON ((2 2, 2 8, 8 8, 8 2, 2 2))>
-    >>> buffer(square, -5, join_style="mitre")
+    >>> shapely.buffer(square, -5, join_style="mitre")
     <POLYGON EMPTY>
-    >>> buffer(line, float("nan")) is None
+    >>> shapely.buffer(line, float("nan")) is None
     True
     """
     ...
@@ -663,8 +760,7 @@ def offset_curve(
     **kwargs,
 ) -> LineString | MultiLineString:
     """
-    Returns a (Multi)LineString at a distance from the object
-    on its right or its left side.
+    Return a (Multi)LineString at a distance from the object.
 
     For positive distance the offset will be at the left side of the input
     line. For a negative distance it will be at the right side. In general,
@@ -680,6 +776,7 @@ def offset_curve(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the offset.
     distance : float or array_like
         Specifies the offset distance from the input geometry. Negative
         for right side offset, positive for left side offset.
@@ -697,13 +794,22 @@ def offset_curve(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``, ``join_style`` or
+        ``mitre_limit`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line = LineString([(0, 0), (0, 2)])
-    >>> offset_curve(line, 2)
+    >>> shapely.offset_curve(line, 2)
     <LINESTRING (-2 0, -2 2)>
-    >>> offset_curve(line, -2)
+    >>> shapely.offset_curve(line, -2)
     <LINESTRING (2 0, 2 2)>
     """
     ...
@@ -717,8 +823,7 @@ def offset_curve(
     **kwargs,
 ) -> None:
     """
-    Returns a (Multi)LineString at a distance from the object
-    on its right or its left side.
+    Return a (Multi)LineString at a distance from the object.
 
     For positive distance the offset will be at the left side of the input
     line. For a negative distance it will be at the right side. In general,
@@ -734,6 +839,7 @@ def offset_curve(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the offset.
     distance : float or array_like
         Specifies the offset distance from the input geometry. Negative
         for right side offset, positive for left side offset.
@@ -751,13 +857,22 @@ def offset_curve(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``, ``join_style`` or
+        ``mitre_limit`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line = LineString([(0, 0), (0, 2)])
-    >>> offset_curve(line, 2)
+    >>> shapely.offset_curve(line, 2)
     <LINESTRING (-2 0, -2 2)>
-    >>> offset_curve(line, -2)
+    >>> shapely.offset_curve(line, -2)
     <LINESTRING (2 0, 2 2)>
     """
     ...
@@ -771,8 +886,7 @@ def offset_curve(
     **kwargs,
 ) -> LineString | MultiLineString | None:
     """
-    Returns a (Multi)LineString at a distance from the object
-    on its right or its left side.
+    Return a (Multi)LineString at a distance from the object.
 
     For positive distance the offset will be at the left side of the input
     line. For a negative distance it will be at the right side. In general,
@@ -788,6 +902,7 @@ def offset_curve(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the offset.
     distance : float or array_like
         Specifies the offset distance from the input geometry. Negative
         for right side offset, positive for left side offset.
@@ -805,13 +920,22 @@ def offset_curve(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``, ``join_style`` or
+        ``mitre_limit`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line = LineString([(0, 0), (0, 2)])
-    >>> offset_curve(line, 2)
+    >>> shapely.offset_curve(line, 2)
     <LINESTRING (-2 0, -2 2)>
-    >>> offset_curve(line, -2)
+    >>> shapely.offset_curve(line, -2)
     <LINESTRING (2 0, 2 2)>
     """
     ...
@@ -825,8 +949,7 @@ def offset_curve(
     **kwargs,
 ) -> GeoArray:
     """
-    Returns a (Multi)LineString at a distance from the object
-    on its right or its left side.
+    Return a (Multi)LineString at a distance from the object.
 
     For positive distance the offset will be at the left side of the input
     line. For a negative distance it will be at the right side. In general,
@@ -842,6 +965,7 @@ def offset_curve(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the offset.
     distance : float or array_like
         Specifies the offset distance from the input geometry. Negative
         for right side offset, positive for left side offset.
@@ -859,13 +983,22 @@ def offset_curve(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``, ``join_style`` or
+        ``mitre_limit`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line = LineString([(0, 0), (0, 2)])
-    >>> offset_curve(line, 2)
+    >>> shapely.offset_curve(line, 2)
     <LINESTRING (-2 0, -2 2)>
-    >>> offset_curve(line, -2)
+    >>> shapely.offset_curve(line, -2)
     <LINESTRING (2 0, 2 2)>
     """
     ...
@@ -879,8 +1012,7 @@ def offset_curve(
     **kwargs,
 ) -> GeoArray:
     """
-    Returns a (Multi)LineString at a distance from the object
-    on its right or its left side.
+    Return a (Multi)LineString at a distance from the object.
 
     For positive distance the offset will be at the left side of the input
     line. For a negative distance it will be at the right side. In general,
@@ -896,6 +1028,7 @@ def offset_curve(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the offset.
     distance : float or array_like
         Specifies the offset distance from the input geometry. Negative
         for right side offset, positive for left side offset.
@@ -913,20 +1046,29 @@ def offset_curve(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``quad_segs``, ``join_style`` or
+        ``mitre_limit`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line = LineString([(0, 0), (0, 2)])
-    >>> offset_curve(line, 2)
+    >>> shapely.offset_curve(line, 2)
     <LINESTRING (-2 0, -2 2)>
-    >>> offset_curve(line, -2)
+    >>> shapely.offset_curve(line, -2)
     <LINESTRING (2 0, 2 2)>
     """
     ...
 @overload
 def centroid(geometry: Geometry, **kwargs) -> Point:
     """
-    Computes the geometric center (center-of-mass) of a geometry.
+    Compute the geometric center (center-of-mass) of a geometry.
 
     For multipoints this is computed as the mean of the input coordinates.
     For multilinestrings the centroid is weighted by the length of each
@@ -936,26 +1078,28 @@ def centroid(geometry: Geometry, **kwargs) -> Point:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the centroid.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> centroid(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.centroid(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.centroid(MultiPoint([(0, 0), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(Polygon())
+    >>> shapely.centroid(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def centroid(geometry: None, **kwargs) -> None:
     """
-    Computes the geometric center (center-of-mass) of a geometry.
+    Compute the geometric center (center-of-mass) of a geometry.
 
     For multipoints this is computed as the mean of the input coordinates.
     For multilinestrings the centroid is weighted by the length of each
@@ -965,26 +1109,28 @@ def centroid(geometry: None, **kwargs) -> None:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the centroid.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> centroid(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.centroid(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.centroid(MultiPoint([(0, 0), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(Polygon())
+    >>> shapely.centroid(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def centroid(geometry: Geometry | None, **kwargs) -> Point | None:
     """
-    Computes the geometric center (center-of-mass) of a geometry.
+    Compute the geometric center (center-of-mass) of a geometry.
 
     For multipoints this is computed as the mean of the input coordinates.
     For multilinestrings the centroid is weighted by the length of each
@@ -994,26 +1140,28 @@ def centroid(geometry: Geometry | None, **kwargs) -> Point | None:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the centroid.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> centroid(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.centroid(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.centroid(MultiPoint([(0, 0), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(Polygon())
+    >>> shapely.centroid(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def centroid(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Computes the geometric center (center-of-mass) of a geometry.
+    Compute the geometric center (center-of-mass) of a geometry.
 
     For multipoints this is computed as the mean of the input coordinates.
     For multilinestrings the centroid is weighted by the length of each
@@ -1023,26 +1171,28 @@ def centroid(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the centroid.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.centroid(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> centroid(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.centroid(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.centroid(MultiPoint([(0, 0), (10, 10)]))
     <POINT (5 5)>
-    >>> centroid(Polygon())
+    >>> shapely.centroid(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def clip_by_rect(geometry: Geometry, xmin: float, ymin: float, xmax: float, ymax: float, **kwargs) -> BaseGeometry:
     """
-    Returns the portion of a geometry within a rectangle.
+    Return the portion of a geometry within a rectangle.
 
     The geometry is clipped in a fast but possibly dirty way. The output is
     not guaranteed to be valid. No exceptions will be raised for topological
@@ -1054,33 +1204,34 @@ def clip_by_rect(geometry: Geometry, xmin: float, ymin: float, xmax: float, ymax
     Parameters
     ----------
     geometry : Geometry or array_like
-        The geometry to be clipped
+        The geometry to be clipped.
     xmin : float
-        Minimum x value of the rectangle
+        Minimum x value of the rectangle.
     ymin : float
-        Minimum y value of the rectangle
+        Minimum y value of the rectangle.
     xmax : float
-        Maximum x value of the rectangle
+        Maximum x value of the rectangle.
     ymax : float
-        Maximum y value of the rectangle
+        Maximum y value of the rectangle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (10, 10)])
-    >>> clip_by_rect(line, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(line, 0., 0., 1., 1.)
     <LINESTRING (0 0, 1 1)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> clip_by_rect(polygon, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(polygon, 0., 0., 1., 1.)
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
     """
     ...
 @overload
 def clip_by_rect(geometry: None, xmin: float, ymin: float, xmax: float, ymax: float, **kwargs) -> None:
     """
-    Returns the portion of a geometry within a rectangle.
+    Return the portion of a geometry within a rectangle.
 
     The geometry is clipped in a fast but possibly dirty way. The output is
     not guaranteed to be valid. No exceptions will be raised for topological
@@ -1092,26 +1243,27 @@ def clip_by_rect(geometry: None, xmin: float, ymin: float, xmax: float, ymax: fl
     Parameters
     ----------
     geometry : Geometry or array_like
-        The geometry to be clipped
+        The geometry to be clipped.
     xmin : float
-        Minimum x value of the rectangle
+        Minimum x value of the rectangle.
     ymin : float
-        Minimum y value of the rectangle
+        Minimum y value of the rectangle.
     xmax : float
-        Maximum x value of the rectangle
+        Maximum x value of the rectangle.
     ymax : float
-        Maximum y value of the rectangle
+        Maximum y value of the rectangle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (10, 10)])
-    >>> clip_by_rect(line, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(line, 0., 0., 1., 1.)
     <LINESTRING (0 0, 1 1)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> clip_by_rect(polygon, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(polygon, 0., 0., 1., 1.)
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
     """
     ...
@@ -1120,7 +1272,7 @@ def clip_by_rect(
     geometry: Geometry | None, xmin: float, ymin: float, xmax: float, ymax: float, **kwargs
 ) -> BaseGeometry | None:
     """
-    Returns the portion of a geometry within a rectangle.
+    Return the portion of a geometry within a rectangle.
 
     The geometry is clipped in a fast but possibly dirty way. The output is
     not guaranteed to be valid. No exceptions will be raised for topological
@@ -1132,33 +1284,34 @@ def clip_by_rect(
     Parameters
     ----------
     geometry : Geometry or array_like
-        The geometry to be clipped
+        The geometry to be clipped.
     xmin : float
-        Minimum x value of the rectangle
+        Minimum x value of the rectangle.
     ymin : float
-        Minimum y value of the rectangle
+        Minimum y value of the rectangle.
     xmax : float
-        Maximum x value of the rectangle
+        Maximum x value of the rectangle.
     ymax : float
-        Maximum y value of the rectangle
+        Maximum y value of the rectangle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (10, 10)])
-    >>> clip_by_rect(line, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(line, 0., 0., 1., 1.)
     <LINESTRING (0 0, 1 1)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> clip_by_rect(polygon, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(polygon, 0., 0., 1., 1.)
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
     """
     ...
 @overload
 def clip_by_rect(geometry: OptGeoArrayLikeSeq, xmin: float, ymin: float, xmax: float, ymax: float, **kwargs) -> GeoArray:
     """
-    Returns the portion of a geometry within a rectangle.
+    Return the portion of a geometry within a rectangle.
 
     The geometry is clipped in a fast but possibly dirty way. The output is
     not guaranteed to be valid. No exceptions will be raised for topological
@@ -1170,37 +1323,39 @@ def clip_by_rect(geometry: OptGeoArrayLikeSeq, xmin: float, ymin: float, xmax: f
     Parameters
     ----------
     geometry : Geometry or array_like
-        The geometry to be clipped
+        The geometry to be clipped.
     xmin : float
-        Minimum x value of the rectangle
+        Minimum x value of the rectangle.
     ymin : float
-        Minimum y value of the rectangle
+        Minimum y value of the rectangle.
     xmax : float
-        Maximum x value of the rectangle
+        Maximum x value of the rectangle.
     ymax : float
-        Maximum y value of the rectangle
+        Maximum y value of the rectangle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (10, 10)])
-    >>> clip_by_rect(line, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(line, 0., 0., 1., 1.)
     <LINESTRING (0 0, 1 1)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> clip_by_rect(polygon, 0., 0., 1., 1.)
+    >>> shapely.clip_by_rect(polygon, 0., 0., 1., 1.)
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
     """
     ...
 @overload
 def concave_hull(geometry: Geometry, ratio: float = 0.0, allow_holes: bool = False, **kwargs) -> BaseGeometry:
     """
-    Computes a concave geometry that encloses an input geometry.
+    Compute a concave geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the concave hull.
     ratio : float, default 0.0
         Number in the range [0, 1]. Higher numbers will include fewer vertices
         in the hull.
@@ -1211,23 +1366,26 @@ def concave_hull(geometry: Geometry, ratio: float = 0.0, allow_holes: bool = Fal
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=0.1)
+    >>> multi_point = MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)])
+    >>> shapely.concave_hull(multi_point, ratio=0.1)
     <POLYGON ((0 0, 0 3, 1 1, 3 3, 3 0, 0 0))>
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=1.0)
+    >>> shapely.concave_hull(multi_point, ratio=1.0)
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0))>
-    >>> concave_hull(Polygon())
+    >>> shapely.concave_hull(Polygon())
     <POLYGON EMPTY>
     """
     ...
 @overload
 def concave_hull(geometry: None, ratio: float = 0.0, allow_holes: bool = False, **kwargs) -> None:
     """
-    Computes a concave geometry that encloses an input geometry.
+    Compute a concave geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the concave hull.
     ratio : float, default 0.0
         Number in the range [0, 1]. Higher numbers will include fewer vertices
         in the hull.
@@ -1238,23 +1396,26 @@ def concave_hull(geometry: None, ratio: float = 0.0, allow_holes: bool = False, 
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=0.1)
+    >>> multi_point = MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)])
+    >>> shapely.concave_hull(multi_point, ratio=0.1)
     <POLYGON ((0 0, 0 3, 1 1, 3 3, 3 0, 0 0))>
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=1.0)
+    >>> shapely.concave_hull(multi_point, ratio=1.0)
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0))>
-    >>> concave_hull(Polygon())
+    >>> shapely.concave_hull(Polygon())
     <POLYGON EMPTY>
     """
     ...
 @overload
 def concave_hull(geometry: Geometry | None, ratio: float = 0.0, allow_holes: bool = False, **kwargs) -> BaseGeometry | None:
     """
-    Computes a concave geometry that encloses an input geometry.
+    Compute a concave geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the concave hull.
     ratio : float, default 0.0
         Number in the range [0, 1]. Higher numbers will include fewer vertices
         in the hull.
@@ -1265,23 +1426,26 @@ def concave_hull(geometry: Geometry | None, ratio: float = 0.0, allow_holes: boo
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=0.1)
+    >>> multi_point = MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)])
+    >>> shapely.concave_hull(multi_point, ratio=0.1)
     <POLYGON ((0 0, 0 3, 1 1, 3 3, 3 0, 0 0))>
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=1.0)
+    >>> shapely.concave_hull(multi_point, ratio=1.0)
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0))>
-    >>> concave_hull(Polygon())
+    >>> shapely.concave_hull(Polygon())
     <POLYGON EMPTY>
     """
     ...
 @overload
 def concave_hull(geometry: OptGeoArrayLikeSeq, ratio: float = 0.0, allow_holes: bool = False, **kwargs) -> GeoArray:
     """
-    Computes a concave geometry that encloses an input geometry.
+    Compute a concave geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the concave hull.
     ratio : float, default 0.0
         Number in the range [0, 1]. Higher numbers will include fewer vertices
         in the hull.
@@ -1292,92 +1456,102 @@ def concave_hull(geometry: OptGeoArrayLikeSeq, ratio: float = 0.0, allow_holes: 
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=0.1)
+    >>> multi_point = MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)])
+    >>> shapely.concave_hull(multi_point, ratio=0.1)
     <POLYGON ((0 0, 0 3, 1 1, 3 3, 3 0, 0 0))>
-    >>> concave_hull(MultiPoint([(0, 0), (0, 3), (1, 1), (3, 0), (3, 3)]), ratio=1.0)
+    >>> shapely.concave_hull(multi_point, ratio=1.0)
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0))>
-    >>> concave_hull(Polygon())
+    >>> shapely.concave_hull(Polygon())
     <POLYGON EMPTY>
     """
     ...
 @overload
 def convex_hull(geometry: Geometry, **kwargs) -> BaseGeometry:
     """
-    Computes the minimum convex geometry that encloses an input geometry.
+    Compute the minimum convex geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the convex hull.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
+    >>> shapely.convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
     <POLYGON ((0 0, 10 10, 10 0, 0 0))>
-    >>> convex_hull(Polygon())
+    >>> shapely.convex_hull(Polygon())
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
 def convex_hull(geometry: None, **kwargs) -> None:
     """
-    Computes the minimum convex geometry that encloses an input geometry.
+    Compute the minimum convex geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the convex hull.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
+    >>> shapely.convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
     <POLYGON ((0 0, 10 10, 10 0, 0 0))>
-    >>> convex_hull(Polygon())
+    >>> shapely.convex_hull(Polygon())
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
 def convex_hull(geometry: Geometry | None, **kwargs) -> BaseGeometry | None:
     """
-    Computes the minimum convex geometry that encloses an input geometry.
+    Compute the minimum convex geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the convex hull.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
+    >>> shapely.convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
     <POLYGON ((0 0, 10 10, 10 0, 0 0))>
-    >>> convex_hull(Polygon())
+    >>> shapely.convex_hull(Polygon())
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
 def convex_hull(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Computes the minimum convex geometry that encloses an input geometry.
+    Compute the minimum convex geometry that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the convex hull.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Polygon
-    >>> convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
+    >>> shapely.convex_hull(MultiPoint([(0, 0), (10, 0), (10, 10)]))
     <POLYGON ((0 0, 10 10, 10 0, 0 0))>
-    >>> convex_hull(Polygon())
+    >>> shapely.convex_hull(Polygon())
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1386,16 +1560,16 @@ def delaunay_triangles(
     geometry: Geometry, tolerance: float = 0.0, only_edges: Literal[False] = False, **kwargs
 ) -> GeometryCollection:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1404,37 +1578,49 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
 def delaunay_triangles(geometry: Geometry, tolerance: float, only_edges: Literal[True], **kwargs) -> MultiLineString:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1443,37 +1629,49 @@ def delaunay_triangles(geometry: Geometry, tolerance: float, only_edges: Literal
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
 def delaunay_triangles(geometry: Geometry, tolerance: float = 0.0, *, only_edges: Literal[True], **kwargs) -> MultiLineString:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1482,21 +1680,33 @@ def delaunay_triangles(geometry: Geometry, tolerance: float = 0.0, *, only_edges
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1505,16 +1715,16 @@ def delaunay_triangles(
     geometry: Geometry, tolerance: float = 0.0, only_edges: bool = False, **kwargs
 ) -> GeometryCollection | MultiLineString:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1523,37 +1733,49 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
 def delaunay_triangles(geometry: None, tolerance: float = 0.0, only_edges: bool = False, **kwargs) -> None:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1562,21 +1784,33 @@ def delaunay_triangles(geometry: None, tolerance: float = 0.0, only_edges: bool 
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1585,16 +1819,16 @@ def delaunay_triangles(
     geometry: Geometry | None, tolerance: float = 0.0, only_edges: bool = False, **kwargs
 ) -> GeometryCollection | MultiLineString | None:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1603,21 +1837,33 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1626,16 +1872,16 @@ def delaunay_triangles(
     geometry: OptGeoArrayLike, tolerance: ArrayLike[float], only_edges: ArrayLikeSeq[bool], **kwargs
 ) -> GeoArray:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1644,21 +1890,33 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1667,16 +1925,16 @@ def delaunay_triangles(
     geometry: OptGeoArrayLike, tolerance: ArrayLike[float] = 0.0, *, only_edges: ArrayLikeSeq[bool], **kwargs
 ) -> GeoArray:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1685,21 +1943,33 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1708,16 +1978,16 @@ def delaunay_triangles(
     geometry: OptGeoArrayLike, tolerance: ArrayLikeSeq[float], only_edges: ArrayLike[bool] = False, **kwargs
 ) -> GeoArray:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1726,21 +1996,33 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
@@ -1749,16 +2031,16 @@ def delaunay_triangles(
     geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float] = 0.0, only_edges: ArrayLike[bool] = False, **kwargs
 ) -> GeoArray:
     """
-    Computes a Delaunay triangulation around the vertices of an input
-    geometry.
+    Compute a Delaunay triangulation around the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns an None if an input geometry
-    contains less than 3 vertices.
+    or linestrings (see ``only_edges``). Returns an empty geometry for input
+    geometries that contain less than 3 vertices.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Delaunay triangulation.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     only_edges : bool or array_like, default False
@@ -1767,134 +2049,350 @@ def delaunay_triangles(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+
+    See Also
+    --------
+    constrained_delaunay_triangles
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Polygon
     >>> points = MultiPoint([(50, 30), (60, 30), (100, 100)])
-    >>> delaunay_triangles(points).normalize()
+    >>> shapely.delaunay_triangles(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(points, only_edges=True)
+    >>> shapely.delaunay_triangles(points, only_edges=True)
     <MULTILINESTRING ((50 30, 100 100), (50 30, 60 30), ...>
-    >>> delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]), tolerance=2).normalize()
+    >>> shapely.delaunay_triangles(
+    ...     MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]),
+    ...     tolerance=2
+    ... ).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
+    >>> shapely.delaunay_triangles(Polygon([(50, 30), (60, 30), (100, 100), (50, 30)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
+    >>> shapely.delaunay_triangles(LineString([(50, 30), (60, 30), (100, 100)])).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)))>
-    >>> delaunay_triangles(GeometryCollection([]))
+    >>> shapely.delaunay_triangles(GeometryCollection([]))
     <GEOMETRYCOLLECTION EMPTY>
     """
     ...
 @overload
-def constrained_delaunay_triangles(geometry: Geometry, **kwargs) -> GeometryCollection: ...
-@overload
-def constrained_delaunay_triangles(geometry: None, **kwargs) -> None: ...
-@overload
-def constrained_delaunay_triangles(geometry: Geometry | None, **kwargs) -> GeometryCollection | None: ...
-@overload
-def constrained_delaunay_triangles(geometry: OptGeoArrayLikeSeq | OptGeoArrayLike, **kwargs) -> GeoArray: ...
-@overload
-def envelope(geometry: Point, **kwargs) -> Point: ...
-@overload
-def envelope(geometry: Geometry, **kwargs) -> BaseGeometry:
+def constrained_delaunay_triangles(geometry: Geometry, **kwargs) -> GeometryCollection:
     """
-    Computes the minimum bounding box that encloses an input geometry.
+    Compute the constrained Delaunay triangulation of polygons.
+
+    A constrained Delaunay triangulation requires the edges of the input
+    polygon(s) to be in the set of resulting triangle edges. An unconstrained
+    delaunay triangulation only triangulates based on the vertices, hence
+    triangle edges could cross polygon boundaries.
+
+    .. versionadded:: 2.1.0
 
     Parameters
     ----------
     geometry : Geometry or array_like
     **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+        * GeometryCollection of polygons, given polygonal input
+        * Empty GeometryCollection, given non-polygonal input
+
+    See Also
+    --------
+    delaunay_triangles
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import MultiPoint, MultiPolygon, Polygon
+    >>> shapely.constrained_delaunay_triangles(Polygon([(10, 10), (20, 40), (90, 90), (90, 10), (10, 10)]))
+    <GEOMETRYCOLLECTION (POLYGON ((90 10, 20 40, 90 90, 90 10)), POLYGON ((20 40...>
+    >>> shapely.constrained_delaunay_triangles(Polygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon([Polygon(((50, 30), (60, 30), (100, 100), (50, 30))), Polygon(((10, 10), (20, 40), (90, 90), (90, 10), (10, 10)))]))
+    <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)), POLYGON ((90 ...>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]))
+    <GEOMETRYCOLLECTION EMPTY>
+    """
+    ...
+@overload
+def constrained_delaunay_triangles(geometry: None, **kwargs) -> None:
+    """
+    Compute the constrained Delaunay triangulation of polygons.
+
+    A constrained Delaunay triangulation requires the edges of the input
+    polygon(s) to be in the set of resulting triangle edges. An unconstrained
+    delaunay triangulation only triangulates based on the vertices, hence
+    triangle edges could cross polygon boundaries.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+        * GeometryCollection of polygons, given polygonal input
+        * Empty GeometryCollection, given non-polygonal input
+
+    See Also
+    --------
+    delaunay_triangles
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import MultiPoint, MultiPolygon, Polygon
+    >>> shapely.constrained_delaunay_triangles(Polygon([(10, 10), (20, 40), (90, 90), (90, 10), (10, 10)]))
+    <GEOMETRYCOLLECTION (POLYGON ((90 10, 20 40, 90 90, 90 10)), POLYGON ((20 40...>
+    >>> shapely.constrained_delaunay_triangles(Polygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon([Polygon(((50, 30), (60, 30), (100, 100), (50, 30))), Polygon(((10, 10), (20, 40), (90, 90), (90, 10), (10, 10)))]))
+    <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)), POLYGON ((90 ...>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]))
+    <GEOMETRYCOLLECTION EMPTY>
+    """
+    ...
+@overload
+def constrained_delaunay_triangles(geometry: Geometry | None, **kwargs) -> GeometryCollection | None:
+    """
+    Compute the constrained Delaunay triangulation of polygons.
+
+    A constrained Delaunay triangulation requires the edges of the input
+    polygon(s) to be in the set of resulting triangle edges. An unconstrained
+    delaunay triangulation only triangulates based on the vertices, hence
+    triangle edges could cross polygon boundaries.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+        * GeometryCollection of polygons, given polygonal input
+        * Empty GeometryCollection, given non-polygonal input
+
+    See Also
+    --------
+    delaunay_triangles
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import MultiPoint, MultiPolygon, Polygon
+    >>> shapely.constrained_delaunay_triangles(Polygon([(10, 10), (20, 40), (90, 90), (90, 10), (10, 10)]))
+    <GEOMETRYCOLLECTION (POLYGON ((90 10, 20 40, 90 90, 90 10)), POLYGON ((20 40...>
+    >>> shapely.constrained_delaunay_triangles(Polygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon([Polygon(((50, 30), (60, 30), (100, 100), (50, 30))), Polygon(((10, 10), (20, 40), (90, 90), (90, 10), (10, 10)))]))
+    <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)), POLYGON ((90 ...>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]))
+    <GEOMETRYCOLLECTION EMPTY>
+    """
+    ...
+@overload
+def constrained_delaunay_triangles(geometry: OptGeoArrayLikeSeq | OptGeoArrayLike, **kwargs) -> GeoArray:
+    """
+    Compute the constrained Delaunay triangulation of polygons.
+
+    A constrained Delaunay triangulation requires the edges of the input
+    polygon(s) to be in the set of resulting triangle edges. An unconstrained
+    delaunay triangulation only triangulates based on the vertices, hence
+    triangle edges could cross polygon boundaries.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Returns
+    -------
+    GeometryCollection or array of GeometryCollections
+        * GeometryCollection of polygons, given polygonal input
+        * Empty GeometryCollection, given non-polygonal input
+
+    See Also
+    --------
+    delaunay_triangles
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import MultiPoint, MultiPolygon, Polygon
+    >>> shapely.constrained_delaunay_triangles(Polygon([(10, 10), (20, 40), (90, 90), (90, 10), (10, 10)]))
+    <GEOMETRYCOLLECTION (POLYGON ((90 10, 20 40, 90 90, 90 10)), POLYGON ((20 40...>
+    >>> shapely.constrained_delaunay_triangles(Polygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon([Polygon(((50, 30), (60, 30), (100, 100), (50, 30))), Polygon(((10, 10), (20, 40), (90, 90), (90, 10), (10, 10)))]))
+    <GEOMETRYCOLLECTION (POLYGON ((50 30, 100 100, 60 30, 50 30)), POLYGON ((90 ...>
+    >>> shapely.constrained_delaunay_triangles(MultiPolygon())
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.constrained_delaunay_triangles(MultiPoint([(50, 30), (51, 30), (60, 30), (100, 100)]))
+    <GEOMETRYCOLLECTION EMPTY>
+    """
+    ...
+@overload
+def envelope(geometry: Point, **kwargs) -> Point:
+    """
+    Compute the minimum bounding box that encloses an input geometry.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the envelope.
+    **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point
-    >>> envelope(LineString([(0, 0), (10, 10)]))
+    >>> shapely.envelope(LineString([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.envelope(MultiPoint([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(Point(0, 0))
+    >>> shapely.envelope(Point(0, 0))
     <POINT (0 0)>
-    >>> envelope(GeometryCollection([]))
+    >>> shapely.envelope(GeometryCollection([]))
+    <POINT EMPTY>
+    """
+    ...
+@overload
+def envelope(geometry: Geometry, **kwargs) -> BaseGeometry:
+    """
+    Compute the minimum bounding box that encloses an input geometry.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the envelope.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import GeometryCollection, LineString, MultiPoint, Point
+    >>> shapely.envelope(LineString([(0, 0), (10, 10)]))
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
+    >>> shapely.envelope(MultiPoint([(0, 0), (10, 10)]))
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
+    >>> shapely.envelope(Point(0, 0))
+    <POINT (0 0)>
+    >>> shapely.envelope(GeometryCollection([]))
     <POINT EMPTY>
     """
     ...
 @overload
 def envelope(geometry: None, **kwargs) -> None:
     """
-    Computes the minimum bounding box that encloses an input geometry.
+    Compute the minimum bounding box that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point
-    >>> envelope(LineString([(0, 0), (10, 10)]))
+    >>> shapely.envelope(LineString([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.envelope(MultiPoint([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(Point(0, 0))
+    >>> shapely.envelope(Point(0, 0))
     <POINT (0 0)>
-    >>> envelope(GeometryCollection([]))
+    >>> shapely.envelope(GeometryCollection([]))
     <POINT EMPTY>
     """
     ...
 @overload
 def envelope(geometry: Geometry | None, **kwargs) -> BaseGeometry | None:
     """
-    Computes the minimum bounding box that encloses an input geometry.
+    Compute the minimum bounding box that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point
-    >>> envelope(LineString([(0, 0), (10, 10)]))
+    >>> shapely.envelope(LineString([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.envelope(MultiPoint([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(Point(0, 0))
+    >>> shapely.envelope(Point(0, 0))
     <POINT (0 0)>
-    >>> envelope(GeometryCollection([]))
+    >>> shapely.envelope(GeometryCollection([]))
     <POINT EMPTY>
     """
     ...
 @overload
 def envelope(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Computes the minimum bounding box that encloses an input geometry.
+    Compute the minimum bounding box that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point
-    >>> envelope(LineString([(0, 0), (10, 10)]))
+    >>> shapely.envelope(LineString([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.envelope(MultiPoint([(0, 0), (10, 10)]))
     <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(Point(0, 0))
+    >>> shapely.envelope(Point(0, 0))
     <POINT (0 0)>
-    >>> envelope(GeometryCollection([]))
+    >>> shapely.envelope(GeometryCollection([]))
     <POINT EMPTY>
     """
     ...
 @overload
 def extract_unique_points(geometry: Geometry, **kwargs) -> MultiPoint:
     """
-    Returns all distinct vertices of an input geometry as a multipoint.
+    Return all distinct vertices of an input geometry as a multipoint.
 
     Note that only 2 dimensions of the vertices are considered when testing
     for equality.
@@ -1902,28 +2400,30 @@ def extract_unique_points(geometry: Geometry, **kwargs) -> MultiPoint:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to extract unique points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Point, Polygon
-    >>> extract_unique_points(Point(0, 0))
-    <MULTIPOINT (0 0)>
-    >>> extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 0, 1 1, 0 1)>
-    >>> extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(LineString())
+    >>> shapely.extract_unique_points(Point(0, 0))
+    <MULTIPOINT ((0 0))>
+    >>> shapely.extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 0), (1 1), (0 1))>
+    >>> shapely.extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(LineString())
     <MULTIPOINT EMPTY>
     """
     ...
 @overload
 def extract_unique_points(geometry: None, **kwargs) -> None:
     """
-    Returns all distinct vertices of an input geometry as a multipoint.
+    Return all distinct vertices of an input geometry as a multipoint.
 
     Note that only 2 dimensions of the vertices are considered when testing
     for equality.
@@ -1931,28 +2431,30 @@ def extract_unique_points(geometry: None, **kwargs) -> None:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to extract unique points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Point, Polygon
-    >>> extract_unique_points(Point(0, 0))
-    <MULTIPOINT (0 0)>
-    >>> extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 0, 1 1, 0 1)>
-    >>> extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(LineString())
+    >>> shapely.extract_unique_points(Point(0, 0))
+    <MULTIPOINT ((0 0))>
+    >>> shapely.extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 0), (1 1), (0 1))>
+    >>> shapely.extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(LineString())
     <MULTIPOINT EMPTY>
     """
     ...
 @overload
 def extract_unique_points(geometry: Geometry | None, **kwargs) -> MultiPoint | None:
     """
-    Returns all distinct vertices of an input geometry as a multipoint.
+    Return all distinct vertices of an input geometry as a multipoint.
 
     Note that only 2 dimensions of the vertices are considered when testing
     for equality.
@@ -1960,28 +2462,30 @@ def extract_unique_points(geometry: Geometry | None, **kwargs) -> MultiPoint | N
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to extract unique points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Point, Polygon
-    >>> extract_unique_points(Point(0, 0))
-    <MULTIPOINT (0 0)>
-    >>> extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 0, 1 1, 0 1)>
-    >>> extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(LineString())
+    >>> shapely.extract_unique_points(Point(0, 0))
+    <MULTIPOINT ((0 0))>
+    >>> shapely.extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 0), (1 1), (0 1))>
+    >>> shapely.extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(LineString())
     <MULTIPOINT EMPTY>
     """
     ...
 @overload
 def extract_unique_points(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns all distinct vertices of an input geometry as a multipoint.
+    Return all distinct vertices of an input geometry as a multipoint.
 
     Note that only 2 dimensions of the vertices are considered when testing
     for equality.
@@ -1989,290 +2493,848 @@ def extract_unique_points(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to extract unique points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Point, Polygon
-    >>> extract_unique_points(Point(0, 0))
-    <MULTIPOINT (0 0)>
-    >>> extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 0, 1 1, 0 1)>
-    >>> extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
-    <MULTIPOINT (0 0, 1 1)>
-    >>> extract_unique_points(LineString())
+    >>> shapely.extract_unique_points(Point(0, 0))
+    <MULTIPOINT ((0 0))>
+    >>> shapely.extract_unique_points(LineString([(0, 0), (1, 1), (1, 1)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 0), (1 1), (0 1))>
+    >>> shapely.extract_unique_points(MultiPoint([(0, 0), (1, 1), (0, 0)]))
+    <MULTIPOINT ((0 0), (1 1))>
+    >>> shapely.extract_unique_points(LineString())
     <MULTIPOINT EMPTY>
     """
     ...
 @overload
 def build_area(geometry: Geometry, **kwargs) -> BaseGeometry:
     """
-    Creates an areal geometry formed by the constituent linework of given geometry.
+    Create an areal geometry formed by the constituent linework of given geometry.
 
     Equivalent of the PostGIS ST_BuildArea() function.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to build an area.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, Polygon
     >>> polygon1 = Polygon([(0, 0), (3, 0), (3, 3), (0, 3), (0, 0)])
     >>> polygon2 = Polygon([(1, 1), (1, 2), (2, 2), (1, 1)])
-    >>> build_area(GeometryCollection([polygon1, polygon2]))
+    >>> shapely.build_area(GeometryCollection([polygon1, polygon2]))
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 2 2, 1 2, 1 1))>
     """
     ...
 @overload
 def build_area(geometry: None, **kwargs) -> None:
     """
-    Creates an areal geometry formed by the constituent linework of given geometry.
+    Create an areal geometry formed by the constituent linework of given geometry.
 
     Equivalent of the PostGIS ST_BuildArea() function.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to build an area.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, Polygon
     >>> polygon1 = Polygon([(0, 0), (3, 0), (3, 3), (0, 3), (0, 0)])
     >>> polygon2 = Polygon([(1, 1), (1, 2), (2, 2), (1, 1)])
-    >>> build_area(GeometryCollection([polygon1, polygon2]))
+    >>> shapely.build_area(GeometryCollection([polygon1, polygon2]))
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 2 2, 1 2, 1 1))>
     """
     ...
 @overload
 def build_area(geometry: Geometry | None, **kwargs) -> BaseGeometry | None:
     """
-    Creates an areal geometry formed by the constituent linework of given geometry.
+    Create an areal geometry formed by the constituent linework of given geometry.
 
     Equivalent of the PostGIS ST_BuildArea() function.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to build an area.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, Polygon
     >>> polygon1 = Polygon([(0, 0), (3, 0), (3, 3), (0, 3), (0, 0)])
     >>> polygon2 = Polygon([(1, 1), (1, 2), (2, 2), (1, 1)])
-    >>> build_area(GeometryCollection([polygon1, polygon2]))
+    >>> shapely.build_area(GeometryCollection([polygon1, polygon2]))
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 2 2, 1 2, 1 1))>
     """
     ...
 @overload
 def build_area(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Creates an areal geometry formed by the constituent linework of given geometry.
+    Create an areal geometry formed by the constituent linework of given geometry.
 
     Equivalent of the PostGIS ST_BuildArea() function.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to build an area.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, Polygon
     >>> polygon1 = Polygon([(0, 0), (3, 0), (3, 3), (0, 3), (0, 0)])
     >>> polygon2 = Polygon([(1, 1), (1, 2), (2, 2), (1, 1)])
-    >>> build_area(GeometryCollection([polygon1, polygon2]))
+    >>> shapely.build_area(GeometryCollection([polygon1, polygon2]))
     <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 2 2, 1 2, 1 1))>
     """
     ...
 @overload
-def make_valid(geometry: Geometry, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> BaseGeometry: ...
-@overload
-def make_valid(geometry: None, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> None: ...
-@overload
-def make_valid(
-    geometry: Geometry | None, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
-) -> BaseGeometry | None: ...
-@overload
-def make_valid(
-    geometry: Geometry | None, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
-) -> BaseGeometry | None: ...
-@overload
-def make_valid(
-    geometry: OptGeoArrayLikeSeq, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
-) -> GeoArray: ...
-@overload
-def make_valid(
-    geometry: OptGeoArrayLikeSeq, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
-) -> GeoArray: ...
-@overload
-def minimum_clearance_line(geometry: Point, **kwargs) -> Point: ...
-@overload
-def minimum_clearance_line(geometry: LineString | Polygon | BaseMultipartGeometry, **kwargs) -> Polygon: ...
-@overload
-def minimum_clearance_line(geometry: Geometry, **kwargs) -> Polygon | Point: ...
-@overload
-def minimum_clearance_line(geometry: None, **kwargs) -> None: ...
-@overload
-def minimum_clearance_line(geometry: Geometry | None, **kwargs) -> Polygon | Point | None: ...
-@overload
-def minimum_clearance_line(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray: ...
-@overload
-def normalize(geometry: OptGeoT, **kwargs) -> OptGeoT:
+def make_valid(geometry: Geometry, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> BaseGeometry:
     """
-    Converts Geometry to strict normal form (or canonical form).
+    Repair invalid geometries.
 
-    In :ref:`strict canonical form <canonical-form>`, the coordinates, rings of a polygon and
-    parts of multi geometries are ordered consistently. Typically useful for testing
-    purposes (for example in combination with ``equals_exact``).
+    Two ``methods`` are available:
+
+    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
+      combines all rings into a set of noded lines and then extracts valid polygons from
+      that linework. An alternating even-odd strategy is used to assign areas as
+      interior or exterior. A disadvantage is that for some relatively simple invalid
+      geometries this produces rather complex results.
+    * the 'structure' algorithm tries to reason from the structure of the input to find
+      the 'correct' repair: exterior rings bound area, interior holes exclude area.
+      It first makes all rings valid, then shells are merged and holes are subtracted
+      from the shells to generate valid result. It assumes that holes and shells are
+      correctly categorized in the input geometry.
+
+    Example:
+
+    .. plot:: code/make_valid_methods.py
+
+    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
+    this example this is the case when the 'linework' ``method`` is used. LineStrings in
+    the result are drawn in red.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to repair.
+    method : {'linework', 'structure'}, default 'linework'
+        Algorithm to use when repairing geometry. 'structure'
+        requires GEOS >= 3.10.
+
+        .. versionadded:: 2.1.0
+    keep_collapsed : bool, default True
+        For the 'structure' method, True will keep components that have collapsed into a
+        lower dimensionality. For example, a ring collapsing to a line, or a line
+        collapsing to a point. Must be True for the 'linework' method.
+
+        .. versionadded:: 2.1.0
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
+    >>> shapely.is_valid(polygon)
+    False
+    >>> shapely.make_valid(polygon)
+    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
+    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
+    <POLYGON EMPTY>
+    """
+    ...
+@overload
+def make_valid(geometry: None, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> None:
+    """
+    Repair invalid geometries.
+
+    Two ``methods`` are available:
+
+    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
+      combines all rings into a set of noded lines and then extracts valid polygons from
+      that linework. An alternating even-odd strategy is used to assign areas as
+      interior or exterior. A disadvantage is that for some relatively simple invalid
+      geometries this produces rather complex results.
+    * the 'structure' algorithm tries to reason from the structure of the input to find
+      the 'correct' repair: exterior rings bound area, interior holes exclude area.
+      It first makes all rings valid, then shells are merged and holes are subtracted
+      from the shells to generate valid result. It assumes that holes and shells are
+      correctly categorized in the input geometry.
+
+    Example:
+
+    .. plot:: code/make_valid_methods.py
+
+    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
+    this example this is the case when the 'linework' ``method`` is used. LineStrings in
+    the result are drawn in red.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to repair.
+    method : {'linework', 'structure'}, default 'linework'
+        Algorithm to use when repairing geometry. 'structure'
+        requires GEOS >= 3.10.
+
+        .. versionadded:: 2.1.0
+    keep_collapsed : bool, default True
+        For the 'structure' method, True will keep components that have collapsed into a
+        lower dimensionality. For example, a ring collapsing to a line, or a line
+        collapsing to a point. Must be True for the 'linework' method.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
+    >>> shapely.is_valid(polygon)
+    False
+    >>> shapely.make_valid(polygon)
+    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
+    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
+    <POLYGON EMPTY>
+    """
+    ...
+@overload
+def make_valid(
+    geometry: Geometry | None, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
+) -> BaseGeometry | None:
+    """
+    Repair invalid geometries.
+
+    Two ``methods`` are available:
+
+    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
+      combines all rings into a set of noded lines and then extracts valid polygons from
+      that linework. An alternating even-odd strategy is used to assign areas as
+      interior or exterior. A disadvantage is that for some relatively simple invalid
+      geometries this produces rather complex results.
+    * the 'structure' algorithm tries to reason from the structure of the input to find
+      the 'correct' repair: exterior rings bound area, interior holes exclude area.
+      It first makes all rings valid, then shells are merged and holes are subtracted
+      from the shells to generate valid result. It assumes that holes and shells are
+      correctly categorized in the input geometry.
+
+    Example:
+
+    .. plot:: code/make_valid_methods.py
+
+    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
+    this example this is the case when the 'linework' ``method`` is used. LineStrings in
+    the result are drawn in red.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to repair.
+    method : {'linework', 'structure'}, default 'linework'
+        Algorithm to use when repairing geometry. 'structure'
+        requires GEOS >= 3.10.
+
+        .. versionadded:: 2.1.0
+    keep_collapsed : bool, default True
+        For the 'structure' method, True will keep components that have collapsed into a
+        lower dimensionality. For example, a ring collapsing to a line, or a line
+        collapsing to a point. Must be True for the 'linework' method.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
+    >>> shapely.is_valid(polygon)
+    False
+    >>> shapely.make_valid(polygon)
+    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
+    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
+    <POLYGON EMPTY>
+    """
+    ...
+@overload
+def make_valid(
+    geometry: Geometry | None, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
+) -> BaseGeometry | None:
+    """
+    Repair invalid geometries.
+
+    Two ``methods`` are available:
+
+    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
+      combines all rings into a set of noded lines and then extracts valid polygons from
+      that linework. An alternating even-odd strategy is used to assign areas as
+      interior or exterior. A disadvantage is that for some relatively simple invalid
+      geometries this produces rather complex results.
+    * the 'structure' algorithm tries to reason from the structure of the input to find
+      the 'correct' repair: exterior rings bound area, interior holes exclude area.
+      It first makes all rings valid, then shells are merged and holes are subtracted
+      from the shells to generate valid result. It assumes that holes and shells are
+      correctly categorized in the input geometry.
+
+    Example:
+
+    .. plot:: code/make_valid_methods.py
+
+    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
+    this example this is the case when the 'linework' ``method`` is used. LineStrings in
+    the result are drawn in red.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to repair.
+    method : {'linework', 'structure'}, default 'linework'
+        Algorithm to use when repairing geometry. 'structure'
+        requires GEOS >= 3.10.
+
+        .. versionadded:: 2.1.0
+    keep_collapsed : bool, default True
+        For the 'structure' method, True will keep components that have collapsed into a
+        lower dimensionality. For example, a ring collapsing to a line, or a line
+        collapsing to a point. Must be True for the 'linework' method.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
+    >>> shapely.is_valid(polygon)
+    False
+    >>> shapely.make_valid(polygon)
+    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
+    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
+    <POLYGON EMPTY>
+    """
+    ...
+@overload
+def make_valid(
+    geometry: OptGeoArrayLikeSeq, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
+) -> GeoArray:
+    """
+    Repair invalid geometries.
+
+    Two ``methods`` are available:
+
+    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
+      combines all rings into a set of noded lines and then extracts valid polygons from
+      that linework. An alternating even-odd strategy is used to assign areas as
+      interior or exterior. A disadvantage is that for some relatively simple invalid
+      geometries this produces rather complex results.
+    * the 'structure' algorithm tries to reason from the structure of the input to find
+      the 'correct' repair: exterior rings bound area, interior holes exclude area.
+      It first makes all rings valid, then shells are merged and holes are subtracted
+      from the shells to generate valid result. It assumes that holes and shells are
+      correctly categorized in the input geometry.
+
+    Example:
+
+    .. plot:: code/make_valid_methods.py
+
+    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
+    this example this is the case when the 'linework' ``method`` is used. LineStrings in
+    the result are drawn in red.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to repair.
+    method : {'linework', 'structure'}, default 'linework'
+        Algorithm to use when repairing geometry. 'structure'
+        requires GEOS >= 3.10.
+
+        .. versionadded:: 2.1.0
+    keep_collapsed : bool, default True
+        For the 'structure' method, True will keep components that have collapsed into a
+        lower dimensionality. For example, a ring collapsing to a line, or a line
+        collapsing to a point. Must be True for the 'linework' method.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
+    >>> shapely.is_valid(polygon)
+    False
+    >>> shapely.make_valid(polygon)
+    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
+    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
+    <POLYGON EMPTY>
+    """
+    ...
+@overload
+def make_valid(
+    geometry: OptGeoArrayLikeSeq, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
+) -> GeoArray:
+    """
+    Repair invalid geometries.
+
+    Two ``methods`` are available:
+
+    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
+      combines all rings into a set of noded lines and then extracts valid polygons from
+      that linework. An alternating even-odd strategy is used to assign areas as
+      interior or exterior. A disadvantage is that for some relatively simple invalid
+      geometries this produces rather complex results.
+    * the 'structure' algorithm tries to reason from the structure of the input to find
+      the 'correct' repair: exterior rings bound area, interior holes exclude area.
+      It first makes all rings valid, then shells are merged and holes are subtracted
+      from the shells to generate valid result. It assumes that holes and shells are
+      correctly categorized in the input geometry.
+
+    Example:
+
+    .. plot:: code/make_valid_methods.py
+
+    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
+    this example this is the case when the 'linework' ``method`` is used. LineStrings in
+    the result are drawn in red.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to repair.
+    method : {'linework', 'structure'}, default 'linework'
+        Algorithm to use when repairing geometry. 'structure'
+        requires GEOS >= 3.10.
+
+        .. versionadded:: 2.1.0
+    keep_collapsed : bool, default True
+        For the 'structure' method, True will keep components that have collapsed into a
+        lower dimensionality. For example, a ring collapsing to a line, or a line
+        collapsing to a point. Must be True for the 'linework' method.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
+    >>> shapely.is_valid(polygon)
+    False
+    >>> shapely.make_valid(polygon)
+    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
+    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
+    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
+    <POLYGON EMPTY>
+    """
+    ...
+@overload
+def minimum_clearance_line(geometry: Point, **kwargs) -> Point:
+    """
+    Return a LineString whose endpoints define the minimum clearance.
+
+    A geometry's "minimum clearance" is the smallest distance by which a vertex
+    of the geometry could be moved to produce an invalid geometry.
+
+    If the geometry has no minimum clearance, an empty LineString will be
+    returned.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to determine the minimum clearance line for.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
+    >>> shapely.minimum_clearance_line(poly)
+    <LINESTRING (5 5, 5 0)>
+
+    See Also
+    --------
+    minimum_clearance
+    """
+    ...
+@overload
+def minimum_clearance_line(geometry: LineString | Polygon | BaseMultipartGeometry, **kwargs) -> Polygon:
+    """
+    Return a LineString whose endpoints define the minimum clearance.
+
+    A geometry's "minimum clearance" is the smallest distance by which a vertex
+    of the geometry could be moved to produce an invalid geometry.
+
+    If the geometry has no minimum clearance, an empty LineString will be
+    returned.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to determine the minimum clearance line for.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
+    >>> shapely.minimum_clearance_line(poly)
+    <LINESTRING (5 5, 5 0)>
+
+    See Also
+    --------
+    minimum_clearance
+    """
+    ...
+@overload
+def minimum_clearance_line(geometry: Geometry, **kwargs) -> Polygon | Point:
+    """
+    Return a LineString whose endpoints define the minimum clearance.
+
+    A geometry's "minimum clearance" is the smallest distance by which a vertex
+    of the geometry could be moved to produce an invalid geometry.
+
+    If the geometry has no minimum clearance, an empty LineString will be
+    returned.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to determine the minimum clearance line for.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
+    >>> shapely.minimum_clearance_line(poly)
+    <LINESTRING (5 5, 5 0)>
+
+    See Also
+    --------
+    minimum_clearance
+    """
+    ...
+@overload
+def minimum_clearance_line(geometry: None, **kwargs) -> None:
+    """
+    Return a LineString whose endpoints define the minimum clearance.
+
+    A geometry's "minimum clearance" is the smallest distance by which a vertex
+    of the geometry could be moved to produce an invalid geometry.
+
+    If the geometry has no minimum clearance, an empty LineString will be
+    returned.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to determine the minimum clearance line for.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
+    >>> shapely.minimum_clearance_line(poly)
+    <LINESTRING (5 5, 5 0)>
+
+    See Also
+    --------
+    minimum_clearance
+    """
+    ...
+@overload
+def minimum_clearance_line(geometry: Geometry | None, **kwargs) -> Polygon | Point | None:
+    """
+    Return a LineString whose endpoints define the minimum clearance.
+
+    A geometry's "minimum clearance" is the smallest distance by which a vertex
+    of the geometry could be moved to produce an invalid geometry.
+
+    If the geometry has no minimum clearance, an empty LineString will be
+    returned.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to determine the minimum clearance line for.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
+    >>> shapely.minimum_clearance_line(poly)
+    <LINESTRING (5 5, 5 0)>
+
+    See Also
+    --------
+    minimum_clearance
+    """
+    ...
+@overload
+def minimum_clearance_line(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
+    """
+    Return a LineString whose endpoints define the minimum clearance.
+
+    A geometry's "minimum clearance" is the smallest distance by which a vertex
+    of the geometry could be moved to produce an invalid geometry.
+
+    If the geometry has no minimum clearance, an empty LineString will be
+    returned.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to determine the minimum clearance line for.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
+    >>> shapely.minimum_clearance_line(poly)
+    <LINESTRING (5 5, 5 0)>
+
+    See Also
+    --------
+    minimum_clearance
+    """
+    ...
+@overload
+def normalize(geometry: OptGeoT, **kwargs) -> OptGeoT:
+    """
+    Convert Geometry to strict normal form (or canonical form).
+
+    In :ref:`strict canonical form <canonical-form>`, the coordinates, rings of
+    a polygon and parts of multi geometries are ordered consistently. Typically
+    useful for testing purposes (for example in combination with
+    ``equals_exact``).
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to normalize.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
     >>> from shapely import MultiLineString
     >>> line = MultiLineString([[(0, 0), (1, 1)], [(2, 2), (3, 3)]])
-    >>> normalize(line)
+    >>> shapely.normalize(line)
     <MULTILINESTRING ((2 2, 3 3), (0 0, 1 1))>
     """
     ...
 @overload
 def normalize(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Converts Geometry to strict normal form (or canonical form).
+    Convert Geometry to strict normal form (or canonical form).
 
-    In :ref:`strict canonical form <canonical-form>`, the coordinates, rings of a polygon and
-    parts of multi geometries are ordered consistently. Typically useful for testing
-    purposes (for example in combination with ``equals_exact``).
+    In :ref:`strict canonical form <canonical-form>`, the coordinates, rings of
+    a polygon and parts of multi geometries are ordered consistently. Typically
+    useful for testing purposes (for example in combination with
+    ``equals_exact``).
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to normalize.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiLineString
     >>> line = MultiLineString([[(0, 0), (1, 1)], [(2, 2), (3, 3)]])
-    >>> normalize(line)
+    >>> shapely.normalize(line)
     <MULTILINESTRING ((2 2, 3 3), (0 0, 1 1))>
     """
     ...
 @overload
 def point_on_surface(geometry: Geometry, **kwargs) -> Point:
     """
-    Returns a point that intersects an input geometry.
+    Return a point that intersects an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute a point on the surface.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (2 2)>
-    >>> point_on_surface(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.point_on_surface(MultiPoint([(0, 0), (10, 10)]))
     <POINT (0 0)>
-    >>> point_on_surface(Polygon())
+    >>> shapely.point_on_surface(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def point_on_surface(geometry: None, **kwargs) -> None:
     """
-    Returns a point that intersects an input geometry.
+    Return a point that intersects an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute a point on the surface.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (2 2)>
-    >>> point_on_surface(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.point_on_surface(MultiPoint([(0, 0), (10, 10)]))
     <POINT (0 0)>
-    >>> point_on_surface(Polygon())
+    >>> shapely.point_on_surface(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def point_on_surface(geometry: Geometry | None, **kwargs) -> Point | None:
     """
-    Returns a point that intersects an input geometry.
+    Return a point that intersects an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute a point on the surface.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (2 2)>
-    >>> point_on_surface(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.point_on_surface(MultiPoint([(0, 0), (10, 10)]))
     <POINT (0 0)>
-    >>> point_on_surface(Polygon())
+    >>> shapely.point_on_surface(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def point_on_surface(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns a point that intersects an input geometry.
+    Return a point that intersects an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute a point on the surface.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint, Polygon
-    >>> point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
+    >>> shapely.point_on_surface(Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)]))
     <POINT (5 5)>
-    >>> point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
+    >>> shapely.point_on_surface(LineString([(0, 0), (2, 2), (10, 10)]))
     <POINT (2 2)>
-    >>> point_on_surface(MultiPoint([(0, 0), (10, 10)]))
+    >>> shapely.point_on_surface(MultiPoint([(0, 0), (10, 10)]))
     <POINT (0 0)>
-    >>> point_on_surface(Polygon())
+    >>> shapely.point_on_surface(Polygon())
     <POINT EMPTY>
     """
     ...
 @overload
 def node(geometry: Geometry, **kwargs) -> MultiLineString:
     """
-    Returns the fully noded version of the linear input as MultiLineString.
+    Return the fully noded version of the linear input as MultiLineString.
 
     Given a linear input geometry, this function returns a new MultiLineString
     in which no lines cross each other but only touch at and points. To
@@ -2287,23 +3349,25 @@ def node(geometry: Geometry, **kwargs) -> MultiLineString:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the noded version.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 0), (1,1), (0, 1), (1, 0)])
-    >>> node(line)
+    >>> shapely.node(line)
     <MULTILINESTRING ((0 0, 0.5 0.5), (0.5 0.5, 1 1, 0 1, 0.5 0.5), (0.5 0.5, 1 0))>
-    >>> node(Point(1, 1))
+    >>> shapely.node(Point(1, 1))
     <MULTILINESTRING EMPTY>
     """
     ...
 @overload
 def node(geometry: None, **kwargs) -> None:
     """
-    Returns the fully noded version of the linear input as MultiLineString.
+    Return the fully noded version of the linear input as MultiLineString.
 
     Given a linear input geometry, this function returns a new MultiLineString
     in which no lines cross each other but only touch at and points. To
@@ -2318,23 +3382,25 @@ def node(geometry: None, **kwargs) -> None:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the noded version.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 0), (1,1), (0, 1), (1, 0)])
-    >>> node(line)
+    >>> shapely.node(line)
     <MULTILINESTRING ((0 0, 0.5 0.5), (0.5 0.5, 1 1, 0 1, 0.5 0.5), (0.5 0.5, 1 0))>
-    >>> node(Point(1, 1))
+    >>> shapely.node(Point(1, 1))
     <MULTILINESTRING EMPTY>
     """
     ...
 @overload
 def node(geometry: Geometry | None, **kwargs) -> MultiLineString | None:
     """
-    Returns the fully noded version of the linear input as MultiLineString.
+    Return the fully noded version of the linear input as MultiLineString.
 
     Given a linear input geometry, this function returns a new MultiLineString
     in which no lines cross each other but only touch at and points. To
@@ -2349,23 +3415,25 @@ def node(geometry: Geometry | None, **kwargs) -> MultiLineString | None:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the noded version.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 0), (1,1), (0, 1), (1, 0)])
-    >>> node(line)
+    >>> shapely.node(line)
     <MULTILINESTRING ((0 0, 0.5 0.5), (0.5 0.5, 1 1, 0 1, 0.5 0.5), (0.5 0.5, 1 0))>
-    >>> node(Point(1, 1))
+    >>> shapely.node(Point(1, 1))
     <MULTILINESTRING EMPTY>
     """
     ...
 @overload
 def node(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns the fully noded version of the linear input as MultiLineString.
+    Return the fully noded version of the linear input as MultiLineString.
 
     Given a linear input geometry, this function returns a new MultiLineString
     in which no lines cross each other but only touch at and points. To
@@ -2380,23 +3448,25 @@ def node(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the noded version.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 0), (1,1), (0, 1), (1, 0)])
-    >>> node(line)
+    >>> shapely.node(line)
     <MULTILINESTRING ((0 0, 0.5 0.5), (0.5 0.5, 1 1, 0 1, 0.5 0.5), (0.5 0.5, 1 0))>
-    >>> node(Point(1, 1))
+    >>> shapely.node(Point(1, 1))
     <MULTILINESTRING EMPTY>
     """
     ...
 @overload
 def polygonize(geometries: Sequence[Geometry | None], **kwargs) -> GeometryCollection:
     """
-    Creates polygons formed from the linework of a set of Geometries.
+    Create polygons formed from the linework of a set of Geometries.
 
     Polygonizes an array of Geometries that contain linework which
     represents the edges of a planar graph. Any type of Geometry may be
@@ -2436,20 +3506,21 @@ def polygonize(geometries: Sequence[Geometry | None], **kwargs) -> GeometryColle
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> lines = [
     ...     LineString([(0, 0), (1, 1)]),
     ...     LineString([(0, 0), (0, 1)]),
     ...     LineString([(0, 1), (1, 1)])
     ... ]
-    >>> polygonize(lines)
+    >>> shapely.polygonize(lines)
     <GEOMETRYCOLLECTION (POLYGON ((1 1, 0 0, 0 1, 1 1)))>
     """
     ...
 @overload
 def polygonize(geometries: Sequence[Sequence[Geometry | None]], **kwargs) -> GeoArray:
     """
-    Creates polygons formed from the linework of a set of Geometries.
+    Create polygons formed from the linework of a set of Geometries.
 
     Polygonizes an array of Geometries that contain linework which
     represents the edges of a planar graph. Any type of Geometry may be
@@ -2489,20 +3560,21 @@ def polygonize(geometries: Sequence[Sequence[Geometry | None]], **kwargs) -> Geo
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> lines = [
     ...     LineString([(0, 0), (1, 1)]),
     ...     LineString([(0, 0), (0, 1)]),
     ...     LineString([(0, 1), (1, 1)])
     ... ]
-    >>> polygonize(lines)
+    >>> shapely.polygonize(lines)
     <GEOMETRYCOLLECTION (POLYGON ((1 1, 0 0, 0 1, 1 1)))>
     """
     ...
 @overload
 def polygonize(geometries: OptGeoArrayLikeSeq, **kwargs) -> GeometryCollection | GeoArray:
     """
-    Creates polygons formed from the linework of a set of Geometries.
+    Create polygons formed from the linework of a set of Geometries.
 
     Polygonizes an array of Geometries that contain linework which
     represents the edges of a planar graph. Any type of Geometry may be
@@ -2542,13 +3614,14 @@ def polygonize(geometries: OptGeoArrayLikeSeq, **kwargs) -> GeometryCollection |
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> lines = [
     ...     LineString([(0, 0), (1, 1)]),
     ...     LineString([(0, 0), (0, 1)]),
     ...     LineString([(0, 1), (1, 1)])
     ... ]
-    >>> polygonize(lines)
+    >>> shapely.polygonize(lines)
     <GEOMETRYCOLLECTION (POLYGON ((1 1, 0 0, 0 1, 1 1)))>
     """
     ...
@@ -2557,8 +3630,9 @@ def polygonize_full(
     geometries: Sequence[Geometry | None], **kwargs
 ) -> tuple[GeometryCollection, GeometryCollection, GeometryCollection, GeometryCollection]:
     """
-    Creates polygons formed from the linework of a set of Geometries and
-    return all extra outputs as well.
+    Create polygons formed from the linework of a set of Geometries.
+
+    All extra outputs are returned as well.
 
     Polygonizes an array of Geometries that contain linework which
     represents the edges of a planar graph. Any type of Geometry may be
@@ -2600,13 +3674,14 @@ def polygonize_full(
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> lines = [
     ...     LineString([(0, 0), (1, 1)]),
     ...     LineString([(0, 0), (0, 1), (1, 1)]),
     ...     LineString([(0, 1), (1, 1)])
     ... ]
-    >>> polygonize_full(lines)  # doctest: +NORMALIZE_WHITESPACE
+    >>> shapely.polygonize_full(lines)
     (<GEOMETRYCOLLECTION (POLYGON ((1 1, 0 0, 0 1, 1 1)))>,
      <GEOMETRYCOLLECTION EMPTY>,
      <GEOMETRYCOLLECTION (LINESTRING (0 1, 1 1))>,
@@ -2618,8 +3693,9 @@ def polygonize_full(
     geometries: Sequence[Sequence[Geometry | None]], **kwargs
 ) -> tuple[GeoArray, GeoArray, GeoArray, GeoArray]:
     """
-    Creates polygons formed from the linework of a set of Geometries and
-    return all extra outputs as well.
+    Create polygons formed from the linework of a set of Geometries.
+
+    All extra outputs are returned as well.
 
     Polygonizes an array of Geometries that contain linework which
     represents the edges of a planar graph. Any type of Geometry may be
@@ -2661,13 +3737,14 @@ def polygonize_full(
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> lines = [
     ...     LineString([(0, 0), (1, 1)]),
     ...     LineString([(0, 0), (0, 1), (1, 1)]),
     ...     LineString([(0, 1), (1, 1)])
     ... ]
-    >>> polygonize_full(lines)  # doctest: +NORMALIZE_WHITESPACE
+    >>> shapely.polygonize_full(lines)
     (<GEOMETRYCOLLECTION (POLYGON ((1 1, 0 0, 0 1, 1 1)))>,
      <GEOMETRYCOLLECTION EMPTY>,
      <GEOMETRYCOLLECTION (LINESTRING (0 1, 1 1))>,
@@ -2682,8 +3759,9 @@ def polygonize_full(
     | tuple[GeoArray, GeoArray, GeoArray, GeoArray]
 ):
     """
-    Creates polygons formed from the linework of a set of Geometries and
-    return all extra outputs as well.
+    Create polygons formed from the linework of a set of Geometries.
+
+    All extra outputs are returned as well.
 
     Polygonizes an array of Geometries that contain linework which
     represents the edges of a planar graph. Any type of Geometry may be
@@ -2725,13 +3803,14 @@ def polygonize_full(
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> lines = [
     ...     LineString([(0, 0), (1, 1)]),
     ...     LineString([(0, 0), (0, 1), (1, 1)]),
     ...     LineString([(0, 1), (1, 1)])
     ... ]
-    >>> polygonize_full(lines)  # doctest: +NORMALIZE_WHITESPACE
+    >>> shapely.polygonize_full(lines)
     (<GEOMETRYCOLLECTION (POLYGON ((1 1, 0 0, 0 1, 1 1)))>,
      <GEOMETRYCOLLECTION EMPTY>,
      <GEOMETRYCOLLECTION (LINESTRING (0 1, 1 1))>,
@@ -2741,7 +3820,7 @@ def polygonize_full(
 @overload
 def remove_repeated_points(geometry: OptGeoT, tolerance: float = 0.0, **kwargs) -> OptGeoT:
     """
-    Returns a copy of a Geometry with repeated points removed.
+    Return a copy of a Geometry with repeated points removed.
 
     From the start of the coordinate sequence, each next point within the
     tolerance is removed.
@@ -2752,22 +3831,26 @@ def remove_repeated_points(geometry: OptGeoT, tolerance: float = 0.0, **kwargs) 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to remove repeated points from.
     tolerance : float or array_like, default=0.0
         Use 0.0 to remove only exactly repeated points.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
-    >>> remove_repeated_points(LineString([(0,0), (0,0), (1,0)]), tolerance=0)
+    >>> shapely.remove_repeated_points(LineString([(0,0), (0,0), (1,0)]), tolerance=0)
     <LINESTRING (0 0, 1 0)>
-    >>> remove_repeated_points(Polygon([(0, 0), (0, .5), (0, 1), (.5, 1), (0,0)]), tolerance=.5)
-    <POLYGON ((0 0, 0 1, 0 0, 0 0))>
+    >>> shapely.remove_repeated_points(Polygon([(0, 0), (0, .5), (0, 1), (.5, 1), (0,0)]), tolerance=.5)
+    <POLYGON ((0 0, 0 1, 0 0))>
     """
     ...
 @overload
 def remove_repeated_points(geometry: OptGeoArrayLikeSeq, tolerance: float = 0.0, **kwargs) -> GeoArray:
     """
-    Returns a copy of a Geometry with repeated points removed.
+    Return a copy of a Geometry with repeated points removed.
 
     From the start of the coordinate sequence, each next point within the
     tolerance is removed.
@@ -2778,22 +3861,26 @@ def remove_repeated_points(geometry: OptGeoArrayLikeSeq, tolerance: float = 0.0,
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to remove repeated points from.
     tolerance : float or array_like, default=0.0
         Use 0.0 to remove only exactly repeated points.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
-    >>> remove_repeated_points(LineString([(0,0), (0,0), (1,0)]), tolerance=0)
+    >>> shapely.remove_repeated_points(LineString([(0,0), (0,0), (1,0)]), tolerance=0)
     <LINESTRING (0 0, 1 0)>
-    >>> remove_repeated_points(Polygon([(0, 0), (0, .5), (0, 1), (.5, 1), (0,0)]), tolerance=.5)
-    <POLYGON ((0 0, 0 1, 0 0, 0 0))>
+    >>> shapely.remove_repeated_points(Polygon([(0, 0), (0, .5), (0, 1), (.5, 1), (0,0)]), tolerance=.5)
+    <POLYGON ((0 0, 0 1, 0 0))>
     """
     ...
 @overload
 def reverse(geometry: OptGeoT, **kwargs) -> OptGeoT:
     """
-    Returns a copy of a Geometry with the order of coordinates reversed.
+    Return a copy of a Geometry with the order of coordinates reversed.
 
     If a Geometry is a polygon with interior rings, the interior rings are also
     reversed.
@@ -2803,28 +3890,30 @@ def reverse(geometry: OptGeoT, **kwargs) -> OptGeoT:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to reverse the coordinates of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     is_ccw : Checks if a Geometry is clockwise.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
-    >>> reverse(LineString([(0, 0), (1, 2)]))
+    >>> shapely.reverse(LineString([(0, 0), (1, 2)]))
     <LINESTRING (1 2, 0 0)>
-    >>> reverse(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.reverse(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
-    >>> reverse(None) is None
+    >>> shapely.reverse(None) is None
     True
     """
     ...
 @overload
 def reverse(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns a copy of a Geometry with the order of coordinates reversed.
+    Return a copy of a Geometry with the order of coordinates reversed.
 
     If a Geometry is a polygon with interior rings, the interior rings are also
     reversed.
@@ -2834,28 +3923,30 @@ def reverse(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to reverse the coordinates of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     is_ccw : Checks if a Geometry is clockwise.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
-    >>> reverse(LineString([(0, 0), (1, 2)]))
+    >>> shapely.reverse(LineString([(0, 0), (1, 2)]))
     <LINESTRING (1 2, 0 0)>
-    >>> reverse(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
+    >>> shapely.reverse(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
-    >>> reverse(None) is None
+    >>> shapely.reverse(None) is None
     True
     """
     ...
 @overload
 def segmentize(geometry: OptGeoT, max_segment_length: float, **kwargs) -> OptGeoT:
     """
-    Adds vertices to line segments based on maximum segment length.
+    Add vertices to line segments based on maximum segment length.
 
     Additional vertices will be added to every line segment in an input geometry
     so that segments are no longer than the provided maximum segment length. New
@@ -2867,6 +3958,7 @@ def segmentize(geometry: OptGeoT, max_segment_length: float, **kwargs) -> OptGeo
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to segmentize.
     max_segment_length : float or array_like
         Additional vertices will be added so that all line segments are no
         longer than this value.  Must be greater than 0.
@@ -2875,21 +3967,22 @@ def segmentize(geometry: OptGeoT, max_segment_length: float, **kwargs) -> OptGeo
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (0, 10)])
-    >>> segmentize(line, max_segment_length=5)
+    >>> shapely.segmentize(line, max_segment_length=5)
     <LINESTRING (0 0, 0 5, 0 10)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> segmentize(polygon, max_segment_length=5)
+    >>> shapely.segmentize(polygon, max_segment_length=5)
     <POLYGON ((0 0, 5 0, 10 0, 10 5, 10 10, 5 10, 0 10, 0 5, 0 0))>
-    >>> segmentize(None, max_segment_length=5) is None
+    >>> shapely.segmentize(None, max_segment_length=5) is None
     True
     """
     ...
 @overload
 def segmentize(geometry: OptGeoArrayLike, max_segment_length: ArrayLikeSeq[float], **kwargs) -> GeoArray:
     """
-    Adds vertices to line segments based on maximum segment length.
+    Add vertices to line segments based on maximum segment length.
 
     Additional vertices will be added to every line segment in an input geometry
     so that segments are no longer than the provided maximum segment length. New
@@ -2901,6 +3994,7 @@ def segmentize(geometry: OptGeoArrayLike, max_segment_length: ArrayLikeSeq[float
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to segmentize.
     max_segment_length : float or array_like
         Additional vertices will be added so that all line segments are no
         longer than this value.  Must be greater than 0.
@@ -2909,21 +4003,22 @@ def segmentize(geometry: OptGeoArrayLike, max_segment_length: ArrayLikeSeq[float
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (0, 10)])
-    >>> segmentize(line, max_segment_length=5)
+    >>> shapely.segmentize(line, max_segment_length=5)
     <LINESTRING (0 0, 0 5, 0 10)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> segmentize(polygon, max_segment_length=5)
+    >>> shapely.segmentize(polygon, max_segment_length=5)
     <POLYGON ((0 0, 5 0, 10 0, 10 5, 10 10, 5 10, 0 10, 0 5, 0 0))>
-    >>> segmentize(None, max_segment_length=5) is None
+    >>> shapely.segmentize(None, max_segment_length=5) is None
     True
     """
     ...
 @overload
 def segmentize(geometry: OptGeoArrayLikeSeq, max_segment_length: ArrayLike[float], **kwargs) -> GeoArray:
     """
-    Adds vertices to line segments based on maximum segment length.
+    Add vertices to line segments based on maximum segment length.
 
     Additional vertices will be added to every line segment in an input geometry
     so that segments are no longer than the provided maximum segment length. New
@@ -2935,6 +4030,7 @@ def segmentize(geometry: OptGeoArrayLikeSeq, max_segment_length: ArrayLike[float
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to segmentize.
     max_segment_length : float or array_like
         Additional vertices will be added so that all line segments are no
         longer than this value.  Must be greater than 0.
@@ -2943,26 +4039,29 @@ def segmentize(geometry: OptGeoArrayLikeSeq, max_segment_length: ArrayLike[float
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (0, 10)])
-    >>> segmentize(line, max_segment_length=5)
+    >>> shapely.segmentize(line, max_segment_length=5)
     <LINESTRING (0 0, 0 5, 0 10)>
     >>> polygon = Polygon([(0, 0), (10, 0), (10, 10), (0, 10), (0, 0)])
-    >>> segmentize(polygon, max_segment_length=5)
+    >>> shapely.segmentize(polygon, max_segment_length=5)
     <POLYGON ((0 0, 5 0, 10 0, 10 5, 10 10, 5 10, 0 10, 0 5, 0 0))>
-    >>> segmentize(None, max_segment_length=5) is None
+    >>> shapely.segmentize(None, max_segment_length=5) is None
     True
     """
     ...
 @overload
 def simplify(geometry: OptGeoT, tolerance: float, preserve_topology: bool = True, **kwargs) -> OptGeoT:
     """
-    Returns a simplified version of an input geometry using the
-    Douglas-Peucker algorithm.
+    Return a simplified version of an input geometry.
+
+    The Douglas-Peucker algorithm is used to simplify the geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to simplify.
     tolerance : float or array_like
         The maximum allowed geometry displacement. The higher this value, the
         smaller the number of vertices in the resulting geometry.
@@ -2973,33 +4072,44 @@ def simplify(geometry: OptGeoT, tolerance: float, preserve_topology: bool = True
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``preserve_topology`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (1, 10), (0, 20)])
-    >>> simplify(line, tolerance=0.9)
+    >>> shapely.simplify(line, tolerance=0.9)
     <LINESTRING (0 0, 1 10, 0 20)>
-    >>> simplify(line, tolerance=1)
+    >>> shapely.simplify(line, tolerance=1)
     <LINESTRING (0 0, 0 20)>
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> simplify(polygon_with_hole, tolerance=4, preserve_topology=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2...>
-    >>> simplify(polygon_with_hole, tolerance=4, preserve_topology=False)
+    >>> shapely.simplify(polygon_with_hole, tolerance=4, preserve_topology=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (4 2, 2 4, 4 4, 4 2))>
+    >>> shapely.simplify(polygon_with_hole, tolerance=4, preserve_topology=False)
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
     """
     ...
 @overload
 def simplify(geometry: OptGeoArrayLike, tolerance: ArrayLikeSeq[float], preserve_topology: bool = True, **kwargs) -> GeoArray:
     """
-    Returns a simplified version of an input geometry using the
-    Douglas-Peucker algorithm.
+    Return a simplified version of an input geometry.
+
+    The Douglas-Peucker algorithm is used to simplify the geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to simplify.
     tolerance : float or array_like
         The maximum allowed geometry displacement. The higher this value, the
         smaller the number of vertices in the resulting geometry.
@@ -3010,33 +4120,44 @@ def simplify(geometry: OptGeoArrayLike, tolerance: ArrayLikeSeq[float], preserve
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``preserve_topology`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (1, 10), (0, 20)])
-    >>> simplify(line, tolerance=0.9)
+    >>> shapely.simplify(line, tolerance=0.9)
     <LINESTRING (0 0, 1 10, 0 20)>
-    >>> simplify(line, tolerance=1)
+    >>> shapely.simplify(line, tolerance=1)
     <LINESTRING (0 0, 0 20)>
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> simplify(polygon_with_hole, tolerance=4, preserve_topology=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2...>
-    >>> simplify(polygon_with_hole, tolerance=4, preserve_topology=False)
+    >>> shapely.simplify(polygon_with_hole, tolerance=4, preserve_topology=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (4 2, 2 4, 4 4, 4 2))>
+    >>> shapely.simplify(polygon_with_hole, tolerance=4, preserve_topology=False)
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
     """
     ...
 @overload
 def simplify(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float], preserve_topology: bool = True, **kwargs) -> GeoArray:
     """
-    Returns a simplified version of an input geometry using the
-    Douglas-Peucker algorithm.
+    Return a simplified version of an input geometry.
+
+    The Douglas-Peucker algorithm is used to simplify the geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to simplify.
     tolerance : float or array_like
         The maximum allowed geometry displacement. The higher this value, the
         smaller the number of vertices in the resulting geometry.
@@ -3047,37 +4168,46 @@ def simplify(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float], preserve
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``preserve_topology`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Polygon
     >>> line = LineString([(0, 0), (1, 10), (0, 20)])
-    >>> simplify(line, tolerance=0.9)
+    >>> shapely.simplify(line, tolerance=0.9)
     <LINESTRING (0 0, 1 10, 0 20)>
-    >>> simplify(line, tolerance=1)
+    >>> shapely.simplify(line, tolerance=1)
     <LINESTRING (0 0, 0 20)>
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> simplify(polygon_with_hole, tolerance=4, preserve_topology=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2...>
-    >>> simplify(polygon_with_hole, tolerance=4, preserve_topology=False)
+    >>> shapely.simplify(polygon_with_hole, tolerance=4, preserve_topology=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (4 2, 2 4, 4 4, 4 2))>
+    >>> shapely.simplify(polygon_with_hole, tolerance=4, preserve_topology=False)
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
     """
     ...
 @overload
 def snap(geometry: OptGeoT, reference: Geometry, tolerance: float, **kwargs) -> OptGeoT:
     """
-    Snaps an input geometry to reference geometry's vertices.
+    Snap the vertices and segments of the geometry to vertices of the reference.
 
-    Vertices of the first geometry are snapped to vertices of the second.
-    geometry, returning a new geometry; the input geometries are not modified.
-    The result geometry is the input geometry with the vertices snapped.
-    If no snapping occurs then the input geometry is returned unchanged.
-    The tolerance is used to control where snapping is performed.
+    Vertices and segments of the input geometry are snapped to vertices of the
+    reference geometry, returning a new geometry; the input geometries are not
+    modified. The result geometry is the input geometry with the vertices and
+    segments snapped. If no snapping occurs then the input geometry is returned
+    unchanged. The tolerance is used to control where snapping is performed.
 
     Where possible, this operation tries to avoid creating invalid geometries;
-    however, it does not guarantee that output geometries will be valid.  It is
+    however, it does not guarantee that output geometries will be valid. It is
     the responsibility of the caller to check for and handle invalid geometries.
 
     Because too much snapping can result in invalid geometries being created,
@@ -3088,76 +4218,81 @@ def snap(geometry: OptGeoT, reference: Geometry, tolerance: float, **kwargs) -> 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to snap.
     reference : Geometry or array_like
+        Geometry or geometries to snap to.
     tolerance : float or array_like
+        The maximum distance between the input and reference geometries for
+        snapping to occur. A value of 0 will snap only identical points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
-    >>> from shapely import snap, distance, LineString, Point, Polygon, MultiPoint, box
+    >>> import shapely
+    >>> from shapely import LineString, Point, Polygon, MultiPoint
 
     >>> point = Point(0.5, 2.5)
     >>> target_point = Point(0, 2)
-    >>> snap(point, target_point, tolerance=1)
+    >>> shapely.snap(point, target_point, tolerance=1)
     <POINT (0 2)>
-    >>> snap(point, target_point, tolerance=0.49)
+    >>> shapely.snap(point, target_point, tolerance=0.49)
     <POINT (0.5 2.5)>
 
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> snap(polygon, Point(8, 10), tolerance=5)
+    >>> shapely.snap(polygon, Point(8, 10), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 10 0, 0 0))>
-    >>> snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
+    >>> shapely.snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 8 0, 0 0))>
 
     You can snap one line to another, for example to clean imprecise coordinates:
 
     >>> line1 = LineString([(0.1, 0.1), (0.49, 0.51), (1.01, 0.89)])
     >>> line2 = LineString([(0, 0), (0.5, 0.5), (1.0, 1.0)])
-    >>> snap(line1, line2, 0.25)
+    >>> shapely.snap(line1, line2, 0.25)
     <LINESTRING (0 0, 0.5 0.5, 1 1)>
 
     Snapping also supports Z coordinates:
 
     >>> point1 = Point(0.1, 0.1, 0.5)
     >>> multipoint = MultiPoint([(0, 0, 1), (0, 0, 0)])
-    >>> snap(point1, multipoint, 1)
+    >>> shapely.snap(point1, multipoint, 1)
     <POINT Z (0 0 1)>
 
     Snapping to an empty geometry has no effect:
 
-    >>> snap(line1, LineString([]), 0.25)
+    >>> shapely.snap(line1, LineString([]), 0.25)
     <LINESTRING (0.1 0.1, 0.49 0.51, 1.01 0.89)>
 
     Snapping to a non-geometry (None) will always return None:
 
-    >>> snap(line1, None, 0.25) is None
+    >>> shapely.snap(line1, None, 0.25) is None
     True
 
     Only one vertex of a polygon is snapped to a target point,
     even if all vertices are equidistant to it,
     in order to prevent collapse of the polygon:
 
-    >>> poly = box(0, 0, 1, 1)
+    >>> poly = shapely.box(0, 0, 1, 1)
     >>> poly
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> snap(poly, Point(0.5, 0.5), 1)
+    >>> shapely.snap(poly, Point(0.5, 0.5), 1)
     <POLYGON ((0.5 0.5, 1 1, 0 1, 0 0, 0.5 0.5))>
     """
     ...
 @overload
 def snap(geometry: Geometry | None, reference: None, tolerance: float, **kwargs) -> None:
     """
-    Snaps an input geometry to reference geometry's vertices.
+    Snap the vertices and segments of the geometry to vertices of the reference.
 
-    Vertices of the first geometry are snapped to vertices of the second.
-    geometry, returning a new geometry; the input geometries are not modified.
-    The result geometry is the input geometry with the vertices snapped.
-    If no snapping occurs then the input geometry is returned unchanged.
-    The tolerance is used to control where snapping is performed.
+    Vertices and segments of the input geometry are snapped to vertices of the
+    reference geometry, returning a new geometry; the input geometries are not
+    modified. The result geometry is the input geometry with the vertices and
+    segments snapped. If no snapping occurs then the input geometry is returned
+    unchanged. The tolerance is used to control where snapping is performed.
 
     Where possible, this operation tries to avoid creating invalid geometries;
-    however, it does not guarantee that output geometries will be valid.  It is
+    however, it does not guarantee that output geometries will be valid. It is
     the responsibility of the caller to check for and handle invalid geometries.
 
     Because too much snapping can result in invalid geometries being created,
@@ -3168,76 +4303,81 @@ def snap(geometry: Geometry | None, reference: None, tolerance: float, **kwargs)
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to snap.
     reference : Geometry or array_like
+        Geometry or geometries to snap to.
     tolerance : float or array_like
+        The maximum distance between the input and reference geometries for
+        snapping to occur. A value of 0 will snap only identical points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
-    >>> from shapely import snap, distance, LineString, Point, Polygon, MultiPoint, box
+    >>> import shapely
+    >>> from shapely import LineString, Point, Polygon, MultiPoint
 
     >>> point = Point(0.5, 2.5)
     >>> target_point = Point(0, 2)
-    >>> snap(point, target_point, tolerance=1)
+    >>> shapely.snap(point, target_point, tolerance=1)
     <POINT (0 2)>
-    >>> snap(point, target_point, tolerance=0.49)
+    >>> shapely.snap(point, target_point, tolerance=0.49)
     <POINT (0.5 2.5)>
 
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> snap(polygon, Point(8, 10), tolerance=5)
+    >>> shapely.snap(polygon, Point(8, 10), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 10 0, 0 0))>
-    >>> snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
+    >>> shapely.snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 8 0, 0 0))>
 
     You can snap one line to another, for example to clean imprecise coordinates:
 
     >>> line1 = LineString([(0.1, 0.1), (0.49, 0.51), (1.01, 0.89)])
     >>> line2 = LineString([(0, 0), (0.5, 0.5), (1.0, 1.0)])
-    >>> snap(line1, line2, 0.25)
+    >>> shapely.snap(line1, line2, 0.25)
     <LINESTRING (0 0, 0.5 0.5, 1 1)>
 
     Snapping also supports Z coordinates:
 
     >>> point1 = Point(0.1, 0.1, 0.5)
     >>> multipoint = MultiPoint([(0, 0, 1), (0, 0, 0)])
-    >>> snap(point1, multipoint, 1)
+    >>> shapely.snap(point1, multipoint, 1)
     <POINT Z (0 0 1)>
 
     Snapping to an empty geometry has no effect:
 
-    >>> snap(line1, LineString([]), 0.25)
+    >>> shapely.snap(line1, LineString([]), 0.25)
     <LINESTRING (0.1 0.1, 0.49 0.51, 1.01 0.89)>
 
     Snapping to a non-geometry (None) will always return None:
 
-    >>> snap(line1, None, 0.25) is None
+    >>> shapely.snap(line1, None, 0.25) is None
     True
 
     Only one vertex of a polygon is snapped to a target point,
     even if all vertices are equidistant to it,
     in order to prevent collapse of the polygon:
 
-    >>> poly = box(0, 0, 1, 1)
+    >>> poly = shapely.box(0, 0, 1, 1)
     >>> poly
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> snap(poly, Point(0.5, 0.5), 1)
+    >>> shapely.snap(poly, Point(0.5, 0.5), 1)
     <POLYGON ((0.5 0.5, 1 1, 0 1, 0 0, 0.5 0.5))>
     """
     ...
 @overload
 def snap(geometry: OptGeoArrayLikeSeq, reference: OptGeoArrayLike, tolerance: ArrayLike[float], **kwargs) -> GeoArray:
     """
-    Snaps an input geometry to reference geometry's vertices.
+    Snap the vertices and segments of the geometry to vertices of the reference.
 
-    Vertices of the first geometry are snapped to vertices of the second.
-    geometry, returning a new geometry; the input geometries are not modified.
-    The result geometry is the input geometry with the vertices snapped.
-    If no snapping occurs then the input geometry is returned unchanged.
-    The tolerance is used to control where snapping is performed.
+    Vertices and segments of the input geometry are snapped to vertices of the
+    reference geometry, returning a new geometry; the input geometries are not
+    modified. The result geometry is the input geometry with the vertices and
+    segments snapped. If no snapping occurs then the input geometry is returned
+    unchanged. The tolerance is used to control where snapping is performed.
 
     Where possible, this operation tries to avoid creating invalid geometries;
-    however, it does not guarantee that output geometries will be valid.  It is
+    however, it does not guarantee that output geometries will be valid. It is
     the responsibility of the caller to check for and handle invalid geometries.
 
     Because too much snapping can result in invalid geometries being created,
@@ -3248,76 +4388,81 @@ def snap(geometry: OptGeoArrayLikeSeq, reference: OptGeoArrayLike, tolerance: Ar
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to snap.
     reference : Geometry or array_like
+        Geometry or geometries to snap to.
     tolerance : float or array_like
+        The maximum distance between the input and reference geometries for
+        snapping to occur. A value of 0 will snap only identical points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
-    >>> from shapely import snap, distance, LineString, Point, Polygon, MultiPoint, box
+    >>> import shapely
+    >>> from shapely import LineString, Point, Polygon, MultiPoint
 
     >>> point = Point(0.5, 2.5)
     >>> target_point = Point(0, 2)
-    >>> snap(point, target_point, tolerance=1)
+    >>> shapely.snap(point, target_point, tolerance=1)
     <POINT (0 2)>
-    >>> snap(point, target_point, tolerance=0.49)
+    >>> shapely.snap(point, target_point, tolerance=0.49)
     <POINT (0.5 2.5)>
 
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> snap(polygon, Point(8, 10), tolerance=5)
+    >>> shapely.snap(polygon, Point(8, 10), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 10 0, 0 0))>
-    >>> snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
+    >>> shapely.snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 8 0, 0 0))>
 
     You can snap one line to another, for example to clean imprecise coordinates:
 
     >>> line1 = LineString([(0.1, 0.1), (0.49, 0.51), (1.01, 0.89)])
     >>> line2 = LineString([(0, 0), (0.5, 0.5), (1.0, 1.0)])
-    >>> snap(line1, line2, 0.25)
+    >>> shapely.snap(line1, line2, 0.25)
     <LINESTRING (0 0, 0.5 0.5, 1 1)>
 
     Snapping also supports Z coordinates:
 
     >>> point1 = Point(0.1, 0.1, 0.5)
     >>> multipoint = MultiPoint([(0, 0, 1), (0, 0, 0)])
-    >>> snap(point1, multipoint, 1)
+    >>> shapely.snap(point1, multipoint, 1)
     <POINT Z (0 0 1)>
 
     Snapping to an empty geometry has no effect:
 
-    >>> snap(line1, LineString([]), 0.25)
+    >>> shapely.snap(line1, LineString([]), 0.25)
     <LINESTRING (0.1 0.1, 0.49 0.51, 1.01 0.89)>
 
     Snapping to a non-geometry (None) will always return None:
 
-    >>> snap(line1, None, 0.25) is None
+    >>> shapely.snap(line1, None, 0.25) is None
     True
 
     Only one vertex of a polygon is snapped to a target point,
     even if all vertices are equidistant to it,
     in order to prevent collapse of the polygon:
 
-    >>> poly = box(0, 0, 1, 1)
+    >>> poly = shapely.box(0, 0, 1, 1)
     >>> poly
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> snap(poly, Point(0.5, 0.5), 1)
+    >>> shapely.snap(poly, Point(0.5, 0.5), 1)
     <POLYGON ((0.5 0.5, 1 1, 0 1, 0 0, 0.5 0.5))>
     """
     ...
 @overload
 def snap(geometry: OptGeoArrayLike, reference: OptGeoArrayLikeSeq, tolerance: ArrayLike[float], **kwargs) -> GeoArray:
     """
-    Snaps an input geometry to reference geometry's vertices.
+    Snap the vertices and segments of the geometry to vertices of the reference.
 
-    Vertices of the first geometry are snapped to vertices of the second.
-    geometry, returning a new geometry; the input geometries are not modified.
-    The result geometry is the input geometry with the vertices snapped.
-    If no snapping occurs then the input geometry is returned unchanged.
-    The tolerance is used to control where snapping is performed.
+    Vertices and segments of the input geometry are snapped to vertices of the
+    reference geometry, returning a new geometry; the input geometries are not
+    modified. The result geometry is the input geometry with the vertices and
+    segments snapped. If no snapping occurs then the input geometry is returned
+    unchanged. The tolerance is used to control where snapping is performed.
 
     Where possible, this operation tries to avoid creating invalid geometries;
-    however, it does not guarantee that output geometries will be valid.  It is
+    however, it does not guarantee that output geometries will be valid. It is
     the responsibility of the caller to check for and handle invalid geometries.
 
     Because too much snapping can result in invalid geometries being created,
@@ -3328,76 +4473,81 @@ def snap(geometry: OptGeoArrayLike, reference: OptGeoArrayLikeSeq, tolerance: Ar
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to snap.
     reference : Geometry or array_like
+        Geometry or geometries to snap to.
     tolerance : float or array_like
+        The maximum distance between the input and reference geometries for
+        snapping to occur. A value of 0 will snap only identical points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
-    >>> from shapely import snap, distance, LineString, Point, Polygon, MultiPoint, box
+    >>> import shapely
+    >>> from shapely import LineString, Point, Polygon, MultiPoint
 
     >>> point = Point(0.5, 2.5)
     >>> target_point = Point(0, 2)
-    >>> snap(point, target_point, tolerance=1)
+    >>> shapely.snap(point, target_point, tolerance=1)
     <POINT (0 2)>
-    >>> snap(point, target_point, tolerance=0.49)
+    >>> shapely.snap(point, target_point, tolerance=0.49)
     <POINT (0.5 2.5)>
 
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> snap(polygon, Point(8, 10), tolerance=5)
+    >>> shapely.snap(polygon, Point(8, 10), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 10 0, 0 0))>
-    >>> snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
+    >>> shapely.snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 8 0, 0 0))>
 
     You can snap one line to another, for example to clean imprecise coordinates:
 
     >>> line1 = LineString([(0.1, 0.1), (0.49, 0.51), (1.01, 0.89)])
     >>> line2 = LineString([(0, 0), (0.5, 0.5), (1.0, 1.0)])
-    >>> snap(line1, line2, 0.25)
+    >>> shapely.snap(line1, line2, 0.25)
     <LINESTRING (0 0, 0.5 0.5, 1 1)>
 
     Snapping also supports Z coordinates:
 
     >>> point1 = Point(0.1, 0.1, 0.5)
     >>> multipoint = MultiPoint([(0, 0, 1), (0, 0, 0)])
-    >>> snap(point1, multipoint, 1)
+    >>> shapely.snap(point1, multipoint, 1)
     <POINT Z (0 0 1)>
 
     Snapping to an empty geometry has no effect:
 
-    >>> snap(line1, LineString([]), 0.25)
+    >>> shapely.snap(line1, LineString([]), 0.25)
     <LINESTRING (0.1 0.1, 0.49 0.51, 1.01 0.89)>
 
     Snapping to a non-geometry (None) will always return None:
 
-    >>> snap(line1, None, 0.25) is None
+    >>> shapely.snap(line1, None, 0.25) is None
     True
 
     Only one vertex of a polygon is snapped to a target point,
     even if all vertices are equidistant to it,
     in order to prevent collapse of the polygon:
 
-    >>> poly = box(0, 0, 1, 1)
+    >>> poly = shapely.box(0, 0, 1, 1)
     >>> poly
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> snap(poly, Point(0.5, 0.5), 1)
+    >>> shapely.snap(poly, Point(0.5, 0.5), 1)
     <POLYGON ((0.5 0.5, 1 1, 0 1, 0 0, 0.5 0.5))>
     """
     ...
 @overload
 def snap(geometry: OptGeoArrayLike, reference: OptGeoArrayLike, tolerance: ArrayLikeSeq[float], **kwargs) -> GeoArray:
     """
-    Snaps an input geometry to reference geometry's vertices.
+    Snap the vertices and segments of the geometry to vertices of the reference.
 
-    Vertices of the first geometry are snapped to vertices of the second.
-    geometry, returning a new geometry; the input geometries are not modified.
-    The result geometry is the input geometry with the vertices snapped.
-    If no snapping occurs then the input geometry is returned unchanged.
-    The tolerance is used to control where snapping is performed.
+    Vertices and segments of the input geometry are snapped to vertices of the
+    reference geometry, returning a new geometry; the input geometries are not
+    modified. The result geometry is the input geometry with the vertices and
+    segments snapped. If no snapping occurs then the input geometry is returned
+    unchanged. The tolerance is used to control where snapping is performed.
 
     Where possible, this operation tries to avoid creating invalid geometries;
-    however, it does not guarantee that output geometries will be valid.  It is
+    however, it does not guarantee that output geometries will be valid. It is
     the responsibility of the caller to check for and handle invalid geometries.
 
     Because too much snapping can result in invalid geometries being created,
@@ -3408,60 +4558,65 @@ def snap(geometry: OptGeoArrayLike, reference: OptGeoArrayLike, tolerance: Array
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to snap.
     reference : Geometry or array_like
+        Geometry or geometries to snap to.
     tolerance : float or array_like
+        The maximum distance between the input and reference geometries for
+        snapping to occur. A value of 0 will snap only identical points.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
-    >>> from shapely import snap, distance, LineString, Point, Polygon, MultiPoint, box
+    >>> import shapely
+    >>> from shapely import LineString, Point, Polygon, MultiPoint
 
     >>> point = Point(0.5, 2.5)
     >>> target_point = Point(0, 2)
-    >>> snap(point, target_point, tolerance=1)
+    >>> shapely.snap(point, target_point, tolerance=1)
     <POINT (0 2)>
-    >>> snap(point, target_point, tolerance=0.49)
+    >>> shapely.snap(point, target_point, tolerance=0.49)
     <POINT (0.5 2.5)>
 
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> snap(polygon, Point(8, 10), tolerance=5)
+    >>> shapely.snap(polygon, Point(8, 10), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 10 0, 0 0))>
-    >>> snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
+    >>> shapely.snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 8 0, 0 0))>
 
     You can snap one line to another, for example to clean imprecise coordinates:
 
     >>> line1 = LineString([(0.1, 0.1), (0.49, 0.51), (1.01, 0.89)])
     >>> line2 = LineString([(0, 0), (0.5, 0.5), (1.0, 1.0)])
-    >>> snap(line1, line2, 0.25)
+    >>> shapely.snap(line1, line2, 0.25)
     <LINESTRING (0 0, 0.5 0.5, 1 1)>
 
     Snapping also supports Z coordinates:
 
     >>> point1 = Point(0.1, 0.1, 0.5)
     >>> multipoint = MultiPoint([(0, 0, 1), (0, 0, 0)])
-    >>> snap(point1, multipoint, 1)
+    >>> shapely.snap(point1, multipoint, 1)
     <POINT Z (0 0 1)>
 
     Snapping to an empty geometry has no effect:
 
-    >>> snap(line1, LineString([]), 0.25)
+    >>> shapely.snap(line1, LineString([]), 0.25)
     <LINESTRING (0.1 0.1, 0.49 0.51, 1.01 0.89)>
 
     Snapping to a non-geometry (None) will always return None:
 
-    >>> snap(line1, None, 0.25) is None
+    >>> shapely.snap(line1, None, 0.25) is None
     True
 
     Only one vertex of a polygon is snapped to a target point,
     even if all vertices are equidistant to it,
     in order to prevent collapse of the polygon:
 
-    >>> poly = box(0, 0, 1, 1)
+    >>> poly = shapely.box(0, 0, 1, 1)
     >>> poly
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> snap(poly, Point(0.5, 0.5), 1)
+    >>> shapely.snap(poly, Point(0.5, 0.5), 1)
     <POLYGON ((0.5 0.5, 1 1, 0 1, 0 0, 0.5 0.5))>
     """
     ...
@@ -3473,11 +4628,125 @@ def voronoi_polygons(
     only_edges: Literal[False] = False,
     ordered: bool = False,
     **kwargs,
-) -> GeometryCollection[Polygon]: ...
+) -> GeometryCollection[Polygon]:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: Geometry, tolerance: float, extend_to: Geometry | None, only_edges: Literal[True], ordered: bool = False, **kwargs
-) -> LineString | MultiLineString: ...
+) -> LineString | MultiLineString:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: Geometry,
@@ -3487,7 +4756,64 @@ def voronoi_polygons(
     only_edges: Literal[True],
     ordered: bool = False,
     **kwargs,
-) -> LineString | MultiLineString: ...
+) -> LineString | MultiLineString:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: Geometry,
@@ -3496,7 +4822,64 @@ def voronoi_polygons(
     only_edges: bool = False,
     ordered: bool = False,
     **kwargs,
-) -> GeometryCollection[Polygon] | LineString | MultiLineString: ...
+) -> GeometryCollection[Polygon] | LineString | MultiLineString:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: None,
@@ -3505,7 +4888,64 @@ def voronoi_polygons(
     only_edges: bool = False,
     ordered: bool = False,
     **kwargs,
-) -> None: ...
+) -> None:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: Geometry | None,
@@ -3514,7 +4954,64 @@ def voronoi_polygons(
     only_edges: bool = False,
     ordered: bool = False,
     **kwargs,
-) -> GeometryCollection[Polygon] | LineString | MultiLineString | None: ...
+) -> GeometryCollection[Polygon] | LineString | MultiLineString | None:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: OptGeoArrayLikeSeq,
@@ -3525,7 +5022,7 @@ def voronoi_polygons(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes a Voronoi diagram from the vertices of an input geometry.
+    Compute a Voronoi diagram from the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
     or linestrings (see only_edges). Returns empty if an input geometry
@@ -3534,6 +5031,7 @@ def voronoi_polygons(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     extend_to : Geometry or array_like, optional
@@ -3542,25 +5040,42 @@ def voronoi_polygons(
     only_edges : bool or array_like, default False
         If set to True, the triangulation will return a collection of
         linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
     >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
+    >>> shapely.voronoi_polygons(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
     <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
     """
     ...
 @overload
@@ -3573,7 +5088,7 @@ def voronoi_polygons(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes a Voronoi diagram from the vertices of an input geometry.
+    Compute a Voronoi diagram from the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
     or linestrings (see only_edges). Returns empty if an input geometry
@@ -3582,6 +5097,7 @@ def voronoi_polygons(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     extend_to : Geometry or array_like, optional
@@ -3590,25 +5106,42 @@ def voronoi_polygons(
     only_edges : bool or array_like, default False
         If set to True, the triangulation will return a collection of
         linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
     >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
+    >>> shapely.voronoi_polygons(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
     <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
     """
     ...
 @overload
@@ -3621,7 +5154,7 @@ def voronoi_polygons(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes a Voronoi diagram from the vertices of an input geometry.
+    Compute a Voronoi diagram from the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
     or linestrings (see only_edges). Returns empty if an input geometry
@@ -3630,6 +5163,7 @@ def voronoi_polygons(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     extend_to : Geometry or array_like, optional
@@ -3638,25 +5172,42 @@ def voronoi_polygons(
     only_edges : bool or array_like, default False
         If set to True, the triangulation will return a collection of
         linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
     >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
+    >>> shapely.voronoi_polygons(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
     <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
     """
     ...
 @overload
@@ -3670,7 +5221,7 @@ def voronoi_polygons(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes a Voronoi diagram from the vertices of an input geometry.
+    Compute a Voronoi diagram from the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
     or linestrings (see only_edges). Returns empty if an input geometry
@@ -3679,6 +5230,7 @@ def voronoi_polygons(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     extend_to : Geometry or array_like, optional
@@ -3687,25 +5239,42 @@ def voronoi_polygons(
     only_edges : bool or array_like, default False
         If set to True, the triangulation will return a collection of
         linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
     >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
+    >>> shapely.voronoi_polygons(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
     <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
     """
     ...
 @overload
@@ -3716,7 +5285,64 @@ def voronoi_polygons(
     only_edges: ArrayLikeSeq[bool],
     ordered: bool = False,
     **kwargs,
-) -> GeoArray: ...
+) -> GeoArray:
+    """
+    Compute a Voronoi diagram from the vertices of an input geometry.
+
+    The output is a geometrycollection containing polygons (default)
+    or linestrings (see only_edges). Returns empty if an input geometry
+    contains less than 2 vertices or if the provided extent has zero area.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
+    tolerance : float or array_like, default 0.0
+        Snap input vertices together if their distance is less than this value.
+    extend_to : Geometry or array_like, optional
+        If provided, the diagram will be extended to cover the envelope of this
+        geometry (unless this envelope is smaller than the input geometry).
+    only_edges : bool or array_like, default False
+        If set to True, the triangulation will return a collection of
+        linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
+    >>> points = MultiPoint([(2, 2), (4, 2)])
+    >>> shapely.voronoi_polygons(points).normalize()
+    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
+    <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
+    """
+    ...
 @overload
 def voronoi_polygons(
     geometry: OptGeoArrayLike,
@@ -3728,7 +5354,7 @@ def voronoi_polygons(
     **kwargs,
 ) -> GeoArray:
     """
-    Computes a Voronoi diagram from the vertices of an input geometry.
+    Compute a Voronoi diagram from the vertices of an input geometry.
 
     The output is a geometrycollection containing polygons (default)
     or linestrings (see only_edges). Returns empty if an input geometry
@@ -3737,6 +5363,7 @@ def voronoi_polygons(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the Voronoi diagram.
     tolerance : float or array_like, default 0.0
         Snap input vertices together if their distance is less than this value.
     extend_to : Geometry or array_like, optional
@@ -3745,194 +5372,261 @@ def voronoi_polygons(
     only_edges : bool or array_like, default False
         If set to True, the triangulation will return a collection of
         linestrings instead of polygons.
+    ordered : bool or array_like, default False
+        If set to True, polygons within the GeometryCollection will be ordered
+        according to the order of the input vertices. Note that this may slow
+        down the computation. Requires GEOS >= 3.12.0.
+
+        .. versionadded:: 2.1.0
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
+        ``ordered`` are specified as positional arguments. In a future
+        release, these will need to be specified as keyword arguments.
+
     Examples
     --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
+    >>> import shapely
+    >>> from shapely import LineString, MultiPoint, Point
     >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
+    >>> shapely.voronoi_polygons(points).normalize()
     <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
+    >>> shapely.voronoi_polygons(points, only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
+    <MULTILINESTRING ((3 4.2, 3 -0.2))>
+    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
+    <MULTILINESTRING ((3 10, 3 0))>
+    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
+    <MULTILINESTRING ((3 4, 3 0))>
+    >>> shapely.voronoi_polygons(Point(2, 2))
     <GEOMETRYCOLLECTION EMPTY>
+    >>> shapely.voronoi_polygons(points, ordered=True)
+    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
     """
     ...
 @overload
 def oriented_envelope(geometry: Point, **kwargs) -> Point:
     """
-    Computes the oriented envelope (minimum rotated rectangle)
-    that encloses an input geometry, such that the resulting rectangle has
-    minimum area.
+    Compute the oriented envelope (minimum rotated rectangle) of the input geometry.
+
+    The oriented envelope encloses an input geometry, such that the resulting
+    rectangle has minimum area.
 
     Unlike envelope this rectangle is not constrained to be parallel to the
     coordinate axes. If the convex hull of the object is a degenerate (line
     or point) this degenerate is returned.
 
+    The starting point of the rectangle is not fixed. You can use
+    :func:`~shapely.normalize` to reorganize the rectangle to
+    :ref:`strict canonical form <canonical-form>` so the starting point is
+    always the lower left point.
+
+    ``minimum_rotated_rectangle`` is an alias for ``oriented_envelope``.
+
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the oriented envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
-    <POLYGON ((0 0, 10 10, 15 5, 5 -5, 0 0))>
-    >>> oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
+    >>> shapely.oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
     <POLYGON ((1 1, 10 10, 12 8, 3 -1, 1 1))>
-    >>> oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
-    <POLYGON ((1 1, 1 10, 15 10, 15 1, 1 1))>
-    >>> oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
+    >>> shapely.oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
+    <POLYGON ((1 1, 5 10, 16.691 4.804, 12.691 -4.196, 1 1))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
     <LINESTRING (1 1, 10 1)>
-    >>> oriented_envelope(Point(2, 2))
+    >>> shapely.oriented_envelope(Point(2, 2))
     <POINT (2 2)>
-    >>> oriented_envelope(GeometryCollection([]))
+    >>> shapely.oriented_envelope(GeometryCollection([]))
     <POLYGON EMPTY>
     """
     ...
 @overload
 def oriented_envelope(geometry: Geometry, **kwargs) -> BaseGeometry:
     """
-    Computes the oriented envelope (minimum rotated rectangle)
-    that encloses an input geometry, such that the resulting rectangle has
-    minimum area.
+    Compute the oriented envelope (minimum rotated rectangle) of the input geometry.
+
+    The oriented envelope encloses an input geometry, such that the resulting
+    rectangle has minimum area.
 
     Unlike envelope this rectangle is not constrained to be parallel to the
     coordinate axes. If the convex hull of the object is a degenerate (line
     or point) this degenerate is returned.
 
+    The starting point of the rectangle is not fixed. You can use
+    :func:`~shapely.normalize` to reorganize the rectangle to
+    :ref:`strict canonical form <canonical-form>` so the starting point is
+    always the lower left point.
+
+    ``minimum_rotated_rectangle`` is an alias for ``oriented_envelope``.
+
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the oriented envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
-    <POLYGON ((0 0, 10 10, 15 5, 5 -5, 0 0))>
-    >>> oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
+    >>> shapely.oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
     <POLYGON ((1 1, 10 10, 12 8, 3 -1, 1 1))>
-    >>> oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
-    <POLYGON ((1 1, 1 10, 15 10, 15 1, 1 1))>
-    >>> oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
+    >>> shapely.oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
+    <POLYGON ((1 1, 5 10, 16.691 4.804, 12.691 -4.196, 1 1))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
     <LINESTRING (1 1, 10 1)>
-    >>> oriented_envelope(Point(2, 2))
+    >>> shapely.oriented_envelope(Point(2, 2))
     <POINT (2 2)>
-    >>> oriented_envelope(GeometryCollection([]))
+    >>> shapely.oriented_envelope(GeometryCollection([]))
     <POLYGON EMPTY>
     """
     ...
 @overload
 def oriented_envelope(geometry: None, **kwargs) -> None:
     """
-    Computes the oriented envelope (minimum rotated rectangle)
-    that encloses an input geometry, such that the resulting rectangle has
-    minimum area.
+    Compute the oriented envelope (minimum rotated rectangle) of the input geometry.
+
+    The oriented envelope encloses an input geometry, such that the resulting
+    rectangle has minimum area.
 
     Unlike envelope this rectangle is not constrained to be parallel to the
     coordinate axes. If the convex hull of the object is a degenerate (line
     or point) this degenerate is returned.
 
+    The starting point of the rectangle is not fixed. You can use
+    :func:`~shapely.normalize` to reorganize the rectangle to
+    :ref:`strict canonical form <canonical-form>` so the starting point is
+    always the lower left point.
+
+    ``minimum_rotated_rectangle`` is an alias for ``oriented_envelope``.
+
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the oriented envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
-    <POLYGON ((0 0, 10 10, 15 5, 5 -5, 0 0))>
-    >>> oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
+    >>> shapely.oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
     <POLYGON ((1 1, 10 10, 12 8, 3 -1, 1 1))>
-    >>> oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
-    <POLYGON ((1 1, 1 10, 15 10, 15 1, 1 1))>
-    >>> oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
+    >>> shapely.oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
+    <POLYGON ((1 1, 5 10, 16.691 4.804, 12.691 -4.196, 1 1))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
     <LINESTRING (1 1, 10 1)>
-    >>> oriented_envelope(Point(2, 2))
+    >>> shapely.oriented_envelope(Point(2, 2))
     <POINT (2 2)>
-    >>> oriented_envelope(GeometryCollection([]))
+    >>> shapely.oriented_envelope(GeometryCollection([]))
     <POLYGON EMPTY>
     """
     ...
 @overload
 def oriented_envelope(geometry: Geometry | None, **kwargs) -> BaseGeometry | None:
     """
-    Computes the oriented envelope (minimum rotated rectangle)
-    that encloses an input geometry, such that the resulting rectangle has
-    minimum area.
+    Compute the oriented envelope (minimum rotated rectangle) of the input geometry.
+
+    The oriented envelope encloses an input geometry, such that the resulting
+    rectangle has minimum area.
 
     Unlike envelope this rectangle is not constrained to be parallel to the
     coordinate axes. If the convex hull of the object is a degenerate (line
     or point) this degenerate is returned.
 
+    The starting point of the rectangle is not fixed. You can use
+    :func:`~shapely.normalize` to reorganize the rectangle to
+    :ref:`strict canonical form <canonical-form>` so the starting point is
+    always the lower left point.
+
+    ``minimum_rotated_rectangle`` is an alias for ``oriented_envelope``.
+
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the oriented envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
-    <POLYGON ((0 0, 10 10, 15 5, 5 -5, 0 0))>
-    >>> oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
+    >>> shapely.oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
     <POLYGON ((1 1, 10 10, 12 8, 3 -1, 1 1))>
-    >>> oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
-    <POLYGON ((1 1, 1 10, 15 10, 15 1, 1 1))>
-    >>> oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
+    >>> shapely.oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
+    <POLYGON ((1 1, 5 10, 16.691 4.804, 12.691 -4.196, 1 1))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
     <LINESTRING (1 1, 10 1)>
-    >>> oriented_envelope(Point(2, 2))
+    >>> shapely.oriented_envelope(Point(2, 2))
     <POINT (2 2)>
-    >>> oriented_envelope(GeometryCollection([]))
+    >>> shapely.oriented_envelope(GeometryCollection([]))
     <POLYGON EMPTY>
     """
     ...
 @overload
 def oriented_envelope(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Computes the oriented envelope (minimum rotated rectangle)
-    that encloses an input geometry, such that the resulting rectangle has
-    minimum area.
+    Compute the oriented envelope (minimum rotated rectangle) of the input geometry.
+
+    The oriented envelope encloses an input geometry, such that the resulting
+    rectangle has minimum area.
 
     Unlike envelope this rectangle is not constrained to be parallel to the
     coordinate axes. If the convex hull of the object is a degenerate (line
     or point) this degenerate is returned.
 
+    The starting point of the rectangle is not fixed. You can use
+    :func:`~shapely.normalize` to reorganize the rectangle to
+    :ref:`strict canonical form <canonical-form>` so the starting point is
+    always the lower left point.
+
+    ``minimum_rotated_rectangle`` is an alias for ``oriented_envelope``.
+
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the oriented envelope.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
-    <POLYGON ((0 0, 10 10, 15 5, 5 -5, 0 0))>
-    >>> oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
+    >>> shapely.oriented_envelope(MultiPoint([(0, 0), (10, 0), (10, 10)])).normalize()
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (5, 1), (10, 10)])).normalize()
     <POLYGON ((1 1, 10 10, 12 8, 3 -1, 1 1))>
-    >>> oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
-    <POLYGON ((1 1, 1 10, 15 10, 15 1, 1 1))>
-    >>> oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
+    >>> shapely.oriented_envelope(Polygon([(1, 1), (15, 1), (5, 10), (1, 1)])).normalize()
+    <POLYGON ((1 1, 5 10, 16.691 4.804, 12.691 -4.196, 1 1))>
+    >>> shapely.oriented_envelope(LineString([(1, 1), (10, 1)])).normalize()
     <LINESTRING (1 1, 10 1)>
-    >>> oriented_envelope(Point(2, 2))
+    >>> shapely.oriented_envelope(Point(2, 2))
     <POINT (2 2)>
-    >>> oriented_envelope(GeometryCollection([]))
+    >>> shapely.oriented_envelope(GeometryCollection([]))
     <POLYGON EMPTY>
     """
     ...
@@ -3942,176 +5636,722 @@ minimum_rotated_rectangle = oriented_envelope
 @overload
 def minimum_bounding_circle(geometry: Point, **kwargs) -> Point:
     """
-    Computes the minimum bounding circle that encloses an input geometry.
+    Compute the minimum bounding circle that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the minimum bounding circle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> minimum_bounding_circle(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.minimum_bounding_circle(
+    ...     Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    ... )
     <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
-    >>> minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
+    >>> shapely.minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
     <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
-    >>> minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
+    >>> shapely.minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
     <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
-    >>> minimum_bounding_circle(Point(0, 1))
+    >>> shapely.minimum_bounding_circle(Point(0, 1))
     <POINT (0 1)>
-    >>> minimum_bounding_circle(GeometryCollection([]))
+    >>> shapely.minimum_bounding_circle(GeometryCollection([]))
     <POLYGON EMPTY>
 
-    See also
+    See Also
     --------
-    minimum_bounding_radius
+    minimum_bounding_radius, maximum_inscribed_circle
     """
     ...
 @overload
 def minimum_bounding_circle(geometry: LineString | Polygon | BaseMultipartGeometry, **kwargs) -> Polygon:
     """
-    Computes the minimum bounding circle that encloses an input geometry.
+    Compute the minimum bounding circle that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the minimum bounding circle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> minimum_bounding_circle(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.minimum_bounding_circle(
+    ...     Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    ... )
     <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
-    >>> minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
+    >>> shapely.minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
     <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
-    >>> minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
+    >>> shapely.minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
     <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
-    >>> minimum_bounding_circle(Point(0, 1))
+    >>> shapely.minimum_bounding_circle(Point(0, 1))
     <POINT (0 1)>
-    >>> minimum_bounding_circle(GeometryCollection([]))
+    >>> shapely.minimum_bounding_circle(GeometryCollection([]))
     <POLYGON EMPTY>
 
-    See also
+    See Also
     --------
-    minimum_bounding_radius
+    minimum_bounding_radius, maximum_inscribed_circle
     """
     ...
 @overload
 def minimum_bounding_circle(geometry: Geometry, **kwargs) -> Polygon | Point:
     """
-    Computes the minimum bounding circle that encloses an input geometry.
+    Compute the minimum bounding circle that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the minimum bounding circle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> minimum_bounding_circle(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.minimum_bounding_circle(
+    ...     Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    ... )
     <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
-    >>> minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
+    >>> shapely.minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
     <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
-    >>> minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
+    >>> shapely.minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
     <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
-    >>> minimum_bounding_circle(Point(0, 1))
+    >>> shapely.minimum_bounding_circle(Point(0, 1))
     <POINT (0 1)>
-    >>> minimum_bounding_circle(GeometryCollection([]))
+    >>> shapely.minimum_bounding_circle(GeometryCollection([]))
     <POLYGON EMPTY>
 
-    See also
+    See Also
     --------
-    minimum_bounding_radius
+    minimum_bounding_radius, maximum_inscribed_circle
     """
     ...
 @overload
 def minimum_bounding_circle(geometry: None, **kwargs) -> None:
     """
-    Computes the minimum bounding circle that encloses an input geometry.
+    Compute the minimum bounding circle that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the minimum bounding circle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> minimum_bounding_circle(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.minimum_bounding_circle(
+    ...     Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    ... )
     <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
-    >>> minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
+    >>> shapely.minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
     <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
-    >>> minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
+    >>> shapely.minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
     <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
-    >>> minimum_bounding_circle(Point(0, 1))
+    >>> shapely.minimum_bounding_circle(Point(0, 1))
     <POINT (0 1)>
-    >>> minimum_bounding_circle(GeometryCollection([]))
+    >>> shapely.minimum_bounding_circle(GeometryCollection([]))
     <POLYGON EMPTY>
 
-    See also
+    See Also
     --------
-    minimum_bounding_radius
+    minimum_bounding_radius, maximum_inscribed_circle
     """
     ...
 @overload
 def minimum_bounding_circle(geometry: Geometry | None, **kwargs) -> Polygon | Point | None:
     """
-    Computes the minimum bounding circle that encloses an input geometry.
+    Compute the minimum bounding circle that encloses an input geometry.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries for which to compute the minimum bounding circle.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> minimum_bounding_circle(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.minimum_bounding_circle(
+    ...     Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    ... )
     <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
-    >>> minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
+    >>> shapely.minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
     <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
-    >>> minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
+    >>> shapely.minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
     <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
-    >>> minimum_bounding_circle(Point(0, 1))
+    >>> shapely.minimum_bounding_circle(Point(0, 1))
     <POINT (0 1)>
-    >>> minimum_bounding_circle(GeometryCollection([]))
+    >>> shapely.minimum_bounding_circle(GeometryCollection([]))
     <POLYGON EMPTY>
 
-    See also
+    See Also
     --------
-    minimum_bounding_radius
+    minimum_bounding_radius, maximum_inscribed_circle
     """
     ...
 @overload
-def minimum_bounding_circle(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray: ...
+def minimum_bounding_circle(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
+    """
+    Compute the minimum bounding circle that encloses an input geometry.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries for which to compute the minimum bounding circle.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
+    >>> shapely.minimum_bounding_circle(
+    ...     Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    ... )
+    <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
+    >>> shapely.minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
+    <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
+    >>> shapely.minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
+    <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
+    >>> shapely.minimum_bounding_circle(Point(0, 1))
+    <POINT (0 1)>
+    >>> shapely.minimum_bounding_circle(GeometryCollection([]))
+    <POLYGON EMPTY>
+
+    See Also
+    --------
+    minimum_bounding_radius, maximum_inscribed_circle
+    """
+    ...
 @overload
-def maximum_inscribed_circle(geometry: Point, tolerance: float | None = None, **kwargs) -> Point: ...
+def maximum_inscribed_circle(geometry: Point, tolerance: float | None = None, **kwargs) -> Point:
+    """
+    Find the largest circle that is fully contained within the input geometry.
+
+    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
+    up to a specified tolerance. The MIC is determined by a point in the
+    interior of the area which has the farthest distance from the area
+    boundary, along with a boundary point at that distance. In the context of
+    geography the center of the MIC is known as the "pole of inaccessibility".
+    A cartographic use case is to determine a suitable point to place a map
+    label within a polygon.
+    The radius length of the MIC is a  measure of how "narrow" a polygon is.
+    It is the distance at which the negative buffer becomes empty.
+
+    The function supports polygons with holes and multipolygons.
+
+    Returns a two-point linestring, with the first point at the center of the
+    inscribed circle and the second on the boundary of the inscribed circle.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    tolerance : float or array_like, optional
+        Stop the algorithm when the search area is smaller than this tolerance.
+        When not specified, uses `max(width, height) / 1000` per geometry as
+        the default.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    >>> shapely.maximum_inscribed_circle(poly)
+    <LINESTRING (5 5, 0 5)>
+
+    See Also
+    --------
+    minimum_bounding_circle
+    """
+    ...
 @overload
 def maximum_inscribed_circle(
     geometry: LineString | Polygon | BaseMultipartGeometry, tolerance: float | None = None, **kwargs
-): ...
+):
+    """
+    Find the largest circle that is fully contained within the input geometry.
+
+    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
+    up to a specified tolerance. The MIC is determined by a point in the
+    interior of the area which has the farthest distance from the area
+    boundary, along with a boundary point at that distance. In the context of
+    geography the center of the MIC is known as the "pole of inaccessibility".
+    A cartographic use case is to determine a suitable point to place a map
+    label within a polygon.
+    The radius length of the MIC is a  measure of how "narrow" a polygon is.
+    It is the distance at which the negative buffer becomes empty.
+
+    The function supports polygons with holes and multipolygons.
+
+    Returns a two-point linestring, with the first point at the center of the
+    inscribed circle and the second on the boundary of the inscribed circle.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    tolerance : float or array_like, optional
+        Stop the algorithm when the search area is smaller than this tolerance.
+        When not specified, uses `max(width, height) / 1000` per geometry as
+        the default.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    >>> shapely.maximum_inscribed_circle(poly)
+    <LINESTRING (5 5, 0 5)>
+
+    See Also
+    --------
+    minimum_bounding_circle
+    """
+    ...
 @overload
-def maximum_inscribed_circle(geometry: Geometry, tolerance: float | None = None, **kwargs) -> Polygon | Point: ...
+def maximum_inscribed_circle(geometry: Geometry, tolerance: float | None = None, **kwargs) -> Polygon | Point:
+    """
+    Find the largest circle that is fully contained within the input geometry.
+
+    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
+    up to a specified tolerance. The MIC is determined by a point in the
+    interior of the area which has the farthest distance from the area
+    boundary, along with a boundary point at that distance. In the context of
+    geography the center of the MIC is known as the "pole of inaccessibility".
+    A cartographic use case is to determine a suitable point to place a map
+    label within a polygon.
+    The radius length of the MIC is a  measure of how "narrow" a polygon is.
+    It is the distance at which the negative buffer becomes empty.
+
+    The function supports polygons with holes and multipolygons.
+
+    Returns a two-point linestring, with the first point at the center of the
+    inscribed circle and the second on the boundary of the inscribed circle.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    tolerance : float or array_like, optional
+        Stop the algorithm when the search area is smaller than this tolerance.
+        When not specified, uses `max(width, height) / 1000` per geometry as
+        the default.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    >>> shapely.maximum_inscribed_circle(poly)
+    <LINESTRING (5 5, 0 5)>
+
+    See Also
+    --------
+    minimum_bounding_circle
+    """
+    ...
 @overload
-def maximum_inscribed_circle(geometry: None, tolerance: float | None = None, **kwargs) -> None: ...
+def maximum_inscribed_circle(geometry: None, tolerance: float | None = None, **kwargs) -> None:
+    """
+    Find the largest circle that is fully contained within the input geometry.
+
+    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
+    up to a specified tolerance. The MIC is determined by a point in the
+    interior of the area which has the farthest distance from the area
+    boundary, along with a boundary point at that distance. In the context of
+    geography the center of the MIC is known as the "pole of inaccessibility".
+    A cartographic use case is to determine a suitable point to place a map
+    label within a polygon.
+    The radius length of the MIC is a  measure of how "narrow" a polygon is.
+    It is the distance at which the negative buffer becomes empty.
+
+    The function supports polygons with holes and multipolygons.
+
+    Returns a two-point linestring, with the first point at the center of the
+    inscribed circle and the second on the boundary of the inscribed circle.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    tolerance : float or array_like, optional
+        Stop the algorithm when the search area is smaller than this tolerance.
+        When not specified, uses `max(width, height) / 1000` per geometry as
+        the default.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    >>> shapely.maximum_inscribed_circle(poly)
+    <LINESTRING (5 5, 0 5)>
+
+    See Also
+    --------
+    minimum_bounding_circle
+    """
+    ...
 @overload
-def maximum_inscribed_circle(geometry: Geometry | None, tolerance: float | None = None, **kwargs) -> Polygon | Point | None: ...
+def maximum_inscribed_circle(geometry: Geometry | None, tolerance: float | None = None, **kwargs) -> Polygon | Point | None:
+    """
+    Find the largest circle that is fully contained within the input geometry.
+
+    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
+    up to a specified tolerance. The MIC is determined by a point in the
+    interior of the area which has the farthest distance from the area
+    boundary, along with a boundary point at that distance. In the context of
+    geography the center of the MIC is known as the "pole of inaccessibility".
+    A cartographic use case is to determine a suitable point to place a map
+    label within a polygon.
+    The radius length of the MIC is a  measure of how "narrow" a polygon is.
+    It is the distance at which the negative buffer becomes empty.
+
+    The function supports polygons with holes and multipolygons.
+
+    Returns a two-point linestring, with the first point at the center of the
+    inscribed circle and the second on the boundary of the inscribed circle.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    tolerance : float or array_like, optional
+        Stop the algorithm when the search area is smaller than this tolerance.
+        When not specified, uses `max(width, height) / 1000` per geometry as
+        the default.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    >>> shapely.maximum_inscribed_circle(poly)
+    <LINESTRING (5 5, 0 5)>
+
+    See Also
+    --------
+    minimum_bounding_circle
+    """
+    ...
 @overload
-def maximum_inscribed_circle(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float] | None = None, **kwargs) -> GeoArray: ...
+def maximum_inscribed_circle(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float] | None = None, **kwargs) -> GeoArray:
+    """
+    Find the largest circle that is fully contained within the input geometry.
+
+    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
+    up to a specified tolerance. The MIC is determined by a point in the
+    interior of the area which has the farthest distance from the area
+    boundary, along with a boundary point at that distance. In the context of
+    geography the center of the MIC is known as the "pole of inaccessibility".
+    A cartographic use case is to determine a suitable point to place a map
+    label within a polygon.
+    The radius length of the MIC is a  measure of how "narrow" a polygon is.
+    It is the distance at which the negative buffer becomes empty.
+
+    The function supports polygons with holes and multipolygons.
+
+    Returns a two-point linestring, with the first point at the center of the
+    inscribed circle and the second on the boundary of the inscribed circle.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    tolerance : float or array_like, optional
+        Stop the algorithm when the search area is smaller than this tolerance.
+        When not specified, uses `max(width, height) / 1000` per geometry as
+        the default.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Polygon
+    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
+    >>> shapely.maximum_inscribed_circle(poly)
+    <LINESTRING (5 5, 0 5)>
+
+    See Also
+    --------
+    minimum_bounding_circle
+    """
+    ...
 @overload
-def orient_polygons(geometry: Point, *, exterior_cw: bool = False, **kwargs) -> Point: ...
+def orient_polygons(geometry: Point, *, exterior_cw: bool = False, **kwargs) -> Point:
+    """
+    Enforce a ring orientation on all polygonal elements in the input geometry.
+
+    Forces (Multi)Polygons to use a counter-clockwise orientation for their
+    exterior ring, and a clockwise orientation for their interior rings (or
+    the oppposite if ``exterior_cw=True``).
+
+    Also processes geometries inside a GeometryCollection in the same way.
+    Other geometries are returned unchanged.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to orient consistently.
+    exterior_cw : bool, default False
+        If True, exterior rings will be clockwise and interior rings
+        will be counter-clockwise.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    A polygon with both shell and hole having clockwise orientation:
+
+    >>> from shapely import Polygon, orient_polygons
+    >>> polygon = Polygon(
+    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
+    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
+    ... )
+    >>> polygon
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    By default, the exterior ring is oriented counter-clockwise and
+    the holes clockwise:
+
+    >>> orient_polygons(polygon)
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    Asking for the opposite orientation:
+
+    >>> orient_polygons(polygon, exterior_cw=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
+    """
+    ...
 @overload
-def orient_polygons(geometry: Geometry, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry: ...
+def orient_polygons(geometry: Geometry, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry:
+    """
+    Enforce a ring orientation on all polygonal elements in the input geometry.
+
+    Forces (Multi)Polygons to use a counter-clockwise orientation for their
+    exterior ring, and a clockwise orientation for their interior rings (or
+    the oppposite if ``exterior_cw=True``).
+
+    Also processes geometries inside a GeometryCollection in the same way.
+    Other geometries are returned unchanged.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to orient consistently.
+    exterior_cw : bool, default False
+        If True, exterior rings will be clockwise and interior rings
+        will be counter-clockwise.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    A polygon with both shell and hole having clockwise orientation:
+
+    >>> from shapely import Polygon, orient_polygons
+    >>> polygon = Polygon(
+    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
+    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
+    ... )
+    >>> polygon
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    By default, the exterior ring is oriented counter-clockwise and
+    the holes clockwise:
+
+    >>> orient_polygons(polygon)
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    Asking for the opposite orientation:
+
+    >>> orient_polygons(polygon, exterior_cw=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
+    """
+    ...
 @overload
-def orient_polygons(geometry: None, *, exterior_cw: bool = False, **kwargs) -> None: ...
+def orient_polygons(geometry: None, *, exterior_cw: bool = False, **kwargs) -> None:
+    """
+    Enforce a ring orientation on all polygonal elements in the input geometry.
+
+    Forces (Multi)Polygons to use a counter-clockwise orientation for their
+    exterior ring, and a clockwise orientation for their interior rings (or
+    the oppposite if ``exterior_cw=True``).
+
+    Also processes geometries inside a GeometryCollection in the same way.
+    Other geometries are returned unchanged.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to orient consistently.
+    exterior_cw : bool, default False
+        If True, exterior rings will be clockwise and interior rings
+        will be counter-clockwise.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    A polygon with both shell and hole having clockwise orientation:
+
+    >>> from shapely import Polygon, orient_polygons
+    >>> polygon = Polygon(
+    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
+    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
+    ... )
+    >>> polygon
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    By default, the exterior ring is oriented counter-clockwise and
+    the holes clockwise:
+
+    >>> orient_polygons(polygon)
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    Asking for the opposite orientation:
+
+    >>> orient_polygons(polygon, exterior_cw=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
+    """
+    ...
 @overload
-def orient_polygons(geometry: Geometry | None, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry | None: ...
+def orient_polygons(geometry: Geometry | None, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry | None:
+    """
+    Enforce a ring orientation on all polygonal elements in the input geometry.
+
+    Forces (Multi)Polygons to use a counter-clockwise orientation for their
+    exterior ring, and a clockwise orientation for their interior rings (or
+    the oppposite if ``exterior_cw=True``).
+
+    Also processes geometries inside a GeometryCollection in the same way.
+    Other geometries are returned unchanged.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to orient consistently.
+    exterior_cw : bool, default False
+        If True, exterior rings will be clockwise and interior rings
+        will be counter-clockwise.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    A polygon with both shell and hole having clockwise orientation:
+
+    >>> from shapely import Polygon, orient_polygons
+    >>> polygon = Polygon(
+    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
+    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
+    ... )
+    >>> polygon
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    By default, the exterior ring is oriented counter-clockwise and
+    the holes clockwise:
+
+    >>> orient_polygons(polygon)
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    Asking for the opposite orientation:
+
+    >>> orient_polygons(polygon, exterior_cw=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
+    """
+    ...
 @overload
-def orient_polygons(geometry: OptGeoArrayLikeSeq, *, exterior_cw: bool = False, **kwargs) -> GeoArray: ...
+def orient_polygons(geometry: OptGeoArrayLikeSeq, *, exterior_cw: bool = False, **kwargs) -> GeoArray:
+    """
+    Enforce a ring orientation on all polygonal elements in the input geometry.
+
+    Forces (Multi)Polygons to use a counter-clockwise orientation for their
+    exterior ring, and a clockwise orientation for their interior rings (or
+    the oppposite if ``exterior_cw=True``).
+
+    Also processes geometries inside a GeometryCollection in the same way.
+    Other geometries are returned unchanged.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to orient consistently.
+    exterior_cw : bool, default False
+        If True, exterior rings will be clockwise and interior rings
+        will be counter-clockwise.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    Examples
+    --------
+    A polygon with both shell and hole having clockwise orientation:
+
+    >>> from shapely import Polygon, orient_polygons
+    >>> polygon = Polygon(
+    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
+    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
+    ... )
+    >>> polygon
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    By default, the exterior ring is oriented counter-clockwise and
+    the holes clockwise:
+
+    >>> orient_polygons(polygon)
+    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
+
+    Asking for the opposite orientation:
+
+    >>> orient_polygons(polygon, exterior_cw=True)
+    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
+    """
+    ...

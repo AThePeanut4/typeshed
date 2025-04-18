@@ -41,7 +41,7 @@ __all__ = [
 _PrecisionMode: TypeAlias = Literal["valid_output", "pointwise", "keep_collapsed", 0, 1, 2]
 
 class GeometryType(IntEnum):
-    """The enumeration of GEOS geometry types"""
+    """The enumeration of GEOS geometry types."""
     MISSING = -1
     POINT = 0
     LINESTRING = 1
@@ -55,7 +55,9 @@ class GeometryType(IntEnum):
 @overload
 def get_type_id(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns the type ID of a geometry.
+    Return the type ID of a geometry.
+
+    Possible values are:
 
     - None (missing) is -1
     - POINT is 0
@@ -70,26 +72,30 @@ def get_type_id(geometry: Geometry | None, **kwargs) -> int:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the type ID of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     GeometryType
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> get_type_id(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_type_id(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
     1
-    >>> get_type_id([Point(1, 2), Point(2, 3)]).tolist()
+    >>> shapely.get_type_id([Point(1, 2), Point(2, 3)]).tolist()
     [0, 0]
     """
     ...
 @overload
 def get_type_id(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns the type ID of a geometry.
+    Return the type ID of a geometry.
+
+    Possible values are:
 
     - None (missing) is -1
     - POINT is 0
@@ -104,26 +110,28 @@ def get_type_id(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the type ID of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     GeometryType
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> get_type_id(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_type_id(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
     1
-    >>> get_type_id([Point(1, 2), Point(2, 3)]).tolist()
+    >>> shapely.get_type_id([Point(1, 2), Point(2, 3)]).tolist()
     [0, 0]
     """
     ...
 @overload
 def get_dimensions(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns the inherent dimensionality of a geometry.
+    Return the inherent dimensionality of a geometry.
 
     The inherent dimension is 0 for points, 1 for linestrings and linearrings,
     and 2 for polygons. For geometrycollections it is the max of the containing
@@ -132,30 +140,32 @@ def get_dimensions(geometry: Geometry | None, **kwargs) -> int:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the dimensionality of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, Point, Polygon
     >>> point = Point(0, 0)
-    >>> get_dimensions(point)
+    >>> shapely.get_dimensions(point)
     0
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_dimensions(polygon)
+    >>> shapely.get_dimensions(polygon)
     2
-    >>> get_dimensions(GeometryCollection([point, polygon]))
+    >>> shapely.get_dimensions(GeometryCollection([point, polygon]))
     2
-    >>> get_dimensions(GeometryCollection([]))
+    >>> shapely.get_dimensions(GeometryCollection([]))
     -1
-    >>> get_dimensions(None)
+    >>> shapely.get_dimensions(None)
     -1
     """
     ...
 @overload
 def get_dimensions(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns the inherent dimensionality of a geometry.
+    Return the inherent dimensionality of a geometry.
 
     The inherent dimension is 0 for points, 1 for linestrings and linearrings,
     and 2 for polygons. For geometrycollections it is the max of the containing
@@ -164,281 +174,316 @@ def get_dimensions(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the dimensionality of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, Point, Polygon
     >>> point = Point(0, 0)
-    >>> get_dimensions(point)
+    >>> shapely.get_dimensions(point)
     0
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_dimensions(polygon)
+    >>> shapely.get_dimensions(polygon)
     2
-    >>> get_dimensions(GeometryCollection([point, polygon]))
+    >>> shapely.get_dimensions(GeometryCollection([point, polygon]))
     2
-    >>> get_dimensions(GeometryCollection([]))
+    >>> shapely.get_dimensions(GeometryCollection([]))
     -1
-    >>> get_dimensions(None)
+    >>> shapely.get_dimensions(None)
     -1
     """
     ...
 @overload
 def get_coordinate_dimension(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns the dimensionality of the coordinates in a geometry (2 or 3).
+    Return the dimensionality of the coordinates in a geometry (2, 3 or 4).
 
-    Returns -1 for missing geometries (``None`` values). Note that if the first Z
-    coordinate equals ``nan``, this function will return ``2``.
+    The return value can be one of the following:
+
+    * Return 2 for geometries with XY coordinate types,
+    * Return 3 for XYZ or XYM coordinate types
+      (distinguished by :meth:`has_z` or :meth:`has_m`),
+    * Return 4 for XYZM coordinate types,
+    * Return -1 for missing geometries (``None`` values).
+
+    Note that with GEOS < 3.12, if the first Z coordinate equals ``nan``, this function
+    will return ``2``. Geometries with M coordinates are supported with GEOS >= 3.12.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the coordinate dimension of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
-    >>> get_coordinate_dimension(Point(0, 0))
+    >>> shapely.get_coordinate_dimension(Point(0, 0))
     2
-    >>> get_coordinate_dimension(Point(0, 0, 1))
+    >>> shapely.get_coordinate_dimension(Point(0, 0, 1))
     3
-    >>> get_coordinate_dimension(None)
+    >>> shapely.get_coordinate_dimension(None)
     -1
-    >>> get_coordinate_dimension(Point(0, 0, float("nan")))
-    2
     """
     ...
 @overload
 def get_coordinate_dimension(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns the dimensionality of the coordinates in a geometry (2 or 3).
+    Return the dimensionality of the coordinates in a geometry (2, 3 or 4).
 
-    Returns -1 for missing geometries (``None`` values). Note that if the first Z
-    coordinate equals ``nan``, this function will return ``2``.
+    The return value can be one of the following:
+
+    * Return 2 for geometries with XY coordinate types,
+    * Return 3 for XYZ or XYM coordinate types
+      (distinguished by :meth:`has_z` or :meth:`has_m`),
+    * Return 4 for XYZM coordinate types,
+    * Return -1 for missing geometries (``None`` values).
+
+    Note that with GEOS < 3.12, if the first Z coordinate equals ``nan``, this function
+    will return ``2``. Geometries with M coordinates are supported with GEOS >= 3.12.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the coordinate dimension of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
-    >>> get_coordinate_dimension(Point(0, 0))
+    >>> shapely.get_coordinate_dimension(Point(0, 0))
     2
-    >>> get_coordinate_dimension(Point(0, 0, 1))
+    >>> shapely.get_coordinate_dimension(Point(0, 0, 1))
     3
-    >>> get_coordinate_dimension(None)
+    >>> shapely.get_coordinate_dimension(None)
     -1
-    >>> get_coordinate_dimension(Point(0, 0, float("nan")))
-    2
     """
     ...
 @overload
 def get_num_coordinates(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns the total number of coordinates in a geometry.
+    Return the total number of coordinates in a geometry.
 
     Returns 0 for not-a-geometry values.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the number of coordinates of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, Point
     >>> point = Point(0, 0)
-    >>> get_num_coordinates(point)
+    >>> shapely.get_num_coordinates(point)
     1
-    >>> get_num_coordinates(Point(0, 0, 0))
+    >>> shapely.get_num_coordinates(Point(0, 0, 0))
     1
     >>> line = LineString([(0, 0), (1, 1)])
-    >>> get_num_coordinates(line)
+    >>> shapely.get_num_coordinates(line)
     2
-    >>> get_num_coordinates(GeometryCollection([point, line]))
+    >>> shapely.get_num_coordinates(GeometryCollection([point, line]))
     3
-    >>> get_num_coordinates(None)
+    >>> shapely.get_num_coordinates(None)
     0
     """
     ...
 @overload
 def get_num_coordinates(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns the total number of coordinates in a geometry.
+    Return the total number of coordinates in a geometry.
 
     Returns 0 for not-a-geometry values.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the number of coordinates of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import GeometryCollection, LineString, Point
     >>> point = Point(0, 0)
-    >>> get_num_coordinates(point)
+    >>> shapely.get_num_coordinates(point)
     1
-    >>> get_num_coordinates(Point(0, 0, 0))
+    >>> shapely.get_num_coordinates(Point(0, 0, 0))
     1
     >>> line = LineString([(0, 0), (1, 1)])
-    >>> get_num_coordinates(line)
+    >>> shapely.get_num_coordinates(line)
     2
-    >>> get_num_coordinates(GeometryCollection([point, line]))
+    >>> shapely.get_num_coordinates(GeometryCollection([point, line]))
     3
-    >>> get_num_coordinates(None)
+    >>> shapely.get_num_coordinates(None)
     0
     """
     ...
 @overload
 def get_srid(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns the SRID of a geometry.
+    Return the SRID of a geometry.
 
     Returns -1 for not-a-geometry values.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the SRID of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     set_srid
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(0, 0)
-    >>> get_srid(point)
+    >>> shapely.get_srid(point)
     0
-    >>> with_srid = set_srid(point, 4326)
-    >>> get_srid(with_srid)
+    >>> with_srid = shapely.set_srid(point, 4326)
+    >>> shapely.get_srid(with_srid)
     4326
     """
     ...
 @overload
 def get_srid(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns the SRID of a geometry.
+    Return the SRID of a geometry.
 
     Returns -1 for not-a-geometry values.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the SRID of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     set_srid
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(0, 0)
-    >>> get_srid(point)
+    >>> shapely.get_srid(point)
     0
-    >>> with_srid = set_srid(point, 4326)
-    >>> get_srid(with_srid)
+    >>> with_srid = shapely.set_srid(point, 4326)
+    >>> shapely.get_srid(with_srid)
     4326
     """
     ...
 @overload
 def set_srid(geometry: OptGeoT, srid: SupportsIndex, **kwargs) -> OptGeoT:
     """
-    Returns a geometry with its SRID set.
+    Return a geometry with its SRID set.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to set the SRID of.
     srid : int
+        The SRID to set on the geometry.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_srid
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(0, 0)
-    >>> get_srid(point)
+    >>> shapely.get_srid(point)
     0
-    >>> with_srid = set_srid(point, 4326)
-    >>> get_srid(with_srid)
+    >>> with_srid = shapely.set_srid(point, 4326)
+    >>> shapely.get_srid(with_srid)
     4326
     """
     ...
 @overload
 def set_srid(geometry: OptGeoArrayLikeSeq, srid: ArrayLike[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns a geometry with its SRID set.
+    Return a geometry with its SRID set.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to set the SRID of.
     srid : int
+        The SRID to set on the geometry.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_srid
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(0, 0)
-    >>> get_srid(point)
+    >>> shapely.get_srid(point)
     0
-    >>> with_srid = set_srid(point, 4326)
-    >>> get_srid(with_srid)
+    >>> with_srid = shapely.set_srid(point, 4326)
+    >>> shapely.get_srid(with_srid)
     4326
     """
     ...
 @overload
 def set_srid(geometry: OptGeoArrayLike, srid: ArrayLikeSeq[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns a geometry with its SRID set.
+    Return a geometry with its SRID set.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to set the SRID of.
     srid : int
+        The SRID to set on the geometry.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_srid
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(0, 0)
-    >>> get_srid(point)
+    >>> shapely.get_srid(point)
     0
-    >>> with_srid = set_srid(point, 4326)
-    >>> get_srid(with_srid)
+    >>> with_srid = shapely.set_srid(point, 4326)
+    >>> shapely.get_srid(with_srid)
     4326
     """
     ...
 @overload
 def get_x(point: Geometry | None, **kwargs) -> float:
     """
-    Returns the x-coordinate of a point
+    Return the x-coordinate of a point.
 
     Parameters
     ----------
@@ -447,23 +492,24 @@ def get_x(point: Geometry | None, **kwargs) -> float:
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    get_y, get_z
+    get_y, get_z, get_m
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_x(Point(1, 2))
+    >>> shapely.get_x(Point(1, 2))
     1.0
-    >>> get_x(MultiPoint([(1, 1), (1, 2)]))
+    >>> shapely.get_x(MultiPoint([(1, 1), (1, 2)]))
     nan
     """
     ...
 @overload
 def get_x(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
     """
-    Returns the x-coordinate of a point
+    Return the x-coordinate of a point.
 
     Parameters
     ----------
@@ -472,23 +518,24 @@ def get_x(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    get_y, get_z
+    get_y, get_z, get_m
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_x(Point(1, 2))
+    >>> shapely.get_x(Point(1, 2))
     1.0
-    >>> get_x(MultiPoint([(1, 1), (1, 2)]))
+    >>> shapely.get_x(MultiPoint([(1, 1), (1, 2)]))
     nan
     """
     ...
 @overload
 def get_y(point: Geometry | None, **kwargs) -> float:
     """
-    Returns the y-coordinate of a point
+    Return the y-coordinate of a point.
 
     Parameters
     ----------
@@ -497,23 +544,24 @@ def get_y(point: Geometry | None, **kwargs) -> float:
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    get_x, get_z
+    get_x, get_z, get_m
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_y(Point(1, 2))
+    >>> shapely.get_y(Point(1, 2))
     2.0
-    >>> get_y(MultiPoint([(1, 1), (1, 2)]))
+    >>> shapely.get_y(MultiPoint([(1, 1), (1, 2)]))
     nan
     """
     ...
 @overload
 def get_y(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
     """
-    Returns the y-coordinate of a point
+    Return the y-coordinate of a point.
 
     Parameters
     ----------
@@ -522,665 +570,812 @@ def get_y(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    get_x, get_z
+    get_x, get_z, get_m
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_y(Point(1, 2))
+    >>> shapely.get_y(Point(1, 2))
     2.0
-    >>> get_y(MultiPoint([(1, 1), (1, 2)]))
+    >>> shapely.get_y(MultiPoint([(1, 1), (1, 2)]))
     nan
     """
     ...
 @overload
 def get_z(point: Geometry | None, **kwargs) -> float:
     """
-    Returns the z-coordinate of a point.
+    Return the z-coordinate of a point.
 
     Parameters
     ----------
     point : Geometry or array_like
-        Non-point geometries or geometries without 3rd dimension will result
+        Non-point geometries or geometries without Z dimension will result
         in NaN being returned.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    get_x, get_y
+    get_x, get_y, get_m
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_z(Point(1, 2, 3))
+    >>> shapely.get_z(Point(1, 2, 3))
     3.0
-    >>> get_z(Point(1, 2))
+    >>> shapely.get_z(Point(1, 2))
     nan
-    >>> get_z(MultiPoint([(1, 1, 1), (2, 2, 2)]))
+    >>> shapely.get_z(MultiPoint([(1, 1, 1), (2, 2, 2)]))
     nan
     """
     ...
 @overload
 def get_z(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
     """
-    Returns the z-coordinate of a point.
+    Return the z-coordinate of a point.
 
     Parameters
     ----------
     point : Geometry or array_like
-        Non-point geometries or geometries without 3rd dimension will result
+        Non-point geometries or geometries without Z dimension will result
         in NaN being returned.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    get_x, get_y
+    get_x, get_y, get_m
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_z(Point(1, 2, 3))
+    >>> shapely.get_z(Point(1, 2, 3))
     3.0
-    >>> get_z(Point(1, 2))
+    >>> shapely.get_z(Point(1, 2))
     nan
-    >>> get_z(MultiPoint([(1, 1, 1), (2, 2, 2)]))
+    >>> shapely.get_z(MultiPoint([(1, 1, 1), (2, 2, 2)]))
     nan
     """
     ...
 @overload
-def get_m(point: Geometry | None, **kwargs) -> float: ...
-@overload
-def get_m(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]: ...
-@overload
-def get_point(geometry: LineString, index: SupportsIndex, **kwargs) -> Point | Any: ...
-@overload
-def get_point(geometry: Point | Polygon | BaseMultipartGeometry | None, index: SupportsIndex, **kwargs) -> None:
+def get_m(point: Geometry | None, **kwargs) -> float:
     """
-    Returns the nth point of a linestring or linearring.
+    Return the m-coordinate of a point.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    point : Geometry or array_like
+        Non-point geometries or geometries without M dimension will result
+        in NaN being returned.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    See Also
+    --------
+    get_x, get_y, get_z
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Point, from_wkt
+    >>> shapely.get_m(from_wkt("POINT ZM (1 2 3 4)"))
+    4.0
+    >>> shapely.get_m(from_wkt("POINT M (1 2 4)"))
+    4.0
+    >>> shapely.get_m(Point(1, 2, 3))
+    nan
+    >>> shapely.get_m(from_wkt("MULTIPOINT M ((1 1 1), (2 2 2))"))
+    nan
+    """
+    ...
+@overload
+def get_m(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
+    """
+    Return the m-coordinate of a point.
+
+    .. versionadded:: 2.1.0
+
+    Parameters
+    ----------
+    point : Geometry or array_like
+        Non-point geometries or geometries without M dimension will result
+        in NaN being returned.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    See Also
+    --------
+    get_x, get_y, get_z
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import Point, from_wkt
+    >>> shapely.get_m(from_wkt("POINT ZM (1 2 3 4)"))
+    4.0
+    >>> shapely.get_m(from_wkt("POINT M (1 2 4)"))
+    4.0
+    >>> shapely.get_m(Point(1, 2, 3))
+    nan
+    >>> shapely.get_m(from_wkt("MULTIPOINT M ((1 1 1), (2 2 2))"))
+    nan
+    """
+    ...
+@overload
+def get_point(geometry: LineString, index: SupportsIndex, **kwargs) -> Point | Any:
+    """
+    Return the nth point of a linestring or linearring.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the point of.
     index : int or array_like
         Negative values count from the end of the linestring backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_num_points
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LinearRing, LineString, MultiPoint, Point
     >>> line = LineString([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_point(line, 1)
+    >>> shapely.get_point(line, 1)
     <POINT (1 1)>
-    >>> get_point(line, -2)
+    >>> shapely.get_point(line, -2)
     <POINT (2 2)>
-    >>> get_point(line, [0, 3]).tolist()
+    >>> shapely.get_point(line, [0, 3]).tolist()
     [<POINT (0 0)>, <POINT (3 3)>]
 
-    The functcion works the same for LinearRing input:
+    The function works the same for LinearRing input:
 
-    >>> get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
+    >>> shapely.get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
     <POINT (1 1)>
 
     For non-linear geometries it returns None:
 
-    >>> get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
+    >>> shapely.get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
     True
-    >>> get_point(Point(1, 1), 0) is None
+    >>> shapely.get_point(Point(1, 1), 0) is None
+    True
+    """
+    ...
+@overload
+def get_point(geometry: Point | Polygon | BaseMultipartGeometry | None, index: SupportsIndex, **kwargs) -> None:
+    """
+    Return the nth point of a linestring or linearring.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+        Geometry or geometries to get the point of.
+    index : int or array_like
+        Negative values count from the end of the linestring backwards.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+
+    See Also
+    --------
+    get_num_points
+
+    Examples
+    --------
+    >>> import shapely
+    >>> from shapely import LinearRing, LineString, MultiPoint, Point
+    >>> line = LineString([(0, 0), (1, 1), (2, 2), (3, 3)])
+    >>> shapely.get_point(line, 1)
+    <POINT (1 1)>
+    >>> shapely.get_point(line, -2)
+    <POINT (2 2)>
+    >>> shapely.get_point(line, [0, 3]).tolist()
+    [<POINT (0 0)>, <POINT (3 3)>]
+
+    The function works the same for LinearRing input:
+
+    >>> shapely.get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
+    <POINT (1 1)>
+
+    For non-linear geometries it returns None:
+
+    >>> shapely.get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
+    True
+    >>> shapely.get_point(Point(1, 1), 0) is None
     True
     """
     ...
 @overload
 def get_point(geometry: Geometry, index: SupportsIndex, **kwargs) -> Point | None:
     """
-    Returns the nth point of a linestring or linearring.
+    Return the nth point of a linestring or linearring.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the point of.
     index : int or array_like
         Negative values count from the end of the linestring backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_num_points
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LinearRing, LineString, MultiPoint, Point
     >>> line = LineString([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_point(line, 1)
+    >>> shapely.get_point(line, 1)
     <POINT (1 1)>
-    >>> get_point(line, -2)
+    >>> shapely.get_point(line, -2)
     <POINT (2 2)>
-    >>> get_point(line, [0, 3]).tolist()
+    >>> shapely.get_point(line, [0, 3]).tolist()
     [<POINT (0 0)>, <POINT (3 3)>]
 
-    The functcion works the same for LinearRing input:
+    The function works the same for LinearRing input:
 
-    >>> get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
+    >>> shapely.get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
     <POINT (1 1)>
 
     For non-linear geometries it returns None:
 
-    >>> get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
+    >>> shapely.get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
     True
-    >>> get_point(Point(1, 1), 0) is None
+    >>> shapely.get_point(Point(1, 1), 0) is None
     True
     """
     ...
 @overload
 def get_point(geometry: OptGeoArrayLikeSeq, index: ArrayLike[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns the nth point of a linestring or linearring.
+    Return the nth point of a linestring or linearring.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the point of.
     index : int or array_like
         Negative values count from the end of the linestring backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_num_points
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LinearRing, LineString, MultiPoint, Point
     >>> line = LineString([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_point(line, 1)
+    >>> shapely.get_point(line, 1)
     <POINT (1 1)>
-    >>> get_point(line, -2)
+    >>> shapely.get_point(line, -2)
     <POINT (2 2)>
-    >>> get_point(line, [0, 3]).tolist()
+    >>> shapely.get_point(line, [0, 3]).tolist()
     [<POINT (0 0)>, <POINT (3 3)>]
 
-    The functcion works the same for LinearRing input:
+    The function works the same for LinearRing input:
 
-    >>> get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
+    >>> shapely.get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
     <POINT (1 1)>
 
     For non-linear geometries it returns None:
 
-    >>> get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
+    >>> shapely.get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
     True
-    >>> get_point(Point(1, 1), 0) is None
+    >>> shapely.get_point(Point(1, 1), 0) is None
     True
     """
     ...
 @overload
 def get_point(geometry: OptGeoArrayLike, index: ArrayLikeSeq[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns the nth point of a linestring or linearring.
+    Return the nth point of a linestring or linearring.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the point of.
     index : int or array_like
         Negative values count from the end of the linestring backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_num_points
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LinearRing, LineString, MultiPoint, Point
     >>> line = LineString([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_point(line, 1)
+    >>> shapely.get_point(line, 1)
     <POINT (1 1)>
-    >>> get_point(line, -2)
+    >>> shapely.get_point(line, -2)
     <POINT (2 2)>
-    >>> get_point(line, [0, 3]).tolist()
+    >>> shapely.get_point(line, [0, 3]).tolist()
     [<POINT (0 0)>, <POINT (3 3)>]
 
-    The functcion works the same for LinearRing input:
+    The function works the same for LinearRing input:
 
-    >>> get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
+    >>> shapely.get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
     <POINT (1 1)>
 
     For non-linear geometries it returns None:
 
-    >>> get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
+    >>> shapely.get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
     True
-    >>> get_point(Point(1, 1), 0) is None
+    >>> shapely.get_point(Point(1, 1), 0) is None
     True
     """
     ...
 @overload
 def get_num_points(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns number of points in a linestring or linearring.
+    Return the number of points in a linestring or linearring.
 
-    Returns 0 for not-a-geometry values.
+    Returns 0 for not-a-geometry values. The number of points in geometries
+    other than linestring or linearring equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The number of points in geometries other than linestring or linearring
-        equals zero.
+        Geometry or geometries to get the number of points of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_point
     get_num_geometries
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint
-    >>> get_num_points(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_num_points(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
     4
-    >>> get_num_points(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_num_points(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
     0
-    >>> get_num_points(None)
+    >>> shapely.get_num_points(None)
     0
     """
     ...
 @overload
 def get_num_points(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns number of points in a linestring or linearring.
+    Return the number of points in a linestring or linearring.
 
-    Returns 0 for not-a-geometry values.
+    Returns 0 for not-a-geometry values. The number of points in geometries
+    other than linestring or linearring equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The number of points in geometries other than linestring or linearring
-        equals zero.
+        Geometry or geometries to get the number of points of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_point
     get_num_geometries
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, MultiPoint
-    >>> get_num_points(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_num_points(LineString([(0, 0), (1, 1), (2, 2), (3, 3)]))
     4
-    >>> get_num_points(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_num_points(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
     0
-    >>> get_num_points(None)
+    >>> shapely.get_num_points(None)
     0
     """
     ...
 @overload
 def get_exterior_ring(geometry: Polygon, **kwargs) -> LinearRing:
     """
-    Returns the exterior ring of a polygon.
+    Return the exterior ring of a polygon.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the exterior ring of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_interior_ring
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
-    >>> get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
     <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>
-    >>> get_exterior_ring(Point(1, 1)) is None
+    >>> shapely.get_exterior_ring(Point(1, 1)) is None
     True
     """
     ...
 @overload
 def get_exterior_ring(geometry: Point | LineString | BaseMultipartGeometry | None, **kwargs) -> None:
     """
-    Returns the exterior ring of a polygon.
+    Return the exterior ring of a polygon.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the exterior ring of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_interior_ring
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
-    >>> get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
     <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>
-    >>> get_exterior_ring(Point(1, 1)) is None
+    >>> shapely.get_exterior_ring(Point(1, 1)) is None
     True
     """
     ...
 @overload
 def get_exterior_ring(geometry: Geometry, **kwargs) -> LinearRing | None:
     """
-    Returns the exterior ring of a polygon.
+    Return the exterior ring of a polygon.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the exterior ring of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_interior_ring
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
-    >>> get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
     <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>
-    >>> get_exterior_ring(Point(1, 1)) is None
+    >>> shapely.get_exterior_ring(Point(1, 1)) is None
     True
     """
     ...
 @overload
 def get_exterior_ring(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns the exterior ring of a polygon.
+    Return the exterior ring of a polygon.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the exterior ring of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_interior_ring
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
-    >>> get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
+    >>> shapely.get_exterior_ring(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
     <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>
-    >>> get_exterior_ring(Point(1, 1)) is None
+    >>> shapely.get_exterior_ring(Point(1, 1)) is None
     True
     """
     ...
 @overload
 def get_interior_ring(geometry: Polygon, index: SupportsIndex, **kwargs) -> LinearRing | Any:
     """
-    Returns the nth interior ring of a polygon.
+    Return the nth interior ring of a polygon.
+
+    The number of interior rings in non-polygons equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the interior ring of.
     index : int or array_like
         Negative values count from the end of the interior rings backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_num_interior_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_interior_ring(polygon_with_hole, 0)
+    >>> shapely.get_interior_ring(polygon_with_hole, 0)
     <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>
-    >>> get_interior_ring(polygon_with_hole, 1) is None
+    >>> shapely.get_interior_ring(polygon_with_hole, 1) is None
     True
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_interior_ring(polygon, 0) is None
+    >>> shapely.get_interior_ring(polygon, 0) is None
     True
-    >>> get_interior_ring(Point(0, 0), 0) is None
+    >>> shapely.get_interior_ring(Point(0, 0), 0) is None
     True
     """
     ...
 @overload
 def get_interior_ring(geometry: Point | LineString | BaseMultipartGeometry | None, index: SupportsIndex, **kwargs) -> None:
     """
-    Returns the nth interior ring of a polygon.
+    Return the nth interior ring of a polygon.
+
+    The number of interior rings in non-polygons equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the interior ring of.
     index : int or array_like
         Negative values count from the end of the interior rings backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_num_interior_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_interior_ring(polygon_with_hole, 0)
+    >>> shapely.get_interior_ring(polygon_with_hole, 0)
     <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>
-    >>> get_interior_ring(polygon_with_hole, 1) is None
+    >>> shapely.get_interior_ring(polygon_with_hole, 1) is None
     True
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_interior_ring(polygon, 0) is None
+    >>> shapely.get_interior_ring(polygon, 0) is None
     True
-    >>> get_interior_ring(Point(0, 0), 0) is None
+    >>> shapely.get_interior_ring(Point(0, 0), 0) is None
     True
     """
     ...
 @overload
 def get_interior_ring(geometry: Geometry, index: SupportsIndex, **kwargs) -> LinearRing | None:
     """
-    Returns the nth interior ring of a polygon.
+    Return the nth interior ring of a polygon.
+
+    The number of interior rings in non-polygons equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the interior ring of.
     index : int or array_like
         Negative values count from the end of the interior rings backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_num_interior_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_interior_ring(polygon_with_hole, 0)
+    >>> shapely.get_interior_ring(polygon_with_hole, 0)
     <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>
-    >>> get_interior_ring(polygon_with_hole, 1) is None
+    >>> shapely.get_interior_ring(polygon_with_hole, 1) is None
     True
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_interior_ring(polygon, 0) is None
+    >>> shapely.get_interior_ring(polygon, 0) is None
     True
-    >>> get_interior_ring(Point(0, 0), 0) is None
+    >>> shapely.get_interior_ring(Point(0, 0), 0) is None
     True
     """
     ...
 @overload
 def get_interior_ring(geometry: OptGeoArrayLikeSeq, index: ArrayLike[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns the nth interior ring of a polygon.
+    Return the nth interior ring of a polygon.
+
+    The number of interior rings in non-polygons equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the interior ring of.
     index : int or array_like
         Negative values count from the end of the interior rings backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_num_interior_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_interior_ring(polygon_with_hole, 0)
+    >>> shapely.get_interior_ring(polygon_with_hole, 0)
     <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>
-    >>> get_interior_ring(polygon_with_hole, 1) is None
+    >>> shapely.get_interior_ring(polygon_with_hole, 1) is None
     True
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_interior_ring(polygon, 0) is None
+    >>> shapely.get_interior_ring(polygon, 0) is None
     True
-    >>> get_interior_ring(Point(0, 0), 0) is None
+    >>> shapely.get_interior_ring(Point(0, 0), 0) is None
     True
     """
     ...
 @overload
 def get_interior_ring(geometry: OptGeoArrayLike, index: ArrayLikeSeq[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns the nth interior ring of a polygon.
+    Return the nth interior ring of a polygon.
+
+    The number of interior rings in non-polygons equals zero.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the interior ring of.
     index : int or array_like
         Negative values count from the end of the interior rings backwards.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_num_interior_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_interior_ring(polygon_with_hole, 0)
+    >>> shapely.get_interior_ring(polygon_with_hole, 0)
     <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>
-    >>> get_interior_ring(polygon_with_hole, 1) is None
+    >>> shapely.get_interior_ring(polygon_with_hole, 1) is None
     True
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_interior_ring(polygon, 0) is None
+    >>> shapely.get_interior_ring(polygon, 0) is None
     True
-    >>> get_interior_ring(Point(0, 0), 0) is None
+    >>> shapely.get_interior_ring(Point(0, 0), 0) is None
     True
     """
     ...
 @overload
 def get_num_interior_rings(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns number of internal rings in a polygon
+    Return number of internal rings in a polygon.
 
     Returns 0 for not-a-geometry values.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The number of interior rings in non-polygons equals zero.
+        Geometry or geometries to get the number of interior rings of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_interior_ring
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_num_interior_rings(polygon)
+    >>> shapely.get_num_interior_rings(polygon)
     0
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_num_interior_rings(polygon_with_hole)
+    >>> shapely.get_num_interior_rings(polygon_with_hole)
     1
-    >>> get_num_interior_rings(Point(0, 0))
+    >>> shapely.get_num_interior_rings(Point(0, 0))
     0
-    >>> get_num_interior_rings(None)
+    >>> shapely.get_num_interior_rings(None)
     0
     """
     ...
 @overload
 def get_num_interior_rings(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns number of internal rings in a polygon
+    Return number of internal rings in a polygon.
 
     Returns 0 for not-a-geometry values.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The number of interior rings in non-polygons equals zero.
+        Geometry or geometries to get the number of interior rings of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_exterior_ring
     get_interior_ring
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, Polygon
     >>> polygon = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> get_num_interior_rings(polygon)
+    >>> shapely.get_num_interior_rings(polygon)
     0
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_num_interior_rings(polygon_with_hole)
+    >>> shapely.get_num_interior_rings(polygon_with_hole)
     1
-    >>> get_num_interior_rings(Point(0, 0))
+    >>> shapely.get_num_interior_rings(Point(0, 0))
     0
-    >>> get_num_interior_rings(None)
+    >>> shapely.get_num_interior_rings(None)
     0
     """
     ...
 @overload
 def get_geometry(geometry: MultiPoint, index: SupportsIndex, **kwargs) -> Point | Any:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1191,34 +1386,36 @@ def get_geometry(geometry: MultiPoint, index: SupportsIndex, **kwargs) -> Point 
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: MultiLineString, index: SupportsIndex, **kwargs) -> LineString | Any:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1229,34 +1426,36 @@ def get_geometry(geometry: MultiLineString, index: SupportsIndex, **kwargs) -> L
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: MultiPolygon, index: SupportsIndex, **kwargs) -> Polygon | Any:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1267,34 +1466,36 @@ def get_geometry(geometry: MultiPolygon, index: SupportsIndex, **kwargs) -> Poly
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: BaseMultipartGeometry, index: SupportsIndex, **kwargs) -> BaseGeometry | Any:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1305,34 +1506,36 @@ def get_geometry(geometry: BaseMultipartGeometry, index: SupportsIndex, **kwargs
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: None, index: SupportsIndex, **kwargs) -> None:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1343,34 +1546,36 @@ def get_geometry(geometry: None, index: SupportsIndex, **kwargs) -> None:
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: Geometry | None, index: SupportsIndex, **kwargs) -> BaseGeometry | None:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1381,34 +1586,36 @@ def get_geometry(geometry: Geometry | None, index: SupportsIndex, **kwargs) -> B
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: OptGeoArrayLikeSeq, index: ArrayLike[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1419,34 +1626,36 @@ def get_geometry(geometry: OptGeoArrayLikeSeq, index: ArrayLike[SupportsIndex], 
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_geometry(geometry: OptGeoArrayLike, index: ArrayLikeSeq[SupportsIndex], **kwargs) -> GeoArray:
     """
-    Returns the nth geometry from a collection of geometries.
+    Return the nth geometry from a collection of geometries.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the nth geometry of.
     index : int or array_like
         Negative values count from the end of the collection backwards.
     **kwargs
@@ -1457,57 +1666,71 @@ def get_geometry(geometry: OptGeoArrayLike, index: ArrayLikeSeq[SupportsIndex], 
     - simple geometries act as length-1 collections
     - out-of-range values return None
 
-    See also
+    See Also
     --------
     get_num_geometries, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point, MultiPoint
     >>> multipoint = MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_geometry(multipoint, 1)
+    >>> shapely.get_geometry(multipoint, 1)
     <POINT (1 1)>
-    >>> get_geometry(multipoint, -1)
+    >>> shapely.get_geometry(multipoint, -1)
     <POINT (3 3)>
-    >>> get_geometry(multipoint, 5) is None
+    >>> shapely.get_geometry(multipoint, 5) is None
     True
-    >>> get_geometry(Point(1, 1), 0)
+    >>> shapely.get_geometry(Point(1, 1), 0)
     <POINT (1 1)>
-    >>> get_geometry(Point(1, 1), 1) is None
+    >>> shapely.get_geometry(Point(1, 1), 1) is None
     True
     """
     ...
 @overload
 def get_parts(geometry: OptGeoArrayLike, return_index: Literal[False] = False) -> GeoArray:
     """
-    Gets parts of each GeometryCollection or Multi* geometry object; returns
-    a copy of each geometry in the GeometryCollection or Multi* geometry object.
+    Get parts of each GeometryCollection or Multi* geometry object.
 
-    Note: This does not return the individual parts of Multi* geometry objects in
-    a GeometryCollection.  You may need to call this function multiple times to
-    return individual parts of Multi* geometry objects in a GeometryCollection.
+    A copy of each geometry in the GeometryCollection or Multi* geometry object
+    is returned.
+
+    Note: This does not return the individual parts of Multi* geometry objects
+    in a GeometryCollection. You may need to call this function multiple times
+    to return individual parts of Multi* geometry objects in a
+    GeometryCollection.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the parts of.
     return_index : bool, default False
-        If True, will return a tuple of ndarrays of (parts, indexes), where indexes
-        are the indexes of the original geometries in the source array.
+        If True, will return a tuple of ndarrays of (parts, indexes), where
+        indexes are the indexes of the original geometries in the source array.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``return_index`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
 
     Returns
     -------
     ndarray of parts or tuple of (parts, indexes)
 
-    See also
+    See Also
     --------
     get_geometry, get_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint
-    >>> get_parts(MultiPoint([(0, 1), (2, 3)])).tolist()
+    >>> shapely.get_parts(MultiPoint([(0, 1), (2, 3)])).tolist()
     [<POINT (0 1)>, <POINT (2 3)>]
-    >>> parts, index = get_parts([MultiPoint([(0, 1)]), MultiPoint([(4, 5), (6, 7)])], return_index=True)
+    >>> parts, index = shapely.get_parts([MultiPoint([(0, 1)]), MultiPoint([(4, 5), (6, 7)])], return_index=True)
     >>> parts.tolist()
     [<POINT (0 1)>, <POINT (4 5)>, <POINT (6 7)>]
     >>> index.tolist()
@@ -1517,34 +1740,47 @@ def get_parts(geometry: OptGeoArrayLike, return_index: Literal[False] = False) -
 @overload
 def get_parts(geometry: OptGeoArrayLike, return_index: Literal[True]) -> tuple[GeoArray, NDArray[np.int64]]:
     """
-    Gets parts of each GeometryCollection or Multi* geometry object; returns
-    a copy of each geometry in the GeometryCollection or Multi* geometry object.
+    Get parts of each GeometryCollection or Multi* geometry object.
 
-    Note: This does not return the individual parts of Multi* geometry objects in
-    a GeometryCollection.  You may need to call this function multiple times to
-    return individual parts of Multi* geometry objects in a GeometryCollection.
+    A copy of each geometry in the GeometryCollection or Multi* geometry object
+    is returned.
+
+    Note: This does not return the individual parts of Multi* geometry objects
+    in a GeometryCollection. You may need to call this function multiple times
+    to return individual parts of Multi* geometry objects in a
+    GeometryCollection.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the parts of.
     return_index : bool, default False
-        If True, will return a tuple of ndarrays of (parts, indexes), where indexes
-        are the indexes of the original geometries in the source array.
+        If True, will return a tuple of ndarrays of (parts, indexes), where
+        indexes are the indexes of the original geometries in the source array.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``return_index`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
 
     Returns
     -------
     ndarray of parts or tuple of (parts, indexes)
 
-    See also
+    See Also
     --------
     get_geometry, get_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint
-    >>> get_parts(MultiPoint([(0, 1), (2, 3)])).tolist()
+    >>> shapely.get_parts(MultiPoint([(0, 1), (2, 3)])).tolist()
     [<POINT (0 1)>, <POINT (2 3)>]
-    >>> parts, index = get_parts([MultiPoint([(0, 1)]), MultiPoint([(4, 5), (6, 7)])], return_index=True)
+    >>> parts, index = shapely.get_parts([MultiPoint([(0, 1)]), MultiPoint([(4, 5), (6, 7)])], return_index=True)
     >>> parts.tolist()
     [<POINT (0 1)>, <POINT (4 5)>, <POINT (6 7)>]
     >>> index.tolist()
@@ -1554,34 +1790,47 @@ def get_parts(geometry: OptGeoArrayLike, return_index: Literal[True]) -> tuple[G
 @overload
 def get_parts(geometry: OptGeoArrayLike, return_index: bool) -> GeoArray | tuple[GeoArray, NDArray[np.int64]]:
     """
-    Gets parts of each GeometryCollection or Multi* geometry object; returns
-    a copy of each geometry in the GeometryCollection or Multi* geometry object.
+    Get parts of each GeometryCollection or Multi* geometry object.
 
-    Note: This does not return the individual parts of Multi* geometry objects in
-    a GeometryCollection.  You may need to call this function multiple times to
-    return individual parts of Multi* geometry objects in a GeometryCollection.
+    A copy of each geometry in the GeometryCollection or Multi* geometry object
+    is returned.
+
+    Note: This does not return the individual parts of Multi* geometry objects
+    in a GeometryCollection. You may need to call this function multiple times
+    to return individual parts of Multi* geometry objects in a
+    GeometryCollection.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the parts of.
     return_index : bool, default False
-        If True, will return a tuple of ndarrays of (parts, indexes), where indexes
-        are the indexes of the original geometries in the source array.
+        If True, will return a tuple of ndarrays of (parts, indexes), where
+        indexes are the indexes of the original geometries in the source array.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``return_index`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
 
     Returns
     -------
     ndarray of parts or tuple of (parts, indexes)
 
-    See also
+    See Also
     --------
     get_geometry, get_rings
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint
-    >>> get_parts(MultiPoint([(0, 1), (2, 3)])).tolist()
+    >>> shapely.get_parts(MultiPoint([(0, 1), (2, 3)])).tolist()
     [<POINT (0 1)>, <POINT (2 3)>]
-    >>> parts, index = get_parts([MultiPoint([(0, 1)]), MultiPoint([(4, 5), (6, 7)])], return_index=True)
+    >>> parts, index = shapely.get_parts([MultiPoint([(0, 1)]), MultiPoint([(4, 5), (6, 7)])], return_index=True)
     >>> parts.tolist()
     [<POINT (0 1)>, <POINT (4 5)>, <POINT (6 7)>]
     >>> index.tolist()
@@ -1591,7 +1840,7 @@ def get_parts(geometry: OptGeoArrayLike, return_index: bool) -> GeoArray | tuple
 @overload
 def get_rings(geometry: OptGeoArrayLike, return_index: Literal[False] = False) -> GeoArray:
     """
-    Gets rings of Polygon geometry object.
+    Get rings of Polygon geometry object.
 
     For each Polygon, the first returned ring is always the exterior ring
     and potential subsequent rings are interior rings.
@@ -1602,33 +1851,46 @@ def get_rings(geometry: OptGeoArrayLike, return_index: Literal[False] = False) -
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the rings of.
     return_index : bool, default False
         If True, will return a tuple of ndarrays of (rings, indexes), where
         indexes are the indexes of the original geometries in the source array.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``return_index`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
 
     Returns
     -------
     ndarray of rings or tuple of (rings, indexes)
 
-    See also
+    See Also
     --------
     get_exterior_ring, get_interior_ring, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_rings(polygon_with_hole).tolist()
+    >>> shapely.get_rings(polygon_with_hole).tolist()
     [<LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>,
      <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>]
 
     With ``return_index=True``:
 
     >>> polygon = Polygon([(0, 0), (2, 0), (2, 2), (0, 2), (0, 0)])
-    >>> rings, index = get_rings([polygon, polygon_with_hole], return_index=True)
+    >>> rings, index = shapely.get_rings(
+    ...     [polygon, polygon_with_hole],
+    ...     return_index=True
+    ... )
     >>> rings.tolist()
     [<LINEARRING (0 0, 2 0, 2 2, 0 2, 0 0)>,
      <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>,
@@ -1640,7 +1902,7 @@ def get_rings(geometry: OptGeoArrayLike, return_index: Literal[False] = False) -
 @overload
 def get_rings(geometry: OptGeoArrayLike, return_index: Literal[True]) -> tuple[GeoArray, NDArray[np.int64]]:
     """
-    Gets rings of Polygon geometry object.
+    Get rings of Polygon geometry object.
 
     For each Polygon, the first returned ring is always the exterior ring
     and potential subsequent rings are interior rings.
@@ -1651,33 +1913,46 @@ def get_rings(geometry: OptGeoArrayLike, return_index: Literal[True]) -> tuple[G
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the rings of.
     return_index : bool, default False
         If True, will return a tuple of ndarrays of (rings, indexes), where
         indexes are the indexes of the original geometries in the source array.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``return_index`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
 
     Returns
     -------
     ndarray of rings or tuple of (rings, indexes)
 
-    See also
+    See Also
     --------
     get_exterior_ring, get_interior_ring, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_rings(polygon_with_hole).tolist()
+    >>> shapely.get_rings(polygon_with_hole).tolist()
     [<LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>,
      <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>]
 
     With ``return_index=True``:
 
     >>> polygon = Polygon([(0, 0), (2, 0), (2, 2), (0, 2), (0, 0)])
-    >>> rings, index = get_rings([polygon, polygon_with_hole], return_index=True)
+    >>> rings, index = shapely.get_rings(
+    ...     [polygon, polygon_with_hole],
+    ...     return_index=True
+    ... )
     >>> rings.tolist()
     [<LINEARRING (0 0, 2 0, 2 2, 0 2, 0 0)>,
      <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>,
@@ -1689,7 +1964,7 @@ def get_rings(geometry: OptGeoArrayLike, return_index: Literal[True]) -> tuple[G
 @overload
 def get_rings(geometry: OptGeoArrayLike, return_index: bool) -> GeoArray | tuple[GeoArray, NDArray[np.int64]]:
     """
-    Gets rings of Polygon geometry object.
+    Get rings of Polygon geometry object.
 
     For each Polygon, the first returned ring is always the exterior ring
     and potential subsequent rings are interior rings.
@@ -1700,33 +1975,46 @@ def get_rings(geometry: OptGeoArrayLike, return_index: bool) -> GeoArray | tuple
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the rings of.
     return_index : bool, default False
         If True, will return a tuple of ndarrays of (rings, indexes), where
         indexes are the indexes of the original geometries in the source array.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``return_index`` is specified as
+        a positional argument. This will need to be specified as a keyword
+        argument in a future release.
 
     Returns
     -------
     ndarray of rings or tuple of (rings, indexes)
 
-    See also
+    See Also
     --------
     get_exterior_ring, get_interior_ring, get_parts
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Polygon
     >>> polygon_with_hole = Polygon(
     ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
     ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]]
     ... )
-    >>> get_rings(polygon_with_hole).tolist()
+    >>> shapely.get_rings(polygon_with_hole).tolist()
     [<LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>,
      <LINEARRING (2 2, 2 4, 4 4, 4 2, 2 2)>]
 
     With ``return_index=True``:
 
     >>> polygon = Polygon([(0, 0), (2, 0), (2, 2), (0, 2), (0, 0)])
-    >>> rings, index = get_rings([polygon, polygon_with_hole], return_index=True)
+    >>> rings, index = shapely.get_rings(
+    ...     [polygon, polygon_with_hole],
+    ...     return_index=True
+    ... )
     >>> rings.tolist()
     [<LINEARRING (0 0, 2 0, 2 2, 0 2, 0 0)>,
      <LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)>,
@@ -1738,62 +2026,64 @@ def get_rings(geometry: OptGeoArrayLike, return_index: bool) -> GeoArray | tuple
 @overload
 def get_num_geometries(geometry: Geometry | None, **kwargs) -> int:
     """
-    Returns number of geometries in a collection.
+    Return number of geometries in a collection.
 
-    Returns 0 for not-a-geometry values.
+    Returns 0 for not-a-geometry values. The number of geometries in points,
+    linestrings, linearrings and polygons equals one.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The number of geometries in points, linestrings, linearrings and
-        polygons equals one.
+        Geometry or geometries to get the number of geometries of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_num_points
     get_geometry
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_num_geometries(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_num_geometries(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
     4
-    >>> get_num_geometries(Point(1, 1))
+    >>> shapely.get_num_geometries(Point(1, 1))
     1
-    >>> get_num_geometries(None)
+    >>> shapely.get_num_geometries(None)
     0
     """
     ...
 @overload
 def get_num_geometries(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.int64]:
     """
-    Returns number of geometries in a collection.
+    Return number of geometries in a collection.
 
-    Returns 0 for not-a-geometry values.
+    Returns 0 for not-a-geometry values. The number of geometries in points,
+    linestrings, linearrings and polygons equals one.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The number of geometries in points, linestrings, linearrings and
-        polygons equals one.
+        Geometry or geometries to get the number of geometries of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_num_points
     get_geometry
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiPoint, Point
-    >>> get_num_geometries(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
+    >>> shapely.get_num_geometries(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]))
     4
-    >>> get_num_geometries(Point(1, 1))
+    >>> shapely.get_num_geometries(Point(1, 1))
     1
-    >>> get_num_geometries(None)
+    >>> shapely.get_num_geometries(None)
     0
     """
     ...
@@ -1811,23 +2101,25 @@ def get_precision(geometry: Geometry | None, **kwargs) -> float:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the precision of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     set_precision
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(1, 1)
-    >>> get_precision(point)
+    >>> shapely.get_precision(point)
     0.0
-    >>> geometry = set_precision(point, 1.0)
-    >>> get_precision(geometry)
+    >>> geometry = shapely.set_precision(point, 1.0)
+    >>> shapely.get_precision(geometry)
     1.0
-    >>> get_precision(None)
+    >>> shapely.get_precision(None)
     nan
     """
     ...
@@ -1845,23 +2137,25 @@ def get_precision(geometry: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to get the precision of.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     set_precision
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import Point
     >>> point = Point(1, 1)
-    >>> get_precision(point)
+    >>> shapely.get_precision(point)
     0.0
-    >>> geometry = set_precision(point, 1.0)
-    >>> get_precision(geometry)
+    >>> geometry = shapely.set_precision(point, 1.0)
+    >>> shapely.get_precision(geometry)
     1.0
-    >>> get_precision(None)
+    >>> shapely.get_precision(None)
     nan
     """
     ...
@@ -1875,7 +2169,7 @@ class SetPrecisionMode(ParamEnum):
 @overload
 def set_precision(geometry: OptGeoT, grid_size: float, mode: _PrecisionMode = "valid_output", **kwargs) -> OptGeoT:
     """
-    Returns geometry with the precision set to a precision grid size.
+    Return geometry with the precision set to a precision grid size.
 
     By default, geometries use double precision coordinates (grid_size = 0).
 
@@ -1888,8 +2182,8 @@ def set_precision(geometry: OptGeoT, grid_size: float, mode: _PrecisionMode = "v
     after rounding the vertices will be removed, which can lead to multipolygons
     or empty geometries. Z values, if present, will not be modified.
 
-    Notes:
-
+    Notes
+    -----
     * subsequent operations will always be performed in the precision of the
       geometry with higher precision (smaller "grid_size"). That same precision
       will be attached to the operation outputs.
@@ -1903,12 +2197,13 @@ def set_precision(geometry: OptGeoT, grid_size: float, mode: _PrecisionMode = "v
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to set the precision of.
     grid_size : float
         Precision grid size. If 0, will use double precision (will not modify
         geometry if precision grid size was not previously set). If this
         value is more precise than input geometry, the input geometry will
         not be modified.
-    mode :  {'valid_output', 'pointwise', 'keep_collapsed'}, default 'valid_output'
+    mode : {'valid_output', 'pointwise', 'keep_collapsed'}, default 'valid_output'
         This parameter determines the way a precision reduction is applied on
         the geometry. There are three modes:
 
@@ -1930,26 +2225,27 @@ def set_precision(geometry: OptGeoT, grid_size: float, mode: _PrecisionMode = "v
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_precision
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> set_precision(Point(0.9, 0.9), 1.0)
+    >>> shapely.set_precision(Point(0.9, 0.9), 1.0)
     <POINT (1 1)>
-    >>> set_precision(Point(0.9, 0.9, 0.9), 1.0)
+    >>> shapely.set_precision(Point(0.9, 0.9, 0.9), 1.0)
     <POINT Z (1 1 0.9)>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0, 1), (1, 1)]), 1.0)
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0, 1), (1, 1)]), 1.0)
     <LINESTRING (0 0, 0 1, 1 1)>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="valid_output")
-    <LINESTRING Z EMPTY>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="pointwise")
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="valid_output")
+    <LINESTRING EMPTY>
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="pointwise")
     <LINESTRING (0 0, 0 0, 0 0)>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="keep_collapsed")
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="keep_collapsed")
     <LINESTRING (0 0, 0 0)>
-    >>> set_precision(None, 1.0) is None
+    >>> shapely.set_precision(None, 1.0) is None
     True
     """
     ...
@@ -1958,7 +2254,7 @@ def set_precision(
     geometry: OptGeoArrayLikeSeq, grid_size: float, mode: _PrecisionMode = "valid_output", **kwargs
 ) -> GeoArray:
     """
-    Returns geometry with the precision set to a precision grid size.
+    Return geometry with the precision set to a precision grid size.
 
     By default, geometries use double precision coordinates (grid_size = 0).
 
@@ -1971,8 +2267,8 @@ def set_precision(
     after rounding the vertices will be removed, which can lead to multipolygons
     or empty geometries. Z values, if present, will not be modified.
 
-    Notes:
-
+    Notes
+    -----
     * subsequent operations will always be performed in the precision of the
       geometry with higher precision (smaller "grid_size"). That same precision
       will be attached to the operation outputs.
@@ -1986,12 +2282,13 @@ def set_precision(
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to set the precision of.
     grid_size : float
         Precision grid size. If 0, will use double precision (will not modify
         geometry if precision grid size was not previously set). If this
         value is more precise than input geometry, the input geometry will
         not be modified.
-    mode :  {'valid_output', 'pointwise', 'keep_collapsed'}, default 'valid_output'
+    mode : {'valid_output', 'pointwise', 'keep_collapsed'}, default 'valid_output'
         This parameter determines the way a precision reduction is applied on
         the geometry. There are three modes:
 
@@ -2013,85 +2310,90 @@ def set_precision(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     get_precision
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> set_precision(Point(0.9, 0.9), 1.0)
+    >>> shapely.set_precision(Point(0.9, 0.9), 1.0)
     <POINT (1 1)>
-    >>> set_precision(Point(0.9, 0.9, 0.9), 1.0)
+    >>> shapely.set_precision(Point(0.9, 0.9, 0.9), 1.0)
     <POINT Z (1 1 0.9)>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0, 1), (1, 1)]), 1.0)
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0, 1), (1, 1)]), 1.0)
     <LINESTRING (0 0, 0 1, 1 1)>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="valid_output")
-    <LINESTRING Z EMPTY>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="pointwise")
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="valid_output")
+    <LINESTRING EMPTY>
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="pointwise")
     <LINESTRING (0 0, 0 0, 0 0)>
-    >>> set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="keep_collapsed")
+    >>> shapely.set_precision(LineString([(0, 0), (0, 0.1), (0.1, 0.1)]), 1.0, mode="keep_collapsed")
     <LINESTRING (0 0, 0 0)>
-    >>> set_precision(None, 1.0) is None
+    >>> shapely.set_precision(None, 1.0) is None
     True
     """
     ...
 @overload
 def force_2d(geometry: OptGeoT, **kwargs) -> OptGeoT:
     """
-    Forces the dimensionality of a geometry to 2D.
+    Force the dimensionality of a geometry to 2D.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to force to 2D.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, from_wkt
-    >>> force_2d(Point(0, 0, 1))
+    >>> shapely.force_2d(Point(0, 0, 1))
     <POINT (0 0)>
-    >>> force_2d(Point(0, 0))
+    >>> shapely.force_2d(Point(0, 0))
     <POINT (0 0)>
-    >>> force_2d(LineString([(0, 0, 0), (0, 1, 1), (1, 1, 2)]))
+    >>> shapely.force_2d(LineString([(0, 0, 0), (0, 1, 1), (1, 1, 2)]))
     <LINESTRING (0 0, 0 1, 1 1)>
-    >>> force_2d(from_wkt("POLYGON Z EMPTY"))
+    >>> shapely.force_2d(from_wkt("POLYGON Z EMPTY"))
     <POLYGON EMPTY>
-    >>> force_2d(None) is None
+    >>> shapely.force_2d(None) is None
     True
     """
     ...
 @overload
 def force_2d(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Forces the dimensionality of a geometry to 2D.
+    Force the dimensionality of a geometry to 2D.
 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to force to 2D.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point, Polygon, from_wkt
-    >>> force_2d(Point(0, 0, 1))
+    >>> shapely.force_2d(Point(0, 0, 1))
     <POINT (0 0)>
-    >>> force_2d(Point(0, 0))
+    >>> shapely.force_2d(Point(0, 0))
     <POINT (0 0)>
-    >>> force_2d(LineString([(0, 0, 0), (0, 1, 1), (1, 1, 2)]))
+    >>> shapely.force_2d(LineString([(0, 0, 0), (0, 1, 1), (1, 1, 2)]))
     <LINESTRING (0 0, 0 1, 1 1)>
-    >>> force_2d(from_wkt("POLYGON Z EMPTY"))
+    >>> shapely.force_2d(from_wkt("POLYGON Z EMPTY"))
     <POLYGON EMPTY>
-    >>> force_2d(None) is None
+    >>> shapely.force_2d(None) is None
     True
     """
     ...
 @overload
 def force_3d(geometry: OptGeoT, z: float = 0.0, **kwargs) -> OptGeoT:
     """
-    Forces the dimensionality of a geometry to 3D.
+    Force the dimensionality of a geometry to 3D.
 
     2D geometries will get the provided Z coordinate; Z coordinates of 3D geometries
     are unchanged (unless they are nan).
@@ -2102,27 +2404,30 @@ def force_3d(geometry: OptGeoT, z: float = 0.0, **kwargs) -> OptGeoT:
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to force to 3D.
     z : float or array_like, default 0.0
+        The Z coordinate value to set on the geometry.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> force_3d(Point(0, 0), z=3)
+    >>> shapely.force_3d(Point(0, 0), z=3)
     <POINT Z (0 0 3)>
-    >>> force_3d(Point(0, 0, 0), z=3)
+    >>> shapely.force_3d(Point(0, 0, 0), z=3)
     <POINT Z (0 0 0)>
-    >>> force_3d(LineString([(0, 0), (0, 1), (1, 1)]))
+    >>> shapely.force_3d(LineString([(0, 0), (0, 1), (1, 1)]))
     <LINESTRING Z (0 0 0, 0 1 0, 1 1 0)>
-    >>> force_3d(None) is None
+    >>> shapely.force_3d(None) is None
     True
     """
     ...
 @overload
 def force_3d(geometry: OptGeoArrayLikeSeq, z: ArrayLike[float] = 0.0, **kwargs) -> GeoArray:
     """
-    Forces the dimensionality of a geometry to 3D.
+    Force the dimensionality of a geometry to 3D.
 
     2D geometries will get the provided Z coordinate; Z coordinates of 3D geometries
     are unchanged (unless they are nan).
@@ -2133,27 +2438,30 @@ def force_3d(geometry: OptGeoArrayLikeSeq, z: ArrayLike[float] = 0.0, **kwargs) 
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to force to 3D.
     z : float or array_like, default 0.0
+        The Z coordinate value to set on the geometry.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> force_3d(Point(0, 0), z=3)
+    >>> shapely.force_3d(Point(0, 0), z=3)
     <POINT Z (0 0 3)>
-    >>> force_3d(Point(0, 0, 0), z=3)
+    >>> shapely.force_3d(Point(0, 0, 0), z=3)
     <POINT Z (0 0 0)>
-    >>> force_3d(LineString([(0, 0), (0, 1), (1, 1)]))
+    >>> shapely.force_3d(LineString([(0, 0), (0, 1), (1, 1)]))
     <LINESTRING Z (0 0 0, 0 1 0, 1 1 0)>
-    >>> force_3d(None) is None
+    >>> shapely.force_3d(None) is None
     True
     """
     ...
 @overload
 def force_3d(geometry: OptGeoArrayLike, z: ArrayLikeSeq[float], **kwargs) -> GeoArray:
     """
-    Forces the dimensionality of a geometry to 3D.
+    Force the dimensionality of a geometry to 3D.
 
     2D geometries will get the provided Z coordinate; Z coordinates of 3D geometries
     are unchanged (unless they are nan).
@@ -2164,20 +2472,23 @@ def force_3d(geometry: OptGeoArrayLike, z: ArrayLikeSeq[float], **kwargs) -> Geo
     Parameters
     ----------
     geometry : Geometry or array_like
+        Geometry or geometries to force to 3D.
     z : float or array_like, default 0.0
+        The Z coordinate value to set on the geometry.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
-    >>> force_3d(Point(0, 0), z=3)
+    >>> shapely.force_3d(Point(0, 0), z=3)
     <POINT Z (0 0 3)>
-    >>> force_3d(Point(0, 0, 0), z=3)
+    >>> shapely.force_3d(Point(0, 0, 0), z=3)
     <POINT Z (0 0 0)>
-    >>> force_3d(LineString([(0, 0), (0, 1), (1, 1)]))
+    >>> shapely.force_3d(LineString([(0, 0), (0, 1), (1, 1)]))
     <LINESTRING Z (0 0 0, 0 1 0, 1 1 0)>
-    >>> force_3d(None) is None
+    >>> shapely.force_3d(None) is None
     True
     """
     ...

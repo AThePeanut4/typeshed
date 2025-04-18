@@ -12,8 +12,9 @@ from .lib import Geometry
 
 def loads(data: str | bytes, hex: bool = False) -> BaseGeometry:
     """
-    Load a geometry from a WKB byte string, or hex-encoded string if
-    ``hex=True``.
+    Load a geometry from a WKB byte string.
+
+    If ``hex=True``, the string will be hex-encoded.
 
     Raises
     ------
@@ -34,13 +35,14 @@ def load(fp: SupportsRead[str] | SupportsRead[bytes], hex: bool = False) -> Base
 @overload
 def dumps(ob: Geometry, hex: Literal[False] = False, srid: int | None = None, **kw) -> bytes:
     """
-    Dump a WKB representation of a geometry to a byte string, or a
-    hex-encoded string if ``hex=True``.
+    Dump a WKB representation of a geometry to a byte string.
+
+    If ``hex=True``, the string will be hex-encoded.
 
     Parameters
     ----------
     ob : geometry
-        The geometry to export to well-known binary (WKB) representation
+        The geometry to export to well-known binary (WKB) representation.
     hex : bool
         If true, export the WKB as a hexadecimal string. The default is to
         return a binary string/bytes object.
@@ -54,13 +56,14 @@ def dumps(ob: Geometry, hex: Literal[False] = False, srid: int | None = None, **
 @overload
 def dumps(ob: Geometry, hex: Literal[True], srid: int | None = None, **kw) -> str:
     """
-    Dump a WKB representation of a geometry to a byte string, or a
-    hex-encoded string if ``hex=True``.
+    Dump a WKB representation of a geometry to a byte string.
+
+    If ``hex=True``, the string will be hex-encoded.
 
     Parameters
     ----------
     ob : geometry
-        The geometry to export to well-known binary (WKB) representation
+        The geometry to export to well-known binary (WKB) representation.
     hex : bool
         If true, export the WKB as a hexadecimal string. The default is to
         return a binary string/bytes object.

@@ -1,4 +1,4 @@
-"""Polygons and their linear ring components"""
+"""Polygons and their linear ring components."""
 
 from collections.abc import Collection
 from typing import NoReturn, overload
@@ -16,8 +16,7 @@ _PolygonHolesLike: TypeAlias = Collection[_ConvertibleToLinearRing | None] | Non
 
 class LinearRing(LineString):
     """
-    A geometry type composed of one or more line segments
-    that forms a closed loop.
+    Geometry type composed of one or more line segments that forms a closed loop.
 
     A LinearRing is a closed, one-dimensional feature.
     A LinearRing that crosses itself or touches itself at a single point is
@@ -39,6 +38,7 @@ class LinearRing(LineString):
     --------
     Construct a square ring.
 
+    >>> from shapely import LinearRing
     >>> ring = LinearRing( ((0, 0), (0, 1), (1 ,1 ), (1 , 0)) )
     >>> ring.is_closed
     True
@@ -47,10 +47,12 @@ class LinearRing(LineString):
     >>> ring.length
     4.0
     """
-    def __new__(self, coordinates: _ConvertibleToLinearRing | None = None) -> Self: ...
+    def __new__(self, coordinates: _ConvertibleToLinearRing | None = None) -> Self:
+        """Create a new LinearRing geometry."""
+        ...
     @property
     def is_ccw(self) -> bool:
-        """True is the ring is oriented counter clock-wise"""
+        """True if the ring is oriented counter clock-wise."""
         ...
 
 class InteriorRingSequence:
@@ -93,24 +95,33 @@ class Polygon(BaseGeometry):
     --------
     Create a square polygon with no holes
 
+    >>> from shapely import Polygon
     >>> coords = ((0., 0.), (0., 1.), (1., 1.), (1., 0.), (0., 0.))
     >>> polygon = Polygon(coords)
     >>> polygon.area
     1.0
     """
-    def __new__(self, shell: _PolygonShellLike = None, holes: _PolygonHolesLike = None) -> Self: ...
+    def __new__(self, shell: _PolygonShellLike = None, holes: _PolygonHolesLike = None) -> Self:
+        """Create a new Polygon geometry."""
+        ...
     @property
-    def exterior(self) -> LinearRing: ...
+    def exterior(self) -> LinearRing:
+        """Return the exterior ring of the polygon."""
+        ...
     @property
-    def interiors(self) -> list[LinearRing] | InteriorRingSequence: ...
+    def interiors(self) -> list[LinearRing] | InteriorRingSequence:
+        """Return the sequence of interior rings of the polygon."""
+        ...
     @property
-    def coords(self) -> NoReturn: ...
+    def coords(self) -> NoReturn:
+        """Not implemented for polygons."""
+        ...
     def svg(self, scale_factor: float = 1.0, fill_color: str | None = None, opacity: float | None = None) -> str:
         """
-        Returns SVG path element for the Polygon geometry.
+        Return SVG path element for the Polygon geometry.
 
         Parameters
-        ==========
+        ----------
         scale_factor : float
             Multiplication factor for the SVG stroke-width.  Default is 1.
         fill_color : str, optional
@@ -128,7 +139,7 @@ class Polygon(BaseGeometry):
     @property
     def boundary(self) -> MultiLineString:
         """
-        Returns a lower dimension geometry that bounds the object
+        Return a lower dimension geometry that bounds the object.
 
         The boundary of a polygon is a line, the boundary of a line is a
         collection of points. The boundary of a point is an empty (null)
@@ -136,4 +147,24 @@ class Polygon(BaseGeometry):
         """
         ...
 
-def orient(polygon: Polygon, sign: float = 1.0) -> Polygon: ...
+def orient(polygon: Polygon, sign: float = 1.0) -> Polygon:
+    """
+    Return an oriented polygon.
+
+    It is recommended to use :func:`shapely.orient_polygons` instead.
+
+    Parameters
+    ----------
+    polygon : shapely.Polygon
+    sign : float, default 1.
+        The sign of the result's signed area.
+        A non-negative sign means that the coordinates of the geometry's exterior
+        rings will be oriented counter-clockwise.
+
+    Returns
+    -------
+    Geometry or array_like
+
+    Refer to :func:`shapely.orient_polygons` for full documentation.
+    """
+    ...

@@ -1,4 +1,4 @@
-"""Multi-part collections of geometries"""
+"""Multi-part collections of geometries."""
 
 from collections.abc import Collection
 from typing import overload
@@ -9,14 +9,13 @@ from .base import BaseMultipartGeometry, GeometrySequence, _GeoT_co
 
 class GeometryCollection(BaseMultipartGeometry[_GeoT_co]):
     """
-    A collection of one or more geometries that may contain more than one type
-    of geometry.
+    Collection of one or more geometries that can be of different types.
 
     Parameters
     ----------
     geoms : list
-        A list of shapely geometry instances, which may be of varying
-        geometry types.
+        A list of shapely geometry instances, which may be of varying geometry
+        types.
 
     Attributes
     ----------
@@ -27,7 +26,7 @@ class GeometryCollection(BaseMultipartGeometry[_GeoT_co]):
     --------
     Create a GeometryCollection with a Point and a LineString
 
-    >>> from shapely import LineString, Point
+    >>> from shapely import GeometryCollection, LineString, Point
     >>> p = Point(51, -1)
     >>> l = LineString([(52, -1), (49, 2)])
     >>> gc = GeometryCollection([p, l])
@@ -36,14 +35,18 @@ class GeometryCollection(BaseMultipartGeometry[_GeoT_co]):
     @overload
     def __new__(
         self, geoms: BaseMultipartGeometry[_GeoT_co] | GeometrySequence[BaseMultipartGeometry[_GeoT_co]] | Collection[_GeoT_co]
-    ) -> Self: ...
+    ) -> Self:
+        """Create a new GeometryCollection."""
+        ...
     @overload
-    def __new__(self, geoms: OptGeoArrayLike = None) -> Self: ...
+    def __new__(self, geoms: OptGeoArrayLike = None) -> Self:
+        """Create a new GeometryCollection."""
+        ...
     # more precise base overrides
     @property
     def boundary(self) -> None:
         """
-        Returns a lower dimension geometry that bounds the object
+        Return a lower dimension geometry that bounds the object.
 
         The boundary of a polygon is a line, the boundary of a line is a
         collection of points. The boundary of a point is an empty (null)

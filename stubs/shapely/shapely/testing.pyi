@@ -1,3 +1,5 @@
+"""Utilities for testing with shapely geometries."""
+
 from ._typing import ArrayLike, OptGeoArrayLike
 
 __all__ = ["assert_geometries_equal"]
@@ -13,17 +15,19 @@ def assert_geometries_equal(
     verbose: bool = True,
 ) -> None:
     """
-    Raises an AssertionError if two geometry array_like objects are not equal.
+    Raise an AssertionError if two geometry array_like objects are not equal.
 
-    Given two array_like objects, check that the shape is equal and all elements of
-    these objects are equal. An exception is raised at shape mismatch or conflicting
-    values. In contrast to the standard usage in shapely, no assertion is raised if
-    both objects have NaNs/Nones in the same positions.
+    Given two array_like objects, check that the shape is equal and all elements
+    of these objects are equal. An exception is raised at shape mismatch or
+    conflicting values. In contrast to the standard usage in shapely, no
+    assertion is raised if both objects have NaNs/Nones in the same positions.
 
     Parameters
     ----------
-    x : Geometry or array_like
-    y : Geometry or array_like
+    x, y : Geometry or array_like
+        Geometry or geometries to compare.
+    tolerance: float, default 1e-7
+        The tolerance to use when comparing geometries.
     equal_none : bool, default True
         Whether to consider None elements equal to other None elements.
     equal_nan : bool, default True

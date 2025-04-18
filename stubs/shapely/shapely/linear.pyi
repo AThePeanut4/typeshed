@@ -1,3 +1,5 @@
+"""Linear geometry functions."""
+
 from typing import overload
 
 import numpy as np
@@ -12,7 +14,7 @@ __all__ = ["line_interpolate_point", "line_locate_point", "line_merge", "shared_
 @overload
 def line_interpolate_point(line: None, distance: float, normalized: bool = False, **kwargs) -> None:
     """
-    Returns a point interpolated at given distance on a line.
+    Return a point interpolated at given distance on a line.
 
     Parameters
     ----------
@@ -31,17 +33,18 @@ def line_interpolate_point(line: None, distance: float, normalized: bool = False
 
     Examples
     --------
-    >>> from shapely import LineString, Point
+    >>> import shapely
+    >>> from shapely import LineString
     >>> line = LineString([(0, 2), (0, 10)])
-    >>> line_interpolate_point(line, 2)
+    >>> shapely.line_interpolate_point(line, 2)
     <POINT (0 4)>
-    >>> line_interpolate_point(line, 100)
+    >>> shapely.line_interpolate_point(line, 100)
     <POINT (0 10)>
-    >>> line_interpolate_point(line, -2)
+    >>> shapely.line_interpolate_point(line, -2)
     <POINT (0 8)>
-    >>> line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
+    >>> shapely.line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
     [<POINT (0 4)>, <POINT (0 8)>]
-    >>> line_interpolate_point(LineString(), 1)
+    >>> shapely.line_interpolate_point(LineString(), 1)
     <POINT EMPTY>
     """
     ...
@@ -50,7 +53,7 @@ def line_interpolate_point(
     line: None, distance: ArrayLikeSeq[float], normalized: bool = False, **kwargs
 ) -> NDArray[np.object_]:
     """
-    Returns a point interpolated at given distance on a line.
+    Return a point interpolated at given distance on a line.
 
     Parameters
     ----------
@@ -69,17 +72,18 @@ def line_interpolate_point(
 
     Examples
     --------
-    >>> from shapely import LineString, Point
+    >>> import shapely
+    >>> from shapely import LineString
     >>> line = LineString([(0, 2), (0, 10)])
-    >>> line_interpolate_point(line, 2)
+    >>> shapely.line_interpolate_point(line, 2)
     <POINT (0 4)>
-    >>> line_interpolate_point(line, 100)
+    >>> shapely.line_interpolate_point(line, 100)
     <POINT (0 10)>
-    >>> line_interpolate_point(line, -2)
+    >>> shapely.line_interpolate_point(line, -2)
     <POINT (0 8)>
-    >>> line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
+    >>> shapely.line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
     [<POINT (0 4)>, <POINT (0 8)>]
-    >>> line_interpolate_point(LineString(), 1)
+    >>> shapely.line_interpolate_point(LineString(), 1)
     <POINT EMPTY>
     """
     ...
@@ -88,7 +92,7 @@ def line_interpolate_point(
     line: LineString | MultiLineString | GeometryCollection, distance: float, normalized: bool = False, **kwargs
 ) -> Point:
     """
-    Returns a point interpolated at given distance on a line.
+    Return a point interpolated at given distance on a line.
 
     Parameters
     ----------
@@ -107,17 +111,18 @@ def line_interpolate_point(
 
     Examples
     --------
-    >>> from shapely import LineString, Point
+    >>> import shapely
+    >>> from shapely import LineString
     >>> line = LineString([(0, 2), (0, 10)])
-    >>> line_interpolate_point(line, 2)
+    >>> shapely.line_interpolate_point(line, 2)
     <POINT (0 4)>
-    >>> line_interpolate_point(line, 100)
+    >>> shapely.line_interpolate_point(line, 100)
     <POINT (0 10)>
-    >>> line_interpolate_point(line, -2)
+    >>> shapely.line_interpolate_point(line, -2)
     <POINT (0 8)>
-    >>> line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
+    >>> shapely.line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
     [<POINT (0 4)>, <POINT (0 8)>]
-    >>> line_interpolate_point(LineString(), 1)
+    >>> shapely.line_interpolate_point(LineString(), 1)
     <POINT EMPTY>
     """
     ...
@@ -126,7 +131,7 @@ def line_interpolate_point(
     line: LineString | MultiLineString | GeometryCollection, distance: ArrayLikeSeq[float], normalized: bool = False, **kwargs
 ) -> GeoArray:
     """
-    Returns a point interpolated at given distance on a line.
+    Return a point interpolated at given distance on a line.
 
     Parameters
     ----------
@@ -145,17 +150,18 @@ def line_interpolate_point(
 
     Examples
     --------
-    >>> from shapely import LineString, Point
+    >>> import shapely
+    >>> from shapely import LineString
     >>> line = LineString([(0, 2), (0, 10)])
-    >>> line_interpolate_point(line, 2)
+    >>> shapely.line_interpolate_point(line, 2)
     <POINT (0 4)>
-    >>> line_interpolate_point(line, 100)
+    >>> shapely.line_interpolate_point(line, 100)
     <POINT (0 10)>
-    >>> line_interpolate_point(line, -2)
+    >>> shapely.line_interpolate_point(line, -2)
     <POINT (0 8)>
-    >>> line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
+    >>> shapely.line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
     [<POINT (0 4)>, <POINT (0 8)>]
-    >>> line_interpolate_point(LineString(), 1)
+    >>> shapely.line_interpolate_point(LineString(), 1)
     <POINT EMPTY>
     """
     ...
@@ -164,7 +170,7 @@ def line_interpolate_point(
     line: OptGeoArrayLikeSeq, distance: ArrayLike[float], normalized: bool = False, **kwargs
 ) -> GeoArray:
     """
-    Returns a point interpolated at given distance on a line.
+    Return a point interpolated at given distance on a line.
 
     Parameters
     ----------
@@ -183,17 +189,18 @@ def line_interpolate_point(
 
     Examples
     --------
-    >>> from shapely import LineString, Point
+    >>> import shapely
+    >>> from shapely import LineString
     >>> line = LineString([(0, 2), (0, 10)])
-    >>> line_interpolate_point(line, 2)
+    >>> shapely.line_interpolate_point(line, 2)
     <POINT (0 4)>
-    >>> line_interpolate_point(line, 100)
+    >>> shapely.line_interpolate_point(line, 100)
     <POINT (0 10)>
-    >>> line_interpolate_point(line, -2)
+    >>> shapely.line_interpolate_point(line, -2)
     <POINT (0 8)>
-    >>> line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
+    >>> shapely.line_interpolate_point(line, [0.25, -0.25], normalized=True).tolist()
     [<POINT (0 4)>, <POINT (0 8)>]
-    >>> line_interpolate_point(LineString(), 1)
+    >>> shapely.line_interpolate_point(LineString(), 1)
     <POINT EMPTY>
     """
     ...
@@ -202,7 +209,7 @@ def line_locate_point(
     line: LineString | MultiLineString | GeometryCollection | None, other: Point | None, normalized: bool = False, **kwargs
 ) -> float:
     """
-    Returns the distance to the line origin of given point.
+    Return the distance to the line origin of given point.
 
     If given point does not intersect with the line, the point will first be
     projected onto the line after which the distance is taken.
@@ -210,25 +217,28 @@ def line_locate_point(
     Parameters
     ----------
     line : Geometry or array_like
-    point : Geometry or array_like
+        Line or lines to calculate the distance to.
+    other : Geometry or array_like
+        Point or points to calculate the distance from.
     normalized : bool, default False
-        If True, the distance is a fraction of the total
-        line length instead of the absolute distance.
+        If True, the distance is a fraction of the total line length instead of
+        the absolute distance.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 2), (0, 10)])
     >>> point = Point(4, 4)
-    >>> line_locate_point(line, point)
+    >>> shapely.line_locate_point(line, point)
     2.0
-    >>> line_locate_point(line, point, normalized=True)
+    >>> shapely.line_locate_point(line, point, normalized=True)
     0.25
-    >>> line_locate_point(line, Point(0, 18))
+    >>> shapely.line_locate_point(line, Point(0, 18))
     8.0
-    >>> line_locate_point(LineString(), point)
+    >>> shapely.line_locate_point(LineString(), point)
     nan
     """
     ...
@@ -237,7 +247,7 @@ def line_locate_point(
     line: LineString | MultiLineString | GeometryCollection | None, other: OptGeoArrayLikeSeq, normalized: bool = False, **kwargs
 ) -> NDArray[np.float64]:
     """
-    Returns the distance to the line origin of given point.
+    Return the distance to the line origin of given point.
 
     If given point does not intersect with the line, the point will first be
     projected onto the line after which the distance is taken.
@@ -245,25 +255,28 @@ def line_locate_point(
     Parameters
     ----------
     line : Geometry or array_like
-    point : Geometry or array_like
+        Line or lines to calculate the distance to.
+    other : Geometry or array_like
+        Point or points to calculate the distance from.
     normalized : bool, default False
-        If True, the distance is a fraction of the total
-        line length instead of the absolute distance.
+        If True, the distance is a fraction of the total line length instead of
+        the absolute distance.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 2), (0, 10)])
     >>> point = Point(4, 4)
-    >>> line_locate_point(line, point)
+    >>> shapely.line_locate_point(line, point)
     2.0
-    >>> line_locate_point(line, point, normalized=True)
+    >>> shapely.line_locate_point(line, point, normalized=True)
     0.25
-    >>> line_locate_point(line, Point(0, 18))
+    >>> shapely.line_locate_point(line, Point(0, 18))
     8.0
-    >>> line_locate_point(LineString(), point)
+    >>> shapely.line_locate_point(LineString(), point)
     nan
     """
     ...
@@ -272,7 +285,7 @@ def line_locate_point(
     line: OptGeoArrayLikeSeq, other: OptGeoArrayLike, normalized: bool = False, **kwargs
 ) -> NDArray[np.float64]:
     """
-    Returns the distance to the line origin of given point.
+    Return the distance to the line origin of given point.
 
     If given point does not intersect with the line, the point will first be
     projected onto the line after which the distance is taken.
@@ -280,33 +293,35 @@ def line_locate_point(
     Parameters
     ----------
     line : Geometry or array_like
-    point : Geometry or array_like
+        Line or lines to calculate the distance to.
+    other : Geometry or array_like
+        Point or points to calculate the distance from.
     normalized : bool, default False
-        If True, the distance is a fraction of the total
-        line length instead of the absolute distance.
+        If True, the distance is a fraction of the total line length instead of
+        the absolute distance.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString, Point
     >>> line = LineString([(0, 2), (0, 10)])
     >>> point = Point(4, 4)
-    >>> line_locate_point(line, point)
+    >>> shapely.line_locate_point(line, point)
     2.0
-    >>> line_locate_point(line, point, normalized=True)
+    >>> shapely.line_locate_point(line, point, normalized=True)
     0.25
-    >>> line_locate_point(line, Point(0, 18))
+    >>> shapely.line_locate_point(line, Point(0, 18))
     8.0
-    >>> line_locate_point(LineString(), point)
+    >>> shapely.line_locate_point(LineString(), point)
     nan
     """
     ...
 @overload
 def line_merge(line: None, directed: bool = False, **kwargs) -> None:
     """
-    Returns (Multi)LineStrings formed by combining the lines in a
-    MultiLineString.
+    Return (Multi)LineStrings formed by combining the lines in a MultiLineString.
 
     Lines are joined together at their endpoints in case two lines are
     intersecting. Lines are not joined when 3 or more lines are intersecting at
@@ -322,6 +337,7 @@ def line_merge(line: None, directed: bool = False, **kwargs) -> None:
     Parameters
     ----------
     line : Geometry or array_like
+        Linear geometry or geometries to merge.
     directed : bool, default False
         Only combine lines if possible without changing point order.
         Requires GEOS >= 3.11.0
@@ -330,24 +346,24 @@ def line_merge(line: None, directed: bool = False, **kwargs) -> None:
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiLineString
-    >>> line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 10), (5, 10)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 10), (5, 10)]]))
     <LINESTRING (0 2, 0 10, 5 10)>
-    >>> line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 11), (5, 10)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 11), (5, 10)]]))
     <MULTILINESTRING ((0 2, 0 10), (0 11, 5 10))>
-    >>> line_merge(MultiLineString())
+    >>> shapely.line_merge(MultiLineString())
     <GEOMETRYCOLLECTION EMPTY>
-    >>> line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]))
     <LINESTRING (1 0, 0 0, 3 0)>
-    >>> line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]), directed=True)
+    >>> shapely.line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]), directed=True)
     <MULTILINESTRING ((0 0, 1 0), (0 0, 3 0))>
     """
     ...
 @overload
 def line_merge(line: Geometry, directed: bool = False, **kwargs) -> LineString | MultiLineString | GeometryCollection:
     """
-    Returns (Multi)LineStrings formed by combining the lines in a
-    MultiLineString.
+    Return (Multi)LineStrings formed by combining the lines in a MultiLineString.
 
     Lines are joined together at their endpoints in case two lines are
     intersecting. Lines are not joined when 3 or more lines are intersecting at
@@ -363,6 +379,7 @@ def line_merge(line: Geometry, directed: bool = False, **kwargs) -> LineString |
     Parameters
     ----------
     line : Geometry or array_like
+        Linear geometry or geometries to merge.
     directed : bool, default False
         Only combine lines if possible without changing point order.
         Requires GEOS >= 3.11.0
@@ -371,24 +388,24 @@ def line_merge(line: Geometry, directed: bool = False, **kwargs) -> LineString |
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiLineString
-    >>> line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 10), (5, 10)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 10), (5, 10)]]))
     <LINESTRING (0 2, 0 10, 5 10)>
-    >>> line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 11), (5, 10)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 11), (5, 10)]]))
     <MULTILINESTRING ((0 2, 0 10), (0 11, 5 10))>
-    >>> line_merge(MultiLineString())
+    >>> shapely.line_merge(MultiLineString())
     <GEOMETRYCOLLECTION EMPTY>
-    >>> line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]))
     <LINESTRING (1 0, 0 0, 3 0)>
-    >>> line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]), directed=True)
+    >>> shapely.line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]), directed=True)
     <MULTILINESTRING ((0 0, 1 0), (0 0, 3 0))>
     """
     ...
 @overload
 def line_merge(line: OptGeoArrayLikeSeq, directed: bool = False, **kwargs) -> GeoArray:
     """
-    Returns (Multi)LineStrings formed by combining the lines in a
-    MultiLineString.
+    Return (Multi)LineStrings formed by combining the lines in a MultiLineString.
 
     Lines are joined together at their endpoints in case two lines are
     intersecting. Lines are not joined when 3 or more lines are intersecting at
@@ -404,6 +421,7 @@ def line_merge(line: OptGeoArrayLikeSeq, directed: bool = False, **kwargs) -> Ge
     Parameters
     ----------
     line : Geometry or array_like
+        Linear geometry or geometries to merge.
     directed : bool, default False
         Only combine lines if possible without changing point order.
         Requires GEOS >= 3.11.0
@@ -412,23 +430,24 @@ def line_merge(line: OptGeoArrayLikeSeq, directed: bool = False, **kwargs) -> Ge
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import MultiLineString
-    >>> line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 10), (5, 10)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 10), (5, 10)]]))
     <LINESTRING (0 2, 0 10, 5 10)>
-    >>> line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 11), (5, 10)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 2), (0, 10)], [(0, 11), (5, 10)]]))
     <MULTILINESTRING ((0 2, 0 10), (0 11, 5 10))>
-    >>> line_merge(MultiLineString())
+    >>> shapely.line_merge(MultiLineString())
     <GEOMETRYCOLLECTION EMPTY>
-    >>> line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]))
+    >>> shapely.line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]))
     <LINESTRING (1 0, 0 0, 3 0)>
-    >>> line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]), directed=True)
+    >>> shapely.line_merge(MultiLineString([[(0, 0), (1, 0)], [(0, 0), (3, 0)]]), directed=True)
     <MULTILINESTRING ((0 0, 1 0), (0 0, 3 0))>
     """
     ...
 @overload
 def shared_paths(a: LineString | MultiLineString | None, b: None, **kwargs) -> None:
     """
-    Returns the shared paths between geom1 and geom2.
+    Return the shared paths between a and b.
 
     Both geometries should be linestrings or arrays of linestrings.
     A geometrycollection or array of geometrycollections is returned
@@ -439,27 +458,28 @@ def shared_paths(a: LineString | MultiLineString | None, b: None, **kwargs) -> N
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Linestring or linestrings to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(1, 0), (2, 0), (2, 1), (1, 1), (1, 0)])
-    >>> shared_paths(line1, line2).wkt
+    >>> shapely.shared_paths(line1, line2).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING EMPTY, MULTILINESTRING ((1 0, 1 1)))'
     >>> line3 = LineString([(1, 1), (0, 1)])
-    >>> shared_paths(line1, line3).wkt
+    >>> shapely.shared_paths(line1, line3).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING ((1 1, 0 1)), MULTILINESTRING EMPTY)'
     """
     ...
 @overload
 def shared_paths(a: None, b: LineString | MultiLineString | None, **kwargs) -> None:
     """
-    Returns the shared paths between geom1 and geom2.
+    Return the shared paths between a and b.
 
     Both geometries should be linestrings or arrays of linestrings.
     A geometrycollection or array of geometrycollections is returned
@@ -470,20 +490,21 @@ def shared_paths(a: None, b: LineString | MultiLineString | None, **kwargs) -> N
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Linestring or linestrings to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(1, 0), (2, 0), (2, 1), (1, 1), (1, 0)])
-    >>> shared_paths(line1, line2).wkt
+    >>> shapely.shared_paths(line1, line2).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING EMPTY, MULTILINESTRING ((1 0, 1 1)))'
     >>> line3 = LineString([(1, 1), (0, 1)])
-    >>> shared_paths(line1, line3).wkt
+    >>> shapely.shared_paths(line1, line3).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING ((1 1, 0 1)), MULTILINESTRING EMPTY)'
     """
     ...
@@ -492,7 +513,7 @@ def shared_paths(
     a: LineString | MultiLineString, b: LineString | MultiLineString, **kwargs
 ) -> GeometryCollection[MultiLineString]:
     """
-    Returns the shared paths between geom1 and geom2.
+    Return the shared paths between a and b.
 
     Both geometries should be linestrings or arrays of linestrings.
     A geometrycollection or array of geometrycollections is returned
@@ -503,27 +524,28 @@ def shared_paths(
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Linestring or linestrings to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(1, 0), (2, 0), (2, 1), (1, 1), (1, 0)])
-    >>> shared_paths(line1, line2).wkt
+    >>> shapely.shared_paths(line1, line2).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING EMPTY, MULTILINESTRING ((1 0, 1 1)))'
     >>> line3 = LineString([(1, 1), (0, 1)])
-    >>> shared_paths(line1, line3).wkt
+    >>> shapely.shared_paths(line1, line3).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING ((1 1, 0 1)), MULTILINESTRING EMPTY)'
     """
     ...
 @overload
 def shared_paths(a: LineString | MultiLineString | None, b: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns the shared paths between geom1 and geom2.
+    Return the shared paths between a and b.
 
     Both geometries should be linestrings or arrays of linestrings.
     A geometrycollection or array of geometrycollections is returned
@@ -534,27 +556,28 @@ def shared_paths(a: LineString | MultiLineString | None, b: OptGeoArrayLikeSeq, 
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Linestring or linestrings to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(1, 0), (2, 0), (2, 1), (1, 1), (1, 0)])
-    >>> shared_paths(line1, line2).wkt
+    >>> shapely.shared_paths(line1, line2).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING EMPTY, MULTILINESTRING ((1 0, 1 1)))'
     >>> line3 = LineString([(1, 1), (0, 1)])
-    >>> shared_paths(line1, line3).wkt
+    >>> shapely.shared_paths(line1, line3).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING ((1 1, 0 1)), MULTILINESTRING EMPTY)'
     """
     ...
 @overload
 def shared_paths(a: OptGeoArrayLikeSeq, b: OptGeoArrayLike, **kwargs) -> GeoArray:
     """
-    Returns the shared paths between geom1 and geom2.
+    Return the shared paths between a and b.
 
     Both geometries should be linestrings or arrays of linestrings.
     A geometrycollection or array of geometrycollections is returned
@@ -565,175 +588,181 @@ def shared_paths(a: OptGeoArrayLikeSeq, b: OptGeoArrayLike, **kwargs) -> GeoArra
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Linestring or linestrings to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(1, 0), (2, 0), (2, 1), (1, 1), (1, 0)])
-    >>> shared_paths(line1, line2).wkt
+    >>> shapely.shared_paths(line1, line2).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING EMPTY, MULTILINESTRING ((1 0, 1 1)))'
     >>> line3 = LineString([(1, 1), (0, 1)])
-    >>> shared_paths(line1, line3).wkt
+    >>> shapely.shared_paths(line1, line3).wkt
     'GEOMETRYCOLLECTION (MULTILINESTRING ((1 1, 0 1)), MULTILINESTRING EMPTY)'
     """
     ...
 @overload
 def shortest_line(a: Geometry | None, b: None, **kwargs) -> None:
     """
-    Returns the shortest line between two geometries.
+    Return the shortest line between two geometries.
 
     The resulting line consists of two points, representing the nearest
     points between the geometry pair. The line always starts in the first
-    geometry `a` and ends in he second geometry `b`. The endpoints of the
+    geometry `a` and ends in the second geometry `b`. The endpoints of the
     line will not necessarily be existing vertices of the input geometries
     `a` and `b`, but can also be a point along a line segment.
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Geometry or geometries to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    prepare : improve performance by preparing ``a`` (the first argument) (for GEOS>=3.9)
+    prepare : improve performance by preparing ``a`` (the first argument)
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(0, 3), (3, 0), (5, 3)])
-    >>> shortest_line(line1, line2)
+    >>> shapely.shortest_line(line1, line2)
     <LINESTRING (1 1, 1.5 1.5)>
     """
     ...
 @overload
 def shortest_line(a: None, b: Geometry | None, **kwargs) -> None:
     """
-    Returns the shortest line between two geometries.
+    Return the shortest line between two geometries.
 
     The resulting line consists of two points, representing the nearest
     points between the geometry pair. The line always starts in the first
-    geometry `a` and ends in he second geometry `b`. The endpoints of the
+    geometry `a` and ends in the second geometry `b`. The endpoints of the
     line will not necessarily be existing vertices of the input geometries
     `a` and `b`, but can also be a point along a line segment.
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Geometry or geometries to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    prepare : improve performance by preparing ``a`` (the first argument) (for GEOS>=3.9)
+    prepare : improve performance by preparing ``a`` (the first argument)
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(0, 3), (3, 0), (5, 3)])
-    >>> shortest_line(line1, line2)
+    >>> shapely.shortest_line(line1, line2)
     <LINESTRING (1 1, 1.5 1.5)>
     """
     ...
 @overload
 def shortest_line(a: Geometry, b: Geometry, **kwargs) -> LineString:
     """
-    Returns the shortest line between two geometries.
+    Return the shortest line between two geometries.
 
     The resulting line consists of two points, representing the nearest
     points between the geometry pair. The line always starts in the first
-    geometry `a` and ends in he second geometry `b`. The endpoints of the
+    geometry `a` and ends in the second geometry `b`. The endpoints of the
     line will not necessarily be existing vertices of the input geometries
     `a` and `b`, but can also be a point along a line segment.
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Geometry or geometries to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    prepare : improve performance by preparing ``a`` (the first argument) (for GEOS>=3.9)
+    prepare : improve performance by preparing ``a`` (the first argument)
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(0, 3), (3, 0), (5, 3)])
-    >>> shortest_line(line1, line2)
+    >>> shapely.shortest_line(line1, line2)
     <LINESTRING (1 1, 1.5 1.5)>
     """
     ...
 @overload
 def shortest_line(a: Geometry | None, b: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
-    Returns the shortest line between two geometries.
+    Return the shortest line between two geometries.
 
     The resulting line consists of two points, representing the nearest
     points between the geometry pair. The line always starts in the first
-    geometry `a` and ends in he second geometry `b`. The endpoints of the
+    geometry `a` and ends in the second geometry `b`. The endpoints of the
     line will not necessarily be existing vertices of the input geometries
     `a` and `b`, but can also be a point along a line segment.
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Geometry or geometries to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    prepare : improve performance by preparing ``a`` (the first argument) (for GEOS>=3.9)
+    prepare : improve performance by preparing ``a`` (the first argument)
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(0, 3), (3, 0), (5, 3)])
-    >>> shortest_line(line1, line2)
+    >>> shapely.shortest_line(line1, line2)
     <LINESTRING (1 1, 1.5 1.5)>
     """
     ...
 @overload
 def shortest_line(a: OptGeoArrayLikeSeq, b: OptGeoArrayLike, **kwargs) -> GeoArray:
     """
-    Returns the shortest line between two geometries.
+    Return the shortest line between two geometries.
 
     The resulting line consists of two points, representing the nearest
     points between the geometry pair. The line always starts in the first
-    geometry `a` and ends in he second geometry `b`. The endpoints of the
+    geometry `a` and ends in the second geometry `b`. The endpoints of the
     line will not necessarily be existing vertices of the input geometries
     `a` and `b`, but can also be a point along a line segment.
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a, b : Geometry or array_like
+        Geometry or geometries to compare.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
-    prepare : improve performance by preparing ``a`` (the first argument) (for GEOS>=3.9)
+    prepare : improve performance by preparing ``a`` (the first argument)
 
     Examples
     --------
+    >>> import shapely
     >>> from shapely import LineString
     >>> line1 = LineString([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
     >>> line2 = LineString([(0, 3), (3, 0), (5, 3)])
-    >>> shortest_line(line1, line2)
+    >>> shapely.shortest_line(line1, line2)
     <LINESTRING (1 1, 1.5 1.5)>
     """
     ...

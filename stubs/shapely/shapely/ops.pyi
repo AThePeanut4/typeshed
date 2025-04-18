@@ -1,4 +1,4 @@
-"""Support for various GEOS geometry operations"""
+"""Support for various GEOS geometry operations."""
 
 from collections.abc import Callable, Iterable
 from typing import Any, Literal, overload
@@ -40,7 +40,7 @@ class CollectionOperator:
         self, lines: OptGeoArrayLike | Iterable[_ConvertibleToLineString | None]
     ) -> GeometrySequence[GeometryCollection[Polygon]]:
         """
-        Creates polygons from a source of lines
+        Create polygons from a source of lines.
 
         The source may be a MultiLineString, a sequence of LineString objects,
         or a sequence of objects than can be adapted to LineStrings.
@@ -52,8 +52,9 @@ class CollectionOperator:
         GeometryCollection[Polygon], GeometryCollection[LineString], GeometryCollection[LineString], GeometryCollection[Polygon]
     ]:
         """
-        Creates polygons from a source of lines, returning the polygons
-        and leftover geometries.
+        Create polygons from a source of lines.
+
+        The polygons and leftover geometries are returned as well.
 
         The source may be a MultiLineString, a sequence of LineString objects,
         or a sequence of objects than can be adapted to LineStrings.
@@ -69,8 +70,23 @@ class CollectionOperator:
         ...
     def linemerge(
         self, lines: MultiLineString | BaseMultipartGeometry | Iterable[_ConvertibleToLineString], directed: bool = False
-    ) -> LineString | MultiLineString: ...
-    def unary_union(self, geoms: OptGeoArrayLike) -> BaseGeometry: ...
+    ) -> LineString | MultiLineString:
+        """
+        Merge all connected lines from a source.
+
+        The source may be a MultiLineString, a sequence of LineString objects,
+        or a sequence of objects than can be adapted to LineStrings.  Returns a
+        LineString or MultiLineString when lines are not contiguous.
+        """
+        ...
+    def unary_union(self, geoms: OptGeoArrayLike) -> BaseGeometry:
+        """
+        Return the union of a sequence of geometries.
+
+        Usually used to convert a collection into the smallest set of polygons
+        that cover the same area.
+        """
+        ...
 
 operator: CollectionOperator
 polygonize = operator.polygonize
@@ -82,7 +98,7 @@ unary_union = operator.unary_union
 @overload  # edges false
 def triangulate(geom: Geometry, tolerance: float = 0.0, edges: Literal[False] = False) -> list[Polygon]:
     """
-    Creates the Delaunay triangulation and returns a list of geometries
+    Create the Delaunay triangulation and return a list of geometries.
 
     The source may be any geometry type. All vertices of the geometry will be
     used as the points of the triangulation.
@@ -99,7 +115,7 @@ def triangulate(geom: Geometry, tolerance: float = 0.0, edges: Literal[False] = 
 @overload  # edges true (keyword)
 def triangulate(geom: Geometry, tolerance: float = 0.0, *, edges: Literal[True]) -> list[LineString]:
     """
-    Creates the Delaunay triangulation and returns a list of geometries
+    Create the Delaunay triangulation and return a list of geometries.
 
     The source may be any geometry type. All vertices of the geometry will be
     used as the points of the triangulation.
@@ -116,7 +132,7 @@ def triangulate(geom: Geometry, tolerance: float = 0.0, *, edges: Literal[True])
 @overload  # edges true (positional)
 def triangulate(geom: Geometry, tolerance: float, edges: Literal[True]) -> list[LineString]:
     """
-    Creates the Delaunay triangulation and returns a list of geometries
+    Create the Delaunay triangulation and return a list of geometries.
 
     The source may be any geometry type. All vertices of the geometry will be
     used as the points of the triangulation.
@@ -133,7 +149,7 @@ def triangulate(geom: Geometry, tolerance: float, edges: Literal[True]) -> list[
 @overload  # fallback
 def triangulate(geom: Geometry, tolerance: float = 0.0, edges: bool = False) -> list[Polygon] | list[LineString]:
     """
-    Creates the Delaunay triangulation and returns a list of geometries
+    Create the Delaunay triangulation and return a list of geometries.
 
     The source may be any geometry type. All vertices of the geometry will be
     used as the points of the triangulation.
@@ -152,7 +168,8 @@ def voronoi_diagram(
     geom: Geometry, envelope: Geometry | None = None, tolerance: float = 0.0, edges: Literal[False] = False
 ) -> GeometryCollection[Polygon]:
     """
-    Constructs a Voronoi Diagram [1] from the given geometry.
+    Construct a Voronoi Diagram [1] from the given geometry.
+
     Returns a list of geometries.
 
     Parameters
@@ -198,7 +215,8 @@ def voronoi_diagram(
     geom: Geometry, envelope: Geometry | None, tolerance: float, edges: Literal[True]
 ) -> GeometryCollection[LineString | MultiLineString]:
     """
-    Constructs a Voronoi Diagram [1] from the given geometry.
+    Construct a Voronoi Diagram [1] from the given geometry.
+
     Returns a list of geometries.
 
     Parameters
@@ -244,7 +262,8 @@ def voronoi_diagram(
     geom: Geometry, envelope: Geometry | None = None, tolerance: float = 0.0, *, edges: Literal[True]
 ) -> GeometryCollection[LineString | MultiLineString]:
     """
-    Constructs a Voronoi Diagram [1] from the given geometry.
+    Construct a Voronoi Diagram [1] from the given geometry.
+
     Returns a list of geometries.
 
     Parameters
@@ -290,7 +309,8 @@ def voronoi_diagram(
     geom: Geometry, envelope: Geometry | None = None, tolerance: float = 0.0, edges: bool = False
 ) -> GeometryCollection[Polygon | LineString | MultiLineString]:
     """
-    Constructs a Voronoi Diagram [1] from the given geometry.
+    Construct a Voronoi Diagram [1] from the given geometry.
+
     Returns a list of geometries.
 
     Parameters
@@ -332,15 +352,22 @@ def voronoi_diagram(
     """
     ...
 @overload
-def validate(geom: None) -> None: ...
+def validate(geom: None) -> None:
+    """Return True if the geometry is valid."""
+    ...
 @overload
-def validate(geom: Geometry) -> str: ...
+def validate(geom: Geometry) -> str:
+    """Return True if the geometry is valid."""
+    ...
 @overload
-def validate(geom: Geometry | None) -> str | None: ...
+def validate(geom: Geometry | None) -> str | None:
+    """Return True if the geometry is valid."""
+    ...
 def transform(func: Callable[[float, float, float | None], tuple[float, ...]], geom: GeoT) -> GeoT:
     """
-    Applies `func` to all coordinates of `geom` and returns a new
-    geometry of the same type from the transformed coordinates.
+    Apply `func` to all coordinates of `geom`.
+
+    Returns a new geometry of the same type from the transformed coordinates.
 
     `func` maps x, y, and optionally z to output xp, yp, zp. The input
     parameters may iterable types like lists or arrays or single values.
@@ -378,7 +405,7 @@ def transform(func: Callable[[float, float, float | None], tuple[float, ...]], g
     ...
 def nearest_points(g1: Geometry, g2: Geometry) -> tuple[Point, Point]:
     """
-    Returns the calculated nearest points in the input geometries
+    Return the calculated nearest points in the input geometries.
 
     The points are returned in the same order as the input geometries.
     """
@@ -401,7 +428,7 @@ def snap(g1: GeoT, g2: Geometry, tolerance: float) -> GeoT:
     ...
 def shared_paths(g1: LineString, g2: LineString) -> GeometryCollection[MultiLineString]:
     """
-    Find paths shared between the two given lineal geometries
+    Find paths shared between the two given lineal geometries.
 
     Returns a GeometryCollection with two elements:
      - First element is a MultiLineString containing shared paths with the
@@ -422,17 +449,24 @@ class SplitOp:
     @staticmethod
     def split(geom: Geometry, splitter: Geometry) -> GeometryCollection:
         """
-        Splits a geometry by another geometry and returns a collection of geometries. This function is the theoretical
-        opposite of the union of the split geometry parts. If the splitter does not split the geometry, a collection
-        with a single geometry equal to the input geometry is returned.
+        Split a geometry by another geometry and return a collection of geometries.
+
+        This function is the theoretical opposite of the union of
+        the split geometry parts. If the splitter does not split the geometry, a
+        collection with a single geometry equal to the input geometry is
+        returned.
+
         The function supports:
-          - Splitting a (Multi)LineString by a (Multi)Point or (Multi)LineString or (Multi)Polygon
+          - Splitting a (Multi)LineString by a (Multi)Point or (Multi)LineString
+            or (Multi)Polygon
           - Splitting a (Multi)Polygon by a LineString
 
-        It may be convenient to snap the splitter with low tolerance to the geometry. For example in the case
-        of splitting a line by a point, the point must be exactly on the line, for the line to be correctly split.
-        When splitting a line by a polygon, the boundary of the polygon is used for the operation.
-        When splitting a line by another line, a ValueError is raised if the two overlap at some segment.
+        It may be convenient to snap the splitter with low tolerance to the
+        geometry. For example in the case of splitting a line by a point, the
+        point must be exactly on the line, for the line to be correctly split.
+        When splitting a line by a polygon, the boundary of the polygon is used
+        for the operation. When splitting a line by another line, a ValueError
+        is raised if the two overlap at some segment.
 
         Parameters
         ----------
@@ -441,11 +475,13 @@ class SplitOp:
         splitter : geometry
             The geometry that will split the input geom
 
-        Example
-        -------
+        Examples
+        --------
+        >>> import shapely.ops
+        >>> from shapely import Point, LineString
         >>> pt = Point((1, 1))
         >>> line = LineString([(0,0), (2,2)])
-        >>> result = split(line, pt)
+        >>> result = shapely.ops.split(line, pt)
         >>> result.wkt
         'GEOMETRYCOLLECTION (LINESTRING (0 0, 1 1), LINESTRING (1 1, 2 2))'
         """
@@ -455,7 +491,7 @@ split = SplitOp.split
 
 def substring(geom: LineString, start_dist: float, end_dist: float, normalized: bool = False) -> Point | LineString:
     """
-    Return a line segment between specified distances along a LineString
+    Return a line segment between specified distances along a LineString.
 
     Negative distance values are taken as measured in the reverse
     direction from the end of the geometry. Out-of-range index
@@ -515,7 +551,7 @@ def substring(geom: LineString, start_dist: float, end_dist: float, normalized: 
     ...
 def clip_by_rect(geom: Geometry, xmin: float, ymin: float, xmax: float, ymax: float) -> BaseGeometry:
     """
-    Returns the portion of a geometry within a rectangle
+    Return the portion of a geometry within a rectangle.
 
     The geometry is clipped in a fast but possibly dirty way. The output is
     not guaranteed to be valid. No exceptions will be raised for topological
@@ -536,17 +572,18 @@ def clip_by_rect(geom: Geometry, xmin: float, ymin: float, xmax: float, ymax: fl
 
     Notes
     -----
-    Requires GEOS >= 3.5.0
     New in 1.7.
     """
     ...
 def orient(geom: GeoT, sign: float = 1.0) -> GeoT:
     """
-    A properly oriented copy of the given geometry.
+    Return a properly oriented copy of the given geometry.
 
     The signed area of the result will have the given sign. A sign of
     1.0 means that the coordinates of the product's exterior rings will
     be oriented counter-clockwise.
+
+    It is recommended to use :func:`shapely.orient_polygons` instead.
 
     Parameters
     ----------

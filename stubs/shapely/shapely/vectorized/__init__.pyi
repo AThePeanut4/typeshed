@@ -12,8 +12,9 @@ from ..prepared import PreparedGeometry
 @overload
 def contains(geometry: Geometry | PreparedGeometry[Geometry], x: float, y: float) -> bool:
     """
-    Vectorized (element-wise) version of `contains` which checks whether
-    multiple points are contained by a single geometry.
+    Check whether multiple points are contained by a single geometry.
+
+    Vectorized (element-wise) version of `contains`.
 
     Parameters
     ----------
@@ -36,8 +37,9 @@ def contains(
     geometry: Geometry | PreparedGeometry[Geometry], x: ArrayLikeSeq[float], y: ArrayLike[float]
 ) -> NDArray[np.bool_]:
     """
-    Vectorized (element-wise) version of `contains` which checks whether
-    multiple points are contained by a single geometry.
+    Check whether multiple points are contained by a single geometry.
+
+    Vectorized (element-wise) version of `contains`.
 
     Parameters
     ----------
@@ -60,8 +62,9 @@ def contains(
     geometry: Geometry | PreparedGeometry[Geometry], x: ArrayLike[float], y: ArrayLikeSeq[float]
 ) -> NDArray[np.bool_]:
     """
-    Vectorized (element-wise) version of `contains` which checks whether
-    multiple points are contained by a single geometry.
+    Check whether multiple points are contained by a single geometry.
+
+    Vectorized (element-wise) version of `contains`.
 
     Parameters
     ----------
@@ -84,8 +87,9 @@ def contains(
     geometry: Geometry | PreparedGeometry[Geometry], x: ArrayLike[float], y: ArrayLike[float]
 ) -> bool | NDArray[np.bool_]:
     """
-    Vectorized (element-wise) version of `contains` which checks whether
-    multiple points are contained by a single geometry.
+    Check whether multiple points are contained by a single geometry.
+
+    Vectorized (element-wise) version of `contains`.
 
     Parameters
     ----------
@@ -106,8 +110,9 @@ def contains(
 @overload
 def touches(geometry: Geometry | PreparedGeometry[Geometry], x: float, y: float) -> bool:
     """
-    Vectorized (element-wise) version of `touches` which checks whether
-    multiple points touch the exterior of a single geometry.
+    Check whether multiple points touch the exterior of a single geometry.
+
+    Vectorized (element-wise) version of `touches`.
 
     Parameters
     ----------
@@ -130,8 +135,9 @@ def touches(
     geometry: Geometry | PreparedGeometry[Geometry], x: ArrayLikeSeq[float], y: ArrayLike[float]
 ) -> NDArray[np.bool_]:
     """
-    Vectorized (element-wise) version of `touches` which checks whether
-    multiple points touch the exterior of a single geometry.
+    Check whether multiple points touch the exterior of a single geometry.
+
+    Vectorized (element-wise) version of `touches`.
 
     Parameters
     ----------
@@ -154,8 +160,9 @@ def touches(
     geometry: Geometry | PreparedGeometry[Geometry], x: ArrayLike[float], y: ArrayLikeSeq[float]
 ) -> NDArray[np.bool_]:
     """
-    Vectorized (element-wise) version of `touches` which checks whether
-    multiple points touch the exterior of a single geometry.
+    Check whether multiple points touch the exterior of a single geometry.
+
+    Vectorized (element-wise) version of `touches`.
 
     Parameters
     ----------
@@ -178,8 +185,9 @@ def touches(
     geometry: Geometry | PreparedGeometry[Geometry], x: ArrayLike[float], y: ArrayLike[float]
 ) -> bool | NDArray[np.bool_]:
     """
-    Vectorized (element-wise) version of `touches` which checks whether
-    multiple points touch the exterior of a single geometry.
+    Check whether multiple points touch the exterior of a single geometry.
+
+    Vectorized (element-wise) version of `touches`.
 
     Parameters
     ----------

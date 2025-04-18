@@ -1,4 +1,4 @@
-"""Proxies for libgeos, GEOS-specific exceptions, and utilities"""
+"""Proxies for libgeos, GEOS-specific exceptions, and utilities."""
 
 geos_version_string: str
 geos_version: tuple[int, int, int]

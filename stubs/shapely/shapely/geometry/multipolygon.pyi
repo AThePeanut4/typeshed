@@ -1,4 +1,4 @@
-"""Collections of polygons and related utilities"""
+"""Collections of polygons and related utilities."""
 
 from collections.abc import Collection
 from typing_extensions import Self
@@ -32,7 +32,7 @@ class MultiPolygon(BaseMultipartGeometry[Polygon]):
     --------
     Construct a MultiPolygon from a sequence of coordinate tuples
 
-    >>> from shapely import Polygon
+    >>> from shapely import MultiPolygon, Polygon
     >>> ob = MultiPolygon([
     ...     (
     ...     ((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0)),
@@ -51,13 +51,15 @@ class MultiPolygon(BaseMultipartGeometry[Polygon]):
             | Collection[Polygon | tuple[_PolygonShellLike] | tuple[_PolygonShellLike, _PolygonHolesLike] | None]
             | None
         ) = None,
-    ) -> Self: ...
+    ) -> Self:
+        """Create a new MultiPolygon geometry."""
+        ...
     def svg(self, scale_factor: float = 1.0, fill_color: str | None = None, opacity: float | None = None) -> str:
         """
-        Returns group of SVG path elements for the MultiPolygon geometry.
+        Return group of SVG path elements for the MultiPolygon geometry.
 
         Parameters
-        ==========
+        ----------
         scale_factor : float
             Multiplication factor for the SVG stroke-width.  Default is 1.
         fill_color : str, optional
@@ -71,7 +73,7 @@ class MultiPolygon(BaseMultipartGeometry[Polygon]):
     @property
     def boundary(self) -> MultiLineString:
         """
-        Returns a lower dimension geometry that bounds the object
+        Return a lower dimension geometry that bounds the object.
 
         The boundary of a polygon is a line, the boundary of a line is a
         collection of points. The boundary of a point is an empty (null)

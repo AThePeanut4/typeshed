@@ -1,3 +1,5 @@
+"""Methods to create geometries."""
+
 from collections.abc import Sequence
 from typing import Literal, SupportsIndex, overload
 from typing_extensions import TypeAlias
@@ -27,6 +29,7 @@ __all__ = [
 ]
 
 class HandleNaN(ParamEnum):
+    """An enumeration."""
     allow = 0
     skip = 1
     error = 2
@@ -43,7 +46,64 @@ def points(
     handle_nan: _HandleNaN = 0,
     out: None = None,
     **kwargs,  # acts as x
-) -> Point: ...
+) -> Point:
+    """
+    Create an array of points.
+
+    Parameters
+    ----------
+    coords : array_like
+        An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
+        provided, an array of x coordinates.
+    y : array_like, optional
+        An array of y coordinates.
+    z : array_like, optional
+        An array of z coordinates.
+    indices : array_like, optional
+        Indices into the target array where input coordinates belong. If
+        provided, the coords should be 2D with shape (N, 2) or (N, 3) and
+        indices should be an array of shape (N,) with integers in increasing
+        order. Missing indices result in a ValueError unless ``out`` is
+        provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': if any of x, y or z values are NaN or Inf, an empty point
+          will be created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> shapely.points([[0, 1], [4, 5]]).tolist()
+    [<POINT (0 1)>, <POINT (4 5)>]
+    >>> shapely.points([0, 1, 2])
+    <POINT Z (0 1 2)>
+
+    Notes
+    -----
+    - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
+    - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as an array with shape
+      ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
+    """
+    ...
 @overload
 def points(
     coords: Sequence[float],
@@ -54,7 +114,64 @@ def points(
     handle_nan: _HandleNaN = 0,
     out: None = None,
     **kwargs,  # acts as x, y[, z]
-) -> Point: ...
+) -> Point:
+    """
+    Create an array of points.
+
+    Parameters
+    ----------
+    coords : array_like
+        An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
+        provided, an array of x coordinates.
+    y : array_like, optional
+        An array of y coordinates.
+    z : array_like, optional
+        An array of z coordinates.
+    indices : array_like, optional
+        Indices into the target array where input coordinates belong. If
+        provided, the coords should be 2D with shape (N, 2) or (N, 3) and
+        indices should be an array of shape (N,) with integers in increasing
+        order. Missing indices result in a ValueError unless ``out`` is
+        provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': if any of x, y or z values are NaN or Inf, an empty point
+          will be created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Examples
+    --------
+    >>> import shapely
+    >>> shapely.points([[0, 1], [4, 5]]).tolist()
+    [<POINT (0 1)>, <POINT (4 5)>]
+    >>> shapely.points([0, 1, 2])
+    <POINT Z (0 1 2)>
+
+    Notes
+    -----
+    - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
+    - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as an array with shape
+      ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
+    """
+    ...
 @overload
 def points(
     coords: Sequence[float],  # acts as (x1, x2, ...)
@@ -75,13 +192,31 @@ def points(
         An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
         provided, an array of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': if any of x, y or z values are NaN or Inf, an empty point
+          will be created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -90,18 +225,19 @@ def points(
 
     Examples
     --------
-    >>> points([[0, 1], [4, 5]]).tolist()
+    >>> import shapely
+    >>> shapely.points([[0, 1], [4, 5]]).tolist()
     [<POINT (0 1)>, <POINT (4 5)>]
-    >>> points([0, 1, 2])
+    >>> shapely.points([0, 1, 2])
     <POINT Z (0 1 2)>
 
     Notes
     -----
-
     - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
     - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as an array with shape ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as an array with shape
+      ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
     """
     ...
 @overload
@@ -124,13 +260,31 @@ def points(
         An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
         provided, an array of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': if any of x, y or z values are NaN or Inf, an empty point
+          will be created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -139,18 +293,19 @@ def points(
 
     Examples
     --------
-    >>> points([[0, 1], [4, 5]]).tolist()
+    >>> import shapely
+    >>> shapely.points([[0, 1], [4, 5]]).tolist()
     [<POINT (0 1)>, <POINT (4 5)>]
-    >>> points([0, 1, 2])
+    >>> shapely.points([0, 1, 2])
     <POINT Z (0 1 2)>
 
     Notes
     -----
-
     - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
     - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as an array with shape ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as an array with shape
+      ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
     """
     ...
 @overload
@@ -173,13 +328,31 @@ def points(
         An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
         provided, an array of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': if any of x, y or z values are NaN or Inf, an empty point
+          will be created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -188,18 +361,19 @@ def points(
 
     Examples
     --------
-    >>> points([[0, 1], [4, 5]]).tolist()
+    >>> import shapely
+    >>> shapely.points([[0, 1], [4, 5]]).tolist()
     [<POINT (0 1)>, <POINT (4 5)>]
-    >>> points([0, 1, 2])
+    >>> shapely.points([0, 1, 2])
     <POINT Z (0 1 2)>
 
     Notes
     -----
-
     - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
     - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as an array with shape ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as an array with shape
+      ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
     """
     ...
 @overload
@@ -222,13 +396,31 @@ def points(
         An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
         provided, an array of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': if any of x, y or z values are NaN or Inf, an empty point
+          will be created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -237,18 +429,19 @@ def points(
 
     Examples
     --------
-    >>> points([[0, 1], [4, 5]]).tolist()
+    >>> import shapely
+    >>> shapely.points([[0, 1], [4, 5]]).tolist()
     [<POINT (0 1)>, <POINT (4 5)>]
-    >>> points([0, 1, 2])
+    >>> shapely.points([0, 1, 2])
     <POINT Z (0 1 2)>
 
     Notes
     -----
-
     - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
     - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as an array with shape ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as an array with shape
+      ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
     """
     ...
 @overload
@@ -272,15 +465,35 @@ def linestrings(
     ----------
     coords : array_like
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
-        is provided, an array of lists of x coordinates
+        is provided, an array of lists of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -289,15 +502,20 @@ def linestrings(
 
     Examples
     --------
-    >>> linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
+    >>> import shapely
+    >>> shapely.linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6)>]
-    >>> linestrings([[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]], indices=[0, 0, 1, 1, 1]).tolist()
+    >>> shapely.linestrings(
+    ...     [[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]],
+    ...     indices=[0, 0, 1, 1, 1]
+    ... ).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6, 7 8)>]
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -321,15 +539,35 @@ def linestrings(
     ----------
     coords : array_like
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
-        is provided, an array of lists of x coordinates
+        is provided, an array of lists of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -338,15 +576,20 @@ def linestrings(
 
     Examples
     --------
-    >>> linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
+    >>> import shapely
+    >>> shapely.linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6)>]
-    >>> linestrings([[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]], indices=[0, 0, 1, 1, 1]).tolist()
+    >>> shapely.linestrings(
+    ...     [[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]],
+    ...     indices=[0, 0, 1, 1, 1]
+    ... ).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6, 7 8)>]
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -370,15 +613,35 @@ def linestrings(
     ----------
     coords : array_like
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
-        is provided, an array of lists of x coordinates
+        is provided, an array of lists of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -387,15 +650,20 @@ def linestrings(
 
     Examples
     --------
-    >>> linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
+    >>> import shapely
+    >>> shapely.linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6)>]
-    >>> linestrings([[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]], indices=[0, 0, 1, 1, 1]).tolist()
+    >>> shapely.linestrings(
+    ...     [[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]],
+    ...     indices=[0, 0, 1, 1, 1]
+    ... ).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6, 7 8)>]
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -419,15 +687,35 @@ def linestrings(
     ----------
     coords : array_like
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
-        is provided, an array of lists of x coordinates
+        is provided, an array of lists of x coordinates.
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
@@ -436,15 +724,20 @@ def linestrings(
 
     Examples
     --------
-    >>> linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
+    >>> import shapely
+    >>> shapely.linestrings([[[0, 1], [4, 5]], [[2, 3], [5, 6]]]).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6)>]
-    >>> linestrings([[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]], indices=[0, 0, 1, 1, 1]).tolist()
+    >>> shapely.linestrings(
+    ...     [[0, 1], [4, 5], [2, 3], [5, 6], [7, 8]],
+    ...     indices=[0, 0, 1, 1, 1]
+    ... ).tolist()
     [<LINESTRING (0 1, 4 5)>, <LINESTRING (2 3, 5 6, 7 8)>]
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -473,34 +766,56 @@ def linearrings(
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
         is provided, an array of lists of x coordinates
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    See Also
     --------
     linestrings
 
     Examples
     --------
-    >>> linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
+    >>> import shapely
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
-    >>> linearrings([[0, 0], [0, 1], [1, 1]])
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -529,34 +844,56 @@ def linearrings(
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
         is provided, an array of lists of x coordinates
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    See Also
     --------
     linestrings
 
     Examples
     --------
-    >>> linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
+    >>> import shapely
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
-    >>> linearrings([[0, 0], [0, 1], [1, 1]])
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -585,34 +922,56 @@ def linearrings(
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
         is provided, an array of lists of x coordinates
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    See Also
     --------
     linestrings
 
     Examples
     --------
-    >>> linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
+    >>> import shapely
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
-    >>> linearrings([[0, 0], [0, 1], [1, 1]])
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -641,34 +1000,56 @@ def linearrings(
         An array of lists of coordinate tuples (2- or 3-dimensional) or, if ``y``
         is provided, an array of lists of x coordinates
     y : array_like, optional
+        An array of y coordinates.
     z : array_like, optional
+        An array of z coordinates.
     indices : array_like, optional
         Indices into the target array where input coordinates belong. If
         provided, the coords should be 2D with shape (N, 2) or (N, 3) and
         indices should be an array of shape (N,) with integers in increasing
         order. Missing indices result in a ValueError unless ``out`` is
         provided, in which case the original value in ``out`` is kept.
+    handle_nan : shapely.HandleNaN or {'allow', 'skip', 'error'}, default 'allow'
+        Specifies what to do when a NaN or Inf is encountered in the coordinates:
+
+        - 'allow': the geometries are created with NaN or Inf coordinates.
+          Note that this can result in unexpected behaviour in subsequent
+          operations, and generally it is discouraged to have non-finite
+          coordinate values. One can use this option if you know all
+          coordinates are finite and want to avoid the overhead of checking
+          for this.
+        - 'skip': the coordinate pairs where any of x, y or z values are
+          NaN or Inf are ignored. If this results in ignoring all coordinates
+          for one geometry, an empty geometry is created.
+        - 'error': if any NaN or Inf is detected in the coordinates, a ValueError
+          is raised. This option ensures that the created geometries have all
+          finite coordinate values.
+
+        .. versionadded:: 2.1.0
+
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    See Also
     --------
     linestrings
 
     Examples
     --------
-    >>> linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
+    >>> import shapely
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1], [0, 0]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
-    >>> linearrings([[0, 0], [0, 1], [1, 1]])
+    >>> shapely.linearrings([[0, 0], [0, 1], [1, 1]])
     <LINEARRING (0 0, 0 1, 1 1, 0 0)>
 
     Notes
     -----
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as a ``(..., 2)`` or ``(..., 3)`` array using only ``coords``.
+    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in
+      ``dask``. Instead provide the coordinates as a ``(..., 2)`` or
+      ``(..., 3)`` array using only ``coords``.
     """
     ...
 @overload
@@ -699,52 +1080,63 @@ def polygons(
         the first geometry for each index is the outer shell
         and all subsequent geometries in that index are the holes.
         Both geometries and indices should be 1D and have matching sizes.
-        Indices should be in increasing order. Missing indices result in a ValueError
-        unless ``out`` is  provided, in which case the original value in ``out`` is kept.
+        Indices should be in increasing order. Missing indices result in a
+        ValueError unless ``out`` is  provided, in which case the original value
+        in ``out`` is kept.
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
+
     Polygons are constructed from rings:
 
-    >>> ring_1 = linearrings([[0, 0], [0, 10], [10, 10], [10, 0]])
-    >>> ring_2 = linearrings([[2, 6], [2, 7], [3, 7], [3, 6]])
-    >>> polygons([ring_1, ring_2])[0]
+    >>> ring_1 = shapely.linearrings([[0, 0], [0, 10], [10, 10], [10, 0]])
+    >>> ring_2 = shapely.linearrings([[2, 6], [2, 7], [3, 7], [3, 6]])
+    >>> shapely.polygons([ring_1, ring_2])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, ring_2])[1]
+    >>> shapely.polygons([ring_1, ring_2])[1]
     <POLYGON ((2 6, 2 7, 3 7, 3 6, 2 6))>
 
     Or from coordinates directly:
 
-    >>> polygons([[0, 0], [0, 10], [10, 10], [10, 0]])
+    >>> shapely.polygons([[0, 0], [0, 10], [10, 10], [10, 0]])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
 
     Adding holes can be done using the ``holes`` keyword argument:
 
-    >>> polygons(ring_1, holes=[ring_2])
+    >>> shapely.polygons(ring_1, holes=[ring_2])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 6, 2 7, 3 7, 3 6, 2 6))>
 
     Or using the ``indices`` argument:
 
-    >>> polygons([ring_1, ring_2], indices=[0, 1])[0]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 1])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, ring_2], indices=[0, 1])[1]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 1])[1]
     <POLYGON ((2 6, 2 7, 3 7, 3 6, 2 6))>
-    >>> polygons([ring_1, ring_2], indices=[0, 0])[0]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 0])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 6, 2 7, 3 7, 3 6, 2 6))>
 
-    Missing input values (``None``) are ignored and may result in an
+    Missing input values (``None``) are skipped and may result in an
     empty polygon:
 
-    >>> polygons(None)
+    >>> shapely.polygons(None)
     <POLYGON EMPTY>
-    >>> polygons(ring_1, holes=[None])
+    >>> shapely.polygons(ring_1, holes=[None])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, None], indices=[0, 0])[0]
+    >>> shapely.polygons([ring_1, None], indices=[0, 0])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
     """
     ...
@@ -776,52 +1168,63 @@ def polygons(
         the first geometry for each index is the outer shell
         and all subsequent geometries in that index are the holes.
         Both geometries and indices should be 1D and have matching sizes.
-        Indices should be in increasing order. Missing indices result in a ValueError
-        unless ``out`` is  provided, in which case the original value in ``out`` is kept.
+        Indices should be in increasing order. Missing indices result in a
+        ValueError unless ``out`` is  provided, in which case the original value
+        in ``out`` is kept.
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
+
     Polygons are constructed from rings:
 
-    >>> ring_1 = linearrings([[0, 0], [0, 10], [10, 10], [10, 0]])
-    >>> ring_2 = linearrings([[2, 6], [2, 7], [3, 7], [3, 6]])
-    >>> polygons([ring_1, ring_2])[0]
+    >>> ring_1 = shapely.linearrings([[0, 0], [0, 10], [10, 10], [10, 0]])
+    >>> ring_2 = shapely.linearrings([[2, 6], [2, 7], [3, 7], [3, 6]])
+    >>> shapely.polygons([ring_1, ring_2])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, ring_2])[1]
+    >>> shapely.polygons([ring_1, ring_2])[1]
     <POLYGON ((2 6, 2 7, 3 7, 3 6, 2 6))>
 
     Or from coordinates directly:
 
-    >>> polygons([[0, 0], [0, 10], [10, 10], [10, 0]])
+    >>> shapely.polygons([[0, 0], [0, 10], [10, 10], [10, 0]])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
 
     Adding holes can be done using the ``holes`` keyword argument:
 
-    >>> polygons(ring_1, holes=[ring_2])
+    >>> shapely.polygons(ring_1, holes=[ring_2])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 6, 2 7, 3 7, 3 6, 2 6))>
 
     Or using the ``indices`` argument:
 
-    >>> polygons([ring_1, ring_2], indices=[0, 1])[0]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 1])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, ring_2], indices=[0, 1])[1]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 1])[1]
     <POLYGON ((2 6, 2 7, 3 7, 3 6, 2 6))>
-    >>> polygons([ring_1, ring_2], indices=[0, 0])[0]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 0])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 6, 2 7, 3 7, 3 6, 2 6))>
 
-    Missing input values (``None``) are ignored and may result in an
+    Missing input values (``None``) are skipped and may result in an
     empty polygon:
 
-    >>> polygons(None)
+    >>> shapely.polygons(None)
     <POLYGON EMPTY>
-    >>> polygons(ring_1, holes=[None])
+    >>> shapely.polygons(ring_1, holes=[None])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, None], indices=[0, 0])[0]
+    >>> shapely.polygons([ring_1, None], indices=[0, 0])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
     """
     ...
@@ -853,52 +1256,63 @@ def polygons(
         the first geometry for each index is the outer shell
         and all subsequent geometries in that index are the holes.
         Both geometries and indices should be 1D and have matching sizes.
-        Indices should be in increasing order. Missing indices result in a ValueError
-        unless ``out`` is  provided, in which case the original value in ``out`` is kept.
+        Indices should be in increasing order. Missing indices result in a
+        ValueError unless ``out`` is  provided, in which case the original value
+        in ``out`` is kept.
     out : ndarray, optional
         An array (with dtype object) to output the geometries into.
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
+
     Polygons are constructed from rings:
 
-    >>> ring_1 = linearrings([[0, 0], [0, 10], [10, 10], [10, 0]])
-    >>> ring_2 = linearrings([[2, 6], [2, 7], [3, 7], [3, 6]])
-    >>> polygons([ring_1, ring_2])[0]
+    >>> ring_1 = shapely.linearrings([[0, 0], [0, 10], [10, 10], [10, 0]])
+    >>> ring_2 = shapely.linearrings([[2, 6], [2, 7], [3, 7], [3, 6]])
+    >>> shapely.polygons([ring_1, ring_2])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, ring_2])[1]
+    >>> shapely.polygons([ring_1, ring_2])[1]
     <POLYGON ((2 6, 2 7, 3 7, 3 6, 2 6))>
 
     Or from coordinates directly:
 
-    >>> polygons([[0, 0], [0, 10], [10, 10], [10, 0]])
+    >>> shapely.polygons([[0, 0], [0, 10], [10, 10], [10, 0]])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
 
     Adding holes can be done using the ``holes`` keyword argument:
 
-    >>> polygons(ring_1, holes=[ring_2])
+    >>> shapely.polygons(ring_1, holes=[ring_2])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 6, 2 7, 3 7, 3 6, 2 6))>
 
     Or using the ``indices`` argument:
 
-    >>> polygons([ring_1, ring_2], indices=[0, 1])[0]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 1])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, ring_2], indices=[0, 1])[1]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 1])[1]
     <POLYGON ((2 6, 2 7, 3 7, 3 6, 2 6))>
-    >>> polygons([ring_1, ring_2], indices=[0, 0])[0]
+    >>> shapely.polygons([ring_1, ring_2], indices=[0, 0])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 6, 2 7, 3 7, 3 6, 2 6))>
 
-    Missing input values (``None``) are ignored and may result in an
+    Missing input values (``None``) are skipped and may result in an
     empty polygon:
 
-    >>> polygons(None)
+    >>> shapely.polygons(None)
     <POLYGON EMPTY>
-    >>> polygons(ring_1, holes=[None])
+    >>> shapely.polygons(ring_1, holes=[None])
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
-    >>> polygons([ring_1, None], indices=[0, 0])[0]
+    >>> shapely.polygons([ring_1, None], indices=[0, 0])[0]
     <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))>
     """
     ...
@@ -909,10 +1323,14 @@ def box(xmin: float, ymin: float, xmax: float, ymax: float, ccw: bool = True, **
 
     Parameters
     ----------
-    xmin : array_like
-    ymin : array_like
-    xmax : array_like
-    ymax : array_like
+    xmin : float or array_like
+        Float or array of minimum x coordinates.
+    ymin : float or array_like
+        Float or array of minimum y coordinates.
+    xmax : float or array_like
+        Float or array of maximum x coordinates.
+    ymax : float or array_like
+        Float or array of maximum y coordinates.
     ccw : bool, default True
         If True, box will be created in counterclockwise direction starting
         from bottom right coordinate (xmax, ymin).
@@ -921,11 +1339,20 @@ def box(xmin: float, ymin: float, xmax: float, ymax: float, ccw: bool = True, **
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``ccw`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
-    >>> box(0, 0, 1, 1)
+    >>> import shapely
+    >>> shapely.box(0, 0, 1, 1)
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> box(0, 0, 1, 1, ccw=False)
+    >>> shapely.box(0, 0, 1, 1, ccw=False)
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
     """
     ...
@@ -943,10 +1370,14 @@ def box(
 
     Parameters
     ----------
-    xmin : array_like
-    ymin : array_like
-    xmax : array_like
-    ymax : array_like
+    xmin : float or array_like
+        Float or array of minimum x coordinates.
+    ymin : float or array_like
+        Float or array of minimum y coordinates.
+    xmax : float or array_like
+        Float or array of maximum x coordinates.
+    ymax : float or array_like
+        Float or array of maximum y coordinates.
     ccw : bool, default True
         If True, box will be created in counterclockwise direction starting
         from bottom right coordinate (xmax, ymin).
@@ -955,28 +1386,29 @@ def box(
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``ccw`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
-    >>> box(0, 0, 1, 1)
+    >>> import shapely
+    >>> shapely.box(0, 0, 1, 1)
     <POLYGON ((1 0, 1 1, 0 1, 0 0, 1 0))>
-    >>> box(0, 0, 1, 1, ccw=False)
+    >>> shapely.box(0, 0, 1, 1, ccw=False)
     <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
     """
     ...
 @overload
 def multipoints(
     geometries: Sequence[Point | Sequence[float] | None], indices: None = None, *, out: None = None, **kwargs
-) -> MultiPoint: ...
-@overload
-def multipoints(
-    geometries: Sequence[Sequence[Point | Sequence[float] | None]],
-    indices: ArrayLikeSeq[int] | None = None,
-    *,
-    out: NDArray[np.object_] | None = None,
-    **kwargs,
-) -> GeoArray:
+) -> MultiPoint:
     """
-    Create multipoints from arrays of points
+    Create multipoints from arrays of points.
 
     Parameters
     ----------
@@ -994,57 +1426,191 @@ def multipoints(
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
     Examples
     --------
+    >>> import shapely
+
     Multipoints are constructed from points:
 
-    >>> point_1 = points([1, 1])
-    >>> point_2 = points([2, 2])
-    >>> multipoints([point_1, point_2])
-    <MULTIPOINT (1 1, 2 2)>
-    >>> multipoints([[point_1, point_2], [point_2, None]]).tolist()
-    [<MULTIPOINT (1 1, 2 2)>, <MULTIPOINT (2 2)>]
+    >>> point_1 = shapely.points([1, 1])
+    >>> point_2 = shapely.points([2, 2])
+    >>> shapely.multipoints([point_1, point_2])
+    <MULTIPOINT ((1 1), (2 2))>
+    >>> shapely.multipoints([[point_1, point_2], [point_2, None]]).tolist()
+    [<MULTIPOINT ((1 1), (2 2))>, <MULTIPOINT ((2 2))>]
 
     Or from coordinates directly:
 
-    >>> multipoints([[0, 0], [2, 2], [3, 3]])
-    <MULTIPOINT (0 0, 2 2, 3 3)>
+    >>> shapely.multipoints([[0, 0], [2, 2], [3, 3]])
+    <MULTIPOINT ((0 0), (2 2), (3 3))>
 
     Multiple multipoints of different sizes can be constructed efficiently using the
     ``indices`` keyword argument:
 
-    >>> multipoints([point_1, point_2, point_2], indices=[0, 0, 1]).tolist()
-    [<MULTIPOINT (1 1, 2 2)>, <MULTIPOINT (2 2)>]
+    >>> shapely.multipoints([point_1, point_2, point_2], indices=[0, 0, 1]).tolist()
+    [<MULTIPOINT ((1 1), (2 2))>, <MULTIPOINT ((2 2))>]
 
-    Missing input values (``None``) are ignored and may result in an
+    Missing input values (``None``) are skipped and may result in an
     empty multipoint:
 
-    >>> multipoints([None])
+    >>> shapely.multipoints([None])
     <MULTIPOINT EMPTY>
-    >>> multipoints([point_1, None], indices=[0, 0]).tolist()
-    [<MULTIPOINT (1 1)>]
-    >>> multipoints([point_1, None], indices=[0, 1]).tolist()
-    [<MULTIPOINT (1 1)>, <MULTIPOINT EMPTY>]
+    >>> shapely.multipoints([point_1, None], indices=[0, 0]).tolist()
+    [<MULTIPOINT ((1 1))>]
+    >>> shapely.multipoints([point_1, None], indices=[0, 1]).tolist()
+    [<MULTIPOINT ((1 1))>, <MULTIPOINT EMPTY>]
     """
     ...
 @overload
 def multipoints(
-    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
-) -> MultiPoint | GeoArray: ...
-@overload
-def multilinestrings(
-    geometries: Sequence[LineString | Sequence[Sequence[float]] | None], indices: None = None, *, out: None = None, **kwargs
-) -> MultiLineString: ...
-@overload
-def multilinestrings(
-    geometries: Sequence[Sequence[LineString | Sequence[Sequence[float]] | None]],
+    geometries: Sequence[Sequence[Point | Sequence[float] | None]],
     indices: ArrayLikeSeq[int] | None = None,
     *,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
     """
-    Create multilinestrings from arrays of linestrings
+    Create multipoints from arrays of points.
+
+    Parameters
+    ----------
+    geometries : array_like
+        An array of points or coordinates (see points).
+    indices : array_like, optional
+        Indices into the target array where input geometries belong. If
+        provided, both geometries and indices should be 1D and have matching
+        sizes. Indices should be in increasing order. Missing indices result
+        in a ValueError unless ``out`` is  provided, in which case the original
+        value in ``out`` is kept.
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    Examples
+    --------
+    >>> import shapely
+
+    Multipoints are constructed from points:
+
+    >>> point_1 = shapely.points([1, 1])
+    >>> point_2 = shapely.points([2, 2])
+    >>> shapely.multipoints([point_1, point_2])
+    <MULTIPOINT ((1 1), (2 2))>
+    >>> shapely.multipoints([[point_1, point_2], [point_2, None]]).tolist()
+    [<MULTIPOINT ((1 1), (2 2))>, <MULTIPOINT ((2 2))>]
+
+    Or from coordinates directly:
+
+    >>> shapely.multipoints([[0, 0], [2, 2], [3, 3]])
+    <MULTIPOINT ((0 0), (2 2), (3 3))>
+
+    Multiple multipoints of different sizes can be constructed efficiently using the
+    ``indices`` keyword argument:
+
+    >>> shapely.multipoints([point_1, point_2, point_2], indices=[0, 0, 1]).tolist()
+    [<MULTIPOINT ((1 1), (2 2))>, <MULTIPOINT ((2 2))>]
+
+    Missing input values (``None``) are skipped and may result in an
+    empty multipoint:
+
+    >>> shapely.multipoints([None])
+    <MULTIPOINT EMPTY>
+    >>> shapely.multipoints([point_1, None], indices=[0, 0]).tolist()
+    [<MULTIPOINT ((1 1))>]
+    >>> shapely.multipoints([point_1, None], indices=[0, 1]).tolist()
+    [<MULTIPOINT ((1 1))>, <MULTIPOINT EMPTY>]
+    """
+    ...
+@overload
+def multipoints(
+    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
+) -> MultiPoint | GeoArray:
+    """
+    Create multipoints from arrays of points.
+
+    Parameters
+    ----------
+    geometries : array_like
+        An array of points or coordinates (see points).
+    indices : array_like, optional
+        Indices into the target array where input geometries belong. If
+        provided, both geometries and indices should be 1D and have matching
+        sizes. Indices should be in increasing order. Missing indices result
+        in a ValueError unless ``out`` is  provided, in which case the original
+        value in ``out`` is kept.
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    Examples
+    --------
+    >>> import shapely
+
+    Multipoints are constructed from points:
+
+    >>> point_1 = shapely.points([1, 1])
+    >>> point_2 = shapely.points([2, 2])
+    >>> shapely.multipoints([point_1, point_2])
+    <MULTIPOINT ((1 1), (2 2))>
+    >>> shapely.multipoints([[point_1, point_2], [point_2, None]]).tolist()
+    [<MULTIPOINT ((1 1), (2 2))>, <MULTIPOINT ((2 2))>]
+
+    Or from coordinates directly:
+
+    >>> shapely.multipoints([[0, 0], [2, 2], [3, 3]])
+    <MULTIPOINT ((0 0), (2 2), (3 3))>
+
+    Multiple multipoints of different sizes can be constructed efficiently using the
+    ``indices`` keyword argument:
+
+    >>> shapely.multipoints([point_1, point_2, point_2], indices=[0, 0, 1]).tolist()
+    [<MULTIPOINT ((1 1), (2 2))>, <MULTIPOINT ((2 2))>]
+
+    Missing input values (``None``) are skipped and may result in an
+    empty multipoint:
+
+    >>> shapely.multipoints([None])
+    <MULTIPOINT EMPTY>
+    >>> shapely.multipoints([point_1, None], indices=[0, 0]).tolist()
+    [<MULTIPOINT ((1 1))>]
+    >>> shapely.multipoints([point_1, None], indices=[0, 1]).tolist()
+    [<MULTIPOINT ((1 1))>, <MULTIPOINT EMPTY>]
+    """
+    ...
+@overload
+def multilinestrings(
+    geometries: Sequence[LineString | Sequence[Sequence[float]] | None], indices: None = None, *, out: None = None, **kwargs
+) -> MultiLineString:
+    """
+    Create multilinestrings from arrays of linestrings.
 
     Parameters
     ----------
@@ -1062,7 +1628,55 @@ def multilinestrings(
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
+    --------
+    multipoints
+    """
+    ...
+@overload
+def multilinestrings(
+    geometries: Sequence[Sequence[LineString | Sequence[Sequence[float]] | None]],
+    indices: ArrayLikeSeq[int] | None = None,
+    *,
+    out: NDArray[np.object_] | None = None,
+    **kwargs,
+) -> GeoArray:
+    """
+    Create multilinestrings from arrays of linestrings.
+
+    Parameters
+    ----------
+    geometries : array_like
+        An array of linestrings or coordinates (see linestrings).
+    indices : array_like, optional
+        Indices into the target array where input geometries belong. If
+        provided, both geometries and indices should be 1D and have matching
+        sizes. Indices should be in increasing order. Missing indices result
+        in a ValueError unless ``out`` is  provided, in which case the original
+        value in ``out`` is kept.
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
     --------
     multipoints
     """
@@ -1070,21 +1684,45 @@ def multilinestrings(
 @overload
 def multilinestrings(
     geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
-) -> MultiLineString | GeoArray: ...
+) -> MultiLineString | GeoArray:
+    """
+    Create multilinestrings from arrays of linestrings.
+
+    Parameters
+    ----------
+    geometries : array_like
+        An array of linestrings or coordinates (see linestrings).
+    indices : array_like, optional
+        Indices into the target array where input geometries belong. If
+        provided, both geometries and indices should be 1D and have matching
+        sizes. Indices should be in increasing order. Missing indices result
+        in a ValueError unless ``out`` is  provided, in which case the original
+        value in ``out`` is kept.
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
+    --------
+    multipoints
+    """
+    ...
 @overload
 def multipolygons(
     geometries: Sequence[Polygon | Sequence[Sequence[float]] | None], indices: None = None, *, out: None = None, **kwargs
-) -> MultiPolygon: ...
-@overload
-def multipolygons(
-    geometries: Sequence[Sequence[Polygon | Sequence[Sequence[float]] | None]],
-    indices: ArrayLikeSeq[int] | None = None,
-    *,
-    out: NDArray[np.object_] | None = None,
-    **kwargs,
-) -> GeoArray:
+) -> MultiPolygon:
     """
-    Create multipolygons from arrays of polygons
+    Create multipolygons from arrays of polygons.
 
     Parameters
     ----------
@@ -1102,26 +1740,34 @@ def multipolygons(
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
     --------
     multipoints
     """
     ...
 @overload
 def multipolygons(
-    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
-) -> MultiPolygon | GeoArray: ...
-@overload
-def geometrycollections(
-    geometries: Sequence[Geometry | None], indices: None = None, out: None = None, **kwargs
-) -> GeometryCollection:
+    geometries: Sequence[Sequence[Polygon | Sequence[Sequence[float]] | None]],
+    indices: ArrayLikeSeq[int] | None = None,
+    *,
+    out: NDArray[np.object_] | None = None,
+    **kwargs,
+) -> GeoArray:
     """
-    Create geometrycollections from arrays of geometries
+    Create multipolygons from arrays of polygons.
 
     Parameters
     ----------
     geometries : array_like
-        An array of geometries
+        An array of polygons or coordinates (see polygons).
     indices : array_like, optional
         Indices into the target array where input geometries belong. If
         provided, both geometries and indices should be 1D and have matching
@@ -1134,7 +1780,87 @@ def geometrycollections(
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
+    --------
+    multipoints
+    """
+    ...
+@overload
+def multipolygons(
+    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
+) -> MultiPolygon | GeoArray:
+    """
+    Create multipolygons from arrays of polygons.
+
+    Parameters
+    ----------
+    geometries : array_like
+        An array of polygons or coordinates (see polygons).
+    indices : array_like, optional
+        Indices into the target array where input geometries belong. If
+        provided, both geometries and indices should be 1D and have matching
+        sizes. Indices should be in increasing order. Missing indices result
+        in a ValueError unless ``out`` is  provided, in which case the original
+        value in ``out`` is kept.
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
+    --------
+    multipoints
+    """
+    ...
+@overload
+def geometrycollections(
+    geometries: Sequence[Geometry | None], indices: None = None, out: None = None, **kwargs
+) -> GeometryCollection:
+    """
+    Create geometrycollections from arrays of geometries.
+
+    Parameters
+    ----------
+    geometries : array_like
+        An array of geometries.
+    indices : array_like, optional
+        Indices into the target array where input geometries belong. If
+        provided, both geometries and indices should be 1D and have matching
+        sizes. Indices should be in increasing order. Missing indices result
+        in a ValueError unless ``out`` is  provided, in which case the original
+        value in ``out`` is kept.
+    out : ndarray, optional
+        An array (with dtype object) to output the geometries into.
+    **kwargs
+        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
+        Ignored if ``indices`` is provided.
+
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
     --------
     multipoints
     """
@@ -1147,12 +1873,12 @@ def geometrycollections(
     **kwargs,
 ) -> GeoArray:
     """
-    Create geometrycollections from arrays of geometries
+    Create geometrycollections from arrays of geometries.
 
     Parameters
     ----------
     geometries : array_like
-        An array of geometries
+        An array of geometries.
     indices : array_like, optional
         Indices into the target array where input geometries belong. If
         provided, both geometries and indices should be 1D and have matching
@@ -1165,7 +1891,15 @@ def geometrycollections(
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
     --------
     multipoints
     """
@@ -1175,12 +1909,12 @@ def geometrycollections(
     geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, out: NDArray[np.object_] | None = None, **kwargs
 ) -> GeometryCollection | GeoArray:
     """
-    Create geometrycollections from arrays of geometries
+    Create geometrycollections from arrays of geometries.
 
     Parameters
     ----------
     geometries : array_like
-        An array of geometries
+        An array of geometries.
     indices : array_like, optional
         Indices into the target array where input geometries belong. If
         provided, both geometries and indices should be 1D and have matching
@@ -1193,7 +1927,15 @@ def geometrycollections(
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
         Ignored if ``indices`` is provided.
 
-    See also
+    Notes
+    -----
+
+    .. deprecated:: 2.1.0
+        A deprecation warning is shown if ``indices`` is specified as a
+        positional argument. This will need to be specified as a keyword
+        argument in a future release.
+
+    See Also
     --------
     multipoints
     """
@@ -1203,15 +1945,16 @@ def prepare(geometry: OptGeoArrayLike, **kwargs) -> None:
     Prepare a geometry, improving performance of other operations.
 
     A prepared geometry is a normal geometry with added information such as an
-    index on the line segments. This improves the performance of the following operations:
-    contains, contains_properly, covered_by, covers, crosses, disjoint, intersects,
-    overlaps, touches, and within.
+    index on the line segments. This improves the performance of the following
+    operations: contains, contains_properly, covered_by, covers, crosses,
+    disjoint, intersects, overlaps, touches, and within.
 
-    Note that if a prepared geometry is modified, the newly created Geometry object is
-    not prepared. In that case, ``prepare`` should be called again.
+    Note that if a prepared geometry is modified, the newly created Geometry
+    object is not prepared. In that case, ``prepare`` should be called again.
 
     This function does not recompute previously prepared geometries;
-    it is efficient to call this function on an array that partially contains prepared geometries.
+    it is efficient to call this function on an array that partially contains
+    prepared geometries.
 
     This function does not return any values; geometries are modified in place.
 
@@ -1222,17 +1965,18 @@ def prepare(geometry: OptGeoArrayLike, **kwargs) -> None:
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     is_prepared : Identify whether a geometry is prepared already.
     destroy_prepared : Destroy the prepared part of a geometry.
 
     Examples
     --------
-    >>> from shapely import Point, buffer, prepare, contains_properly
-    >>> poly = buffer(Point(1.0, 1.0), 1)
-    >>> prepare(poly)
-    >>> contains_properly(poly, [Point(0.0, 0.0), Point(0.5, 0.5)]).tolist()
+    >>> import shapely
+    >>> from shapely import Point
+    >>> poly = shapely.buffer(Point(1.0, 1.0), 1)
+    >>> shapely.prepare(poly)
+    >>> shapely.contains_properly(poly, [Point(0.0, 0.0), Point(0.5, 0.5)]).tolist()
     [False, True]
     """
     ...
@@ -1251,7 +1995,7 @@ def destroy_prepared(geometry: OptGeoArrayLike, **kwargs) -> None:
     **kwargs
         See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
 
-    See also
+    See Also
     --------
     prepare
     """
@@ -1276,9 +2020,10 @@ def empty(
 
     Examples
     --------
-    >>> empty((2, 3)).tolist()
+    >>> import shapely
+    >>> shapely.empty((2, 3)).tolist()
     [[None, None, None], [None, None, None]]
-    >>> empty(2, geom_type=GeometryType.POINT).tolist()
+    >>> shapely.empty(2, geom_type=shapely.GeometryType.POINT).tolist()
     [<POINT EMPTY>, <POINT EMPTY>]
     """
     ...

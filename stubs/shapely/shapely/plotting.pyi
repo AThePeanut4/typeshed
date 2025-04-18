@@ -17,7 +17,7 @@ from .lib import Geometry
 
 def patch_from_polygon(polygon: Polygon | MultiPolygon, **kwargs: Any) -> PathPatch:
     """
-    Gets a Matplotlib patch from a (Multi)Polygon.
+    Get a Matplotlib patch from a (Multi)Polygon.
 
     Note: this function is experimental, and mainly targeting (interactive)
     exploration, debugging and illustration purposes.
@@ -25,6 +25,7 @@ def patch_from_polygon(polygon: Polygon | MultiPolygon, **kwargs: Any) -> PathPa
     Parameters
     ----------
     polygon : shapely.Polygon or shapely.MultiPolygon
+        The polygon to convert to a Matplotlib Patch.
     **kwargs
         Additional keyword arguments passed to the matplotlib Patch.
 
@@ -53,6 +54,7 @@ def plot_polygon(
     Parameters
     ----------
     polygon : shapely.Polygon or shapely.MultiPolygon
+        The polygon to plot.
     ax : matplotlib Axes, default None
         The axes on which to draw the plot. If not specified, will get the
         current active axes or create a new figure.
@@ -98,6 +100,7 @@ def plot_polygon(
     Parameters
     ----------
     polygon : shapely.Polygon or shapely.MultiPolygon
+        The polygon to plot.
     ax : matplotlib Axes, default None
         The axes on which to draw the plot. If not specified, will get the
         current active axes or create a new figure.
@@ -142,6 +145,7 @@ def plot_polygon(
     Parameters
     ----------
     polygon : shapely.Polygon or shapely.MultiPolygon
+        The polygon to plot.
     ax : matplotlib Axes, default None
         The axes on which to draw the plot. If not specified, will get the
         current active axes or create a new figure.
@@ -184,6 +188,7 @@ def plot_line(
     Parameters
     ----------
     line : shapely.LineString or shapely.LinearRing
+        The line to plot.
     ax : matplotlib Axes, default None
         The axes on which to draw the plot. If not specified, will get the
         current active axes or create a new figure.
@@ -220,6 +225,7 @@ def plot_line(
     Parameters
     ----------
     line : shapely.LineString or shapely.LinearRing
+        The line to plot.
     ax : matplotlib Axes, default None
         The axes on which to draw the plot. If not specified, will get the
         current active axes or create a new figure.
@@ -255,6 +261,7 @@ def plot_line(
     Parameters
     ----------
     line : shapely.LineString or shapely.LinearRing
+        The line to plot.
     ax : matplotlib Axes, default None
         The axes on which to draw the plot. If not specified, will get the
         current active axes or create a new figure.
@@ -288,7 +295,7 @@ def plot_points(
         current active axes or create a new figure.
     color : matplotlib color specification
         Color for the filled points. You can use `markeredgecolor` and
-        `markeredgecolor` to have different edge and fill colors.
+        `markerfacecolor` to have different edge and fill colors.
     marker : str, default "o"
         The matplotlib marker for the points.
     **kwargs

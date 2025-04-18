@@ -1,5 +1,5 @@
 """
-Load/dump geometries using the well-known text (WKT) format
+Load/dump geometries using the well-known text (WKT) format.
 
 Also provides pickle-like convenience functions.
 """
@@ -46,11 +46,11 @@ def dumps(ob: Geometry, trim: bool = False, rounding_precision: int = -1, **kw) 
         A geometry object of any type to be dumped to WKT.
     trim : bool, default False
         Remove excess decimals from the WKT.
-    rounding_precision : int
+    rounding_precision : int, default -1
         Round output to the specified number of digits.
         Default behavior returns full precision.
-    output_dimension : int, default 3
-        Force removal of dimensions above the one specified.
+    **kw : kwargs, optional
+        Keyword output options passed to :func:`~shapely.to_wkt`.
 
     Returns
     -------
@@ -67,13 +67,8 @@ def dump(ob: Geometry, fp: SupportsWrite[str], *, trim: bool = False, rounding_p
         A geometry object of any type to be dumped to WKT.
     fp :
         A file-like object which implements a `write` method.
-    trim : bool, default False
-        Remove excess decimals from the WKT.
-    rounding_precision : int
-        Round output to the specified number of digits.
-        Default behavior returns full precision.
-    output_dimension : int, default 3
-        Force removal of dimensions above the one specified.
+    **settings : kwargs, optional
+        Keyword output options passed to :func:`~shapely.wkt.dumps`.
 
     Returns
     -------

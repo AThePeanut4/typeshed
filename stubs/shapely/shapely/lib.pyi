@@ -194,19 +194,19 @@ def count_coordinates(geoms: NDArray[np.object_], /) -> int:
     ...
 @overload
 def get_coordinates(arr: NDArray[np.object_], include_z: bool, return_index: Literal[False], /) -> NDArray[np.float64]:
-    """Gets the coordinates as an (N, 2) shaped ndarray of floats"""
+    """Gets the coordinates as an (N, 2), (N, 3), or (N, 4) shaped ndarray of floats"""
     ...
 @overload
 def get_coordinates(
     arr: NDArray[np.object_], include_z: bool, return_index: Literal[True], /
 ) -> tuple[NDArray[np.float64], NDArray[np.int64]]:
-    """Gets the coordinates as an (N, 2) shaped ndarray of floats"""
+    """Gets the coordinates as an (N, 2), (N, 3), or (N, 4) shaped ndarray of floats"""
     ...
 @overload
 def get_coordinates(
     arr: NDArray[np.object_], include_z: bool, return_index: bool, /
 ) -> NDArray[np.float64] | tuple[NDArray[np.float64], NDArray[np.int64]]:
-    """Gets the coordinates as an (N, 2) shaped ndarray of floats"""
+    """Gets the coordinates as an (N, 2), (N, 3), or (N, 4) shaped ndarray of floats"""
     ...
 def set_coordinates(geoms: NDArray[np.object_], coords: NDArray[np.float64], /) -> NDArray[np.object_]:
     """Sets coordinates to a geometry array"""

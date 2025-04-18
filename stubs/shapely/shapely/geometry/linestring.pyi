@@ -1,4 +1,4 @@
-"""Line strings and related utilities"""
+"""Line strings and related utilities."""
 
 from collections.abc import Iterable
 from typing import Literal, SupportsFloat, SupportsIndex
@@ -21,31 +21,34 @@ class LineString(BaseGeometry):
     A geometry type composed of one or more line segments.
 
     A LineString is a one-dimensional feature and has a non-zero length but
-    zero area. It may approximate a curve and need not be straight. Unlike a
-    LinearRing, a LineString is not closed.
+    zero area. It may approximate a curve and need not be straight. A LineString may
+    be closed.
 
     Parameters
     ----------
     coordinates : sequence
         A sequence of (x, y, [,z]) numeric coordinate pairs or triples, or
         an array-like with shape (N, 2) or (N, 3).
-        Also can be a sequence of Point objects.
+        Also can be a sequence of Point objects, or combination of both.
 
     Examples
     --------
     Create a LineString with two segments
 
+    >>> from shapely import LineString
     >>> a = LineString([[0, 0], [1, 0], [1, 1]])
     >>> a.length
     2.0
     """
-    def __new__(self, coordinates: _ConvertibleToLineString | None = None) -> Self: ...
+    def __new__(self, coordinates: _ConvertibleToLineString | None = None) -> Self:
+        """Create a new LineString geometry."""
+        ...
     def svg(self, scale_factor: float = 1.0, stroke_color: str | None = None, opacity: float | None = None) -> str:
         """
-        Returns SVG polyline element for the LineString geometry.
+        Return SVG polyline element for the LineString geometry.
 
         Parameters
-        ==========
+        ----------
         scale_factor : float
             Multiplication factor for the SVG stroke-width.  Default is 1.
         stroke_color : str, optional
@@ -63,13 +66,12 @@ class LineString(BaseGeometry):
         mitre_limit: float = 5.0,
     ) -> LineString | MultiLineString:
         """
-        Returns a LineString or MultiLineString geometry at a distance from
-        the object on its right or its left side.
+        Return a (Multi)LineString at a distance from the object.
 
-        The side is determined by the sign of the `distance` parameter
-        (negative for right side offset, positive for left side offset). The
-        resolution of the buffer around each vertex of the object increases
-        by increasing the `quad_segs` keyword parameter.
+        The side, left or right, is determined by the sign of the `distance`
+        parameter (negative for right side offset, positive for left side
+        offset). The resolution of the buffer around each vertex of the object
+        increases by increasing the `quad_segs` keyword parameter.
 
         The join style is for outside corners between line segments. Accepted
         values are JOIN_STYLE.round (1), JOIN_STYLE.mitre (2), and
@@ -113,7 +115,7 @@ class LineString(BaseGeometry):
     @property
     def boundary(self) -> MultiPoint:
         """
-        Returns a lower dimension geometry that bounds the object
+        Return a lower dimension geometry that bounds the object.
 
         The boundary of a polygon is a line, the boundary of a line is a
         collection of points. The boundary of a point is an empty (null)
@@ -123,8 +125,10 @@ class LineString(BaseGeometry):
     @property
     def convex_hull(self) -> LineString:
         """
-        Imagine an elastic band stretched around the geometry: that's a
-        convex hull, more or less
+        Return the convex hull of the geometry.
+
+        Imagine an elastic band stretched around the geometry: that's a convex
+        hull, more or less.
 
         The convex hull of a three member multipoint, for example, is a
         triangular polygon.
@@ -132,17 +136,24 @@ class LineString(BaseGeometry):
         ...
     @property
     def envelope(self) -> Polygon:
-        """A figure that envelopes the geometry"""
+        """A figure that envelopes the geometry."""
         ...
     @property
     def oriented_envelope(self) -> LineString:
         """
-        Returns the oriented envelope (minimum rotated rectangle) that
-        encloses the geometry.
+        Return the oriented envelope (minimum rotated rectangle) of a geometry.
+
+        The oriented envelope encloses an input geometry, such that the resulting
+        rectangle has minimum area.
 
         Unlike envelope this rectangle is not constrained to be parallel to the
         coordinate axes. If the convex hull of the object is a degenerate (line
         or point) this degenerate is returned.
+
+        The starting point of the rectangle is not fixed. You can use
+        :func:`~shapely.normalize` to reorganize the rectangle to
+        :ref:`strict canonical form <canonical-form>` so the starting point is
+        always the lower left point.
 
         Alias of `minimum_rotated_rectangle`.
         """
@@ -150,12 +161,19 @@ class LineString(BaseGeometry):
     @property
     def minimum_rotated_rectangle(self) -> LineString:
         """
-        Returns the oriented envelope (minimum rotated rectangle) that
-        encloses the geometry.
+        Return the oriented envelope (minimum rotated rectangle) of the geometry.
+
+        The oriented envelope encloses an input geometry, such that the resulting
+        rectangle has minimum area.
 
         Unlike `envelope` this rectangle is not constrained to be parallel to the
         coordinate axes. If the convex hull of the object is a degenerate (line
         or point) this degenerate is returned.
+
+        The starting point of the rectangle is not fixed. You can use
+        :func:`~shapely.normalize` to reorganize the rectangle to
+        :ref:`strict canonical form <canonical-form>` so the starting point is
+        always the lower left point.
 
         Alias of `oriented_envelope`.
         """

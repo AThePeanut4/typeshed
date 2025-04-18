@@ -1,4 +1,4 @@
-"""Collections of points and related utilities"""
+"""Collections of points and related utilities."""
 
 from collections.abc import Collection
 from typing_extensions import Self
@@ -30,7 +30,7 @@ class MultiPoint(BaseMultipartGeometry[Point]):
     --------
     Construct a MultiPoint containing two Points
 
-    >>> from shapely import Point
+    >>> from shapely import MultiPoint, Point
     >>> ob = MultiPoint([[0.0, 0.0], [1.0, 2.0]])
     >>> len(ob.geoms)
     2
@@ -42,13 +42,15 @@ class MultiPoint(BaseMultipartGeometry[Point]):
     # * `Sequence` is more correct but it will lead to False positives with common types
     #   like np.ndarray, pd.Index, pd.Series, ...
     # I went with Collection as false negatives seem better to me than false positives in this case
-    def __new__(self, points: MultiPoint | Collection[_PointLike] | None = None) -> Self: ...
+    def __new__(self, points: MultiPoint | Collection[_PointLike] | None = None) -> Self:
+        """Create a new MultiPoint geometry."""
+        ...
     def svg(self, scale_factor: float = 1.0, fill_color: str | None = None, opacity: float | None = None) -> str:
         """
-        Returns a group of SVG circle elements for the MultiPoint geometry.
+        Return a group of SVG circle elements for the MultiPoint geometry.
 
         Parameters
-        ==========
+        ----------
         scale_factor : float
             Multiplication factor for the SVG circle diameters.  Default is 1.
         fill_color : str, optional
@@ -62,7 +64,7 @@ class MultiPoint(BaseMultipartGeometry[Point]):
     @property
     def boundary(self) -> GeometryCollection:
         """
-        Returns a lower dimension geometry that bounds the object
+        Return a lower dimension geometry that bounds the object.
 
         The boundary of a polygon is a line, the boundary of a line is a
         collection of points. The boundary of a point is an empty (null)
