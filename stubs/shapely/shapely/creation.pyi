@@ -1,9 +1,11 @@
 from collections.abc import Sequence
 from typing import Literal, SupportsIndex, overload
+from typing_extensions import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
 
+from ._enum import ParamEnum
 from ._geometry import GeometryType
 from ._typing import ArrayLike, ArrayLikeSeq, GeoArray, OptGeoArrayLike, OptGeoArrayLikeSeq
 from .geometry import GeometryCollection, LinearRing, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon
@@ -24,96 +26,43 @@ __all__ = [
     "empty",
 ]
 
+class HandleNaN(ParamEnum):
+    allow = 0
+    skip = 1
+    error = 2
+
+_HandleNaN: TypeAlias = Literal[0, 1, 2] | HandleNaN
+
 @overload
 def points(
-    coords: float, y: float, z: float | None = None, indices: None = None, out: None = None, **kwargs  # acts as x
-) -> Point:
-    """
-    Create an array of points.
-
-    Parameters
-    ----------
-    coords : array_like
-        An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
-        provided, an array of x coordinates.
-    y : array_like, optional
-    z : array_like, optional
-    indices : array_like, optional
-        Indices into the target array where input coordinates belong. If
-        provided, the coords should be 2D with shape (N, 2) or (N, 3) and
-        indices should be an array of shape (N,) with integers in increasing
-        order. Missing indices result in a ValueError unless ``out`` is
-        provided, in which case the original value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    Examples
-    --------
-    >>> points([[0, 1], [4, 5]]).tolist()
-    [<POINT (0 1)>, <POINT (4 5)>]
-    >>> points([0, 1, 2])
-    <POINT Z (0 1 2)>
-
-    Notes
-    -----
-
-    - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
-    - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as an array with shape ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
-    """
-    ...
+    coords: float,
+    y: float,
+    z: float | None = None,
+    indices: None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
+    out: None = None,
+    **kwargs,  # acts as x
+) -> Point: ...
 @overload
 def points(
-    coords: Sequence[float], y: None = None, z: None = None, indices: None = None, out: None = None, **kwargs  # acts as x, y[, z]
-) -> Point:
-    """
-    Create an array of points.
-
-    Parameters
-    ----------
-    coords : array_like
-        An array of coordinate tuples (2- or 3-dimensional) or, if ``y`` is
-        provided, an array of x coordinates.
-    y : array_like, optional
-    z : array_like, optional
-    indices : array_like, optional
-        Indices into the target array where input coordinates belong. If
-        provided, the coords should be 2D with shape (N, 2) or (N, 3) and
-        indices should be an array of shape (N,) with integers in increasing
-        order. Missing indices result in a ValueError unless ``out`` is
-        provided, in which case the original value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    Examples
-    --------
-    >>> points([[0, 1], [4, 5]]).tolist()
-    [<POINT (0 1)>, <POINT (4 5)>]
-    >>> points([0, 1, 2])
-    <POINT Z (0 1 2)>
-
-    Notes
-    -----
-
-    - GEOS 3.10, 3.11 and 3.12 automatically converts POINT (nan nan) to POINT EMPTY.
-    - GEOS 3.10 and 3.11 will transform a 3D point to 2D if its Z coordinate is NaN.
-    - Usage of the ``y`` and ``z`` arguments will prevents lazy evaluation in ``dask``.
-      Instead provide the coordinates as an array with shape ``(..., 2)`` or ``(..., 3)`` using only the ``coords`` argument.
-    """
-    ...
+    coords: Sequence[float],
+    y: None = None,
+    z: None = None,
+    indices: None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
+    out: None = None,
+    **kwargs,  # acts as x, y[, z]
+) -> Point: ...
 @overload
 def points(
     coords: Sequence[float],  # acts as (x1, x2, ...)
     y: Sequence[float],  # must be (y1, y2, ...)
     z: Sequence[float] | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -161,6 +110,8 @@ def points(
     y: None = None,
     z: None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -208,6 +159,8 @@ def points(
     y: ArrayLike[float],
     z: ArrayLike[float] | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> Point | GeoArray:
@@ -255,6 +208,8 @@ def points(
     y: ArrayLike[float] | None = None,
     z: ArrayLike[float] | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> Point | GeoArray:
@@ -302,6 +257,8 @@ def linestrings(
     y: Sequence[float],
     z: Sequence[float] | None = None,
     indices: None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: None = None,
     **kwargs,
 ) -> LineString:
@@ -349,6 +306,8 @@ def linestrings(
     y: None = None,
     z: None = None,
     indices: None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: None = None,
     **kwargs,
 ) -> LineString:
@@ -396,6 +355,8 @@ def linestrings(
     y: None = None,
     z: None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -443,6 +404,8 @@ def linestrings(
     y: ArrayLikeSeq[float] | None = None,
     z: ArrayLikeSeq[float] | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> LineString | GeoArray:
@@ -490,6 +453,8 @@ def linearrings(
     y: Sequence[float],
     z: Sequence[float] | None = None,
     indices: None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: None = None,
     **kwargs,
 ) -> LinearRing:
@@ -544,6 +509,8 @@ def linearrings(
     y: None = None,
     z: None = None,
     indices: None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: None = None,
     **kwargs,
 ) -> LinearRing:
@@ -598,6 +565,8 @@ def linearrings(
     y: None = None,
     z: None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -652,6 +621,8 @@ def linearrings(
     y: ArrayLikeSeq[float] | None = None,
     z: ArrayLikeSeq[float] | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
+    handle_nan: _HandleNaN = 0,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> LinearRing | GeoArray:
@@ -705,6 +676,7 @@ def polygons(
     geometries: LinearRing | Sequence[Sequence[float]] | None,
     holes: ArrayLikeSeq[float] | OptGeoArrayLikeSeq | None = None,
     indices: None = None,
+    *,
     out: None = None,
     **kwargs,
 ) -> Polygon:
@@ -781,6 +753,7 @@ def polygons(
     geometries: Sequence[LinearRing | Sequence[Sequence[float]] | None],
     holes: ArrayLikeSeq[float] | OptGeoArrayLikeSeq | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -857,6 +830,7 @@ def polygons(
     geometries: ArrayLikeSeq[float] | OptGeoArrayLikeSeq,
     holes: ArrayLikeSeq[float] | OptGeoArrayLikeSeq | None = None,
     indices: ArrayLikeSeq[int] | None = None,
+    *,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> Polygon | GeoArray:
@@ -991,64 +965,13 @@ def box(
     ...
 @overload
 def multipoints(
-    geometries: Sequence[Point | Sequence[float] | None], indices: None = None, out: None = None, **kwargs
-) -> MultiPoint:
-    """
-    Create multipoints from arrays of points
-
-    Parameters
-    ----------
-    geometries : array_like
-        An array of points or coordinates (see points).
-    indices : array_like, optional
-        Indices into the target array where input geometries belong. If
-        provided, both geometries and indices should be 1D and have matching
-        sizes. Indices should be in increasing order. Missing indices result
-        in a ValueError unless ``out`` is  provided, in which case the original
-        value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    Examples
-    --------
-    Multipoints are constructed from points:
-
-    >>> point_1 = points([1, 1])
-    >>> point_2 = points([2, 2])
-    >>> multipoints([point_1, point_2])
-    <MULTIPOINT (1 1, 2 2)>
-    >>> multipoints([[point_1, point_2], [point_2, None]]).tolist()
-    [<MULTIPOINT (1 1, 2 2)>, <MULTIPOINT (2 2)>]
-
-    Or from coordinates directly:
-
-    >>> multipoints([[0, 0], [2, 2], [3, 3]])
-    <MULTIPOINT (0 0, 2 2, 3 3)>
-
-    Multiple multipoints of different sizes can be constructed efficiently using the
-    ``indices`` keyword argument:
-
-    >>> multipoints([point_1, point_2, point_2], indices=[0, 0, 1]).tolist()
-    [<MULTIPOINT (1 1, 2 2)>, <MULTIPOINT (2 2)>]
-
-    Missing input values (``None``) are ignored and may result in an
-    empty multipoint:
-
-    >>> multipoints([None])
-    <MULTIPOINT EMPTY>
-    >>> multipoints([point_1, None], indices=[0, 0]).tolist()
-    [<MULTIPOINT (1 1)>]
-    >>> multipoints([point_1, None], indices=[0, 1]).tolist()
-    [<MULTIPOINT (1 1)>, <MULTIPOINT EMPTY>]
-    """
-    ...
+    geometries: Sequence[Point | Sequence[float] | None], indices: None = None, *, out: None = None, **kwargs
+) -> MultiPoint: ...
 @overload
 def multipoints(
     geometries: Sequence[Sequence[Point | Sequence[float] | None]],
     indices: ArrayLikeSeq[int] | None = None,
+    *,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -1106,92 +1029,17 @@ def multipoints(
     ...
 @overload
 def multipoints(
-    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, out: NDArray[np.object_] | None = None, **kwargs
-) -> MultiPoint | GeoArray:
-    """
-    Create multipoints from arrays of points
-
-    Parameters
-    ----------
-    geometries : array_like
-        An array of points or coordinates (see points).
-    indices : array_like, optional
-        Indices into the target array where input geometries belong. If
-        provided, both geometries and indices should be 1D and have matching
-        sizes. Indices should be in increasing order. Missing indices result
-        in a ValueError unless ``out`` is  provided, in which case the original
-        value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    Examples
-    --------
-    Multipoints are constructed from points:
-
-    >>> point_1 = points([1, 1])
-    >>> point_2 = points([2, 2])
-    >>> multipoints([point_1, point_2])
-    <MULTIPOINT (1 1, 2 2)>
-    >>> multipoints([[point_1, point_2], [point_2, None]]).tolist()
-    [<MULTIPOINT (1 1, 2 2)>, <MULTIPOINT (2 2)>]
-
-    Or from coordinates directly:
-
-    >>> multipoints([[0, 0], [2, 2], [3, 3]])
-    <MULTIPOINT (0 0, 2 2, 3 3)>
-
-    Multiple multipoints of different sizes can be constructed efficiently using the
-    ``indices`` keyword argument:
-
-    >>> multipoints([point_1, point_2, point_2], indices=[0, 0, 1]).tolist()
-    [<MULTIPOINT (1 1, 2 2)>, <MULTIPOINT (2 2)>]
-
-    Missing input values (``None``) are ignored and may result in an
-    empty multipoint:
-
-    >>> multipoints([None])
-    <MULTIPOINT EMPTY>
-    >>> multipoints([point_1, None], indices=[0, 0]).tolist()
-    [<MULTIPOINT (1 1)>]
-    >>> multipoints([point_1, None], indices=[0, 1]).tolist()
-    [<MULTIPOINT (1 1)>, <MULTIPOINT EMPTY>]
-    """
-    ...
+    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
+) -> MultiPoint | GeoArray: ...
 @overload
 def multilinestrings(
-    geometries: Sequence[LineString | Sequence[Sequence[float]] | None], indices: None = None, out: None = None, **kwargs
-) -> MultiLineString:
-    """
-    Create multilinestrings from arrays of linestrings
-
-    Parameters
-    ----------
-    geometries : array_like
-        An array of linestrings or coordinates (see linestrings).
-    indices : array_like, optional
-        Indices into the target array where input geometries belong. If
-        provided, both geometries and indices should be 1D and have matching
-        sizes. Indices should be in increasing order. Missing indices result
-        in a ValueError unless ``out`` is  provided, in which case the original
-        value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    See also
-    --------
-    multipoints
-    """
-    ...
+    geometries: Sequence[LineString | Sequence[Sequence[float]] | None], indices: None = None, *, out: None = None, **kwargs
+) -> MultiLineString: ...
 @overload
 def multilinestrings(
     geometries: Sequence[Sequence[LineString | Sequence[Sequence[float]] | None]],
     indices: ArrayLikeSeq[int] | None = None,
+    *,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -1221,64 +1069,17 @@ def multilinestrings(
     ...
 @overload
 def multilinestrings(
-    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, out: NDArray[np.object_] | None = None, **kwargs
-) -> MultiLineString | GeoArray:
-    """
-    Create multilinestrings from arrays of linestrings
-
-    Parameters
-    ----------
-    geometries : array_like
-        An array of linestrings or coordinates (see linestrings).
-    indices : array_like, optional
-        Indices into the target array where input geometries belong. If
-        provided, both geometries and indices should be 1D and have matching
-        sizes. Indices should be in increasing order. Missing indices result
-        in a ValueError unless ``out`` is  provided, in which case the original
-        value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    See also
-    --------
-    multipoints
-    """
-    ...
+    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
+) -> MultiLineString | GeoArray: ...
 @overload
 def multipolygons(
-    geometries: Sequence[Polygon | Sequence[Sequence[float]] | None], indices: None = None, out: None = None, **kwargs
-) -> MultiPolygon:
-    """
-    Create multipolygons from arrays of polygons
-
-    Parameters
-    ----------
-    geometries : array_like
-        An array of polygons or coordinates (see polygons).
-    indices : array_like, optional
-        Indices into the target array where input geometries belong. If
-        provided, both geometries and indices should be 1D and have matching
-        sizes. Indices should be in increasing order. Missing indices result
-        in a ValueError unless ``out`` is  provided, in which case the original
-        value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    See also
-    --------
-    multipoints
-    """
-    ...
+    geometries: Sequence[Polygon | Sequence[Sequence[float]] | None], indices: None = None, *, out: None = None, **kwargs
+) -> MultiPolygon: ...
 @overload
 def multipolygons(
     geometries: Sequence[Sequence[Polygon | Sequence[Sequence[float]] | None]],
     indices: ArrayLikeSeq[int] | None = None,
+    *,
     out: NDArray[np.object_] | None = None,
     **kwargs,
 ) -> GeoArray:
@@ -1308,32 +1109,8 @@ def multipolygons(
     ...
 @overload
 def multipolygons(
-    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, out: NDArray[np.object_] | None = None, **kwargs
-) -> MultiPolygon | GeoArray:
-    """
-    Create multipolygons from arrays of polygons
-
-    Parameters
-    ----------
-    geometries : array_like
-        An array of polygons or coordinates (see polygons).
-    indices : array_like, optional
-        Indices into the target array where input geometries belong. If
-        provided, both geometries and indices should be 1D and have matching
-        sizes. Indices should be in increasing order. Missing indices result
-        in a ValueError unless ``out`` is  provided, in which case the original
-        value in ``out`` is kept.
-    out : ndarray, optional
-        An array (with dtype object) to output the geometries into.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-        Ignored if ``indices`` is provided.
-
-    See also
-    --------
-    multipoints
-    """
-    ...
+    geometries: OptGeoArrayLikeSeq, indices: ArrayLikeSeq[int] | None = None, *, out: NDArray[np.object_] | None = None, **kwargs
+) -> MultiPolygon | GeoArray: ...
 @overload
 def geometrycollections(
     geometries: Sequence[Geometry | None], indices: None = None, out: None = None, **kwargs

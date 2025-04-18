@@ -459,9 +459,9 @@ class BaseGeometry(Geometry):
         """
         ...
     @property
-    def is_empty(self) -> bool:
-        """True if the set of points in this geometry is empty, else False"""
-        ...
+    def has_m(self) -> bool: ...
+    @property
+    def is_empty(self) -> bool: ...
     @property
     def is_ring(self) -> bool:
         """True if the geometry is a closed ring, else False"""
@@ -670,144 +670,15 @@ class BaseGeometry(Geometry):
         """
         ...
     @overload
-    def equals_exact(self, other: Geometry | None, tolerance: float) -> bool:
-        """
-        True if geometries are equal to within a specified
-        tolerance.
-
-        Parameters
-        ----------
-        other : BaseGeometry
-            The other geometry object in this comparison.
-        tolerance : float
-            Absolute tolerance in the same units as coordinates.
-
-        This method considers coordinate equality, which requires
-        coordinates to be equal and in the same order for all components
-        of a geometry.
-
-        Because of this it is possible for "equals()" to be True for two
-        geometries and "equals_exact()" to be False.
-
-        Examples
-        --------
-        >>> LineString(
-        ...     [(0, 0), (2, 2)]
-        ... ).equals_exact(
-        ...     LineString([(0, 0), (1, 1), (2, 2)]),
-        ...     1e-6
-        ... )
-        False
-
-        Returns
-        -------
-        bool
-        """
-        ...
+    def equals_exact(self, other: Geometry | None, tolerance: float = 0.0, *, normalize: Literal[False] = False) -> bool: ...
     @overload
-    def equals_exact(self, other: OptGeoArrayLikeSeq, tolerance: float) -> NDArray[np.bool_]:
-        """
-        True if geometries are equal to within a specified
-        tolerance.
-
-        Parameters
-        ----------
-        other : BaseGeometry
-            The other geometry object in this comparison.
-        tolerance : float
-            Absolute tolerance in the same units as coordinates.
-
-        This method considers coordinate equality, which requires
-        coordinates to be equal and in the same order for all components
-        of a geometry.
-
-        Because of this it is possible for "equals()" to be True for two
-        geometries and "equals_exact()" to be False.
-
-        Examples
-        --------
-        >>> LineString(
-        ...     [(0, 0), (2, 2)]
-        ... ).equals_exact(
-        ...     LineString([(0, 0), (1, 1), (2, 2)]),
-        ...     1e-6
-        ... )
-        False
-
-        Returns
-        -------
-        bool
-        """
-        ...
+    def equals_exact(
+        self, other: OptGeoArrayLikeSeq, tolerance: float = 0.0, *, normalize: bool = False
+    ) -> NDArray[np.bool_]: ...
     @overload
-    def equals_exact(self, other: OptGeoArrayLike, tolerance: ArrayLikeSeq[float]) -> NDArray[np.bool_]:
-        """
-        True if geometries are equal to within a specified
-        tolerance.
-
-        Parameters
-        ----------
-        other : BaseGeometry
-            The other geometry object in this comparison.
-        tolerance : float
-            Absolute tolerance in the same units as coordinates.
-
-        This method considers coordinate equality, which requires
-        coordinates to be equal and in the same order for all components
-        of a geometry.
-
-        Because of this it is possible for "equals()" to be True for two
-        geometries and "equals_exact()" to be False.
-
-        Examples
-        --------
-        >>> LineString(
-        ...     [(0, 0), (2, 2)]
-        ... ).equals_exact(
-        ...     LineString([(0, 0), (1, 1), (2, 2)]),
-        ...     1e-6
-        ... )
-        False
-
-        Returns
-        -------
-        bool
-        """
-        ...
-    @deprecated("Method 'almost_equals()' is deprecated. Use method 'equals_exact()' instead.")
-    def almost_equals(self, other: OptGeoArrayLike, decimal: int = 6) -> bool | NDArray[np.bool_]:
-        """
-        True if geometries are equal at all coordinates to a
-        specified decimal place.
-
-        .. deprecated:: 1.8.0
-            The 'almost_equals()' method is deprecated
-            and will be removed in Shapely 2.1 because the name is
-            confusing. The 'equals_exact()' method should be used
-            instead.
-
-        Refers to approximate coordinate equality, which requires
-        coordinates to be approximately equal and in the same order for
-        all components of a geometry.
-
-        Because of this it is possible for "equals()" to be True for two
-        geometries and "almost_equals()" to be False.
-
-        Examples
-        --------
-        >>> LineString(
-        ...     [(0, 0), (2, 2)]
-        ... ).equals_exact(
-        ...     LineString([(0, 0), (1, 1), (2, 2)]),
-        ...     1e-6
-        ... )
-        False
-
-        Returns
-        -------
-        bool
-        """
-        ...
+    def equals_exact(
+        self, other: OptGeoArrayLike, tolerance: ArrayLikeSeq[float], *, normalize: bool = False
+    ) -> NDArray[np.bool_]: ...
     @overload
     def relate_pattern(self, other: Geometry | None, pattern: str) -> bool:
         """

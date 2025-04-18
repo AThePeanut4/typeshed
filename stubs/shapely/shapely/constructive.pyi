@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Any, Literal, SupportsIndex, overload
+from typing_extensions import TypeAlias
 
 from ._enum import ParamEnum
 from ._typing import ArrayLike, ArrayLikeSeq, GeoArray, OptGeoArrayLike, OptGeoArrayLikeSeq, OptGeoT
@@ -12,31 +13,37 @@ __all__ = [
     "BufferJoinStyle",
     "boundary",
     "buffer",
-    "offset_curve",
+    "build_area",
     "centroid",
     "clip_by_rect",
     "concave_hull",
+    "constrained_delaunay_triangles",
     "convex_hull",
     "delaunay_triangles",
-    "segmentize",
     "envelope",
     "extract_unique_points",
-    "build_area",
     "make_valid",
-    "normalize",
+    "maximum_inscribed_circle",
+    "minimum_bounding_circle",
+    "minimum_clearance_line",
+    "minimum_rotated_rectangle",
     "node",
+    "normalize",
+    "offset_curve",
+    "orient_polygons",
+    "oriented_envelope",
     "point_on_surface",
     "polygonize",
     "polygonize_full",
     "remove_repeated_points",
     "reverse",
+    "segmentize",
     "simplify",
     "snap",
     "voronoi_polygons",
-    "oriented_envelope",
-    "minimum_rotated_rectangle",
-    "minimum_bounding_circle",
 ]
+
+_Method: TypeAlias = Literal["linework", "structure"]
 
 class BufferCapStyle(ParamEnum):
     """An enumeration."""
@@ -1779,29 +1786,15 @@ def delaunay_triangles(
     """
     ...
 @overload
-def envelope(geometry: Point, **kwargs) -> Point:
-    """
-    Computes the minimum bounding box that encloses an input geometry.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import GeometryCollection, LineString, MultiPoint, Point
-    >>> envelope(LineString([(0, 0), (10, 10)]))
-    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(MultiPoint([(0, 0), (10, 10)]))
-    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))>
-    >>> envelope(Point(0, 0))
-    <POINT (0 0)>
-    >>> envelope(GeometryCollection([]))
-    <POINT EMPTY>
-    """
-    ...
+def constrained_delaunay_triangles(geometry: Geometry, **kwargs) -> GeometryCollection: ...
+@overload
+def constrained_delaunay_triangles(geometry: None, **kwargs) -> None: ...
+@overload
+def constrained_delaunay_triangles(geometry: Geometry | None, **kwargs) -> GeometryCollection | None: ...
+@overload
+def constrained_delaunay_triangles(geometry: OptGeoArrayLikeSeq | OptGeoArrayLike, **kwargs) -> GeoArray: ...
+@overload
+def envelope(geometry: Point, **kwargs) -> Point: ...
 @overload
 def envelope(geometry: Geometry, **kwargs) -> BaseGeometry:
     """
@@ -2103,89 +2096,37 @@ def build_area(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
     ...
 @overload
-def make_valid(geometry: Geometry, **kwargs) -> BaseGeometry:
-    """
-    Repairs invalid geometries.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import is_valid, Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> is_valid(polygon)
-    False
-    >>> make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    """
-    ...
+def make_valid(geometry: Geometry, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> BaseGeometry: ...
 @overload
-def make_valid(geometry: None, **kwargs) -> None:
-    """
-    Repairs invalid geometries.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import is_valid, Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> is_valid(polygon)
-    False
-    >>> make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    """
-    ...
+def make_valid(geometry: None, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> None: ...
 @overload
-def make_valid(geometry: Geometry | None, **kwargs) -> BaseGeometry | None:
-    """
-    Repairs invalid geometries.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import is_valid, Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> is_valid(polygon)
-    False
-    >>> make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    """
-    ...
+def make_valid(
+    geometry: Geometry | None, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
+) -> BaseGeometry | None: ...
 @overload
-def make_valid(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
-    """
-    Repairs invalid geometries.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import is_valid, Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> is_valid(polygon)
-    False
-    >>> make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    """
-    ...
+def make_valid(
+    geometry: Geometry | None, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
+) -> BaseGeometry | None: ...
+@overload
+def make_valid(
+    geometry: OptGeoArrayLikeSeq, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
+) -> GeoArray: ...
+@overload
+def make_valid(
+    geometry: OptGeoArrayLikeSeq, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
+) -> GeoArray: ...
+@overload
+def minimum_clearance_line(geometry: Point, **kwargs) -> Point: ...
+@overload
+def minimum_clearance_line(geometry: LineString | Polygon | BaseMultipartGeometry, **kwargs) -> Polygon: ...
+@overload
+def minimum_clearance_line(geometry: Geometry, **kwargs) -> Polygon | Point: ...
+@overload
+def minimum_clearance_line(geometry: None, **kwargs) -> None: ...
+@overload
+def minimum_clearance_line(geometry: Geometry | None, **kwargs) -> Polygon | Point | None: ...
+@overload
+def minimum_clearance_line(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray: ...
 @overload
 def normalize(geometry: OptGeoT, **kwargs) -> OptGeoT:
     """
@@ -3526,268 +3467,61 @@ def snap(geometry: OptGeoArrayLike, reference: OptGeoArrayLike, tolerance: Array
     ...
 @overload
 def voronoi_polygons(
-    geometry: Geometry, tolerance: float = 0.0, extend_to: Geometry | None = None, only_edges: Literal[False] = False, **kwargs
-) -> GeometryCollection[Polygon]:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: Geometry,
+    tolerance: float = 0.0,
+    extend_to: Geometry | None = None,
+    only_edges: Literal[False] = False,
+    ordered: bool = False,
+    **kwargs,
+) -> GeometryCollection[Polygon]: ...
 @overload
 def voronoi_polygons(
-    geometry: Geometry, tolerance: float, extend_to: Geometry | None, only_edges: Literal[True], **kwargs
-) -> LineString | MultiLineString:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: Geometry, tolerance: float, extend_to: Geometry | None, only_edges: Literal[True], ordered: bool = False, **kwargs
+) -> LineString | MultiLineString: ...
 @overload
 def voronoi_polygons(
-    geometry: Geometry, tolerance: float = 0.0, extend_to: Geometry | None = None, *, only_edges: Literal[True], **kwargs
-) -> LineString | MultiLineString:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: Geometry,
+    tolerance: float = 0.0,
+    extend_to: Geometry | None = None,
+    *,
+    only_edges: Literal[True],
+    ordered: bool = False,
+    **kwargs,
+) -> LineString | MultiLineString: ...
 @overload
 def voronoi_polygons(
-    geometry: Geometry, tolerance: float = 0.0, extend_to: Geometry | None = None, only_edges: bool = False, **kwargs
-) -> GeometryCollection[Polygon] | LineString | MultiLineString:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: Geometry,
+    tolerance: float = 0.0,
+    extend_to: Geometry | None = None,
+    only_edges: bool = False,
+    ordered: bool = False,
+    **kwargs,
+) -> GeometryCollection[Polygon] | LineString | MultiLineString: ...
 @overload
 def voronoi_polygons(
-    geometry: None, tolerance: float = 0.0, extend_to: Geometry | None = None, only_edges: bool = False, **kwargs
-) -> None:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: None,
+    tolerance: float = 0.0,
+    extend_to: Geometry | None = None,
+    only_edges: bool = False,
+    ordered: bool = False,
+    **kwargs,
+) -> None: ...
 @overload
 def voronoi_polygons(
-    geometry: Geometry | None, tolerance: float = 0.0, extend_to: Geometry | None = None, only_edges: bool = False, **kwargs
-) -> GeometryCollection[Polygon] | LineString | MultiLineString | None:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: Geometry | None,
+    tolerance: float = 0.0,
+    extend_to: Geometry | None = None,
+    only_edges: bool = False,
+    ordered: bool = False,
+    **kwargs,
+) -> GeometryCollection[Polygon] | LineString | MultiLineString | None: ...
 @overload
 def voronoi_polygons(
     geometry: OptGeoArrayLikeSeq,
     tolerance: ArrayLike[float] = 0.0,
     extend_to: OptGeoArrayLike = None,
     only_edges: ArrayLike[bool] = False,
+    ordered: bool = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -3835,6 +3569,7 @@ def voronoi_polygons(
     tolerance: ArrayLikeSeq[float],
     extend_to: OptGeoArrayLike = None,
     only_edges: ArrayLike[bool] = False,
+    ordered: bool = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -3882,6 +3617,7 @@ def voronoi_polygons(
     tolerance: ArrayLike[float],
     extend_to: OptGeoArrayLikeSeq,
     only_edges: ArrayLike[bool] = False,
+    ordered: bool = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -3930,6 +3666,7 @@ def voronoi_polygons(
     *,
     extend_to: OptGeoArrayLikeSeq,
     only_edges: ArrayLike[bool] = False,
+    ordered: bool = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -3973,47 +3710,13 @@ def voronoi_polygons(
     ...
 @overload
 def voronoi_polygons(
-    geometry: OptGeoArrayLike, tolerance: ArrayLike[float], extend_to: OptGeoArrayLike, only_edges: ArrayLikeSeq[bool], **kwargs
-) -> GeoArray:
-    """
-    Computes a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import LineString, MultiPoint, normalize, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> normalize(voronoi_polygons(points))
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> voronoi_polygons(points, only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <LINESTRING (3 4.2, 3 -0.2)>
-    >>> voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <LINESTRING (3 10, 3 0)>
-    >>> voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <LINESTRING (3 4, 3 0)>
-    >>> voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+    geometry: OptGeoArrayLike,
+    tolerance: ArrayLike[float],
+    extend_to: OptGeoArrayLike,
+    only_edges: ArrayLikeSeq[bool],
+    ordered: bool = False,
+    **kwargs,
+) -> GeoArray: ...
 @overload
 def voronoi_polygons(
     geometry: OptGeoArrayLike,
@@ -4021,6 +3724,7 @@ def voronoi_polygons(
     extend_to: OptGeoArrayLike = None,
     *,
     only_edges: ArrayLikeSeq[bool],
+    ordered: bool = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -4386,32 +4090,28 @@ def minimum_bounding_circle(geometry: Geometry | None, **kwargs) -> Polygon | Po
     """
     ...
 @overload
-def minimum_bounding_circle(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
-    """
-    Computes the minimum bounding circle that encloses an input geometry.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import GeometryCollection, LineString, MultiPoint, Point, Polygon
-    >>> minimum_bounding_circle(Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)]))
-    <POLYGON ((12.071 5, 11.935 3.621, 11.533 2.294, 10.879 1.07...>
-    >>> minimum_bounding_circle(LineString([(1, 1), (10, 10)]))
-    <POLYGON ((11.864 5.5, 11.742 4.258, 11.38 3.065, 10.791 1.9...>
-    >>> minimum_bounding_circle(MultiPoint([(2, 2), (4, 2)]))
-    <POLYGON ((4 2, 3.981 1.805, 3.924 1.617, 3.831 1.444, 3.707...>
-    >>> minimum_bounding_circle(Point(0, 1))
-    <POINT (0 1)>
-    >>> minimum_bounding_circle(GeometryCollection([]))
-    <POLYGON EMPTY>
-
-    See also
-    --------
-    minimum_bounding_radius
-    """
-    ...
+def minimum_bounding_circle(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray: ...
+@overload
+def maximum_inscribed_circle(geometry: Point, tolerance: float | None = None, **kwargs) -> Point: ...
+@overload
+def maximum_inscribed_circle(
+    geometry: LineString | Polygon | BaseMultipartGeometry, tolerance: float | None = None, **kwargs
+): ...
+@overload
+def maximum_inscribed_circle(geometry: Geometry, tolerance: float | None = None, **kwargs) -> Polygon | Point: ...
+@overload
+def maximum_inscribed_circle(geometry: None, tolerance: float | None = None, **kwargs) -> None: ...
+@overload
+def maximum_inscribed_circle(geometry: Geometry | None, tolerance: float | None = None, **kwargs) -> Polygon | Point | None: ...
+@overload
+def maximum_inscribed_circle(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float] | None = None, **kwargs) -> GeoArray: ...
+@overload
+def orient_polygons(geometry: Point, *, exterior_cw: bool = False, **kwargs) -> Point: ...
+@overload
+def orient_polygons(geometry: Geometry, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry: ...
+@overload
+def orient_polygons(geometry: None, *, exterior_cw: bool = False, **kwargs) -> None: ...
+@overload
+def orient_polygons(geometry: Geometry | None, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry | None: ...
+@overload
+def orient_polygons(geometry: OptGeoArrayLikeSeq, *, exterior_cw: bool = False, **kwargs) -> GeoArray: ...

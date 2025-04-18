@@ -13,28 +13,29 @@ from .lib import Geometry
 
 __all__ = [
     "GeometryType",
-    "get_type_id",
-    "get_dimensions",
+    "force_2d",
+    "force_3d",
     "get_coordinate_dimension",
+    "get_dimensions",
+    "get_exterior_ring",
+    "get_geometry",
+    "get_interior_ring",
+    "get_m",
     "get_num_coordinates",
+    "get_num_geometries",
+    "get_num_interior_rings",
+    "get_num_points",
+    "get_parts",
+    "get_point",
+    "get_precision",
+    "get_rings",
     "get_srid",
-    "set_srid",
+    "get_type_id",
     "get_x",
     "get_y",
     "get_z",
-    "get_exterior_ring",
-    "get_num_points",
-    "get_num_interior_rings",
-    "get_num_geometries",
-    "get_point",
-    "get_interior_ring",
-    "get_geometry",
-    "get_parts",
-    "get_rings",
-    "get_precision",
     "set_precision",
-    "force_2d",
-    "force_3d",
+    "set_srid",
 ]
 
 _PrecisionMode: TypeAlias = Literal["valid_output", "pointwise", "keep_collapsed", 0, 1, 2]
@@ -591,46 +592,11 @@ def get_z(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]:
     """
     ...
 @overload
-def get_point(geometry: LineString, index: SupportsIndex, **kwargs) -> Point | Any:
-    """
-    Returns the nth point of a linestring or linearring.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    index : int or array_like
-        Negative values count from the end of the linestring backwards.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    See also
-    --------
-    get_num_points
-
-    Examples
-    --------
-    >>> from shapely import LinearRing, LineString, MultiPoint, Point
-    >>> line = LineString([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> get_point(line, 1)
-    <POINT (1 1)>
-    >>> get_point(line, -2)
-    <POINT (2 2)>
-    >>> get_point(line, [0, 3]).tolist()
-    [<POINT (0 0)>, <POINT (3 3)>]
-
-    The functcion works the same for LinearRing input:
-
-    >>> get_point(LinearRing([(0, 0), (1, 1), (2, 2), (0, 0)]), 1)
-    <POINT (1 1)>
-
-    For non-linear geometries it returns None:
-
-    >>> get_point(MultiPoint([(0, 0), (1, 1), (2, 2), (3, 3)]), 1) is None
-    True
-    >>> get_point(Point(1, 1), 0) is None
-    True
-    """
-    ...
+def get_m(point: Geometry | None, **kwargs) -> float: ...
+@overload
+def get_m(point: OptGeoArrayLikeSeq, **kwargs) -> NDArray[np.float64]: ...
+@overload
+def get_point(geometry: LineString, index: SupportsIndex, **kwargs) -> Point | Any: ...
 @overload
 def get_point(geometry: Point | Polygon | BaseMultipartGeometry | None, index: SupportsIndex, **kwargs) -> None:
     """

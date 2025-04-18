@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import TypeVar
 
 _F = TypeVar("_F", bound=Callable[..., object])
@@ -8,12 +8,5 @@ class requires_geos:
     def __init__(self, version: str) -> None: ...
     def __call__(self, func: _F) -> _F: ...
 
-def multithreading_enabled(func: _F) -> _F:
-    """
-    Prepare multithreading by setting the writable flags of object type
-    ndarrays to False.
-
-    NB: multithreading also requires the GIL to be released, which is done in
-    the C extension (ufuncs.c).
-    """
-    ...
+def multithreading_enabled(func: _F) -> _F: ...
+def deprecate_positional(should_be_kwargs: Iterable[str], category: type[Warning] = ...) -> Callable[..., object]: ...

@@ -1,5 +1,6 @@
 from _typeshed import Incomplete
 from typing import Literal, overload
+from typing_extensions import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
@@ -11,6 +12,8 @@ from .geometry.base import BaseGeometry
 from .lib import Geometry
 
 __all__ = ["from_geojson", "from_ragged_array", "from_wkb", "from_wkt", "to_geojson", "to_ragged_array", "to_wkb", "to_wkt"]
+
+_OutputDimension: TypeAlias = Literal[2, 3, 4]
 
 # Mypy and stubtest aren't happy with the following definition and
 # raise is a reserved keyword, so we cannot use the class syntax of enums
@@ -24,130 +27,28 @@ class WKBFlavorOptions(ParamEnum):
 
 @overload
 def to_wkt(
-    geometry: None, rounding_precision: int = 6, trim: bool = True, output_dimension: int = 3, old_3d: bool = False, **kwargs
-) -> None:
-    """
-    Converts to the Well-Known Text (WKT) representation of a Geometry.
-
-    The Well-known Text format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    The following limitations apply to WKT serialization:
-
-    - for GEOS <= 3.8 a multipoint with an empty sub-geometry will raise an exception
-    - for GEOS <= 3.8 empty geometries are always serialized to 2D
-    - for GEOS >= 3.9 only simple empty geometries can be 3D, collections are still
-      always 2D
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    rounding_precision : int, default 6
-        The rounding precision when writing the WKT string. Set to a value of
-        -1 to indicate the full precision.
-    trim : bool, default True
-        If True, trim unnecessary decimals (trailing zeros).
-    output_dimension : int, default 3
-        The output dimension for the WKT string. Supported values are 2 and 3.
-        Specifying 3 means that up to 3 dimensions will be written but 2D
-        geometries will still be represented as 2D in the WKT string.
-    old_3d : bool, default False
-        Enable old style 3D/4D WKT generation. By default, new style 3D/4D WKT
-        (ie. "POINT Z (10 20 30)") is returned, but with ``old_3d=True``
-        the WKT will be formatted in the style "POINT (10 20 30)".
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import Point
-    >>> to_wkt(Point(0, 0))
-    'POINT (0 0)'
-    >>> to_wkt(Point(0, 0), rounding_precision=3, trim=False)
-    'POINT (0.000 0.000)'
-    >>> to_wkt(Point(0, 0), rounding_precision=-1, trim=False)
-    'POINT (0.0000000000000000 0.0000000000000000)'
-    >>> to_wkt(Point(1, 2, 3), trim=True)
-    'POINT Z (1 2 3)'
-    >>> to_wkt(Point(1, 2, 3), trim=True, output_dimension=2)
-    'POINT (1 2)'
-    >>> to_wkt(Point(1, 2, 3), trim=True, old_3d=True)
-    'POINT (1 2 3)'
-
-    Notes
-    -----
-    The defaults differ from the default of the GEOS library. To mimic this,
-    use::
-
-        to_wkt(geometry, rounding_precision=-1, trim=False, output_dimension=2)
-    """
-    ...
+    geometry: None,
+    rounding_precision: int = 6,
+    trim: bool = True,
+    output_dimension: _OutputDimension | None = None,
+    old_3d: bool = False,
+    **kwargs,
+) -> None: ...
 @overload
 def to_wkt(
-    geometry: Geometry, rounding_precision: int = 6, trim: bool = True, output_dimension: int = 3, old_3d: bool = False, **kwargs
-) -> str:
-    """
-    Converts to the Well-Known Text (WKT) representation of a Geometry.
-
-    The Well-known Text format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    The following limitations apply to WKT serialization:
-
-    - for GEOS <= 3.8 a multipoint with an empty sub-geometry will raise an exception
-    - for GEOS <= 3.8 empty geometries are always serialized to 2D
-    - for GEOS >= 3.9 only simple empty geometries can be 3D, collections are still
-      always 2D
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    rounding_precision : int, default 6
-        The rounding precision when writing the WKT string. Set to a value of
-        -1 to indicate the full precision.
-    trim : bool, default True
-        If True, trim unnecessary decimals (trailing zeros).
-    output_dimension : int, default 3
-        The output dimension for the WKT string. Supported values are 2 and 3.
-        Specifying 3 means that up to 3 dimensions will be written but 2D
-        geometries will still be represented as 2D in the WKT string.
-    old_3d : bool, default False
-        Enable old style 3D/4D WKT generation. By default, new style 3D/4D WKT
-        (ie. "POINT Z (10 20 30)") is returned, but with ``old_3d=True``
-        the WKT will be formatted in the style "POINT (10 20 30)".
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> from shapely import Point
-    >>> to_wkt(Point(0, 0))
-    'POINT (0 0)'
-    >>> to_wkt(Point(0, 0), rounding_precision=3, trim=False)
-    'POINT (0.000 0.000)'
-    >>> to_wkt(Point(0, 0), rounding_precision=-1, trim=False)
-    'POINT (0.0000000000000000 0.0000000000000000)'
-    >>> to_wkt(Point(1, 2, 3), trim=True)
-    'POINT Z (1 2 3)'
-    >>> to_wkt(Point(1, 2, 3), trim=True, output_dimension=2)
-    'POINT (1 2)'
-    >>> to_wkt(Point(1, 2, 3), trim=True, old_3d=True)
-    'POINT (1 2 3)'
-
-    Notes
-    -----
-    The defaults differ from the default of the GEOS library. To mimic this,
-    use::
-
-        to_wkt(geometry, rounding_precision=-1, trim=False, output_dimension=2)
-    """
-    ...
+    geometry: Geometry,
+    rounding_precision: int = 6,
+    trim: bool = True,
+    output_dimension: _OutputDimension | None = None,
+    old_3d: bool = False,
+    **kwargs,
+) -> str: ...
 @overload
 def to_wkt(
     geometry: OptGeoArrayLikeSeq,
     rounding_precision: int = 6,
     trim: bool = True,
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     old_3d: bool = False,
     **kwargs,
 ) -> NDArray[np.str_]:
@@ -211,7 +112,7 @@ def to_wkt(
 def to_wkb(
     geometry: None,
     hex: bool = False,
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
@@ -272,7 +173,7 @@ def to_wkb(
 def to_wkb(
     geometry: Geometry,
     hex: Literal[False] = False,
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
@@ -333,7 +234,7 @@ def to_wkb(
 def to_wkb(
     geometry: Geometry,
     hex: Literal[True],
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
@@ -394,7 +295,7 @@ def to_wkb(
 def to_wkb(
     geometry: Geometry,
     hex: bool,
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
@@ -455,7 +356,7 @@ def to_wkb(
 def to_wkb(
     geometry: OptGeoArrayLikeSeq,
     hex: Literal[False] = False,
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
@@ -516,7 +417,7 @@ def to_wkb(
 def to_wkb(
     geometry: OptGeoArrayLikeSeq,
     hex: Literal[True],
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
@@ -577,7 +478,7 @@ def to_wkb(
 def to_wkb(
     geometry: OptGeoArrayLikeSeq,
     hex: bool,
-    output_dimension: int = 3,
+    output_dimension: _OutputDimension | None = None,
     byte_order: int = -1,
     include_srid: bool = False,
     flavor: Literal["iso", "extended"] = "extended",
