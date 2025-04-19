@@ -1,4 +1,5 @@
 import sys
+from _typeshed import MaybeNone
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping, Sequence
 from contextlib import _GeneratorContextManager
 from types import TracebackType
@@ -89,16 +90,13 @@ class _Call(tuple[Any, ...]):
     If the _Call has no name then it will match any name.
     """
     def __new__(
-        cls, value: _CallValue = (), name: str | None = "", parent: Any | None = None, two: bool = False, from_kall: bool = True
+        cls, value: _CallValue = (), name: str | None = "", parent: _Call | None = None, two: bool = False, from_kall: bool = True
     ) -> Self: ...
-    name: Any
-    parent: Any
-    from_kall: Any
     def __init__(
         self,
         value: _CallValue = (),
         name: str | None = None,
-        parent: Any | None = None,
+        parent: _Call | None = None,
         two: bool = False,
         from_kall: bool = True,
     ) -> None: ...
@@ -278,7 +276,7 @@ class NonCallableMock(Base, Any):
     side_effect: Any
     called: bool
     call_count: int
-    call_args: Any
+    call_args: _Call | MaybeNone
     call_args_list: _CallList
     mock_calls: _CallList
     def _format_mock_call_signature(self, args: Any, kwargs: Any) -> str: ...
