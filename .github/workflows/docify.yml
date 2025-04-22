@@ -31,14 +31,19 @@ jobs:
       - name: Merge
         run: |
           git reset --hard origin/main
-          if ! git merge upstream/main --no-ff -m 'chore: merge upstream' -s ort -X theirs; then
+          if ! git merge upstream/main --no-ff --no-commit -s ort -X theirs; then
             # merge failed, -X theirs means this should (hopefully)
             # only be caused by either us or them deleting files
             # so resolve all conflicts by deleting the file
-            git status --porcelain=2 | grep '^u' | cut -d ' ' -f '11-' | while read line; do
+            git status --porcelain=2 | grep '^u' | cut -d ' ' -f '11-' | while read -r line; do
               git rm "$line"
             done
-            git commit --no-edit
+          fi
+          # don't try to commit if we're already up to date
+          if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+            # discard any changes to our readme or .github folder
+            git restore --staged --worktree README.md .github
+            git commit -m 'chore: merge upstream'
           fi
       - name: Install uv
         uses: astral-sh/setup-uv@v3
