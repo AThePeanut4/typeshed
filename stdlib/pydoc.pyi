@@ -46,7 +46,7 @@ from collections.abc import Callable, Container, Mapping, MutableMapping
 from reprlib import Repr
 from types import MethodType, ModuleType, TracebackType
 from typing import IO, Any, AnyStr, Final, NoReturn, Protocol, TypeVar
-from typing_extensions import TypeGuard
+from typing_extensions import TypeGuard, deprecated
 
 __all__ = ["help"]
 
@@ -85,15 +85,16 @@ def stripid(text: str) -> str:
     """Remove the hexadecimal id from a Python object representation."""
     ...
 def allmethods(cl: type) -> MutableMapping[str, MethodType]: ...
-def visiblename(name: str, all: Container[str] | None = None, obj: object = None) -> bool:
-    """Decide whether to show documentation on a variable."""
-    ...
-def classify_class_attrs(object: object) -> list[tuple[str, str, type, str]]:
-    """Wrap inspect.classify_class_attrs, with fixup for data descriptors and bound methods."""
-    ...
-def ispackage(path: str) -> bool:
-    """Guess whether a path refers to a package directory."""
-    ...
+def visiblename(name: str, all: Container[str] | None = None, obj: object = None) -> bool: ...
+def classify_class_attrs(object: object) -> list[tuple[str, str, type, str]]: ...
+
+if sys.version_info >= (3, 13):
+    @deprecated("Deprecated in Python 3.13.")
+    def ispackage(path: str) -> bool: ...
+
+else:
+    def ispackage(path: str) -> bool: ...
+
 def source_synopsis(file: IO[AnyStr]) -> AnyStr | None: ...
 def synopsis(filename: str, cache: MutableMapping[str, tuple[int, str]] = {}) -> str | None:
     """Get the one-line summary out of a module file."""
