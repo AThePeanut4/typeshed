@@ -1,3 +1,48 @@
+"""
+click_default_group
+~~~~~~~~~~~~~~~~~~~
+
+Define a default subcommand by `default=True`:
+
+.. sourcecode:: python
+
+   import click
+   from click_default_group import DefaultGroup
+
+   @click.group(cls=DefaultGroup, default_if_no_args=True)
+   def cli():
+       pass
+
+   @cli.command(default=True)
+   def foo():
+       click.echo('foo')
+
+   @cli.command()
+   def bar():
+       click.echo('bar')
+
+Then you can invoke that without explicit subcommand name:
+
+.. sourcecode:: console
+
+   $ cli.py --help
+   Usage: cli.py [OPTIONS] COMMAND [ARGS]...
+
+   Options:
+     --help    Show this message and exit.
+
+   Command:
+     foo*
+     bar
+
+   $ cli.py
+   foo
+   $ cli.py foo
+   foo
+   $ cli.py bar
+   bar
+"""
+
 from collections.abc import Callable, MutableMapping, Sequence
 from typing import Any, Final, Literal, overload
 from typing_extensions import deprecated
@@ -43,7 +88,9 @@ class DefaultGroup(click.Group):
         hidden: bool = False,
         deprecated: bool = False,
     ) -> None: ...
-    def set_default_command(self, command: click.Command) -> None: ...
+    def set_default_command(self, command: click.Command) -> None:
+        """Sets a command function as the default command."""
+        ...
     def parse_args(self, ctx: click.Context, args: list[str]) -> list[str]: ...
     def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None: ...
     def resolve_command(self, ctx: click.Context, args: list[str]) -> tuple[str | None, click.Command | None, list[str]]: ...

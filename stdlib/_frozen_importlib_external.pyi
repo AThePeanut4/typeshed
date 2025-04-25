@@ -77,7 +77,18 @@ def spec_from_file_location(
     *,
     loader: LoaderProtocol | None = None,
     submodule_search_locations: list[str] | None = ...,
-) -> importlib.machinery.ModuleSpec | None: ...
+) -> importlib.machinery.ModuleSpec | None:
+    """
+    Return a module spec based on a file location.
+
+    To indicate that the module is a package, set
+    submodule_search_locations to a list of directory paths.  An
+    empty list is sufficient, though its not otherwise useful to the
+    import system.
+
+    The loader must take a spec as its only __init__() arg.
+    """
+    ...
 @deprecated(
     "Deprecated as of Python 3.6: Use site configuration instead. "
     "Future versions of Python may not enable this finder by default."

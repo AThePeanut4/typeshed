@@ -63,7 +63,9 @@ class AsyncAuth0:
         ...
     async def __aexit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
-    ) -> None: ...
+    ) -> None:
+        """Automatically close session within context manager."""
+        ...
 
     # Same attributes as Auth0
     # See note in stubs/auth0-python/@tests/stubtest_allowlist.txt about _async methods
