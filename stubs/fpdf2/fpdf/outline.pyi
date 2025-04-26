@@ -10,15 +10,15 @@ in non-backward-compatible ways.
 
 from _typeshed import Incomplete
 from collections.abc import Generator, Iterable
-from typing import NamedTuple
+from dataclasses import dataclass
 
 from .fonts import TextStyle
 from .fpdf import FPDF
 from .structure_tree import StructElem
 from .syntax import Destination, PDFObject, PDFString
 
-class OutlineSection(NamedTuple):
-    """OutlineSection(name, level, page_number, dest, struct_elem)"""
+@dataclass
+class OutlineSection:
     name: str
     level: int
     page_number: int

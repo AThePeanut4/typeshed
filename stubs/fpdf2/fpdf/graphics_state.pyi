@@ -1,12 +1,4 @@
-"""
-Mixin class for managing a stack of graphics state variables.
-
-The contents of this module are internal to fpdf2, and not part of the public API.
-They may change at any time without prior warning or any deprecation period,
-in non-backward-compatible ways.
-"""
-
-from typing import Any, ClassVar, Literal, TypedDict, type_check_only
+from typing import Any, ClassVar, Final, Literal, TypedDict, type_check_only
 
 from .drawing import DeviceGray, DeviceRGB
 from .enums import TextMode
@@ -55,6 +47,10 @@ class GraphicsStateMixin:
     @underline.setter
     def underline(self, v: bool) -> None: ...
     @property
+    def strikethrough(self) -> bool: ...
+    @strikethrough.setter
+    def strikethrough(self, v: bool) -> None: ...
+    @property
     def font_style(self) -> str: ...
     @font_style.setter
     def font_style(self, v: str) -> None: ...
@@ -82,6 +78,10 @@ class GraphicsStateMixin:
     def current_font(self) -> dict[str, Any]: ...
     @current_font.setter
     def current_font(self, v: dict[str, Any]) -> None: ...
+    @property
+    def current_font_is_set_on_page(self) -> bool: ...
+    @current_font_is_set_on_page.setter
+    def current_font_is_set_on_page(self, v: bool) -> None: ...
     @property
     def dash_pattern(self) -> dict[str, float]: ...
     @dash_pattern.setter
@@ -224,9 +224,6 @@ class GraphicsStateMixin:
     def text_shaping(self) -> _TextShaping | None: ...
     @text_shaping.setter
     def text_shaping(self, v: _TextShaping | None) -> None: ...
-    def font_face(self) -> FontFace:
-        """
-        Return a `fpdf.fonts.FontFace` instance
-        representing a subset of properties of this GraphicsState.
-        """
-        ...
+    def font_face(self) -> FontFace: ...
+
+__pdoc__: Final[dict[str, bool]]

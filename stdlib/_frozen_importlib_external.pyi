@@ -317,13 +317,15 @@ class FileLoader:
         def contents(self) -> Iterator[str]: ...
 
 class SourceFileLoader(importlib.abc.FileLoader, FileLoader, importlib.abc.SourceLoader, SourceLoader):  # type: ignore[misc]  # incompatible method arguments in base classes
-    """Concrete implementation of SourceLoader using the file system."""
-    def set_data(self, path: str, data: ReadableBuffer, *, _mode: int = 0o666) -> None:
-        """Write bytes data to a file."""
-        ...
-    def path_stats(self, path: str) -> Mapping[str, Any]:
-        """Return the metadata for the path."""
-        ...
+    def set_data(self, path: str, data: ReadableBuffer, *, _mode: int = 0o666) -> None: ...
+    def path_stats(self, path: str) -> Mapping[str, Any]: ...
+    def source_to_code(  # type: ignore[override]  # incompatible with InspectLoader.source_to_code
+        self,
+        data: ReadableBuffer | str | _ast.Module | _ast.Expression | _ast.Interactive,
+        path: ReadableBuffer | StrPath,
+        *,
+        _optimize: int = -1,
+    ) -> types.CodeType: ...
 
 class SourcelessFileLoader(importlib.abc.FileLoader, FileLoader, _LoaderBasics):
     """Loader which handles sourceless file imports."""

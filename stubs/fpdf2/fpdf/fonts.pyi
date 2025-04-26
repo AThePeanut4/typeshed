@@ -8,15 +8,20 @@ in non-backward-compatible ways.
 """
 
 import dataclasses
-from _typeshed import Incomplete
+from _typeshed import Incomplete, Unused
+from collections import defaultdict
 from collections.abc import Generator
 from dataclasses import dataclass
+from logging import Logger
 from typing import Final, overload
 from typing_extensions import Self, deprecated
 
+from ._fonttools_shims import _TTFont
 from .drawing import DeviceGray, DeviceRGB, Number
 from .enums import Align, TextEmphasis
 from .syntax import PDFObject
+
+LOGGER: Logger
 
 # Only defined if harfbuzz is installed.
 class HarfBuzzFont(Incomplete):  # derives from uharfbuzz.Font
@@ -103,50 +108,48 @@ class TitleStyle(TextStyle): ...
 
 __pdoc__: Final[dict[str, bool]]
 
-class _FontMixin:
+class CoreFont:
     i: int
     type: str
     name: str
     up: int
     ut: int
+    sp: int
+    ss: int
     cw: int
     fontkey: str
     emphasis: TextEmphasis
-    def encode_text(self, text: str): ...
-
-class CoreFont(_FontMixin):
     def __init__(self, fpdf, fontkey: str, style: int) -> None: ...
-    def get_text_width(self, text: str, font_size_pt: int, _): ...
+    def get_text_width(self, text: str, font_size_pt: int, _: Unused) -> float: ...
+    def encode_text(self, text: str) -> str: ...
 
-class TTFFont(_FontMixin):
+class TTFFont:
+    i: int
+    type: str
     ttffile: Incomplete
-    ttfont: Incomplete
-    scale: Incomplete
-    desc: Incomplete
+    fontkey: str
+    ttfont: _TTFont
+    scale: float
+    desc: PDFFontDescriptor
+    cw: defaultdict[str, int]
     cmap: Incomplete
-    glyph_ids: Incomplete
-    missing_glyphs: Incomplete
-    subset: Incomplete
+    glyph_ids: dict[Incomplete, Incomplete]
+    missing_glyphs: list[Incomplete]
+    name: str
+    up: int
+    ut: int
+    sp: int
+    ss: int
+    emphasis: TextEmphasis
+    subset: SubsetMap
     hbfont: HarfBuzzFont | None  # Not always defined.
     def __init__(self, fpdf, font_file_path, fontkey: str, style: int) -> None: ...
     def close(self) -> None: ...
-    def get_text_width(self, text: str, font_size_pt: int, text_shaping_parms): ...
-    def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_parms):
-        """
-        When texts are shaped, the length of a string is not always the sum of all individual character widths
-        This method will invoke harfbuzz to perform the text shaping and return the sum of "x_advance"
-        and "x_offset" for each glyph. This method works for "left to right" or "right to left" texts.
-        """
-        ...
-    def perform_harfbuzz_shaping(self, text: str, font_size_pt: int, text_shaping_parms):
-        """This method invokes Harfbuzz to perform text shaping of the input string"""
-        ...
-    def shape_text(self, text: str, font_size_pt: int, text_shaping_parms):
-        """
-        This method will invoke harfbuzz for text shaping, include the mapping code
-        of the glyphs on the subset and map input characters to the cluster codes
-        """
-        ...
+    def get_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def perform_harfbuzz_shaping(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def encode_text(self, text: str) -> str: ...
+    def shape_text(self, text: str, font_size_pt: int, text_shaping_params): ...
 
 class PDFFontDescriptor(PDFObject):
     type: Incomplete
@@ -186,7 +189,7 @@ class SubsetMap:
     the lowest possible representation.
     """
     font: TTFFont
-    def __init__(self, font: TTFFont, identities: list[int]) -> None: ...
+    def __init__(self, font: TTFFont) -> None: ...
     def __len__(self) -> int: ...
     def items(self) -> Generator[Incomplete, None, None]: ...
     def pick(self, unicode: int): ...

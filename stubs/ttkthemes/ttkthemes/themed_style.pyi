@@ -16,13 +16,8 @@ class ThemedStyle(ttk.Style, ThemedWidget):
     Supports the themes provided by this package.
     """
     def __init__(
-        self, master: tkinter.Misc | None = ..., *, theme: str | None = ..., gif_override: bool | None = ..., **kwargs
-    ) -> None:
-        """
-        :param theme: Theme to set up initialization completion. If the
-                      theme is not available, fails silently.
-        """
-        ...
+        self, master: tkinter.Misc | None = ..., *, theme: str | None = None, gif_override: bool | None = False
+    ) -> None: ...
     # theme_use() can't return None (differs from ttk.Style)
     def theme_use(self, theme_name: str | None = None) -> str:
         """

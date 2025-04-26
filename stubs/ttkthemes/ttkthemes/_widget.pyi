@@ -17,29 +17,9 @@ class ThemedWidget:
     PACKAGES: ClassVar[dict[str, str]]
     tk: _tkinter.TkappType
     png_support: bool
-    def __init__(self, tk_interpreter, gif_override: bool = False) -> None:
-        """
-        Initialize attributes and call _load_themes
-
-        :param tk_interpreter: tk interpreter for tk.Widget that is
-            being initialized as ThemedWidget. Even if this Widget is
-            just a single widget, the changes affect all widgets with
-            the same parent Tk instance.
-        :param gif_override: Force loading of GIF-themes even if
-            PNG-themes can be loaded
-        """
-        ...
-    def set_theme(self, theme_name: str) -> None:
-        """
-        Set new theme to use. Uses a direct tk call to allow usage
-        of the themes supplied with this package.
-
-        :param theme_name: name of theme to activate
-        """
-        ...
-    def get_themes(self) -> list[str]:
-        """Return a list of names of available themes"""
-        ...
+    def __init__(self, tk_interpreter: _tkinter.TkappType, gif_override: bool = False) -> None: ...
+    def set_theme(self, theme_name: str) -> None: ...
+    def get_themes(self) -> list[str]: ...
     @property
     def themes(self) -> list[str]:
         """Property alias of get_themes()"""

@@ -5,7 +5,7 @@ Copyright (c) 2017-2018 RedFantom
 """
 
 import tkinter
-from _typeshed import Incomplete
+from typing import Any
 
 from ._widget import ThemedWidget
 
@@ -56,28 +56,57 @@ class ThemedTk(tkinter.Tk, ThemedWidget):
         themebg: bool | None = ...,
         background: bool | None = ...,  # old alias for themebg
         gif_override: bool = ...,
-    ) -> None:
-        """
-        :param theme: Theme to set upon initialization. If theme is not
-            available, fails silently.
-        :param toplevel: Control Toplevel background color option,
-            see class documentation for details.
-        :param themebg: Control Tk background color option, see
-            class documentation for details.
-        :param fonts: Whether to enable the automatic change of default
-            font selected for a theme
-        """
-        ...
-    def set_theme(self, theme_name, toplevel: bool | None = None, themebg: bool | None = None) -> None:
-        """Redirect the set_theme call to also set Tk background color"""
-        ...
-    # TODO: currently no good way to say "use the same big list of kwargs as parent class but also add these"
-    def config(self, kw: Incomplete | None = None, **kwargs):
-        """configure redirect to support additional options"""
-        ...
-    def cget(self, k):
-        """cget redirect to support additional options"""
-        ...
-    def configure(self, kw: Incomplete | None = None, **kwargs): ...  # type: ignore[override]
-    def __getitem__(self, k): ...
-    def __setitem__(self, k, v) -> None: ...
+    ) -> None: ...
+    def set_theme(self, theme_name: str, toplevel: bool | None = None, themebg: bool | None = None) -> None: ...
+    # Keep this in sync with tkinter.Tk
+    def config(  # type: ignore[override]
+        self,
+        kw: dict[str, Any] | None = None,
+        *,
+        themebg: bool | None = ...,
+        toplevel: bool | None = ...,
+        theme: str | None = ...,
+        background: str = ...,
+        bd: tkinter._ScreenUnits = ...,
+        bg: str = ...,
+        border: tkinter._ScreenUnits = ...,
+        borderwidth: tkinter._ScreenUnits = ...,
+        cursor: tkinter._Cursor = ...,
+        height: tkinter._ScreenUnits = ...,
+        highlightbackground: str = ...,
+        highlightcolor: str = ...,
+        highlightthickness: tkinter._ScreenUnits = ...,
+        menu: tkinter.Menu = ...,
+        padx: tkinter._ScreenUnits = ...,
+        pady: tkinter._ScreenUnits = ...,
+        relief: tkinter._Relief = ...,
+        takefocus: tkinter._TakeFocusValue = ...,
+        width: tkinter._ScreenUnits = ...,
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    def cget(self, k: str) -> Any: ...
+    def configure(  # type: ignore[override]
+        self,
+        kw: dict[str, Any] | None = None,
+        *,
+        themebg: bool | None = ...,
+        toplevel: bool | None = ...,
+        theme: str | None = ...,
+        background: str = ...,
+        bd: tkinter._ScreenUnits = ...,
+        bg: str = ...,
+        border: tkinter._ScreenUnits = ...,
+        borderwidth: tkinter._ScreenUnits = ...,
+        cursor: tkinter._Cursor = ...,
+        height: tkinter._ScreenUnits = ...,
+        highlightbackground: str = ...,
+        highlightcolor: str = ...,
+        highlightthickness: tkinter._ScreenUnits = ...,
+        menu: tkinter.Menu = ...,
+        padx: tkinter._ScreenUnits = ...,
+        pady: tkinter._ScreenUnits = ...,
+        relief: tkinter._Relief = ...,
+        takefocus: tkinter._TakeFocusValue = ...,
+        width: tkinter._ScreenUnits = ...,
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    def __getitem__(self, k: str) -> Any: ...
+    def __setitem__(self, k: str, v: Any) -> None: ...

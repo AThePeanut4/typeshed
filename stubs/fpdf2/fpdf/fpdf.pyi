@@ -23,6 +23,7 @@ from .enums import (
     EncryptionMethod,
     FileAttachmentAnnotationName,
     MethodReturnValue,
+    OutputIntentSubType,
     PageLabelStyle,
     PageLayout,
     PageMode,
@@ -53,7 +54,7 @@ from .image_datastructures import (
     VectorImageInfo as VectorImageInfo,
     _TextAlign,
 )
-from .output import OutputProducer, PDFPage
+from .output import OutputProducer, PDFICCProfile, PDFPage
 from .recorder import FPDFRecorder
 from .structure_tree import StructureTreeBuilder
 from .syntax import DestinationXYZ
@@ -77,7 +78,35 @@ __all__ = [
 _Orientation: TypeAlias = Literal["", "portrait", "p", "P", "landscape", "l", "L"]
 _Format: TypeAlias = Literal["", "a3", "A3", "a4", "A4", "a5", "A5", "letter", "Letter", "legal", "Legal"]
 _FontStyle: TypeAlias = Literal["", "B", "I", "BI"]
-_FontStyles: TypeAlias = Literal["", "B", "I", "U", "BU", "UB", "BI", "IB", "IU", "UI", "BIU", "BUI", "IBU", "IUB", "UBI", "UIB"]
+_FontStyles: TypeAlias = Literal[
+    "",
+    "B",
+    "I",
+    "U",
+    "S",
+    "BU",
+    "UB",
+    "BI",
+    "IB",
+    "IU",
+    "UI",
+    "BS",
+    "SB",
+    "IS",
+    "SI",
+    "BIU",
+    "BUI",
+    "IBU",
+    "IUB",
+    "UBI",
+    "UIB",
+    "BIS",
+    "BSI",
+    "IBS",
+    "ISB",
+    "SBI",
+    "SIB",
+]
 
 FPDF_VERSION: Final[str]
 PAGE_FORMATS: dict[_Format, tuple[float, float]]
@@ -89,6 +118,7 @@ class ToCPlaceholder(NamedTuple):
     y: int
     page_orientation: str
     pages: int = 1
+    reset_page_indices: bool = True
 
 def get_page_format(format: _Format | tuple[float, float], k: float | None = None) -> tuple[float, float]:
     """
@@ -117,6 +147,7 @@ class FPDF(GraphicsStateMixin):
     """PDF Generation class"""
     MARKDOWN_BOLD_MARKER: ClassVar[str]
     MARKDOWN_ITALICS_MARKER: ClassVar[str]
+    MARKDOWN_STRIKETHROUGH_MARKER: ClassVar[str]
     MARKDOWN_UNDERLINE_MARKER: ClassVar[str]
     MARKDOWN_ESCAPE_CHARACTER: ClassVar[str]
     MARKDOWN_LINK_REGEX: ClassVar[Pattern[str]]
@@ -168,7 +199,6 @@ class FPDF(GraphicsStateMixin):
     compress: bool
     pdf_version: str
     creation_date: datetime.datetime
-    graphics_style_names_per_page_number: dict[int, set[str]]
 
     buffer: bytearray | None
 
@@ -261,6 +291,19 @@ class FPDF(GraphicsStateMixin):
     def is_ttf_font(self) -> bool: ...
     @property
     def page_mode(self) -> PageMode: ...
+    @page_mode.setter
+    def page_mode(self, page_mode: PageMode) -> None: ...
+    @property
+    def output_intents(self): ...
+    def add_output_intent(
+        self,
+        subtype: OutputIntentSubType,
+        output_condition_identifier: str | None = None,
+        output_condition: str | None = None,
+        registry_name: str | None = None,
+        dest_output_profile: PDFICCProfile | None = None,
+        info: str | None = None,
+    ) -> None: ...
     @property
     def epw(self) -> float:
         """Effective page width: the page width minus its horizontal margins."""
@@ -985,150 +1028,22 @@ class FPDF(GraphicsStateMixin):
         point_list: Sequence[tuple[int, int]],
         closed: bool = False,
         style: RenderStyle | Literal["D", "F", "DF", "FD"] | None = None,
-    ) -> None:
-        """
-        Outputs a quadratic or cubic Bézier curve, defined by three or four coordinates.
-
-        Args:
-            point_list (list of tuples): List of Abscissa and Ordinate of
-                                        segments that should be drawn. Should be
-                                        three or four tuples. The first and last
-                                        points are the start and end point. The
-                                        middle point(s) are the control point(s).
-            closed (bool): True to draw the curve as a closed path, False (default)
-                                        for it to be drawn as an open path.
-            style (fpdf.enums.RenderStyle, str): Optional style of rendering. Allowed values are:
-            * `D` or None: draw border. This is the default value.
-            * `F`: fill
-            * `DF` or `FD`: draw and fill
-        """
-        ...
+    ) -> None: ...
+    def use_pattern(self, shading) -> _GeneratorContextManager[None]: ...
     def add_font(
         self,
         family: str | None = None,
         style: _FontStyle = "",
         fname: str | PurePath | None = None,
         uni: bool | Literal["DEPRECATED"] = "DEPRECATED",
-    ) -> None:
-        """
-        Imports a TrueType or OpenType font and makes it available
-        for later calls to the `FPDF.set_font()` method.
-
-        You will find more information on the "Unicode" documentation page.
-
-        Args:
-            family (str): optional name of the font family. Used as a reference for `FPDF.set_font()`.
-                If not provided, use the base name of the `fname` font path, without extension.
-            style (str): font style. "" for regular, include 'B' for bold, and/or 'I' for italic.
-            fname (str): font file name. You can specify a relative or full path.
-                If the file is not found, it will be searched in `FPDF_FONT_DIR`.
-            uni (bool): [**DEPRECATED since 2.5.1**] unused
-        """
-        ...
-    def set_font(self, family: str | None = None, style: _FontStyles = "", size: int = 0) -> None:
-        """
-        Sets the font used to print character strings.
-        It is mandatory to call this method at least once before printing text.
-
-        Default encoding is not specified, but all text writing methods accept only
-        unicode for external fonts and one byte encoding for standard.
-
-        Standard fonts use `Latin-1` encoding by default, but Windows
-        encoding `cp1252` (Western Europe) can be used with
-        `self.core_fonts_encoding = encoding`.
-
-        The font specified is retained from page to page.
-        The method can be called before the first page is created.
-
-        Args:
-            family (str): name of a font added with `FPDF.add_font`,
-                or name of one of the 14 standard "PostScript" fonts:
-                Courier (fixed-width), Helvetica (sans serif), Times (serif),
-                Symbol (symbolic) or ZapfDingbats (symbolic)
-                If an empty string is provided, the current family is retained.
-            style (str): empty string (by default) or a combination
-                of one or several letters among B (bold), I (italic) and U (underline).
-                Bold and italic styles do not apply to Symbol and ZapfDingbats fonts.
-            size (float): in points. The default value is the current size.
-        """
-        ...
-    def set_font_size(self, size: float) -> None:
-        """
-        Configure the font size in points
-
-        Args:
-            size (float): font size in points
-        """
-        ...
-    def set_char_spacing(self, spacing: float) -> None:
-        """
-        Sets horizontal character spacing.
-        A positive value increases the space between characters, a negative value
-        reduces it (which may result in glyph overlap).
-        By default, no spacing is set (which is equivalent to a value of 0).
-
-        Args:
-            spacing (float): horizontal spacing in document units
-        """
-        ...
-    def set_stretching(self, stretching: float) -> None:
-        """
-        Sets horizontal font stretching.
-        By default, no stretching is set (which is equivalent to a value of 100).
-
-        Args:
-            stretching (float): horizontal stretching (scaling) in percents.
-        """
-        ...
-    def set_fallback_fonts(self, fallback_fonts: Iterable[str], exact_match: bool = True) -> None:
-        """
-        Allows you to specify a list of fonts to be used if any character is not available on the font currently set.
-        Detailed documentation: https://py-pdf.github.io/fpdf2/Unicode.html#fallback-fonts
-
-        Args:
-            fallback_fonts: sequence of fallback font IDs
-            exact_match (bool): when a glyph cannot be rendered uing the current font,
-                fpdf2 will look for a fallback font matching the current character emphasis (bold/italics).
-                If it does not find such matching font, and `exact_match` is True, no fallback font will be used.
-                If it does not find such matching font, and `exact_match` is False, a fallback font will still be used.
-                To get even more control over this logic, you can also override `FPDF.get_fallback_font()`
-        """
-        ...
-    def add_link(self, y: float = 0, x: float = 0, page: int = -1, zoom: float | Literal["null"] = "null") -> int:
-        """
-        Creates a new internal link and returns its identifier.
-        An internal link is a clickable area which directs to another place within the document.
-
-        The identifier can then be passed to the `FPDF.cell()`, `FPDF.write()`, `FPDF.image()`
-        or `FPDF.link()` methods.
-
-        Args:
-            y (float): optional ordinate of target position.
-                The default value is 0 (top of page).
-            x (float): optional abscissa of target position.
-                The default value is 0 (top of page).
-            page (int): optional number of target page.
-                -1 indicates the current page, which is the default value.
-            zoom (float): optional new zoom level after following the link.
-                Currently ignored by Sumatra PDF Reader, but observed by Adobe Acrobat reader.
-        """
-        ...
-    def set_link(self, link, y: float = 0, x: float = 0, page: int = -1, zoom: float | Literal["null"] = "null") -> None:
-        """
-        Defines the page and position a link points to.
-
-        Args:
-            link (int): a link identifier returned by `FPDF.add_link()`.
-            y (float): optional ordinate of target position.
-                The default value is 0 (top of page).
-            x (float): optional abscissa of target position.
-                The default value is 0 (top of page).
-            page (int): optional number of target page.
-                -1 indicates the current page, which is the default value.
-            zoom (float): optional new zoom level after following the link.
-                Currently ignored by Sumatra PDF Reader, but observed by Adobe Acrobat reader.
-        """
-        ...
+    ) -> None: ...
+    def set_font(self, family: str | None = None, style: _FontStyles | TextEmphasis = "", size: int = 0) -> None: ...
+    def set_font_size(self, size: float) -> None: ...
+    def set_char_spacing(self, spacing: float) -> None: ...
+    def set_stretching(self, stretching: float) -> None: ...
+    def set_fallback_fonts(self, fallback_fonts: Iterable[str], exact_match: bool = True) -> None: ...
+    def add_link(self, y: float = 0, x: float = 0, page: int = -1, zoom: float | Literal["null"] = "null") -> int: ...
+    def set_link(self, link, y: float = 0, x: float = 0, page: int = -1, zoom: float | Literal["null"] = "null") -> None: ...
     def link(
         self,
         x: float,
@@ -2024,25 +1939,12 @@ class FPDF(GraphicsStateMixin):
         """
         ...
     def insert_toc_placeholder(
-        self, render_toc_function: Callable[[FPDF, list[OutlineSection]], object], pages: int = 1, allow_extra_pages: bool = False
-    ) -> None:
-        """
-        Configure Table Of Contents rendering at the end of the document generation,
-        and reserve some vertical space right now in order to insert it.
-
-        Args:
-            render_toc_function (function): a function that will be invoked to render the ToC.
-                This function will receive 2 parameters: `pdf`, an instance of FPDF, and `outline`,
-                a list of `fpdf.outline.OutlineSection`.
-            pages (int): the number of pages that the Table of Contents will span,
-                including the current one that will. As many page breaks as the value of this argument
-                will occur immediately after calling this method.
-            allow_extra_pages (bool): If set to `True`, allows for an unlimited number of
-                extra pages in the ToC, which may cause discrepancies with pre-rendered
-                page numbers. For consistent numbering, using page labels to create a
-                separate numbering style for the ToC is recommended.
-        """
-        ...
+        self,
+        render_toc_function: Callable[[FPDF, list[OutlineSection]], object],
+        pages: int = 1,
+        allow_extra_pages: bool = False,
+        reset_page_indices: bool = True,
+    ) -> None: ...
     def set_section_title_styles(
         self,
         level0: TextStyle,

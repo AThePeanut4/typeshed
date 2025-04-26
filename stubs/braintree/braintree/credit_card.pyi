@@ -1,11 +1,15 @@
 from _typeshed import Incomplete
+from datetime import date, datetime
 from enum import Enum
-from typing import Final
+from typing import Final, Literal
 
 from braintree.address import Address
 from braintree.credit_card_verification import CreditCardVerification
+from braintree.error_result import ErrorResult
 from braintree.resource import Resource
+from braintree.resource_collection import ResourceCollection
 from braintree.subscription import Subscription
+from braintree.successful_result import SuccessfulResult
 
 class CreditCard(Resource):
     """
@@ -135,82 +139,33 @@ class CreditCard(Resource):
     ProductId: type[CardTypeIndicator]
     PrepaidReloadable: type[CardTypeIndicator]
     @staticmethod
-    def create(params: Incomplete | None = None):
-        """
-        Create a CreditCard.
-
-        A number and expiration_date are required. ::
-
-            result = braintree.CreditCard.create({
-                "number": "4111111111111111",
-                "expiration_date": "12/2012"
-            })
-        """
-        ...
+    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
     @staticmethod
-    def update(credit_card_token, params: Incomplete | None = None):
-        """
-        Update an existing CreditCard
-
-        By credit_card_id.  The params are similar to create::
-
-            result = braintree.CreditCard.update("my_credit_card_id", {
-                "cardholder_name": "John Doe"
-            })
-        """
-        ...
+    def update(credit_card_token: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
     @staticmethod
-    def delete(credit_card_token):
-        """
-        Delete a credit card
-
-        Given a credit_card_id::
-
-            result = braintree.CreditCard.delete("my_credit_card_id")
-        """
-        ...
+    def delete(credit_card_token: str) -> SuccessfulResult: ...
     @staticmethod
-    def expired():
-        """Return a collection of expired credit cards. """
-        ...
+    def expired() -> ResourceCollection: ...
     @staticmethod
-    def expiring_between(start_date, end_date):
-        """Return a collection of credit cards expiring between the given dates. """
-        ...
+    def expiring_between(start_date: date | datetime, end_date: date | datetime) -> ResourceCollection: ...
     @staticmethod
-    def find(credit_card_token):
-        """
-        Find a credit card, given a credit_card_id. This does not return
-        a result object. This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>` if the provided
-        credit_card_id is not found. ::
-
-            credit_card = braintree.CreditCard.find("my_credit_card_token")
-        """
-        ...
+    def find(credit_card_token: str) -> CreditCard: ...
     @staticmethod
-    def from_nonce(nonce):
-        """
-        Convert a payment method nonce into a CreditCard. This does not return
-        a result object. This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>` if the provided
-        credit_card_id is not found. ::
-
-            credit_card = braintree.CreditCard.from_nonce("my_payment_method_nonce")
-        """
-        ...
+    def from_nonce(nonce: str) -> CreditCard: ...
     @staticmethod
-    def create_signature(): ...
+    def create_signature() -> list[str | dict[str, list[str]] | dict[str, list[str | dict[str, list[str]]]]]: ...
     @staticmethod
-    def update_signature(): ...
+    def update_signature() -> list[str | dict[str, list[str]] | dict[str, list[str | dict[str, list[str]]]]]: ...
     @staticmethod
-    def signature(type): ...
+    def signature(
+        type: Literal["create", "update", "update_via_customer"],
+    ) -> list[str | dict[str, list[str]] | dict[str, list[str | dict[str, list[str]]]]]: ...
     is_expired = expired
     billing_address: Address | None
     subscriptions: list[Subscription]
     verification: CreditCardVerification
-    def __init__(self, gateway, attributes): ...
+    def __init__(self, gateway, attributes) -> None: ...
     @property
-    def expiration_date(self): ...
+    def expiration_date(self) -> str | None: ...
     @property
-    def masked_number(self):
-        """Returns the masked number of the CreditCard."""
-        ...
+    def masked_number(self) -> str: ...

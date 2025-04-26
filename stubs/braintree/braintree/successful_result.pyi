@@ -1,3 +1,5 @@
+from typing import Literal
+
 from braintree.attribute_getter import AttributeGetter
 
 class SuccessfulResult(AttributeGetter):
@@ -11,6 +13,4 @@ class SuccessfulResult(AttributeGetter):
             print [error.code for error in result.errors.all]
     """
     @property
-    def is_success(self):
-        """Returns whether the result from the gateway is a successful response. """
-        ...
+    def is_success(self) -> Literal[True]: ...
