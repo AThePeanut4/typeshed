@@ -13,4 +13,6 @@ class SuccessfulResult(AttributeGetter):
             print [error.code for error in result.errors.all]
     """
     @property
-    def is_success(self) -> Literal[True]: ...
+    def is_success(self) -> Literal[True]:
+        """Returns whether the result from the gateway is a successful response. """
+        ...

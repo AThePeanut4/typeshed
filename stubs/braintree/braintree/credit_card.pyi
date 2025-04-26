@@ -139,19 +139,68 @@ class CreditCard(Resource):
     ProductId: type[CardTypeIndicator]
     PrepaidReloadable: type[CardTypeIndicator]
     @staticmethod
-    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
+    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None:
+        """
+        Create a CreditCard.
+
+        A number and expiration_date are required. ::
+
+            result = braintree.CreditCard.create({
+                "number": "4111111111111111",
+                "expiration_date": "12/2012"
+            })
+        """
+        ...
     @staticmethod
-    def update(credit_card_token: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
+    def update(credit_card_token: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None:
+        """
+        Update an existing CreditCard
+
+        By credit_card_id.  The params are similar to create::
+
+            result = braintree.CreditCard.update("my_credit_card_id", {
+                "cardholder_name": "John Doe"
+            })
+        """
+        ...
     @staticmethod
-    def delete(credit_card_token: str) -> SuccessfulResult: ...
+    def delete(credit_card_token: str) -> SuccessfulResult:
+        """
+        Delete a credit card
+
+        Given a credit_card_id::
+
+            result = braintree.CreditCard.delete("my_credit_card_id")
+        """
+        ...
     @staticmethod
-    def expired() -> ResourceCollection: ...
+    def expired() -> ResourceCollection:
+        """Return a collection of expired credit cards. """
+        ...
     @staticmethod
-    def expiring_between(start_date: date | datetime, end_date: date | datetime) -> ResourceCollection: ...
+    def expiring_between(start_date: date | datetime, end_date: date | datetime) -> ResourceCollection:
+        """Return a collection of credit cards expiring between the given dates. """
+        ...
     @staticmethod
-    def find(credit_card_token: str) -> CreditCard: ...
+    def find(credit_card_token: str) -> CreditCard:
+        """
+        Find a credit card, given a credit_card_id. This does not return
+        a result object. This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>` if the provided
+        credit_card_id is not found. ::
+
+            credit_card = braintree.CreditCard.find("my_credit_card_token")
+        """
+        ...
     @staticmethod
-    def from_nonce(nonce: str) -> CreditCard: ...
+    def from_nonce(nonce: str) -> CreditCard:
+        """
+        Convert a payment method nonce into a CreditCard. This does not return
+        a result object. This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>` if the provided
+        credit_card_id is not found. ::
+
+            credit_card = braintree.CreditCard.from_nonce("my_payment_method_nonce")
+        """
+        ...
     @staticmethod
     def create_signature() -> list[str | dict[str, list[str]] | dict[str, list[str | dict[str, list[str]]]]]: ...
     @staticmethod
@@ -168,4 +217,6 @@ class CreditCard(Resource):
     @property
     def expiration_date(self) -> str | None: ...
     @property
-    def masked_number(self) -> str: ...
+    def masked_number(self) -> str:
+        """Returns the masked number of the CreditCard."""
+        ...

@@ -111,11 +111,6 @@ class Name(str):
     def serialize(self) -> str: ...
 
 class PDFObject:
-    """
-    Main features of this class:
-    * delay ID assignement
-    * implement serializing
-    """
     @property
     def id(self) -> int: ...
     @id.setter

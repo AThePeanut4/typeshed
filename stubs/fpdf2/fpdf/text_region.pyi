@@ -144,7 +144,24 @@ class ParagraphCollectorMixin:
         bullet_r_margin: float | None = None,
         wrapmode: WrapMode | None = None,
         first_line_indent: float = 0,
-    ) -> Paragraph: ...
+    ) -> Paragraph:
+        """
+        Args:
+            text_align (Align, optional): the horizontal alignment of the paragraph.
+            line_height (float, optional): factor by which the line spacing will be different from the font height. (Default: by region)
+            top_margin (float, optional):  how much spacing is added above the paragraph.
+                No spacing will be added at the top of the paragraph if the current y position is at (or above) the
+                top margin of the page. (Default: 0.0)
+            bottom_margin (float, optional): those two values determine how much spacing is added below the paragraph.
+                No spacing will be added at the bottom if it would result in overstepping the bottom margin of the page. (Default: 0.0)
+            indent (float, optional): determines the indentation of the paragraph. (Default: 0.0)
+            bullet_string (str, optional): determines the fragments and text lines of the bullet. (Default: "")
+            bullet_r_margin (float, optional): determines the spacing between the bullet and the bulleted line
+            skip_leading_spaces (float, optional): removes all space characters at the beginning of each line. (Default: False)
+            wrapmode (WrapMode): determines the way text wrapping is handled. (Default: None)
+            first_line_indent (float, optional): left spacing before first line of text in paragraph.
+        """
+        ...
     def end_paragraph(self) -> None: ...
     def image(
         self,
@@ -186,6 +203,8 @@ class TextColumns(TextRegion, TextColumnarMixin):
     balance: Incomplete
     def __init__(self, pdf, *args, ncols: int = 1, gutter: float = 10, balance: bool = False, **kwargs) -> None: ...
     def __enter__(self) -> Self: ...
-    def new_column(self) -> None: ...
+    def new_column(self) -> None:
+        """End the current column and continue at the top of the next one."""
+        ...
     def render(self) -> None: ...
     def current_x_extents(self, y, height): ...

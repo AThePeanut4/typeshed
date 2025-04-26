@@ -101,7 +101,12 @@ class TextStyle(FontFace):
         t_margin: int | None = None,
         l_margin: int | None = None,
         b_margin: int | None = None,
-    ) -> TextStyle: ...
+    ) -> TextStyle:
+        """
+        Create a new TextStyle instance, with new values for some attributes.
+        Same as `dataclasses.replace()`
+        """
+        ...
 
 @deprecated("fpdf.TitleStyle is deprecated since 2.7.10. It has been replaced by fpdf.TextStyle.")
 class TitleStyle(TextStyle): ...
@@ -146,10 +151,23 @@ class TTFFont:
     def __init__(self, fpdf, font_file_path, fontkey: str, style: int) -> None: ...
     def close(self) -> None: ...
     def get_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
-    def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
-    def perform_harfbuzz_shaping(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_params):
+        """
+        When texts are shaped, the length of a string is not always the sum of all individual character widths
+        This method will invoke harfbuzz to perform the text shaping and return the sum of "x_advance"
+        and "x_offset" for each glyph. This method works for "left to right" or "right to left" texts.
+        """
+        ...
+    def perform_harfbuzz_shaping(self, text: str, font_size_pt: int, text_shaping_params):
+        """This method invokes Harfbuzz to perform text shaping of the input string"""
+        ...
     def encode_text(self, text: str) -> str: ...
-    def shape_text(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def shape_text(self, text: str, font_size_pt: int, text_shaping_params):
+        """
+        This method will invoke harfbuzz for text shaping, include the mapping code
+        of the glyphs on the subset and map input characters to the cluster codes
+        """
+        ...
 
 class PDFFontDescriptor(PDFObject):
     type: Incomplete
@@ -182,7 +200,7 @@ class SubsetMap:
     Holds a mapping of used characters and their position in the font's subset
 
     Characters that must be mapped on their actual unicode must be part of the
-    `identities` list during object instanciation. These non-negative values should
+    `identities` list during object instantiation. These non-negative values should
     only appear once in the list. `pick()` can be used to get the characters
     corresponding position in the subset. If it's not yet part of the object, a new
     position is acquired automatically. This implementation always tries to return

@@ -19,6 +19,7 @@ from .syntax import Destination, PDFObject, PDFString
 
 @dataclass
 class OutlineSection:
+    """OutlineSection(name, level, page_number, dest, struct_elem=None)"""
     name: str
     level: int
     page_number: int
@@ -79,5 +80,5 @@ class TableOfContents:
     def get_text_style(self, pdf: FPDF, item: OutlineSection) -> TextStyle: ...
     def render_toc_item(self, pdf: FPDF, item: OutlineSection) -> None: ...
     def render_toc(self, pdf: FPDF, outline: Iterable[OutlineSection]) -> None:
-        """This method can be overriden by subclasses to customize the Table of Contents style."""
+        """This method can be overridden by subclasses to customize the Table of Contents style."""
         ...

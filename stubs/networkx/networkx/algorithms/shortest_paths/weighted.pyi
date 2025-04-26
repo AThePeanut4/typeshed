@@ -1236,7 +1236,65 @@ def single_source_bellman_ford_path(
 @_dispatchable
 def single_source_bellman_ford_path_length(
     G: Graph[_Node], source: _Node, weight: str | Callable[[Any, Any, SupportsGetItem[str, Any]], float | None] | None = "weight"
-): ...
+):
+    """
+    Compute the shortest path length between source and all other
+    reachable nodes for a weighted graph.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    source : node label
+        Starting node for path
+
+    weight : string or function (default="weight")
+        If this is a string, then edge weights will be accessed via the
+        edge attribute with this key (that is, the weight of the edge
+        joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+        such edge attribute exists, the weight of the edge is assumed to
+        be one.
+
+        If this is a function, the weight of an edge is the value
+        returned by the function. The function must accept exactly three
+        positional arguments: the two endpoints of an edge and the
+        dictionary of edge attributes for that edge. The function must
+        return a number.
+
+    Returns
+    -------
+    length : dictionary
+        Dictionary of shortest path length keyed by target
+
+    Raises
+    ------
+    NodeNotFound
+        If `source` is not in `G`.
+
+    Examples
+    --------
+    >>> G = nx.path_graph(5)
+    >>> length = nx.single_source_bellman_ford_path_length(G, 0)
+    >>> length[4]
+    4
+    >>> for node in [0, 1, 2, 3, 4]:
+    ...     print(f"{node}: {length[node]}")
+    0: 0
+    1: 1
+    2: 2
+    3: 3
+    4: 4
+
+    Notes
+    -----
+    Edge weight attributes must be numerical.
+    Distances are calculated as sums of weighted edges traversed.
+
+    See Also
+    --------
+    single_source_dijkstra, single_source_bellman_ford
+    """
+    ...
 @_dispatchable
 def single_source_bellman_ford(
     G: Graph[_Node],
@@ -1424,7 +1482,87 @@ def all_pairs_bellman_ford_path(
 @_dispatchable
 def goldberg_radzik(
     G: Graph[_Node], source: _Node, weight: str | Callable[[Any, Any, SupportsGetItem[str, Any]], float | None] | None = "weight"
-): ...
+):
+    """
+    Compute shortest path lengths and predecessors on shortest paths
+    in weighted graphs.
+
+    The algorithm has a running time of $O(mn)$ where $n$ is the number of
+    nodes and $m$ is the number of edges.  It is slower than Dijkstra but
+    can handle negative edge weights.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        The algorithm works for all types of graphs, including directed
+        graphs and multigraphs.
+
+    source: node label
+        Starting node for path
+
+    weight : string or function
+        If this is a string, then edge weights will be accessed via the
+        edge attribute with this key (that is, the weight of the edge
+        joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+        such edge attribute exists, the weight of the edge is assumed to
+        be one.
+
+        If this is a function, the weight of an edge is the value
+        returned by the function. The function must accept exactly three
+        positional arguments: the two endpoints of an edge and the
+        dictionary of edge attributes for that edge. The function must
+        return a number.
+
+    Returns
+    -------
+    pred, dist : dictionaries
+        Returns two dictionaries keyed by node to predecessor in the
+        path and to the distance from the source respectively.
+
+    Raises
+    ------
+    NodeNotFound
+        If `source` is not in `G`.
+
+    NetworkXUnbounded
+        If the (di)graph contains a negative (di)cycle, the
+        algorithm raises an exception to indicate the presence of the
+        negative (di)cycle.  Note: any negative weight edge in an
+        undirected graph is a negative cycle.
+
+        As of NetworkX v3.2, a zero weight cycle is no longer
+        incorrectly reported as a negative weight cycle.
+
+
+    Examples
+    --------
+    >>> G = nx.path_graph(5, create_using=nx.DiGraph())
+    >>> pred, dist = nx.goldberg_radzik(G, 0)
+    >>> sorted(pred.items())
+    [(0, None), (1, 0), (2, 1), (3, 2), (4, 3)]
+    >>> sorted(dist.items())
+    [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4)]
+
+    >>> G = nx.cycle_graph(5, create_using=nx.DiGraph())
+    >>> G[1][2]["weight"] = -7
+    >>> nx.goldberg_radzik(G, 0)
+    Traceback (most recent call last):
+        ...
+    networkx.exception.NetworkXUnbounded: Negative cycle detected.
+
+    Notes
+    -----
+    Edge weight attributes must be numerical.
+    Distances are calculated as sums of weighted edges traversed.
+
+    The dictionaries returned only have keys for nodes reachable from
+    the source.
+
+    In the case where the (di)graph is not connected, if a component
+    not containing the source contains a negative (di)cycle, it
+    will not be detected.
+    """
+    ...
 @_dispatchable
 def negative_edge_cycle(
     G: Graph[_Node],
@@ -1484,7 +1622,63 @@ def negative_edge_cycle(
 @_dispatchable
 def find_negative_cycle(
     G: Graph[_Node], source: _Node, weight: str | Callable[[Any, Any, SupportsGetItem[str, Any]], float | None] | None = "weight"
-): ...
+):
+    """
+    Returns a cycle with negative total weight if it exists.
+
+    Bellman-Ford is used to find shortest_paths. That algorithm
+    stops if there exists a negative cycle. This algorithm
+    picks up from there and returns the found negative cycle.
+
+    The cycle consists of a list of nodes in the cycle order. The last
+    node equals the first to make it a cycle.
+    You can look up the edge weights in the original graph. In the case
+    of multigraphs the relevant edge is the minimal weight edge between
+    the nodes in the 2-tuple.
+
+    If the graph has no negative cycle, a NetworkXError is raised.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    source: node label
+        The search for the negative cycle will start from this node.
+
+    weight : string or function
+        If this is a string, then edge weights will be accessed via the
+        edge attribute with this key (that is, the weight of the edge
+        joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+        such edge attribute exists, the weight of the edge is assumed to
+        be one.
+
+        If this is a function, the weight of an edge is the value
+        returned by the function. The function must accept exactly three
+        positional arguments: the two endpoints of an edge and the
+        dictionary of edge attributes for that edge. The function must
+        return a number.
+
+    Examples
+    --------
+    >>> G = nx.DiGraph()
+    >>> G.add_weighted_edges_from(
+    ...     [(0, 1, 2), (1, 2, 2), (2, 0, 1), (1, 4, 2), (4, 0, -5)]
+    ... )
+    >>> nx.find_negative_cycle(G, 0)
+    [4, 0, 1, 4]
+
+    Returns
+    -------
+    cycle : list
+        A list of nodes in the order of the cycle found. The last node
+        equals the first to indicate a cycle.
+
+    Raises
+    ------
+    NetworkXError
+        If no negative cycle is found.
+    """
+    ...
 @_dispatchable
 def bidirectional_dijkstra(
     G: Graph[_Node],

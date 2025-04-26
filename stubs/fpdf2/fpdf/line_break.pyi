@@ -129,7 +129,7 @@ class TotalPagesSubstitutionFragment(Fragment):
         ...
 
 class TextLine(NamedTuple):
-    """TextLine(fragments, text_width, number_of_spaces, align, height, max_width, trailing_nl, trailing_form_feed)"""
+    """TextLine(fragments, text_width, number_of_spaces, align, height, max_width, trailing_nl, trailing_form_feed, indent)"""
     fragments: tuple[Fragment, ...]
     text_width: float
     number_of_spaces: int
@@ -172,7 +172,14 @@ class CurrentLine:
     number_of_spaces: int
     space_break_hint: Incomplete
     hyphen_break_hint: Incomplete
-    def __init__(self, max_width: float, print_sh: bool = False, indent: float = 0) -> None: ...
+    def __init__(self, max_width: float, print_sh: bool = False, indent: float = 0) -> None:
+        """
+        Per-line text fragment management for use by MultiLineBreak.
+            Args:
+                print_sh (bool): If true, a soft-hyphen will be rendered
+                    normally, instead of triggering a line break. Default: False
+        """
+        ...
     @property
     def width(self) -> float: ...
     def add_character(
@@ -214,5 +221,29 @@ class MultiLineBreak:
         line_height: float = 1.0,
         skip_leading_spaces: bool = False,
         first_line_indent: float = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Accept text as Fragments, to be split into individual lines depending
+        on line width and text height.
+        Args:
+            fragments: A sequence of Fragment()s containing text.
+            max_width: Either a fixed width as float or a callback function
+                get_width(height). If a function, it gets called with the largest
+                height encountered on the current line, and must return the
+                applicable width for the line with the given height at the current
+                vertical position. The height is relevant in those cases where the
+                lateral boundaries of the enclosing TextRegion() are not vertical.
+            margins (sequence of floats): The extra clearance that may apply at the beginning
+                and/or end of a line (usually either FPDF.c_margin or 0.0 for each side).
+            align (Align): The horizontal alignment of the current text block.
+            print_sh (bool): If True, a soft-hyphen will be rendered
+                normally, instead of triggering a line break. Default: False
+            wrapmode (WrapMode): Selects word or character based wrapping.
+            line_height (float, optional): A multiplier relative to the font
+                size changing the vertical space occupied by a line of text. Default 1.0.
+            skip_leading_spaces (bool, optional): On each line, any space characters
+                at the beginning will be skipped. Default value: False.
+            first_line_indent (float, optional): left spacing before first line of text in paragraph.
+        """
+        ...
     def get_line(self) -> TextLine: ...

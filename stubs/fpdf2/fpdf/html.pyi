@@ -116,7 +116,7 @@ class HTML2FPDF(HTMLParser):
                 font to use for `<pre>` & `<code>` blocks - Set `tag_styles` instead
             warn_on_tags_not_matching (bool): control warnings production for unmatched HTML tags. Defaults to `True`.
             tag_indents (dict): [**DEPRECATED since v2.8.0**]
-                mapping of HTML tag names to numeric values representing their horizontal left identation. - Set `tag_styles` instead
+                mapping of HTML tag names to numeric values representing their horizontal left indentation. - Set `tag_styles` instead
             tag_styles (dict[str, fpdf.fonts.TextStyle]): mapping of HTML tag names to `fpdf.TextStyle` or `fpdf.FontFace` instances
             font_family (str): optional font family. Default to Times.
             render_title_tag (bool): Render the document <title> at the beginning of the PDF. Default to False.
@@ -126,10 +126,10 @@ class HTML2FPDF(HTMLParser):
     def handle_starttag(self, tag, attrs) -> None: ...
     def handle_endtag(self, tag) -> None: ...
     def put_link(self, text) -> None:
-        """Put a hyperlink"""
+        """Insert a hyperlink"""
         ...
     def render_toc(self, pdf, outline) -> None:
-        """This method can be overriden by subclasses to customize the Table of Contents style."""
+        """This method can be overridden by subclasses to customize the Table of Contents style."""
         ...
     def error(self, message: str) -> None: ...
 

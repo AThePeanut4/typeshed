@@ -452,6 +452,7 @@ class TextDirection(CoerciveEnum):
     BTT = "BTT"
 
 class OutputIntentSubType(CoerciveEnum):
+    """Definition for Output Intent Subtypes"""
     PDFX = "GTS_PDFX"
     PDFA = "GTS_PDFA1"
     ISOPDF = "ISO_PDFE1"
@@ -488,6 +489,7 @@ class PageOrientation(CoerciveEnum):
     def coerce(cls, value: Self | str) -> Self: ...  # type: ignore[override]
 
 class PDFResourceType(Enum):
+    """An enumeration."""
     EXT_G_STATE = "ExtGState"
     COLOR_SPACE = "ColorSpace"
     PATTERN = "Pattern"

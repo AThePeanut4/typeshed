@@ -1,3 +1,11 @@
+"""
+Mixin class for managing a stack of graphics state variables.
+
+The contents of this module are internal to fpdf2, and not part of the public API.
+They may change at any time without prior warning or any deprecation period,
+in non-backward-compatible ways.
+"""
+
 from typing import Any, ClassVar, Final, Literal, TypedDict, type_check_only
 
 from .drawing import DeviceGray, DeviceRGB
@@ -224,6 +232,11 @@ class GraphicsStateMixin:
     def text_shaping(self) -> _TextShaping | None: ...
     @text_shaping.setter
     def text_shaping(self, v: _TextShaping | None) -> None: ...
-    def font_face(self) -> FontFace: ...
+    def font_face(self) -> FontFace:
+        """
+        Return a `fpdf.fonts.FontFace` instance
+        representing a subset of properties of this GraphicsState.
+        """
+        ...
 
 __pdoc__: Final[dict[str, bool]]

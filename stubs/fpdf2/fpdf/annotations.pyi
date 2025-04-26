@@ -57,7 +57,7 @@ class PDFAnnotation(AnnotationMixin, PDFObject):
     ...
 
 class AnnotationDict(AnnotationMixin):
-    """A PDF annotation that get serialized as an inline <<dictionnary>>"""
+    """A PDF annotation that get serialized as an inline <<dictionary>>"""
     def serialize(self) -> str: ...
 
 class PDFEmbeddedFile(PDFContentStream):

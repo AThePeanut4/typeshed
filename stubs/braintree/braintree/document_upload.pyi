@@ -24,7 +24,20 @@ class DocumentUpload(Resource):
         EvidenceDocument: Final = "evidence_document"
 
     @staticmethod
-    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult: ...
+    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult:
+        """
+        Create a DocumentUpload
+
+        File and Kind are required:
+
+            result = braintree.DocumentUpload.create(
+                {
+                    "kind": braintree.DocumentUpload.Kind.EvidenceDocument,
+                    "file": open("path/to/file", "rb"),
+                }
+            )
+        """
+        ...
     @staticmethod
     def create_signature() -> list[str]: ...
     def __init__(self, gateway, attributes) -> None: ...

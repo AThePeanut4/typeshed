@@ -68,17 +68,56 @@ class Customer(Resource):
     For more information on Customers, see https://developer.paypal.com/braintree/docs/reference/request/customer/create/python
     """
     @staticmethod
-    def all() -> ResourceCollection: ...
+    def all() -> ResourceCollection:
+        """Return a collection of all customers. """
+        ...
     @staticmethod
-    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
+    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None:
+        """
+        Create a Customer
+
+        No field is required::
+
+            result = braintree.Customer.create({
+                "company": "Some company",
+                "first_name": "John"
+            })
+        """
+        ...
     @staticmethod
-    def delete(customer_id: str) -> SuccessfulResult: ...
+    def delete(customer_id: str) -> SuccessfulResult:
+        """
+        Delete a customer
+
+        Given a customer_id::
+
+            result = braintree.Customer.delete("my_customer_id")
+        """
+        ...
     @staticmethod
-    def find(customer_id: str, association_filter_id: str | None = None) -> Customer: ...
+    def find(customer_id: str, association_filter_id: str | None = None) -> Customer:
+        """
+        Find an customer, given a customer_id.  This does not return a result
+        object.  This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>` if the provided customer_id
+        is not found. ::
+
+            customer = braintree.Customer.find("my_customer_id")
+        """
+        ...
     @staticmethod
     def search(*query) -> ResourceCollection: ...
     @staticmethod
-    def update(customer_id: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
+    def update(customer_id: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None:
+        """
+        Update an existing Customer
+
+        By customer_id. The params are similar to create::
+
+            result = braintree.Customer.update("my_customer_id", {
+                "last_name": "Smith"
+            })
+        """
+        ...
     @staticmethod
     def create_signature() -> (
         list[
