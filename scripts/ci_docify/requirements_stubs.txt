@@ -78,7 +78,7 @@ Flask-Cors==5.0.*
 lupa==2.4.*
 geopandas==1.0.1
 gevent==24.11.*
-fpdf2==2.8.2
+fpdf2==2.8.3
 click-default-group==1.2.*
 workalendar==17.0.*
 shapely==2.1.*
@@ -103,6 +103,7 @@ pytest-lazy-fixture==0.6.*
 peewee==3.17.9
 pynput~=1.8.1
 braintree==4.34.*
+grpcio==1.*
 pyserial[cp2110]==3.5.*
 python-dateutil==2.9.*
 python-http-client==3.3.7
