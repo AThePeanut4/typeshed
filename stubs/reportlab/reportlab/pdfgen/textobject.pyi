@@ -1,3 +1,11 @@
+"""
+PDFTextObject is an efficient way to add text to a Canvas. Do not
+instantiate directly, obtain one from the Canvas instead.
+
+Progress Reports:
+8.83, 2000-01-13, gmcm: created from pdfgen.py
+"""
+
 from _typeshed import Incomplete, Unused
 from collections.abc import Callable
 from typing import Final, Literal

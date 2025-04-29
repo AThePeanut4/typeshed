@@ -70,14 +70,23 @@ class LateFutureImport(Message):
     def __init__(self, filename: str, loc: ast.AST) -> None: ...
 
 class FutureFeatureNotDefined(Message):
+    """An undefined __future__ feature name was imported."""
     message_args: tuple[str]
     def __init__(self, filename: str, loc: ast.AST, name: str) -> None: ...
 
 class UnusedVariable(Message):
+    """
+    Indicates that a variable has been explicitly assigned to but not actually
+    used.
+    """
     message_args: tuple[str]
     def __init__(self, filename: str, loc: ast.AST, names: str) -> None: ...
 
 class UnusedAnnotation(Message):
+    """
+    Indicates that a variable has been explicitly annotated to but not actually
+    used.
+    """
     message_args: tuple[str]
     def __init__(self, filename: str, loc: ast.AST, names: str) -> None: ...
 

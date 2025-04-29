@@ -203,8 +203,41 @@ def comma_delimited_to_list(list_param: Iterable[_T]) -> Iterable[_T]:
     ...
 
 # the docstring states that this function returns a bool, but the code does not return anything
-def validate_pem_format(param_name: str, param_argument: str) -> None: ...
-def remove_nones(params: Mapping[_K, _V | None]) -> Mapping[_K, _V]: ...
+def validate_pem_format(param_name: str, param_argument: str) -> None:
+    """
+    Validate that an argument is a PEM-formatted public key or certificate
+
+    :param param_name: The name of the parameter being validate. Used in any resulting exception messages.
+    :type param_name: str | unicode
+    :param param_argument: The argument to validate
+    :type param_argument: str | unicode
+    :return: True if the argument is validate False otherwise
+    :rtype: bool
+    """
+    ...
+def remove_nones(params: Mapping[_K, _V | None]) -> Mapping[_K, _V]:
+    """
+    Removes None values from optional arguments in a parameter dictionary.
+
+    :param params: The dictionary of parameters to be filtered.
+    :type params: dict
+    :return: A filtered copy of the parameter dictionary.
+    :rtype: dict
+    """
+    ...
 def format_url(
     format_str: str, *args: object, **kwargs: object
-) -> str: ...  # values are passed to builtins.str, which takes an object type
+) -> str:
+    """
+    Creates a URL using the specified format after escaping the provided arguments.
+
+    :param format_str: The URL containing replacement fields.
+    :type format_str: str
+    :param kwargs: Positional replacement field values.
+    :type kwargs: list
+    :param kwargs: Named replacement field values.
+    :type kwargs: dict
+    :return: The formatted URL path with escaped replacement fields.
+    :rtype: str
+    """
+    ...

@@ -1,3 +1,20 @@
+"""
+This provides a database of font metric information and
+efines Font, Encoding and TypeFace classes aimed at end users.
+
+There are counterparts to some of these in pdfbase/pdfdoc.py, but
+the latter focus on constructing the right PDF objects.  These
+classes are declarative and focus on letting the user construct
+and query font objects.
+
+The module maintains a registry of font objects at run time.
+
+It is independent of the canvas or any particular context.  It keeps
+a registry of Font, TypeFace and Encoding objects.  Ideally these
+would be pre-loaded, but due to a nasty circularity problem we
+trap attempts to access them and do it on first access.
+"""
+
 from _typeshed import Incomplete, StrOrBytesPath
 from typing import Final
 
@@ -10,7 +27,16 @@ standardEncodings: Incomplete
 class FontError(Exception): ...
 class FontNotFoundError(Exception): ...
 
-def parseAFMFile(afmFileName: StrOrBytesPath) -> tuple[dict[Incomplete, Incomplete], list[Incomplete]]: ...
+def parseAFMFile(afmFileName: StrOrBytesPath) -> tuple[dict[Incomplete, Incomplete], list[Incomplete]]:
+    """
+    Quick and dirty - gives back a top-level dictionary
+    with top-level items, and a 'widths' key containing
+    a dictionary of glyph names and widths.  Just enough
+    needed for embedding.  A better parser would accept
+    options for what data you wwanted, and preserve the
+    order.
+    """
+    ...
 
 class TypeFace:
     name: Incomplete
@@ -89,7 +115,13 @@ class Font:
     shapable: bool
     def __init__(self, name, faceName, encName, substitutionFonts: Incomplete | None = None) -> None: ...
     def stringWidth(self, text: str | bytes, size: float, encoding: str = "utf8") -> float: ...
-    def addObjects(self, doc) -> None: ...
+    def addObjects(self, doc) -> None:
+        """
+        Makes and returns one or more PDF objects to be added
+        to the document.  The caller supplies the internal name
+        to be used (typically F1, F2... in sequence) 
+        """
+        ...
 
 PFB_MARKER: Final[str]
 PFB_ASCII: Final[str]
@@ -120,16 +152,40 @@ def registerFontFamily(
     italic: Incomplete | None = None,
     boldItalic: Incomplete | None = None,
 ) -> None: ...
-def registerFont(font) -> None: ...
-def getTypeFace(faceName): ...
-def getEncoding(encName): ...
-def findFontAndRegister(fontName: str) -> Font: ...
-def getFont(fontName: str) -> Font: ...
+def registerFont(font) -> None:
+    """Registers a font, including setting up info for accelerated stringWidth"""
+    ...
+def getTypeFace(faceName):
+    """Lazily construct known typefaces if not found"""
+    ...
+def getEncoding(encName):
+    """Lazily construct known encodings if not found"""
+    ...
+def findFontAndRegister(fontName: str) -> Font:
+    """search for and register a font given its name"""
+    ...
+def getFont(fontName: str) -> Font:
+    """
+    Lazily constructs known fonts if not found.
+
+    Names of form 'face-encoding' will be built if
+    face and encoding are known.  Also if the name is
+    just one of the standard 14, it will make up a font
+    in the default encoding.
+    """
+    ...
 def getAscentDescent(fontName: str, fontSize: float | None = None): ...
 def getAscent(fontName: str, fontSize: float | None = None): ...
 def getDescent(fontName: str, fontSize: float | None = None): ...
-def getRegisteredFontNames() -> list[Incomplete]: ...
-def stringWidth(text: str | bytes, fontName: str, fontSize: float, encoding: str = "utf8") -> float: ...
+def getRegisteredFontNames() -> list[Incomplete]:
+    """Returns what's in there"""
+    ...
+def stringWidth(text: str | bytes, fontName: str, fontSize: float, encoding: str = "utf8") -> float:
+    """
+    Compute width of string in points;
+    not accelerated as fast enough because of instanceStringWidthT1/TTF
+    """
+    ...
 def dumpFontData() -> None: ...
 def test3widths(texts) -> None: ...
 def testStringWidthAlgorithms() -> None: ...

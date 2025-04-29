@@ -1,3 +1,54 @@
+"""
+TrueType font support
+
+This defines classes to represent TrueType fonts.  They know how to calculate
+their own width and how to write themselves into PDF files.  They support
+subsetting and embedding and can represent all 16-bit Unicode characters.
+
+Note on dynamic fonts
+---------------------
+
+Usually a Font in ReportLab corresponds to a fixed set of PDF objects (Font,
+FontDescriptor, Encoding).  But with dynamic font subsetting a single TTFont
+will result in a number of Font/FontDescriptor/Encoding object sets, and the
+contents of those will depend on the actual characters used for printing.
+
+To support dynamic font subsetting a concept of "dynamic font" was introduced.
+Dynamic Fonts have a _dynamicFont attribute set to 1.
+
+Dynamic fonts have the following additional functions::
+
+    def splitString(self, text, doc):
+        '''Splits text into a number of chunks, each of which belongs to a
+        single subset.  Returns a list of tuples (subset, string).  Use
+        subset numbers with getSubsetInternalName.  Doc is used to identify
+        a document so that different documents may have different dynamically
+        constructed subsets.'''
+
+    def getSubsetInternalName(self, subset, doc):
+        '''Returns the name of a PDF Font object corresponding to a given
+        subset of this dynamic font.  Use this function instead of
+        PDFDocument.getInternalFontName.'''
+
+You must never call PDFDocument.getInternalFontName for dynamic fonts.
+
+If you have a traditional static font, mapping to PDF text output operators
+is simple::
+
+   '%s 14 Tf (%s) Tj' % (getInternalFontName(psfontname), text)
+
+If you have a dynamic font, use this instead::
+
+   for subset, chunk in font.splitString(text, doc):
+       '%s 14 Tf (%s) Tj' % (font.getSubsetInternalName(subset, doc), chunk)
+
+(Tf is a font setting operator and Tj is a text ouput operator.  You should
+also escape invalid characters in Tj argument, see TextObject._formatText.
+Oh, and that 14 up there is font size.)
+
+Canvas and TextObject have special support for dynamic fonts.
+"""
+
 from _typeshed import Incomplete, ReadableBuffer, StrOrBytesPath
 from typing import Final, NamedTuple
 from typing_extensions import Self
@@ -12,8 +63,18 @@ class TTFError(pdfdoc.PDFError):
     ...
 
 def SUBSETN(n, table: ReadableBuffer | None = ...) -> bytes: ...
-def makeToUnicodeCMap(fontname: str, subset) -> str: ...
-def splice(stream, offset, value): ...
+def makeToUnicodeCMap(fontname: str, subset) -> str:
+    """
+    Creates a ToUnicode CMap for a given subset.  See Adobe
+    _PDF_Reference (ISBN 0-201-75839-3) for more information.
+    """
+    ...
+def splice(stream, offset, value):
+    """
+    Splices the given value into stream at the given offset and
+    returns the resulting stream (the original is unchanged)
+    """
+    ...
 
 GF_ARG_1_AND_2_ARE_WORDS: Final = 1
 GF_ARGS_ARE_XY_VALUES: Final = 2
@@ -29,7 +90,12 @@ GF_OVERLAP_COMPOUND: Final = 1024
 GF_SCALED_COMPONENT_OFFSET: Final = 2048
 GF_UNSCALED_COMPONENT_OFFSET: Final = 4096
 
-def TTFOpenFile(fn: StrOrBytesPath) -> tuple[StrOrBytesPath,]: ...
+def TTFOpenFile(fn: StrOrBytesPath) -> tuple[StrOrBytesPath,]:
+    """
+    Opens a TTF file possibly after searching TTFSearchPath
+    returns (filename,file)
+    """
+    ...
 
 class TTFontParser:
     """Basic TTF file parser"""
@@ -274,7 +340,14 @@ class TTFont:
         subfontIndex: int = 0,
         asciiReadable: int | None = None,
         shapable: bool = True,
-    ) -> None: ...
+    ) -> None:
+        """
+        Loads a TrueType font from filename.
+
+        If validate is set to a false values, skips checksum validation.  This
+        can save time, especially if the font is large.
+        """
+        ...
     def stringWidth(self, text, size, encoding: str = "utf8"): ...
     def splitString(self, text, doc, encoding: str = "utf-8"):
         """
@@ -333,6 +406,8 @@ class ShapedStr(str):
     def __radd__(self, other) -> Self: ...
 
 def shapeStr(s: str, fontName: str, fontSize: float): ...
-def freshTTFont(ttfn, ttfpath, **kwds) -> TTFont: ...
+def freshTTFont(ttfn, ttfpath, **kwds) -> TTFont:
+    """return a new instance corrsponding to a ttf path"""
+    ...
 def makeShapedFragWord(w, K: list[Incomplete] = [], V: list[Incomplete] = []) -> type[ShapedFragWord]: ...
 def shapeFragWord(w, features: Incomplete | None = None): ...

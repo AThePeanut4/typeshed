@@ -1,3 +1,26 @@
+"""
+A flowable is a "floating element" in a document whose exact position is determined by the
+other elements that precede it, such as a paragraph, a diagram interspersed between paragraphs,
+a section header, etcetera.  Examples of non-flowables include page numbering annotations,
+headers, footers, fixed diagrams or logos, among others.
+
+Flowables are defined here as objects which know how to determine their size and which
+can draw themselves onto a page with respect to a relative "origin" position determined
+at a higher level. The object's draw() method should assume that (0,0) corresponds to the
+bottom left corner of the enclosing rectangle that will contain the object. The attributes
+vAlign and hAlign may be used by 'packers' as hints as to how the object should be placed.
+
+Some Flowables also know how to "split themselves".  For example a
+long paragraph might split itself between one page and the next.
+
+Packers should set the canv attribute during wrap, split & draw operations to allow
+the flowable to work out sizes etc in the proper context.
+
+The "text" of a document usually consists mainly of a sequence of flowables which
+flow into a document from top to bottom (with column and page breaks controlled by
+higher level components).
+"""
+
 from _typeshed import Incomplete, SupportsRead, Unused
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any, Literal, NoReturn, Protocol
@@ -105,17 +128,60 @@ class Flowable:
     #       subclasses that rely on the argument existing when called through
     #       super() inside their own implementation, so we can't really
     #       make everyone happy here, sigh...
-    def drawOn(self, canvas: Canvas, x: float, y: float) -> None: ...
-    def wrapOn(self, canv: Canvas, aW: float, aH: float) -> tuple[float, float]: ...
-    def wrap(self, aW: float, aH: float) -> tuple[float, float]: ...
-    def minWidth(self) -> float: ...
-    def splitOn(self, canv: Canvas, aW: float, aH: float) -> list[Flowable]: ...
-    def split(self, aW: float, aH: float, /) -> list[Flowable]: ...
-    def getKeepWithNext(self): ...
-    def getSpaceAfter(self) -> float: ...
-    def getSpaceBefore(self) -> float: ...
-    def isIndexing(self) -> int: ...
-    def identity(self, maxLen: int | None = None) -> str: ...
+    def drawOn(self, canvas: Canvas, x: float, y: float) -> None:
+        """Tell it to draw itself on the canvas.  Do not override"""
+        ...
+    def wrapOn(self, canv: Canvas, aW: float, aH: float) -> tuple[float, float]:
+        """
+        intended for use by packers allows setting the canvas on
+        during the actual wrap
+        """
+        ...
+    def wrap(self, aW: float, aH: float) -> tuple[float, float]:
+        """
+        This will be called by the enclosing frame before objects
+        are asked their size, drawn or whatever.  It returns the
+        size actually used.
+        """
+        ...
+    def minWidth(self) -> float:
+        """This should return the minimum required width"""
+        ...
+    def splitOn(self, canv: Canvas, aW: float, aH: float) -> list[Flowable]:
+        """
+        intended for use by packers allows setting the canvas on
+        during the actual split
+        """
+        ...
+    def split(self, aW: float, aH: float, /) -> list[Flowable]:
+        """
+        This will be called by more sophisticated frames when
+        wrap fails. Stupid flowables should return []. Clever flowables
+        should split themselves and return a list of flowables.
+        If they decide that nothing useful can be fitted in the
+        available space (e.g. if you have a table and not enough
+        space for the first row), also return []
+        """
+        ...
+    def getKeepWithNext(self):
+        """returns boolean determining whether the next flowable should stay with this one"""
+        ...
+    def getSpaceAfter(self) -> float:
+        """returns how much space should follow this item if another item follows on the same page."""
+        ...
+    def getSpaceBefore(self) -> float:
+        """returns how much space should precede this item if another item precedess on the same page."""
+        ...
+    def isIndexing(self) -> int:
+        """Hook for IndexingFlowables - things which have cross references"""
+        ...
+    def identity(self, maxLen: int | None = None) -> str:
+        """
+        This method should attempt to return a string that can be used to identify
+        a particular flowable uniquely. The result can then be used for debugging
+        and or error printouts
+        """
+        ...
 
 class XBox(Flowable):
     """

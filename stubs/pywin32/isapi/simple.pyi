@@ -10,9 +10,25 @@ must ensure each of the required methods are implemented.
 """
 
 class SimpleExtension:
-    def GetExtensionVersion(self, vi) -> None: ...
-    def HttpExtensionProc(self, control_block) -> int | None: ...
-    def TerminateExtension(self, status) -> None: ...
+    """Base class for a simple ISAPI extension"""
+    def GetExtensionVersion(self, vi) -> None:
+        """
+        Called by the ISAPI framework to get the extension version
+
+        The default implementation uses the classes docstring to
+        set the extension description.
+        """
+        ...
+    def HttpExtensionProc(self, control_block) -> int | None:
+        """
+        Called by the ISAPI framework for each extension request.
+
+        sub-classes must provide an implementation for this method.
+        """
+        ...
+    def TerminateExtension(self, status) -> None:
+        """Called by the ISAPI framework as the extension terminates."""
+        ...
 
 class SimpleFilter:
     """Base class for a a simple ISAPI filter"""
