@@ -785,9 +785,8 @@ class Canvas(_PDFColorSetter):
         charSpace: float = 0,
         direction: Literal["LTR", "RTL"] | None = None,
         wordSpace: float | None = None,
-    ) -> None:
-        """Draws a string in the current text styles."""
-        ...
+        shaping: bool = False,
+    ) -> None: ...
     def drawRightString(
         self,
         x: float,
@@ -797,9 +796,8 @@ class Canvas(_PDFColorSetter):
         charSpace: float = 0,
         direction: Literal["LTR", "RTL"] | None = None,
         wordSpace: float | None = None,
-    ) -> None:
-        """Draws a string right-aligned with the x coordinate"""
-        ...
+        shaping: bool = False,
+    ) -> None: ...
     def drawCentredString(
         self,
         x: float,
@@ -809,13 +807,8 @@ class Canvas(_PDFColorSetter):
         charSpace: float = 0,
         direction: Literal["LTR", "RTL"] | None = None,
         wordSpace: float | None = None,
-    ) -> None:
-        """
-        Draws a string centred on the x coordinate. 
-
-        We're British, dammit, and proud of our spelling!
-        """
-        ...
+        shaping: bool = False,
+    ) -> None: ...
     def drawAlignedString(
         self,
         x: float,
@@ -826,59 +819,13 @@ class Canvas(_PDFColorSetter):
         charSpace: float = 0,
         direction: Literal["LTR", "RTL"] | None = None,
         wordSpace: float | None = None,
-    ) -> None:
-        """
-        Draws a string aligned on the first '.' (or other pivot character).
-
-        The centre position of the pivot character will be used as x.
-        So, you could draw a straight line down through all the decimals in a
-        column of numbers, and anything without a decimal should be
-        optically aligned with those that have.
-
-        There is one special rule to help with accounting formatting.  Here's
-        how normal numbers should be aligned on the 'dot'. Look at the
-        LAST two::
-
-           12,345,67
-              987.15
-               42
-           -1,234.56
-             (456.78)
-             (456)
-               27 inches
-               13cm
-
-        Since the last three do not contain a dot, a crude dot-finding
-        rule would place them wrong. So we test for the special case
-        where no pivot is found, digits are present, but the last character
-        is not a digit.  We then work back from the end of the string
-        This case is a tad slower but hopefully rare.
-        """
-        ...
-    def getAvailableFonts(self):
-        """
-        Returns the list of PostScript font names available.
-
-        Standard set now, but may grow in future with font embedding.
-        """
-        ...
-    def listLoadedFonts0(self):
-        """Convenience function to list all loaded fonts"""
-        ...
-    def setFont(self, psfontname: str, size: float, leading: float | None = None) -> None:
-        """
-        Sets the font.  If leading not specified, defaults to 1.2 x
-        font size. Raises a readable exception if an illegal font
-        is supplied.  Font names are case-sensitive! Keeps track
-        of font name and size for metrics.
-        """
-        ...
-    def setFontSize(self, size: float | None = None, leading: float | None = None) -> None:
-        """Sets font size or leading without knowing the font face"""
-        ...
-    def stringWidth(self, text: str, fontName: str | None = None, fontSize: float | None = None) -> float:
-        """gets width of a string in the given font and size"""
-        ...
+        shaping: bool = False,
+    ) -> None: ...
+    def getAvailableFonts(self): ...
+    def listLoadedFonts0(self): ...
+    def setFont(self, psfontname: str, size: float, leading: float | None = None) -> None: ...
+    def setFontSize(self, size: float | None = None, leading: float | None = None) -> None: ...
+    def stringWidth(self, text: str, fontName: str | None = None, fontSize: float | None = None) -> float: ...
     def setLineWidth(self, width: float) -> None: ...
     def setLineCap(self, mode) -> None:
         """0=butt,1=round,2=square"""
@@ -990,12 +937,7 @@ class Canvas(_PDFColorSetter):
         """add a PDFPageLabel for pageNum"""
         ...
     @property
-    def acroForm(self):
-        """get form from canvas, create the form if needed"""
-        ...
-    def drawBoundary(self, sb, x1: float, y1: float, width: float, height: float) -> None:
-        """draw a boundary as a rectangle (primarily for debugging)."""
-        ...
-    def shapedText(self, text) -> tuple[Incomplete, Incomplete]: ...
+    def acroForm(self): ...
+    def drawBoundary(self, sb, x1: float, y1: float, width: float, height: float) -> None: ...
 
 __all__ = ["Canvas", "ShowBoundaryValue"]
