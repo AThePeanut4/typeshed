@@ -17,6 +17,7 @@ METHOD_CONTAINER_NODES: Final[set[ast.AST]]
 FUNC_NODES: Final[tuple[type[ast.FunctionDef], type[ast.AsyncFunctionDef]]]
 
 class BaseASTCheck:
+    """Base for AST Checks."""
     all: list[BaseASTCheck]
     codes: tuple[str, ...]
     # Per convention, unknown kwargs are passed to the super-class. See there for the types.
@@ -24,11 +25,13 @@ class BaseASTCheck:
     def err(self, node: ast.AST, code: str, **kwargs: str) -> tuple[int, int, str, Self]: ...
 
 class NameSet(frozenset[str]):
+    """A set of names that can be matched as Unix shell-style wildcards."""
     def __new__(cls, iterable: Iterable[str]) -> Self: ...
     def __contains__(self, item: object, /) -> bool: ...
 
 @enum.unique
 class FunctionType(enum.Enum):
+    """An enumeration."""
     CLASSMETHOD = "classmethod"
     STATICMETHOD = "staticmethod"
     FUNCTION = "function"
@@ -49,7 +52,9 @@ class NamingChecker:
     def run(self) -> Generator[tuple[int, int, str, Self]] | tuple[()]: ...
     def visit_tree(self, node: ast.AST, parents: deque[ast.AST]) -> Generator[tuple[int, int, str, Self]]: ...
     def visit_node(self, node: ast.AST, parents: Sequence[ast.AST]) -> Generator[tuple[int, int, str, Self]]: ...
-    def tag_class_functions(self, cls_node: ast.ClassDef) -> None: ...
+    def tag_class_functions(self, cls_node: ast.ClassDef) -> None:
+        """Tag functions if they are methods, classmethods, staticmethods"""
+        ...
     def set_function_nodes_types(
         self, nodes: Iterator[ast.AST], ismetaclass: bool, late_decoration: dict[str, FunctionType]
     ) -> None: ...
