@@ -51,7 +51,7 @@ ttkthemes==3.2.*
 requests[socks]==2.32.*
 oauthlib==3.2.*
 hdbcli==2.24.*
-protobuf~=5.29.1
+protobuf~=6.30.2
 jsonschema[format]==4.23.*
 WebOb==1.8.*
 docutils==0.21.*
@@ -180,4 +180,4 @@ Jetson.GPIO==2.1.*
 mock==5.2.*
 auth0-python==4.9.*
 dockerfile-parse==2.0.*
-setuptools==80.0.*
+setuptools==80.1.*
