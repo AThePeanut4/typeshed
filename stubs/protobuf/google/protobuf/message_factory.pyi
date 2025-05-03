@@ -19,12 +19,7 @@ from google.protobuf.message import Message
 class MessageFactory:
     """Factory for creating Proto2 messages from descriptors in a pool."""
     pool: Any
-    def __init__(self, pool: DescriptorPool | None = None) -> None:
-        """Initializes a new factory."""
-        ...
-    def GetPrototype(self, descriptor: Descriptor) -> type[Message]:
-        """
-        Obtains a proto2 message class based on the passed in descriptor.
+    def __init__(self, pool: DescriptorPool | None = None) -> None: ...
 
         Passing a descriptor with a fully qualified name matching a previous
         invocation will cause the same class to be returned.

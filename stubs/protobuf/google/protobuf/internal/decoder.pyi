@@ -136,23 +136,5 @@ def MessageDecoder(
 
 MESSAGE_SET_ITEM_TAG: bytes
 
-def MessageSetItemDecoder(descriptor: Descriptor) -> _Decoder:
-    """
-    Returns a decoder for a MessageSet item.
-
-    The parameter is the message Descriptor.
-
-    The message set message looks like this:
-      message MessageSet {
-        repeated group Item = 1 {
-          required int32 type_id = 2;
-          required string message = 3;
-        }
-      }
-    """
-    ...
-def MapDecoder(field_descriptor, new_default, is_message_map) -> _Decoder:
-    """Returns a decoder for a map field."""
-    ...
-
-SkipField: Any
+def MessageSetItemDecoder(descriptor: Descriptor) -> _Decoder: ...
+def MapDecoder(field_descriptor, new_default, is_message_map) -> _Decoder: ...
