@@ -277,9 +277,35 @@ class RestartPolicy(dict[str, Incomplete]):
     ) -> None: ...
 
 class DriverConfig(dict[str, Incomplete]):
+    """
+    Indicates which driver to use, as well as its configuration. Can be used
+    as ``log_driver`` in a :py:class:`~docker.types.ContainerSpec`,
+    for the `driver_config` in a volume :py:class:`~docker.types.Mount`, or
+    as the driver object in
+    :py:meth:`create_secret`.
+
+    Args:
+
+        name (string): Name of the driver to use.
+        options (dict): Driver-specific options. Default: ``None``.
+    """
     def __init__(self, name: str, options: dict[Incomplete, Incomplete] | None = None) -> None: ...
 
 class EndpointSpec(dict[str, Incomplete]):
+    """
+    Describes properties to access and load-balance a service.
+
+    Args:
+
+        mode (string): The mode of resolution to use for internal load
+          balancing between tasks (``'vip'`` or ``'dnsrr'``). Defaults to
+          ``'vip'`` if not provided.
+        ports (dict): Exposed ports that this service is accessible on from the
+          outside, in the form of ``{ published_port: target_port }`` or
+          ``{ published_port: <port_config_tuple> }``. Port config tuple format
+          is ``(target_port [, protocol [, publish_mode]])``.
+          Ports can only be provided if the ``vip`` resolution mode is used.
+    """
     def __init__(
         self, mode: str | None = None, ports: Mapping[str, str | tuple[str | None, ...]] | list[dict[str, str]] | None = None
     ) -> None: ...
@@ -290,6 +316,17 @@ def convert_service_ports(ports: list[_T]) -> list[_T]: ...
 def convert_service_ports(ports: Mapping[str, str | tuple[str | None, ...]]) -> list[dict[str, str]]: ...
 
 class ServiceMode(dict[str, Incomplete]):
+    """
+    Indicate whether a service or a job should be deployed as a replicated
+    or global service, and associated parameters
+
+    Args:
+        mode (string): Can be either ``replicated``, ``global``,
+          ``replicated-job`` or ``global-job``
+        replicas (int): Number of replicas. For replicated services only.
+        concurrency (int): Number of concurrent jobs. For replicated job
+          services only.
+    """
     mode: Literal["replicated", "global", "ReplicatedJob", "GlobalJob"]
     def __init__(
         self,
@@ -374,6 +411,17 @@ class Placement(dict[str, Incomplete]):
     ) -> None: ...
 
 class PlacementPreference(dict[str, Incomplete]):
+    """
+    Placement preference to be used as an element in the list of
+    preferences for :py:class:`Placement` objects.
+
+    Args:
+        strategy (string): The placement strategy to implement. Currently,
+            the only supported strategy is ``spread``.
+        descriptor (string): A label descriptor. For the spread strategy,
+            the scheduler will try to spread tasks evenly over groups of
+            nodes identified by this label.
+    """
     def __init__(self, strategy: Literal["spread"], descriptor: str) -> None: ...
 
 class DNSConfig(dict[str, Incomplete]):
@@ -428,4 +476,15 @@ class Privileges(dict[str, Incomplete]):
     ) -> None: ...
 
 class NetworkAttachmentConfig(dict[str, Incomplete]):
+    """
+    Network attachment options for a service.
+
+    Args:
+        target (str): The target network for attachment.
+            Can be a network name or ID.
+        aliases (:py:class:`list`): A list of discoverable alternate names
+            for the service.
+        options (:py:class:`dict`): Driver attachment options for the
+            network target.
+    """
     def __init__(self, target: str, aliases: list[str] | None = None, options: dict[str, Incomplete] | None = None) -> None: ...

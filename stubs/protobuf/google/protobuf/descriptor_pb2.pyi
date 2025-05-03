@@ -1980,7 +1980,9 @@ class FeatureSet(google.protobuf.message.Message):
         STYLE2024: FeatureSet._EnforceNamingStyle.ValueType  # 1
         STYLE_LEGACY: FeatureSet._EnforceNamingStyle.ValueType  # 2
 
-    class EnforceNamingStyle(_EnforceNamingStyle, metaclass=_EnforceNamingStyleEnumTypeWrapper): ...
+    class EnforceNamingStyle(_EnforceNamingStyle, metaclass=_EnforceNamingStyleEnumTypeWrapper):
+        """A utility for finding the names of enum values."""
+        ...
     ENFORCE_NAMING_STYLE_UNKNOWN: FeatureSet.EnforceNamingStyle.ValueType  # 0
     STYLE2024: FeatureSet.EnforceNamingStyle.ValueType  # 1
     STYLE_LEGACY: FeatureSet.EnforceNamingStyle.ValueType  # 2
@@ -2010,8 +2012,12 @@ class FeatureSet(google.protobuf.message.Message):
         json_format: global___FeatureSet.JsonFormat.ValueType | None = ...,
         enforce_naming_style: global___FeatureSet.EnforceNamingStyle.ValueType | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["enforce_naming_style", b"enforce_naming_style", "enum_type", b"enum_type", "field_presence", b"field_presence", "json_format", b"json_format", "message_encoding", b"message_encoding", "repeated_field_encoding", b"repeated_field_encoding", "utf8_validation", b"utf8_validation"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["enforce_naming_style", b"enforce_naming_style", "enum_type", b"enum_type", "field_presence", b"field_presence", "json_format", b"json_format", "message_encoding", b"message_encoding", "repeated_field_encoding", b"repeated_field_encoding", "utf8_validation", b"utf8_validation"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["enforce_naming_style", b"enforce_naming_style", "enum_type", b"enum_type", "field_presence", b"field_presence", "json_format", b"json_format", "message_encoding", b"message_encoding", "repeated_field_encoding", b"repeated_field_encoding", "utf8_validation", b"utf8_validation"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["enforce_naming_style", b"enforce_naming_style", "enum_type", b"enum_type", "field_presence", b"field_presence", "json_format", b"json_format", "message_encoding", b"message_encoding", "repeated_field_encoding", b"repeated_field_encoding", "utf8_validation", b"utf8_validation"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___FeatureSet = FeatureSet
 
