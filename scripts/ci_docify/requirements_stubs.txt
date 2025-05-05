@@ -180,4 +180,4 @@ Jetson.GPIO==2.1.*
 mock==5.2.*
 auth0-python==4.9.*
 dockerfile-parse==2.0.*
-setuptools==80.1.*
+setuptools==80.3.*
