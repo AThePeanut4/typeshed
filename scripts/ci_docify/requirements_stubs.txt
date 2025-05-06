@@ -2,6 +2,7 @@ docify==1.1.0
 
 typing-extensions==4.12.2
 
+grpcio-reflection==1.*
 TgCrypto==1.2.*
 six==1.17.*
 pycocotools==2.0.*
@@ -27,6 +28,7 @@ pyflakes~=3.3.2
 Pygments==2.19.*
 toposort==1.10
 flake8-builtins==2.5.*
+grpcio-health-checking==1.*
 JACK-Client==0.5.*
 opentracing==2.4.*
 reportlab[pycairo]==4.4.*
@@ -72,6 +74,7 @@ passpy==1.0.*
 ldap3==2.9.*
 click-spinner==0.1.*
 beautifulsoup4[html5lib,lxml]==4.12.*
+grpcio-channelz==1.*
 python-datemath==3.0.1
 atheris==2.3.*
 Flask-Cors==5.0.*
@@ -91,18 +94,19 @@ mysqlclient==2.2.*
 dirhash==0.5.*
 ujson==5.10.*
 translationstring==1.4.*
-qrcode[pil]==8.1.*
+qrcode[pil]==8.2.*
 pep8-naming==0.15.*
 xdgenvpy==3.0.*
 Send2Trash==1.8.*
 decorator==5.2.*
 ExifRead==3.0.*
+grpcio-status==1.*
 toml==0.10.*
 seaborn==0.13.2
 pytest-lazy-fixture==0.6.*
 peewee==3.18.0
 pynput~=1.8.1
-braintree==4.34.*
+braintree==4.35.*
 grpcio==1.*
 pyserial[cp2110]==3.5.*
 python-dateutil==2.9.*
@@ -149,7 +153,7 @@ openpyxl==3.1.5
 console-menu==0.8.*
 cachetools==5.5.*
 simplejson==3.20.*
-zstd==1.5.6.7
+zstd==1.5.6.8
 mypy-extensions==1.1.*
 corus==0.10.*
 uWSGI==2.0.*
