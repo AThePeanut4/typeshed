@@ -102,7 +102,9 @@ class SnapshotMetadataRecord(google.protobuf.message.Message):
             "version",
             b"version",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapshotMetadataRecord = SnapshotMetadataRecord
 
@@ -124,10 +126,14 @@ class TensorMetadata(google.protobuf.message.Message):
         tensor_shape: tensorflow.core.framework.tensor_shape_pb2.TensorShapeProto | None = ...,
         tensor_size_bytes: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["tensor_shape", b"tensor_shape", "tensor_size_bytes", b"tensor_size_bytes"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___TensorMetadata = TensorMetadata
 
@@ -141,7 +147,9 @@ class SnapshotTensorMetadata(google.protobuf.message.Message):
     @property
     def tensor_metadata(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___TensorMetadata]: ...
     def __init__(self, *, tensor_metadata: collections.abc.Iterable[global___TensorMetadata] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["tensor_metadata", b"tensor_metadata"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["tensor_metadata", b"tensor_metadata"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapshotTensorMetadata = SnapshotTensorMetadata
 
@@ -161,6 +169,8 @@ class DistributedSnapshotMetadata(google.protobuf.message.Message):
     compress.
     """
     def __init__(self, *, element_spec: builtins.bytes | None = ..., compression: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["compression", b"compression", "element_spec", b"element_spec"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["compression", b"compression", "element_spec", b"element_spec"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___DistributedSnapshotMetadata = DistributedSnapshotMetadata

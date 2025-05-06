@@ -47,6 +47,8 @@ class ReaderBaseState(google.protobuf.message.Message):
             "work_started",
             b"work_started",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ReaderBaseState = ReaderBaseState

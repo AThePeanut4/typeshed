@@ -59,6 +59,8 @@ class AllocationDescription(google.protobuf.message.Message):
             "requested_bytes",
             b"requested_bytes",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___AllocationDescription = AllocationDescription

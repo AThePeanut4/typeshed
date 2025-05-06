@@ -62,6 +62,8 @@ class VerifierConfig(google.protobuf.message.Message):
         field_name: typing.Literal[
             "structure_verifier", b"structure_verifier", "verification_timeout_in_ms", b"verification_timeout_in_ms"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___VerifierConfig = VerifierConfig

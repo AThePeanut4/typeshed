@@ -115,6 +115,8 @@ class CppShapeInferenceInputsNeeded(google.protobuf.message.Message):
         field_name: typing.Literal[
             "input_tensors_as_shapes_needed", b"input_tensors_as_shapes_needed", "input_tensors_needed", b"input_tensors_needed"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___CppShapeInferenceInputsNeeded = CppShapeInferenceInputsNeeded

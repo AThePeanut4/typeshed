@@ -79,7 +79,9 @@ class TPUHardwareFeature(google.protobuf.message.Message):
         field_name: typing.Literal[
             "embedding_feature", b"embedding_feature", "num_embedding_devices_per_chip", b"num_embedding_devices_per_chip"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___TPUHardwareFeature = TPUHardwareFeature
 
@@ -129,7 +131,9 @@ class TopologyProto(google.protobuf.message.Message):
         device_coordinates: collections.abc.Iterable[builtins.int] | None = ...,
         tpu_hardware_feature: global___TPUHardwareFeature | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tpu_hardware_feature", b"tpu_hardware_feature"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["tpu_hardware_feature", b"tpu_hardware_feature"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -144,6 +148,8 @@ class TopologyProto(google.protobuf.message.Message):
             "tpu_hardware_feature",
             b"tpu_hardware_feature",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___TopologyProto = TopologyProto

@@ -78,10 +78,14 @@ class BundleHeaderProto(google.protobuf.message.Message):
         endianness: global___BundleHeaderProto.Endianness.ValueType | None = ...,
         version: tensorflow.core.framework.versions_pb2.VersionDef | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["version", b"version"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["version", b"version"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["endianness", b"endianness", "num_shards", b"num_shards", "version", b"version"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___BundleHeaderProto = BundleHeaderProto
 
@@ -136,7 +140,9 @@ class BundleEntryProto(google.protobuf.message.Message):
         crc32c: builtins.int | None = ...,
         slices: collections.abc.Iterable[tensorflow.core.framework.tensor_slice_pb2.TensorSliceProto] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["shape", b"shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["shape", b"shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -155,6 +161,8 @@ class BundleEntryProto(google.protobuf.message.Message):
             "slices",
             b"slices",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___BundleEntryProto = BundleEntryProto

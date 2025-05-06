@@ -45,7 +45,9 @@ class FunctionDefLibrary(google.protobuf.message.Message):
         field_name: typing.Literal[
             "function", b"function", "gradient", b"gradient", "registered_gradients", b"registered_gradients"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___FunctionDefLibrary = FunctionDefLibrary
 
@@ -129,8 +131,12 @@ class FunctionDef(google.protobuf.message.Message):
         @property
         def value(self) -> global___FunctionDef.ArgAttrs: ...
         def __init__(self, *, key: builtins.int | None = ..., value: global___FunctionDef.ArgAttrs | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class ResourceArgUniqueIdEntry(google.protobuf.message.Message):
@@ -141,7 +147,9 @@ class FunctionDef(google.protobuf.message.Message):
         key: builtins.int
         value: builtins.int
         def __init__(self, *, key: builtins.int | None = ..., value: builtins.int | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class RetEntry(google.protobuf.message.Message):
@@ -152,7 +160,9 @@ class FunctionDef(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.str
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class ControlRetEntry(google.protobuf.message.Message):
@@ -163,7 +173,9 @@ class FunctionDef(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.str
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     SIGNATURE_FIELD_NUMBER: builtins.int
     ATTR_FIELD_NUMBER: builtins.int
@@ -235,7 +247,9 @@ class FunctionDef(google.protobuf.message.Message):
         ret: collections.abc.Mapping[builtins.str, builtins.str] | None = ...,
         control_ret: collections.abc.Mapping[builtins.str, builtins.str] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["signature", b"signature"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["signature", b"signature"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -254,7 +268,9 @@ class FunctionDef(google.protobuf.message.Message):
             "signature",
             b"signature",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___FunctionDef = FunctionDef
 
@@ -291,7 +307,9 @@ class GradientDef(google.protobuf.message.Message):
     def __init__(self, *, function_name: builtins.str | None = ..., gradient_func: builtins.str | None = ...) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["function_name", b"function_name", "gradient_func", b"gradient_func"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GradientDef = GradientDef
 
@@ -314,6 +332,8 @@ class RegisteredGradient(google.protobuf.message.Message):
     def __init__(self, *, gradient_func: builtins.str | None = ..., registered_op_type: builtins.str | None = ...) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["gradient_func", b"gradient_func", "registered_op_type", b"registered_op_type"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___RegisteredGradient = RegisteredGradient

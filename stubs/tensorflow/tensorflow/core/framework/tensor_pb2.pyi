@@ -159,7 +159,9 @@ class TensorProto(google.protobuf.message.Message):
         uint64_val: collections.abc.Iterable[builtins.int] | None = ...,
         float8_val: builtins.bytes | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -200,7 +202,9 @@ class TensorProto(google.protobuf.message.Message):
             "version_number",
             b"version_number",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___TensorProto = TensorProto
 
@@ -230,6 +234,8 @@ class VariantTensorDataProto(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["metadata", b"metadata", "tensors", b"tensors", "type_name", b"type_name"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___VariantTensorDataProto = VariantTensorDataProto

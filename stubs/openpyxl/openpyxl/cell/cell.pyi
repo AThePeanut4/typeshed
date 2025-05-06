@@ -87,11 +87,27 @@ class Cell(StyleableObject):
         """Tries to convert Error" else N/A"""
         ...
     @property
-    def value(self) -> _CellGetValue: ...
+    def value(self) -> _CellGetValue:
+        """
+        Get or set the value held in the cell.
+
+        :type: depends on the value (string, float, int or
+            :class:`datetime.datetime`)
+        """
+        ...
     @value.setter
-    def value(self, value: _CellSetValue) -> None: ...
+    def value(self, value: _CellSetValue) -> None:
+        """
+        Get or set the value held in the cell.
+
+        :type: depends on the value (string, float, int or
+            :class:`datetime.datetime`)
+        """
+        ...
     @property
-    def internal_value(self) -> _CellGetValue: ...
+    def internal_value(self) -> _CellGetValue:
+        """Always returns the value for excel."""
+        ...
     @property
     def hyperlink(self) -> Hyperlink | None:
         """Return the hyperlink target or an empty string"""
@@ -156,7 +172,9 @@ class MergedCell(StyleableObject):
     # Same as Cell.coordinate
     # https://github.com/python/mypy/issues/6700
     @property
-    def coordinate(self) -> str: ...
+    def coordinate(self) -> str:
+        """This cell's coordinate (ex. 'A5')"""
+        ...
     # The value of a MergedCell is always None.
     value: None
 

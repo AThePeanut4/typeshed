@@ -20,6 +20,8 @@ class Metadata(google.protobuf.message.Message):
     NAME_FIELD_NUMBER: builtins.int
     name: builtins.bytes
     def __init__(self, *, name: builtins.bytes | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___Metadata = Metadata

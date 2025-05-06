@@ -36,7 +36,7 @@ class StyledPilImage(base.BaseImageWithDrawer):
     data integrity A resampling filter can be specified (defaulting to
     PIL.Image.Resampling.LANCZOS) for resizing; see PIL.Image.resize() for possible
     options for this parameter.
-    The image size can be controlled by `embeded_image_ratio` which is a ratio
+    The image size can be controlled by `embedded_image_ratio` which is a ratio
     between 0 and 1 that's set in relation to the overall width of the QR code.
     """
     kind: Literal["PNG"]

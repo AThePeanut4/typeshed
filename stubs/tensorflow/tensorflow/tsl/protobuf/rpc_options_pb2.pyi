@@ -80,6 +80,8 @@ class RPCOptions(google.protobuf.message.Message):
             "use_rpc_for_inprocess_master",
             b"use_rpc_for_inprocess_master",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___RPCOptions = RPCOptions

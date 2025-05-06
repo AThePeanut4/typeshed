@@ -1,3 +1,5 @@
+"""Reference implementation for reflection in gRPC Python."""
+
 from _typeshed import Incomplete
 from collections.abc import Iterable
 from typing import Final
@@ -24,6 +26,15 @@ class ReflectionServicer(BaseReflectionServicer):
 
 def enable_server_reflection(
     service_names: Iterable[str], server: _AnyServer, pool: descriptor_pool.DescriptorPool | None = None
-) -> None: ...
+) -> None:
+    """
+    Enables server reflection on a server.
+
+    Args:
+        service_names: Iterable of fully-qualified service names available.
+        server: grpc.Server to which reflection service will be added.
+        pool: DescriptorPool object to use (descriptor_pool.Default() if None).
+    """
+    ...
 
 __all__ = ["SERVICE_NAME", "ReflectionServicer", "enable_server_reflection", "aio"]

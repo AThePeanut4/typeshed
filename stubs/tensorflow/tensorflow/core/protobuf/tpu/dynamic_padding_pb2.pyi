@@ -42,6 +42,8 @@ class PaddingMap(google.protobuf.message.Message):
         field_name: typing.Literal[
             "arg_index", b"arg_index", "padding_arg_index", b"padding_arg_index", "shape_index", b"shape_index"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___PaddingMap = PaddingMap

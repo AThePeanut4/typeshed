@@ -77,7 +77,9 @@ class NodeDef(google.protobuf.message.Message):
             field_name: typing.Literal[
                 "original_func_names", b"original_func_names", "original_node_names", b"original_node_names"
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     NAME_FIELD_NUMBER: builtins.int
     OP_FIELD_NUMBER: builtins.int
@@ -172,7 +174,9 @@ class NodeDef(google.protobuf.message.Message):
         field_name: typing.Literal[
             "experimental_debug_info", b"experimental_debug_info", "experimental_type", b"experimental_type"
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -191,6 +195,8 @@ class NodeDef(google.protobuf.message.Message):
             "op",
             b"op",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___NodeDef = NodeDef

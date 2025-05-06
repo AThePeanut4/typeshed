@@ -108,6 +108,8 @@ class SaverDef(google.protobuf.message.Message):
             "version",
             b"version",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SaverDef = SaverDef

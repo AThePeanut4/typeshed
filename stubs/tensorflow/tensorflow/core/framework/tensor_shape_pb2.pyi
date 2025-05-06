@@ -37,7 +37,9 @@ class TensorShapeProto(google.protobuf.message.Message):
         name: builtins.str
         """Optional name of the tensor dimension."""
         def __init__(self, *, size: builtins.int | None = ..., name: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["name", b"name", "size", b"size"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["name", b"name", "size", b"size"]) -> None:
+            """Clears a message field."""
+            ...
 
     DIM_FIELD_NUMBER: builtins.int
     UNKNOWN_RANK_FIELD_NUMBER: builtins.int

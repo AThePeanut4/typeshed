@@ -73,6 +73,8 @@ class HistogramProto(google.protobuf.message.Message):
             "sum_squares",
             b"sum_squares",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___HistogramProto = HistogramProto

@@ -106,7 +106,9 @@ class OpDef(google.protobuf.message.Message):
             is_ref: builtins.bool | None = ...,
             experimental_full_type: tensorflow.core.framework.full_type_pb2.FullTypeDef | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing.Literal["experimental_full_type", b"experimental_full_type"]) -> builtins.bool: ...
+        def HasField(self, field_name: typing.Literal["experimental_full_type", b"experimental_full_type"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -129,7 +131,9 @@ class OpDef(google.protobuf.message.Message):
                 "type_list_attr",
                 b"type_list_attr",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class AttrDef(google.protobuf.message.Message):
@@ -196,7 +200,9 @@ class OpDef(google.protobuf.message.Message):
         ) -> None: ...
         def HasField(
             self, field_name: typing.Literal["allowed_values", b"allowed_values", "default_value", b"default_value"]
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -215,7 +221,9 @@ class OpDef(google.protobuf.message.Message):
                 "type",
                 b"type",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     NAME_FIELD_NUMBER: builtins.int
     INPUT_ARG_FIELD_NUMBER: builtins.int
@@ -324,7 +332,9 @@ class OpDef(google.protobuf.message.Message):
         allows_uninitialized_input: builtins.bool | None = ...,
         is_distributed_communication: builtins.bool | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["deprecation", b"deprecation"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["deprecation", b"deprecation"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -355,7 +365,9 @@ class OpDef(google.protobuf.message.Message):
             "summary",
             b"summary",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___OpDef = OpDef
 
@@ -372,7 +384,9 @@ class OpDeprecation(google.protobuf.message.Message):
     explanation: builtins.str
     """Explanation of why it was deprecated and what to use instead."""
     def __init__(self, *, version: builtins.int | None = ..., explanation: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["explanation", b"explanation", "version", b"version"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["explanation", b"explanation", "version", b"version"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___OpDeprecation = OpDeprecation
 
@@ -386,6 +400,8 @@ class OpList(google.protobuf.message.Message):
     @property
     def op(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___OpDef]: ...
     def __init__(self, *, op: collections.abc.Iterable[global___OpDef] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["op", b"op"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["op", b"op"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___OpList = OpList

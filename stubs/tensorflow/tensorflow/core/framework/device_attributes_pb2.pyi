@@ -28,7 +28,9 @@ class InterconnectLink(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["device_id", b"device_id", "strength", b"strength", "type", b"type"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___InterconnectLink = InterconnectLink
 
@@ -40,7 +42,9 @@ class LocalLinks(google.protobuf.message.Message):
     @property
     def link(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___InterconnectLink]: ...
     def __init__(self, *, link: collections.abc.Iterable[global___InterconnectLink] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["link", b"link"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["link", b"link"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___LocalLinks = LocalLinks
 
@@ -64,10 +68,14 @@ class DeviceLocality(google.protobuf.message.Message):
     def __init__(
         self, *, bus_id: builtins.int | None = ..., numa_node: builtins.int | None = ..., links: global___LocalLinks | None = ...
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["links", b"links"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["links", b"links"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["bus_id", b"bus_id", "links", b"links", "numa_node", b"numa_node"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___DeviceLocality = DeviceLocality
 
@@ -116,7 +124,9 @@ class DeviceAttributes(google.protobuf.message.Message):
         physical_device_desc: builtins.str | None = ...,
         xla_global_id: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["locality", b"locality"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["locality", b"locality"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -135,6 +145,8 @@ class DeviceAttributes(google.protobuf.message.Message):
             "xla_global_id",
             b"xla_global_id",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___DeviceAttributes = DeviceAttributes

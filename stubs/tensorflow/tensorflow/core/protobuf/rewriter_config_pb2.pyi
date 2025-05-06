@@ -31,7 +31,9 @@ class AutoParallelOptions(google.protobuf.message.Message):
     enable: builtins.bool
     num_replicas: builtins.int
     def __init__(self, *, enable: builtins.bool | None = ..., num_replicas: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["enable", b"enable", "num_replicas", b"num_replicas"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["enable", b"enable", "num_replicas", b"num_replicas"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AutoParallelOptions = AutoParallelOptions
 
@@ -45,7 +47,9 @@ class ScopedAllocatorOptions(google.protobuf.message.Message):
         """If present, only perform optimization for these ops."""
 
     def __init__(self, *, enable_op: collections.abc.Iterable[builtins.str] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["enable_op", b"enable_op"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["enable_op", b"enable_op"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ScopedAllocatorOptions = ScopedAllocatorOptions
 
@@ -512,7 +516,9 @@ class RewriterConfig(google.protobuf.message.Message):
             "scoped_allocator_opts",
             b"scoped_allocator_opts",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -591,6 +597,8 @@ class RewriterConfig(google.protobuf.message.Message):
             "use_plugin_optimizers",
             b"use_plugin_optimizers",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___RewriterConfig = RewriterConfig

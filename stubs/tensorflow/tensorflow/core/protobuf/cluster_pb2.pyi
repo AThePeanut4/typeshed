@@ -84,7 +84,9 @@ class JobDef(google.protobuf.message.Message):
         key: builtins.int
         value: builtins.str
         def __init__(self, *, key: builtins.int | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     NAME_FIELD_NUMBER: builtins.int
     TASKS_FIELD_NUMBER: builtins.int
@@ -123,6 +125,8 @@ class ClusterDef(google.protobuf.message.Message):
         """The jobs that comprise the cluster."""
 
     def __init__(self, *, job: collections.abc.Iterable[global___JobDef] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["job", b"job"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["job", b"job"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ClusterDef = ClusterDef

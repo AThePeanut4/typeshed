@@ -82,6 +82,8 @@ class CompilationResultProto(google.protobuf.message.Message):
             "status_error_message",
             b"status_error_message",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___CompilationResultProto = CompilationResultProto

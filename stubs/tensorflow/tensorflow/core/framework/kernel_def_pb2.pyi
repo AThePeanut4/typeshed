@@ -101,7 +101,9 @@ class KernelDef(google.protobuf.message.Message):
             "priority",
             b"priority",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___KernelDef = KernelDef
 
@@ -115,6 +117,8 @@ class KernelList(google.protobuf.message.Message):
     @property
     def kernel(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___KernelDef]: ...
     def __init__(self, *, kernel: collections.abc.Iterable[global___KernelDef] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["kernel", b"kernel"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["kernel", b"kernel"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___KernelList = KernelList

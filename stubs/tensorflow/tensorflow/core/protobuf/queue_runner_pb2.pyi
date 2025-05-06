@@ -68,6 +68,8 @@ class QueueRunnerDef(google.protobuf.message.Message):
             "queue_name",
             b"queue_name",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___QueueRunnerDef = QueueRunnerDef

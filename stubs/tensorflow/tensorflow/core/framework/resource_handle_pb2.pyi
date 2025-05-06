@@ -103,6 +103,8 @@ class ResourceHandleProto(google.protobuf.message.Message):
             "name",
             b"name",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ResourceHandleProto = ResourceHandleProto

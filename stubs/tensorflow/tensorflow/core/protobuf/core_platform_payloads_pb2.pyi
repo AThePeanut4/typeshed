@@ -63,6 +63,8 @@ class ErrorSourceProto(google.protobuf.message.Message):
     ERROR_SOURCE_FIELD_NUMBER: builtins.int
     error_source: global___ErrorSourceProto.ErrorSource.ValueType
     def __init__(self, *, error_source: global___ErrorSourceProto.ErrorSource.ValueType | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["error_source", b"error_source"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["error_source", b"error_source"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ErrorSourceProto = ErrorSourceProto

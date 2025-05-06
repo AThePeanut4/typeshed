@@ -162,7 +162,9 @@ class VariableDef(google.protobuf.message.Message):
         synchronization: global___VariableSynchronization.ValueType | None = ...,
         aggregation: global___VariableAggregation.ValueType | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["save_slice_info_def", b"save_slice_info_def"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["save_slice_info_def", b"save_slice_info_def"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -185,7 +187,9 @@ class VariableDef(google.protobuf.message.Message):
             "variable_name",
             b"variable_name",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___VariableDef = VariableDef
 
@@ -224,6 +228,8 @@ class SaveSliceInfoDef(google.protobuf.message.Message):
         field_name: typing.Literal[
             "full_name", b"full_name", "full_shape", b"full_shape", "var_offset", b"var_offset", "var_shape", b"var_shape"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SaveSliceInfoDef = SaveSliceInfoDef

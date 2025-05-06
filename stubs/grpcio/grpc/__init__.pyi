@@ -169,9 +169,50 @@ class Future(abc.ABC, Generic[_TFutureValue]):
         """
         ...
     @abc.abstractmethod
-    def exception(self, timeout: float | None = None) -> Exception | None: ...
+    def exception(self, timeout: float | None = None) -> Exception | None:
+        """
+        Return the exception raised by the computation.
+
+        This method may return immediately or may block.
+
+        Args:
+          timeout: The length of time in seconds to wait for the computation to
+            terminate or be cancelled. If None, the call will block until the
+            computations's termination.
+
+        Returns:
+            The exception raised by the computation, or None if the computation
+            did not raise an exception.
+
+        Raises:
+          FutureTimeoutError: If a timeout value is passed and the computation
+            does not terminate within the allotted time.
+          FutureCancelledError: If the computation was cancelled.
+        """
+        ...
     @abc.abstractmethod
-    def result(self, timeout: float | None = None) -> _TFutureValue: ...
+    def result(self, timeout: float | None = None) -> _TFutureValue:
+        """
+        Returns the result of the computation or raises its exception.
+
+        This method may return immediately or may block.
+
+        Args:
+          timeout: The length of time in seconds to wait for the computation to
+            finish or be cancelled. If None, the call will block until the
+            computations's termination.
+
+        Returns:
+          The return value of the computation.
+
+        Raises:
+          FutureTimeoutError: If a timeout value is passed and the computation
+            does not terminate within the allotted time.
+          FutureCancelledError: If the computation was cancelled.
+          Exception: If the computation raised an exception, this call will
+            raise the same exception.
+        """
+        ...
     @abc.abstractmethod
     def running(self) -> bool:
         """
@@ -189,14 +230,67 @@ class Future(abc.ABC, Generic[_TFutureValue]):
 
     # FIXME: unsure of the exact return type here. Is it a traceback.StackSummary?
     @abc.abstractmethod
-    def traceback(self, timeout: float | None = None): ...
+    def traceback(self, timeout: float | None = None):
+        """
+        Access the traceback of the exception raised by the computation.
+
+        This method may return immediately or may block.
+
+        Args:
+          timeout: The length of time in seconds to wait for the computation
+            to terminate or be cancelled. If None, the call will block until
+            the computation's termination.
+
+        Returns:
+            The traceback of the exception raised by the computation, or None
+            if the computation did not raise an exception.
+
+        Raises:
+          FutureTimeoutError: If a timeout value is passed and the computation
+            does not terminate within the allotted time.
+          FutureCancelledError: If the computation was cancelled.
+        """
+        ...
 
 # Create Client:
 
-def insecure_channel(target: str, options: _Options | None = None, compression: Compression | None = None) -> Channel: ...
+def insecure_channel(target: str, options: _Options | None = None, compression: Compression | None = None) -> Channel:
+    """
+    Creates an insecure Channel to a server.
+
+    The returned Channel is thread-safe.
+
+    Args:
+      target: The server address
+      options: An optional list of key-value pairs (:term:`channel_arguments`
+        in gRPC Core runtime) to configure the channel.
+      compression: An optional value indicating the compression method to be
+        used over the lifetime of the channel.
+
+    Returns:
+      A Channel.
+    """
+    ...
 def secure_channel(
     target: str, credentials: ChannelCredentials, options: _Options | None = None, compression: Compression | None = None
-) -> Channel: ...
+) -> Channel:
+    """
+    Creates a secure Channel to a server.
+
+    The returned Channel is thread-safe.
+
+    Args:
+      target: The server address.
+      credentials: A ChannelCredentials instance.
+      options: An optional list of key-value pairs (:term:`channel_arguments`
+        in gRPC Core runtime) to configure the channel.
+      compression: An optional value indicating the compression method to be
+        used over the lifetime of the channel.
+
+    Returns:
+      A Channel.
+    """
+    ...
 
 _Interceptor: TypeAlias = (
     UnaryUnaryClientInterceptor[_TRequest, _TResponse]
@@ -234,13 +328,120 @@ def intercept_channel(channel: Channel, *interceptors: _Interceptor[_TRequest, _
 
 def ssl_channel_credentials(
     root_certificates: bytes | None = None, private_key: bytes | None = None, certificate_chain: bytes | None = None
-) -> ChannelCredentials: ...
-def local_channel_credentials(local_connect_type: LocalConnectionType = ...) -> ChannelCredentials: ...
-def metadata_call_credentials(metadata_plugin: AuthMetadataPlugin, name: str | None = None) -> CallCredentials: ...
-def access_token_call_credentials(access_token: str) -> CallCredentials: ...
-def alts_channel_credentials(service_accounts: Sequence[str] | None = None) -> ChannelCredentials: ...
-def compute_engine_channel_credentials(call_credentials: CallCredentials) -> ChannelCredentials: ...
-def xds_channel_credentials(fallback_credentials: ChannelCredentials | None = None) -> ChannelCredentials: ...
+) -> ChannelCredentials:
+    """
+    Creates a ChannelCredentials for use with an SSL-enabled Channel.
+
+    Args:
+      root_certificates: The PEM-encoded root certificates as a byte string,
+        or None to retrieve them from a default location chosen by gRPC
+        runtime.
+      private_key: The PEM-encoded private key as a byte string, or None if no
+        private key should be used.
+      certificate_chain: The PEM-encoded certificate chain as a byte string
+        to use or None if no certificate chain should be used.
+
+    Returns:
+      A ChannelCredentials for use with an SSL-enabled Channel.
+    """
+    ...
+def local_channel_credentials(local_connect_type: LocalConnectionType = ...) -> ChannelCredentials:
+    """
+    Creates a local ChannelCredentials used for local connections.
+
+    This is an EXPERIMENTAL API.
+
+    Local credentials are used by local TCP endpoints (e.g. localhost:10000)
+    also UDS connections.
+
+    The connections created by local channel credentials are not
+    encrypted, but will be checked if they are local or not.
+    The UDS connections are considered secure by providing peer authentication
+    and data confidentiality while TCP connections are considered insecure.
+
+    It is allowed to transmit call credentials over connections created by
+    local channel credentials.
+
+    Local channel credentials are useful for 1) eliminating insecure_channel usage;
+    2) enable unit testing for call credentials without setting up secrets.
+
+    Args:
+      local_connect_type: Local connection type (either
+        grpc.LocalConnectionType.UDS or grpc.LocalConnectionType.LOCAL_TCP)
+
+    Returns:
+      A ChannelCredentials for use with a local Channel
+    """
+    ...
+def metadata_call_credentials(metadata_plugin: AuthMetadataPlugin, name: str | None = None) -> CallCredentials:
+    """
+    Construct CallCredentials from an AuthMetadataPlugin.
+
+    Args:
+      metadata_plugin: An AuthMetadataPlugin to use for authentication.
+      name: An optional name for the plugin.
+
+    Returns:
+      A CallCredentials.
+    """
+    ...
+def access_token_call_credentials(access_token: str) -> CallCredentials:
+    """
+    Construct CallCredentials from an access token.
+
+    Args:
+      access_token: A string to place directly in the http request
+        authorization header, for example
+        "authorization: Bearer <access_token>".
+
+    Returns:
+      A CallCredentials.
+    """
+    ...
+def alts_channel_credentials(service_accounts: Sequence[str] | None = None) -> ChannelCredentials:
+    """
+    Creates a ChannelCredentials for use with an ALTS-enabled Channel.
+
+    This is an EXPERIMENTAL API.
+    ALTS credentials API can only be used in GCP environment as it relies on
+    handshaker service being available. For more info about ALTS see
+    https://cloud.google.com/security/encryption-in-transit/application-layer-transport-security
+
+    Args:
+      service_accounts: A list of server identities accepted by the client.
+        If target service accounts are provided and none of them matches the
+        peer identity of the server, handshake will fail. The arg can be empty
+        if the client does not have any information about trusted server
+        identity.
+    Returns:
+      A ChannelCredentials for use with an ALTS-enabled Channel
+    """
+    ...
+def compute_engine_channel_credentials(call_credentials: CallCredentials) -> ChannelCredentials:
+    """
+    Creates a compute engine channel credential.
+
+    This credential can only be used in a GCP environment as it relies on
+    a handshaker service. For more info about ALTS, see
+    https://cloud.google.com/security/encryption-in-transit/application-layer-transport-security
+
+    This channel credential is expected to be used as part of a composite
+    credential in conjunction with a call credentials that authenticates the
+    VM's default service account. If used with any other sort of call
+    credential, the connection may suddenly and unexpectedly begin failing RPCs.
+    """
+    ...
+def xds_channel_credentials(fallback_credentials: ChannelCredentials | None = None) -> ChannelCredentials:
+    """
+    Creates a ChannelCredentials for use with xDS. This is an EXPERIMENTAL
+      API.
+
+    Args:
+      fallback_credentials: Credentials to use in case it is not possible to
+        establish a secure connection via xDS. If no fallback_credentials
+        argument is supplied, a default SSLChannelCredentials is used.
+    """
+    ...
 
 # GRPC docs say there should be at least two:
 def composite_call_credentials(creds1: CallCredentials, creds2: CallCredentials, *rest: CallCredentials) -> CallCredentials:
@@ -282,7 +483,35 @@ def server(
     maximum_concurrent_rpcs: int | None = None,
     compression: Compression | None = None,
     xds: bool = False,
-) -> Server: ...
+) -> Server:
+    """
+    Creates a Server with which RPCs can be serviced.
+
+    Args:
+      thread_pool: A futures.ThreadPoolExecutor to be used by the Server
+        to execute RPC handlers.
+      handlers: An optional list of GenericRpcHandlers used for executing RPCs.
+        More handlers may be added by calling add_generic_rpc_handlers any time
+        before the server is started.
+      interceptors: An optional list of ServerInterceptor objects that observe
+        and optionally manipulate the incoming RPCs before handing them over to
+        handlers. The interceptors are given control in the order they are
+        specified. This is an EXPERIMENTAL API.
+      options: An optional list of key-value pairs (:term:`channel_arguments` in gRPC runtime)
+        to configure the channel.
+      maximum_concurrent_rpcs: The maximum number of concurrent RPCs this server
+        will service before returning RESOURCE_EXHAUSTED status, or None to
+        indicate no limit.
+      compression: An element of grpc.compression, e.g.
+        grpc.compression.Gzip. This compression algorithm will be used for the
+        lifetime of the server unless overridden.
+      xds: If set to true, retrieves server configuration via xDS. This is an
+        EXPERIMENTAL option.
+
+    Returns:
+      A Server object.
+    """
+    ...
 
 # Create Server Credentials:
 
@@ -292,19 +521,131 @@ def ssl_server_credentials(
     private_key_certificate_chain_pairs: list[_CertificateChainPair],
     root_certificates: bytes | None = None,
     require_client_auth: bool = False,
-) -> ServerCredentials: ...
-def local_server_credentials(local_connect_type: LocalConnectionType = ...) -> ServerCredentials: ...
+) -> ServerCredentials:
+    """
+    Creates a ServerCredentials for use with an SSL-enabled Server.
+
+    Args:
+      private_key_certificate_chain_pairs: A list of pairs of the form
+        [PEM-encoded private key, PEM-encoded certificate chain].
+      root_certificates: An optional byte string of PEM-encoded client root
+        certificates that the server will use to verify client authentication.
+        If omitted, require_client_auth must also be False.
+      require_client_auth: A boolean indicating whether or not to require
+        clients to be authenticated. May only be True if root_certificates
+        is not None.
+
+    Returns:
+      A ServerCredentials for use with an SSL-enabled Server. Typically, this
+      object is an argument to add_secure_port() method during server setup.
+    """
+    ...
+def local_server_credentials(local_connect_type: LocalConnectionType = ...) -> ServerCredentials:
+    """
+    Creates a local ServerCredentials used for local connections.
+
+    This is an EXPERIMENTAL API.
+
+    Local credentials are used by local TCP endpoints (e.g. localhost:10000)
+    also UDS connections.
+
+    The connections created by local server credentials are not
+    encrypted, but will be checked if they are local or not.
+    The UDS connections are considered secure by providing peer authentication
+    and data confidentiality while TCP connections are considered insecure.
+
+    It is allowed to transmit call credentials over connections created by local
+    server credentials.
+
+    Local server credentials are useful for 1) eliminating insecure_channel usage;
+    2) enable unit testing for call credentials without setting up secrets.
+
+    Args:
+      local_connect_type: Local connection type (either
+        grpc.LocalConnectionType.UDS or grpc.LocalConnectionType.LOCAL_TCP)
+
+    Returns:
+      A ServerCredentials for use with a local Server
+    """
+    ...
 def ssl_server_certificate_configuration(
     private_key_certificate_chain_pairs: list[_CertificateChainPair], root_certificates: bytes | None = None
-) -> ServerCertificateConfiguration: ...
+) -> ServerCertificateConfiguration:
+    """
+    Creates a ServerCertificateConfiguration for use with a Server.
+
+    Args:
+      private_key_certificate_chain_pairs: A collection of pairs of
+        the form [PEM-encoded private key, PEM-encoded certificate
+        chain].
+      root_certificates: An optional byte string of PEM-encoded client root
+        certificates that the server will use to verify client authentication.
+
+    Returns:
+      A ServerCertificateConfiguration that can be returned in the certificate
+        configuration fetching callback.
+    """
+    ...
 def dynamic_ssl_server_credentials(
     initial_certificate_configuration: ServerCertificateConfiguration,
     certificate_configuration_fetcher: Callable[[], ServerCertificateConfiguration],
     require_client_authentication: bool = False,
-) -> ServerCredentials: ...
-def alts_server_credentials() -> ServerCredentials: ...
-def insecure_server_credentials() -> ServerCredentials: ...
-def xds_server_credentials(fallback_credentials: ServerCredentials) -> ServerCredentials: ...
+) -> ServerCredentials:
+    """
+    Creates a ServerCredentials for use with an SSL-enabled Server.
+
+    Args:
+      initial_certificate_configuration (ServerCertificateConfiguration): The
+        certificate configuration with which the server will be initialized.
+      certificate_configuration_fetcher (callable): A callable that takes no
+        arguments and should return a ServerCertificateConfiguration to
+        replace the server's current certificate, or None for no change
+        (i.e., the server will continue its current certificate
+        config). The library will call this callback on *every* new
+        client connection before starting the TLS handshake with the
+        client, thus allowing the user application to optionally
+        return a new ServerCertificateConfiguration that the server will then
+        use for the handshake.
+      require_client_authentication: A boolean indicating whether or not to
+        require clients to be authenticated.
+
+    Returns:
+      A ServerCredentials.
+    """
+    ...
+def alts_server_credentials() -> ServerCredentials:
+    """
+    Creates a ServerCredentials for use with an ALTS-enabled connection.
+
+    This is an EXPERIMENTAL API.
+    ALTS credentials API can only be used in GCP environment as it relies on
+    handshaker service being available. For more info about ALTS see
+    https://cloud.google.com/security/encryption-in-transit/application-layer-transport-security
+
+    Returns:
+      A ServerCredentials for use with an ALTS-enabled Server
+    """
+    ...
+def insecure_server_credentials() -> ServerCredentials:
+    """
+    Creates a credentials object directing the server to use no credentials.
+      This is an EXPERIMENTAL API.
+
+    This object cannot be used directly in a call to `add_secure_port`.
+    Instead, it should be used to construct other credentials objects, e.g.
+    with xds_server_credentials.
+    """
+    ...
+def xds_server_credentials(fallback_credentials: ServerCredentials) -> ServerCredentials:
+    """
+    Creates a ServerCredentials for use with xDS. This is an EXPERIMENTAL
+      API.
+
+    Args:
+      fallback_credentials: Credentials to use in case it is not possible to
+        establish a secure connection via xDS. No default value is provided.
+    """
+    ...
 
 # RPC Method Handlers:
 
@@ -323,22 +664,74 @@ def unary_unary_rpc_method_handler(
     behavior: _Behaviour,
     request_deserializer: _RequestDeserializer | None = None,
     response_serializer: _ResponseSerializer | None = None,
-) -> RpcMethodHandler[Any, Any]: ...
+) -> RpcMethodHandler[Any, Any]:
+    """
+    Creates an RpcMethodHandler for a unary-unary RPC method.
+
+    Args:
+      behavior: The implementation of an RPC that accepts one request
+        and returns one response.
+      request_deserializer: An optional :term:`deserializer` for request deserialization.
+      response_serializer: An optional :term:`serializer` for response serialization.
+
+    Returns:
+      An RpcMethodHandler object that is typically used by grpc.Server.
+    """
+    ...
 def unary_stream_rpc_method_handler(
     behavior: _Behaviour,
     request_deserializer: _RequestDeserializer | None = None,
     response_serializer: _ResponseSerializer | None = None,
-) -> RpcMethodHandler[Any, Any]: ...
+) -> RpcMethodHandler[Any, Any]:
+    """
+    Creates an RpcMethodHandler for a unary-stream RPC method.
+
+    Args:
+      behavior: The implementation of an RPC that accepts one request
+        and returns an iterator of response values.
+      request_deserializer: An optional :term:`deserializer` for request deserialization.
+      response_serializer: An optional :term:`serializer` for response serialization.
+
+    Returns:
+      An RpcMethodHandler object that is typically used by grpc.Server.
+    """
+    ...
 def stream_unary_rpc_method_handler(
     behavior: _Behaviour,
     request_deserializer: _RequestDeserializer | None = None,
     response_serializer: _ResponseSerializer | None = None,
-) -> RpcMethodHandler[Any, Any]: ...
+) -> RpcMethodHandler[Any, Any]:
+    """
+    Creates an RpcMethodHandler for a stream-unary RPC method.
+
+    Args:
+      behavior: The implementation of an RPC that accepts an iterator of
+        request values and returns a single response value.
+      request_deserializer: An optional :term:`deserializer` for request deserialization.
+      response_serializer: An optional :term:`serializer` for response serialization.
+
+    Returns:
+      An RpcMethodHandler object that is typically used by grpc.Server.
+    """
+    ...
 def stream_stream_rpc_method_handler(
     behavior: _Behaviour,
     request_deserializer: _RequestDeserializer | None = None,
     response_serializer: _ResponseSerializer | None = None,
-) -> RpcMethodHandler[Any, Any]: ...
+) -> RpcMethodHandler[Any, Any]:
+    """
+    Creates an RpcMethodHandler for a stream-stream RPC method.
+
+    Args:
+      behavior: The implementation of an RPC that accepts an iterator of
+        request values and returns an iterator of response values.
+      request_deserializer: An optional :term:`deserializer` for request deserialization.
+      response_serializer: An optional :term:`serializer` for response serialization.
+
+    Returns:
+      An RpcMethodHandler object that is typically used by grpc.Server.
+    """
+    ...
 def method_handlers_generic_handler(
     service: str, method_handlers: dict[str, RpcMethodHandler[Any, Any]]
 ) -> GenericRpcHandler[Any, Any]:
@@ -490,30 +883,117 @@ class Channel(abc.ABC):
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> StreamStreamMultiCallable[Any, Any]: ...
+    ) -> StreamStreamMultiCallable[Any, Any]:
+        """
+        Creates a StreamStreamMultiCallable for a stream-stream method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. A bool representing whether the method
+            is registered.
+
+        Returns:
+          A StreamStreamMultiCallable value for the named stream-stream method.
+        """
+        ...
     @abc.abstractmethod
     def stream_unary(
         self,
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> StreamUnaryMultiCallable[Any, Any]: ...
+    ) -> StreamUnaryMultiCallable[Any, Any]:
+        """
+        Creates a StreamUnaryMultiCallable for a stream-unary method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None is
+            passed.
+          _registered_method: Implementation Private. A bool representing whether the method
+            is registered.
+
+        Returns:
+          A StreamUnaryMultiCallable value for the named stream-unary method.
+        """
+        ...
     @abc.abstractmethod
-    def subscribe(self, callback: Callable[[ChannelConnectivity], None], try_to_connect: bool = False) -> None: ...
+    def subscribe(self, callback: Callable[[ChannelConnectivity], None], try_to_connect: bool = False) -> None:
+        """
+        Subscribe to this Channel's connectivity state machine.
+
+        A Channel may be in any of the states described by ChannelConnectivity.
+        This method allows application to monitor the state transitions.
+        The typical use case is to debug or gain better visibility into gRPC
+        runtime's state.
+
+        Args:
+          callback: A callable to be invoked with ChannelConnectivity argument.
+            ChannelConnectivity describes current state of the channel.
+            The callable will be invoked immediately upon subscription
+            and again for every change to ChannelConnectivity until it
+            is unsubscribed or this Channel object goes out of scope.
+          try_to_connect: A boolean indicating whether or not this Channel
+            should attempt to connect immediately. If set to False, gRPC
+            runtime decides when to connect.
+        """
+        ...
     @abc.abstractmethod
     def unary_stream(
         self,
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> UnaryStreamMultiCallable[Any, Any]: ...
+    ) -> UnaryStreamMultiCallable[Any, Any]:
+        """
+        Creates a UnaryStreamMultiCallable for a unary-stream method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None is
+            passed.
+          _registered_method: Implementation Private. A bool representing whether the method
+            is registered.
+
+        Returns:
+          A UnaryStreamMultiCallable value for the name unary-stream method.
+        """
+        ...
     @abc.abstractmethod
     def unary_unary(
         self,
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> UnaryUnaryMultiCallable[Any, Any]: ...
+    ) -> UnaryUnaryMultiCallable[Any, Any]:
+        """
+        Creates a UnaryUnaryMultiCallable for a unary-unary method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. A bool representing whether the method
+            is registered.
+
+        Returns:
+          A UnaryUnaryMultiCallable value for the named unary-unary method.
+        """
+        ...
     @abc.abstractmethod
     def unsubscribe(self, callback: Callable[[ChannelConnectivity], None]) -> None:
         """
@@ -629,7 +1109,29 @@ class Server(abc.ABC):
 
     # Block current thread until the server stops. Returns a bool
     # indicates if the operation times out. Timeout is in seconds.
-    def wait_for_termination(self, timeout: float | None = None) -> bool: ...
+    def wait_for_termination(self, timeout: float | None = None) -> bool:
+        """
+        Block current thread until the server stops.
+
+        This is an EXPERIMENTAL API.
+
+        The wait will not consume computational resources during blocking, and
+        it will block until one of the two following conditions are met:
+
+        1) The server is stopped or terminated;
+        2) A timeout occurs if timeout is not `None`.
+
+        The timeout argument works in the same way as `threading.Event.wait()`.
+        https://docs.python.org/3/library/threading.html#threading.Event.wait
+
+        Args:
+          timeout: A floating point number specifying a timeout for the
+            operation in seconds.
+
+        Returns:
+          A bool indicates if the operation times out.
+        """
+        ...
 
 # Authentication & Authorization Objects:
 
@@ -1379,7 +1881,31 @@ class UnaryUnaryMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> _TResponse: ...
+    ) -> _TResponse:
+        """
+        Synchronously invokes the underlying RPC.
+
+        Args:
+          request: The request value for the RPC.
+          timeout: An optional duration of time in seconds to allow
+            for the RPC.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+          The response value for the RPC.
+
+        Raises:
+          RpcError: Indicating that the RPC terminated with non-OK status. The
+            raised RpcError will also be a Call for the RPC affording the RPC's
+            metadata, status code, and details.
+        """
+        ...
     @abc.abstractmethod
     def future(
         self,
@@ -1389,7 +1915,30 @@ class UnaryUnaryMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> _CallFuture[_TResponse]: ...
+    ) -> _CallFuture[_TResponse]:
+        """
+        Asynchronously invokes the underlying RPC.
+
+        Args:
+          request: The request value for the RPC.
+          timeout: An optional duration of time in seconds to allow for
+            the RPC.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+            An object that is both a Call for the RPC and a Future.
+            In the event of RPC completion, the return Call-Future's result
+            value will be the response message of the RPC.
+            Should the event terminate with non-OK status,
+            the returned Call-Future's exception value will be an RpcError.
+        """
+        ...
     @abc.abstractmethod
     def with_call(
         self,
@@ -1438,7 +1987,29 @@ class UnaryStreamMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> _CallIterator[_TResponse]: ...
+    ) -> _CallIterator[_TResponse]:
+        """
+        Invokes the underlying RPC.
+
+        Args:
+          request: The request value for the RPC.
+          timeout: An optional duration of time in seconds to allow for
+            the RPC. If None, the timeout is considered infinite.
+          metadata: An optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+            An object that is a Call for the RPC, an iterator of response
+            values, and a Future for the RPC. Drawing response values from the
+            returned Call-iterator may raise RpcError indicating termination of
+            the RPC with non-OK status.
+        """
+        ...
 
 class StreamUnaryMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
     """Affords invoking a stream-unary RPC from client-side."""
@@ -1451,7 +2022,32 @@ class StreamUnaryMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> _TResponse: ...
+    ) -> _TResponse:
+        """
+        Synchronously invokes the underlying RPC.
+
+        Args:
+          request_iterator: An iterator that yields request values for
+            the RPC.
+          timeout: An optional duration of time in seconds to allow for
+            the RPC. If None, the timeout is considered infinite.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+          The response value for the RPC.
+
+        Raises:
+          RpcError: Indicating that the RPC terminated with non-OK status. The
+            raised RpcError will also implement grpc.Call, affording methods
+            such as metadata, code, and details.
+        """
+        ...
     @abc.abstractmethod
     def future(
         self,
@@ -1461,7 +2057,30 @@ class StreamUnaryMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> _CallFuture[_TResponse]: ...
+    ) -> _CallFuture[_TResponse]:
+        """
+        Asynchronously invokes the underlying RPC on the client.
+
+        Args:
+          request_iterator: An iterator that yields request values for the RPC.
+          timeout: An optional duration of time in seconds to allow for
+            the RPC. If None, the timeout is considered infinite.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+            An object that is both a Call for the RPC and a Future.
+            In the event of RPC completion, the return Call-Future's result value
+            will be the response message of the RPC. Should the event terminate
+            with non-OK status, the returned Call-Future's exception value will
+            be an RpcError.
+        """
+        ...
     @abc.abstractmethod
     def with_call(
         self,
@@ -1511,7 +2130,29 @@ class StreamStreamMultiCallable(abc.ABC, Generic[_TRequest, _TResponse]):
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> _CallIterator[_TResponse]: ...
+    ) -> _CallIterator[_TResponse]:
+        """
+        Invokes the underlying RPC on the client.
+
+        Args:
+          request_iterator: An iterator that yields request values for the RPC.
+          timeout: An optional duration of time in seconds to allow for
+            the RPC. If not specified, the timeout is considered infinite.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+            An object that is a Call for the RPC, an iterator of response
+            values, and a Future for the RPC. Drawing response values from the
+            returned Call-iterator may raise RpcError indicating termination of
+            the RPC with non-OK status.
+        """
+        ...
 
 # Runtime Protobuf Parsing:
 

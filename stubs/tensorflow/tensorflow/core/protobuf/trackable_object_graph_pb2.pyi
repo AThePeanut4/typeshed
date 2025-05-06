@@ -40,7 +40,9 @@ class TrackableObjectGraph(google.protobuf.message.Message):
             local_name: builtins.str
             """A user-provided name for the edge."""
             def __init__(self, *, node_id: builtins.int | None = ..., local_name: builtins.str | None = ...) -> None: ...
-            def ClearField(self, field_name: typing.Literal["local_name", b"local_name", "node_id", b"node_id"]) -> None: ...
+            def ClearField(self, field_name: typing.Literal["local_name", b"local_name", "node_id", b"node_id"]) -> None:
+                """Clears a message field."""
+                ...
 
         @typing.final
         class SerializedTensor(google.protobuf.message.Message):
@@ -71,7 +73,9 @@ class TrackableObjectGraph(google.protobuf.message.Message):
             ) -> None: ...
             def ClearField(
                 self, field_name: typing.Literal["checkpoint_key", b"checkpoint_key", "full_name", b"full_name", "name", b"name"]
-            ) -> None: ...
+            ) -> None:
+                """Clears a message field."""
+                ...
 
         @typing.final
         class SlotVariableReference(google.protobuf.message.Message):
@@ -107,7 +111,9 @@ class TrackableObjectGraph(google.protobuf.message.Message):
                     "slot_variable_node_id",
                     b"slot_variable_node_id",
                 ],
-            ) -> None: ...
+            ) -> None:
+                """Clears a message field."""
+                ...
 
         CHILDREN_FIELD_NUMBER: builtins.int
         ATTRIBUTES_FIELD_NUMBER: builtins.int
@@ -168,7 +174,9 @@ class TrackableObjectGraph(google.protobuf.message.Message):
             field_name: typing.Literal[
                 "has_checkpoint_values", b"has_checkpoint_values", "registered_saver", b"registered_saver"
             ],
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -183,7 +191,9 @@ class TrackableObjectGraph(google.protobuf.message.Message):
                 "slot_variables",
                 b"slot_variables",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     NODES_FIELD_NUMBER: builtins.int
     @property
@@ -210,6 +220,8 @@ class RegisteredSaver(google.protobuf.message.Message):
     object_name: builtins.str
     """Unique auto-generated name of the object."""
     def __init__(self, *, name: builtins.str | None = ..., object_name: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "object_name", b"object_name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "object_name", b"object_name"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___RegisteredSaver = RegisteredSaver

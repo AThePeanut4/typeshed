@@ -71,9 +71,34 @@ class AioRpcError(RpcError):
         trailing_metadata: Metadata,
         details: str | None = None,
         debug_error_string: str | None = None,
-    ) -> None: ...
-    def debug_error_string(self) -> str: ...
-    def initial_metadata(self) -> Metadata: ...
+    ) -> None:
+        """
+        Constructor.
+
+        Args:
+          code: The status code with which the RPC has been finalized.
+          details: Optional details explaining the reason of the error.
+          initial_metadata: Optional initial metadata that could be sent by the
+            Server.
+          trailing_metadata: Optional metadata that could be sent by the Server.
+        """
+        ...
+    def debug_error_string(self) -> str:
+        """
+        Accesses the debug error string sent by the server.
+
+        Returns:
+          The debug error string received.
+        """
+        ...
+    def initial_metadata(self) -> Metadata:
+        """
+        Accesses the initial metadata sent by the server.
+
+        Returns:
+          The initial metadata received.
+        """
+        ...
 
 # Create Client:
 
@@ -86,14 +111,47 @@ def insecure_channel(
     options: _Options | None = None,
     compression: Compression | None = None,
     interceptors: Sequence[ClientInterceptor] | None = None,
-) -> Channel: ...
+) -> Channel:
+    """
+    Creates an insecure asynchronous Channel to a server.
+
+    Args:
+      target: The server address
+      options: An optional list of key-value pairs (:term:`channel_arguments`
+        in gRPC Core runtime) to configure the channel.
+      compression: An optional value indicating the compression method to be
+        used over the lifetime of the channel.
+      interceptors: An optional sequence of interceptors that will be executed for
+        any call executed with this channel.
+
+    Returns:
+      A Channel.
+    """
+    ...
 def secure_channel(
     target: str,
     credentials: ChannelCredentials,
     options: _Options | None = None,
     compression: Compression | None = None,
     interceptors: Sequence[ClientInterceptor] | None = None,
-) -> Channel: ...
+) -> Channel:
+    """
+    Creates a secure asynchronous Channel to a server.
+
+    Args:
+      target: The server address.
+      credentials: A ChannelCredentials instance.
+      options: An optional list of key-value pairs (:term:`channel_arguments`
+        in gRPC Core runtime) to configure the channel.
+      compression: An optional value indicating the compression method to be
+        used over the lifetime of the channel.
+      interceptors: An optional sequence of interceptors that will be executed for
+        any call executed with this channel.
+
+    Returns:
+      An aio.Channel.
+    """
+    ...
 
 # Create Server:
 
@@ -104,7 +162,33 @@ def server(
     options: _Options | None = None,
     maximum_concurrent_rpcs: int | None = None,
     compression: Compression | None = None,
-) -> Server: ...
+) -> Server:
+    """
+    Creates a Server with which RPCs can be serviced.
+
+    Args:
+      migration_thread_pool: A futures.ThreadPoolExecutor to be used by the
+        Server to execute non-AsyncIO RPC handlers for migration purpose.
+      handlers: An optional list of GenericRpcHandlers used for executing RPCs.
+        More handlers may be added by calling add_generic_rpc_handlers any time
+        before the server is started.
+      interceptors: An optional list of ServerInterceptor objects that observe
+        and optionally manipulate the incoming RPCs before handing them over to
+        handlers. The interceptors are given control in the order they are
+        specified. This is an EXPERIMENTAL API.
+      options: An optional list of key-value pairs (:term:`channel_arguments` in gRPC runtime)
+        to configure the channel.
+      maximum_concurrent_rpcs: The maximum number of concurrent RPCs this server
+        will service before returning RESOURCE_EXHAUSTED status, or None to
+        indicate no limit.
+      compression: An element of grpc.compression, e.g.
+        grpc.compression.Gzip. This compression algorithm will be used for the
+        lifetime of the server unless overridden by set_compression.
+
+    Returns:
+      A Server object.
+    """
+    ...
 
 # Channel Object:
 
@@ -123,9 +207,40 @@ class Channel(abc.ABC):
     multiple times.
     """
     @abc.abstractmethod
-    async def close(self, grace: float | None = None) -> None: ...
+    async def close(self, grace: float | None = None) -> None:
+        """
+        Closes this Channel and releases all resources held by it.
+
+        This method immediately stops the channel from executing new RPCs in
+        all cases.
+
+        If a grace period is specified, this method waits until all active
+        RPCs are finished or until the grace period is reached. RPCs that haven't
+        been terminated within the grace period are aborted.
+        If a grace period is not specified (by passing None for grace),
+        all existing RPCs are cancelled immediately.
+
+        This method is idempotent.
+        """
+        ...
     @abc.abstractmethod
-    def get_state(self, try_to_connect: bool = False) -> ChannelConnectivity: ...
+    def get_state(self, try_to_connect: bool = False) -> ChannelConnectivity:
+        """
+        Checks the connectivity state of a channel.
+
+        This is an EXPERIMENTAL API.
+
+        If the channel reaches a stable connectivity state, it is guaranteed
+        that the return value of this function will eventually converge to that
+        state.
+
+        Args:
+          try_to_connect: a bool indicate whether the Channel should try to
+            connect to peer or not.
+
+        Returns: A ChannelConnectivity object.
+        """
+        ...
     @abc.abstractmethod
     async def wait_for_state_change(self, last_observed_state: ChannelConnectivity) -> None:
         """
@@ -156,28 +271,96 @@ class Channel(abc.ABC):
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> StreamStreamMultiCallable[Any, Any]: ...
+    ) -> StreamStreamMultiCallable[Any, Any]:
+        """
+        Creates a StreamStreamMultiCallable for a stream-stream method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A StreamStreamMultiCallable value for the named stream-stream method.
+        """
+        ...
     @abc.abstractmethod
     def stream_unary(
         self,
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> StreamUnaryMultiCallable[Any, Any]: ...
+    ) -> StreamUnaryMultiCallable[Any, Any]:
+        """
+        Creates a StreamUnaryMultiCallable for a stream-unary method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A StreamUnaryMultiCallable value for the named stream-unary method.
+        """
+        ...
     @abc.abstractmethod
     def unary_stream(
         self,
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> UnaryStreamMultiCallable[Any, Any]: ...
+    ) -> UnaryStreamMultiCallable[Any, Any]:
+        """
+        Creates a UnaryStreamMultiCallable for a unary-stream method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A UnaryStreamMultiCallable value for the named unary-stream method.
+        """
+        ...
     @abc.abstractmethod
     def unary_unary(
         self,
         method: str,
         request_serializer: _RequestSerializer | None = None,
         response_deserializer: _ResponseDeserializer | None = None,
-    ) -> UnaryUnaryMultiCallable[Any, Any]: ...
+    ) -> UnaryUnaryMultiCallable[Any, Any]:
+        """
+        Creates a UnaryUnaryMultiCallable for a unary-unary method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A UnaryUnaryMultiCallable value for the named unary-unary method.
+        """
+        ...
     @abc.abstractmethod
     async def __aenter__(self) -> Self:
         """
@@ -299,7 +482,29 @@ class Server(metaclass=abc.ABCMeta):
 
     # Returns a bool indicates if the operation times out. Timeout is in seconds.
     @abc.abstractmethod
-    async def wait_for_termination(self, timeout: float | None = None) -> bool: ...
+    async def wait_for_termination(self, timeout: float | None = None) -> bool:
+        """
+        Continues current coroutine once the server stops.
+
+        This is an EXPERIMENTAL API.
+
+        The wait will not consume computational resources during blocking, and
+        it will block until one of the two following conditions are met:
+
+        1) The server is stopped or terminated;
+        2) A timeout occurs if timeout is not `None`.
+
+        The timeout argument works in the same way as `threading.Event.wait()`.
+        https://docs.python.org/3/library/threading.html#threading.Event.wait
+
+        Args:
+          timeout: A floating point number specifying a timeout for the
+            operation in seconds.
+
+        Returns:
+          A bool indicates if the operation times out.
+        """
+        ...
 
 # Client-Side Context:
 
@@ -548,7 +753,26 @@ class _DoneCallback(Generic[_TRequest, _TResponse]):
 class ServicerContext(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
     """A context object passed to method implementations."""
     @abc.abstractmethod
-    async def abort(self, code: StatusCode, details: str = "", trailing_metadata: _MetadataType = ()) -> NoReturn: ...
+    async def abort(self, code: StatusCode, details: str = "", trailing_metadata: _MetadataType = ()) -> NoReturn:
+        """
+        Raises an exception to terminate the RPC with a non-OK status.
+
+        The code and details passed as arguments will supersede any existing
+        ones.
+
+        Args:
+          code: A StatusCode object to be sent to the client.
+            It must not be StatusCode.OK.
+          details: A UTF-8-encodable string to be sent to the client upon
+            termination of the RPC.
+          trailing_metadata: A sequence of tuple represents the trailing
+            :term:`metadata`.
+
+        Raises:
+          Exception: An exception is always raised to signal the abortion the
+            RPC to the gRPC runtime.
+        """
+        ...
     @abc.abstractmethod
     async def read(self) -> _TRequest:
         """
@@ -1073,7 +1297,31 @@ class UnaryUnaryMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.ABCM
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> UnaryUnaryCall[_TRequest, _TResponse]: ...
+    ) -> UnaryUnaryCall[_TRequest, _TResponse]:
+        """
+        Asynchronously invokes the underlying RPC.
+
+        Args:
+          request: The request value for the RPC.
+          timeout: An optional duration of time in seconds to allow
+            for the RPC.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+          A UnaryUnaryCall object.
+
+        Raises:
+          RpcError: Indicates that the RPC terminated with non-OK status. The
+            raised RpcError will also be a Call for the RPC affording the RPC's
+            metadata, status code, and details.
+        """
+        ...
 
 class UnaryStreamMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
     """Enables asynchronous invocation of a server-streaming RPC."""
@@ -1087,7 +1335,31 @@ class UnaryStreamMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.ABC
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> UnaryStreamCall[_TRequest, _TResponse]: ...
+    ) -> UnaryStreamCall[_TRequest, _TResponse]:
+        """
+        Asynchronously invokes the underlying RPC.
+
+        Args:
+          request: The request value for the RPC.
+          timeout: An optional duration of time in seconds to allow
+            for the RPC.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+          A UnaryStreamCall object.
+
+        Raises:
+          RpcError: Indicates that the RPC terminated with non-OK status. The
+            raised RpcError will also be a Call for the RPC affording the RPC's
+            metadata, status code, and details.
+        """
+        ...
 
 class StreamUnaryMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
     """Enables asynchronous invocation of a client-streaming RPC."""
@@ -1100,7 +1372,32 @@ class StreamUnaryMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.ABC
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> StreamUnaryCall[_TRequest, _TResponse]: ...
+    ) -> StreamUnaryCall[_TRequest, _TResponse]:
+        """
+        Asynchronously invokes the underlying RPC.
+
+        Args:
+          request_iterator: An optional async iterable or iterable of request
+            messages for the RPC.
+          timeout: An optional duration of time in seconds to allow
+            for the RPC.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+          A StreamUnaryCall object.
+
+        Raises:
+          RpcError: Indicates that the RPC terminated with non-OK status. The
+            raised RpcError will also be a Call for the RPC affording the RPC's
+            metadata, status code, and details.
+        """
+        ...
 
 class StreamStreamMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
     """Enables asynchronous invocation of a bidirectional-streaming RPC."""
@@ -1113,7 +1410,32 @@ class StreamStreamMultiCallable(Generic[_TRequest, _TResponse], metaclass=abc.AB
         credentials: CallCredentials | None = None,
         wait_for_ready: bool | None = None,
         compression: Compression | None = None,
-    ) -> StreamStreamCall[_TRequest, _TResponse]: ...
+    ) -> StreamStreamCall[_TRequest, _TResponse]:
+        """
+        Asynchronously invokes the underlying RPC.
+
+        Args:
+          request_iterator: An optional async iterable or iterable of request
+            messages for the RPC.
+          timeout: An optional duration of time in seconds to allow
+            for the RPC.
+          metadata: Optional :term:`metadata` to be transmitted to the
+            service-side of the RPC.
+          credentials: An optional CallCredentials for the RPC. Only valid for
+            secure Channel.
+          wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+          compression: An element of grpc.compression, e.g.
+            grpc.compression.Gzip.
+
+        Returns:
+          A StreamStreamCall object.
+
+        Raises:
+          RpcError: Indicates that the RPC terminated with non-OK status. The
+            raised RpcError will also be a Call for the RPC affording the RPC's
+            metadata, status code, and details.
+        """
+        ...
 
 # Metadata:
 

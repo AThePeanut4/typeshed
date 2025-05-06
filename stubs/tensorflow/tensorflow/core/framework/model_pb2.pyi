@@ -136,7 +136,9 @@ class ModelProto(google.protobuf.message.Message):
                     "value",
                     b"value",
                 ],
-            ) -> None: ...
+            ) -> None:
+                """Clears a message field."""
+                ...
 
         ID_FIELD_NUMBER: builtins.int
         NAME_FIELD_NUMBER: builtins.int
@@ -259,7 +261,9 @@ class ModelProto(google.protobuf.message.Message):
                 "record_metrics",
                 b"record_metrics",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class NodesEntry(google.protobuf.message.Message):
@@ -271,8 +275,12 @@ class ModelProto(google.protobuf.message.Message):
         @property
         def value(self) -> global___ModelProto.Node: ...
         def __init__(self, *, key: builtins.int | None = ..., value: global___ModelProto.Node | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class OptimizationParams(google.protobuf.message.Message):
@@ -314,7 +322,9 @@ class ModelProto(google.protobuf.message.Message):
                 "ram_budget",
                 b"ram_budget",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     DATASET_NAME_FIELD_NUMBER: builtins.int
     NODES_FIELD_NUMBER: builtins.int
@@ -346,7 +356,9 @@ class ModelProto(google.protobuf.message.Message):
         optimization_params: global___ModelProto.OptimizationParams | None = ...,
         gap_times: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["optimization_params", b"optimization_params"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["optimization_params", b"optimization_params"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -363,6 +375,8 @@ class ModelProto(google.protobuf.message.Message):
             "output",
             b"output",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ModelProto = ModelProto

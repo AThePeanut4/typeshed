@@ -17,7 +17,13 @@ class ReadOnlyWorksheet:
     # Same as Worksheet.values
     # https://github.com/python/mypy/issues/6700
     @property
-    def values(self) -> Generator[tuple[_CellGetValue, ...], None, None]: ...
+    def values(self) -> Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces all cell values in the worksheet, by row
+
+        :type: generator
+        """
+        ...
     # Same as Worksheet.rows
     # https://github.com/python/mypy/issues/6700
     @property

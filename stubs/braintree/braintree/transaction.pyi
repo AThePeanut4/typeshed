@@ -204,7 +204,32 @@ class Transaction(Resource):
     @staticmethod
     def clone_transaction(transaction_id, params): ...
     @staticmethod
-    def credit(params: Incomplete | None = None): ...
+    def credit(params: Incomplete | None = None):
+        """
+        Creates a transaction of type Credit.
+
+        Amount is required. Also, a credit card,
+        customer_id or payment_method_token is required. ::
+
+            result = braintree.Transaction.credit({
+                "amount": "100.00",
+                "payment_method_token": "my_token"
+            })
+
+            result = braintree.Transaction.credit({
+                "amount": "100.00",
+                "credit_card": {
+                    "number": "4111111111111111",
+                    "expiration_date": "12/2012"
+                }
+            })
+
+            result = braintree.Transaction.credit({
+                "amount": "100.00",
+                "customer_id": "my_customer_id"
+            })
+        """
+        ...
     @staticmethod
     def find(transaction_id):
         """
@@ -216,7 +241,15 @@ class Transaction(Resource):
         """
         ...
     @staticmethod
-    def refund(transaction_id, amount_or_options: Incomplete | None = None): ...
+    def refund(transaction_id, amount_or_options: Incomplete | None = None):
+        """
+        Refunds an existing transaction.
+
+        It expects a transaction_id.::
+
+            result = braintree.Transaction.refund("my_transaction_id")
+        """
+        ...
     @staticmethod
     def sale(params: Incomplete | None = None):
         """
@@ -245,7 +278,15 @@ class Transaction(Resource):
     @staticmethod
     def search(*query): ...
     @staticmethod
-    def submit_for_settlement(transaction_id, amount: Incomplete | None = None, params: Incomplete | None = None): ...
+    def submit_for_settlement(transaction_id, amount: Incomplete | None = None, params: Incomplete | None = None):
+        """
+        Submits an authorized transaction for settlement.
+
+        Requires the transaction id::
+
+            result = braintree.Transaction.submit_for_settlement("my_transaction_id")
+        """
+        ...
     @staticmethod
     def update_details(transaction_id, params: Incomplete | None = None):
         """

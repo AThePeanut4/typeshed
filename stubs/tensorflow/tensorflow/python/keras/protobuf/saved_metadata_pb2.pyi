@@ -26,7 +26,9 @@ class SavedMetadata(google.protobuf.message.Message):
         """
 
     def __init__(self, *, nodes: collections.abc.Iterable[global___SavedObject] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["nodes", b"nodes"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["nodes", b"nodes"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedMetadata = SavedMetadata
 
@@ -69,7 +71,9 @@ class SavedObject(google.protobuf.message.Message):
         metadata: builtins.str | None = ...,
         version: tensorflow.python.keras.protobuf.versions_pb2.VersionDef | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["version", b"version"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["version", b"version"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -84,6 +88,8 @@ class SavedObject(google.protobuf.message.Message):
             "version",
             b"version",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedObject = SavedObject

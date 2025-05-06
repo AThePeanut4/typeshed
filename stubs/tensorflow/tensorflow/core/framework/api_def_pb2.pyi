@@ -126,7 +126,9 @@ class ApiDef(google.protobuf.message.Message):
             field_name: typing.Literal[
                 "deprecated", b"deprecated", "deprecation_version", b"deprecation_version", "name", b"name"
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class Arg(google.protobuf.message.Message):
@@ -151,7 +153,9 @@ class ApiDef(google.protobuf.message.Message):
         ) -> None: ...
         def ClearField(
             self, field_name: typing.Literal["description", b"description", "name", b"name", "rename_to", b"rename_to"]
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class Attr(google.protobuf.message.Message):
@@ -192,13 +196,17 @@ class ApiDef(google.protobuf.message.Message):
             default_value: tensorflow.core.framework.attr_value_pb2.AttrValue | None = ...,
             description: builtins.str | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing.Literal["default_value", b"default_value"]) -> builtins.bool: ...
+        def HasField(self, field_name: typing.Literal["default_value", b"default_value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
                 "default_value", b"default_value", "description", b"description", "name", b"name", "rename_to", b"rename_to"
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     GRAPH_OP_NAME_FIELD_NUMBER: builtins.int
     DEPRECATION_MESSAGE_FIELD_NUMBER: builtins.int
@@ -297,7 +305,9 @@ class ApiDef(google.protobuf.message.Message):
             "visibility",
             b"visibility",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ApiDef = ApiDef
 
@@ -309,6 +319,8 @@ class ApiDefs(google.protobuf.message.Message):
     @property
     def op(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ApiDef]: ...
     def __init__(self, *, op: collections.abc.Iterable[global___ApiDef] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["op", b"op"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["op", b"op"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ApiDefs = ApiDefs

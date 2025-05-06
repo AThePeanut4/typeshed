@@ -144,7 +144,9 @@ class AutotuneOptions(google.protobuf.message.Message):
             "ram_budget",
             b"ram_budget",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -169,27 +171,39 @@ class AutotuneOptions(google.protobuf.message.Message):
             "ram_budget",
             b"ram_budget",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_autotune_algorithm", b"optional_autotune_algorithm"]
-    ) -> typing.Literal["autotune_algorithm"] | None: ...
+    ) -> typing.Literal["autotune_algorithm"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_cpu_budget", b"optional_cpu_budget"]
-    ) -> typing.Literal["cpu_budget"] | None: ...
+    ) -> typing.Literal["cpu_budget"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_enabled", b"optional_enabled"]
-    ) -> typing.Literal["enabled"] | None: ...
+    ) -> typing.Literal["enabled"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_initial_parallelism", b"optional_initial_parallelism"]
-    ) -> typing.Literal["initial_parallelism"] | None: ...
+    ) -> typing.Literal["initial_parallelism"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_ram_budget", b"optional_ram_budget"]
-    ) -> typing.Literal["ram_budget"] | None: ...
+    ) -> typing.Literal["ram_budget"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___AutotuneOptions = AutotuneOptions
 
@@ -239,7 +253,9 @@ class CardinalityOptions(google.protobuf.message.Message):
     COMPUTE_LEVEL_FIELD_NUMBER: builtins.int
     compute_level: global___CardinalityOptions.ComputeLevel.ValueType
     def __init__(self, *, compute_level: global___CardinalityOptions.ComputeLevel.ValueType | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["compute_level", b"compute_level"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["compute_level", b"compute_level"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CardinalityOptions = CardinalityOptions
 
@@ -258,7 +274,9 @@ class DistributeOptions(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["num_devices", b"num_devices", "optional_num_devices", b"optional_num_devices"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -269,10 +287,14 @@ class DistributeOptions(google.protobuf.message.Message):
             "optional_num_devices",
             b"optional_num_devices",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_num_devices", b"optional_num_devices"]
-    ) -> typing.Literal["num_devices"] | None: ...
+    ) -> typing.Literal["num_devices"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___DistributeOptions = DistributeOptions
 
@@ -374,7 +396,9 @@ class OptimizationOptions(google.protobuf.message.Message):
             "shuffle_and_repeat_fusion",
             b"shuffle_and_repeat_fusion",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -427,55 +451,81 @@ class OptimizationOptions(google.protobuf.message.Message):
             "shuffle_and_repeat_fusion",
             b"shuffle_and_repeat_fusion",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_apply_default_optimizations", b"optional_apply_default_optimizations"]
-    ) -> typing.Literal["apply_default_optimizations"] | None: ...
+    ) -> typing.Literal["apply_default_optimizations"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_filter_fusion", b"optional_filter_fusion"]
-    ) -> typing.Literal["filter_fusion"] | None: ...
+    ) -> typing.Literal["filter_fusion"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_filter_parallelization", b"optional_filter_parallelization"]
-    ) -> typing.Literal["filter_parallelization"] | None: ...
+    ) -> typing.Literal["filter_parallelization"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_inject_prefetch", b"optional_inject_prefetch"]
-    ) -> typing.Literal["inject_prefetch"] | None: ...
+    ) -> typing.Literal["inject_prefetch"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_map_and_batch_fusion", b"optional_map_and_batch_fusion"]
-    ) -> typing.Literal["map_and_batch_fusion"] | None: ...
+    ) -> typing.Literal["map_and_batch_fusion"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_map_and_filter_fusion", b"optional_map_and_filter_fusion"]
-    ) -> typing.Literal["map_and_filter_fusion"] | None: ...
+    ) -> typing.Literal["map_and_filter_fusion"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_map_fusion", b"optional_map_fusion"]
-    ) -> typing.Literal["map_fusion"] | None: ...
+    ) -> typing.Literal["map_fusion"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_map_parallelization", b"optional_map_parallelization"]
-    ) -> typing.Literal["map_parallelization"] | None: ...
+    ) -> typing.Literal["map_parallelization"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_noop_elimination", b"optional_noop_elimination"]
-    ) -> typing.Literal["noop_elimination"] | None: ...
+    ) -> typing.Literal["noop_elimination"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_parallel_batch", b"optional_parallel_batch"]
-    ) -> typing.Literal["parallel_batch"] | None: ...
+    ) -> typing.Literal["parallel_batch"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_seq_interleave_prefetch", b"optional_seq_interleave_prefetch"]
-    ) -> typing.Literal["seq_interleave_prefetch"] | None: ...
+    ) -> typing.Literal["seq_interleave_prefetch"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_shuffle_and_repeat_fusion", b"optional_shuffle_and_repeat_fusion"]
-    ) -> typing.Literal["shuffle_and_repeat_fusion"] | None: ...
+    ) -> typing.Literal["shuffle_and_repeat_fusion"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___OptimizationOptions = OptimizationOptions
 
@@ -490,11 +540,17 @@ class ServiceOptions(google.protobuf.message.Message):
     def __init__(self, *, pinned: builtins.bool | None = ...) -> None: ...
     def HasField(
         self, field_name: typing.Literal["optional_pinned", b"optional_pinned", "pinned", b"pinned"]
-    ) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["optional_pinned", b"optional_pinned", "pinned", b"pinned"]) -> None: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["optional_pinned", b"optional_pinned", "pinned", b"pinned"]) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_pinned", b"optional_pinned"]
-    ) -> typing.Literal["pinned"] | None: ...
+    ) -> typing.Literal["pinned"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___ServiceOptions = ServiceOptions
 
@@ -523,7 +579,9 @@ class ThreadingOptions(google.protobuf.message.Message):
             "private_threadpool_size",
             b"private_threadpool_size",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -536,15 +594,21 @@ class ThreadingOptions(google.protobuf.message.Message):
             "private_threadpool_size",
             b"private_threadpool_size",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_max_intra_op_parallelism", b"optional_max_intra_op_parallelism"]
-    ) -> typing.Literal["max_intra_op_parallelism"] | None: ...
+    ) -> typing.Literal["max_intra_op_parallelism"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_private_threadpool_size", b"optional_private_threadpool_size"]
-    ) -> typing.Literal["private_threadpool_size"] | None: ...
+    ) -> typing.Literal["private_threadpool_size"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___ThreadingOptions = ThreadingOptions
 
@@ -654,7 +718,9 @@ class Options(google.protobuf.message.Message):
             "warm_start",
             b"warm_start",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -695,19 +761,27 @@ class Options(google.protobuf.message.Message):
             "warm_start",
             b"warm_start",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_dataset_name", b"optional_dataset_name"]
-    ) -> typing.Literal["dataset_name"] | None: ...
+    ) -> typing.Literal["dataset_name"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_deterministic", b"optional_deterministic"]
-    ) -> typing.Literal["deterministic"] | None: ...
+    ) -> typing.Literal["deterministic"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_external_state_policy", b"optional_external_state_policy"]
-    ) -> typing.Literal["external_state_policy"] | None: ...
+    ) -> typing.Literal["external_state_policy"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(self, oneof_group: typing.Literal["optional_slack", b"optional_slack"]) -> typing.Literal["slack"] | None:
         """Returns the name of the field set inside a oneof, or None if no field is set."""
@@ -715,10 +789,14 @@ class Options(google.protobuf.message.Message):
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_symbolic_checkpoint", b"optional_symbolic_checkpoint"]
-    ) -> typing.Literal["symbolic_checkpoint"] | None: ...
+    ) -> typing.Literal["symbolic_checkpoint"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["optional_warm_start", b"optional_warm_start"]
-    ) -> typing.Literal["warm_start"] | None: ...
+    ) -> typing.Literal["warm_start"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___Options = Options

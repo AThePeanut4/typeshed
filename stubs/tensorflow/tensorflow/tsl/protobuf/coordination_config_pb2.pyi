@@ -26,7 +26,9 @@ class CoordinatedJob(google.protobuf.message.Message):
     name: builtins.str
     num_tasks: builtins.int
     def __init__(self, *, name: builtins.str | None = ..., num_tasks: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "num_tasks", b"num_tasks"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "num_tasks", b"num_tasks"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CoordinatedJob = CoordinatedJob
 
@@ -151,6 +153,8 @@ class CoordinationServiceConfig(google.protobuf.message.Message):
             "shutdown_barrier_timeout_in_ms",
             b"shutdown_barrier_timeout_in_ms",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___CoordinationServiceConfig = CoordinationServiceConfig

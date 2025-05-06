@@ -28,7 +28,9 @@ class AllocationRecord(google.protobuf.message.Message):
     alloc_bytes: builtins.int
     """Number of bytes allocated, or de-allocated if negative."""
     def __init__(self, *, alloc_micros: builtins.int | None = ..., alloc_bytes: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["alloc_bytes", b"alloc_bytes", "alloc_micros", b"alloc_micros"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["alloc_bytes", b"alloc_bytes", "alloc_micros", b"alloc_micros"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AllocationRecord = AllocationRecord
 
@@ -84,7 +86,9 @@ class AllocatorMemoryUsed(google.protobuf.message.Message):
             "total_bytes",
             b"total_bytes",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___AllocatorMemoryUsed = AllocatorMemoryUsed
 
@@ -162,7 +166,9 @@ class MemoryStats(google.protobuf.message.Message):
             "temp_memory_size",
             b"temp_memory_size",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemoryStats = MemoryStats
 
@@ -242,7 +248,9 @@ class NodeExecStats(google.protobuf.message.Message):
         all_end_rel_nanos: builtins.int | None = ...,
         scheduled_nanos: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["memory_stats", b"memory_stats"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["memory_stats", b"memory_stats"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -281,7 +289,9 @@ class NodeExecStats(google.protobuf.message.Message):
             "timeline_label",
             b"timeline_label",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___NodeExecStats = NodeExecStats
 
@@ -298,7 +308,9 @@ class DeviceStepStats(google.protobuf.message.Message):
         key: builtins.int
         value: builtins.str
         def __init__(self, *, key: builtins.int | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     DEVICE_FIELD_NUMBER: builtins.int
     NODE_STATS_FIELD_NUMBER: builtins.int
@@ -319,7 +331,9 @@ class DeviceStepStats(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["device", b"device", "node_stats", b"node_stats", "thread_names", b"thread_names"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___DeviceStepStats = DeviceStepStats
 
@@ -331,6 +345,8 @@ class StepStats(google.protobuf.message.Message):
     @property
     def dev_stats(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___DeviceStepStats]: ...
     def __init__(self, *, dev_stats: collections.abc.Iterable[global___DeviceStepStats] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dev_stats", b"dev_stats"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dev_stats", b"dev_stats"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___StepStats = StepStats

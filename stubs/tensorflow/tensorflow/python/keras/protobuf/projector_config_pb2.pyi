@@ -32,7 +32,9 @@ class SpriteMetadata(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["image_path", b"image_path", "single_image_dim", b"single_image_dim"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SpriteMetadata = SpriteMetadata
 
@@ -71,7 +73,9 @@ class EmbeddingInfo(google.protobuf.message.Message):
         sprite: global___SpriteMetadata | None = ...,
         tensor_path: builtins.str | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["sprite", b"sprite"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["sprite", b"sprite"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -88,7 +92,9 @@ class EmbeddingInfo(google.protobuf.message.Message):
             "tensor_shape",
             b"tensor_shape",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___EmbeddingInfo = EmbeddingInfo
 
@@ -124,6 +130,8 @@ class ProjectorConfig(google.protobuf.message.Message):
             "model_checkpoint_path",
             b"model_checkpoint_path",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ProjectorConfig = ProjectorConfig

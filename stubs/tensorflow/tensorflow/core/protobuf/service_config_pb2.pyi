@@ -138,7 +138,9 @@ class DispatcherConfig(google.protobuf.message.Message):
             "worker_timeout_ms",
             b"worker_timeout_ms",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___DispatcherConfig = DispatcherConfig
 
@@ -270,6 +272,8 @@ class WorkerConfig(google.protobuf.message.Message):
             "worker_tags",
             b"worker_tags",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___WorkerConfig = WorkerConfig

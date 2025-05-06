@@ -98,9 +98,49 @@ class Worksheet(_WorkbookChild):
     def freeze_panes(self, topLeftCell: str | Cell | None = None) -> None: ...
     # A MergedCell value should be kept to None
     @overload
-    def cell(self, row: int, column: int, value: None = None) -> _CellOrMergedCell: ...
+    def cell(self, row: int, column: int, value: None = None) -> _CellOrMergedCell:
+        """
+        Returns a cell object based on the given coordinates.
+
+        Usage: cell(row=15, column=1, value=5)
+
+        Calling `cell` creates cells in memory when they
+        are first accessed.
+
+        :param row: row index of the cell (e.g. 4)
+        :type row: int
+
+        :param column: column index of the cell (e.g. 3)
+        :type column: int
+
+        :param value: value of the cell (e.g. 5)
+        :type value: numeric or time or string or bool or none
+
+        :rtype: openpyxl.cell.cell.Cell
+        """
+        ...
     @overload
-    def cell(self, row: int, column: int, value: _CellSetValue = None) -> Cell: ...
+    def cell(self, row: int, column: int, value: _CellSetValue = None) -> Cell:
+        """
+        Returns a cell object based on the given coordinates.
+
+        Usage: cell(row=15, column=1, value=5)
+
+        Calling `cell` creates cells in memory when they
+        are first accessed.
+
+        :param row: row index of the cell (e.g. 4)
+        :type row: int
+
+        :param column: column index of the cell (e.g. 3)
+        :type column: int
+
+        :param value: value of the cell (e.g. 5)
+        :type value: numeric or time or string or bool or none
+
+        :rtype: openpyxl.cell.cell.Cell
+        """
+        ...
     # An int is necessarily a row selection
     @overload
     def __getitem__(self, key: int) -> tuple[_CellOrMergedCell, ...]:
@@ -135,7 +175,19 @@ class Worksheet(_WorkbookChild):
     @overload
     def __getitem__(
         self, key: str
-    ) -> Any: ...  # AnyOf[_CellOrMergedCell, tuple[_CellOrMergedCell, ...], tuple[tuple[_CellOrMergedCell, ...], ...]]
+    ) -> Any:
+        """
+        Convenience access by Excel style coordinates
+
+        The key can be a single cell coordinate 'A1', a range of cells 'A1:D25',
+        individual rows or columns 'A', 4 or ranges of rows or columns 'A:D',
+        4:10.
+
+        Single cells will always be created if they do not exist.
+
+        Returns either a single cell or a tuple of rows or columns.
+        """
+        ...
     def __setitem__(self, key: str, value: _CellSetValue) -> None: ...
     def __iter__(self) -> Iterator[tuple[_CellOrMergedCell, ...]]: ...
     def __delitem__(self, key: str) -> None: ...
@@ -185,7 +237,33 @@ class Worksheet(_WorkbookChild):
     @overload
     def iter_rows(
         self, min_row: int | None, max_row: int | None, min_col: int | None, max_col: int | None, values_only: Literal[True]
-    ) -> Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by row. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @overload
     def iter_rows(
         self,
@@ -195,7 +273,33 @@ class Worksheet(_WorkbookChild):
         max_col: int | None = None,
         *,
         values_only: Literal[True],
-    ) -> Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by row. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @overload
     def iter_rows(
         self,
@@ -234,7 +338,33 @@ class Worksheet(_WorkbookChild):
     @overload
     def iter_rows(
         self, min_row: int | None, max_row: int | None, min_col: int | None, max_col: int | None, values_only: bool
-    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by row. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @overload
     def iter_rows(
         self,
@@ -244,7 +374,33 @@ class Worksheet(_WorkbookChild):
         max_col: int | None = None,
         *,
         values_only: bool,
-    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by row. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @property
     def rows(self) -> Generator[tuple[_CellOrMergedCell, ...], None, None]:
         """
@@ -254,11 +410,43 @@ class Worksheet(_WorkbookChild):
         """
         ...
     @property
-    def values(self) -> Generator[tuple[_CellGetValue, ...]]: ...
+    def values(self) -> Generator[tuple[_CellGetValue, ...]]:
+        """
+        Produces all cell values in the worksheet, by row
+
+        :type: generator
+        """
+        ...
     @overload
     def iter_cols(
         self, min_col: int | None, max_col: int | None, min_row: int | None, max_row: int | None, values_only: Literal[True]
-    ) -> Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by column. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @overload
     def iter_cols(
         self,
@@ -268,7 +456,33 @@ class Worksheet(_WorkbookChild):
         max_row: int | None = None,
         *,
         values_only: Literal[True],
-    ) -> Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by column. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @overload
     def iter_cols(
         self,
@@ -307,7 +521,33 @@ class Worksheet(_WorkbookChild):
     @overload
     def iter_cols(
         self, min_col: int | None, max_col: int | None, min_row: int | None, max_row: int | None, values_only: bool
-    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by column. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @overload
     def iter_cols(
         self,
@@ -317,7 +557,33 @@ class Worksheet(_WorkbookChild):
         max_row: int | None = None,
         *,
         values_only: bool,
-    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]: ...
+    ) -> Generator[tuple[_CellOrMergedCell, ...], None, None] | Generator[tuple[_CellGetValue, ...], None, None]:
+        """
+        Produces cells from the worksheet, by column. Specify the iteration range
+        using indices of rows and columns.
+
+        If no indices are specified the range starts at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: largest row index (1-based index)
+        :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
+        :rtype: generator
+        """
+        ...
     @property
     def columns(self) -> Generator[tuple[_CellOrMergedCell, ...], None, None]:
         """Produces all cells in the worksheet, by column  (see :func:`iter_cols`)"""

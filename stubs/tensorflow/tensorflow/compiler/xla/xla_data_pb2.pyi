@@ -531,7 +531,9 @@ class PaddingConfig(google.protobuf.message.Message):
                 "interior_padding",
                 b"interior_padding",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     DIMENSIONS_FIELD_NUMBER: builtins.int
     @property
@@ -568,7 +570,9 @@ class TileProto(google.protobuf.message.Message):
         """
 
     def __init__(self, *, dimensions: collections.abc.Iterable[builtins.int] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dimensions", b"dimensions"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dimensions", b"dimensions"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___TileProto = TileProto
 
@@ -724,7 +728,9 @@ class LayoutProto(google.protobuf.message.Message):
         dynamic_shape_metadata_prefix_bytes: builtins.int | None = ...,
         split_configs: collections.abc.Iterable[global___SplitConfigProto] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["physical_shape", b"physical_shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["physical_shape", b"physical_shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -755,7 +761,9 @@ class LayoutProto(google.protobuf.message.Message):
             "tiles",
             b"tiles",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___LayoutProto = LayoutProto
 
@@ -818,7 +826,9 @@ class ShapeProto(google.protobuf.message.Message):
         layout: global___LayoutProto | None = ...,
         is_dynamic_dimension: collections.abc.Iterable[builtins.bool] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["layout", b"layout"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["layout", b"layout"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -833,7 +843,9 @@ class ShapeProto(google.protobuf.message.Message):
             "tuple_shapes",
             b"tuple_shapes",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ShapeProto = ShapeProto
 
@@ -861,10 +873,14 @@ class ProgramShapeProto(google.protobuf.message.Message):
         result: global___ShapeProto | None = ...,
         parameter_names: collections.abc.Iterable[builtins.str] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["result", b"result"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["result", b"result"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["parameter_names", b"parameter_names", "parameters", b"parameters", "result", b"result"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ProgramShapeProto = ProgramShapeProto
 
@@ -883,7 +899,9 @@ class ComputationStats(google.protobuf.message.Message):
     def __init__(self, *, flop_count: builtins.float | None = ..., transcendental_count: builtins.float | None = ...) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["flop_count", b"flop_count", "transcendental_count", b"transcendental_count"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ComputationStats = ComputationStats
 
@@ -941,7 +959,9 @@ class OpMetadata(google.protobuf.message.Message):
                 "relative_speedup",
                 b"relative_speedup",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     OP_TYPE_FIELD_NUMBER: builtins.int
     OP_NAME_FIELD_NUMBER: builtins.int
@@ -1022,7 +1042,9 @@ class OpMetadata(google.protobuf.message.Message):
         stack_frame_id: builtins.int | None = ...,
         scheduling_name: builtins.str | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["profile_info", b"profile_info"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["profile_info", b"profile_info"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1051,7 +1073,9 @@ class OpMetadata(google.protobuf.message.Message):
             "stack_frame_id",
             b"stack_frame_id",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___OpMetadata = OpMetadata
 
@@ -1131,7 +1155,9 @@ class ExecutionProfile(google.protobuf.message.Message):
             "warmup_run_executed",
             b"warmup_run_executed",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ExecutionProfile = ExecutionProfile
 
@@ -1146,7 +1172,9 @@ class ExecutionHandle(google.protobuf.message.Message):
     HANDLE_FIELD_NUMBER: builtins.int
     handle: builtins.int
     def __init__(self, *, handle: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["handle", b"handle"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["handle", b"handle"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ExecutionHandle = ExecutionHandle
 
@@ -1162,7 +1190,9 @@ class GlobalDataHandle(google.protobuf.message.Message):
     HANDLE_FIELD_NUMBER: builtins.int
     handle: builtins.int
     def __init__(self, *, handle: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["handle", b"handle"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["handle", b"handle"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GlobalDataHandle = GlobalDataHandle
 
@@ -1183,7 +1213,9 @@ class DeviceHandle(google.protobuf.message.Message):
     Send/Recv instructions.
     """
     def __init__(self, *, handle: builtins.int | None = ..., device_count: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["device_count", b"device_count", "handle", b"handle"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["device_count", b"device_count", "handle", b"handle"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___DeviceHandle = DeviceHandle
 
@@ -1267,7 +1299,9 @@ class DeviceAssignmentProto(google.protobuf.message.Message):
         @property
         def replica_device_ids(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(self, *, replica_device_ids: collections.abc.Iterable[builtins.int] | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["replica_device_ids", b"replica_device_ids"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["replica_device_ids", b"replica_device_ids"]) -> None:
+            """Clears a message field."""
+            ...
 
     REPLICA_COUNT_FIELD_NUMBER: builtins.int
     COMPUTATION_COUNT_FIELD_NUMBER: builtins.int
@@ -1297,7 +1331,9 @@ class DeviceAssignmentProto(google.protobuf.message.Message):
             "replica_count",
             b"replica_count",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___DeviceAssignmentProto = DeviceAssignmentProto
 
@@ -1417,7 +1453,9 @@ class LiteralProto(google.protobuf.message.Message):
         f8e4m3fnuzs: builtins.bytes | None = ...,
         sparse_indices: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["shape", b"shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["shape", b"shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1476,7 +1514,9 @@ class LiteralProto(google.protobuf.message.Message):
             "u8s",
             b"u8s",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___LiteralProto = LiteralProto
 
@@ -1560,7 +1600,9 @@ class WindowDimension(google.protobuf.message.Message):
             "window_reversal",
             b"window_reversal",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___WindowDimension = WindowDimension
 
@@ -1579,7 +1621,9 @@ class Window(google.protobuf.message.Message):
     @property
     def dimensions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WindowDimension]: ...
     def __init__(self, *, dimensions: collections.abc.Iterable[global___WindowDimension] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["dimensions", b"dimensions"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["dimensions", b"dimensions"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___Window = Window
 
@@ -1665,7 +1709,9 @@ class GatherDimensionNumbers(google.protobuf.message.Message):
             "start_indices_batching_dims",
             b"start_indices_batching_dims",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GatherDimensionNumbers = GatherDimensionNumbers
 
@@ -1730,7 +1776,9 @@ class ScatterDimensionNumbers(google.protobuf.message.Message):
             "update_window_dims",
             b"update_window_dims",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ScatterDimensionNumbers = ScatterDimensionNumbers
 
@@ -1817,7 +1865,9 @@ class ConvolutionDimensionNumbers(google.protobuf.message.Message):
             "output_spatial_dimensions",
             b"output_spatial_dimensions",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ConvolutionDimensionNumbers = ConvolutionDimensionNumbers
 
@@ -1865,7 +1915,9 @@ class DotDimensionNumbers(google.protobuf.message.Message):
             "rhs_contracting_dimensions",
             b"rhs_contracting_dimensions",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___DotDimensionNumbers = DotDimensionNumbers
 
@@ -1905,7 +1957,9 @@ class SparsityDescriptor(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["dimension", b"dimension", "index", b"index", "m", b"m", "n", b"n", "type", b"type"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SparsityDescriptor = SparsityDescriptor
 
@@ -1964,7 +2018,9 @@ class TriangularSolveOptions(google.protobuf.message.Message):
         field_name: typing.Literal[
             "left_side", b"left_side", "lower", b"lower", "transpose_a", b"transpose_a", "unit_diagonal", b"unit_diagonal"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___TriangularSolveOptions = TriangularSolveOptions
 
@@ -1978,7 +2034,9 @@ class CholeskyOptions(google.protobuf.message.Message):
     of `a`.
     """
     def __init__(self, *, lower: builtins.bool | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["lower", b"lower"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["lower", b"lower"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CholeskyOptions = CholeskyOptions
 
@@ -1991,7 +2049,9 @@ class SortOptions(google.protobuf.message.Message):
     DESCENDING_FIELD_NUMBER: builtins.int
     descending: builtins.bool
     def __init__(self, *, descending: builtins.bool | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["descending", b"descending"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["descending", b"descending"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SortOptions = SortOptions
 
@@ -2012,13 +2072,17 @@ class FrontendAttributes(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.str
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     MAP_FIELD_NUMBER: builtins.int
     @property
     def map(self) -> google.protobuf.internal.containers.ScalarMap[builtins.str, builtins.str]: ...
     def __init__(self, *, map: collections.abc.Mapping[builtins.str, builtins.str] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["map", b"map"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["map", b"map"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___FrontendAttributes = FrontendAttributes
 
@@ -2037,7 +2101,9 @@ class Statistic(google.protobuf.message.Message):
     properly render the statistic onto the graph.
     """
     def __init__(self, *, stat_name: builtins.str | None = ..., stat_val: builtins.float | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["stat_name", b"stat_name", "stat_val", b"stat_val"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["stat_name", b"stat_name", "stat_val", b"stat_val"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___Statistic = Statistic
 
@@ -2063,7 +2129,9 @@ class StatisticsViz(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["stat_index_to_visualize", b"stat_index_to_visualize", "statistics", b"statistics"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___StatisticsViz = StatisticsViz
 
@@ -2259,7 +2327,9 @@ class OpSharding(google.protobuf.message.Message):
         shard_group_id: builtins.int | None = ...,
         shard_group_type: global___OpSharding.ShardGroupType.ValueType | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tile_shape", b"tile_shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["tile_shape", b"tile_shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2290,7 +2360,9 @@ class OpSharding(google.protobuf.message.Message):
             "type",
             b"type",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___OpSharding = OpSharding
 
@@ -2310,7 +2382,9 @@ class ReplicaGroup(google.protobuf.message.Message):
         """
 
     def __init__(self, *, replica_ids: collections.abc.Iterable[builtins.int] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["replica_ids", b"replica_ids"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["replica_ids", b"replica_ids"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ReplicaGroup = ReplicaGroup
 
@@ -2362,7 +2436,9 @@ class IotaReplicaGroupListProto(google.protobuf.message.Message):
             "num_replica_groups",
             b"num_replica_groups",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___IotaReplicaGroupListProto = IotaReplicaGroupListProto
 
@@ -2395,11 +2471,15 @@ class CollectiveDeviceListProto(google.protobuf.message.Message):
         replica_groups: collections.abc.Iterable[global___ReplicaGroup] | None = ...,
         iota_replica_group_list: global___IotaReplicaGroupListProto | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["iota_replica_group_list", b"iota_replica_group_list"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["iota_replica_group_list", b"iota_replica_group_list"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal["iota_replica_group_list", b"iota_replica_group_list", "replica_groups", b"replica_groups"],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___CollectiveDeviceListProto = CollectiveDeviceListProto
 
@@ -2414,7 +2494,9 @@ class SourceTarget(google.protobuf.message.Message):
     source: builtins.int
     target: builtins.int
     def __init__(self, *, source: builtins.int | None = ..., target: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["source", b"source", "target", b"target"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["source", b"source", "target", b"target"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SourceTarget = SourceTarget
 
@@ -2561,7 +2643,9 @@ class PrecisionConfig(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["algorithm", b"algorithm", "operand_precision", b"operand_precision"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___PrecisionConfig = PrecisionConfig
 
@@ -2585,7 +2669,9 @@ class ParameterReplication(google.protobuf.message.Message):
         """
 
     def __init__(self, *, replicated_at_leaf_buffers: collections.abc.Iterable[builtins.bool] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["replicated_at_leaf_buffers", b"replicated_at_leaf_buffers"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["replicated_at_leaf_buffers", b"replicated_at_leaf_buffers"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ParameterReplication = ParameterReplication
 
@@ -2610,7 +2696,9 @@ class WhileLoopBackendConfig(google.protobuf.message.Message):
         N_FIELD_NUMBER: builtins.int
         n: builtins.int
         def __init__(self, *, n: builtins.int | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["n", b"n"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["n", b"n"]) -> None:
+            """Clears a message field."""
+            ...
 
     KNOWN_TRIP_COUNT_FIELD_NUMBER: builtins.int
     @property
@@ -2620,8 +2708,12 @@ class WhileLoopBackendConfig(google.protobuf.message.Message):
         """
 
     def __init__(self, *, known_trip_count: global___WhileLoopBackendConfig.KnownTripCount | None = ...) -> None: ...
-    def HasField(self, field_name: typing.Literal["known_trip_count", b"known_trip_count"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["known_trip_count", b"known_trip_count"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["known_trip_count", b"known_trip_count"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["known_trip_count", b"known_trip_count"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___WhileLoopBackendConfig = WhileLoopBackendConfig
 
@@ -2658,7 +2750,9 @@ class OutputOperandAliasing(google.protobuf.message.Message):
             "output_shape_index",
             b"output_shape_index",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___OutputOperandAliasing = OutputOperandAliasing
 
@@ -2686,7 +2780,9 @@ class OriginalArrayProto(google.protobuf.message.Message):
         field_name: typing.Literal[
             "instruction_name", b"instruction_name", "leaf_shape_index", b"leaf_shape_index", "shape_index", b"shape_index"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___OriginalArrayProto = OriginalArrayProto
 
@@ -2698,6 +2794,8 @@ class OriginalValueProto(google.protobuf.message.Message):
     @property
     def leaves(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___OriginalArrayProto]: ...
     def __init__(self, *, leaves: collections.abc.Iterable[global___OriginalArrayProto] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["leaves", b"leaves"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["leaves", b"leaves"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___OriginalValueProto = OriginalValueProto

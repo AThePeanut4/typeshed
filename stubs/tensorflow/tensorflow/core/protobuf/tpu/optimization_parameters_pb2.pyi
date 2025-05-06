@@ -86,11 +86,15 @@ class SimulatedQuantization(google.protobuf.message.Message):
         clipping_limits: global___ClippingLimits | None = ...,
         num_buckets: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["clipping_limits", b"clipping_limits"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["clipping_limits", b"clipping_limits"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal["clipping_limits", b"clipping_limits", "enabled", b"enabled", "num_buckets", b"num_buckets"],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SimulatedQuantization = SimulatedQuantization
 
@@ -134,7 +138,9 @@ class DynamicLearningRate(google.protobuf.message.Message):
     list of learning_rate scalars.
     """
     def __init__(self, *, tag: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["tag", b"tag"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["tag", b"tag"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___DynamicLearningRate = DynamicLearningRate
 
@@ -152,13 +158,19 @@ class LearningRate(google.protobuf.message.Message):
     def __init__(self, *, constant: builtins.float | None = ..., dynamic: global___DynamicLearningRate | None = ...) -> None: ...
     def HasField(
         self, field_name: typing.Literal["constant", b"constant", "dynamic", b"dynamic", "learning_rate", b"learning_rate"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["constant", b"constant", "dynamic", b"dynamic", "learning_rate", b"learning_rate"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["learning_rate", b"learning_rate"]
-    ) -> typing.Literal["constant", "dynamic"] | None: ...
+    ) -> typing.Literal["constant", "dynamic"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___LearningRate = LearningRate
 
@@ -232,7 +244,9 @@ class AdagradMomentumParameters(google.protobuf.message.Message):
             "use_nesterov",
             b"use_nesterov",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___AdagradMomentumParameters = AdagradMomentumParameters
 
@@ -275,7 +289,9 @@ class BoundedAdagradParameters(google.protobuf.message.Message):
             "update_accumulator_first",
             b"update_accumulator_first",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___BoundedAdagradParameters = BoundedAdagradParameters
 
@@ -357,7 +373,9 @@ class FtrlParameters(google.protobuf.message.Message):
             "multiply_linear_by_lr",
             b"multiply_linear_by_lr",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___FtrlParameters = FtrlParameters
 
@@ -420,7 +438,9 @@ class AdamParameters(google.protobuf.message.Message):
             "use_sum_inside_sqrt",
             b"use_sum_inside_sqrt",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___AdamParameters = AdamParameters
 
@@ -437,7 +457,9 @@ class MomentumParameters(google.protobuf.message.Message):
     momentum: builtins.float
     use_nesterov: builtins.bool
     def __init__(self, *, momentum: builtins.float | None = ..., use_nesterov: builtins.bool | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["momentum", b"momentum", "use_nesterov", b"use_nesterov"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["momentum", b"momentum", "use_nesterov", b"use_nesterov"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___MomentumParameters = MomentumParameters
 
@@ -467,7 +489,9 @@ class LionParameters(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["beta1", b"beta1", "beta2", b"beta2", "use_non_lazy_lion", b"use_non_lazy_lion"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___LionParameters = LionParameters
 
@@ -591,7 +615,9 @@ class MdlAdagradLightParameters(google.protobuf.message.Message):
             "min_servable_mdl_benefit",
             b"min_servable_mdl_benefit",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___MdlAdagradLightParameters = MdlAdagradLightParameters
 
@@ -608,7 +634,9 @@ class AdadeltaParameters(google.protobuf.message.Message):
     rho: builtins.float
     epsilon: builtins.float
     def __init__(self, *, rho: builtins.float | None = ..., epsilon: builtins.float | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["epsilon", b"epsilon", "rho", b"rho"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["epsilon", b"epsilon", "rho", b"rho"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AdadeltaParameters = AdadeltaParameters
 
@@ -625,7 +653,9 @@ class ProximalAdagradParameters(google.protobuf.message.Message):
     l1: builtins.float
     l2: builtins.float
     def __init__(self, *, l1: builtins.float | None = ..., l2: builtins.float | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["l1", b"l1", "l2", b"l2"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["l1", b"l1", "l2", b"l2"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ProximalAdagradParameters = ProximalAdagradParameters
 
@@ -703,7 +733,9 @@ class ProximalYogiParameters(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["beta1", b"beta1", "beta2", b"beta2", "epsilon", b"epsilon", "l1", b"l1", "l2", b"l2"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ProximalYogiParameters = ProximalYogiParameters
 
@@ -773,7 +805,9 @@ class FrequencyEstimatorParameters(google.protobuf.message.Message):
             "weight_exponent",
             b"weight_exponent",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___FrequencyEstimatorParameters = FrequencyEstimatorParameters
 
@@ -806,8 +840,12 @@ class UserDefinedProgramParameters(google.protobuf.message.Message):
     @property
     def program(self) -> tensorflow.compiler.xla.service.hlo_pb2.HloModuleProto: ...
     def __init__(self, *, program: tensorflow.compiler.xla.service.hlo_pb2.HloModuleProto | None = ...) -> None: ...
-    def HasField(self, field_name: typing.Literal["program", b"program"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["program", b"program"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["program", b"program"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["program", b"program"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___UserDefinedProgramParameters = UserDefinedProgramParameters
 
@@ -972,7 +1010,9 @@ class HotIdReplicationConfiguration(google.protobuf.message.Message):
     STATUS_FIELD_NUMBER: builtins.int
     status: global___HotIdReplicationConfiguration.Status.ValueType
     def __init__(self, *, status: global___HotIdReplicationConfiguration.Status.ValueType | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["status", b"status"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["status", b"status"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___HotIdReplicationConfiguration = HotIdReplicationConfiguration
 
@@ -1178,7 +1218,9 @@ class OptimizationParameters(google.protobuf.message.Message):
             "user_defined_program",
             b"user_defined_program",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1239,7 +1281,9 @@ class OptimizationParameters(google.protobuf.message.Message):
             "weight_decay_factor",
             b"weight_decay_factor",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["parameters", b"parameters"]
     ) -> (
@@ -1264,7 +1308,9 @@ class OptimizationParameters(google.protobuf.message.Message):
             "assign",
         ]
         | None
-    ): ...
+    ):
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___OptimizationParameters = OptimizationParameters
 
@@ -1299,7 +1345,9 @@ class StateVariableSpecification(google.protobuf.message.Message):
         INITIAL_VALUE_FIELD_NUMBER: builtins.int
         initial_value: builtins.float
         def __init__(self, *, initial_value: builtins.float | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["initial_value", b"initial_value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["initial_value", b"initial_value"]) -> None:
+            """Clears a message field."""
+            ...
 
     NAME_FIELD_NUMBER: builtins.int
     USER_DEFINED_FIELD_NUMBER: builtins.int
@@ -1322,15 +1370,21 @@ class StateVariableSpecification(google.protobuf.message.Message):
         field_name: typing.Literal[
             "fill_with_constant", b"fill_with_constant", "usage", b"usage", "user_defined", b"user_defined"
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
             "fill_with_constant", b"fill_with_constant", "name", b"name", "usage", b"usage", "user_defined", b"user_defined"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["usage", b"usage"]
-    ) -> typing.Literal["user_defined", "fill_with_constant"] | None: ...
+    ) -> typing.Literal["user_defined", "fill_with_constant"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___StateVariableSpecification = StateVariableSpecification

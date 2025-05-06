@@ -52,7 +52,9 @@ class MemAllocatorStats(google.protobuf.message.Message):
             "peak_bytes_in_use",
             b"peak_bytes_in_use",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemAllocatorStats = MemAllocatorStats
 
@@ -113,7 +115,9 @@ class MemChunk(google.protobuf.message.Message):
             "step_id",
             b"step_id",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemChunk = MemChunk
 
@@ -154,7 +158,9 @@ class BinSummary(google.protobuf.message.Message):
             "total_chunks_in_use",
             b"total_chunks_in_use",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___BinSummary = BinSummary
 
@@ -167,7 +173,9 @@ class SnapShot(google.protobuf.message.Message):
     action_count: builtins.int
     size: builtins.int
     def __init__(self, *, action_count: builtins.int | None = ..., size: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["action_count", b"action_count", "size", b"size"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["action_count", b"action_count", "size", b"size"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SnapShot = SnapShot
 
@@ -198,7 +206,9 @@ class MemoryDump(google.protobuf.message.Message):
         snap_shot: collections.abc.Iterable[global___SnapShot] | None = ...,
         stats: global___MemAllocatorStats | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["stats", b"stats"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["stats", b"stats"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -213,6 +223,8 @@ class MemoryDump(google.protobuf.message.Message):
             "stats",
             b"stats",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___MemoryDump = MemoryDump

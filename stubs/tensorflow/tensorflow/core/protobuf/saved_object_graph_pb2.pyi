@@ -47,8 +47,12 @@ class SavedObjectGraph(google.protobuf.message.Message):
         @property
         def value(self) -> global___SavedConcreteFunction: ...
         def __init__(self, *, key: builtins.str | None = ..., value: global___SavedConcreteFunction | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     NODES_FIELD_NUMBER: builtins.int
     CONCRETE_FUNCTIONS_FIELD_NUMBER: builtins.int
@@ -92,8 +96,12 @@ class SavedObject(google.protobuf.message.Message):
         @property
         def value(self) -> global___SaveableObject: ...
         def __init__(self, *, key: builtins.str | None = ..., value: global___SaveableObject | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     CHILDREN_FIELD_NUMBER: builtins.int
     DEPENDENCIES_FIELD_NUMBER: builtins.int
@@ -258,7 +266,9 @@ class SavedObject(google.protobuf.message.Message):
             "variable",
             b"variable",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -295,7 +305,9 @@ class SavedObject(google.protobuf.message.Message):
             "variable",
             b"variable",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["kind", b"kind"]
     ) -> (
@@ -303,7 +315,9 @@ class SavedObject(google.protobuf.message.Message):
             "user_object", "asset", "function", "variable", "bare_concrete_function", "constant", "resource", "captured_tensor"
         ]
         | None
-    ): ...
+    ):
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___SavedObject = SavedObject
 
@@ -342,10 +356,14 @@ class SavedUserObject(google.protobuf.message.Message):
         version: tensorflow.core.framework.versions_pb2.VersionDef | None = ...,
         metadata: builtins.str | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["version", b"version"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["version", b"version"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["identifier", b"identifier", "metadata", b"metadata", "version", b"version"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedUserObject = SavedUserObject
 
@@ -368,7 +386,9 @@ class SavedAsset(google.protobuf.message.Message):
     `AssetFileDef.tensor_info`, MUST be ignored.
     """
     def __init__(self, *, asset_file_def_index: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["asset_file_def_index", b"asset_file_def_index"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["asset_file_def_index", b"asset_file_def_index"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedAsset = SavedAsset
 
@@ -390,10 +410,14 @@ class SavedFunction(google.protobuf.message.Message):
         concrete_functions: collections.abc.Iterable[builtins.str] | None = ...,
         function_spec: global___FunctionSpec | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["function_spec", b"function_spec"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["function_spec", b"function_spec"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self, field_name: typing.Literal["concrete_functions", b"concrete_functions", "function_spec", b"function_spec"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedFunction = SavedFunction
 
@@ -408,7 +432,9 @@ class CapturedTensor(google.protobuf.message.Message):
     concrete_function: builtins.str
     """Name of concrete function which contains the computed graph tensor."""
     def __init__(self, *, name: builtins.str | None = ..., concrete_function: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["concrete_function", b"concrete_function", "name", b"name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["concrete_function", b"concrete_function", "name", b"name"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___CapturedTensor = CapturedTensor
 
@@ -450,7 +476,9 @@ class SavedConcreteFunction(google.protobuf.message.Message):
         field_name: typing.Literal[
             "canonicalized_input_signature", b"canonicalized_input_signature", "output_signature", b"output_signature"
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -461,7 +489,9 @@ class SavedConcreteFunction(google.protobuf.message.Message):
             "output_signature",
             b"output_signature",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedConcreteFunction = SavedConcreteFunction
 
@@ -499,7 +529,9 @@ class SavedBareConcreteFunction(google.protobuf.message.Message):
         allowed_positional_arguments: builtins.int | None = ...,
         function_spec: global___FunctionSpec | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["function_spec", b"function_spec"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["function_spec", b"function_spec"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -512,7 +544,9 @@ class SavedBareConcreteFunction(google.protobuf.message.Message):
             "function_spec",
             b"function_spec",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedBareConcreteFunction = SavedBareConcreteFunction
 
@@ -524,7 +558,9 @@ class SavedConstant(google.protobuf.message.Message):
     operation: builtins.str
     """An Operation name for a ConstantOp in this SavedObjectGraph's MetaGraph."""
     def __init__(self, *, operation: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["operation", b"operation"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["operation", b"operation"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedConstant = SavedConstant
 
@@ -576,7 +612,9 @@ class SavedVariable(google.protobuf.message.Message):
         device: builtins.str | None = ...,
         experimental_distributed_variable_components: collections.abc.Iterable[global___SavedVariable] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["shape", b"shape"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["shape", b"shape"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -597,7 +635,9 @@ class SavedVariable(google.protobuf.message.Message):
             "trainable",
             b"trainable",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedVariable = SavedVariable
 
@@ -661,7 +701,9 @@ class FunctionSpec(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["fullargspec", b"fullargspec", "input_signature", b"input_signature"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -674,7 +716,9 @@ class FunctionSpec(google.protobuf.message.Message):
             "jit_compile",
             b"jit_compile",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___FunctionSpec = FunctionSpec
 
@@ -694,7 +738,9 @@ class SavedResource(google.protobuf.message.Message):
     device.
     """
     def __init__(self, *, device: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["device", b"device"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["device", b"device"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SavedResource = SavedResource
 
@@ -712,6 +758,8 @@ class SaveableObject(google.protobuf.message.Message):
     def __init__(self, *, save_function: builtins.int | None = ..., restore_function: builtins.int | None = ...) -> None: ...
     def ClearField(
         self, field_name: typing.Literal["restore_function", b"restore_function", "save_function", b"save_function"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SaveableObject = SaveableObject

@@ -56,7 +56,9 @@ class MetaGraphDef(google.protobuf.message.Message):
             key: builtins.str
             value: builtins.str
             def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-            def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+            def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+                """Clears a message field."""
+                ...
 
         META_GRAPH_VERSION_FIELD_NUMBER: builtins.int
         STRIPPED_OP_LIST_FIELD_NUMBER: builtins.int
@@ -124,7 +126,9 @@ class MetaGraphDef(google.protobuf.message.Message):
         ) -> None: ...
         def HasField(
             self, field_name: typing.Literal["any_info", b"any_info", "stripped_op_list", b"stripped_op_list"]
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -145,7 +149,9 @@ class MetaGraphDef(google.protobuf.message.Message):
                 "tensorflow_version",
                 b"tensorflow_version",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class CollectionDefEntry(google.protobuf.message.Message):
@@ -157,8 +163,12 @@ class MetaGraphDef(google.protobuf.message.Message):
         @property
         def value(self) -> global___CollectionDef: ...
         def __init__(self, *, key: builtins.str | None = ..., value: global___CollectionDef | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class SignatureDefEntry(google.protobuf.message.Message):
@@ -170,8 +180,12 @@ class MetaGraphDef(google.protobuf.message.Message):
         @property
         def value(self) -> global___SignatureDef: ...
         def __init__(self, *, key: builtins.str | None = ..., value: global___SignatureDef | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     META_INFO_DEF_FIELD_NUMBER: builtins.int
     GRAPH_DEF_FIELD_NUMBER: builtins.int
@@ -233,7 +247,9 @@ class MetaGraphDef(google.protobuf.message.Message):
             "saver_def",
             b"saver_def",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -252,7 +268,9 @@ class MetaGraphDef(google.protobuf.message.Message):
             "signature_def",
             b"signature_def",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___MetaGraphDef = MetaGraphDef
 
@@ -344,7 +362,9 @@ class CollectionDef(google.protobuf.message.Message):
         @property
         def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
         def __init__(self, *, value: collections.abc.Iterable[builtins.str] | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class BytesList(google.protobuf.message.Message):
@@ -369,7 +389,9 @@ class CollectionDef(google.protobuf.message.Message):
         @property
         def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]: ...
         def __init__(self, *, value: collections.abc.Iterable[builtins.bytes] | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class Int64List(google.protobuf.message.Message):
@@ -381,7 +403,9 @@ class CollectionDef(google.protobuf.message.Message):
         @property
         def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(self, *, value: collections.abc.Iterable[builtins.int] | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class FloatList(google.protobuf.message.Message):
@@ -393,7 +417,9 @@ class CollectionDef(google.protobuf.message.Message):
         @property
         def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.float]: ...
         def __init__(self, *, value: collections.abc.Iterable[builtins.float] | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class AnyList(google.protobuf.message.Message):
@@ -405,7 +431,9 @@ class CollectionDef(google.protobuf.message.Message):
         @property
         def value(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[google.protobuf.any_pb2.Any]: ...
         def __init__(self, *, value: collections.abc.Iterable[google.protobuf.any_pb2.Any] | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     NODE_LIST_FIELD_NUMBER: builtins.int
     BYTES_LIST_FIELD_NUMBER: builtins.int
@@ -447,7 +475,9 @@ class CollectionDef(google.protobuf.message.Message):
             "node_list",
             b"node_list",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -464,10 +494,14 @@ class CollectionDef(google.protobuf.message.Message):
             "node_list",
             b"node_list",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["kind", b"kind"]
-    ) -> typing.Literal["node_list", "bytes_list", "int64_list", "float_list", "any_list"] | None: ...
+    ) -> typing.Literal["node_list", "bytes_list", "int64_list", "float_list", "any_list"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___CollectionDef = CollectionDef
 
@@ -515,7 +549,9 @@ class TensorInfo(google.protobuf.message.Message):
                 "values_tensor_name",
                 b"values_tensor_name",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class CompositeTensor(google.protobuf.message.Message):
@@ -596,7 +632,9 @@ class TensorInfo(google.protobuf.message.Message):
             "tensor_shape",
             b"tensor_shape",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -613,10 +651,14 @@ class TensorInfo(google.protobuf.message.Message):
             "tensor_shape",
             b"tensor_shape",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     def WhichOneof(
         self, oneof_group: typing.Literal["encoding", b"encoding"]
-    ) -> typing.Literal["name", "coo_sparse", "composite_tensor"] | None: ...
+    ) -> typing.Literal["name", "coo_sparse", "composite_tensor"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
 
 global___TensorInfo = TensorInfo
 
@@ -638,8 +680,12 @@ class SignatureDef(google.protobuf.message.Message):
         @property
         def value(self) -> global___TensorInfo: ...
         def __init__(self, *, key: builtins.str | None = ..., value: global___TensorInfo | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class OutputsEntry(google.protobuf.message.Message):
@@ -651,8 +697,12 @@ class SignatureDef(google.protobuf.message.Message):
         @property
         def value(self) -> global___TensorInfo: ...
         def __init__(self, *, key: builtins.str | None = ..., value: global___TensorInfo | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class DefaultsEntry(google.protobuf.message.Message):
@@ -713,7 +763,9 @@ class SignatureDef(google.protobuf.message.Message):
         field_name: typing.Literal[
             "defaults", b"defaults", "inputs", b"inputs", "method_name", b"method_name", "outputs", b"outputs"
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___SignatureDef = SignatureDef
 
@@ -737,7 +789,11 @@ class AssetFileDef(google.protobuf.message.Message):
         """The tensor to bind the asset filename to."""
 
     def __init__(self, *, tensor_info: global___TensorInfo | None = ..., filename: builtins.str | None = ...) -> None: ...
-    def HasField(self, field_name: typing.Literal["tensor_info", b"tensor_info"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["filename", b"filename", "tensor_info", b"tensor_info"]) -> None: ...
+    def HasField(self, field_name: typing.Literal["tensor_info", b"tensor_info"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
+    def ClearField(self, field_name: typing.Literal["filename", b"filename", "tensor_info", b"tensor_info"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___AssetFileDef = AssetFileDef

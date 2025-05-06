@@ -99,7 +99,9 @@ class ServerDef(google.protobuf.message.Message):
             "default_session_config",
             b"default_session_config",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -120,6 +122,8 @@ class ServerDef(google.protobuf.message.Message):
             "task_index",
             b"task_index",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ServerDef = ServerDef

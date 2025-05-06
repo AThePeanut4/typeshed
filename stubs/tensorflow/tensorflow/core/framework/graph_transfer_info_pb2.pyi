@@ -30,7 +30,9 @@ class GraphTransferNodeInput(google.protobuf.message.Message):
     node_id: builtins.int
     output_port: builtins.int
     def __init__(self, *, node_id: builtins.int | None = ..., output_port: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["node_id", b"node_id", "output_port", b"output_port"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["node_id", b"node_id", "output_port", b"output_port"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferNodeInput = GraphTransferNodeInput
 
@@ -81,7 +83,9 @@ class GraphTransferNodeInfo(google.protobuf.message.Message):
             "type_name",
             b"type_name",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferNodeInfo = GraphTransferNodeInfo
 
@@ -112,7 +116,9 @@ class GraphTransferConstNodeInfo(google.protobuf.message.Message):
     def ClearField(
         self,
         field_name: typing.Literal["data", b"data", "dtype", b"dtype", "name", b"name", "node_id", b"node_id", "shape", b"shape"],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferConstNodeInfo = GraphTransferConstNodeInfo
 
@@ -295,6 +301,8 @@ class GraphTransferInfo(google.protobuf.message.Message):
             "node_output_info",
             b"node_output_info",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphTransferInfo = GraphTransferInfo

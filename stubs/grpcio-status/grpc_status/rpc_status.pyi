@@ -24,6 +24,19 @@ def from_call(call: grpc.Call):
     ...
 
 # Convert a google.rpc.status.Status message to grpc.Status.
-def to_status(status) -> grpc.Status: ...
+def to_status(status) -> grpc.Status:
+    """
+    Convert a google.rpc.status.Status message to grpc.Status.
+
+    This is an EXPERIMENTAL API.
+
+    Args:
+      status: a google.rpc.status.Status message representing the non-OK status
+        to terminate the RPC with and communicate it to the client.
+
+    Returns:
+      A grpc.Status instance representing the input google.rpc.status.Status message.
+    """
+    ...
 
 __all__ = ["from_call", "to_status", "aio"]

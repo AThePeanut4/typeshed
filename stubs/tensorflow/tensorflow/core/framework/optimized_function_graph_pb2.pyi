@@ -68,7 +68,9 @@ class OptimizedFunctionGraph(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.str
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     NAME_FIELD_NUMBER: builtins.int
     FUNCTION_GRAPH_FIELD_NUMBER: builtins.int
@@ -132,7 +134,9 @@ class OptimizedFunctionGraph(google.protobuf.message.Message):
             "source",
             b"source",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -155,11 +159,15 @@ class OptimizedFunctionGraph(google.protobuf.message.Message):
             "source",
             b"source",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
     @typing.overload
     def WhichOneof(
         self, oneof_group: typing.Literal["_optimization_time_usecs", b"_optimization_time_usecs"]
-    ) -> typing.Literal["optimization_time_usecs"] | None: ...
+    ) -> typing.Literal["optimization_time_usecs"] | None:
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+        ...
     @typing.overload
     def WhichOneof(self, oneof_group: typing.Literal["_source", b"_source"]) -> typing.Literal["source"] | None:
         """Returns the name of the field set inside a oneof, or None if no field is set."""

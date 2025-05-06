@@ -95,6 +95,8 @@ class RemoteTensorHandle(google.protobuf.message.Message):
             "resource_dtypes_and_shapes",
             b"resource_dtypes_and_shapes",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___RemoteTensorHandle = RemoteTensorHandle

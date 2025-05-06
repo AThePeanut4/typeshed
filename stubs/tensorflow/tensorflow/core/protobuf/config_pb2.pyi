@@ -93,7 +93,9 @@ class GPUOptions(google.protobuf.message.Message):
                 field_name: typing.Literal[
                     "device_ordinal", b"device_ordinal", "memory_limit_mb", b"memory_limit_mb", "priority", b"priority"
                 ],
-            ) -> None: ...
+            ) -> None:
+                """Clears a message field."""
+                ...
 
         @typing.final
         class StreamMergeOptions(google.protobuf.message.Message):
@@ -146,7 +148,9 @@ class GPUOptions(google.protobuf.message.Message):
                     "merge_host_to_device_stream",
                     b"merge_host_to_device_stream",
                 ],
-            ) -> None: ...
+            ) -> None:
+                """Clears a message field."""
+                ...
 
         VIRTUAL_DEVICES_FIELD_NUMBER: builtins.int
         NUM_VIRTUAL_DEVICES_PER_GPU_FIELD_NUMBER: builtins.int
@@ -337,7 +341,9 @@ class GPUOptions(google.protobuf.message.Message):
             node_id: builtins.int | None = ...,
             stream_merge_options: global___GPUOptions.Experimental.StreamMergeOptions | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing.Literal["stream_merge_options", b"stream_merge_options"]) -> builtins.bool: ...
+        def HasField(self, field_name: typing.Literal["stream_merge_options", b"stream_merge_options"]) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -378,7 +384,9 @@ class GPUOptions(google.protobuf.message.Message):
                 "virtual_devices",
                 b"virtual_devices",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     PER_PROCESS_GPU_MEMORY_FRACTION_FIELD_NUMBER: builtins.int
     ALLOW_GROWTH_FIELD_NUMBER: builtins.int
@@ -489,7 +497,9 @@ class GPUOptions(google.protobuf.message.Message):
         force_gpu_compatible: builtins.bool | None = ...,
         experimental: global___GPUOptions.Experimental | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["experimental", b"experimental"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["experimental", b"experimental"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -512,7 +522,9 @@ class GPUOptions(google.protobuf.message.Message):
             "visible_device_list",
             b"visible_device_list",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GPUOptions = GPUOptions
 
@@ -650,7 +662,9 @@ class OptimizerOptions(google.protobuf.message.Message):
             "opt_level",
             b"opt_level",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___OptimizerOptions = OptimizerOptions
 
@@ -725,7 +739,9 @@ class GraphOptions(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["optimizer_options", b"optimizer_options", "rewrite_options", b"rewrite_options"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -748,7 +764,9 @@ class GraphOptions(google.protobuf.message.Message):
             "timeline_step",
             b"timeline_step",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___GraphOptions = GraphOptions
 
@@ -782,7 +800,9 @@ class ThreadPoolOptionProto(google.protobuf.message.Message):
     - threadpools created this way are never garbage collected.
     """
     def __init__(self, *, num_threads: builtins.int | None = ..., global_name: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["global_name", b"global_name", "num_threads", b"num_threads"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["global_name", b"global_name", "num_threads", b"num_threads"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___ThreadPoolOptionProto = ThreadPoolOptionProto
 
@@ -806,7 +826,9 @@ class SessionMetadata(google.protobuf.message.Message):
     version: builtins.int
     """The version is optional. If set, needs to be >= 0."""
     def __init__(self, *, name: builtins.str | None = ..., version: builtins.int | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "version", b"version"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "version", b"version"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___SessionMetadata = SessionMetadata
 
@@ -827,7 +849,9 @@ class ConfigProto(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.int
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.int | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class Experimental(google.protobuf.message.Message):
@@ -1094,7 +1118,9 @@ class ConfigProto(google.protobuf.message.Message):
         def HasField(
             self,
             field_name: typing.Literal["coordination_config", b"coordination_config", "session_metadata", b"session_metadata"],
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -1155,7 +1181,9 @@ class ConfigProto(google.protobuf.message.Message):
                 "xla_prefer_single_graph_cluster",
                 b"xla_prefer_single_graph_cluster",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     DEVICE_COUNT_FIELD_NUMBER: builtins.int
     INTRA_OP_PARALLELISM_THREADS_FIELD_NUMBER: builtins.int
@@ -1345,7 +1373,9 @@ class ConfigProto(google.protobuf.message.Message):
             "rpc_options",
             b"rpc_options",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1386,7 +1416,9 @@ class ConfigProto(google.protobuf.message.Message):
             "use_per_session_threads",
             b"use_per_session_threads",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___ConfigProto = ConfigProto
 
@@ -1440,7 +1472,9 @@ class RunOptions(google.protobuf.message.Message):
             based on the priority number. The larger number means higher priority.
             """
             def __init__(self, *, priority: builtins.int | None = ...) -> None: ...
-            def ClearField(self, field_name: typing.Literal["priority", b"priority"]) -> None: ...
+            def ClearField(self, field_name: typing.Literal["priority", b"priority"]) -> None:
+                """Clears a message field."""
+                ...
 
         COLLECTIVE_GRAPH_KEY_FIELD_NUMBER: builtins.int
         USE_RUN_HANDLER_POOL_FIELD_NUMBER: builtins.int
@@ -1468,7 +1502,9 @@ class RunOptions(google.protobuf.message.Message):
         ) -> None: ...
         def HasField(
             self, field_name: typing.Literal["run_handler_pool_options", b"run_handler_pool_options"]
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -1479,7 +1515,9 @@ class RunOptions(google.protobuf.message.Message):
                 "use_run_handler_pool",
                 b"use_run_handler_pool",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     TRACE_LEVEL_FIELD_NUMBER: builtins.int
     TIMEOUT_IN_MS_FIELD_NUMBER: builtins.int
@@ -1529,7 +1567,9 @@ class RunOptions(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["debug_options", b"debug_options", "experimental", b"experimental"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1548,7 +1588,9 @@ class RunOptions(google.protobuf.message.Message):
             "trace_level",
             b"trace_level",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___RunOptions = RunOptions
 
@@ -1587,7 +1629,9 @@ class RunMetadata(google.protobuf.message.Message):
             field_name: typing.Literal[
                 "post_optimization_graph", b"post_optimization_graph", "pre_optimization_graph", b"pre_optimization_graph"
             ],
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+            ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -1598,7 +1642,9 @@ class RunMetadata(google.protobuf.message.Message):
                 "pre_optimization_graph",
                 b"pre_optimization_graph",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
+            ...
 
     STEP_STATS_FIELD_NUMBER: builtins.int
     COST_GRAPH_FIELD_NUMBER: builtins.int
@@ -1656,7 +1702,9 @@ class RunMetadata(google.protobuf.message.Message):
         field_name: typing.Literal[
             "cost_graph", b"cost_graph", "session_metadata", b"session_metadata", "step_stats", b"step_stats"
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1671,7 +1719,9 @@ class RunMetadata(google.protobuf.message.Message):
             "step_stats",
             b"step_stats",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___RunMetadata = RunMetadata
 
@@ -1692,7 +1742,9 @@ class TensorConnection(google.protobuf.message.Message):
     value of the tensor named in `from_tensor`.
     """
     def __init__(self, *, from_tensor: builtins.str | None = ..., to_tensor: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["from_tensor", b"from_tensor", "to_tensor", b"to_tensor"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["from_tensor", b"from_tensor", "to_tensor", b"to_tensor"]) -> None:
+        """Clears a message field."""
+        ...
 
 global___TensorConnection = TensorConnection
 
@@ -1715,7 +1767,9 @@ class CallableOptions(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.str
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     @typing.final
     class FetchDevicesEntry(google.protobuf.message.Message):
@@ -1726,7 +1780,9 @@ class CallableOptions(google.protobuf.message.Message):
         key: builtins.str
         value: builtins.str
         def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
+            """Clears a message field."""
+            ...
 
     FEED_FIELD_NUMBER: builtins.int
     FETCH_FIELD_NUMBER: builtins.int
@@ -1841,7 +1897,9 @@ class CallableOptions(google.protobuf.message.Message):
         fetch_devices: collections.abc.Mapping[builtins.str, builtins.str] | None = ...,
         fetch_skip_sync: builtins.bool | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["run_options", b"run_options"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["run_options", b"run_options"]) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1862,6 +1920,8 @@ class CallableOptions(google.protobuf.message.Message):
             "tensor_connection",
             b"tensor_connection",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
+        ...
 
 global___CallableOptions = CallableOptions
