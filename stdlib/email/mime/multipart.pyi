@@ -2,8 +2,9 @@
 
 from collections.abc import Sequence
 from email import _ParamsType
+from email._policybase import _MessageT
 from email.mime.base import MIMEBase
-from email.policy import Policy, _MessageT
+from email.policy import Policy
 
 __all__ = ["MIMEMultipart"]
 

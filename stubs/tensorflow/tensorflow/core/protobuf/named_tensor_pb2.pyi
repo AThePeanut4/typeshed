@@ -33,10 +33,7 @@ class NamedTensorProto(google.protobuf.message.Message):
         """
 
     def __init__(
-        self,
-        *,
-        name: builtins.str | None = ...,
-        tensor: tensorflow.core.framework.tensor_pb2.TensorProto | None = ...,
+        self, *, name: builtins.str | None = ..., tensor: tensorflow.core.framework.tensor_pb2.TensorProto | None = ...
     ) -> None: ...
     def HasField(self, field_name: typing.Literal["tensor", b"tensor"]) -> builtins.bool:
         """Checks if a message field is set."""

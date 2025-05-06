@@ -28,14 +28,11 @@ class SpriteMetadata(google.protobuf.message.Message):
         """[width, height] of a single image in the sprite."""
 
     def __init__(
-        self,
-        *,
-        image_path: builtins.str | None = ...,
-        single_image_dim: collections.abc.Iterable[builtins.int] | None = ...,
+        self, *, image_path: builtins.str | None = ..., single_image_dim: collections.abc.Iterable[builtins.int] | None = ...
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["image_path", b"image_path", "single_image_dim", b"single_image_dim"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self, field_name: typing.Literal["image_path", b"image_path", "single_image_dim", b"single_image_dim"]
+    ) -> None: ...
 
 global___SpriteMetadata = SpriteMetadata
 
@@ -74,12 +71,24 @@ class EmbeddingInfo(google.protobuf.message.Message):
         sprite: global___SpriteMetadata | None = ...,
         tensor_path: builtins.str | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["sprite", b"sprite"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["bookmarks_path", b"bookmarks_path", "metadata_path", b"metadata_path", "sprite", b"sprite", "tensor_name", b"tensor_name", "tensor_path", b"tensor_path", "tensor_shape", b"tensor_shape"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(self, field_name: typing.Literal["sprite", b"sprite"]) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "bookmarks_path",
+            b"bookmarks_path",
+            "metadata_path",
+            b"metadata_path",
+            "sprite",
+            b"sprite",
+            "tensor_name",
+            b"tensor_name",
+            "tensor_path",
+            b"tensor_path",
+            "tensor_shape",
+            b"tensor_shape",
+        ],
+    ) -> None: ...
 
 global___EmbeddingInfo = EmbeddingInfo
 
@@ -105,8 +114,16 @@ class ProjectorConfig(google.protobuf.message.Message):
         embeddings: collections.abc.Iterable[global___EmbeddingInfo] | None = ...,
         model_checkpoint_dir: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["embeddings", b"embeddings", "model_checkpoint_dir", b"model_checkpoint_dir", "model_checkpoint_path", b"model_checkpoint_path"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "embeddings",
+            b"embeddings",
+            "model_checkpoint_dir",
+            b"model_checkpoint_dir",
+            "model_checkpoint_path",
+            b"model_checkpoint_path",
+        ],
+    ) -> None: ...
 
 global___ProjectorConfig = ProjectorConfig

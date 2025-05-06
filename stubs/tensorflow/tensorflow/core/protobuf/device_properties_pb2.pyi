@@ -39,15 +39,8 @@ class DeviceProperties(google.protobuf.message.Message):
         VALUE_FIELD_NUMBER: builtins.int
         key: builtins.str
         value: builtins.str
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: builtins.str | None = ...,
-        ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     VENDOR_FIELD_NUMBER: builtins.int
@@ -111,9 +104,37 @@ class DeviceProperties(google.protobuf.message.Message):
         memory_size: builtins.int | None = ...,
         bandwidth: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bandwidth", b"bandwidth", "environment", b"environment", "frequency", b"frequency", "l1_cache_size", b"l1_cache_size", "l2_cache_size", b"l2_cache_size", "l3_cache_size", b"l3_cache_size", "memory_size", b"memory_size", "model", b"model", "num_cores", b"num_cores", "num_registers", b"num_registers", "shared_memory_size_per_multiprocessor", b"shared_memory_size_per_multiprocessor", "type", b"type", "vendor", b"vendor"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "bandwidth",
+            b"bandwidth",
+            "environment",
+            b"environment",
+            "frequency",
+            b"frequency",
+            "l1_cache_size",
+            b"l1_cache_size",
+            "l2_cache_size",
+            b"l2_cache_size",
+            "l3_cache_size",
+            b"l3_cache_size",
+            "memory_size",
+            b"memory_size",
+            "model",
+            b"model",
+            "num_cores",
+            b"num_cores",
+            "num_registers",
+            b"num_registers",
+            "shared_memory_size_per_multiprocessor",
+            b"shared_memory_size_per_multiprocessor",
+            "type",
+            b"type",
+            "vendor",
+            b"vendor",
+        ],
+    ) -> None: ...
 
 global___DeviceProperties = DeviceProperties
 
@@ -126,17 +147,8 @@ class NamedDevice(google.protobuf.message.Message):
     name: builtins.str
     @property
     def properties(self) -> global___DeviceProperties: ...
-    def __init__(
-        self,
-        *,
-        name: builtins.str | None = ...,
-        properties: global___DeviceProperties | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing.Literal["properties", b"properties"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "properties", b"properties"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, name: builtins.str | None = ..., properties: global___DeviceProperties | None = ...) -> None: ...
+    def HasField(self, field_name: typing.Literal["properties", b"properties"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "properties", b"properties"]) -> None: ...
 
 global___NamedDevice = NamedDevice

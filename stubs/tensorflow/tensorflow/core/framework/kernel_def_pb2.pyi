@@ -66,7 +66,9 @@ class KernelDef(google.protobuf.message.Message):
     this is not set), we prefer GPU kernels over CPU.
     """
     @property
-    def constraint(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___KernelDef.AttrConstraint]: ...
+    def constraint(
+        self,
+    ) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___KernelDef.AttrConstraint]: ...
     @property
     def host_memory_arg(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
         """Names of the Op's input_/output_args that reside in host memory
@@ -83,9 +85,23 @@ class KernelDef(google.protobuf.message.Message):
         label: builtins.str | None = ...,
         priority: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["constraint", b"constraint", "device_type", b"device_type", "host_memory_arg", b"host_memory_arg", "label", b"label", "op", b"op", "priority", b"priority"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "constraint",
+            b"constraint",
+            "device_type",
+            b"device_type",
+            "host_memory_arg",
+            b"host_memory_arg",
+            "label",
+            b"label",
+            "op",
+            b"op",
+            "priority",
+            b"priority",
+        ],
+    ) -> None: ...
 
 global___KernelDef = KernelDef
 
@@ -98,13 +114,7 @@ class KernelList(google.protobuf.message.Message):
     KERNEL_FIELD_NUMBER: builtins.int
     @property
     def kernel(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___KernelDef]: ...
-    def __init__(
-        self,
-        *,
-        kernel: collections.abc.Iterable[global___KernelDef] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["kernel", b"kernel"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, kernel: collections.abc.Iterable[global___KernelDef] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["kernel", b"kernel"]) -> None: ...
 
 global___KernelList = KernelList

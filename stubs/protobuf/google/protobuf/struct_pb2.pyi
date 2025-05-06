@@ -93,32 +93,17 @@ class Struct(google.protobuf.message.Message, google.protobuf.internal.well_know
         key: builtins.str
         @property
         def value(self) -> global___Value: ...
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: global___Value | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: global___Value | None = ...) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     FIELDS_FIELD_NUMBER: builtins.int
     @property
     def fields(self) -> google.protobuf.internal.containers.MessageMap[builtins.str, global___Value]:
         """Unordered map of dynamically typed values."""
 
-    def __init__(
-        self,
-        *,
-        fields: collections.abc.Mapping[builtins.str, global___Value] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["fields", b"fields"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, fields: collections.abc.Mapping[builtins.str, global___Value] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["fields", b"fields"]) -> None: ...
 
 global___Struct = Struct
 
@@ -166,15 +151,47 @@ class Value(google.protobuf.message.Message):
         struct_value: global___Struct | None = ...,
         list_value: global___ListValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["bool_value", b"bool_value", "kind", b"kind", "list_value", b"list_value", "null_value", b"null_value", "number_value", b"number_value", "string_value", b"string_value", "struct_value", b"struct_value"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["bool_value", b"bool_value", "kind", b"kind", "list_value", b"list_value", "null_value", b"null_value", "number_value", b"number_value", "string_value", b"string_value", "struct_value", b"struct_value"]) -> None:
-        """Clears a message field."""
-        ...
-    def WhichOneof(self, oneof_group: typing.Literal["kind", b"kind"]) -> typing.Literal["null_value", "number_value", "string_value", "bool_value", "struct_value", "list_value"] | None:
-        """Returns the name of the field set inside a oneof, or None if no field is set."""
-        ...
+    def HasField(
+        self,
+        field_name: typing.Literal[
+            "bool_value",
+            b"bool_value",
+            "kind",
+            b"kind",
+            "list_value",
+            b"list_value",
+            "null_value",
+            b"null_value",
+            "number_value",
+            b"number_value",
+            "string_value",
+            b"string_value",
+            "struct_value",
+            b"struct_value",
+        ],
+    ) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "bool_value",
+            b"bool_value",
+            "kind",
+            b"kind",
+            "list_value",
+            b"list_value",
+            "null_value",
+            b"null_value",
+            "number_value",
+            b"number_value",
+            "string_value",
+            b"string_value",
+            "struct_value",
+            b"struct_value",
+        ],
+    ) -> None: ...
+    def WhichOneof(
+        self, oneof_group: typing.Literal["kind", b"kind"]
+    ) -> typing.Literal["null_value", "number_value", "string_value", "bool_value", "struct_value", "list_value"] | None: ...
 
 global___Value = Value
 
@@ -192,13 +209,7 @@ class ListValue(google.protobuf.message.Message, google.protobuf.internal.well_k
     def values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Value]:
         """Repeated field of dynamically typed values."""
 
-    def __init__(
-        self,
-        *,
-        values: collections.abc.Iterable[global___Value] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["values", b"values"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, values: collections.abc.Iterable[global___Value] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["values", b"values"]) -> None: ...
 
 global___ListValue = ListValue

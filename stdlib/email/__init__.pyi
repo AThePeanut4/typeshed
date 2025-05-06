@@ -1,8 +1,9 @@
 """A package for parsing, handling, and generating email messages."""
 
 from collections.abc import Callable
+from email._policybase import _MessageT
 from email.message import Message
-from email.policy import Policy, _MessageT
+from email.policy import Policy
 from typing import IO, overload
 from typing_extensions import TypeAlias
 

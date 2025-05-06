@@ -50,7 +50,9 @@ class _AutotuneAlgorithm:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType
 
-class _AutotuneAlgorithmEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_AutotuneAlgorithm.ValueType], builtins.type):
+class _AutotuneAlgorithmEnumTypeWrapper(
+    google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_AutotuneAlgorithm.ValueType], builtins.type
+):
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
     DEFAULT: _AutotuneAlgorithm.ValueType  # 0
     HILL_CLIMB: _AutotuneAlgorithm.ValueType  # 1
@@ -118,9 +120,23 @@ class ModelProto(google.protobuf.message.Message):
                 max: builtins.float | None = ...,
                 tunable: builtins.bool | None = ...,
             ) -> None: ...
-            def ClearField(self, field_name: typing.Literal["max", b"max", "min", b"min", "name", b"name", "state_value", b"state_value", "tunable", b"tunable", "value", b"value"]) -> None:
-                """Clears a message field."""
-                ...
+            def ClearField(
+                self,
+                field_name: typing.Literal[
+                    "max",
+                    b"max",
+                    "min",
+                    b"min",
+                    "name",
+                    b"name",
+                    "state_value",
+                    b"state_value",
+                    "tunable",
+                    b"tunable",
+                    "value",
+                    b"value",
+                ],
+            ) -> None: ...
 
         ID_FIELD_NUMBER: builtins.int
         NAME_FIELD_NUMBER: builtins.int
@@ -175,7 +191,9 @@ class ModelProto(google.protobuf.message.Message):
         buffered element. This is only used by ASYNC_KNOWN_RATIO nodes.
         """
         @property
-        def parameters(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ModelProto.Node.Parameter]:
+        def parameters(
+            self,
+        ) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ModelProto.Node.Parameter]:
             """Parameters of this node."""
 
         @property
@@ -203,9 +221,45 @@ class ModelProto(google.protobuf.message.Message):
             ratio: builtins.float | None = ...,
             memory_ratio: builtins.float | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["autotune", b"autotune", "buffered_bytes", b"buffered_bytes", "buffered_elements", b"buffered_elements", "bytes_consumed", b"bytes_consumed", "bytes_produced", b"bytes_produced", "id", b"id", "input_processing_time_count", b"input_processing_time_count", "input_processing_time_sum", b"input_processing_time_sum", "inputs", b"inputs", "memory_ratio", b"memory_ratio", "name", b"name", "node_class", b"node_class", "num_elements", b"num_elements", "parameters", b"parameters", "processing_time", b"processing_time", "ratio", b"ratio", "record_metrics", b"record_metrics"]) -> None:
-            """Clears a message field."""
-            ...
+        def ClearField(
+            self,
+            field_name: typing.Literal[
+                "autotune",
+                b"autotune",
+                "buffered_bytes",
+                b"buffered_bytes",
+                "buffered_elements",
+                b"buffered_elements",
+                "bytes_consumed",
+                b"bytes_consumed",
+                "bytes_produced",
+                b"bytes_produced",
+                "id",
+                b"id",
+                "input_processing_time_count",
+                b"input_processing_time_count",
+                "input_processing_time_sum",
+                b"input_processing_time_sum",
+                "inputs",
+                b"inputs",
+                "memory_ratio",
+                b"memory_ratio",
+                "name",
+                b"name",
+                "node_class",
+                b"node_class",
+                "num_elements",
+                b"num_elements",
+                "parameters",
+                b"parameters",
+                "processing_time",
+                b"processing_time",
+                "ratio",
+                b"ratio",
+                "record_metrics",
+                b"record_metrics",
+            ],
+        ) -> None: ...
 
     @typing.final
     class NodesEntry(google.protobuf.message.Message):
@@ -216,18 +270,9 @@ class ModelProto(google.protobuf.message.Message):
         key: builtins.int
         @property
         def value(self) -> global___ModelProto.Node: ...
-        def __init__(
-            self,
-            *,
-            key: builtins.int | None = ...,
-            value: global___ModelProto.Node | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.int | None = ..., value: global___ModelProto.Node | None = ...) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     @typing.final
     class OptimizationParams(google.protobuf.message.Message):
@@ -257,9 +302,19 @@ class ModelProto(google.protobuf.message.Message):
             ram_budget: builtins.int | None = ...,
             model_input_time: builtins.float | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["algorithm", b"algorithm", "cpu_budget", b"cpu_budget", "model_input_time", b"model_input_time", "ram_budget", b"ram_budget"]) -> None:
-            """Clears a message field."""
-            ...
+        def ClearField(
+            self,
+            field_name: typing.Literal[
+                "algorithm",
+                b"algorithm",
+                "cpu_budget",
+                b"cpu_budget",
+                "model_input_time",
+                b"model_input_time",
+                "ram_budget",
+                b"ram_budget",
+            ],
+        ) -> None: ...
 
     DATASET_NAME_FIELD_NUMBER: builtins.int
     NODES_FIELD_NUMBER: builtins.int
@@ -291,11 +346,23 @@ class ModelProto(google.protobuf.message.Message):
         optimization_params: global___ModelProto.OptimizationParams | None = ...,
         gap_times: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["optimization_params", b"optimization_params"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["dataset_name", b"dataset_name", "gap_times", b"gap_times", "id_counter", b"id_counter", "nodes", b"nodes", "optimization_params", b"optimization_params", "output", b"output"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(self, field_name: typing.Literal["optimization_params", b"optimization_params"]) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "dataset_name",
+            b"dataset_name",
+            "gap_times",
+            b"gap_times",
+            "id_counter",
+            b"id_counter",
+            "nodes",
+            b"nodes",
+            "optimization_params",
+            b"optimization_params",
+            "output",
+            b"output",
+        ],
+    ) -> None: ...
 
 global___ModelProto = ModelProto

@@ -33,21 +33,12 @@ class TensorSliceProto(google.protobuf.message.Message):
         start: builtins.int
         """Start index of the slice, starting at 0."""
         length: builtins.int
-        def __init__(
-            self,
-            *,
-            start: builtins.int | None = ...,
-            length: builtins.int | None = ...,
+        def __init__(self, *, start: builtins.int | None = ..., length: builtins.int | None = ...) -> None: ...
+        def HasField(self, field_name: typing.Literal["has_length", b"has_length", "length", b"length"]) -> builtins.bool: ...
+        def ClearField(
+            self, field_name: typing.Literal["has_length", b"has_length", "length", b"length", "start", b"start"]
         ) -> None: ...
-        def HasField(self, field_name: typing.Literal["has_length", b"has_length", "length", b"length"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["has_length", b"has_length", "length", b"length", "start", b"start"]) -> None:
-            """Clears a message field."""
-            ...
-        def WhichOneof(self, oneof_group: typing.Literal["has_length", b"has_length"]) -> typing.Literal["length"] | None:
-            """Returns the name of the field set inside a oneof, or None if no field is set."""
-            ...
+        def WhichOneof(self, oneof_group: typing.Literal["has_length", b"has_length"]) -> typing.Literal["length"] | None: ...
 
     EXTENT_FIELD_NUMBER: builtins.int
     @property
@@ -59,13 +50,7 @@ class TensorSliceProto(google.protobuf.message.Message):
         dimensions in the TensorShape.
         """
 
-    def __init__(
-        self,
-        *,
-        extent: collections.abc.Iterable[global___TensorSliceProto.Extent] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["extent", b"extent"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, extent: collections.abc.Iterable[global___TensorSliceProto.Extent] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["extent", b"extent"]) -> None: ...
 
 global___TensorSliceProto = TensorSliceProto

@@ -22,6 +22,7 @@ from braintree.masterpass_card import MasterpassCard
 from braintree.meta_checkout_card import MetaCheckoutCard
 from braintree.meta_checkout_token import MetaCheckoutToken
 from braintree.package_details import PackageDetails
+from braintree.payment_facilitator import PaymentFacilitator
 from braintree.paypal_account import PayPalAccount
 from braintree.paypal_here import PayPalHere
 from braintree.resource import Resource
@@ -135,22 +136,6 @@ class Transaction(Resource):
         ControlPanel: Final = "control_panel"
         Recurring: Final = "recurring"
 
-    class EscrowStatus:
-        """
-        Constants representing transaction escrow statuses. Available statuses are:
-
-        * braintree.Transaction.EscrowStatus.HoldPending
-        * braintree.Transaction.EscrowStatus.Held
-        * braintree.Transaction.EscrowStatus.ReleasePending
-        * braintree.Transaction.EscrowStatus.Released
-        * braintree.Transaction.EscrowStatus.Refunded
-        """
-        HoldPending: Final = "hold_pending"
-        Held: Final = "held"
-        ReleasePending: Final = "release_pending"
-        Released: Final = "released"
-        Refunded: Final = "refunded"
-
     class Status:
         """
         Constants representing transaction statuses. Available statuses are:
@@ -219,42 +204,7 @@ class Transaction(Resource):
     @staticmethod
     def clone_transaction(transaction_id, params): ...
     @staticmethod
-    def cancel_release(transaction_id):
-        """
-        Cancels a pending release from escrow for a transaction.
-
-        Requires the transaction id::
-
-            result = braintree.Transaction.cancel_release("my_transaction_id")
-        """
-        ...
-    @staticmethod
-    def credit(params: Incomplete | None = None):
-        """
-        Creates a transaction of type Credit.
-
-        Amount is required. Also, a credit card,
-        customer_id or payment_method_token is required. ::
-
-            result = braintree.Transaction.credit({
-                "amount": "100.00",
-                "payment_method_token": "my_token"
-            })
-
-            result = braintree.Transaction.credit({
-                "amount": "100.00",
-                "credit_card": {
-                    "number": "4111111111111111",
-                    "expiration_date": "12/2012"
-                }
-            })
-
-            result = braintree.Transaction.credit({
-                "amount": "100.00",
-                "customer_id": "my_customer_id"
-            })
-        """
-        ...
+    def credit(params: Incomplete | None = None): ...
     @staticmethod
     def find(transaction_id):
         """
@@ -266,25 +216,7 @@ class Transaction(Resource):
         """
         ...
     @staticmethod
-    def hold_in_escrow(transaction_id):
-        """
-        Holds an existing submerchant transaction for escrow.
-
-        It expects a transaction_id.::
-
-            result = braintree.Transaction.hold_in_escrow("my_transaction_id")
-        """
-        ...
-    @staticmethod
-    def refund(transaction_id, amount_or_options: Incomplete | None = None):
-        """
-        Refunds an existing transaction.
-
-        It expects a transaction_id.::
-
-            result = braintree.Transaction.refund("my_transaction_id")
-        """
-        ...
+    def refund(transaction_id, amount_or_options: Incomplete | None = None): ...
     @staticmethod
     def sale(params: Incomplete | None = None):
         """
@@ -313,25 +245,7 @@ class Transaction(Resource):
     @staticmethod
     def search(*query): ...
     @staticmethod
-    def release_from_escrow(transaction_id):
-        """
-        Submits an escrowed transaction for release.
-
-        Requires the transaction id::
-
-            result = braintree.Transaction.release_from_escrow("my_transaction_id")
-        """
-        ...
-    @staticmethod
-    def submit_for_settlement(transaction_id, amount: Incomplete | None = None, params: Incomplete | None = None):
-        """
-        Submits an authorized transaction for settlement.
-
-        Requires the transaction id::
-
-            result = braintree.Transaction.submit_for_settlement("my_transaction_id")
-        """
-        ...
+    def submit_for_settlement(transaction_id, amount: Incomplete | None = None, params: Incomplete | None = None): ...
     @staticmethod
     def update_details(transaction_id, params: Incomplete | None = None):
         """
@@ -461,6 +375,7 @@ class Transaction(Resource):
     facilitated_details: FacilitatedDetails
     facilitator_details: FacilitatorDetails
     network_transaction_id: Incomplete
+    payment_facilitator: PaymentFacilitator
     def __init__(self, gateway, attributes) -> None: ...
     @property
     def vault_billing_address(self):

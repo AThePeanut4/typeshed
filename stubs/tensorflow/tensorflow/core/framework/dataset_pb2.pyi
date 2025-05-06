@@ -50,12 +50,13 @@ class CompressedComponentMetadata(google.protobuf.message.Message):
         tensor_shape: tensorflow.core.framework.tensor_shape_pb2.TensorShapeProto | None = ...,
         uncompressed_bytes: collections.abc.Iterable[builtins.int] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["dtype", b"dtype", "tensor_shape", b"tensor_shape", "uncompressed_bytes", b"uncompressed_bytes"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(self, field_name: typing.Literal["tensor_shape", b"tensor_shape"]) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "dtype", b"dtype", "tensor_shape", b"tensor_shape", "uncompressed_bytes", b"uncompressed_bytes"
+        ],
+    ) -> None: ...
 
 global___CompressedComponentMetadata = CompressedComponentMetadata
 
@@ -76,7 +77,9 @@ class CompressedElement(google.protobuf.message.Message):
     tensorflow/core/data/compression_utils.cc.
     """
     @property
-    def component_metadata(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___CompressedComponentMetadata]:
+    def component_metadata(
+        self,
+    ) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___CompressedComponentMetadata]:
         """Metadata for the components of the element."""
 
     def __init__(
@@ -86,9 +89,9 @@ class CompressedElement(google.protobuf.message.Message):
         component_metadata: collections.abc.Iterable[global___CompressedComponentMetadata] | None = ...,
         version: builtins.int | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["component_metadata", b"component_metadata", "data", b"data", "version", b"version"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self, field_name: typing.Literal["component_metadata", b"component_metadata", "data", b"data", "version", b"version"]
+    ) -> None: ...
 
 global___CompressedElement = CompressedElement
 
@@ -100,11 +103,13 @@ class UncompressedElement(google.protobuf.message.Message):
 
     COMPONENTS_FIELD_NUMBER: builtins.int
     @property
-    def components(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[tensorflow.core.framework.tensor_pb2.TensorProto]: ...
-    def __init__(
+    def components(
         self,
-        *,
-        components: collections.abc.Iterable[tensorflow.core.framework.tensor_pb2.TensorProto] | None = ...,
+    ) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[
+        tensorflow.core.framework.tensor_pb2.TensorProto
+    ]: ...
+    def __init__(
+        self, *, components: collections.abc.Iterable[tensorflow.core.framework.tensor_pb2.TensorProto] | None = ...
     ) -> None: ...
     def ClearField(self, field_name: typing.Literal["components", b"components"]) -> None:
         """Clears a message field."""

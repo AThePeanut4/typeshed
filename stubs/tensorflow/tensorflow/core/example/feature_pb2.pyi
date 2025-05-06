@@ -77,14 +77,8 @@ class BytesList(google.protobuf.message.Message):
     VALUE_FIELD_NUMBER: builtins.int
     @property
     def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]: ...
-    def __init__(
-        self,
-        *,
-        value: collections.abc.Iterable[builtins.bytes] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, value: collections.abc.Iterable[builtins.bytes] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
 
 global___BytesList = BytesList
 
@@ -131,14 +125,8 @@ class FloatList(google.protobuf.message.Message):
     VALUE_FIELD_NUMBER: builtins.int
     @property
     def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.float]: ...
-    def __init__(
-        self,
-        *,
-        value: collections.abc.Iterable[builtins.float] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, value: collections.abc.Iterable[builtins.float] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
 
 global___FloatList = FloatList
 
@@ -185,14 +173,8 @@ class Int64List(google.protobuf.message.Message):
     VALUE_FIELD_NUMBER: builtins.int
     @property
     def value(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
-    def __init__(
-        self,
-        *,
-        value: collections.abc.Iterable[builtins.int] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, value: collections.abc.Iterable[builtins.int] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["value", b"value"]) -> None: ...
 
 global___Int64List = Int64List
 
@@ -218,15 +200,21 @@ class Feature(google.protobuf.message.Message):
         float_list: global___FloatList | None = ...,
         int64_list: global___Int64List | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["bytes_list", b"bytes_list", "float_list", b"float_list", "int64_list", b"int64_list", "kind", b"kind"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["bytes_list", b"bytes_list", "float_list", b"float_list", "int64_list", b"int64_list", "kind", b"kind"]) -> None:
-        """Clears a message field."""
-        ...
-    def WhichOneof(self, oneof_group: typing.Literal["kind", b"kind"]) -> typing.Literal["bytes_list", "float_list", "int64_list"] | None:
-        """Returns the name of the field set inside a oneof, or None if no field is set."""
-        ...
+    def HasField(
+        self,
+        field_name: typing.Literal[
+            "bytes_list", b"bytes_list", "float_list", b"float_list", "int64_list", b"int64_list", "kind", b"kind"
+        ],
+    ) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "bytes_list", b"bytes_list", "float_list", b"float_list", "int64_list", b"int64_list", "kind", b"kind"
+        ],
+    ) -> None: ...
+    def WhichOneof(
+        self, oneof_group: typing.Literal["kind", b"kind"]
+    ) -> typing.Literal["bytes_list", "float_list", "int64_list"] | None: ...
 
 global___Feature = Feature
 
@@ -286,32 +274,17 @@ class Features(google.protobuf.message.Message):
         key: builtins.str
         @property
         def value(self) -> global___Feature: ...
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: global___Feature | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: global___Feature | None = ...) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     FEATURE_FIELD_NUMBER: builtins.int
     @property
     def feature(self) -> google.protobuf.internal.containers.MessageMap[builtins.str, global___Feature]:
         """Map from feature name to feature."""
 
-    def __init__(
-        self,
-        *,
-        feature: collections.abc.Mapping[builtins.str, global___Feature] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["feature", b"feature"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, feature: collections.abc.Mapping[builtins.str, global___Feature] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["feature", b"feature"]) -> None: ...
 
 global___Features = Features
 
@@ -331,14 +304,8 @@ class FeatureList(google.protobuf.message.Message):
     FEATURE_FIELD_NUMBER: builtins.int
     @property
     def feature(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Feature]: ...
-    def __init__(
-        self,
-        *,
-        feature: collections.abc.Iterable[global___Feature] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["feature", b"feature"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, feature: collections.abc.Iterable[global___Feature] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["feature", b"feature"]) -> None: ...
 
 global___FeatureList = FeatureList
 
@@ -382,31 +349,16 @@ class FeatureLists(google.protobuf.message.Message):
         key: builtins.str
         @property
         def value(self) -> global___FeatureList: ...
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: global___FeatureList | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: global___FeatureList | None = ...) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     FEATURE_LIST_FIELD_NUMBER: builtins.int
     @property
     def feature_list(self) -> google.protobuf.internal.containers.MessageMap[builtins.str, global___FeatureList]:
         """Map from feature name to feature list."""
 
-    def __init__(
-        self,
-        *,
-        feature_list: collections.abc.Mapping[builtins.str, global___FeatureList] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["feature_list", b"feature_list"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, feature_list: collections.abc.Mapping[builtins.str, global___FeatureList] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["feature_list", b"feature_list"]) -> None: ...
 
 global___FeatureLists = FeatureLists

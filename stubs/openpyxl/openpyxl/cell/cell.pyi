@@ -11,7 +11,7 @@ from datetime import datetime
 from re import Pattern
 from typing import Final, Literal, overload
 
-from openpyxl.cell import _CellOrMergedCell, _CellValue, _TimeTypes
+from openpyxl.cell import _CellGetValue, _CellOrMergedCell, _CellSetValue, _TimeTypes
 from openpyxl.comments.comments import Comment
 from openpyxl.compat.numbers import NUMERIC_TYPES as NUMERIC_TYPES  # cell numeric types
 from openpyxl.styles.cell_style import StyleArray
@@ -58,7 +58,7 @@ class Cell(StyleableObject):
         worksheet: _WorkbookChild | ReadOnlyWorksheet,
         row: int,
         column: int,
-        value: str | float | datetime | None = None,
+        value: _CellSetValue = None,
         style_array: StyleArray | None = None,
     ) -> None: ...
     @property
@@ -87,27 +87,11 @@ class Cell(StyleableObject):
         """Tries to convert Error" else N/A"""
         ...
     @property
-    def value(self) -> _CellValue | None:
-        """
-        Get or set the value held in the cell.
-
-        :type: depends on the value (string, float, int or
-            :class:`datetime.datetime`)
-        """
-        ...
+    def value(self) -> _CellGetValue: ...
     @value.setter
-    def value(self, value: _CellValue | bytes | None) -> None:
-        """
-        Get or set the value held in the cell.
-
-        :type: depends on the value (string, float, int or
-            :class:`datetime.datetime`)
-        """
-        ...
+    def value(self, value: _CellSetValue) -> None: ...
     @property
-    def internal_value(self) -> _CellValue | None:
-        """Always returns the value for excel."""
-        ...
+    def internal_value(self) -> _CellGetValue: ...
     @property
     def hyperlink(self) -> Hyperlink | None:
         """Return the hyperlink target or an empty string"""
@@ -172,9 +156,8 @@ class MergedCell(StyleableObject):
     # Same as Cell.coordinate
     # https://github.com/python/mypy/issues/6700
     @property
-    def coordinate(self) -> str:
-        """This cell's coordinate (ex. 'A5')"""
-        ...
-    value: str | float | int | datetime | None
+    def coordinate(self) -> str: ...
+    # The value of a MergedCell is always None.
+    value: None
 
 def WriteOnlyCell(ws: _WorkbookChild | ReadOnlyWorksheet, value: str | float | datetime | None = None) -> Cell: ...

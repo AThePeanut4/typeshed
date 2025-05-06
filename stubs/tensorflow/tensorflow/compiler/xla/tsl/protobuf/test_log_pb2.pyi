@@ -30,21 +30,16 @@ class EntryValue(google.protobuf.message.Message):
     STRING_VALUE_FIELD_NUMBER: builtins.int
     double_value: builtins.float
     string_value: builtins.str
-    def __init__(
-        self,
-        *,
-        double_value: builtins.float | None = ...,
-        string_value: builtins.str | None = ...,
+    def __init__(self, *, double_value: builtins.float | None = ..., string_value: builtins.str | None = ...) -> None: ...
+    def HasField(
+        self, field_name: typing.Literal["double_value", b"double_value", "kind", b"kind", "string_value", b"string_value"]
+    ) -> builtins.bool: ...
+    def ClearField(
+        self, field_name: typing.Literal["double_value", b"double_value", "kind", b"kind", "string_value", b"string_value"]
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["double_value", b"double_value", "kind", b"kind", "string_value", b"string_value"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["double_value", b"double_value", "kind", b"kind", "string_value", b"string_value"]) -> None:
-        """Clears a message field."""
-        ...
-    def WhichOneof(self, oneof_group: typing.Literal["kind", b"kind"]) -> typing.Literal["double_value", "string_value"] | None:
-        """Returns the name of the field set inside a oneof, or None if no field is set."""
-        ...
+    def WhichOneof(
+        self, oneof_group: typing.Literal["kind", b"kind"]
+    ) -> typing.Literal["double_value", "string_value"] | None: ...
 
 global___EntryValue = EntryValue
 
@@ -76,12 +71,10 @@ class MetricEntry(google.protobuf.message.Message):
         min_value: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
         max_value: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["max_value", b"max_value", "min_value", b"min_value"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["max_value", b"max_value", "min_value", b"min_value", "name", b"name", "value", b"value"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(self, field_name: typing.Literal["max_value", b"max_value", "min_value", b"min_value"]) -> builtins.bool: ...
+    def ClearField(
+        self, field_name: typing.Literal["max_value", b"max_value", "min_value", b"min_value", "name", b"name", "value", b"value"]
+    ) -> None: ...
 
 global___MetricEntry = MetricEntry
 
@@ -107,18 +100,9 @@ class BenchmarkEntry(google.protobuf.message.Message):
         key: builtins.str
         @property
         def value(self) -> global___EntryValue: ...
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: global___EntryValue | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: global___EntryValue | None = ...) -> None: ...
+        def HasField(self, field_name: typing.Literal["value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     NAME_FIELD_NUMBER: builtins.int
     ITERS_FIELD_NUMBER: builtins.int
@@ -160,9 +144,25 @@ class BenchmarkEntry(google.protobuf.message.Message):
         extras: collections.abc.Mapping[builtins.str, global___EntryValue] | None = ...,
         metrics: collections.abc.Iterable[global___MetricEntry] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["cpu_time", b"cpu_time", "extras", b"extras", "iters", b"iters", "metrics", b"metrics", "name", b"name", "throughput", b"throughput", "wall_time", b"wall_time"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "cpu_time",
+            b"cpu_time",
+            "extras",
+            b"extras",
+            "iters",
+            b"iters",
+            "metrics",
+            b"metrics",
+            "name",
+            b"name",
+            "throughput",
+            b"throughput",
+            "wall_time",
+            b"wall_time",
+        ],
+    ) -> None: ...
 
 global___BenchmarkEntry = BenchmarkEntry
 
@@ -173,14 +173,8 @@ class BenchmarkEntries(google.protobuf.message.Message):
     ENTRY_FIELD_NUMBER: builtins.int
     @property
     def entry(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___BenchmarkEntry]: ...
-    def __init__(
-        self,
-        *,
-        entry: collections.abc.Iterable[global___BenchmarkEntry] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["entry", b"entry"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, entry: collections.abc.Iterable[global___BenchmarkEntry] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["entry", b"entry"]) -> None: ...
 
 global___BenchmarkEntries = BenchmarkEntries
 
@@ -239,15 +233,25 @@ class CommitId(google.protobuf.message.Message):
         snapshot: builtins.str | None = ...,
         pending_changelist: builtins.int | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["changelist", b"changelist", "hash", b"hash", "kind", b"kind"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["changelist", b"changelist", "hash", b"hash", "kind", b"kind", "pending_changelist", b"pending_changelist", "snapshot", b"snapshot"]) -> None:
-        """Clears a message field."""
-        ...
-    def WhichOneof(self, oneof_group: typing.Literal["kind", b"kind"]) -> typing.Literal["changelist", "hash"] | None:
-        """Returns the name of the field set inside a oneof, or None if no field is set."""
-        ...
+    def HasField(
+        self, field_name: typing.Literal["changelist", b"changelist", "hash", b"hash", "kind", b"kind"]
+    ) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "changelist",
+            b"changelist",
+            "hash",
+            b"hash",
+            "kind",
+            b"kind",
+            "pending_changelist",
+            b"pending_changelist",
+            "snapshot",
+            b"snapshot",
+        ],
+    ) -> None: ...
+    def WhichOneof(self, oneof_group: typing.Literal["kind", b"kind"]) -> typing.Literal["changelist", "hash"] | None: ...
 
 global___CommitId = CommitId
 
@@ -263,15 +267,8 @@ class CPUInfo(google.protobuf.message.Message):
         VALUE_FIELD_NUMBER: builtins.int
         key: builtins.str
         value: builtins.int
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: builtins.int | None = ...,
-        ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: builtins.int | None = ...) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     NUM_CORES_FIELD_NUMBER: builtins.int
     NUM_CORES_ALLOWED_FIELD_NUMBER: builtins.int
@@ -305,9 +302,23 @@ class CPUInfo(google.protobuf.message.Message):
         cpu_governor: builtins.str | None = ...,
         cache_size: collections.abc.Mapping[builtins.str, builtins.int] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["cache_size", b"cache_size", "cpu_governor", b"cpu_governor", "cpu_info", b"cpu_info", "mhz_per_cpu", b"mhz_per_cpu", "num_cores", b"num_cores", "num_cores_allowed", b"num_cores_allowed"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "cache_size",
+            b"cache_size",
+            "cpu_governor",
+            b"cpu_governor",
+            "cpu_info",
+            b"cpu_info",
+            "mhz_per_cpu",
+            b"mhz_per_cpu",
+            "num_cores",
+            b"num_cores",
+            "num_cores_allowed",
+            b"num_cores_allowed",
+        ],
+    ) -> None: ...
 
 global___CPUInfo = CPUInfo
 
@@ -321,15 +332,8 @@ class MemoryInfo(google.protobuf.message.Message):
     """Total virtual memory in bytes"""
     available: builtins.int
     """Immediately available memory in bytes"""
-    def __init__(
-        self,
-        *,
-        total: builtins.int | None = ...,
-        available: builtins.int | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["available", b"available", "total", b"total"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, total: builtins.int | None = ..., available: builtins.int | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["available", b"available", "total", b"total"]) -> None: ...
 
 global___MemoryInfo = MemoryInfo
 
@@ -347,11 +351,7 @@ class GPUInfo(google.protobuf.message.Message):
     bus_id: builtins.str
     """e.g. "0000:04:00.0" """
     def __init__(
-        self,
-        *,
-        model: builtins.str | None = ...,
-        uuid: builtins.str | None = ...,
-        bus_id: builtins.str | None = ...,
+        self, *, model: builtins.str | None = ..., uuid: builtins.str | None = ..., bus_id: builtins.str | None = ...
     ) -> None: ...
     def ClearField(self, field_name: typing.Literal["bus_id", b"bus_id", "model", b"model", "uuid", b"uuid"]) -> None:
         """Clears a message field."""
@@ -391,9 +391,23 @@ class PlatformInfo(google.protobuf.message.Message):
         system: builtins.str | None = ...,
         version: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bits", b"bits", "linkage", b"linkage", "machine", b"machine", "release", b"release", "system", b"system", "version", b"version"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "bits",
+            b"bits",
+            "linkage",
+            b"linkage",
+            "machine",
+            b"machine",
+            "release",
+            b"release",
+            "system",
+            b"system",
+            "version",
+            b"version",
+        ],
+    ) -> None: ...
 
 global___PlatformInfo = PlatformInfo
 
@@ -423,9 +437,12 @@ class AvailableDeviceInfo(google.protobuf.message.Message):
         memory_limit: builtins.int | None = ...,
         physical_description: builtins.str | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["memory_limit", b"memory_limit", "name", b"name", "physical_description", b"physical_description", "type", b"type"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "memory_limit", b"memory_limit", "name", b"name", "physical_description", b"physical_description", "type", b"type"
+        ],
+    ) -> None: ...
 
 global___AvailableDeviceInfo = AvailableDeviceInfo
 
@@ -457,7 +474,9 @@ class MachineConfiguration(google.protobuf.message.Message):
         """Other devices that are attached and relevant (e.g. GPUInfo)."""
 
     @property
-    def available_device_info(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___AvailableDeviceInfo]:
+    def available_device_info(
+        self,
+    ) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___AvailableDeviceInfo]:
         """Devices accessible to the test (e.g. as given by list_local_devices)."""
 
     @property
@@ -473,12 +492,29 @@ class MachineConfiguration(google.protobuf.message.Message):
         available_device_info: collections.abc.Iterable[global___AvailableDeviceInfo] | None = ...,
         memory_info: global___MemoryInfo | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["cpu_info", b"cpu_info", "memory_info", b"memory_info", "platform_info", b"platform_info"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["available_device_info", b"available_device_info", "cpu_info", b"cpu_info", "device_info", b"device_info", "hostname", b"hostname", "memory_info", b"memory_info", "platform_info", b"platform_info", "serial_identifier", b"serial_identifier"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(
+        self,
+        field_name: typing.Literal["cpu_info", b"cpu_info", "memory_info", b"memory_info", "platform_info", b"platform_info"],
+    ) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "available_device_info",
+            b"available_device_info",
+            "cpu_info",
+            b"cpu_info",
+            "device_info",
+            b"device_info",
+            "hostname",
+            b"hostname",
+            "memory_info",
+            b"memory_info",
+            "platform_info",
+            b"platform_info",
+            "serial_identifier",
+            b"serial_identifier",
+        ],
+    ) -> None: ...
 
 global___MachineConfiguration = MachineConfiguration
 
@@ -496,15 +532,8 @@ class RunConfiguration(google.protobuf.message.Message):
         VALUE_FIELD_NUMBER: builtins.int
         key: builtins.str
         value: builtins.str
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: builtins.str | None = ...,
-        ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: builtins.str | None = ...) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     ARGUMENT_FIELD_NUMBER: builtins.int
     ENV_VARS_FIELD_NUMBER: builtins.int
@@ -543,7 +572,9 @@ class TestResults(google.protobuf.message.Message):
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _BenchmarkTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[TestResults._BenchmarkType.ValueType], builtins.type):
+    class _BenchmarkTypeEnumTypeWrapper(
+        google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[TestResults._BenchmarkType.ValueType], builtins.type
+    ):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: TestResults._BenchmarkType.ValueType  # 0
         """Fallback for protos written before Type was introduced."""
@@ -634,11 +665,49 @@ class TestResults(google.protobuf.message.Message):
         run_mode: builtins.str | None = ...,
         tf_version: builtins.str | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["build_configuration", b"build_configuration", "commit_id", b"commit_id", "entries", b"entries", "machine_configuration", b"machine_configuration", "run_configuration", b"run_configuration"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["benchmark_type", b"benchmark_type", "build_configuration", b"build_configuration", "commit_id", b"commit_id", "entries", b"entries", "machine_configuration", b"machine_configuration", "name", b"name", "run_configuration", b"run_configuration", "run_mode", b"run_mode", "run_time", b"run_time", "start_time", b"start_time", "target", b"target", "tf_version", b"tf_version"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(
+        self,
+        field_name: typing.Literal[
+            "build_configuration",
+            b"build_configuration",
+            "commit_id",
+            b"commit_id",
+            "entries",
+            b"entries",
+            "machine_configuration",
+            b"machine_configuration",
+            "run_configuration",
+            b"run_configuration",
+        ],
+    ) -> builtins.bool: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "benchmark_type",
+            b"benchmark_type",
+            "build_configuration",
+            b"build_configuration",
+            "commit_id",
+            b"commit_id",
+            "entries",
+            b"entries",
+            "machine_configuration",
+            b"machine_configuration",
+            "name",
+            b"name",
+            "run_configuration",
+            b"run_configuration",
+            "run_mode",
+            b"run_mode",
+            "run_time",
+            b"run_time",
+            "start_time",
+            b"start_time",
+            "target",
+            b"target",
+            "tf_version",
+            b"tf_version",
+        ],
+    ) -> None: ...
 
 global___TestResults = TestResults

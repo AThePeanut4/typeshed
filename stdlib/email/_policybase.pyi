@@ -8,12 +8,12 @@ from abc import ABCMeta, abstractmethod
 from email.errors import MessageDefect
 from email.header import Header
 from email.message import Message
-from typing import Generic, Protocol, TypeVar, type_check_only
+from typing import Any, Generic, Protocol, TypeVar, type_check_only
 from typing_extensions import Self
 
 __all__ = ["Policy", "Compat32", "compat32"]
 
-_MessageT = TypeVar("_MessageT", bound=Message, default=Message)
+_MessageT = TypeVar("_MessageT", bound=Message[Any, Any], default=Message[str, str])
 
 @type_check_only
 class _MessageFactory(Protocol[_MessageT]):
@@ -368,4 +368,4 @@ class Compat32(Policy[_MessageT]):
         """
         ...
 
-compat32: Compat32[Message]
+compat32: Compat32[Message[str, str]]

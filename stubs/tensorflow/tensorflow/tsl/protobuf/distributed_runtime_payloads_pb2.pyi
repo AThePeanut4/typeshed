@@ -30,27 +30,14 @@ class GrpcPayloadContainer(google.protobuf.message.Message):
         VALUE_FIELD_NUMBER: builtins.int
         key: builtins.str
         value: builtins.bytes
-        def __init__(
-            self,
-            *,
-            key: builtins.str | None = ...,
-            value: builtins.bytes | None = ...,
-        ) -> None: ...
-        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def __init__(self, *, key: builtins.str | None = ..., value: builtins.bytes | None = ...) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
 
     PAYLOADS_FIELD_NUMBER: builtins.int
     @property
     def payloads(self) -> google.protobuf.internal.containers.ScalarMap[builtins.str, builtins.bytes]: ...
-    def __init__(
-        self,
-        *,
-        payloads: collections.abc.Mapping[builtins.str, builtins.bytes] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["payloads", b"payloads"]) -> None:
-        """Clears a message field."""
-        ...
+    def __init__(self, *, payloads: collections.abc.Mapping[builtins.str, builtins.bytes] | None = ...) -> None: ...
+    def ClearField(self, field_name: typing.Literal["payloads", b"payloads"]) -> None: ...
 
 global___GrpcPayloadContainer = GrpcPayloadContainer
 
@@ -63,9 +50,7 @@ class GrpcPayloadsLost(google.protobuf.message.Message):
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    def __init__(
-        self,
-    ) -> None: ...
+    def __init__(self) -> None: ...
 
 global___GrpcPayloadsLost = GrpcPayloadsLost
 
@@ -79,8 +64,6 @@ class WorkerPossiblyRestarted(google.protobuf.message.Message):
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    def __init__(
-        self,
-    ) -> None: ...
+    def __init__(self) -> None: ...
 
 global___WorkerPossiblyRestarted = WorkerPossiblyRestarted
