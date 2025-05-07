@@ -1,7 +1,7 @@
 """PageRank analysis of graph structure."""
 
 from _typeshed import Incomplete, SupportsGetItem
-from collections.abc import Iterable
+from collections.abc import Collection
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
@@ -113,7 +113,7 @@ def google_matrix(
     G: Graph[_Node],
     alpha: float = 0.85,
     personalization: SupportsGetItem[Incomplete, Incomplete] | None = None,
-    nodelist: Iterable[Incomplete] | None = None,
+    nodelist: Collection[_Node] | None = None,
     weight: str | None = "weight",
     dangling: SupportsGetItem[Incomplete, Incomplete] | None = None,
 ):
