@@ -9,7 +9,77 @@ from networkx.utils.backends import _dispatchable
 from numpy.random import RandomState
 
 @_dispatchable
-def triadic_census(G: DiGraph[_Node], nodelist: Collection[_Node] | None = None): ...
+def triadic_census(G: DiGraph[_Node], nodelist: Collection[_Node] | None = None):
+    """
+    Determines the triadic census of a directed graph.
+
+    The triadic census is a count of how many of the 16 possible types of
+    triads are present in a directed graph. If a list of nodes is passed, then
+    only those triads are taken into account which have elements of nodelist in them.
+
+    Parameters
+    ----------
+    G : digraph
+       A NetworkX DiGraph
+    nodelist : list
+        List of nodes for which you want to calculate triadic census
+
+    Returns
+    -------
+    census : dict
+       Dictionary with triad type as keys and number of occurrences as values.
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(1, 2), (2, 3), (3, 1), (3, 4), (4, 1), (4, 2)])
+    >>> triadic_census = nx.triadic_census(G)
+    >>> for key, value in triadic_census.items():
+    ...     print(f"{key}: {value}")
+    003: 0
+    012: 0
+    102: 0
+    021D: 0
+    021U: 0
+    021C: 0
+    111D: 0
+    111U: 0
+    030T: 2
+    030C: 2
+    201: 0
+    120D: 0
+    120U: 0
+    120C: 0
+    210: 0
+    300: 0
+
+    Notes
+    -----
+    This algorithm has complexity $O(m)$ where $m$ is the number of edges in
+    the graph.
+
+    For undirected graphs, the triadic census can be computed by first converting
+    the graph into a directed graph using the ``G.to_directed()`` method.
+    After this conversion, only the triad types 003, 102, 201 and 300 will be
+    present in the undirected scenario.
+
+    Raises
+    ------
+    ValueError
+        If `nodelist` contains duplicate nodes or nodes not in `G`.
+        If you want to ignore this you can preprocess with `set(nodelist) & G.nodes`
+
+    See also
+    --------
+    triad_graph
+
+    References
+    ----------
+    .. [1] Vladimir Batagelj and Andrej Mrvar, A subquadratic triad census
+        algorithm for large sparse networks with small maximum degree,
+        University of Ljubljana,
+        http://vlado.fmf.uni-lj.si/pub/networks/doc/triads/triads.pdf
+    """
+    ...
 @_dispatchable
 def is_triad(G: Graph[_Node]):
     """

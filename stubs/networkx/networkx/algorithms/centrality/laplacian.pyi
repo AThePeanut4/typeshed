@@ -1,3 +1,5 @@
+"""Laplacian centrality measures."""
+
 from collections.abc import Collection
 
 from networkx.classes.graph import Graph, _Node
