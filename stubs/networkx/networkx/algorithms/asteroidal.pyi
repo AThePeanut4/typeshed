@@ -14,6 +14,8 @@ independent set and coloring.
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
+__all__ = ["is_at_free", "find_asteroidal_triple"]
+
 @_dispatchable
 def find_asteroidal_triple(G: Graph[_Node]):
     r"""

@@ -11,6 +11,8 @@ from networkx.classes.reportviews import OutMultiEdgeView
 
 _MultiEdge: TypeAlias = tuple[_Node, _Node, int]  # noqa: Y047
 
+__all__ = ["MultiGraph"]
+
 class MultiGraph(Graph[_Node]):
     """
     An undirected graph class that can store multiedges.

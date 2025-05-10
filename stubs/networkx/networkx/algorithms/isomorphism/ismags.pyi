@@ -109,6 +109,8 @@ References
 from _typeshed import Incomplete
 from collections.abc import Generator
 
+__all__ = ["ISMAGS"]
+
 class ISMAGS:
     """
     Implements the ISMAGS subgraph matching algorithm. [1]_ ISMAGS stands for

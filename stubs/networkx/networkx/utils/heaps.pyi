@@ -2,6 +2,8 @@
 
 from _typeshed import Incomplete
 
+__all__ = ["MinHeap", "PairingHeap", "BinaryHeap"]
+
 class MinHeap:
     """
     Base class for min-heaps.

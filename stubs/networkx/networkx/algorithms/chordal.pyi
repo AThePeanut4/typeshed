@@ -7,18 +7,23 @@ https://en.wikipedia.org/wiki/Chordal_graph
 """
 
 import sys
+from _typeshed import Incomplete
 from collections.abc import Generator
 
 from networkx.classes.graph import Graph, _Node
 from networkx.exception import NetworkXException
 from networkx.utils.backends import _dispatchable
 
-class NetworkXTreewidthBoundExceeded(NetworkXException):
-    """
-    Exception raised when a treewidth bound has been provided and it has
-    been exceeded
-    """
-    ...
+__all__ = [
+    "is_chordal",
+    "find_induced_nodes",
+    "chordal_graph_cliques",
+    "chordal_graph_treewidth",
+    "NetworkXTreewidthBoundExceeded",
+    "complete_to_chordal_graph",
+]
+
+class NetworkXTreewidthBoundExceeded(NetworkXException): ...
 
 @_dispatchable
 def is_chordal(G: Graph[_Node]) -> bool:
@@ -184,49 +189,6 @@ def chordal_graph_cliques(G: Graph[_Node]) -> Generator[frozenset[_Node], None, 
     """
     ...
 @_dispatchable
-def chordal_graph_treewidth(G: Graph[_Node]) -> int:
-    """
-    Returns the treewidth of the chordal graph G.
-
-    Parameters
-    ----------
-    G : graph
-      A NetworkX graph
-
-    Returns
-    -------
-    treewidth : int
-        The size of the largest clique in the graph minus one.
-
-    Raises
-    ------
-    NetworkXError
-        The algorithm does not support DiGraph, MultiGraph and MultiDiGraph.
-        The algorithm can only be applied to chordal graphs. If the input
-        graph is found to be non-chordal, a :exc:`NetworkXError` is raised.
-
-    Examples
-    --------
-    >>> e = [
-    ...     (1, 2),
-    ...     (1, 3),
-    ...     (2, 3),
-    ...     (2, 4),
-    ...     (3, 4),
-    ...     (3, 5),
-    ...     (3, 6),
-    ...     (4, 5),
-    ...     (4, 6),
-    ...     (5, 6),
-    ...     (7, 8),
-    ... ]
-    >>> G = nx.Graph(e)
-    >>> G.add_node(9)
-    >>> nx.chordal_graph_treewidth(G)
-    3
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Tree_decomposition#Treewidth
-    """
-    ...
+def chordal_graph_treewidth(G: Graph[_Node]) -> int: ...
+@_dispatchable
+def complete_to_chordal_graph(G) -> tuple[Incomplete, dict[Incomplete, int]]: ...

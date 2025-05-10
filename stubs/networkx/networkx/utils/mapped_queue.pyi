@@ -3,6 +3,8 @@
 from _typeshed import Incomplete
 from collections.abc import Iterator
 
+__all__ = ["MappedQueue"]
+
 class _HeapElement:
     """
     This proxy class separates the heap element from its priority.

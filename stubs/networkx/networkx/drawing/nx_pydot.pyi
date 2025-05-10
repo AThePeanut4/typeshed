@@ -24,13 +24,9 @@ from _typeshed import Incomplete
 
 from networkx.utils.backends import _dispatchable
 
-def write_dot(G, path) -> None:
-    """
-    Write NetworkX graph G to Graphviz dot format on path.
+__all__ = ["write_dot", "read_dot", "graphviz_layout", "pydot_layout", "to_pydot", "from_pydot"]
 
-    Path can be a string or a file handle.
-    """
-    ...
+def write_dot(G, path) -> None: ...
 @_dispatchable
 def read_dot(path):
     """

@@ -1,51 +1,8 @@
 from networkx.utils.backends import _dispatchable
 
-def cytoscape_data(G, name: str = "name", ident: str = "id"):
-    """
-    Returns data in Cytoscape JSON format (cyjs).
+__all__ = ["cytoscape_data", "cytoscape_graph"]
 
-    Parameters
-    ----------
-    G : NetworkX Graph
-        The graph to convert to cytoscape format
-    name : string
-        A string which is mapped to the 'name' node element in cyjs format.
-        Must not have the same value as `ident`.
-    ident : string
-        A string which is mapped to the 'id' node element in cyjs format.
-        Must not have the same value as `name`.
-
-    Returns
-    -------
-    data: dict
-        A dictionary with cyjs formatted data.
-
-    Raises
-    ------
-    NetworkXError
-        If the values for `name` and `ident` are identical.
-
-    See Also
-    --------
-    cytoscape_graph: convert a dictionary in cyjs format to a graph
-
-    References
-    ----------
-    .. [1] Cytoscape user's manual:
-       http://manual.cytoscape.org/en/stable/index.html
-
-    Examples
-    --------
-    >>> G = nx.path_graph(2)
-    >>> nx.cytoscape_data(G)  # doctest: +SKIP
-    {'data': [],
-     'directed': False,
-     'multigraph': False,
-     'elements': {'nodes': [{'data': {'id': '0', 'value': 0, 'name': '0'}},
-       {'data': {'id': '1', 'value': 1, 'name': '1'}}],
-      'edges': [{'data': {'source': 0, 'target': 1}}]}}
-    """
-    ...
+def cytoscape_data(G, name: str = "name", ident: str = "id"): ...
 @_dispatchable
 def cytoscape_graph(data, name: str = "name", ident: str = "id"):
     """

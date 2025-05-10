@@ -15,6 +15,17 @@ from typing import overload
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
+__all__ = [
+    "find_cliques",
+    "find_cliques_recursive",
+    "make_max_clique_graph",
+    "make_clique_bipartite",
+    "node_clique_number",
+    "number_of_cliques",
+    "enumerate_all_cliques",
+    "max_weight_clique",
+]
+
 @_dispatchable
 def enumerate_all_cliques(G: Graph[_Node]) -> Generator[list[_Node], None, None]:
     """
@@ -403,37 +414,7 @@ def node_clique_number(
     """
     ...
 @overload
-def node_clique_number(G: Graph[_Node], nodes=None, cliques: Iterable[Incomplete] | None = None, separate_nodes=False) -> int:
-    """
-    Returns the size of the largest maximal clique containing each given node.
-
-    Returns a single or list depending on input nodes.
-    An optional list of cliques can be input if already computed.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-        An undirected graph.
-
-    cliques : list, optional (default=None)
-        A list of cliques, each of which is itself a list of nodes.
-        If not specified, the list of all cliques will be computed
-        using :func:`find_cliques`.
-
-    Returns
-    -------
-    int or dict
-        If `nodes` is a single node, returns the size of the
-        largest maximal clique in `G` containing that node.
-        Otherwise return a dict keyed by node to the size
-        of the largest maximal clique containing that node.
-
-    See Also
-    --------
-    find_cliques
-        find_cliques yields the maximal cliques of G.
-        It accepts a `nodes` argument which restricts consideration to
-        maximal cliques containing all the given `nodes`.
-        The search for the cliques is optimized for `nodes`.
-    """
-    ...
+def node_clique_number(G: Graph[_Node], nodes=None, cliques: Iterable[Incomplete] | None = None, separate_nodes=False) -> int: ...
+def number_of_cliques(G, nodes=None, cliques=None) -> int | dict[Incomplete, Incomplete]: ...
+@_dispatchable
+def max_weight_clique(G, weight="weight") -> tuple[Incomplete, Incomplete]: ...

@@ -37,6 +37,8 @@ _Data: TypeAlias = (
     # | scipy.sparse.base.spmatrix
 )
 
+__all__ = ["Graph"]
+
 class Graph(Collection[_Node]):
     """
     Base class for undirected graphs.

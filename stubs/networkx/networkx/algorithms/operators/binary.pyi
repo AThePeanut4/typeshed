@@ -8,6 +8,8 @@ from networkx.classes.digraph import DiGraph
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
+__all__ = ["union", "compose", "disjoint_union", "intersection", "difference", "symmetric_difference", "full_join"]
+
 @_dispatchable
 def disjoint_union(G: Graph[_Node], H: Graph[_Node]):
     """
@@ -262,55 +264,6 @@ def compose(G: Graph[_X_co], H: Graph[_Y_co]) -> DiGraph[_X_co | _Y_co]:
     """
     ...
 @_dispatchable
-def union(G: Graph[_X_co], H: Graph[_Y_co], rename: Iterable[Incomplete] | None = ()) -> DiGraph[_X_co | _Y_co]:
-    """
-    Combine graphs G and H. The names of nodes must be unique.
-
-    A name collision between the graphs will raise an exception.
-
-    A renaming facility is provided to avoid name collisions.
-
-
-    Parameters
-    ----------
-    G, H : graph
-       A NetworkX graph
-
-    rename : iterable , optional
-       Node names of G and H can be changed by specifying the tuple
-       rename=('G-','H-') (for example).  Node "u" in G is then renamed
-       "G-u" and "v" in H is renamed "H-v".
-
-    Returns
-    -------
-    U : A union graph with the same type as G.
-
-    See Also
-    --------
-    compose
-    :func:`~networkx.Graph.update`
-    disjoint_union
-
-    Notes
-    -----
-    To combine graphs that have common nodes, consider compose(G, H)
-    or the method, Graph.update().
-
-    disjoint_union() is similar to union() except that it avoids name clashes
-    by relabeling the nodes with sequential integers.
-
-    Edge and node attributes are propagated from G and H to the union graph.
-    Graph attributes are also propagated, but if they are present in both G and H,
-    then the value from H is used.
-
-    Examples
-    --------
-    >>> G = nx.Graph([(0, 1), (0, 2), (1, 2)])
-    >>> H = nx.Graph([(0, 1), (0, 3), (1, 3), (1, 2)])
-    >>> U = nx.union(G, H, rename=("G", "H"))
-    >>> U.nodes
-    NodeView(('G0', 'G1', 'G2', 'H0', 'H1', 'H3', 'H2'))
-    >>> U.edges
-    EdgeView([('G0', 'G1'), ('G0', 'G2'), ('G1', 'G2'), ('H0', 'H1'), ('H0', 'H3'), ('H1', 'H3'), ('H1', 'H2')])
-    """
-    ...
+def full_join(G, H, rename=(None, None)): ...
+@_dispatchable
+def union(G: Graph[_X_co], H: Graph[_Y_co], rename: Iterable[Incomplete] | None = ()) -> DiGraph[_X_co | _Y_co]: ...

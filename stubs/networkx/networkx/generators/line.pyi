@@ -4,6 +4,8 @@ from _typeshed import Incomplete
 
 from networkx.utils.backends import _dispatchable
 
+__all__ = ["line_graph", "inverse_line_graph"]
+
 @_dispatchable
 def line_graph(G, create_using: Incomplete | None = None):
     r"""

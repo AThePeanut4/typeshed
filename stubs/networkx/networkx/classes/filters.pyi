@@ -6,24 +6,26 @@ These filters return the function used when creating `SubGraph`.
 
 from _typeshed import Incomplete
 
-def no_filter(*items):
-    """Returns a filter function that always evaluates to True."""
-    ...
-def hide_nodes(nodes):
-    """Returns a filter function that hides specific nodes."""
-    ...
-def hide_diedges(edges):
-    """Returns a filter function that hides specific directed edges."""
-    ...
-def hide_edges(edges):
-    """Returns a filter function that hides specific undirected edges."""
-    ...
-def hide_multidiedges(edges):
-    """Returns a filter function that hides specific multi-directed edges."""
-    ...
-def hide_multiedges(edges):
-    """Returns a filter function that hides specific multi-undirected edges."""
-    ...
+__all__ = [
+    "no_filter",
+    "hide_nodes",
+    "hide_edges",
+    "hide_multiedges",
+    "hide_diedges",
+    "hide_multidiedges",
+    "show_nodes",
+    "show_edges",
+    "show_multiedges",
+    "show_diedges",
+    "show_multidiedges",
+]
+
+def no_filter(*items): ...
+def hide_nodes(nodes): ...
+def hide_diedges(edges): ...
+def hide_edges(edges): ...
+def hide_multidiedges(edges): ...
+def hide_multiedges(edges): ...
 
 class show_nodes:
     """

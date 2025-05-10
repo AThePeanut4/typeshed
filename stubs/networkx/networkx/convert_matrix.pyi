@@ -45,6 +45,17 @@ _ExtensionDtype: TypeAlias = Incomplete
 _Axes: TypeAlias = Collection[_Node]
 _G = TypeVar("_G", bound=Graph[Hashable])
 
+__all__ = [
+    "from_pandas_adjacency",
+    "to_pandas_adjacency",
+    "from_pandas_edgelist",
+    "to_pandas_edgelist",
+    "from_scipy_sparse_array",
+    "to_scipy_sparse_array",
+    "from_numpy_array",
+    "to_numpy_array",
+]
+
 @_dispatchable
 def to_pandas_adjacency(
     G: Graph[_Node],
@@ -668,6 +679,10 @@ def from_pandas_edgelist(
     AtlasView({'A': {'weight': 3, 'color': 'red'}, 'D': {'weight': 6, 'color': 'blue'}})
     """
     ...
+@_dispatchable
+def to_scipy_sparse_array(G, nodelist=None, dtype=None, weight="weight", format="csr"): ...
+@_dispatchable
+def from_scipy_sparse_array(A, parallel_edges=False, create_using=None, edge_attribute="weight"): ...
 @_dispatchable
 def to_numpy_array(
     G: Graph[_Node],

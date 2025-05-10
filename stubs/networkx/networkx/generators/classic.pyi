@@ -12,7 +12,32 @@ in this module return a Graph class (i.e. a simple, undirected graph).
 
 from _typeshed import Incomplete
 
+from networkx.classes import Graph
 from networkx.utils.backends import _dispatchable
+
+__all__ = [
+    "balanced_tree",
+    "barbell_graph",
+    "binomial_tree",
+    "complete_graph",
+    "complete_multipartite_graph",
+    "circular_ladder_graph",
+    "circulant_graph",
+    "cycle_graph",
+    "dorogovtsev_goltsev_mendes_graph",
+    "empty_graph",
+    "full_rary_tree",
+    "kneser_graph",
+    "ladder_graph",
+    "lollipop_graph",
+    "null_graph",
+    "path_graph",
+    "star_graph",
+    "tadpole_graph",
+    "trivial_graph",
+    "turan_graph",
+    "wheel_graph",
+]
 
 @_dispatchable
 def full_rary_tree(r, n, create_using: Incomplete | None = None):
@@ -50,42 +75,9 @@ def full_rary_tree(r, n, create_using: Incomplete | None = None):
     """
     ...
 @_dispatchable
-def balanced_tree(r, h, create_using: Incomplete | None = None):
-    """
-    Returns the perfectly balanced `r`-ary tree of height `h`.
-
-    .. plot::
-
-        >>> nx.draw(nx.balanced_tree(2, 3))
-
-    Parameters
-    ----------
-    r : int
-        Branching factor of the tree; each node will have `r`
-        children.
-
-    h : int
-        Height of the tree.
-
-    create_using : NetworkX graph constructor, optional (default=nx.Graph)
-       Graph type to create. If graph instance, then cleared before populated.
-
-    Returns
-    -------
-    G : NetworkX graph
-        A balanced `r`-ary tree of height `h`.
-
-    Notes
-    -----
-    This is the rooted tree where all leaves are at distance `h` from
-    the root. The root has degree `r` and all other internal nodes
-    have degree `r + 1`.
-
-    Node labels are integers, starting from zero.
-
-    A balanced tree is also known as a *complete r-ary tree*.
-    """
-    ...
+def kneser_graph(n, k) -> Graph[Incomplete]: ...
+@_dispatchable
+def balanced_tree(r, h, create_using: Incomplete | None = None): ...
 @_dispatchable
 def barbell_graph(m1, m2, create_using: Incomplete | None = None):
     """
@@ -553,15 +545,9 @@ def star_graph(n, create_using: Incomplete | None = None):
     """
     ...
 @_dispatchable
-def trivial_graph(create_using: Incomplete | None = None):
-    """
-    Return the Trivial graph with one node (with label 0) and no edges.
-
-    .. plot::
-
-        >>> nx.draw(nx.trivial_graph(), with_labels=True)
-    """
-    ...
+def tadpole_graph(m, n, create_using=None) -> Graph[Incomplete] | Incomplete: ...
+@_dispatchable
+def trivial_graph(create_using: Incomplete | None = None): ...
 @_dispatchable
 def turan_graph(n, r):
     r"""

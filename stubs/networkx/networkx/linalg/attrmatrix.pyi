@@ -4,6 +4,8 @@ from _typeshed import Incomplete
 
 from networkx.utils.backends import _dispatchable
 
+__all__ = ["attr_matrix", "attr_sparse_matrix"]
+
 @_dispatchable
 def attr_matrix(
     G,

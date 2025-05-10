@@ -74,6 +74,8 @@ from typing import NamedTuple
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
+__all__ = ["vf2pp_isomorphism", "vf2pp_is_isomorphic", "vf2pp_all_isomorphisms"]
+
 class _GraphParameters(NamedTuple):
     """_GraphParameters(G1, G2, G1_labels, G2_labels, nodes_of_G1Labels, nodes_of_G2Labels, G2_nodes_of_degree)"""
     G1: Incomplete

@@ -7,6 +7,8 @@ For now, only Weisfeiler-Lehman hashing is implemented.
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
+__all__ = ["weisfeiler_lehman_graph_hash", "weisfeiler_lehman_subgraph_hashes"]
+
 @_dispatchable
 def weisfeiler_lehman_graph_hash(
     G: Graph[_Node],

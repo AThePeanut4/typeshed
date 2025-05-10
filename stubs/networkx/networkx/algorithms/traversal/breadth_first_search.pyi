@@ -2,10 +2,24 @@
 
 from _typeshed import Incomplete
 from collections.abc import Callable, Generator
+from typing import Literal
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
+__all__ = [
+    "bfs_edges",
+    "bfs_tree",
+    "bfs_predecessors",
+    "bfs_successors",
+    "descendants_at_distance",
+    "bfs_layers",
+    "bfs_labeled_edges",
+    "generic_bfs_edges",
+]
+
+@_dispatchable
+def generic_bfs_edges(G, source, neighbors=None, depth_limit=None) -> Generator[tuple[Incomplete, Incomplete]]: ...
 @_dispatchable
 def bfs_edges(
     G: Graph[_Node],
@@ -312,34 +326,6 @@ def bfs_layers(G: Graph[_Node], sources) -> Generator[Incomplete, None, None]:
     """
     ...
 @_dispatchable
-def descendants_at_distance(G: Graph[_Node], source, distance):
-    """
-    Returns all nodes at a fixed `distance` from `source` in `G`.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-        A graph
-    source : node in `G`
-    distance : the distance of the wanted nodes from `source`
-
-    Returns
-    -------
-    set()
-        The descendants of `source` in `G` at the given `distance` from `source`
-
-    Examples
-    --------
-    >>> G = nx.path_graph(5)
-    >>> nx.descendants_at_distance(G, 2, 2)
-    {0, 4}
-    >>> H = nx.DiGraph()
-    >>> H.add_edges_from([(0, 1), (0, 2), (1, 3), (1, 4), (2, 5), (2, 6)])
-    >>> nx.descendants_at_distance(H, 0, 2)
-    {3, 4, 5, 6}
-    >>> nx.descendants_at_distance(H, 5, 0)
-    {5}
-    >>> nx.descendants_at_distance(H, 5, 1)
-    set()
-    """
-    ...
+def bfs_labeled_edges(G, sources) -> Generator[tuple[Incomplete, Incomplete, Literal["tree", "level", "forward", "reverse"]]]: ...
+@_dispatchable
+def descendants_at_distance(G: Graph[_Node], source, distance): ...

@@ -32,118 +32,17 @@ from collections.abc import Generator
 
 from networkx.utils.backends import _dispatchable
 
-def generate_edgelist(G, delimiter: str = " ", data: bool = True) -> Generator[Incomplete, None, None]:
-    """
-    Generate a single line of the graph G in edge list format.
+__all__ = [
+    "generate_edgelist",
+    "write_edgelist",
+    "parse_edgelist",
+    "read_edgelist",
+    "read_weighted_edgelist",
+    "write_weighted_edgelist",
+]
 
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    delimiter : string, optional
-       Separator for node labels
-
-    data : bool or list of keys
-       If False generate no edge data.  If True use a dictionary
-       representation of edge data.  If a list of keys use a list of data
-       values corresponding to the keys.
-
-    Returns
-    -------
-    lines : string
-        Lines of data in adjlist format.
-
-    Examples
-    --------
-    >>> G = nx.lollipop_graph(4, 3)
-    >>> G[1][2]["weight"] = 3
-    >>> G[3][4]["capacity"] = 12
-    >>> for line in nx.generate_edgelist(G, data=False):
-    ...     print(line)
-    0 1
-    0 2
-    0 3
-    1 2
-    1 3
-    2 3
-    3 4
-    4 5
-    5 6
-
-    >>> for line in nx.generate_edgelist(G):
-    ...     print(line)
-    0 1 {}
-    0 2 {}
-    0 3 {}
-    1 2 {'weight': 3}
-    1 3 {}
-    2 3 {}
-    3 4 {'capacity': 12}
-    4 5 {}
-    5 6 {}
-
-    >>> for line in nx.generate_edgelist(G, data=["weight"]):
-    ...     print(line)
-    0 1
-    0 2
-    0 3
-    1 2 3
-    1 3
-    2 3
-    3 4
-    4 5
-    5 6
-
-    See Also
-    --------
-    write_adjlist, read_adjlist
-    """
-    ...
-def write_edgelist(G, path, comments: str = "#", delimiter: str = " ", data: bool = True, encoding: str = "utf-8") -> None:
-    """
-    Write graph as a list of edges.
-
-    Parameters
-    ----------
-    G : graph
-       A NetworkX graph
-    path : file or string
-       File or filename to write. If a file is provided, it must be
-       opened in 'wb' mode. Filenames ending in .gz or .bz2 will be compressed.
-    comments : string, optional
-       The character used to indicate the start of a comment
-    delimiter : string, optional
-       The string used to separate values.  The default is whitespace.
-    data : bool or list, optional
-       If False write no edge data.
-       If True write a string representation of the edge data dictionary..
-       If a list (or other iterable) is provided, write the  keys specified
-       in the list.
-    encoding: string, optional
-       Specify which encoding to use when writing file.
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> nx.write_edgelist(G, "test.edgelist")
-    >>> G = nx.path_graph(4)
-    >>> fh = open("test.edgelist", "wb")
-    >>> nx.write_edgelist(G, fh)
-    >>> nx.write_edgelist(G, "test.edgelist.gz")
-    >>> nx.write_edgelist(G, "test.edgelist.gz", data=False)
-
-    >>> G = nx.Graph()
-    >>> G.add_edge(1, 2, weight=7, color="red")
-    >>> nx.write_edgelist(G, "test.edgelist", data=False)
-    >>> nx.write_edgelist(G, "test.edgelist", data=["color"])
-    >>> nx.write_edgelist(G, "test.edgelist", data=["color", "weight"])
-
-    See Also
-    --------
-    read_edgelist
-    write_weighted_edgelist
-    """
-    ...
+def generate_edgelist(G, delimiter: str = " ", data: bool = True) -> Generator[Incomplete, None, None]: ...
+def write_edgelist(G, path, comments: str = "#", delimiter: str = " ", data: bool = True, encoding: str = "utf-8") -> None: ...
 @_dispatchable
 def parse_edgelist(
     lines,

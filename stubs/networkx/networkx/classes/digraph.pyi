@@ -8,6 +8,8 @@ from networkx.classes.coreviews import AdjacencyView
 from networkx.classes.graph import Graph, _Node
 from networkx.classes.reportviews import DiDegreeView, OutEdgeView
 
+__all__ = ["DiGraph"]
+
 class DiGraph(Graph[_Node]):
     """
     Base class for directed graphs.

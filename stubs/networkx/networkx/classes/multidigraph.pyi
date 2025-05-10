@@ -9,6 +9,8 @@ from networkx.classes.graph import _Node
 from networkx.classes.multigraph import MultiGraph
 from networkx.classes.reportviews import InMultiDegreeView, OutMultiDegreeView, OutMultiEdgeView
 
+__all__ = ["MultiDiGraph"]
+
 class MultiDiGraph(MultiGraph[_Node], DiGraph[_Node]):
     """
     A directed graph class that can store multiedges.
