@@ -247,6 +247,7 @@ class FunctionDef(stmt):
         ) -> Self: ...
 
 class AsyncFunctionDef(stmt):
+    """AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list, expr? returns, string? type_comment, type_param* type_params)"""
     if sys.version_info >= (3, 12):
         __match_args__ = ("name", "args", "body", "decorator_list", "returns", "type_comment", "type_params")
     elif sys.version_info >= (3, 10):

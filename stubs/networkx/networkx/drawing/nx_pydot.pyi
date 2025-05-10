@@ -26,7 +26,13 @@ from networkx.utils.backends import _dispatchable
 
 __all__ = ["write_dot", "read_dot", "graphviz_layout", "pydot_layout", "to_pydot", "from_pydot"]
 
-def write_dot(G, path) -> None: ...
+def write_dot(G, path) -> None:
+    """
+    Write NetworkX graph G to Graphviz dot format on path.
+
+    Path can be a string or a file handle.
+    """
+    ...
 @_dispatchable
 def read_dot(path):
     """

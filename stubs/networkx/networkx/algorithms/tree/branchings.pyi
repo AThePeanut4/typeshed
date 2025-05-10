@@ -159,7 +159,38 @@ def minimum_branching(
     """
     ...
 @_dispatchable
-def minimal_branching(G, /, *, attr="weight", default=1, preserve_attrs=False, partition=None): ...
+def minimal_branching(G, /, *, attr="weight", default=1, preserve_attrs=False, partition=None):
+    """
+    Returns a minimal branching from `G`.
+
+    A minimal branching is a branching similar to a minimal arborescence but
+    without the requirement that the result is actually a spanning arborescence.
+    This allows minimal branchinges to be computed over graphs which may not
+    have arborescence (such as multiple components).
+
+    Parameters
+    ----------
+    G : (multi)digraph-like
+        The graph to be searched.
+    attr : str
+        The edge attribute used in determining optimality.
+    default : float
+        The value of the edge attribute used if an edge does not have
+        the attribute `attr`.
+    preserve_attrs : bool
+        If True, preserve the other attributes of the original graph (that are not
+        passed to `attr`)
+    partition : str
+        The key for the edge attribute containing the partition
+        data on the graph. Edges can be included, excluded or open using the
+        `EdgePartition` enum.
+
+    Returns
+    -------
+    B : (multi)digraph-like
+        A minimal branching.
+    """
+    ...
 @_dispatchable
 def maximum_spanning_arborescence(
     G: DiGraph[_Node], attr: str = "weight", default: float = 1, preserve_attrs: bool = False, partition: str | None = None

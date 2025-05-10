@@ -387,6 +387,83 @@ def find_cycle(G: Graph[_Node], source=None, orientation=None):
     """
     ...
 @_dispatchable
-def minimum_cycle_basis(G: Graph[_Node], weight: str | None = None): ...
+def minimum_cycle_basis(G: Graph[_Node], weight: str | None = None):
+    """
+    Returns a minimum weight cycle basis for G
+
+    Minimum weight means a cycle basis for which the total weight
+    (length for unweighted graphs) of all the cycles is minimum.
+
+    Parameters
+    ----------
+    G : NetworkX Graph
+    weight: string
+        name of the edge attribute to use for edge weights
+
+    Returns
+    -------
+    A list of cycle lists.  Each cycle list is a list of nodes
+    which forms a cycle (loop) in G. Note that the nodes are not
+    necessarily returned in a order by which they appear in the cycle
+
+    Examples
+    --------
+    >>> G = nx.Graph()
+    >>> nx.add_cycle(G, [0, 1, 2, 3])
+    >>> nx.add_cycle(G, [0, 3, 4, 5])
+    >>> nx.minimum_cycle_basis(G)
+    [[5, 4, 3, 0], [3, 2, 1, 0]]
+
+    References:
+        [1] Kavitha, Telikepalli, et al. "An O(m^2n) Algorithm for
+        Minimum Cycle Basis of Graphs."
+        http://link.springer.com/article/10.1007/s00453-007-9064-z
+        [2] de Pina, J. 1995. Applications of shortest path methods.
+        Ph.D. thesis, University of Amsterdam, Netherlands
+
+    See Also
+    --------
+    simple_cycles, cycle_basis
+    """
+    ...
 @_dispatchable
-def girth(G) -> float | int: ...
+def girth(G) -> float | int:
+    """
+    Returns the girth of the graph.
+
+    The girth of a graph is the length of its shortest cycle, or infinity if
+    the graph is acyclic. The algorithm follows the description given on the
+    Wikipedia page [1]_, and runs in time O(mn) on a graph with m edges and n
+    nodes.
+
+    Parameters
+    ----------
+    G : NetworkX Graph
+
+    Returns
+    -------
+    int or math.inf
+
+    Examples
+    --------
+    All examples below (except P_5) can easily be checked using Wikipedia,
+    which has a page for each of these famous graphs.
+
+    >>> nx.girth(nx.chvatal_graph())
+    4
+    >>> nx.girth(nx.tutte_graph())
+    4
+    >>> nx.girth(nx.petersen_graph())
+    5
+    >>> nx.girth(nx.heawood_graph())
+    6
+    >>> nx.girth(nx.pappus_graph())
+    6
+    >>> nx.girth(nx.path_graph(5))
+    inf
+
+    References
+    ----------
+    .. [1] `Wikipedia: Girth <https://en.wikipedia.org/wiki/Girth_(graph_theory)>`_
+    """
+    ...

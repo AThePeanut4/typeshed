@@ -19,7 +19,73 @@ __all__ = [
 ]
 
 @_dispatchable
-def generic_bfs_edges(G, source, neighbors=None, depth_limit=None) -> Generator[tuple[Incomplete, Incomplete]]: ...
+def generic_bfs_edges(G, source, neighbors=None, depth_limit=None) -> Generator[tuple[Incomplete, Incomplete]]:
+    """
+    Iterate over edges in a breadth-first search.
+
+    The breadth-first search begins at `source` and enqueues the
+    neighbors of newly visited nodes specified by the `neighbors`
+    function.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    source : node
+        Starting node for the breadth-first search; this function
+        iterates over only those edges in the component reachable from
+        this node.
+
+    neighbors : function
+        A function that takes a newly visited node of the graph as input
+        and returns an *iterator* (not just a list) of nodes that are
+        neighbors of that node with custom ordering. If not specified, this is
+        just the ``G.neighbors`` method, but in general it can be any function
+        that returns an iterator over some or all of the neighbors of a
+        given node, in any order.
+
+    depth_limit : int, optional(default=len(G))
+        Specify the maximum search depth.
+
+    Yields
+    ------
+    edge
+        Edges in the breadth-first search starting from `source`.
+
+    Examples
+    --------
+    >>> G = nx.path_graph(7)
+    >>> list(nx.generic_bfs_edges(G, source=0))
+    [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)]
+    >>> list(nx.generic_bfs_edges(G, source=2))
+    [(2, 1), (2, 3), (1, 0), (3, 4), (4, 5), (5, 6)]
+    >>> list(nx.generic_bfs_edges(G, source=2, depth_limit=2))
+    [(2, 1), (2, 3), (1, 0), (3, 4)]
+
+    The `neighbors` param can be used to specify the visitation order of each
+    node's neighbors generically. In the following example, we modify the default
+    neighbor to return *odd* nodes first:
+
+    >>> def odd_first(n):
+    ...     return sorted(G.neighbors(n), key=lambda x: x % 2, reverse=True)
+
+    >>> G = nx.star_graph(5)
+    >>> list(nx.generic_bfs_edges(G, source=0))  # Default neighbor ordering
+    [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5)]
+    >>> list(nx.generic_bfs_edges(G, source=0, neighbors=odd_first))
+    [(0, 1), (0, 3), (0, 5), (0, 2), (0, 4)]
+
+    Notes
+    -----
+    This implementation is from `PADS`_, which was in the public domain
+    when it was first accessed in July, 2004.  The modifications
+    to allow depth limits are based on the Wikipedia article
+    "`Depth-limited-search`_".
+
+    .. _PADS: http://www.ics.uci.edu/~eppstein/PADS/BFS.py
+    .. _Depth-limited-search: https://en.wikipedia.org/wiki/Depth-limited_search
+    """
+    ...
 @_dispatchable
 def bfs_edges(
     G: Graph[_Node],
@@ -326,6 +392,77 @@ def bfs_layers(G: Graph[_Node], sources) -> Generator[Incomplete, None, None]:
     """
     ...
 @_dispatchable
-def bfs_labeled_edges(G, sources) -> Generator[tuple[Incomplete, Incomplete, Literal["tree", "level", "forward", "reverse"]]]: ...
+def bfs_labeled_edges(G, sources) -> Generator[tuple[Incomplete, Incomplete, Literal["tree", "level", "forward", "reverse"]]]:
+    """
+    Iterate over edges in a breadth-first search (BFS) labeled by type.
+
+    We generate triple of the form (*u*, *v*, *d*), where (*u*, *v*) is the
+    edge being explored in the breadth-first search and *d* is one of the
+    strings 'tree', 'forward', 'level', or 'reverse'.  A 'tree' edge is one in
+    which *v* is first discovered and placed into the layer below *u*.  A
+    'forward' edge is one in which *u* is on the layer above *v* and *v* has
+    already been discovered.  A 'level' edge is one in which both *u* and *v*
+    occur on the same layer.  A 'reverse' edge is one in which *u* is on a layer
+    below *v*.
+
+    We emit each edge exactly once.  In an undirected graph, 'reverse' edges do
+    not occur, because each is discovered either as a 'tree' or 'forward' edge.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A graph over which to find the layers using breadth-first search.
+
+    sources : node in `G` or list of nodes in `G`
+        Starting nodes for single source or multiple sources breadth-first search
+
+    Yields
+    ------
+    edges: generator
+       A generator of triples (*u*, *v*, *d*) where (*u*, *v*) is the edge being
+       explored and *d* is described above.
+
+    Examples
+    --------
+    >>> G = nx.cycle_graph(4, create_using=nx.DiGraph)
+    >>> list(nx.bfs_labeled_edges(G, 0))
+    [(0, 1, 'tree'), (1, 2, 'tree'), (2, 3, 'tree'), (3, 0, 'reverse')]
+    >>> G = nx.complete_graph(3)
+    >>> list(nx.bfs_labeled_edges(G, 0))
+    [(0, 1, 'tree'), (0, 2, 'tree'), (1, 2, 'level')]
+    >>> list(nx.bfs_labeled_edges(G, [0, 1]))
+    [(0, 1, 'level'), (0, 2, 'tree'), (1, 2, 'forward')]
+    """
+    ...
 @_dispatchable
-def descendants_at_distance(G: Graph[_Node], source, distance): ...
+def descendants_at_distance(G: Graph[_Node], source, distance):
+    """
+    Returns all nodes at a fixed `distance` from `source` in `G`.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A graph
+    source : node in `G`
+    distance : the distance of the wanted nodes from `source`
+
+    Returns
+    -------
+    set()
+        The descendants of `source` in `G` at the given `distance` from `source`
+
+    Examples
+    --------
+    >>> G = nx.path_graph(5)
+    >>> nx.descendants_at_distance(G, 2, 2)
+    {0, 4}
+    >>> H = nx.DiGraph()
+    >>> H.add_edges_from([(0, 1), (0, 2), (1, 3), (1, 4), (2, 5), (2, 6)])
+    >>> nx.descendants_at_distance(H, 0, 2)
+    {3, 4, 5, 6}
+    >>> nx.descendants_at_distance(H, 5, 0)
+    {5}
+    >>> nx.descendants_at_distance(H, 5, 1)
+    set()
+    """
+    ...

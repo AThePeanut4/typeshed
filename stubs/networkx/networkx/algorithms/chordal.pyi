@@ -23,7 +23,12 @@ __all__ = [
     "complete_to_chordal_graph",
 ]
 
-class NetworkXTreewidthBoundExceeded(NetworkXException): ...
+class NetworkXTreewidthBoundExceeded(NetworkXException):
+    """
+    Exception raised when a treewidth bound has been provided and it has
+    been exceeded
+    """
+    ...
 
 @_dispatchable
 def is_chordal(G: Graph[_Node]) -> bool:
@@ -189,6 +194,92 @@ def chordal_graph_cliques(G: Graph[_Node]) -> Generator[frozenset[_Node], None, 
     """
     ...
 @_dispatchable
-def chordal_graph_treewidth(G: Graph[_Node]) -> int: ...
+def chordal_graph_treewidth(G: Graph[_Node]) -> int:
+    """
+    Returns the treewidth of the chordal graph G.
+
+    Parameters
+    ----------
+    G : graph
+      A NetworkX graph
+
+    Returns
+    -------
+    treewidth : int
+        The size of the largest clique in the graph minus one.
+
+    Raises
+    ------
+    NetworkXError
+        The algorithm does not support DiGraph, MultiGraph and MultiDiGraph.
+        The algorithm can only be applied to chordal graphs. If the input
+        graph is found to be non-chordal, a :exc:`NetworkXError` is raised.
+
+    Examples
+    --------
+    >>> e = [
+    ...     (1, 2),
+    ...     (1, 3),
+    ...     (2, 3),
+    ...     (2, 4),
+    ...     (3, 4),
+    ...     (3, 5),
+    ...     (3, 6),
+    ...     (4, 5),
+    ...     (4, 6),
+    ...     (5, 6),
+    ...     (7, 8),
+    ... ]
+    >>> G = nx.Graph(e)
+    >>> G.add_node(9)
+    >>> nx.chordal_graph_treewidth(G)
+    3
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Tree_decomposition#Treewidth
+    """
+    ...
 @_dispatchable
-def complete_to_chordal_graph(G) -> tuple[Incomplete, dict[Incomplete, int]]: ...
+def complete_to_chordal_graph(G) -> tuple[Incomplete, dict[Incomplete, int]]:
+    """
+    Return a copy of G completed to a chordal graph
+
+    Adds edges to a copy of G to create a chordal graph. A graph G=(V,E) is
+    called chordal if for each cycle with length bigger than 3, there exist
+    two non-adjacent nodes connected by an edge (called a chord).
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        Undirected graph
+
+    Returns
+    -------
+    H : NetworkX graph
+        The chordal enhancement of G
+    alpha : Dictionary
+            The elimination ordering of nodes of G
+
+    Notes
+    -----
+    There are different approaches to calculate the chordal
+    enhancement of a graph. The algorithm used here is called
+    MCS-M and gives at least minimal (local) triangulation of graph. Note
+    that this triangulation is not necessarily a global minimum.
+
+    https://en.wikipedia.org/wiki/Chordal_graph
+
+    References
+    ----------
+    .. [1] Berry, Anne & Blair, Jean & Heggernes, Pinar & Peyton, Barry. (2004)
+           Maximum Cardinality Search for Computing Minimal Triangulations of
+           Graphs.  Algorithmica. 39. 287-298. 10.1007/s00453-004-1084-3.
+
+    Examples
+    --------
+    >>> from networkx.algorithms.chordal import complete_to_chordal_graph
+    >>> G = nx.wheel_graph(10)
+    >>> H, alpha = complete_to_chordal_graph(G)
+    """
+    ...

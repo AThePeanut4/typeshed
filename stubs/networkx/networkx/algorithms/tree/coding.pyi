@@ -18,7 +18,13 @@ from networkx.utils.backends import _dispatchable
 
 __all__ = ["from_nested_tuple", "from_prufer_sequence", "NotATree", "to_nested_tuple", "to_prufer_sequence"]
 
-class NotATree(NetworkXException): ...
+class NotATree(NetworkXException):
+    """
+    Raised when a function expects a tree (that is, a connected
+    undirected graph with no cycles) but gets a non-tree graph as input
+    instead.
+    """
+    ...
 
 @_dispatchable
 def to_nested_tuple(T: Graph[_Node], root: _Node, canonical_form: bool = False):

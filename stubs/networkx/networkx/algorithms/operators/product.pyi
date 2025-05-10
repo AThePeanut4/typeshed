@@ -1,3 +1,5 @@
+"""Graph products."""
+
 from _typeshed import Incomplete
 from collections.abc import Hashable
 from typing import TypeVar
@@ -305,6 +307,115 @@ def rooted_product(G: Graph[_X], H: Graph[_Y], root: _Y) -> Graph[tuple[_X, _Y]]
     """
     ...
 @_dispatchable
-def corona_product(G: Graph[_X], H: Graph[_Y]) -> Graph[tuple[_X, _Y]]: ...
+def corona_product(G: Graph[_X], H: Graph[_Y]) -> Graph[tuple[_X, _Y]]:
+    r"""
+    Returns the Corona product of G and H.
+
+    The corona product of $G$ and $H$ is the graph $C = G \circ H$ obtained by
+    taking one copy of $G$, called the center graph, $|V(G)|$ copies of $H$,
+    called the outer graph, and making the $i$-th vertex of $G$ adjacent to
+    every vertex of the $i$-th copy of $H$, where $1 ≤ i ≤ |V(G)|$.
+
+    Parameters
+    ----------
+    G, H: NetworkX graphs
+        The graphs to take the carona product of.
+        `G` is the center graph and `H` is the outer graph
+
+    Returns
+    -------
+    C: NetworkX graph
+        The Corona product of G and H.
+
+    Raises
+    ------
+    NetworkXError
+        If G and H are not both directed or both undirected.
+
+    Examples
+    --------
+    >>> G = nx.cycle_graph(4)
+    >>> H = nx.path_graph(2)
+    >>> C = nx.corona_product(G, H)
+    >>> list(C)
+    [0, 1, 2, 3, (0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
+    >>> print(C)
+    Graph with 12 nodes and 16 edges
+
+    References
+    ----------
+    [1] M. Tavakoli, F. Rahbarnia, and A. R. Ashrafi,
+        "Studying the corona product of graphs under some graph invariants,"
+        Transactions on Combinatorics, vol. 3, no. 3, pp. 43–49, Sep. 2014,
+        doi: 10.22108/toc.2014.5542.
+    [2] A. Faraji, "Corona Product in Graph Theory," Ali Faraji, May 11, 2021.
+        https://blog.alifaraji.ir/math/graph-theory/corona-product.html (accessed Dec. 07, 2021).
+    """
+    ...
 @_dispatchable
-def modular_product(G, H) -> Graph[Incomplete]: ...
+def modular_product(G, H) -> Graph[Incomplete]:
+    r"""
+    Returns the Modular product of G and H.
+
+    The modular product of `G` and `H` is the graph $M = G \nabla H$,
+    consisting of the node set $V(M) = V(G) \times V(H)$ that is the Cartesian
+    product of the node sets of `G` and `H`. Further, M contains an edge ((u, v), (x, y)):
+
+    - if u is adjacent to x in `G` and v is adjacent to y in `H`, or
+    - if u is not adjacent to x in `G` and v is not adjacent to y in `H`.
+
+    More formally::
+
+        E(M) = {((u, v), (x, y)) | ((u, x) in E(G) and (v, y) in E(H)) or
+                                   ((u, x) not in E(G) and (v, y) not in E(H))}
+
+    Parameters
+    ----------
+    G, H: NetworkX graphs
+        The graphs to take the modular product of.
+
+    Returns
+    -------
+    M: NetworkX graph
+        The Modular product of `G` and `H`.
+
+    Raises
+    ------
+    NetworkXNotImplemented
+        If `G` is not a simple graph.
+
+    Examples
+    --------
+    >>> G = nx.cycle_graph(4)
+    >>> H = nx.path_graph(2)
+    >>> M = nx.modular_product(G, H)
+    >>> list(M)
+    [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
+    >>> print(M)
+    Graph with 8 nodes and 8 edges
+
+    Notes
+    -----
+    The *modular product* is defined in [1]_ and was first
+    introduced as the *weak modular product*.
+
+    The modular product reduces the problem of counting isomorphic subgraphs
+    in `G` and `H` to the problem of counting cliques in M. The subgraphs of
+    `G` and `H` that are induced by the nodes of a clique in M are
+    isomorphic [2]_ [3]_.
+
+    References
+    ----------
+    .. [1] R. Hammack, W. Imrich, and S. Klavžar,
+        "Handbook of Product Graphs", CRC Press, 2011.
+
+    .. [2] H. G. Barrow and R. M. Burstall,
+        "Subgraph isomorphism, matching relational structures and maximal
+        cliques", Information Processing Letters, vol. 4, issue 4, pp. 83-84,
+        1976, https://doi.org/10.1016/0020-0190(76)90049-1.
+
+    .. [3] V. G. Vizing, "Reduction of the problem of isomorphism and isomorphic
+        entrance to the task of finding the nondensity of a graph." Proc. Third
+        All-Union Conference on Problems of Theoretical Cybernetics. 1974.
+    """
+    ...

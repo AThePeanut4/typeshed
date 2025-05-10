@@ -75,9 +75,73 @@ def full_rary_tree(r, n, create_using: Incomplete | None = None):
     """
     ...
 @_dispatchable
-def kneser_graph(n, k) -> Graph[Incomplete]: ...
+def kneser_graph(n, k) -> Graph[Incomplete]:
+    """
+    Returns the Kneser Graph with parameters `n` and `k`.
+
+    The Kneser Graph has nodes that are k-tuples (subsets) of the integers
+    between 0 and ``n-1``. Nodes are adjacent if their corresponding sets are disjoint.
+
+    Parameters
+    ----------
+    n: int
+        Number of integers from which to make node subsets.
+        Subsets are drawn from ``set(range(n))``.
+    k: int
+        Size of the subsets.
+
+    Returns
+    -------
+    G : NetworkX Graph
+
+    Examples
+    --------
+    >>> G = nx.kneser_graph(5, 2)
+    >>> G.number_of_nodes()
+    10
+    >>> G.number_of_edges()
+    15
+    >>> nx.is_isomorphic(G, nx.petersen_graph())
+    True
+    """
+    ...
 @_dispatchable
-def balanced_tree(r, h, create_using: Incomplete | None = None): ...
+def balanced_tree(r, h, create_using: Incomplete | None = None):
+    """
+    Returns the perfectly balanced `r`-ary tree of height `h`.
+
+    .. plot::
+
+        >>> nx.draw(nx.balanced_tree(2, 3))
+
+    Parameters
+    ----------
+    r : int
+        Branching factor of the tree; each node will have `r`
+        children.
+
+    h : int
+        Height of the tree.
+
+    create_using : NetworkX graph constructor, optional (default=nx.Graph)
+       Graph type to create. If graph instance, then cleared before populated.
+
+    Returns
+    -------
+    G : NetworkX graph
+        A balanced `r`-ary tree of height `h`.
+
+    Notes
+    -----
+    This is the rooted tree where all leaves are at distance `h` from
+    the root. The root has degree `r` and all other internal nodes
+    have degree `r + 1`.
+
+    Node labels are integers, starting from zero.
+
+    A balanced tree is also known as a *complete r-ary tree*.
+    """
+    ...
 @_dispatchable
 def barbell_graph(m1, m2, create_using: Incomplete | None = None):
     """
@@ -545,9 +609,57 @@ def star_graph(n, create_using: Incomplete | None = None):
     """
     ...
 @_dispatchable
-def tadpole_graph(m, n, create_using=None) -> Graph[Incomplete] | Incomplete: ...
+def tadpole_graph(m, n, create_using=None) -> Graph[Incomplete] | Incomplete:
+    """
+    Returns the (m,n)-tadpole graph; ``C_m`` connected to ``P_n``.
+
+    This graph on m+n nodes connects a cycle of size `m` to a path of length `n`.
+    It looks like a tadpole. It is also called a kite graph or a dragon graph.
+
+    .. plot::
+
+        >>> nx.draw(nx.tadpole_graph(3, 5))
+
+    Parameters
+    ----------
+    m, n : int or iterable container of nodes
+        If an integer, nodes are from ``range(m)`` and ``range(m,m+n)``.
+        If a container of nodes, those nodes appear in the graph.
+        Warning: `m` and `n` are not checked for duplicates and if present the
+        resulting graph may not be as desired.
+
+        The nodes for `m` appear in the cycle graph $C_m$ and the nodes
+        for `n` appear in the path $P_n$.
+    create_using : NetworkX graph constructor, optional (default=nx.Graph)
+       Graph type to create. If graph instance, then cleared before populated.
+
+    Returns
+    -------
+    Networkx graph
+       A cycle of size `m` connected to a path of length `n`.
+
+    Raises
+    ------
+    NetworkXError
+        If ``m < 2``. The tadpole graph is undefined for ``m<2``.
+
+    Notes
+    -----
+    The 2 subgraphs are joined via an edge ``(m-1, m)``.
+    If ``n=0``, this is a cycle graph.
+    `m` and/or `n` can be a container of nodes instead of an integer.
+    """
+    ...
 @_dispatchable
-def trivial_graph(create_using: Incomplete | None = None): ...
+def trivial_graph(create_using: Incomplete | None = None):
+    """
+    Return the Trivial graph with one node (with label 0) and no edges.
+
+    .. plot::
+
+        >>> nx.draw(nx.trivial_graph(), with_labels=True)
+    """
+    ...
 @_dispatchable
 def turan_graph(n, r):
     r"""
