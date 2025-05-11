@@ -4576,6 +4576,10 @@ def locals() -> dict[str, Any]:
     ...
 
 class map(Generic[_S]):
+    """
+    Make an iterator that computes the function using arguments from
+    each of the iterables.  Stops when the shortest iterable is exhausted.
+    """
     # 3.14 adds `strict` argument.
     if sys.version_info >= (3, 14):
         @overload
@@ -4678,8 +4682,12 @@ class map(Generic[_S]):
             *iterables: Iterable[Any],
         ) -> Self: ...
 
-    def __iter__(self) -> Self: ...
-    def __next__(self) -> _S: ...
+    def __iter__(self) -> Self:
+        """Implement iter(self)."""
+        ...
+    def __next__(self) -> _S:
+        """Implement next(self)."""
+        ...
 
 @overload
 def max(

@@ -1,3 +1,5 @@
+"""Context Variables"""
+
 import sys
 from collections.abc import Callable, Iterator, Mapping
 from types import GenericAlias, TracebackType
@@ -85,7 +87,9 @@ class Token(Generic[_T]):
     def old_value(self) -> Any: ...  # returns either _T or MISSING, but that's hard to express
     MISSING: ClassVar[object]
     __hash__: ClassVar[None]  # type: ignore[assignment]
-    def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+    def __class_getitem__(cls, item: Any, /) -> GenericAlias:
+        """See PEP 585"""
+        ...
     if sys.version_info >= (3, 14):
         def __enter__(self) -> Self: ...
         def __exit__(

@@ -166,7 +166,18 @@ class Future(Generic[_T]):
         ...
 
 class Executor:
-    def submit(self, fn: Callable[_P, _T], /, *args: _P.args, **kwargs: _P.kwargs) -> Future[_T]: ...
+    """This is an abstract base class for concrete asynchronous executors."""
+    def submit(self, fn: Callable[_P, _T], /, *args: _P.args, **kwargs: _P.kwargs) -> Future[_T]:
+        """
+        Submits a callable to be executed with the given arguments.
+
+        Schedules the callable to be executed as fn(*args, **kwargs) and returns
+        a Future instance representing the execution of the callable.
+
+        Returns:
+            A Future representing the given call.
+        """
+        ...
     if sys.version_info >= (3, 14):
         def map(
             self,
@@ -179,9 +190,47 @@ class Executor:
     else:
         def map(
             self, fn: Callable[..., _T], *iterables: Iterable[Any], timeout: float | None = None, chunksize: int = 1
-        ) -> Iterator[_T]: ...
+        ) -> Iterator[_T]:
+            """
+            Returns an iterator equivalent to map(fn, iter).
 
-    def shutdown(self, wait: bool = True, *, cancel_futures: bool = False) -> None: ...
+            Args:
+                fn: A callable that will take as many arguments as there are
+                    passed iterables.
+                timeout: The maximum number of seconds to wait. If None, then there
+                    is no limit on the wait time.
+                chunksize: The size of the chunks the iterable will be broken into
+                    before being passed to a child process. This argument is only
+                    used by ProcessPoolExecutor; it is ignored by
+                    ThreadPoolExecutor.
+
+            Returns:
+                An iterator equivalent to: map(func, *iterables) but the calls may
+                be evaluated out-of-order.
+
+            Raises:
+                TimeoutError: If the entire result iterator could not be generated
+                    before the given timeout.
+                Exception: If fn(*args) raises for any values.
+            """
+            ...
+
+    def shutdown(self, wait: bool = True, *, cancel_futures: bool = False) -> None:
+        """
+        Clean-up the resources associated with the Executor.
+
+        It is safe to call this method several times. Otherwise, no other
+        methods can be called after this one.
+
+        Args:
+            wait: If True then shutdown will not return until all running
+                futures have finished executing and the resources used by the
+                executor have been reclaimed.
+            cancel_futures: If True then shutdown will cancel all pending
+                futures. Futures that are completed or running will not be
+                cancelled.
+        """
+        ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None

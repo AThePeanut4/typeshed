@@ -290,7 +290,15 @@ if sys.version_info >= (3, 13):
         device: str = "",
         is_emulator: bool = False,
     ) -> AndroidVer: ...
-    def ios_ver(system: str = "", release: str = "", model: str = "", is_simulator: bool = False) -> IOSVersionInfo: ...
+    def ios_ver(system: str = "", release: str = "", model: str = "", is_simulator: bool = False) -> IOSVersionInfo:
+        """
+        Get iOS version information, and return it as a namedtuple:
+            (system, release, model, is_simulator).
+
+        If values can't be determined, they are set to values provided as
+        parameters.
+        """
+        ...
 
 if sys.version_info >= (3, 14):
     def invalidate_caches() -> None: ...

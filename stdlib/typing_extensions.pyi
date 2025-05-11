@@ -327,9 +327,57 @@ if sys.version_info >= (3, 13):
 else:
     def get_type_hints(
         obj: Any, globalns: dict[str, Any] | None = None, localns: Mapping[str, Any] | None = None, include_extras: bool = False
-    ) -> dict[str, AnnotationForm]: ...
+    ) -> dict[str, AnnotationForm]:
+        """
+        Return type hints for an object.
 
-def get_args(tp: AnnotationForm) -> tuple[AnnotationForm, ...]: ...
+        This is often the same as obj.__annotations__, but it handles
+        forward references encoded as string literals, adds Optional[t] if a
+        default value equal to None is set and recursively replaces all
+        'Annotated[T, ...]', 'Required[T]' or 'NotRequired[T]' with 'T'
+        (unless 'include_extras=True').
+
+        The argument may be a module, class, method, or function. The annotations
+        are returned as a dictionary. For classes, annotations include also
+        inherited members.
+
+        TypeError is raised if the argument is not of a type that can contain
+        annotations, and an empty dictionary is returned if no annotations are
+        present.
+
+        BEWARE -- the behavior of globalns and localns is counterintuitive
+        (unless you are familiar with how eval() and exec() work).  The
+        search order is locals first, then globals.
+
+        - If no dict arguments are passed, an attempt is made to use the
+          globals from obj (or the respective module's globals for classes),
+          and these are also used as the locals.  If the object does not appear
+          to have globals, an empty dictionary is used.
+
+        - If one dict argument is passed, it is used for both globals and
+          locals.
+
+        - If two dict arguments are passed, they specify globals and
+          locals, respectively.
+        """
+        ...
+
+def get_args(tp: AnnotationForm) -> tuple[AnnotationForm, ...]:
+    """
+    Get type arguments with all substitutions performed.
+
+    For unions, basic simplifications used by Union constructor are performed.
+
+    Examples::
+
+        >>> T = TypeVar('T')
+        >>> assert get_args(Dict[str, int]) == (str, int)
+        >>> assert get_args(int) == ()
+        >>> assert get_args(Union[int, Union[T, int], str][int]) == (int, str)
+        >>> assert get_args(Union[int, Tuple[T, int]][str]) == (int, Tuple[str, int])
+        >>> assert get_args(Callable[[], T][int]) == ([], int)
+    """
+    ...
 
 if sys.version_info >= (3, 10):
     @overload
@@ -397,7 +445,26 @@ def get_origin(tp: ParamSpecArgs | ParamSpecKwargs) -> ParamSpec:
     """
     ...
 @overload
-def get_origin(tp: AnnotationForm) -> AnnotationForm | None: ...
+def get_origin(tp: AnnotationForm) -> AnnotationForm | None:
+    """
+    Get the unsubscripted version of a type.
+
+    This supports generic types, Callable, Tuple, Union, Literal, Final, ClassVar,
+    Annotated, and others. Return None for unsupported types.
+
+    Examples::
+
+        >>> P = ParamSpec('P')
+        >>> assert get_origin(Literal[42]) is Literal
+        >>> assert get_origin(int) is None
+        >>> assert get_origin(ClassVar[int]) is ClassVar
+        >>> assert get_origin(Generic) is Generic
+        >>> assert get_origin(Generic[T]) is Generic
+        >>> assert get_origin(Union[T, int]) is Union
+        >>> assert get_origin(List[Tuple[T, T]][int]) is list
+        >>> assert get_origin(P.args) is P
+    """
+    ...
 
 Annotated: _SpecialForm
 _AnnotatedAlias: Any  # undocumented
@@ -487,11 +554,65 @@ if sys.version_info >= (3, 11):
 else:
     Self: _SpecialForm
     Never: _SpecialForm
-    def reveal_type(obj: _T, /) -> _T: ...
-    def assert_never(arg: Never, /) -> Never: ...
-    def assert_type(val: _T, typ: AnnotationForm, /) -> _T: ...
-    def clear_overloads() -> None: ...
-    def get_overloads(func: Callable[..., object]) -> Sequence[Callable[..., object]]: ...
+    def reveal_type(obj: _T, /) -> _T:
+        """
+        Reveal the inferred type of a variable.
+
+        When a static type checker encounters a call to ``reveal_type()``,
+        it will emit the inferred type of the argument::
+
+            x: int = 1
+            reveal_type(x)
+
+        Running a static type checker (e.g., ``mypy``) on this example
+        will produce output similar to 'Revealed type is "builtins.int"'.
+
+        At runtime, the function prints the runtime type of the
+        argument and returns it unchanged.
+        """
+        ...
+    def assert_never(arg: Never, /) -> Never:
+        """
+        Assert to the type checker that a line of code is unreachable.
+
+        Example::
+
+            def int_or_str(arg: int | str) -> None:
+                match arg:
+                    case int():
+                        print("It's an int")
+                    case str():
+                        print("It's a str")
+                    case _:
+                        assert_never(arg)
+
+        If a type checker finds that a call to assert_never() is
+        reachable, it will emit an error.
+
+        At runtime, this throws an exception when called.
+        """
+        ...
+    def assert_type(val: _T, typ: AnnotationForm, /) -> _T:
+        """
+        Assert (to the type checker) that the value is of the given type.
+
+        When the type checker encounters a call to assert_type(), it
+        emits an error if the value is not of the specified type::
+
+            def greet(name: str) -> None:
+                assert_type(name, str)  # ok
+                assert_type(name, int)  # type checker error
+
+        At runtime this returns the first argument unchanged and otherwise
+        does nothing.
+        """
+        ...
+    def clear_overloads() -> None:
+        """Clear all overloads in the registry."""
+        ...
+    def get_overloads(func: Callable[..., object]) -> Sequence[Callable[..., object]]:
+        """Return all defined overloads for *func* as a sequence."""
+        ...
 
     Required: _SpecialForm
     NotRequired: _SpecialForm
@@ -608,6 +729,19 @@ else:
         def _replace(self, **kwargs: Any) -> Self: ...
 
     class NewType:
+        """
+        NewType creates simple unique types with almost zero
+        runtime overhead. NewType(name, tp) is considered a subtype of tp
+        by static type checkers. At runtime, NewType(name, tp) returns
+        a dummy callable that simply returns its argument. Usage::
+            UserId = NewType('UserId', int)
+            def name_by_id(user_id: UserId) -> str:
+                ...
+            UserId('user')          # Fails type check
+            name_by_id(42)          # Fails type check
+            name_by_id(UserId(42))  # OK
+            num = UserId(5) + 1     # type: int
+        """
         def __init__(self, name: str, tp: AnnotationForm) -> None: ...
         def __call__(self, obj: _T, /) -> _T: ...
         __supertype__: type | NewType
@@ -1003,8 +1137,17 @@ else:
         @property
         def __module__(self) -> str | None: ...  # type: ignore[override]
         # Returns typing._GenericAlias, which isn't stubbed.
-        def __getitem__(self, parameters: Incomplete | tuple[Incomplete, ...]) -> AnnotationForm: ...
-        def __init_subclass__(cls, *args: Unused, **kwargs: Unused) -> NoReturn: ...
+        def __getitem__(self, parameters: Incomplete | tuple[Incomplete, ...]) -> AnnotationForm:
+            """Return self[key]."""
+            ...
+        def __init_subclass__(cls, *args: Unused, **kwargs: Unused) -> NoReturn:
+            """
+            This method is called when a class is subclassed.
+
+            The default implementation does nothing. It may be
+            overridden to extend subclasses.
+            """
+            ...
         if sys.version_info >= (3, 10):
             def __or__(self, right: Any) -> _SpecialForm:
                 """Return self|value."""
