@@ -2,7 +2,7 @@ import abc
 import enum
 import sys
 from _collections_abc import dict_items, dict_keys, dict_values
-from _typeshed import IdentityFunction, Incomplete, Unused
+from _typeshed import AnnotationForm, IdentityFunction, Incomplete, Unused
 from collections.abc import (
     AsyncGenerator as AsyncGenerator,
     AsyncIterable as AsyncIterable,
@@ -288,7 +288,7 @@ class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
     __mutable_keys__: ClassVar[frozenset[str]]
     # PEP 728
     __closed__: ClassVar[bool]
-    __extra_items__: ClassVar[Any]
+    __extra_items__: ClassVar[AnnotationForm]
     def copy(self) -> Self: ...
     # Using Never so that only calls using mypy plugin hook that specialize the signature
     # can go through.
@@ -322,60 +322,14 @@ class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
 
 OrderedDict = _Alias()
 
-def get_type_hints(
-    obj: Callable[..., Any],
-    globalns: dict[str, Any] | None = None,
-    localns: Mapping[str, Any] | None = None,
-    include_extras: bool = False,
-) -> dict[str, Any]:
-    """
-    Return type hints for an object.
+if sys.version_info >= (3, 13):
+    from typing import get_type_hints as get_type_hints
+else:
+    def get_type_hints(
+        obj: Any, globalns: dict[str, Any] | None = None, localns: Mapping[str, Any] | None = None, include_extras: bool = False
+    ) -> dict[str, AnnotationForm]: ...
 
-    This is often the same as obj.__annotations__, but it handles
-    forward references encoded as string literals and recursively replaces all
-    'Annotated[T, ...]' with 'T' (unless 'include_extras=True').
-
-    The argument may be a module, class, method, or function. The annotations
-    are returned as a dictionary. For classes, annotations include also
-    inherited members.
-
-    TypeError is raised if the argument is not of a type that can contain
-    annotations, and an empty dictionary is returned if no annotations are
-    present.
-
-    BEWARE -- the behavior of globalns and localns is counterintuitive
-    (unless you are familiar with how eval() and exec() work).  The
-    search order is locals first, then globals.
-
-    - If no dict arguments are passed, an attempt is made to use the
-      globals from obj (or the respective module's globals for classes),
-      and these are also used as the locals.  If the object does not appear
-      to have globals, an empty dictionary is used.  For classes, the search
-      order is globals first then locals.
-
-    - If one dict argument is passed, it is used for both globals and
-      locals.
-
-    - If two dict arguments are passed, they specify globals and
-      locals, respectively.
-    """
-    ...
-def get_args(tp: Any) -> tuple[Any, ...]:
-    """
-    Get type arguments with all substitutions performed.
-
-    For unions, basic simplifications used by Union constructor are performed.
-
-    Examples::
-
-        >>> T = TypeVar('T')
-        >>> assert get_args(Dict[str, int]) == (str, int)
-        >>> assert get_args(int) == ()
-        >>> assert get_args(Union[int, Union[T, int], str][int]) == (int, str)
-        >>> assert get_args(Union[int, Tuple[T, int]][str]) == (int, Tuple[str, int])
-        >>> assert get_args(Callable[[], T][int]) == ([], int)
-    """
-    ...
+def get_args(tp: AnnotationForm) -> tuple[AnnotationForm, ...]: ...
 
 if sys.version_info >= (3, 10):
     @overload
@@ -443,26 +397,7 @@ def get_origin(tp: ParamSpecArgs | ParamSpecKwargs) -> ParamSpec:
     """
     ...
 @overload
-def get_origin(tp: Any) -> Any | None:
-    """
-    Get the unsubscripted version of a type.
-
-    This supports generic types, Callable, Tuple, Union, Literal, Final, ClassVar,
-    Annotated, and others. Return None for unsupported types.
-
-    Examples::
-
-        >>> P = ParamSpec('P')
-        >>> assert get_origin(Literal[42]) is Literal
-        >>> assert get_origin(int) is None
-        >>> assert get_origin(ClassVar[int]) is ClassVar
-        >>> assert get_origin(Generic) is Generic
-        >>> assert get_origin(Generic[T]) is Generic
-        >>> assert get_origin(Union[T, int]) is Union
-        >>> assert get_origin(List[Tuple[T, T]][int]) is list
-        >>> assert get_origin(P.args) is P
-    """
-    ...
+def get_origin(tp: AnnotationForm) -> AnnotationForm | None: ...
 
 Annotated: _SpecialForm
 _AnnotatedAlias: Any  # undocumented
@@ -552,65 +487,11 @@ if sys.version_info >= (3, 11):
 else:
     Self: _SpecialForm
     Never: _SpecialForm
-    def reveal_type(obj: _T, /) -> _T:
-        """
-        Reveal the inferred type of a variable.
-
-        When a static type checker encounters a call to ``reveal_type()``,
-        it will emit the inferred type of the argument::
-
-            x: int = 1
-            reveal_type(x)
-
-        Running a static type checker (e.g., ``mypy``) on this example
-        will produce output similar to 'Revealed type is "builtins.int"'.
-
-        At runtime, the function prints the runtime type of the
-        argument and returns it unchanged.
-        """
-        ...
-    def assert_never(arg: Never, /) -> Never:
-        """
-        Assert to the type checker that a line of code is unreachable.
-
-        Example::
-
-            def int_or_str(arg: int | str) -> None:
-                match arg:
-                    case int():
-                        print("It's an int")
-                    case str():
-                        print("It's a str")
-                    case _:
-                        assert_never(arg)
-
-        If a type checker finds that a call to assert_never() is
-        reachable, it will emit an error.
-
-        At runtime, this throws an exception when called.
-        """
-        ...
-    def assert_type(val: _T, typ: Any, /) -> _T:
-        """
-        Assert (to the type checker) that the value is of the given type.
-
-        When the type checker encounters a call to assert_type(), it
-        emits an error if the value is not of the specified type::
-
-            def greet(name: str) -> None:
-                assert_type(name, str)  # ok
-                assert_type(name, int)  # type checker error
-
-        At runtime this returns the first argument unchanged and otherwise
-        does nothing.
-        """
-        ...
-    def clear_overloads() -> None:
-        """Clear all overloads in the registry."""
-        ...
-    def get_overloads(func: Callable[..., object]) -> Sequence[Callable[..., object]]:
-        """Return all defined overloads for *func* as a sequence."""
-        ...
+    def reveal_type(obj: _T, /) -> _T: ...
+    def assert_never(arg: Never, /) -> Never: ...
+    def assert_type(val: _T, typ: AnnotationForm, /) -> _T: ...
+    def clear_overloads() -> None: ...
+    def get_overloads(func: Callable[..., object]) -> Sequence[Callable[..., object]]: ...
 
     Required: _SpecialForm
     NotRequired: _SpecialForm
@@ -727,20 +608,7 @@ else:
         def _replace(self, **kwargs: Any) -> Self: ...
 
     class NewType:
-        """
-        NewType creates simple unique types with almost zero
-        runtime overhead. NewType(name, tp) is considered a subtype of tp
-        by static type checkers. At runtime, NewType(name, tp) returns
-        a dummy callable that simply returns its argument. Usage::
-            UserId = NewType('UserId', int)
-            def name_by_id(user_id: UserId) -> str:
-                ...
-            UserId('user')          # Fails type check
-            name_by_id(42)          # Fails type check
-            name_by_id(UserId(42))  # OK
-            num = UserId(5) + 1     # type: int
-        """
-        def __init__(self, name: str, tp: Any) -> None: ...
+        def __init__(self, name: str, tp: AnnotationForm) -> None: ...
         def __call__(self, obj: _T, /) -> _T: ...
         __supertype__: type | NewType
         if sys.version_info >= (3, 10):
@@ -1002,9 +870,9 @@ else:
         @property
         def __name__(self) -> str: ...
         @property
-        def __bound__(self) -> Any | None: ...
+        def __bound__(self) -> AnnotationForm | None: ...
         @property
-        def __constraints__(self) -> tuple[Any, ...]: ...
+        def __constraints__(self) -> tuple[AnnotationForm, ...]: ...
         @property
         def __covariant__(self) -> bool: ...
         @property
@@ -1012,15 +880,15 @@ else:
         @property
         def __infer_variance__(self) -> bool: ...
         @property
-        def __default__(self) -> Any: ...
+        def __default__(self) -> AnnotationForm: ...
         def __init__(
             self,
             name: str,
-            *constraints: Any,
-            bound: Any | None = None,
+            *constraints: AnnotationForm,
+            bound: AnnotationForm | None = None,
             covariant: bool = False,
             contravariant: bool = False,
-            default: Any = ...,
+            default: AnnotationForm = ...,
             infer_variance: bool = False,
         ) -> None: ...
         def has_default(self) -> bool: ...
@@ -1041,7 +909,7 @@ else:
         @property
         def __name__(self) -> str: ...
         @property
-        def __bound__(self) -> Any | None: ...
+        def __bound__(self) -> AnnotationForm | None: ...
         @property
         def __covariant__(self) -> bool: ...
         @property
@@ -1049,15 +917,15 @@ else:
         @property
         def __infer_variance__(self) -> bool: ...
         @property
-        def __default__(self) -> Any: ...
+        def __default__(self) -> AnnotationForm: ...
         def __init__(
             self,
             name: str,
             *,
-            bound: None | type[Any] | str = None,
+            bound: None | AnnotationForm | str = None,
             contravariant: bool = False,
             covariant: bool = False,
-            default: Any = ...,
+            default: AnnotationForm = ...,
         ) -> None: ...
         @property
         def args(self) -> ParamSpecArgs: ...
@@ -1079,8 +947,8 @@ else:
         @property
         def __name__(self) -> str: ...
         @property
-        def __default__(self) -> Any: ...
-        def __init__(self, name: str, *, default: Any = ...) -> None: ...
+        def __default__(self) -> AnnotationForm: ...
+        def __init__(self, name: str, *, default: AnnotationForm = ...) -> None: ...
         def __iter__(self) -> Any: ...  # Unpack[Self]
         def has_default(self) -> bool: ...
         def __typing_prepare_subst__(self, alias: Any, args: Any) -> tuple[Any, ...]: ...
@@ -1119,33 +987,24 @@ else:
         See PEP 695 for more information.
         """
         def __init__(
-            self, name: str, value: Any, *, type_params: tuple[TypeVar | ParamSpec | TypeVarTuple, ...] = ()
-        ) -> None: ...  # value is a type expression
+            self, name: str, value: AnnotationForm, *, type_params: tuple[TypeVar | ParamSpec | TypeVarTuple, ...] = ()
+        ) -> None: ...
         @property
-        def __value__(self) -> Any: ...  # a type expression
+        def __value__(self) -> AnnotationForm: ...
         @property
         def __type_params__(self) -> tuple[TypeVar | ParamSpec | TypeVarTuple, ...]: ...
         @property
         # `__parameters__` can include special forms if a `TypeVarTuple` was
         # passed as a `type_params` element to the constructor method.
-        def __parameters__(self) -> tuple[TypeVar | ParamSpec | Any, ...]: ...
+        def __parameters__(self) -> tuple[TypeVar | ParamSpec | AnnotationForm, ...]: ...
         @property
         def __name__(self) -> str: ...
         # It's writable on types, but not on instances of TypeAliasType.
         @property
         def __module__(self) -> str | None: ...  # type: ignore[override]
         # Returns typing._GenericAlias, which isn't stubbed.
-        def __getitem__(self, parameters: Incomplete | tuple[Incomplete, ...]) -> Any:
-            """Return self[key]."""
-            ...
-        def __init_subclass__(cls, *args: Unused, **kwargs: Unused) -> NoReturn:
-            """
-            This method is called when a class is subclassed.
-
-            The default implementation does nothing. It may be
-            overridden to extend subclasses.
-            """
-            ...
+        def __getitem__(self, parameters: Incomplete | tuple[Incomplete, ...]) -> AnnotationForm: ...
+        def __init_subclass__(cls, *args: Unused, **kwargs: Unused) -> NoReturn: ...
         if sys.version_info >= (3, 10):
             def __or__(self, right: Any) -> _SpecialForm:
                 """Return self|value."""
@@ -1186,27 +1045,75 @@ NoExtraItems: _NoExtraItemsType
 # PEP 747
 TypeForm: _SpecialForm
 
-class Format(enum.IntEnum):
-    VALUE = 1
-    FORWARDREF = 2
-    STRING = 3
-
 # PEP 649/749
-def get_annotations(
-    obj: Callable[..., object] | type[object] | ModuleType,  # any callable, class, or module
-    *,
-    globals: Mapping[str, Any] | None = None,  # value types depend on the key
-    locals: Mapping[str, Any] | None = None,  # value types depend on the key
-    eval_str: bool = False,
-    format: Format = Format.VALUE,  # noqa: Y011
-) -> dict[str, Any]: ...  # values are type expressions
-def evaluate_forward_ref(
-    forward_ref: ForwardRef,
-    *,
-    owner: Callable[..., object] | type[object] | ModuleType | None = None,  # any callable, class, or module
-    globals: Mapping[str, Any] | None = None,  # value types depend on the key
-    locals: Mapping[str, Any] | None = None,  # value types depend on the key
-    type_params: Iterable[TypeVar | ParamSpec | TypeVarTuple] | None = None,
-    format: Format = Format.VALUE,  # noqa: Y011
-    _recursive_guard: Container[str] = ...,
-) -> Any: ...  # str if format is Format.STRING, otherwise a type expression
+if sys.version_info >= (3, 14):
+    from typing import evaluate_forward_ref as evaluate_forward_ref
+
+    from annotationlib import Format as Format, get_annotations as get_annotations
+else:
+    class Format(enum.IntEnum):
+        VALUE = 1
+        VALUE_WITH_FAKE_GLOBALS = 2
+        FORWARDREF = 3
+        STRING = 4
+
+    @overload
+    def get_annotations(
+        obj: Any,  # any object with __annotations__ or __annotate__
+        *,
+        globals: Mapping[str, Any] | None = None,  # value types depend on the key
+        locals: Mapping[str, Any] | None = None,  # value types depend on the key
+        eval_str: bool = False,
+        format: Literal[Format.STRING],
+    ) -> dict[str, str]: ...
+    @overload
+    def get_annotations(
+        obj: Any,  # any object with __annotations__ or __annotate__
+        *,
+        globals: Mapping[str, Any] | None = None,  # value types depend on the key
+        locals: Mapping[str, Any] | None = None,  # value types depend on the key
+        eval_str: bool = False,
+        format: Literal[Format.FORWARDREF],
+    ) -> dict[str, AnnotationForm | ForwardRef]: ...
+    @overload
+    def get_annotations(
+        obj: Any,  # any object with __annotations__ or __annotate__
+        *,
+        globals: Mapping[str, Any] | None = None,  # value types depend on the key
+        locals: Mapping[str, Any] | None = None,  # value types depend on the key
+        eval_str: bool = False,
+        format: Format = Format.VALUE,  # noqa: Y011
+    ) -> dict[str, AnnotationForm]: ...
+    @overload
+    def evaluate_forward_ref(
+        forward_ref: ForwardRef,
+        *,
+        owner: Callable[..., object] | type[object] | ModuleType | None = None,  # any callable, class, or module
+        globals: Mapping[str, Any] | None = None,  # value types depend on the key
+        locals: Mapping[str, Any] | None = None,  # value types depend on the key
+        type_params: Iterable[TypeVar | ParamSpec | TypeVarTuple] | None = None,
+        format: Literal[Format.STRING],
+        _recursive_guard: Container[str] = ...,
+    ) -> str: ...
+    @overload
+    def evaluate_forward_ref(
+        forward_ref: ForwardRef,
+        *,
+        owner: Callable[..., object] | type[object] | ModuleType | None = None,  # any callable, class, or module
+        globals: Mapping[str, Any] | None = None,  # value types depend on the key
+        locals: Mapping[str, Any] | None = None,  # value types depend on the key
+        type_params: Iterable[TypeVar | ParamSpec | TypeVarTuple] | None = None,
+        format: Literal[Format.FORWARDREF],
+        _recursive_guard: Container[str] = ...,
+    ) -> AnnotationForm | ForwardRef: ...
+    @overload
+    def evaluate_forward_ref(
+        forward_ref: ForwardRef,
+        *,
+        owner: Callable[..., object] | type[object] | ModuleType | None = None,  # any callable, class, or module
+        globals: Mapping[str, Any] | None = None,  # value types depend on the key
+        locals: Mapping[str, Any] | None = None,  # value types depend on the key
+        type_params: Iterable[TypeVar | ParamSpec | TypeVarTuple] | None = None,
+        format: Format = Format.VALUE,  # noqa: Y011
+        _recursive_guard: Container[str] = ...,
+    ) -> AnnotationForm: ...

@@ -17,7 +17,9 @@ from logging import FileHandler, Handler, LogRecord
 from re import Pattern
 from socket import SocketKind, socket
 from threading import Thread
+from types import TracebackType
 from typing import Any, ClassVar, Final, Protocol, TypeVar
+from typing_extensions import Self
 
 _T = TypeVar("_T")
 
@@ -618,60 +620,16 @@ class QueueListener:
     respect_handler_level: bool  # undocumented
     queue: _QueueLike[Any]  # undocumented
     _thread: Thread | None  # undocumented
-    def __init__(self, queue: _QueueLike[Any], *handlers: Handler, respect_handler_level: bool = False) -> None:
-        """
-        Initialise an instance with the specified queue and
-        handlers.
-        """
-        ...
-    def dequeue(self, block: bool) -> LogRecord:
-        """
-        Dequeue a record and return it, optionally blocking.
+    def __init__(self, queue: _QueueLike[Any], *handlers: Handler, respect_handler_level: bool = False) -> None: ...
+    def dequeue(self, block: bool) -> LogRecord: ...
+    def prepare(self, record: LogRecord) -> Any: ...
+    def start(self) -> None: ...
+    def stop(self) -> None: ...
+    def enqueue_sentinel(self) -> None: ...
+    def handle(self, record: LogRecord) -> None: ...
 
-        The base implementation uses get. You may want to override this method
-        if you want to use timeouts or work with custom queue implementations.
-        """
-        ...
-    def prepare(self, record: LogRecord) -> Any:
-        """
-        Prepare a record for handling.
-
-        This method just returns the passed-in record. You may want to
-        override this method if you need to do any custom marshalling or
-        manipulation of the record before passing it to the handlers.
-        """
-        ...
-    def start(self) -> None:
-        """
-        Start the listener.
-
-        This starts up a background thread to monitor the queue for
-        LogRecords to process.
-        """
-        ...
-    def stop(self) -> None:
-        """
-        Stop the listener.
-
-        This asks the thread to terminate, and then waits for it to do so.
-        Note that if you don't call this before your application exits, there
-        may be some records still left on the queue, which won't be processed.
-        """
-        ...
-    def enqueue_sentinel(self) -> None:
-        """
-        This is used to enqueue the sentinel record.
-
-        The base implementation uses put_nowait. You may want to override this
-        method if you want to use timeouts or work with custom queue
-        implementations.
-        """
-        ...
-    def handle(self, record: LogRecord) -> None:
-        """
-        Handle a record.
-
-        This just loops through the handlers offering them the record
-        to handle.
-        """
-        ...
+    if sys.version_info >= (3, 14):
+        def __enter__(self) -> Self: ...
+        def __exit__(
+            self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
+        ) -> None: ...

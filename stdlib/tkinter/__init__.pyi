@@ -7360,6 +7360,7 @@ class PhotoImage(Image, _PhotoImageLike):
         self,
         data: (
             str
+            | bytes
             | list[str]
             | list[list[str]]
             | list[tuple[str, ...]]
@@ -7367,13 +7368,8 @@ class PhotoImage(Image, _PhotoImageLike):
             | tuple[list[str], ...]
             | tuple[tuple[str, ...], ...]
         ),
-        to: tuple[int, int] | None = None,
-    ) -> None:
-        """
-        Put row formatted colors to image starting from
-        position TO, e.g. image.put("{red green} {blue yellow}", to=(4,6))
-        """
-        ...
+        to: tuple[int, int] | tuple[int, int, int, int] | None = None,
+    ) -> None: ...
     if sys.version_info >= (3, 13):
         def read(
             self,

@@ -18,6 +18,7 @@ import sys
 import types
 from _collections_abc import dict_items, dict_keys, dict_values
 from _typeshed import (
+    AnnotationForm,
     AnyStr_co,
     ConvertibleToFloat,
     ConvertibleToInt,
@@ -84,6 +85,9 @@ from typing_extensions import (  # noqa: Y023
     TypeVarTuple,
     deprecated,
 )
+
+if sys.version_info >= (3, 14):
+    from _typeshed import AnnotateFunc
 
 _T = TypeVar("_T")
 _I = TypeVar("_I", default=int)
@@ -358,6 +362,9 @@ class type:
             ...
     if sys.version_info >= (3, 12):
         __type_params__: tuple[TypeVar | ParamSpec | TypeVarTuple, ...]
+    __annotations__: dict[str, AnnotationForm]
+    if sys.version_info >= (3, 14):
+        __annotate__: AnnotateFunc | None
 
 class super:
     """
@@ -3316,7 +3323,9 @@ class function:
     def __globals__(self) -> dict[str, Any]: ...
     __name__: str
     __qualname__: str
-    __annotations__: dict[str, Any]
+    __annotations__: dict[str, AnnotationForm]
+    if sys.version_info >= (3, 14):
+        __annotate__: AnnotateFunc | None
     __kwdefaults__: dict[str, Any]
     if sys.version_info >= (3, 10):
         @property
@@ -4567,58 +4576,110 @@ def locals() -> dict[str, Any]:
     ...
 
 class map(Generic[_S]):
-    """
-    Make an iterator that computes the function using arguments from
-    each of the iterables.  Stops when the shortest iterable is exhausted.
-    """
-    @overload
-    def __new__(cls, func: Callable[[_T1], _S], iterable: Iterable[_T1], /) -> Self: ...
-    @overload
-    def __new__(cls, func: Callable[[_T1, _T2], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], /) -> Self: ...
-    @overload
-    def __new__(
-        cls, func: Callable[[_T1, _T2, _T3], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /
-    ) -> Self: ...
-    @overload
-    def __new__(
-        cls,
-        func: Callable[[_T1, _T2, _T3, _T4], _S],
-        iterable: Iterable[_T1],
-        iter2: Iterable[_T2],
-        iter3: Iterable[_T3],
-        iter4: Iterable[_T4],
-        /,
-    ) -> Self: ...
-    @overload
-    def __new__(
-        cls,
-        func: Callable[[_T1, _T2, _T3, _T4, _T5], _S],
-        iterable: Iterable[_T1],
-        iter2: Iterable[_T2],
-        iter3: Iterable[_T3],
-        iter4: Iterable[_T4],
-        iter5: Iterable[_T5],
-        /,
-    ) -> Self: ...
-    @overload
-    def __new__(
-        cls,
-        func: Callable[..., _S],
-        iterable: Iterable[Any],
-        iter2: Iterable[Any],
-        iter3: Iterable[Any],
-        iter4: Iterable[Any],
-        iter5: Iterable[Any],
-        iter6: Iterable[Any],
-        /,
-        *iterables: Iterable[Any],
-    ) -> Self: ...
-    def __iter__(self) -> Self:
-        """Implement iter(self)."""
-        ...
-    def __next__(self) -> _S:
-        """Implement next(self)."""
-        ...
+    # 3.14 adds `strict` argument.
+    if sys.version_info >= (3, 14):
+        @overload
+        def __new__(cls, func: Callable[[_T1], _S], iterable: Iterable[_T1], /, *, strict: bool = False) -> Self: ...
+        @overload
+        def __new__(
+            cls, func: Callable[[_T1, _T2], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], /, *, strict: bool = False
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[[_T1, _T2, _T3], _S],
+            iterable: Iterable[_T1],
+            iter2: Iterable[_T2],
+            iter3: Iterable[_T3],
+            /,
+            *,
+            strict: bool = False,
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[[_T1, _T2, _T3, _T4], _S],
+            iterable: Iterable[_T1],
+            iter2: Iterable[_T2],
+            iter3: Iterable[_T3],
+            iter4: Iterable[_T4],
+            /,
+            *,
+            strict: bool = False,
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[[_T1, _T2, _T3, _T4, _T5], _S],
+            iterable: Iterable[_T1],
+            iter2: Iterable[_T2],
+            iter3: Iterable[_T3],
+            iter4: Iterable[_T4],
+            iter5: Iterable[_T5],
+            /,
+            *,
+            strict: bool = False,
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[..., _S],
+            iterable: Iterable[Any],
+            iter2: Iterable[Any],
+            iter3: Iterable[Any],
+            iter4: Iterable[Any],
+            iter5: Iterable[Any],
+            iter6: Iterable[Any],
+            /,
+            *iterables: Iterable[Any],
+            strict: bool = False,
+        ) -> Self: ...
+    else:
+        @overload
+        def __new__(cls, func: Callable[[_T1], _S], iterable: Iterable[_T1], /) -> Self: ...
+        @overload
+        def __new__(cls, func: Callable[[_T1, _T2], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], /) -> Self: ...
+        @overload
+        def __new__(
+            cls, func: Callable[[_T1, _T2, _T3], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[[_T1, _T2, _T3, _T4], _S],
+            iterable: Iterable[_T1],
+            iter2: Iterable[_T2],
+            iter3: Iterable[_T3],
+            iter4: Iterable[_T4],
+            /,
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[[_T1, _T2, _T3, _T4, _T5], _S],
+            iterable: Iterable[_T1],
+            iter2: Iterable[_T2],
+            iter3: Iterable[_T3],
+            iter4: Iterable[_T4],
+            iter5: Iterable[_T5],
+            /,
+        ) -> Self: ...
+        @overload
+        def __new__(
+            cls,
+            func: Callable[..., _S],
+            iterable: Iterable[Any],
+            iter2: Iterable[Any],
+            iter3: Iterable[Any],
+            iter4: Iterable[Any],
+            iter5: Iterable[Any],
+            iter6: Iterable[Any],
+            /,
+            *iterables: Iterable[Any],
+        ) -> Self: ...
+
+    def __iter__(self) -> Self: ...
+    def __next__(self) -> _S: ...
 
 @overload
 def max(

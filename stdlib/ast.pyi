@@ -34,7 +34,7 @@ from _ast import (
     PyCF_TYPE_COMMENTS as PyCF_TYPE_COMMENTS,
 )
 from _typeshed import ReadableBuffer, Unused
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Sequence
 from typing import Any, ClassVar, Generic, Literal, TypedDict, TypeVar as _TypeVar, overload
 from typing_extensions import Self, Unpack, deprecated
 
@@ -321,6 +321,7 @@ class AsyncFunctionDef(stmt):
             returns: expr | None = ...,
             type_comment: str | None = ...,
             type_params: list[type_param] = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
 class ClassDef(stmt):
@@ -2542,4 +2543,9 @@ class NodeTransformer(NodeVisitor):
     #       is also allowed in some cases -- this needs to be mapped.
 
 def unparse(ast_obj: AST) -> str: ...
-def main() -> None: ...
+
+if sys.version_info >= (3, 14):
+    def main(args: Sequence[str] | None = None) -> None: ...
+
+else:
+    def main() -> None: ...

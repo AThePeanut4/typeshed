@@ -1,3 +1,4 @@
+import sys
 from typing import Any, ClassVar, Final
 
 import click
@@ -63,7 +64,10 @@ class BaseInput:
         ...
 
 class ChoiceInput(BaseInput):
-    param_type_cls: type[click.Choice]
+    if sys.version_info >= (3, 10):
+        param_type_cls: type[click.Choice[Any]]
+    else:
+        param_type_cls: type[click.Choice]
 
 class FlagInput(BaseInput):
     param_type_cls: None

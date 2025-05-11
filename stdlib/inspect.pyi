@@ -33,7 +33,7 @@ import dis
 import enum
 import sys
 import types
-from _typeshed import StrPath
+from _typeshed import AnnotationForm, StrPath
 from collections import OrderedDict
 from collections.abc import AsyncGenerator, Awaitable, Callable, Coroutine, Generator, Mapping, Sequence, Set as AbstractSet
 from types import (
@@ -58,6 +58,9 @@ from types import (
 )
 from typing import Any, ClassVar, Final, Literal, NamedTuple, Protocol, TypeVar, overload
 from typing_extensions import ParamSpec, Self, TypeAlias, TypeGuard, TypeIs
+
+if sys.version_info >= (3, 14):
+    from annotationlib import Format
 
 if sys.version_info >= (3, 11):
     __all__ = [
@@ -170,6 +173,8 @@ if sys.version_info >= (3, 11):
             "getasyncgenstate",
             "BufferFlags",
         ]
+    if sys.version_info >= (3, 14):
+        __all__ += ["CO_HAS_DOCSTRING", "CO_METHOD", "ispackage"]
 
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
@@ -204,6 +209,9 @@ CO_COROUTINE: Final = 128
 CO_ITERABLE_COROUTINE: Final = 256
 CO_ASYNC_GENERATOR: Final = 512
 TPFLAGS_IS_ABSTRACT: Final = 1048576
+if sys.version_info >= (3, 14):
+    CO_HAS_DOCSTRING: Final = 67108864
+    CO_METHOD: Final = 134217728
 
 modulesbyfile: dict[str, Any]
 
@@ -243,70 +251,16 @@ if sys.version_info >= (3, 11):
         __getattr__ or __getattribute__. Optionally, only return members that
         satisfy a given predicate.
 
-        Note: this function may not be able to retrieve all members
-           that getmembers can fetch (like dynamically created attributes)
-           and may find members that getmembers can't (like descriptors
-           that raise AttributeError). It can also return descriptor objects
-           instead of instance members in some cases.
-        """
-        ...
-    @overload
-    def getmembers_static(object: object, predicate: _GetMembersPredicateTypeIs[_T]) -> _GetMembersReturn[_T]:
-        """
-        Return all members of an object as (name, value) pairs sorted by name
-        without triggering dynamic lookup via the descriptor protocol,
-        __getattr__ or __getattribute__. Optionally, only return members that
-        satisfy a given predicate.
+def getmodulename(path: StrPath) -> str | None: ...
+def ismodule(object: object) -> TypeIs[ModuleType]: ...
+def isclass(object: object) -> TypeIs[type[Any]]: ...
+def ismethod(object: object) -> TypeIs[MethodType]: ...
 
-        Note: this function may not be able to retrieve all members
-           that getmembers can fetch (like dynamically created attributes)
-           and may find members that getmembers can't (like descriptors
-           that raise AttributeError). It can also return descriptor objects
-           instead of instance members in some cases.
-        """
-        ...
-    @overload
-    def getmembers_static(object: object, predicate: _GetMembersPredicate | None = None) -> _GetMembersReturn[Any]:
-        """
-        Return all members of an object as (name, value) pairs sorted by name
-        without triggering dynamic lookup via the descriptor protocol,
-        __getattr__ or __getattribute__. Optionally, only return members that
-        satisfy a given predicate.
+if sys.version_info >= (3, 14):
+    # Not TypeIs because it does not return True for all modules
+    def ispackage(object: object) -> TypeGuard[ModuleType]: ...
 
-        Note: this function may not be able to retrieve all members
-           that getmembers can fetch (like dynamically created attributes)
-           and may find members that getmembers can't (like descriptors
-           that raise AttributeError). It can also return descriptor objects
-           instead of instance members in some cases.
-        """
-        ...
-
-def getmodulename(path: StrPath) -> str | None:
-    """Return the module name for a given file, or None."""
-    ...
-def ismodule(object: object) -> TypeIs[ModuleType]:
-    """Return true if the object is a module."""
-    ...
-def isclass(object: object) -> TypeIs[type[Any]]:
-    """Return true if the object is a class."""
-    ...
-def ismethod(object: object) -> TypeIs[MethodType]:
-    """Return true if the object is an instance method."""
-    ...
-def isfunction(object: object) -> TypeIs[FunctionType]:
-    """
-    Return true if the object is a user-defined function.
-
-    Function objects provide these attributes:
-        __doc__         documentation string
-        __name__        name with which this function was defined
-        __code__        code object containing compiled function bytecode
-        __defaults__    tuple of any default values for arguments
-        __globals__     global namespace in which this function was defined
-        __annotations__ dict of parameter annotations
-        __kwdefaults__  dict of keyword only parameters with defaults
-    """
-    ...
+def isfunction(object: object) -> TypeIs[FunctionType]: ...
 
 if sys.version_info >= (3, 12):
     def markcoroutinefunction(func: _F) -> _F:
@@ -673,7 +627,18 @@ _IntrospectableCallable: TypeAlias = Callable[..., Any]
 #
 # Introspecting callables with the Signature object
 #
-if sys.version_info >= (3, 10):
+if sys.version_info >= (3, 14):
+    def signature(
+        obj: _IntrospectableCallable,
+        *,
+        follow_wrapped: bool = True,
+        globals: Mapping[str, Any] | None = None,
+        locals: Mapping[str, Any] | None = None,
+        eval_str: bool = False,
+        annotation_format: Format = Format.VALUE,  # noqa: Y011
+    ) -> Signature: ...
+
+elif sys.version_info >= (3, 10):
     def signature(
         obj: _IntrospectableCallable,
         *,
@@ -755,7 +720,19 @@ class Signature:
         """
         ...
     __replace__ = replace
-    if sys.version_info >= (3, 10):
+    if sys.version_info >= (3, 14):
+        @classmethod
+        def from_callable(
+            cls,
+            obj: _IntrospectableCallable,
+            *,
+            follow_wrapped: bool = True,
+            globals: Mapping[str, Any] | None = None,
+            locals: Mapping[str, Any] | None = None,
+            eval_str: bool = False,
+            annotation_format: Format = Format.VALUE,  # noqa: Y011
+        ) -> Self: ...
+    elif sys.version_info >= (3, 10):
         @classmethod
         def from_callable(
             cls,
@@ -770,78 +747,25 @@ class Signature:
             ...
     else:
         @classmethod
-        def from_callable(cls, obj: _IntrospectableCallable, *, follow_wrapped: bool = True) -> Self:
-            """Constructs Signature for the given callable object."""
-            ...
-    if sys.version_info >= (3, 13):
-        def format(self, *, max_width: int | None = None) -> str:
-            """
-            Create a string representation of the Signature object.
-
-            If *max_width* integer is passed,
-            signature will try to fit into the *max_width*.
-            If signature is longer than *max_width*,
-            all parameters will be on separate lines.
-            """
-            ...
+        def from_callable(cls, obj: _IntrospectableCallable, *, follow_wrapped: bool = True) -> Self: ...
+    if sys.version_info >= (3, 14):
+        def format(self, *, max_width: int | None = None, quote_annotation_strings: bool = True) -> str: ...
+    elif sys.version_info >= (3, 13):
+        def format(self, *, max_width: int | None = None) -> str: ...
 
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
 
-if sys.version_info >= (3, 10):
+if sys.version_info >= (3, 14):
+    from annotationlib import get_annotations as get_annotations
+elif sys.version_info >= (3, 10):
     def get_annotations(
         obj: Callable[..., object] | type[object] | ModuleType,  # any callable, class, or module
         *,
         globals: Mapping[str, Any] | None = None,  # value types depend on the key
         locals: Mapping[str, Any] | None = None,  # value types depend on the key
         eval_str: bool = False,
-    ) -> dict[str, Any]:
-        """
-        Compute the annotations dict for an object.
-
-        obj may be a callable, class, or module.
-        Passing in an object of any other type raises TypeError.
-
-        Returns a dict.  get_annotations() returns a new dict every time
-        it's called; calling it twice on the same object will return two
-        different but equivalent dicts.
-
-        This function handles several details for you:
-
-          * If eval_str is true, values of type str will
-            be un-stringized using eval().  This is intended
-            for use with stringized annotations
-            ("from __future__ import annotations").
-          * If obj doesn't have an annotations dict, returns an
-            empty dict.  (Functions and methods always have an
-            annotations dict; classes, modules, and other types of
-            callables may not.)
-          * Ignores inherited annotations on classes.  If a class
-            doesn't have its own annotations dict, returns an empty dict.
-          * All accesses to object members and dict values are done
-            using getattr() and dict.get() for safety.
-          * Always, always, always returns a freshly-created dict.
-
-        eval_str controls whether or not values of type str are replaced
-        with the result of calling eval() on those values:
-
-          * If eval_str is true, eval() is called on values of type str.
-          * If eval_str is false (the default), values of type str are unchanged.
-
-        globals and locals are passed in to eval(); see the documentation
-        for eval() for more information.  If either globals or locals is
-        None, this function may replace that value with a context-specific
-        default, contingent on type(obj):
-
-          * If obj is a module, globals defaults to obj.__dict__.
-          * If obj is a class, globals defaults to
-            sys.modules[obj.__module__].__dict__ and locals
-            defaults to the obj class namespace.
-          * If obj is a callable, globals defaults to obj.__globals__,
-            although if obj is a wrapped function (using
-            functools.update_wrapper()) it is first unwrapped.
-        """
-        ...
+    ) -> dict[str, AnnotationForm]: ...  # values are type expressions
 
 # The name is the same as the enum's name in CPython
 class _ParameterKind(enum.IntEnum):
@@ -1083,17 +1007,14 @@ class ArgInfo(NamedTuple):
     keywords: str | None
     locals: dict[str, Any]
 
-def getargvalues(frame: FrameType) -> ArgInfo:
-    """
-    Get information about arguments passed into a particular frame.
+def getargvalues(frame: FrameType) -> ArgInfo: ...
 
-    A tuple of four things is returned: (args, varargs, varkw, locals).
-    'args' is a list of the argument names.
-    'varargs' and 'varkw' are the names of the * and ** arguments or None.
-    'locals' is the locals dictionary of the given frame.
-    """
-    ...
-def formatannotation(annotation: object, base_module: str | None = None) -> str: ...
+if sys.version_info >= (3, 14):
+    def formatannotation(annotation: object, base_module: str | None = None, *, quote_annotation_strings: bool = True) -> str: ...
+
+else:
+    def formatannotation(annotation: object, base_module: str | None = None) -> str: ...
+
 def formatannotationrelativeto(object: object) -> Callable[[object], str]: ...
 
 if sys.version_info < (3, 11):
