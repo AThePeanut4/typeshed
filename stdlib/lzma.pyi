@@ -1,15 +1,4 @@
-"""
-Interface to the liblzma compression library.
-
-This module provides a class for reading and writing compressed files,
-classes for incremental (de)compression, and convenience functions for
-one-shot (de)compression.
-
-These classes and functions support both the XZ and legacy LZMA
-container formats, as well as raw compressed data streams.
-"""
-
-from _compression import BaseStream
+import sys
 from _lzma import (
     CHECK_CRC32 as CHECK_CRC32,
     CHECK_CRC64 as CHECK_CRC64,
@@ -48,6 +37,11 @@ from _lzma import (
 from _typeshed import ReadableBuffer, StrOrBytesPath
 from typing import IO, Literal, TextIO, overload
 from typing_extensions import Self, TypeAlias
+
+if sys.version_info >= (3, 14):
+    from compression._common._streams import BaseStream
+else:
+    from _compression import BaseStream
 
 __all__ = [
     "CHECK_NONE",

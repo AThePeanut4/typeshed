@@ -56,7 +56,7 @@ from _io import (
     open as open,
     open_code as open_code,
 )
-from typing import Final
+from typing import Final, Protocol, TypeVar
 
 __all__ = [
     "BlockingIOError",
@@ -80,75 +80,30 @@ __all__ = [
     "SEEK_END",
 ]
 
+if sys.version_info >= (3, 14):
+    __all__ += ["Reader", "Writer"]
+
 if sys.version_info >= (3, 11):
     from _io import text_encoding as text_encoding
 
     __all__ += ["DEFAULT_BUFFER_SIZE", "IncrementalNewlineDecoder", "text_encoding"]
+
+_T_co = TypeVar("_T_co", covariant=True)
+_T_contra = TypeVar("_T_contra", contravariant=True)
 
 SEEK_SET: Final = 0
 SEEK_CUR: Final = 1
 SEEK_END: Final = 2
 
 class UnsupportedOperation(OSError, ValueError): ...
-class IOBase(_IOBase, metaclass=abc.ABCMeta):
-    """
-    The abstract base class for all I/O classes.
+class IOBase(_IOBase, metaclass=abc.ABCMeta): ...
+class RawIOBase(_RawIOBase, IOBase): ...
+class BufferedIOBase(_BufferedIOBase, IOBase): ...
+class TextIOBase(_TextIOBase, IOBase): ...
 
-    This class provides dummy implementations for many methods that
-    derived classes can override selectively; the default implementations
-    represent a file that cannot be read, written or seeked.
+if sys.version_info >= (3, 14):
+    class Reader(Protocol[_T_co]):
+        def read(self, size: int = ..., /) -> _T_co: ...
 
-    Even though IOBase does not declare read, readinto, or write because
-    their signatures will vary, implementations and clients should
-    consider those methods part of the interface. Also, implementations
-    may raise UnsupportedOperation when operations they do not support are
-    called.
-
-    The basic type used for binary data read from or written to a file is
-    bytes. Other bytes-like objects are accepted as method arguments too.
-    In some cases (such as readinto), a writable object is required. Text
-    I/O classes work with str data.
-
-    Note that calling any method (except additional calls to close(),
-    which are ignored) on a closed stream should raise a ValueError.
-
-    IOBase (and its subclasses) support the iterator protocol, meaning
-    that an IOBase object can be iterated over yielding the lines in a
-    stream.
-
-    IOBase also supports the :keyword:`with` statement. In this example,
-    fp is closed after the suite of the with statement is complete:
-
-    with open('spam.txt', 'r') as fp:
-        fp.write('Spam and eggs!')
-    """
-    ...
-class RawIOBase(_RawIOBase, IOBase):
-    """Base class for raw binary I/O."""
-    ...
-class BufferedIOBase(_BufferedIOBase, IOBase):
-    """
-    Base class for buffered IO objects.
-
-    The main difference with RawIOBase is that the read() method
-    supports omitting the size argument, and does not have a default
-    implementation that defers to readinto().
-
-    In addition, read(), readinto() and write() may raise
-    BlockingIOError if the underlying raw stream is in non-blocking
-    mode and not ready; unlike their raw counterparts, they will never
-    return None.
-
-    A typical implementation should not inherit from a RawIOBase
-    implementation, but wrap one.
-    """
-    ...
-class TextIOBase(_TextIOBase, IOBase):
-    """
-    Base class for text I/O.
-
-    This class provides a character and line based interface to stream
-    I/O. There is no readinto method because Python's character strings
-    are immutable.
-    """
-    ...
+    class Writer(Protocol[_T_contra]):
+        def write(self, data: _T_contra, /) -> int: ...

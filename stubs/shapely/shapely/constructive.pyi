@@ -2,7 +2,6 @@
 
 from collections.abc import Sequence
 from typing import Any, Literal, SupportsIndex, overload
-from typing_extensions import TypeAlias
 
 from ._enum import ParamEnum
 from ._typing import ArrayLike, ArrayLikeSeq, GeoArray, OptGeoArrayLike, OptGeoArrayLikeSeq, OptGeoT
@@ -44,8 +43,6 @@ __all__ = [
     "snap",
     "voronoi_polygons",
 ]
-
-_Method: TypeAlias = Literal["linework", "structure"]
 
 class BufferCapStyle(ParamEnum):
     """
@@ -2586,211 +2583,32 @@ def build_area(geometry: Geometry | None, **kwargs) -> BaseGeometry | None:
     """
     ...
 @overload
-def build_area(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
-    """
-    Create an areal geometry formed by the constituent linework of given geometry.
+def build_area(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray: ...
 
-    Equivalent of the PostGIS ST_BuildArea() function.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries for which to build an area.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import GeometryCollection, Polygon
-    >>> polygon1 = Polygon([(0, 0), (3, 0), (3, 3), (0, 3), (0, 0)])
-    >>> polygon2 = Polygon([(1, 1), (1, 2), (2, 2), (1, 1)])
-    >>> shapely.build_area(GeometryCollection([polygon1, polygon2]))
-    <POLYGON ((0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 2 2, 1 2, 1 1))>
-    """
-    ...
+# make_valid with `method="linework"` only accepts `keep_collapsed=True`
 @overload
-def make_valid(geometry: Geometry, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> BaseGeometry:
-    """
-    Repair invalid geometries.
-
-    Two ``methods`` are available:
-
-    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
-      combines all rings into a set of noded lines and then extracts valid polygons from
-      that linework. An alternating even-odd strategy is used to assign areas as
-      interior or exterior. A disadvantage is that for some relatively simple invalid
-      geometries this produces rather complex results.
-    * the 'structure' algorithm tries to reason from the structure of the input to find
-      the 'correct' repair: exterior rings bound area, interior holes exclude area.
-      It first makes all rings valid, then shells are merged and holes are subtracted
-      from the shells to generate valid result. It assumes that holes and shells are
-      correctly categorized in the input geometry.
-
-    Example:
-
-    .. plot:: code/make_valid_methods.py
-
-    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
-    this example this is the case when the 'linework' ``method`` is used. LineStrings in
-    the result are drawn in red.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to repair.
-    method : {'linework', 'structure'}, default 'linework'
-        Algorithm to use when repairing geometry. 'structure'
-        requires GEOS >= 3.10.
-
-        .. versionadded:: 2.1.0
-    keep_collapsed : bool, default True
-        For the 'structure' method, True will keep components that have collapsed into a
-        lower dimensionality. For example, a ring collapsing to a line, or a line
-        collapsing to a point. Must be True for the 'linework' method.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> shapely.is_valid(polygon)
-    False
-    >>> shapely.make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
-    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
-    <POLYGON EMPTY>
-    """
-    ...
+def make_valid(
+    geometry: Geometry, *, method: Literal["linework"] = "linework", keep_collapsed: Literal[True] = True, **kwargs
+) -> BaseGeometry: ...
 @overload
-def make_valid(geometry: None, *, method: _Method = "linework", keep_collapsed: bool = True, **kwargs) -> None:
-    """
-    Repair invalid geometries.
-
-    Two ``methods`` are available:
-
-    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
-      combines all rings into a set of noded lines and then extracts valid polygons from
-      that linework. An alternating even-odd strategy is used to assign areas as
-      interior or exterior. A disadvantage is that for some relatively simple invalid
-      geometries this produces rather complex results.
-    * the 'structure' algorithm tries to reason from the structure of the input to find
-      the 'correct' repair: exterior rings bound area, interior holes exclude area.
-      It first makes all rings valid, then shells are merged and holes are subtracted
-      from the shells to generate valid result. It assumes that holes and shells are
-      correctly categorized in the input geometry.
-
-    Example:
-
-    .. plot:: code/make_valid_methods.py
-
-    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
-    this example this is the case when the 'linework' ``method`` is used. LineStrings in
-    the result are drawn in red.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to repair.
-    method : {'linework', 'structure'}, default 'linework'
-        Algorithm to use when repairing geometry. 'structure'
-        requires GEOS >= 3.10.
-
-        .. versionadded:: 2.1.0
-    keep_collapsed : bool, default True
-        For the 'structure' method, True will keep components that have collapsed into a
-        lower dimensionality. For example, a ring collapsing to a line, or a line
-        collapsing to a point. Must be True for the 'linework' method.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> shapely.is_valid(polygon)
-    False
-    >>> shapely.make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
-    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
-    <POLYGON EMPTY>
-    """
-    ...
+def make_valid(
+    geometry: None, *, method: Literal["linework"] = "linework", keep_collapsed: Literal[True] = True, **kwargs
+) -> None: ...
+@overload
+def make_valid(
+    geometry: Geometry | None, *, method: Literal["linework"] = "linework", keep_collapsed: Literal[True] = True, **kwargs
+) -> BaseGeometry | None: ...
+@overload
+def make_valid(
+    geometry: OptGeoArrayLikeSeq, *, method: Literal["linework"] = "linework", keep_collapsed: Literal[True] = True, **kwargs
+) -> GeoArray: ...
+@overload
+def make_valid(geometry: Geometry, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs) -> BaseGeometry: ...
+@overload
+def make_valid(geometry: None, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs) -> None: ...
 @overload
 def make_valid(
     geometry: Geometry | None, *, method: Literal["structure"], keep_collapsed: bool = True, **kwargs
-) -> BaseGeometry | None:
-    """
-    Repair invalid geometries.
-
-    Two ``methods`` are available:
-
-    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
-      combines all rings into a set of noded lines and then extracts valid polygons from
-      that linework. An alternating even-odd strategy is used to assign areas as
-      interior or exterior. A disadvantage is that for some relatively simple invalid
-      geometries this produces rather complex results.
-    * the 'structure' algorithm tries to reason from the structure of the input to find
-      the 'correct' repair: exterior rings bound area, interior holes exclude area.
-      It first makes all rings valid, then shells are merged and holes are subtracted
-      from the shells to generate valid result. It assumes that holes and shells are
-      correctly categorized in the input geometry.
-
-    Example:
-
-    .. plot:: code/make_valid_methods.py
-
-    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
-    this example this is the case when the 'linework' ``method`` is used. LineStrings in
-    the result are drawn in red.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to repair.
-    method : {'linework', 'structure'}, default 'linework'
-        Algorithm to use when repairing geometry. 'structure'
-        requires GEOS >= 3.10.
-
-        .. versionadded:: 2.1.0
-    keep_collapsed : bool, default True
-        For the 'structure' method, True will keep components that have collapsed into a
-        lower dimensionality. For example, a ring collapsing to a line, or a line
-        collapsing to a point. Must be True for the 'linework' method.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> shapely.is_valid(polygon)
-    False
-    >>> shapely.make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
-    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
-    <POLYGON EMPTY>
-    """
-    ...
-@overload
-def make_valid(
-    geometry: Geometry | None, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
 ) -> BaseGeometry | None:
     """
     Repair invalid geometries.
@@ -2911,100 +2729,7 @@ def make_valid(
     """
     ...
 @overload
-def make_valid(
-    geometry: OptGeoArrayLikeSeq, *, method: Literal["linework"], keep_collapsed: Literal[True], **kwargs
-) -> GeoArray:
-    """
-    Repair invalid geometries.
-
-    Two ``methods`` are available:
-
-    * the 'linework' algorithm tries to preserve every edge and vertex in the input. It
-      combines all rings into a set of noded lines and then extracts valid polygons from
-      that linework. An alternating even-odd strategy is used to assign areas as
-      interior or exterior. A disadvantage is that for some relatively simple invalid
-      geometries this produces rather complex results.
-    * the 'structure' algorithm tries to reason from the structure of the input to find
-      the 'correct' repair: exterior rings bound area, interior holes exclude area.
-      It first makes all rings valid, then shells are merged and holes are subtracted
-      from the shells to generate valid result. It assumes that holes and shells are
-      correctly categorized in the input geometry.
-
-    Example:
-
-    .. plot:: code/make_valid_methods.py
-
-    When using ``make_valid`` on a Polygon, the result can be a GeometryCollection. For
-    this example this is the case when the 'linework' ``method`` is used. LineStrings in
-    the result are drawn in red.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to repair.
-    method : {'linework', 'structure'}, default 'linework'
-        Algorithm to use when repairing geometry. 'structure'
-        requires GEOS >= 3.10.
-
-        .. versionadded:: 2.1.0
-    keep_collapsed : bool, default True
-        For the 'structure' method, True will keep components that have collapsed into a
-        lower dimensionality. For example, a ring collapsing to a line, or a line
-        collapsing to a point. Must be True for the 'linework' method.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon = Polygon([(0, 0), (1, 1), (1, 2), (1, 1), (0, 0)])
-    >>> shapely.is_valid(polygon)
-    False
-    >>> shapely.make_valid(polygon)
-    <MULTILINESTRING ((0 0, 1 1), (1 1, 1 2))>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=True)
-    <LINESTRING (0 0, 1 1, 1 2, 1 1, 0 0)>
-    >>> shapely.make_valid(polygon, method="structure", keep_collapsed=False)
-    <POLYGON EMPTY>
-    """
-    ...
-@overload
-def minimum_clearance_line(geometry: Point, **kwargs) -> Point:
-    """
-    Return a LineString whose endpoints define the minimum clearance.
-
-    A geometry's "minimum clearance" is the smallest distance by which a vertex
-    of the geometry could be moved to produce an invalid geometry.
-
-    If the geometry has no minimum clearance, an empty LineString will be
-    returned.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to determine the minimum clearance line for.
-    **kwargs
-        For other keyword-only arguments, see the
-        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> poly = Polygon([(0, 0), (10, 0), (10, 10), (5, 5), (0, 10), (0, 0)])
-    >>> shapely.minimum_clearance_line(poly)
-    <LINESTRING (5 5, 5 0)>
-
-    See Also
-    --------
-    minimum_clearance
-    """
-    ...
+def minimum_clearance_line(geometry: Point, **kwargs) -> Point: ...
 @overload
 def minimum_clearance_line(geometry: LineString | Polygon | BaseMultipartGeometry, **kwargs) -> Polygon:
     """
