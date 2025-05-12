@@ -126,15 +126,42 @@ class PurePath(PathLike[str]):
     def __ge__(self, other: PurePath) -> bool: ...
     def __truediv__(self, key: StrPath) -> Self: ...
     def __rtruediv__(self, key: StrPath) -> Self: ...
-    def __bytes__(self) -> bytes: ...
-    def as_posix(self) -> str: ...
-    def as_uri(self) -> str: ...
-    def is_absolute(self) -> bool: ...
-    def is_reserved(self) -> bool: ...
+    def __bytes__(self) -> bytes:
+        """
+        Return the bytes representation of the path.  This is only
+        recommended to use under Unix.
+        """
+        ...
+    def as_posix(self) -> str:
+        """
+        Return the string representation of the path with forward (/)
+        slashes.
+        """
+        ...
+    def as_uri(self) -> str:
+        """Return the path as a URI."""
+        ...
+    def is_absolute(self) -> bool:
+        """
+        True if the path is absolute (has both a root and, if applicable,
+        a drive).
+        """
+        ...
+    def is_reserved(self) -> bool:
+        """
+        Return True if the path contains one of the special names reserved
+        by the system, if any.
+        """
+        ...
     if sys.version_info >= (3, 14):
         def is_relative_to(self, other: StrPath) -> bool: ...
     elif sys.version_info >= (3, 12):
-        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool: ...
+        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool:
+            """
+            Return True if the path is relative to another path or False.
+        
+            """
+            ...
     else:
         def is_relative_to(self, *other: StrPath) -> bool:
             """
@@ -160,9 +187,11 @@ class PurePath(PathLike[str]):
     if sys.version_info >= (3, 14):
         def relative_to(self, other: StrPath, *, walk_up: bool = False) -> Self: ...
     elif sys.version_info >= (3, 12):
-        def relative_to(self, other: StrPath, /, *_deprecated: StrPath, walk_up: bool = False) -> Self: ...
-    else:
-        def relative_to(self, *other: StrPath) -> Self: ...
+        def relative_to(self, other: StrPath, /, *_deprecated: StrPath, walk_up: bool = False) -> Self:
+            """
+            Return the relative path to another path identified by the passed
+            arguments.  If the operation is not possible (because this is not
+            related to the other path), raise ValueError.
 
             The *walk_up* parameter controls whether `..` may be used to resolve
             the path.
@@ -562,9 +591,63 @@ class Path(PurePath):
             """
             Rename this path to the target path.
 
-    def resolve(self, strict: bool = False) -> Self: ...
-    def rmdir(self) -> None: ...
-    def symlink_to(self, target: StrOrBytesPath, target_is_directory: bool = False) -> None: ...
+            The target path may be absolute or relative. Relative paths are
+            interpreted relative to the current working directory, *not* the
+            directory of the Path object.
+
+            Returns the new Path instance pointing to the target path.
+            """
+            ...
+        def replace(self, target: StrPath) -> Self:
+            """
+            Rename this path to the target path, overwriting if that path exists.
+
+            The target path may be absolute or relative. Relative paths are
+            interpreted relative to the current working directory, *not* the
+            directory of the Path object.
+
+            Returns the new Path instance pointing to the target path.
+            """
+            ...
+    else:
+        def rename(self, target: str | PurePath) -> Self:
+            """
+            Rename this path to the target path.
+
+            The target path may be absolute or relative. Relative paths are
+            interpreted relative to the current working directory, *not* the
+            directory of the Path object.
+
+            Returns the new Path instance pointing to the target path.
+            """
+            ...
+        def replace(self, target: str | PurePath) -> Self:
+            """
+            Rename this path to the target path, overwriting if that path exists.
+
+            The target path may be absolute or relative. Relative paths are
+            interpreted relative to the current working directory, *not* the
+            directory of the Path object.
+
+            Returns the new Path instance pointing to the target path.
+            """
+            ...
+
+    def resolve(self, strict: bool = False) -> Self:
+        """
+        Make the path absolute, resolving all symlinks on the way and also
+        normalizing it.
+        """
+        ...
+    def rmdir(self) -> None:
+        """Remove this directory.  The directory must be empty."""
+        ...
+    def symlink_to(self, target: StrOrBytesPath, target_is_directory: bool = False) -> None:
+        """
+        Make this path a symlink pointing to the target path.
+        Note the order of arguments (link, target) is the reverse of os.symlink.
+        """
+        ...
     if sys.version_info >= (3, 10):
         def hardlink_to(self, target: StrOrBytesPath) -> None:
             """
@@ -660,8 +743,20 @@ class Path(PurePath):
             """Walk the directory tree from this directory, similar to os.walk()."""
             ...
 
-class PosixPath(Path, PurePosixPath): ...
-class WindowsPath(Path, PureWindowsPath): ...
+class PosixPath(Path, PurePosixPath):
+    """
+    Path subclass for non-Windows systems.
+
+    On a POSIX system, instantiating a Path should return this object.
+    """
+    ...
+class WindowsPath(Path, PureWindowsPath):
+    """
+    Path subclass for Windows systems.
+
+    On a Windows system, instantiating a Path should return this object.
+    """
+    ...
 
 if sys.version_info >= (3, 13):
     class UnsupportedOperation(NotImplementedError):

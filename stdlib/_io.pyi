@@ -419,6 +419,7 @@ class _BufferedReaderStream(Protocol):
 _BufferedReaderStreamT = TypeVar("_BufferedReaderStreamT", bound=_BufferedReaderStream, default=_BufferedReaderStream)
 
 class BufferedReader(BufferedIOBase, _BufferedIOBase, BinaryIO, Generic[_BufferedReaderStreamT]):  # type: ignore[misc]  # incompatible definitions of methods in the base classes
+    """Create a new buffered reader using the given readable raw IO object."""
     raw: _BufferedReaderStreamT
     def __init__(self, raw: _BufferedReaderStreamT, buffer_size: int = 8192) -> None: ...
     def peek(self, size: int = 0, /) -> bytes: ...
@@ -456,6 +457,17 @@ class BufferedRandom(BufferedIOBase, _BufferedIOBase, BinaryIO):  # type: ignore
     def truncate(self, pos: int | None = None, /) -> int: ...
 
 class BufferedRWPair(BufferedIOBase, _BufferedIOBase, Generic[_BufferedReaderStreamT]):
+    """
+    A buffered reader and writer object together.
+
+    A buffered reader object and buffered writer object put together to
+    form a sequential IO object that can read and write. This is typically
+    used with a socket or two-way pipe.
+
+    reader and writer are RawIOBase objects that are readable and
+    writeable respectively. If the buffer_size is omitted it defaults to
+    DEFAULT_BUFFER_SIZE.
+    """
     def __init__(self, reader: _BufferedReaderStreamT, writer: RawIOBase, buffer_size: int = 8192, /) -> None: ...
     def peek(self, size: int = 0, /) -> bytes: ...
 

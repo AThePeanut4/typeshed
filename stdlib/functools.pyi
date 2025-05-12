@@ -39,10 +39,32 @@ if sys.version_info >= (3, 14):
 
 else:
     @overload
-    def reduce(function: Callable[[_T, _S], _T], iterable: Iterable[_S], initial: _T, /) -> _T: ...
+    def reduce(function: Callable[[_T, _S], _T], iterable: Iterable[_S], initial: _T, /) -> _T:
+        """
+        reduce(function, iterable[, initial], /) -> value
+
+        Apply a function of two arguments cumulatively to the items of a sequence
+        or iterable, from left to right, so as to reduce the iterable to a single
+        value.  For example, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) calculates
+        ((((1+2)+3)+4)+5).  If initial is present, it is placed before the items
+        of the iterable in the calculation, and serves as a default when the
+        iterable is empty.
+        """
+        ...
 
 @overload
-def reduce(function: Callable[[_T, _T], _T], iterable: Iterable[_T], /) -> _T: ...
+def reduce(function: Callable[[_T, _T], _T], iterable: Iterable[_T], /) -> _T:
+    """
+    reduce(function, iterable[, initial], /) -> value
+
+    Apply a function of two arguments cumulatively to the items of a sequence
+    or iterable, from left to right, so as to reduce the iterable to a single
+    value.  For example, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) calculates
+    ((((1+2)+3)+4)+5).  If initial is present, it is placed before the items
+    of the iterable in the calculation, and serves as a default when the
+    iterable is empty.
+    """
+    ...
 
 class _CacheInfo(NamedTuple):
     """CacheInfo(hits, misses, maxsize, currsize)"""
@@ -424,7 +446,18 @@ def _make_key(
     tuple: type = ...,
     type: Any = ...,
     len: Callable[[Sized], int] = ...,
-) -> Hashable: ...
+) -> Hashable:
+    """
+    Make a cache key from optionally typed positional and keyword arguments
+
+    The key is constructed in a way that is flat as possible rather than
+    as a nested structure that would take more memory.
+
+    If there is only a single argument and its data type is known to cache
+    its hash value, then that argument is returned without a wrapper.  This
+    saves space and improves lookup speed.
+    """
+    ...
 
 if sys.version_info >= (3, 14):
     @final

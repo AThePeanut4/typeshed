@@ -22,6 +22,8 @@ Cooperative ``subprocess`` module.
    standard library or the source code.
 
 .. _is not defined: http://www.linuxprogrammingblog.com/all-about-linux-signals?page=11
+
+Be sure to see important notes in :func:`gevent.monkey.patch_subprocess`.
 """
 
 from subprocess import *

@@ -66,7 +66,8 @@ class Config:
     There is one instance of this object at ``gevent.config``. If you
     are going to make changes in code, instead of using the documented
     environment variables, you need to make the changes before using
-    any parts of gevent that might need those settings. For example::
+    any parts of gevent that might need those settings (unless otherwise
+    documented). For example::
 
         >>> from gevent import config
         >>> config.fileobject = 'thread'
@@ -350,6 +351,26 @@ class MaxBlockingTime(FloatSettingMixin, Setting[float]):
     desc: str
 
 class PrintBlockingReports(BoolSettingMixin, Setting[bool]):
+    """
+    If `monitor_thread` is enabled, and gevent detects a hub blocked
+    for more than `max_blocking_time`, should gevent print a detailed
+    report about the block?
+
+    The report is generated and notifications are broadcast whether
+    or not the report is printed.
+
+    .. versionadded:: 25.4.1
+
+    This is a boolean value.
+
+    In the environment variable, it may be given as ``1``, ``true``,
+    ``on`` or ``yes`` for `True`, or ``0``, ``false``, ``off``, or
+    ``no`` for `False`.
+
+    The default value is `True`
+
+    The environment variable ``GEVENT_MONITOR_PRINT_BLOCKING_REPORTS`` can be used to control this.
+    """
     default: bool
     desc: str
 

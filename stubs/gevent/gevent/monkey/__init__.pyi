@@ -170,11 +170,18 @@ def patch_queue() -> None:
     """
     Patch objects in :mod:`queue`.
 
-
-    Currently, this just replaces :class:`queue.SimpleQueue` (implemented
-    in C) with its Python counterpart, but the details may change at any time.
+    This replaces ``SimpleQueue``, ``PriorityQueue``, ``Queue``
+    and ``LifoQueue`` with their gevent equivalents.
 
     .. versionadded:: 1.3.5
+
+    .. versionchanged:: 25.4.1
+       In addition to ``SimpleQueue``, now also patches
+       ``Queue``, ``PriorityQueue`` and ``LifoQueue``.`
+
+       Note that only documented attributes are the same between
+       gevent and the standard library. Internal implementation details
+       are very different.
     """
     ...
 def patch_time() -> None:
@@ -307,6 +314,15 @@ def patch_subprocess() -> None:
     .. note::
        On Windows under Python 3, the API support may not completely match
        the standard library.
+
+    .. note::
+       On macOS, this changes the :mod:`multiprocessing` start method to 'fork'.
+       It defaults to 'spawn'.
+
+    .. note::
+       On Python 3.14+ and platforms other than macOS and Windows, this
+       changes the :mod:`multiprocessing` start method to 'fork'.
+       It defaults to 'forkserver'.
     """
     ...
 def patch_sys(stdin: bool = True, stdout: bool = True, stderr: bool = True) -> None:

@@ -133,12 +133,81 @@ class LinkifyFilter(Filter):
         parse_email: bool = False,
         url_re: Pattern[str] = ...,
         email_re: Pattern[str] = ...,
-    ) -> None: ...
-    def apply_callbacks(self, attrs: _HTMLAttrs, is_new: bool) -> _HTMLAttrs | None: ...
-    def extract_character_data(self, token_list: Iterable[_Token]) -> str: ...
-    def handle_email_addresses(self, src_iter: Iterable[_Token]) -> Iterator[_Token]: ...
-    def strip_non_url_bits(self, fragment: str) -> tuple[str, str, str]: ...
-    def handle_links(self, src_iter: Iterable[_Token]) -> Iterator[_Token]: ...
-    def handle_a_tag(self, token_buffer: Sequence[_Token]) -> Iterator[_Token]: ...
-    def extract_entities(self, token: _Token) -> Iterator[_Token]: ...
+    ) -> None:
+        """
+        Creates a LinkifyFilter instance
+
+        :arg source: stream as an html5lib TreeWalker
+
+        :arg list callbacks: list of callbacks to run when adjusting tag attributes;
+            defaults to ``bleach.linkifier.DEFAULT_CALLBACKS``
+
+        :arg set skip_tags: set of tags that you don't want to linkify the
+            contents of; for example, you could set this to ``{'pre'}`` to skip
+            linkifying contents of ``pre`` tags
+
+        :arg bool parse_email: whether or not to linkify email addresses
+
+        :arg url_re: url matching regex
+
+        :arg email_re: email matching regex
+        """
+        ...
+    def apply_callbacks(self, attrs: _HTMLAttrs, is_new: bool) -> _HTMLAttrs | None:
+        """
+        Given an attrs dict and an is_new bool, runs through callbacks
+
+        Callbacks can return an adjusted attrs dict or ``None``. In the case of
+        ``None``, we stop going through callbacks and return that and the link
+        gets dropped.
+
+        :arg dict attrs: map of ``(namespace, name)`` -> ``value``
+
+        :arg bool is_new: whether or not this link was added by linkify
+
+        :returns: adjusted attrs dict or ``None``
+        """
+        ...
+    def extract_character_data(self, token_list: Iterable[_Token]) -> str:
+        """Extracts and squashes character sequences in a token stream"""
+        ...
+    def handle_email_addresses(self, src_iter: Iterable[_Token]) -> Iterator[_Token]:
+        """Handle email addresses in character tokens"""
+        ...
+    def strip_non_url_bits(self, fragment: str) -> tuple[str, str, str]:
+        """
+        Strips non-url bits from the url
+
+        This accounts for over-eager matching by the regex.
+        """
+        ...
+    def handle_links(self, src_iter: Iterable[_Token]) -> Iterator[_Token]:
+        """Handle links in character tokens"""
+        ...
+    def handle_a_tag(self, token_buffer: Sequence[_Token]) -> Iterator[_Token]:
+        """
+        Handle the "a" tag
+
+        This could adjust the link or drop it altogether depending on what the
+        callbacks return.
+
+        This yields the new set of tokens.
+        """
+        ...
+    def extract_entities(self, token: _Token) -> Iterator[_Token]:
+        """
+        Handles Characters tokens with entities
+
+        Our overridden tokenizer doesn't do anything with entities. However,
+        that means that the serializer will convert all ``&`` in Characters
+        tokens to ``&amp;``.
+
+        Since we don't want that, we extract entities here and convert them to
+        Entity tokens so the serializer will let them be.
+
+        :arg token: the Characters token to work on
+
+        :returns: generator of tokens
+        """
+        ...
     def __iter__(self) -> Iterator[_Token]: ...

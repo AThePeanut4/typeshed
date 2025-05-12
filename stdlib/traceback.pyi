@@ -147,13 +147,74 @@ else:
         """
         Format a stack trace and the exception information.
 
-def print_exc(limit: int | None = None, file: SupportsWrite[str] | None = None, chain: bool = True) -> None: ...
-def print_last(limit: int | None = None, file: SupportsWrite[str] | None = None, chain: bool = True) -> None: ...
-def print_stack(f: FrameType | None = None, limit: int | None = None, file: SupportsWrite[str] | None = None) -> None: ...
-def extract_tb(tb: TracebackType | None, limit: int | None = None) -> StackSummary: ...
-def extract_stack(f: FrameType | None = None, limit: int | None = None) -> StackSummary: ...
-def format_list(extracted_list: Iterable[FrameSummary | _FrameSummaryTuple]) -> list[str]: ...
-def print_list(extracted_list: Iterable[FrameSummary | _FrameSummaryTuple], file: SupportsWrite[str] | None = None) -> None: ...
+        The arguments have the same meaning as the corresponding arguments
+        to print_exception().  The return value is a list of strings, each
+        ending in a newline and some containing internal newlines.  When
+        these lines are concatenated and printed, exactly the same text is
+        printed as does print_exception().
+        """
+        ...
+
+def print_exc(limit: int | None = None, file: SupportsWrite[str] | None = None, chain: bool = True) -> None:
+    """Shorthand for 'print_exception(sys.exception(), limit, file, chain)'."""
+    ...
+def print_last(limit: int | None = None, file: SupportsWrite[str] | None = None, chain: bool = True) -> None:
+    """This is a shorthand for 'print_exception(sys.last_exc, limit, file, chain)'."""
+    ...
+def print_stack(f: FrameType | None = None, limit: int | None = None, file: SupportsWrite[str] | None = None) -> None:
+    """
+    Print a stack trace from its invocation point.
+
+    The optional 'f' argument can be used to specify an alternate
+    stack frame at which to start. The optional 'limit' and 'file'
+    arguments have the same meaning as for print_exception().
+    """
+    ...
+def extract_tb(tb: TracebackType | None, limit: int | None = None) -> StackSummary:
+    """
+    Return a StackSummary object representing a list of
+    pre-processed entries from traceback.
+
+    This is useful for alternate formatting of stack traces.  If
+    'limit' is omitted or None, all entries are extracted.  A
+    pre-processed stack trace entry is a FrameSummary object
+    containing attributes filename, lineno, name, and line
+    representing the information that is usually printed for a stack
+    trace.  The line is a string with leading and trailing
+    whitespace stripped; if the source is not available it is None.
+    """
+    ...
+def extract_stack(f: FrameType | None = None, limit: int | None = None) -> StackSummary:
+    """
+    Extract the raw traceback from the current stack frame.
+
+    The return value has the same format as for extract_tb().  The
+    optional 'f' and 'limit' arguments have the same meaning as for
+    print_stack().  Each item in the list is a quadruple (filename,
+    line number, function name, text), and the entries are in order
+    from oldest to newest stack frame.
+    """
+    ...
+def format_list(extracted_list: Iterable[FrameSummary | _FrameSummaryTuple]) -> list[str]:
+    """
+    Format a list of tuples or FrameSummary objects for printing.
+
+    Given a list of tuples or FrameSummary objects as returned by
+    extract_tb() or extract_stack(), return a list of strings ready
+    for printing.
+
+    Each string in the resulting list corresponds to the item with the
+    same index in the argument list.  Each string ends in a newline;
+    the strings may contain internal newlines as well, for those items
+    whose source text line is not None.
+    """
+    ...
+def print_list(extracted_list: Iterable[FrameSummary | _FrameSummaryTuple], file: SupportsWrite[str] | None = None) -> None:
+    """
+    Print the list of tuples as returned by extract_tb() or
+    extract_stack() as a formatted stack trace to the given file.
+    """
+    ...
 
 if sys.version_info >= (3, 13):
     @overload

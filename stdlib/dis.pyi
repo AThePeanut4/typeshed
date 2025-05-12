@@ -334,7 +334,9 @@ elif sys.version_info >= (3, 13):
         show_caches: bool = False,
         adaptive: bool = False,
         show_offsets: bool = False,
-    ) -> None: ...
+    ) -> None:
+        """Disassemble a traceback (default: last traceback)."""
+        ...
 
 elif sys.version_info >= (3, 11):
     # 3.11 added `show_caches` and `adaptive`
@@ -363,28 +365,16 @@ elif sys.version_info >= (3, 11):
         ...
     def distb(
         tb: types.TracebackType | None = None, *, file: IO[str] | None = None, show_caches: bool = False, adaptive: bool = False
-    ) -> None: ...
+    ) -> None:
+        """Disassemble a traceback (default: last traceback)."""
+        ...
 
 else:
     def dis(
         x: _HaveCodeType | str | bytes | bytearray | None = None, *, file: IO[str] | None = None, depth: int | None = None
-    ) -> None: ...
-    def disassemble(co: _HaveCodeType, lasti: int = -1, *, file: IO[str] | None = None) -> None: ...
-    def distb(tb: types.TracebackType | None = None, *, file: IO[str] | None = None) -> None: ...
-
-if sys.version_info >= (3, 13):
-    # 3.13 made `show_cache` `None` by default
-    def get_instructions(
-        x: _HaveCodeType, *, first_line: int | None = None, show_caches: bool | None = None, adaptive: bool = False
-    ) -> Iterator[Instruction]: ...
-
-elif sys.version_info >= (3, 11):
-    def get_instructions(
-        x: _HaveCodeType, *, first_line: int | None = None, show_caches: bool = False, adaptive: bool = False
-    ) -> Iterator[Instruction]: ...
-
-else:
-    def get_instructions(x: _HaveCodeType, *, first_line: int | None = None) -> Iterator[Instruction]: ...
+    ) -> None:
+        """
+        Disassemble classes, methods, functions, and other compiled objects.
 
         With no argument, disassemble the last traceback.
 
@@ -399,6 +389,43 @@ else:
     def distb(tb: types.TracebackType | None = None, *, file: IO[str] | None = None) -> None:
         """Disassemble a traceback (default: last traceback)."""
         ...
+
+if sys.version_info >= (3, 13):
+    # 3.13 made `show_cache` `None` by default
+    def get_instructions(
+        x: _HaveCodeType, *, first_line: int | None = None, show_caches: bool | None = None, adaptive: bool = False
+    ) -> Iterator[Instruction]:
+        """
+        Iterator for the opcodes in methods, functions or code
+
+        Generates a series of Instruction named tuples giving the details of
+        each operations in the supplied code.
+
+        If *first_line* is not None, it indicates the line number that should
+        be reported for the first source line in the disassembled code.
+        Otherwise, the source line information (if any) is taken directly from
+        the disassembled code object.
+        """
+        ...
+
+elif sys.version_info >= (3, 11):
+    def get_instructions(
+        x: _HaveCodeType, *, first_line: int | None = None, show_caches: bool = False, adaptive: bool = False
+    ) -> Iterator[Instruction]:
+        """
+        Iterator for the opcodes in methods, functions or code
+
+        Generates a series of Instruction named tuples giving the details of
+        each operations in the supplied code.
+
+        If *first_line* is not None, it indicates the line number that should
+        be reported for the first source line in the disassembled code.
+        Otherwise, the source line information (if any) is taken directly from
+        the disassembled code object.
+        """
+        ...
+
+else:
     def get_instructions(x: _HaveCodeType, *, first_line: int | None = None) -> Iterator[Instruction]:
         """
         Iterator for the opcodes in methods, functions or code

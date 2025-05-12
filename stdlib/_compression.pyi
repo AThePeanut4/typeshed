@@ -1,5 +1,8 @@
 # _compression is replaced by compression._common._streams on Python 3.14+ (PEP-784)
 
+
+"""Internal classes used by the gzip, lzma and bz2 modules"""
+
 from _typeshed import Incomplete, WriteableBuffer
 from collections.abc import Callable
 from io import DEFAULT_BUFFER_SIZE, BufferedIOBase, RawIOBase
