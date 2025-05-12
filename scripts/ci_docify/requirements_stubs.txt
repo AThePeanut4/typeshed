@@ -16,7 +16,7 @@ atheris==2.3.*
 workalendar==17.0.*
 Flask-SocketIO==5.5.*
 binaryornot==0.4.*
-gevent==24.11.*
+gevent==25.4.*
 slumber==0.7.*
 mock==5.2.*
 lupa==2.4.*
@@ -182,7 +182,7 @@ Pygments==2.19.*
 uWSGI==2.0.*
 s2clientprotocol==5.*
 dirhash==0.5.*
-peewee==3.18.0
+peewee==3.18.1
 httplib2==0.22.*
 tqdm[slack,telegram]==4.67.*
 protobuf~=6.30.2
