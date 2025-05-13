@@ -33,6 +33,21 @@ class _SupportsDecodeToPayload(Protocol):
     def decode(self, encoding: str, errors: str, /) -> _PayloadType | _MultipartPayloadType: ...
 
 class Message(Generic[_HeaderT_co, _HeaderParamT_contra]):
+    """
+    Basic message object.
+
+    A message object is defined as something that has a bunch of RFC 2822
+    headers and a payload.  It may optionally have an envelope header
+    (a.k.a. Unix-From or From_ header).  If the message is a container (i.e. a
+    multipart or a message/rfc822), then the payload is a list of Message
+    objects, otherwise it is a string.
+
+    Message objects implement part of the `mapping' interface, which assumes
+    there is exactly one occurrence of the header per message.  Some headers
+    do in fact appear multiple times (e.g. Received) and for those headers,
+    you must use the explicit API to set or get all the headers.  Not all of
+    the mapping methods are implemented.
+    """
     # The policy attributes and arguments in this class and its subclasses
     # would ideally use Policy[Self], but this is not possible.
     policy: Policy[Any]  # undocumented
@@ -229,27 +244,184 @@ class Message(Generic[_HeaderT_co, _HeaderParamT_contra]):
     # This is important for protocols using __getitem__, like SupportsKeysAndGetItem
     # Morally, the return type should be `AnyOf[_HeaderType, None]`,
     # so using "the Any trick" instead.
-    def __getitem__(self, name: str) -> _HeaderT_co | MaybeNone: ...
-    def __setitem__(self, name: str, val: _HeaderParamT_contra) -> None: ...
-    def __delitem__(self, name: str) -> None: ...
-    def keys(self) -> list[str]: ...
-    def values(self) -> list[_HeaderT_co]: ...
-    def items(self) -> list[tuple[str, _HeaderT_co]]: ...
+    def __getitem__(self, name: str) -> _HeaderT_co | MaybeNone:
+        """
+        Get a header value.
+
+        Return None if the header is missing instead of raising an exception.
+
+        Note that if the header appeared multiple times, exactly which
+        occurrence gets returned is undefined.  Use get_all() to get all
+        the values matching a header field name.
+        """
+        ...
+    def __setitem__(self, name: str, val: _HeaderParamT_contra) -> None:
+        """
+        Set the value of a header.
+
+        Note: this does not overwrite an existing header with the same field
+        name.  Use __delitem__() first to delete any existing headers.
+        """
+        ...
+    def __delitem__(self, name: str) -> None:
+        """
+        Delete all occurrences of a header, if present.
+
+        Does not raise an exception if the header is missing.
+        """
+        ...
+    def keys(self) -> list[str]:
+        """
+        Return a list of all the message's header field names.
+
+        These will be sorted in the order they appeared in the original
+        message, or were added to the message, and may contain duplicates.
+        Any fields deleted and re-inserted are always appended to the header
+        list.
+        """
+        ...
+    def values(self) -> list[_HeaderT_co]:
+        """
+        Return a list of all the message's header values.
+
+        These will be sorted in the order they appeared in the original
+        message, or were added to the message, and may contain duplicates.
+        Any fields deleted and re-inserted are always appended to the header
+        list.
+        """
+        ...
+    def items(self) -> list[tuple[str, _HeaderT_co]]:
+        """
+        Get all the message's header fields and values.
+
+        These will be sorted in the order they appeared in the original
+        message, or were added to the message, and may contain duplicates.
+        Any fields deleted and re-inserted are always appended to the header
+        list.
+        """
+        ...
     @overload
-    def get(self, name: str, failobj: None = None) -> _HeaderT_co | None: ...
+    def get(self, name: str, failobj: None = None) -> _HeaderT_co | None:
+        """
+        Get a header value.
+
+        Like __getitem__() but return failobj instead of None when the field
+        is missing.
+        """
+        ...
     @overload
-    def get(self, name: str, failobj: _T) -> _HeaderT_co | _T: ...
+    def get(self, name: str, failobj: _T) -> _HeaderT_co | _T:
+        """
+        Get a header value.
+
+        Like __getitem__() but return failobj instead of None when the field
+        is missing.
+        """
+        ...
     @overload
-    def get_all(self, name: str, failobj: None = None) -> list[_HeaderT_co] | None: ...
+    def get_all(self, name: str, failobj: None = None) -> list[_HeaderT_co] | None:
+        """
+        Return a list of all the values for the named field.
+
+        These will be sorted in the order they appeared in the original
+        message, and may contain duplicates.  Any fields deleted and
+        re-inserted are always appended to the header list.
+
+        If no such fields exist, failobj is returned (defaults to None).
+        """
+        ...
     @overload
-    def get_all(self, name: str, failobj: _T) -> list[_HeaderT_co] | _T: ...
-    def add_header(self, _name: str, _value: str, **_params: _ParamsType) -> None: ...
-    def replace_header(self, _name: str, _value: _HeaderParamT_contra) -> None: ...
-    def get_content_type(self) -> str: ...
-    def get_content_maintype(self) -> str: ...
-    def get_content_subtype(self) -> str: ...
-    def get_default_type(self) -> str: ...
-    def set_default_type(self, ctype: str) -> None: ...
+    def get_all(self, name: str, failobj: _T) -> list[_HeaderT_co] | _T:
+        """
+        Return a list of all the values for the named field.
+
+        These will be sorted in the order they appeared in the original
+        message, and may contain duplicates.  Any fields deleted and
+        re-inserted are always appended to the header list.
+
+        If no such fields exist, failobj is returned (defaults to None).
+        """
+        ...
+    def add_header(self, _name: str, _value: str, **_params: _ParamsType) -> None:
+        """
+        Extended header setting.
+
+        name is the header field to add.  keyword arguments can be used to set
+        additional parameters for the header field, with underscores converted
+        to dashes.  Normally the parameter will be added as key="value" unless
+        value is None, in which case only the key will be added.  If a
+        parameter value contains non-ASCII characters it can be specified as a
+        three-tuple of (charset, language, value), in which case it will be
+        encoded according to RFC2231 rules.  Otherwise it will be encoded using
+        the utf-8 charset and a language of ''.
+
+        Examples:
+
+        msg.add_header('content-disposition', 'attachment', filename='bud.gif')
+        msg.add_header('content-disposition', 'attachment',
+                       filename=('utf-8', '', Fußballer.ppt'))
+        msg.add_header('content-disposition', 'attachment',
+                       filename='Fußballer.ppt'))
+        """
+        ...
+    def replace_header(self, _name: str, _value: _HeaderParamT_contra) -> None:
+        """
+        Replace a header.
+
+        Replace the first matching header found in the message, retaining
+        header order and case.  If no matching header was found, a KeyError is
+        raised.
+        """
+        ...
+    def get_content_type(self) -> str:
+        """
+        Return the message's content type.
+
+        The returned string is coerced to lower case of the form
+        `maintype/subtype'.  If there was no Content-Type header in the
+        message, the default type as given by get_default_type() will be
+        returned.  Since according to RFC 2045, messages always have a default
+        type this will always return a value.
+
+        RFC 2045 defines a message's default type to be text/plain unless it
+        appears inside a multipart/digest container, in which case it would be
+        message/rfc822.
+        """
+        ...
+    def get_content_maintype(self) -> str:
+        """
+        Return the message's main content type.
+
+        This is the `maintype' part of the string returned by
+        get_content_type().
+        """
+        ...
+    def get_content_subtype(self) -> str:
+        """
+        Returns the message's sub-content type.
+
+        This is the `subtype' part of the string returned by
+        get_content_type().
+        """
+        ...
+    def get_default_type(self) -> str:
+        """
+        Return the `default' content type.
+
+        Most messages have a default content type of text/plain, except for
+        messages that are subparts of multipart/digest containers.  Such
+        subparts have a default content type of message/rfc822.
+        """
+        ...
+    def set_default_type(self, ctype: str) -> None:
+        """
+        Set the `default' content type.
+
+        ctype should be either "text/plain" or "message/rfc822", although this
+        is not enforced.  The default content type is not stored in the
+        Content-Type header.
+        """
+        ...
     @overload
     def get_params(
         self, failobj: None = None, header: str = "content-type", unquote: bool = True
@@ -550,18 +722,67 @@ class Message(Generic[_HeaderT_co, _HeaderParamT_contra]):
         """
         ...
     # The following two methods are undocumented, but a source code comment states that they are public API
-    def set_raw(self, name: str, value: _HeaderParamT_contra) -> None: ...
-    def raw_items(self) -> Iterator[tuple[str, _HeaderT_co]]: ...
+    def set_raw(self, name: str, value: _HeaderParamT_contra) -> None:
+        """
+        Store name and value in the model without modification.
+
+        This is an "internal" API, intended only for use by a parser.
+        """
+        ...
+    def raw_items(self) -> Iterator[tuple[str, _HeaderT_co]]:
+        """
+        Return the (name, value) header pairs without modification.
+
+        This is an "internal" API, intended only for use by a generator.
+        """
+        ...
 
 class MIMEPart(Message[_HeaderRegistryT_co, _HeaderRegistryParamT_contra]):
     def __init__(self, policy: Policy[Any] | None = None) -> None: ...
-    def get_body(self, preferencelist: Sequence[str] = ("related", "html", "plain")) -> MIMEPart[_HeaderRegistryT_co] | None: ...
-    def attach(self, payload: Self) -> None: ...  # type: ignore[override]
+    def get_body(self, preferencelist: Sequence[str] = ("related", "html", "plain")) -> MIMEPart[_HeaderRegistryT_co] | None:
+        """
+        Return best candidate mime part for display as 'body' of message.
+
+        Do a depth first search, starting with self, looking for the first part
+        matching each of the items in preferencelist, and return the part
+        corresponding to the first item that has a match, or None if no items
+        have a match.  If 'related' is not included in preferencelist, consider
+        the root part of any multipart/related encountered as a candidate
+        match.  Ignore parts with 'Content-Disposition: attachment'.
+        """
+        ...
+    def attach(self, payload: Self) -> None:
+        """
+        Add the given payload to the current payload.
+
+        The current payload will always be a list of objects after this method
+        is called.  If you want to set the payload to a scalar object, use
+        set_payload() instead.
+        """
+        ...
     # The attachments are created via type(self) in the attach method. It's theoretically
     # possible to sneak other attachment types into a MIMEPart instance, but could cause
     # cause unforseen consequences.
-    def iter_attachments(self) -> Iterator[Self]: ...
-    def iter_parts(self) -> Iterator[MIMEPart[_HeaderRegistryT_co]]: ...
+    def iter_attachments(self) -> Iterator[Self]:
+        """
+        Return an iterator over the non-main parts of a multipart.
+
+        Skip the first of each occurrence of text/plain, text/html,
+        multipart/related, or multipart/alternative in the multipart (unless
+        they have a 'Content-Disposition: attachment' header) and include all
+        remaining subparts in the returned iterator.  When applied to a
+        multipart/related, return all parts except the root part.  Return an
+        empty iterator when applied to a multipart/alternative or a
+        non-multipart.
+        """
+        ...
+    def iter_parts(self) -> Iterator[MIMEPart[_HeaderRegistryT_co]]:
+        """
+        Return an iterator over all immediate subparts of a multipart.
+
+        Return an empty iterator for a non-multipart.
+        """
+        ...
     def get_content(self, *args: Any, content_manager: ContentManager | None = None, **kw: Any) -> Any: ...
     def set_content(self, *args: Any, content_manager: ContentManager | None = None, **kw: Any) -> None: ...
     def make_related(self, boundary: str | None = None) -> None: ...

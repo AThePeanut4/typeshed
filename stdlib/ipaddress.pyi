@@ -92,7 +92,15 @@ class _IPAddressBase:
         """Return the longhand version of the IP address as a string."""
         ...
     @property
-    def reverse_pointer(self) -> str: ...
+    def reverse_pointer(self) -> str:
+        """
+        The name of the reverse DNS pointer for the IP address, e.g.:
+        >>> ipaddress.ip_address("127.0.0.1").reverse_pointer
+        '1.0.0.127.in-addr.arpa'
+        >>> ipaddress.ip_address("2001:db8::1").reverse_pointer
+        '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'
+        """
+        ...
     if sys.version_info < (3, 14):
         @property
         def version(self) -> int: ...
@@ -404,6 +412,12 @@ class _BaseNetwork(_IPAddressBase, Generic[_A]):
     def hostmask(self) -> _A: ...
 
 class _BaseV4:
+    """
+    Base IPv4 object.
+
+    The following methods are used by IPv4 objects in both single IP
+    addresses and networks.
+    """
     if sys.version_info >= (3, 14):
         version: Final = 4
         max_prefixlen: Final = 32
@@ -594,6 +608,12 @@ class IPv4Interface(IPv4Address):
     def with_prefixlen(self) -> str: ...
 
 class _BaseV6:
+    """
+    Base IPv6 object.
+
+    The following methods are used by IPv6 objects in both single IP
+    addresses and networks.
+    """
     if sys.version_info >= (3, 14):
         version: Final = 6
         max_prefixlen: Final = 128

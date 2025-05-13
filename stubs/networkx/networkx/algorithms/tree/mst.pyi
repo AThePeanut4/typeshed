@@ -415,6 +415,24 @@ def random_spanning_tree(
     ...
 
 class SpanningTreeIterator:
+    """
+    Iterate over all spanning trees of a graph in either increasing or
+    decreasing cost.
+
+    Notes
+    -----
+    This iterator uses the partition scheme from [1]_ (included edges,
+    excluded edges and open edges) as well as a modified Kruskal's Algorithm
+    to generate minimum spanning trees which respect the partition of edges.
+    For spanning trees with the same weight, ties are broken arbitrarily.
+
+    References
+    ----------
+    .. [1] G.K. Janssens, K. Sörensen, An algorithm to generate all spanning
+           trees in order of increasing cost, Pesquisa Operacional, 2005-08,
+           Vol. 25 (2), p. 219-229,
+           https://www.scielo.br/j/pope/a/XHswBwRwJyrfL88dmMwYNWp/?lang=en
+    """
     @dataclass(order=True)
     class Partition:
         """

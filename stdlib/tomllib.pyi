@@ -20,7 +20,9 @@ if sys.version_info >= (3, 14):
         def __init__(self, msg: str | type = ..., doc: str | type = ..., pos: int | type = ..., *args: Any) -> None: ...
 
 else:
-    class TOMLDecodeError(ValueError): ...
+    class TOMLDecodeError(ValueError):
+        """An error raised if a document is not valid TOML."""
+        ...
 
 def load(fp: SupportsRead[bytes], /, *, parse_float: Callable[[str], Any] = ...) -> dict[str, Any]:
     """Parse TOML from a binary file object."""
