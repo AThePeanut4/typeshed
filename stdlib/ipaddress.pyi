@@ -92,17 +92,10 @@ class _IPAddressBase:
         """Return the longhand version of the IP address as a string."""
         ...
     @property
-    def reverse_pointer(self) -> str:
-        """
-        The name of the reverse DNS pointer for the IP address, e.g.:
-        >>> ipaddress.ip_address("127.0.0.1").reverse_pointer
-        '1.0.0.127.in-addr.arpa'
-        >>> ipaddress.ip_address("2001:db8::1").reverse_pointer
-        '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'
-        """
-        ...
-    @property
-    def version(self) -> int: ...
+    def reverse_pointer(self) -> str: ...
+    if sys.version_info < (3, 14):
+        @property
+        def version(self) -> int: ...
 
 class _BaseAddress(_IPAddressBase):
     """
@@ -411,16 +404,14 @@ class _BaseNetwork(_IPAddressBase, Generic[_A]):
     def hostmask(self) -> _A: ...
 
 class _BaseV4:
-    """
-    Base IPv4 object.
-
-    The following methods are used by IPv4 objects in both single IP
-    addresses and networks.
-    """
-    @property
-    def version(self) -> Literal[4]: ...
-    @property
-    def max_prefixlen(self) -> Literal[32]: ...
+    if sys.version_info >= (3, 14):
+        version: Final = 4
+        max_prefixlen: Final = 32
+    else:
+        @property
+        def version(self) -> Literal[4]: ...
+        @property
+        def max_prefixlen(self) -> Literal[32]: ...
 
 class IPv4Address(_BaseV4, _BaseAddress):
     """Represent and manipulate single IPv4 Addresses."""
@@ -603,16 +594,14 @@ class IPv4Interface(IPv4Address):
     def with_prefixlen(self) -> str: ...
 
 class _BaseV6:
-    """
-    Base IPv6 object.
-
-    The following methods are used by IPv6 objects in both single IP
-    addresses and networks.
-    """
-    @property
-    def version(self) -> Literal[6]: ...
-    @property
-    def max_prefixlen(self) -> Literal[128]: ...
+    if sys.version_info >= (3, 14):
+        version: Final = 6
+        max_prefixlen: Final = 128
+    else:
+        @property
+        def version(self) -> Literal[6]: ...
+        @property
+        def max_prefixlen(self) -> Literal[128]: ...
 
 class IPv6Address(_BaseV6, _BaseAddress):
     """Represent and manipulate single IPv6 Addresses."""

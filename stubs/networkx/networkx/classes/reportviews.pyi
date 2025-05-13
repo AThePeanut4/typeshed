@@ -429,7 +429,7 @@ class InEdgeDataView(OutEdgeDataView[_Node, _D]):
     ...
 
 class OutMultiEdgeDataView(OutEdgeDataView[_Node, _D]):
-    """An EdgeDataView for outward edges of MultiDiGraph; See EdgeDataView"""
+    keys: bool
     def __init__(
         self, viewer, nbunch: _NBunch[_Node] = None, data: bool = False, *, default: Incomplete | None = None, keys: bool = False
     ) -> None: ...
@@ -441,13 +441,13 @@ class InMultiEdgeDataView(OutEdgeDataView[_Node, _D]):
     """An EdgeDataView for inward edges of MultiDiGraph; See EdgeDataView"""
     ...
 
-class OutEdgeView(AbstractSet[Incomplete], Mapping[Incomplete, Incomplete], Generic[_Node]):
-    """A EdgeView class for outward edges of a DiGraph"""
+class OutEdgeView(AbstractSet[Incomplete], Mapping[Incomplete, Incomplete], EdgeViewABC, Generic[_Node]):
     def __init__(self, G: Graph[_Node]) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[tuple[_Node, _Node]]: ...
     def __contains__(self, e: _Edge[_Node]) -> bool: ...  # type: ignore[override]
     def __getitem__(self, e: _Edge[_Node]) -> dict[str, Any]: ...
+    dataview = OutEdgeDataView
     @overload
     def __call__(self, nbunch: None = None, data: Literal[False] = False, *, default: Unused = None) -> Self: ...  # type: ignore[overload-overlap]
     @overload
@@ -635,160 +635,83 @@ class OutEdgeView(AbstractSet[Incomplete], Mapping[Incomplete, Incomplete], Gene
         """
         Return a read-only view of edge data.
 
-        Parameters
-        ----------
-        data : bool or edge attribute key
-            If ``data=True``, then the data view maps each edge to a dictionary
-            containing all of its attributes. If `data` is a key in the edge
-            dictionary, then the data view maps each edge to its value for
-            the keyed attribute. In this case, if the edge doesn't have the
-            attribute, the `default` value is returned.
-        default : object, default=None
-            The value used when an edge does not have a specific attribute
-        nbunch : container of nodes, optional (default=None)
-            Allows restriction to edges only involving certain nodes. All edges
-            are considered by default.
-
-        Returns
-        -------
-        dataview
-            Returns an `EdgeDataView` for undirected Graphs, `OutEdgeDataView`
-            for DiGraphs, `MultiEdgeDataView` for MultiGraphs and
-            `OutMultiEdgeDataView` for MultiDiGraphs.
-
-        Notes
-        -----
-        If ``data=False``, returns an `EdgeView` without any edge data.
-
-        See Also
-        --------
-        EdgeDataView
-        OutEdgeDataView
-        MultiEdgeDataView
-        OutMultiEdgeDataView
-
-        Examples
-        --------
-        >>> G = nx.Graph()
-        >>> G.add_edges_from(
-        ...     [
-        ...         (0, 1, {"dist": 3, "capacity": 20}),
-        ...         (1, 2, {"dist": 4}),
-        ...         (2, 0, {"dist": 5}),
-        ...     ]
-        ... )
-
-        Accessing edge data with ``data=True`` (the default) returns an
-        edge data view object listing each edge with all of its attributes:
-
-        >>> G.edges.data()
-        EdgeDataView([(0, 1, {'dist': 3, 'capacity': 20}), (0, 2, {'dist': 5}), (1, 2, {'dist': 4})])
-
-        If `data` represents a key in the edge attribute dict, a dataview listing
-        each edge with its value for that specific key is returned:
-
-        >>> G.edges.data("dist")
-        EdgeDataView([(0, 1, 3), (0, 2, 5), (1, 2, 4)])
-
-        `nbunch` can be used to limit the edges:
-
-        >>> G.edges.data("dist", nbunch=[0])
-        EdgeDataView([(0, 1, 3), (0, 2, 5)])
-
-        If a specific key is not found in an edge attribute dict, the value
-        specified by `default` is used:
-
-        >>> G.edges.data("capacity")
-        EdgeDataView([(0, 1, 20), (0, 2, None), (1, 2, None)])
-
-        Note that there is no check that the `data` key is present in any of
-        the edge attribute dictionaries:
-
-        >>> G.edges.data("speed")
-        EdgeDataView([(0, 1, None), (0, 2, None), (1, 2, None)])
-        """
-        ...
-
 class EdgeView(OutEdgeView[_Node]):
-    """
-    A EdgeView class for edges of a Graph
+    dataview = EdgeDataView
+    # Have to override parent's overloads with the proper return type based on dataview
+    @overload
+    def __call__(self, nbunch: None = None, data: Literal[False] = False, *, default: Unused = None) -> Self: ...  # type: ignore[overload-overlap]
+    @overload
+    def __call__(
+        self, nbunch: _Node | Iterable[_Node], data: Literal[False] = False, *, default: None = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: Literal[True], *, default: None = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: Literal[True], default: None = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: str, *, default: _U | None = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: str, default: _U | None = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def data(self, data: Literal[False], default: Unused = None, nbunch: None = None) -> Self: ...
+    @overload
+    def data(
+        self, data: Literal[True] = True, default: None = None, nbunch: _NBunch[_Node] = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def data(
+        self, data: str, default: _U | None = None, nbunch: _NBunch[_Node] = None
+    ) -> EdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
 
-    This densely packed View allows iteration over edges, data lookup
-    like a dict and set operations on edges represented by node-tuples.
-    In addition, edge data can be controlled by calling this object
-    possibly creating an EdgeDataView. Typically edges are iterated over
-    and reported as `(u, v)` node tuples or `(u, v, key)` node/key tuples
-    for multigraphs. Those edge representations can also be using to
-    lookup the data dict for any edge. Set operations also are available
-    where those tuples are the elements of the set.
-    Calling this object with optional arguments `data`, `default` and `keys`
-    controls the form of the tuple (see EdgeDataView). Optional argument
-    `nbunch` allows restriction to edges only involving certain nodes.
-
-    If `data is False` (the default) then iterate over 2-tuples `(u, v)`.
-    If `data is True` iterate over 3-tuples `(u, v, datadict)`.
-    Otherwise iterate over `(u, v, datadict.get(data, default))`.
-    For Multigraphs, if `keys is True`, replace `u, v` with `u, v, key` above.
-
-    Parameters
-    ==========
-    graph : NetworkX graph-like class
-    nbunch : (default= all nodes in graph) only report edges with these nodes
-    keys : (only for MultiGraph. default=False) report edge key in tuple
-    data : bool or string (default=False) see above
-    default : object (default=None)
-
-    Examples
-    ========
-    >>> G = nx.path_graph(4)
-    >>> EV = G.edges()
-    >>> (2, 3) in EV
-    True
-    >>> for u, v in EV:
-    ...     print((u, v))
-    (0, 1)
-    (1, 2)
-    (2, 3)
-    >>> assert EV & {(1, 2), (3, 4)} == {(1, 2)}
-
-    >>> EVdata = G.edges(data="color", default="aqua")
-    >>> G.add_edge(2, 3, color="blue")
-    >>> assert (2, 3, "blue") in EVdata
-    >>> for u, v, c in EVdata:
-    ...     print(f"({u}, {v}) has color: {c}")
-    (0, 1) has color: aqua
-    (1, 2) has color: aqua
-    (2, 3) has color: blue
-
-    >>> EVnbunch = G.edges(nbunch=2)
-    >>> assert (2, 3) in EVnbunch
-    >>> assert (0, 1) not in EVnbunch
-    >>> for u, v in EVnbunch:
-    ...     assert u == 2 or v == 2
-
-    >>> MG = nx.path_graph(4, create_using=nx.MultiGraph)
-    >>> EVmulti = MG.edges(keys=True)
-    >>> (2, 3, 0) in EVmulti
-    True
-    >>> (2, 3) in EVmulti  # 2-tuples work even when keys is True
-    True
-    >>> key = MG.add_edge(2, 3)
-    >>> for u, v, k in EVmulti:
-    ...     print((u, v, k))
-    (0, 1, 0)
-    (1, 2, 0)
-    (2, 3, 0)
-    (2, 3, 1)
-    """
-    ...
 class InEdgeView(OutEdgeView[_Node]):
-    """A EdgeView class for inward edges of a DiGraph"""
-    ...
+    dataview = InEdgeDataView
+    # Have to override parent's overloads with the proper return type based on dataview
+    @overload
+    def __call__(self, nbunch: None = None, data: Literal[False] = False, *, default: Unused = None) -> Self: ...  # type: ignore[overload-overlap]
+    @overload
+    def __call__(
+        self, nbunch: _Node | Iterable[_Node], data: Literal[False] = False, *, default: None = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: Literal[True], *, default: None = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: Literal[True], default: None = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: str, *, default: _U | None = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: str, default: _U | None = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def data(self, data: Literal[False], default: Unused = None, nbunch: None = None) -> Self: ...
+    @overload
+    def data(
+        self, data: Literal[True] = True, default: None = None, nbunch: _NBunch[_Node] = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def data(
+        self, data: str, default: _U | None = None, nbunch: _NBunch[_Node] = None
+    ) -> InEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
 
 class OutMultiEdgeView(OutEdgeView[_Node]):
     """A EdgeView class for outward edges of a MultiDiGraph"""
     def __iter__(self) -> Iterator[tuple[_Node, _Node, Incomplete]]: ...  # type: ignore[override]
     def __getitem__(self, e: tuple[_Node, _Node, Incomplete]) -> dict[str, Any]: ...  # type: ignore[override]
+    dataview = OutMultiEdgeDataView
     @overload  # type: ignore[override]  # Has an additional `keys` keyword argument
     def __call__(  # type: ignore[overload-overlap]
         self, nbunch: None = None, data: Literal[False] = False, *, default: Unused = None, keys: Literal[True]
@@ -849,8 +772,125 @@ class OutMultiEdgeView(OutEdgeView[_Node]):
     ) -> OutMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, _U]]: ...
 
 class MultiEdgeView(OutMultiEdgeView[_Node]):
-    """A EdgeView class for edges of a MultiGraph"""
-    ...
+    dataview = MultiEdgeDataView  # type: ignore[assignment]
+    # Have to override parent's overloads with the proper return type based on dataview
+    @overload  # type: ignore[override]  # Has an additional `keys` keyword argument
+    def __call__(  # type: ignore[overload-overlap]
+        self, nbunch: None = None, data: Literal[False] = False, *, default: Unused = None, keys: Literal[True]
+    ) -> Self: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, data: Literal[False] = False, *, default: None = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _Node | Iterable[_Node], data: Literal[False] = False, *, default: None = None, keys: Literal[True]
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: Literal[True], default: None = None, keys: Literal[True]
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: Literal[True], *, default: None = None, keys: Literal[True]
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: Literal[True], default: None = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: str, *, default: _U | None = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: str, default: _U | None = None, keys: Literal[True]
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, _U]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: str, default: _U | None = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload  # type: ignore[override]
+    def data(self, data: Literal[False], default: Unused = None, nbunch: None = None, *, keys: Literal[True]) -> Self: ...
+    @overload
+    def data(
+        self, data: Literal[False], default: None = None, nbunch: _NBunch[_Node] = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node]]: ...
+    @overload
+    def data(
+        self, data: Literal[True] = True, default: None = None, nbunch: _NBunch[_Node] = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def data(
+        self, data: Literal[True] = True, default: None = None, nbunch: _NBunch[_Node] = None, *, keys: Literal[True]
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, dict[str, Incomplete]]]: ...
+    @overload
+    def data(
+        self, data: str, default: _U | None = None, nbunch: _NBunch[_Node] = None, keys: Literal[False] = False
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def data(
+        self, data: str, default: _U | None = None, nbunch: _NBunch[_Node] = None, *, keys: Literal[True]
+    ) -> MultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, _U]]: ...
+
 class InMultiEdgeView(OutMultiEdgeView[_Node]):
-    """A EdgeView class for inward edges of a MultiDiGraph"""
-    ...
+    dataview = InMultiEdgeDataView  # type: ignore[assignment]
+    # Have to override parent's overloads with the proper return type based on dataview
+    @overload  # type: ignore[override]
+    def __call__(  # type: ignore[overload-overlap]
+        self, nbunch: None = None, data: Literal[False] = False, *, default: Unused = None, keys: Literal[True]
+    ) -> Self: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, data: Literal[False] = False, *, default: None = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _Node | Iterable[_Node], data: Literal[False] = False, *, default: None = None, keys: Literal[True]
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: Literal[True], default: None = None, keys: Literal[True]
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: Literal[True], *, default: None = None, keys: Literal[True]
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: Literal[True], default: None = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node], data: str, *, default: _U | None = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: str, default: _U | None = None, keys: Literal[True]
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, _U]]: ...
+    @overload
+    def __call__(
+        self, nbunch: _NBunch[_Node] = None, *, data: str, default: _U | None = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload  # type: ignore[override]
+    def data(self, data: Literal[False], default: Unused = None, nbunch: None = None, *, keys: Literal[True]) -> Self: ...
+    @overload
+    def data(
+        self, data: Literal[False], default: None = None, nbunch: _NBunch[_Node] = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node]]: ...
+    @overload
+    def data(
+        self, data: Literal[True] = True, default: None = None, nbunch: _NBunch[_Node] = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, dict[str, Incomplete]]]: ...
+    @overload
+    def data(
+        self, data: Literal[True] = True, default: None = None, nbunch: _NBunch[_Node] = None, *, keys: Literal[True]
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, dict[str, Incomplete]]]: ...
+    @overload
+    def data(
+        self, data: str, default: _U | None = None, nbunch: _NBunch[_Node] = None, keys: Literal[False] = False
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, _U]]: ...
+    @overload
+    def data(
+        self, data: str, default: _U | None = None, nbunch: _NBunch[_Node] = None, *, keys: Literal[True]
+    ) -> InMultiEdgeDataView[_Node, tuple[_Node, _Node, Incomplete, _U]]: ...

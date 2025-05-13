@@ -24,6 +24,9 @@ from .tasks import *
 from .threads import *
 from .transports import *
 
+if sys.version_info >= (3, 14):
+    from .graph import *
+
 if sys.version_info >= (3, 11):
     from .taskgroups import *
     from .timeouts import *
@@ -35,6 +38,7 @@ else:
 
 if sys.platform == "win32":
     if sys.version_info >= (3, 14):
+
         __all__ = (
             "BaseEventLoop",  # from base_events
             "Server",  # from base_events
@@ -63,6 +67,13 @@ if sys.platform == "win32":
             "Future",  # from futures
             "wrap_future",  # from futures
             "isfuture",  # from futures
+            "future_discard_from_awaited_by",  # from futures
+            "future_add_to_awaited_by",  # from futures
+            "capture_call_graph",  # from graph
+            "format_call_graph",  # from graph
+            "print_call_graph",  # from graph
+            "FrameCallGraphEntry",  # from graph
+            "FutureCallGraph",  # from graph
             "Lock",  # from locks
             "Event",  # from locks
             "Condition",  # from locks
@@ -530,6 +541,13 @@ else:
             "Future",  # from futures
             "wrap_future",  # from futures
             "isfuture",  # from futures
+            "future_discard_from_awaited_by",  # from futures
+            "future_add_to_awaited_by",  # from futures
+            "capture_call_graph",  # from graph
+            "format_call_graph",  # from graph
+            "print_call_graph",  # from graph
+            "FrameCallGraphEntry",  # from graph
+            "FutureCallGraph",  # from graph
             "Lock",  # from locks
             "Event",  # from locks
             "Condition",  # from locks

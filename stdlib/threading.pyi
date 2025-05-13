@@ -5,6 +5,7 @@ import sys
 from _thread import _excepthook, _ExceptHookArgs, get_native_id as get_native_id
 from _typeshed import ProfileFunction, TraceFunction
 from collections.abc import Callable, Iterable, Mapping
+from contextvars import ContextVar
 from types import TracebackType
 from typing import Any, TypeVar, final
 from typing_extensions import deprecated
@@ -197,84 +198,33 @@ class Thread:
         """
         ...
     daemon: bool
-    def __init__(
-        self,
-        group: None = None,
-        target: Callable[..., object] | None = None,
-        name: str | None = None,
-        args: Iterable[Any] = (),
-        kwargs: Mapping[str, Any] | None = None,
-        *,
-        daemon: bool | None = None,
-    ) -> None:
-        """
-        This constructor should always be called with keyword arguments. Arguments are:
+    if sys.version_info >= (3, 14):
+        def __init__(
+            self,
+            group: None = None,
+            target: Callable[..., object] | None = None,
+            name: str | None = None,
+            args: Iterable[Any] = (),
+            kwargs: Mapping[str, Any] | None = None,
+            *,
+            daemon: bool | None = None,
+            context: ContextVar[Any] | None = None,
+        ) -> None: ...
+    else:
+        def __init__(
+            self,
+            group: None = None,
+            target: Callable[..., object] | None = None,
+            name: str | None = None,
+            args: Iterable[Any] = (),
+            kwargs: Mapping[str, Any] | None = None,
+            *,
+            daemon: bool | None = None,
+        ) -> None: ...
 
-        *group* should be None; reserved for future extension when a ThreadGroup
-        class is implemented.
-
-        *target* is the callable object to be invoked by the run()
-        method. Defaults to None, meaning nothing is called.
-
-        *name* is the thread name. By default, a unique name is constructed of
-        the form "Thread-N" where N is a small decimal number.
-
-        *args* is a list or tuple of arguments for the target invocation. Defaults to ().
-
-        *kwargs* is a dictionary of keyword arguments for the target
-        invocation. Defaults to {}.
-
-        If a subclass overrides the constructor, it must make sure to invoke
-        the base class constructor (Thread.__init__()) before doing anything
-        else to the thread.
-        """
-        ...
-    def start(self) -> None:
-        """
-        Start the thread's activity.
-
-        It must be called at most once per thread object. It arranges for the
-        object's run() method to be invoked in a separate thread of control.
-
-        This method will raise a RuntimeError if called more than once on the
-        same thread object.
-        """
-        ...
-    def run(self) -> None:
-        """
-        Method representing the thread's activity.
-
-        You may override this method in a subclass. The standard run() method
-        invokes the callable object passed to the object's constructor as the
-        target argument, if any, with sequential and keyword arguments taken
-        from the args and kwargs arguments, respectively.
-        """
-        ...
-    def join(self, timeout: float | None = None) -> None:
-        """
-        Wait until the thread terminates.
-
-        This blocks the calling thread until the thread whose join() method is
-        called terminates -- either normally or through an unhandled exception
-        or until the optional timeout occurs.
-
-        When the timeout argument is present and not None, it should be a
-        floating-point number specifying a timeout for the operation in seconds
-        (or fractions thereof). As join() always returns None, you must call
-        is_alive() after join() to decide whether a timeout happened -- if the
-        thread is still alive, the join() call timed out.
-
-        When the timeout argument is not present or None, the operation will
-        block until the thread terminates.
-
-        A thread can be join()ed many times.
-
-        join() raises a RuntimeError if an attempt is made to join the current
-        thread as that would cause a deadlock. It is also an error to join() a
-        thread before it has been started and attempts to do so raises the same
-        exception.
-        """
-        ...
+    def start(self) -> None: ...
+    def run(self) -> None: ...
+    def join(self, timeout: float | None = None) -> None: ...
     @property
     def native_id(self) -> int | None:
         """
@@ -390,6 +340,9 @@ class _RLock:
         ...
     __enter__ = acquire
     def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
+
+    if sys.version_info >= (3, 14):
+        def locked(self) -> bool: ...
 
 RLock = _thread.RLock  # Actually a function at runtime.
 

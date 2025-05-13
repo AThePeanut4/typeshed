@@ -1,7 +1,5 @@
-"""Class representing text/* type MIME documents."""
-
+from email._policybase import Policy
 from email.mime.nonmultipart import MIMENonMultipart
-from email.policy import Policy
 
 __all__ = ["MIMEText"]
 

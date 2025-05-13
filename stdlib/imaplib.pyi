@@ -14,16 +14,16 @@ Public functions:       Internaldate2tuple
 import subprocess
 import sys
 import time
-from _typeshed import ReadableBuffer, SizedBuffer
+from _typeshed import ReadableBuffer, SizedBuffer, Unused
 from builtins import list as _list  # conflicts with a method named "list"
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 from datetime import datetime
 from re import Pattern
 from socket import socket as _socket
 from ssl import SSLContext, SSLSocket
 from types import TracebackType
 from typing import IO, Any, Literal, SupportsAbs, SupportsInt
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, deprecated
 
 __all__ = ["IMAP4", "IMAP4_stream", "Internaldate2tuple", "Int2AP", "ParseFlags", "Time2Internaldate", "IMAP4_SSL"]
 
@@ -101,338 +101,63 @@ class IMAP4:
     capabilities: tuple[str, ...]
     PROTOCOL_VERSION: str
     def __init__(self, host: str = "", port: int = 143, timeout: float | None = None) -> None: ...
-    def open(self, host: str = "", port: int = 143, timeout: float | None = None) -> None:
-        """
-        Setup connection to remote server on "host:port"
-            (default: localhost:standard IMAP4 port).
-        This connection will be used by the routines:
-            read, readline, send, shutdown.
-        """
-        ...
+    def open(self, host: str = "", port: int = 143, timeout: float | None = None) -> None: ...
+    if sys.version_info >= (3, 14):
+        @property
+        @deprecated("IMAP4.file is unsupported, can cause errors, and may be removed.")
+        def file(self) -> IO[str] | IO[bytes]: ...
+    else:
+        file: IO[str] | IO[bytes]
+
     def __getattr__(self, attr: str) -> Any: ...
     host: str
     port: int
     sock: _socket
-    file: IO[str] | IO[bytes]
-    def read(self, size: int) -> bytes:
-        """Read 'size' bytes from remote."""
-        ...
-    def readline(self) -> bytes:
-        """Read line from remote."""
-        ...
-    def send(self, data: ReadableBuffer) -> None:
-        """Send data to remote."""
-        ...
-    def shutdown(self) -> None:
-        """Close I/O established in "open"."""
-        ...
-    def socket(self) -> _socket:
-        """
-        Return socket instance used to connect to IMAP4 server.
-
-        socket = <instance>.socket()
-        """
-        ...
-    def recent(self) -> _CommandResults:
-        """
-        Return most recent 'RECENT' responses if any exist,
-        else prompt server for an update using the 'NOOP' command.
-
-        (typ, [data]) = <instance>.recent()
-
-        'data' is None if no new messages,
-        else list of RECENT responses, most recent last.
-        """
-        ...
-    def response(self, code: str) -> _CommandResults:
-        """
-        Return data for response 'code' if received, or None.
-
-        Old value for response 'code' is cleared.
-
-        (code, [data]) = <instance>.response(code)
-        """
-        ...
-    def append(self, mailbox: str, flags: str, date_time: str, message: ReadableBuffer) -> str:
-        """
-        Append message to named mailbox.
-
-        (typ, [data]) = <instance>.append(mailbox, flags, date_time, message)
-
-                All args except `message' can be None.
-        """
-        ...
-    def authenticate(self, mechanism: str, authobject: Callable[[bytes], bytes | None]) -> tuple[str, str]:
-        """
-        Authenticate command - requires response processing.
-
-        'mechanism' specifies which authentication mechanism is to
-        be used - it must appear in <instance>.capabilities in the
-        form AUTH=<mechanism>.
-
-        'authobject' must be a callable object:
-
-                data = authobject(response)
-
-        It will be called to process server continuation responses; the
-        response argument it is passed will be a bytes.  It should return bytes
-        data that will be base64 encoded and sent to the server.  It should
-        return None if the client abort response '*' should be sent instead.
-        """
-        ...
-    def capability(self) -> _CommandResults:
-        """
-        (typ, [data]) = <instance>.capability()
-        Fetch capabilities list from server.
-        """
-        ...
-    def check(self) -> _CommandResults:
-        """
-        Checkpoint mailbox on server.
-
-        (typ, [data]) = <instance>.check()
-        """
-        ...
-    def close(self) -> _CommandResults:
-        """
-        Close currently selected mailbox.
-
-        Deleted messages are removed from writable mailbox.
-        This is the recommended command before 'LOGOUT'.
-
-        (typ, [data]) = <instance>.close()
-        """
-        ...
-    def copy(self, message_set: str, new_mailbox: str) -> _CommandResults:
-        """
-        Copy 'message_set' messages onto end of 'new_mailbox'.
-
-        (typ, [data]) = <instance>.copy(message_set, new_mailbox)
-        """
-        ...
-    def create(self, mailbox: str) -> _CommandResults:
-        """
-        Create new mailbox.
-
-        (typ, [data]) = <instance>.create(mailbox)
-        """
-        ...
-    def delete(self, mailbox: str) -> _CommandResults:
-        """
-        Delete old mailbox.
-
-        (typ, [data]) = <instance>.delete(mailbox)
-        """
-        ...
-    def deleteacl(self, mailbox: str, who: str) -> _CommandResults:
-        """
-        Delete the ACLs (remove any rights) set for who on mailbox.
-
-        (typ, [data]) = <instance>.deleteacl(mailbox, who)
-        """
-        ...
-    def enable(self, capability: str) -> _CommandResults:
-        """
-        Send an RFC5161 enable string to the server.
-
-        (typ, [data]) = <instance>.enable(capability)
-        """
-        ...
+    def read(self, size: int) -> bytes: ...
+    def readline(self) -> bytes: ...
+    def send(self, data: ReadableBuffer) -> None: ...
+    def shutdown(self) -> None: ...
+    def socket(self) -> _socket: ...
+    def recent(self) -> _CommandResults: ...
+    def response(self, code: str) -> _CommandResults: ...
+    def append(self, mailbox: str, flags: str, date_time: str, message: ReadableBuffer) -> str: ...
+    def authenticate(self, mechanism: str, authobject: Callable[[bytes], bytes | None]) -> tuple[str, str]: ...
+    def capability(self) -> _CommandResults: ...
+    def check(self) -> _CommandResults: ...
+    def close(self) -> _CommandResults: ...
+    def copy(self, message_set: str, new_mailbox: str) -> _CommandResults: ...
+    def create(self, mailbox: str) -> _CommandResults: ...
+    def delete(self, mailbox: str) -> _CommandResults: ...
+    def deleteacl(self, mailbox: str, who: str) -> _CommandResults: ...
+    def enable(self, capability: str) -> _CommandResults: ...
     def __enter__(self) -> Self: ...
     def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
-    def expunge(self) -> _CommandResults:
-        """
-        Permanently remove deleted items from selected mailbox.
+    def expunge(self) -> _CommandResults: ...
+    def fetch(self, message_set: str, message_parts: str) -> tuple[str, _AnyResponseData]: ...
+    def getacl(self, mailbox: str) -> _CommandResults: ...
+    def getannotation(self, mailbox: str, entry: str, attribute: str) -> _CommandResults: ...
+    def getquota(self, root: str) -> _CommandResults: ...
+    def getquotaroot(self, mailbox: str) -> _CommandResults: ...
+    if sys.version_info >= (3, 14):
+        def idle(self, duration: float | None = None) -> Idler: ...
 
-        Generates 'EXPUNGE' response for each deleted message.
-
-        (typ, [data]) = <instance>.expunge()
-
-        'data' is list of 'EXPUNGE'd message numbers in order received.
-        """
-        ...
-    def fetch(self, message_set: str, message_parts: str) -> tuple[str, _AnyResponseData]:
-        """
-        Fetch (parts of) messages.
-
-        (typ, [data, ...]) = <instance>.fetch(message_set, message_parts)
-
-        'message_parts' should be a string of selected parts
-        enclosed in parentheses, eg: "(UID BODY[TEXT])".
-
-        'data' are tuples of message part envelope and data.
-        """
-        ...
-    def getacl(self, mailbox: str) -> _CommandResults:
-        """
-        Get the ACLs for a mailbox.
-
-        (typ, [data]) = <instance>.getacl(mailbox)
-        """
-        ...
-    def getannotation(self, mailbox: str, entry: str, attribute: str) -> _CommandResults:
-        """
-        (typ, [data]) = <instance>.getannotation(mailbox, entry, attribute)
-        Retrieve ANNOTATIONs.
-        """
-        ...
-    def getquota(self, root: str) -> _CommandResults:
-        """
-        Get the quota root's resource usage and limits.
-
-        Part of the IMAP4 QUOTA extension defined in rfc2087.
-
-        (typ, [data]) = <instance>.getquota(root)
-        """
-        ...
-    def getquotaroot(self, mailbox: str) -> _CommandResults:
-        """
-        Get the list of quota roots for the named mailbox.
-
-        (typ, [[QUOTAROOT responses...], [QUOTA responses]]) = <instance>.getquotaroot(mailbox)
-        """
-        ...
-    def list(self, directory: str = '""', pattern: str = "*") -> tuple[str, _AnyResponseData]:
-        """
-        List mailbox names in directory matching pattern.
-
-        (typ, [data]) = <instance>.list(directory='""', pattern='*')
-
-        'data' is list of LIST responses.
-        """
-        ...
-    def login(self, user: str, password: str) -> tuple[Literal["OK"], _list[bytes]]:
-        """
-        Identify client using plaintext password.
-
-        (typ, [data]) = <instance>.login(user, password)
-
-        NB: 'password' will be quoted.
-        """
-        ...
-    def login_cram_md5(self, user: str, password: str) -> _CommandResults:
-        """
-        Force use of CRAM-MD5 authentication.
-
-        (typ, [data]) = <instance>.login_cram_md5(user, password)
-        """
-        ...
-    def logout(self) -> tuple[str, _AnyResponseData]:
-        """
-        Shutdown connection to server.
-
-        (typ, [data]) = <instance>.logout()
-
-        Returns server 'BYE' response.
-        """
-        ...
-    def lsub(self, directory: str = '""', pattern: str = "*") -> _CommandResults:
-        """
-        List 'subscribed' mailbox names in directory matching pattern.
-
-        (typ, [data, ...]) = <instance>.lsub(directory='""', pattern='*')
-
-        'data' are tuples of message part envelope and data.
-        """
-        ...
-    def myrights(self, mailbox: str) -> _CommandResults:
-        """
-        Show my ACLs for a mailbox (i.e. the rights that I have on mailbox).
-
-        (typ, [data]) = <instance>.myrights(mailbox)
-        """
-        ...
-    def namespace(self) -> _CommandResults:
-        """
-        Returns IMAP namespaces ala rfc2342
-
-        (typ, [data, ...]) = <instance>.namespace()
-        """
-        ...
-    def noop(self) -> tuple[str, _list[bytes]]:
-        """
-        Send NOOP command.
-
-        (typ, [data]) = <instance>.noop()
-        """
-        ...
-    def partial(self, message_num: str, message_part: str, start: str, length: str) -> _CommandResults:
-        """
-        Fetch truncated part of a message.
-
-        (typ, [data, ...]) = <instance>.partial(message_num, message_part, start, length)
-
-        'data' is tuple of message part envelope and data.
-        """
-        ...
-    def proxyauth(self, user: str) -> _CommandResults:
-        """
-        Assume authentication as "user".
-
-        Allows an authorised administrator to proxy into any user's
-        mailbox.
-
-        (typ, [data]) = <instance>.proxyauth(user)
-        """
-        ...
-    def rename(self, oldmailbox: str, newmailbox: str) -> _CommandResults:
-        """
-        Rename old mailbox name to new.
-
-        (typ, [data]) = <instance>.rename(oldmailbox, newmailbox)
-        """
-        ...
-    def search(self, charset: str | None, *criteria: str) -> _CommandResults:
-        """
-        Search mailbox for matching messages.
-
-        (typ, [data]) = <instance>.search(charset, criterion, ...)
-
-        'data' is space separated list of matching message numbers.
-        If UTF8 is enabled, charset MUST be None.
-        """
-        ...
-    def select(self, mailbox: str = "INBOX", readonly: bool = False) -> tuple[str, _list[bytes | None]]:
-        """
-        Select a mailbox.
-
-        Flush all untagged responses.
-
-        (typ, [data]) = <instance>.select(mailbox='INBOX', readonly=False)
-
-        'data' is count of messages in mailbox ('EXISTS' response).
-
-        Mandated responses are ('FLAGS', 'EXISTS', 'RECENT', 'UIDVALIDITY'), so
-        other responses should be obtained via <instance>.response('FLAGS') etc.
-        """
-        ...
-    def setacl(self, mailbox: str, who: str, what: str) -> _CommandResults:
-        """
-        Set a mailbox acl.
-
-        (typ, [data]) = <instance>.setacl(mailbox, who, what)
-        """
-        ...
-    def setannotation(self, *args: str) -> _CommandResults:
-        """
-        (typ, [data]) = <instance>.setannotation(mailbox[, entry, attribute]+)
-        Set ANNOTATIONs.
-        """
-        ...
-    def setquota(self, root: str, limits: str) -> _CommandResults:
-        """
-        Set the quota root's resource limits.
-
-        (typ, [data]) = <instance>.setquota(root, limits)
-        """
-        ...
-    def sort(self, sort_criteria: str, charset: str, *search_criteria: str) -> _CommandResults:
-        """
-        IMAP4rev1 extension SORT command.
-
-        (typ, [data]) = <instance>.sort(sort_criteria, charset, search_criteria, ...)
-        """
-        ...
+    def list(self, directory: str = '""', pattern: str = "*") -> tuple[str, _AnyResponseData]: ...
+    def login(self, user: str, password: str) -> tuple[Literal["OK"], _list[bytes]]: ...
+    def login_cram_md5(self, user: str, password: str) -> _CommandResults: ...
+    def logout(self) -> tuple[str, _AnyResponseData]: ...
+    def lsub(self, directory: str = '""', pattern: str = "*") -> _CommandResults: ...
+    def myrights(self, mailbox: str) -> _CommandResults: ...
+    def namespace(self) -> _CommandResults: ...
+    def noop(self) -> tuple[str, _list[bytes]]: ...
+    def partial(self, message_num: str, message_part: str, start: str, length: str) -> _CommandResults: ...
+    def proxyauth(self, user: str) -> _CommandResults: ...
+    def rename(self, oldmailbox: str, newmailbox: str) -> _CommandResults: ...
+    def search(self, charset: str | None, *criteria: str) -> _CommandResults: ...
+    def select(self, mailbox: str = "INBOX", readonly: bool = False) -> tuple[str, _list[bytes | None]]: ...
+    def setacl(self, mailbox: str, who: str, what: str) -> _CommandResults: ...
+    def setannotation(self, *args: str) -> _CommandResults: ...
+    def setquota(self, root: str, limits: str) -> _CommandResults: ...
+    def sort(self, sort_criteria: str, charset: str, *search_criteria: str) -> _CommandResults: ...
     def starttls(self, ssl_context: Any | None = None) -> tuple[Literal["OK"], _list[None]]: ...
     def status(self, mailbox: str, names: str) -> _CommandResults:
         """
@@ -504,6 +229,15 @@ class IMAP4:
         ...
     def print_log(self) -> None: ...
 
+if sys.version_info >= (3, 14):
+    class Idler:
+        def __init__(self, imap: IMAP4, duration: float | None = None) -> None: ...
+        def __enter__(self) -> Self: ...
+        def __exit__(self, exc_type: object, exc_val: Unused, exc_tb: Unused) -> Literal[False]: ...
+        def __iter__(self) -> Self: ...
+        def __next__(self) -> tuple[str, float | None]: ...
+        def burst(self, interval: float = 0.1) -> Generator[tuple[str, float | None]]: ...
+
 class IMAP4_SSL(IMAP4):
     """
     IMAP4 client class over SSL connection
@@ -537,15 +271,14 @@ class IMAP4_SSL(IMAP4):
             timeout: float | None = None,
         ) -> None: ...
     sslobj: SSLSocket
-    file: IO[Any]
-    def open(self, host: str = "", port: int | None = 993, timeout: float | None = None) -> None:
-        """
-        Setup connection to remote server on "host:port".
-            (default: localhost:standard IMAP4 SSL port).
-        This connection will be used by the routines:
-            read, readline, send, shutdown.
-        """
-        ...
+    if sys.version_info >= (3, 14):
+        @property
+        @deprecated("IMAP4_SSL.file is unsupported, can cause errors, and may be removed.")
+        def file(self) -> IO[Any]: ...
+    else:
+        file: IO[Any]
+
+    def open(self, host: str = "", port: int | None = 993, timeout: float | None = None) -> None: ...
     def ssl(self) -> SSLSocket: ...
 
 class IMAP4_stream(IMAP4):
@@ -560,7 +293,12 @@ class IMAP4_stream(IMAP4):
     """
     command: str
     def __init__(self, command: str) -> None: ...
-    file: IO[Any]
+    if sys.version_info >= (3, 14):
+        @property
+        @deprecated("IMAP4_stream.file is unsupported, can cause errors, and may be removed.")
+        def file(self) -> IO[Any]: ...
+    else:
+        file: IO[Any]
     process: subprocess.Popen[bytes]
     writefile: IO[Any]
     readfile: IO[Any]
