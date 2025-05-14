@@ -9,18 +9,11 @@ from .prop import vText
 __all__ = ["UIDGenerator", "is_date", "is_datetime", "to_datetime", "is_pytz", "is_pytz_dt", "normalize_pytz"]
 
 class UIDGenerator:
-    """
-    If you are too lazy to create real uid's.
-
-    
-    """
+    """If you are too lazy to create real uid's."""
     chars: Final[list[str]]
     @staticmethod
     def rnd_string(length: int = 16) -> str:
-        """
-        Generates a string with random characters of length.
-        
-        """
+        """Generates a string with random characters of length."""
         ...
     @staticmethod
     def uid(host_name: str = "example.com", unique: str = "") -> vText:

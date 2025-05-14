@@ -1,3 +1,5 @@
+"""Definitions for resource-type trackable object classes."""
+
 from tensorflow.python.trackable.base import Trackable
 
 class _ResourceMetaclass(type):

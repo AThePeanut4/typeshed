@@ -1,3 +1,11 @@
+"""
+oauthlib.oauth2.rfc6749.errors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Error used both by OAuth 2 clients and providers to represent the spec
+defined error responses for all four core grant types.
+"""
+
 from oauthlib.oauth2.rfc6749.errors import FatalClientError, OAuth2Error
 
 class FatalOpenIDClientError(FatalClientError): ...

@@ -223,12 +223,228 @@ def normalized_laplacian_matrix(G, nodelist: Collection[Incomplete] | None = Non
     """
     ...
 @_dispatchable
-def total_spanning_tree_weight(G, weight=None): ...
+def total_spanning_tree_weight(G, weight=None):
+    """
+    Returns the total weight of all spanning trees of `G`.
+
+    Kirchoff's Tree Matrix Theorem [1]_, [2]_ states that the determinant of any
+    cofactor of the Laplacian matrix of a graph is the number of spanning trees
+    in the graph. For a weighted Laplacian matrix, it is the sum across all
+    spanning trees of the multiplicative weight of each tree. That is, the
+    weight of each tree is the product of its edge weights.
+
+    For unweighted graphs, the total weight equals the number of spanning trees in `G`.
+
+    For directed graphs, the total weight follows by summing over all directed
+    spanning trees in `G` that start in the `root` node [3]_.
+
+    .. deprecated:: 3.3
+
+       ``total_spanning_tree_weight`` is deprecated and will be removed in v3.5.
+       Use ``nx.number_of_spanning_trees(G)`` instead.
+
+    Parameters
+    ----------
+    G : NetworkX Graph
+
+    weight : string or None, optional (default=None)
+        The key for the edge attribute holding the edge weight.
+        If None, then each edge has weight 1.
+
+    root : node (only required for directed graphs)
+       A node in the directed graph `G`.
+
+    Returns
+    -------
+    total_weight : float
+        Undirected graphs:
+            The sum of the total multiplicative weights for all spanning trees in `G`.
+        Directed graphs:
+            The sum of the total multiplicative weights for all spanning trees of `G`,
+            rooted at node `root`.
+
+    Raises
+    ------
+    NetworkXPointlessConcept
+        If `G` does not contain any nodes.
+
+    NetworkXError
+        If the graph `G` is not (weakly) connected,
+        or if `G` is directed and the root node is not specified or not in G.
+
+    Examples
+    --------
+    >>> G = nx.complete_graph(5)
+    >>> round(nx.total_spanning_tree_weight(G))
+    125
+
+    >>> G = nx.Graph()
+    >>> G.add_edge(1, 2, weight=2)
+    >>> G.add_edge(1, 3, weight=1)
+    >>> G.add_edge(2, 3, weight=1)
+    >>> round(nx.total_spanning_tree_weight(G, "weight"))
+    5
+
+    Notes
+    -----
+    Self-loops are excluded. Multi-edges are contracted in one edge
+    equal to the sum of the weights.
+
+    References
+    ----------
+    .. [1] Wikipedia
+       "Kirchhoff's theorem."
+       https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
+    .. [2] Kirchhoff, G. R.
+        Über die Auflösung der Gleichungen, auf welche man
+        bei der Untersuchung der linearen Vertheilung
+        Galvanischer Ströme geführt wird
+        Annalen der Physik und Chemie, vol. 72, pp. 497-508, 1847.
+    .. [3] Margoliash, J.
+        "Matrix-Tree Theorem for Directed Graphs"
+        https://www.math.uchicago.edu/~may/VIGRE/VIGRE2010/REUPapers/Margoliash.pdf
+    """
+    ...
 @_dispatchable
 def directed_laplacian_matrix(
     G, nodelist: Collection[Incomplete] | None = None, weight: str = "weight", walk_type=None, alpha: float = 0.95
-): ...
+):
+    r"""
+    Returns the directed Laplacian matrix of G.
+
+    The graph directed Laplacian is the matrix
+
+    .. math::
+
+        L = I - \frac{1}{2} \left (\Phi^{1/2} P \Phi^{-1/2} + \Phi^{-1/2} P^T \Phi^{1/2} \right )
+
+    where `I` is the identity matrix, `P` is the transition matrix of the
+    graph, and `\Phi` a matrix with the Perron vector of `P` in the diagonal and
+    zeros elsewhere [1]_.
+
+    Depending on the value of walk_type, `P` can be the transition matrix
+    induced by a random walk, a lazy random walk, or a random walk with
+    teleportation (PageRank).
+
+    Parameters
+    ----------
+    G : DiGraph
+       A NetworkX graph
+
+    nodelist : list, optional
+       The rows and columns are ordered according to the nodes in nodelist.
+       If nodelist is None, then the ordering is produced by G.nodes().
+
+    weight : string or None, optional (default='weight')
+       The edge data key used to compute each value in the matrix.
+       If None, then each edge has weight 1.
+
+    walk_type : string or None, optional (default=None)
+       One of ``"random"``, ``"lazy"``, or ``"pagerank"``. If ``walk_type=None``
+       (the default), then a value is selected according to the properties of `G`:
+       - ``walk_type="random"`` if `G` is strongly connected and aperiodic
+       - ``walk_type="lazy"`` if `G` is strongly connected but not aperiodic
+       - ``walk_type="pagerank"`` for all other cases.
+
+    alpha : real
+       (1 - alpha) is the teleportation probability used with pagerank
+
+    Returns
+    -------
+    L : NumPy matrix
+      Normalized Laplacian of G.
+
+    Notes
+    -----
+    Only implemented for DiGraphs
+
+    The result is always a symmetric matrix.
+
+    This calculation uses the out-degree of the graph `G`. To use the
+    in-degree for calculations instead, use `G.reverse(copy=False)` and
+    take the transpose.
+
+    See Also
+    --------
+    laplacian_matrix
+    normalized_laplacian_matrix
+    directed_combinatorial_laplacian_matrix
+
+    References
+    ----------
+    .. [1] Fan Chung (2005).
+       Laplacians and the Cheeger inequality for directed graphs.
+       Annals of Combinatorics, 9(1), 2005
+    """
+    ...
 @_dispatchable
 def directed_combinatorial_laplacian_matrix(
     G, nodelist: Collection[Incomplete] | None = None, weight: str = "weight", walk_type=None, alpha: float = 0.95
-): ...
+):
+    r"""
+    Return the directed combinatorial Laplacian matrix of G.
+
+    The graph directed combinatorial Laplacian is the matrix
+
+    .. math::
+
+        L = \Phi - \frac{1}{2} \left (\Phi P + P^T \Phi \right)
+
+    where `P` is the transition matrix of the graph and `\Phi` a matrix
+    with the Perron vector of `P` in the diagonal and zeros elsewhere [1]_.
+
+    Depending on the value of walk_type, `P` can be the transition matrix
+    induced by a random walk, a lazy random walk, or a random walk with
+    teleportation (PageRank).
+
+    Parameters
+    ----------
+    G : DiGraph
+       A NetworkX graph
+
+    nodelist : list, optional
+       The rows and columns are ordered according to the nodes in nodelist.
+       If nodelist is None, then the ordering is produced by G.nodes().
+
+    weight : string or None, optional (default='weight')
+       The edge data key used to compute each value in the matrix.
+       If None, then each edge has weight 1.
+
+    walk_type : string or None, optional (default=None)
+        One of ``"random"``, ``"lazy"``, or ``"pagerank"``. If ``walk_type=None``
+        (the default), then a value is selected according to the properties of `G`:
+        - ``walk_type="random"`` if `G` is strongly connected and aperiodic
+        - ``walk_type="lazy"`` if `G` is strongly connected but not aperiodic
+        - ``walk_type="pagerank"`` for all other cases.
+
+    alpha : real
+       (1 - alpha) is the teleportation probability used with pagerank
+
+    Returns
+    -------
+    L : NumPy matrix
+      Combinatorial Laplacian of G.
+
+    Notes
+    -----
+    Only implemented for DiGraphs
+
+    The result is always a symmetric matrix.
+
+    This calculation uses the out-degree of the graph `G`. To use the
+    in-degree for calculations instead, use `G.reverse(copy=False)` and
+    take the transpose.
+
+    See Also
+    --------
+    laplacian_matrix
+    normalized_laplacian_matrix
+    directed_laplacian_matrix
+
+    References
+    ----------
+    .. [1] Fan Chung (2005).
+       Laplacians and the Cheeger inequality for directed graphs.
+       Annals of Combinatorics, 9(1), 2005
+    """
+    ...

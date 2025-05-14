@@ -1,3 +1,13 @@
+"""
+pygments.lexers
+~~~~~~~~~~~~~~~
+
+Pygments lexers.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import FileDescriptorOrPath, StrPath
 from collections.abc import Iterator
 from typing import Any

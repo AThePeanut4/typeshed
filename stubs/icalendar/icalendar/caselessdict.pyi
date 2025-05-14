@@ -16,10 +16,7 @@ def canonsort_keys(keys: Iterable[str], canonical_order: Iterable[str] | None = 
     """
     ...
 def canonsort_items(dict1: Mapping[str, _VT], canonical_order: Iterable[str] | None = None) -> list[tuple[str, _VT]]:
-    """
-    Returns a list of items from dict1, sorted by canonical_order.
-    
-    """
+    """Returns a list of items from dict1, sorted by canonical_order."""
     ...
 
 class CaselessDict(OrderedDict[str, _VT]):

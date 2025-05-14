@@ -18,10 +18,7 @@ def from_unicode(value: ICAL_TYPE, encoding: str = "utf-8") -> bytes:
     """
     ...
 def to_unicode(value: ICAL_TYPE, encoding: str = "utf-8-sig") -> str:
-    """
-    Converts a value to unicode, even if it is already a unicode string.
-    
-    """
+    """Converts a value to unicode, even if it is already a unicode string."""
     ...
 @overload
 def data_encode(data: ICAL_TYPE, encoding: str = ...) -> bytes:

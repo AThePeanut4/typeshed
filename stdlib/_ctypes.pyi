@@ -149,10 +149,38 @@ class _Pointer(_PointerLike, _CData, Generic[_CT], metaclass=_PyCPointerType):
 
 if sys.version_info < (3, 14):
     @overload
-    def POINTER(type: None, /) -> type[c_void_p]: ...
+    def POINTER(type: None, /) -> type[c_void_p]:
+        """
+        Create and return a new ctypes pointer type.
+
+          type
+            A ctypes type.
+
+        Pointer types are cached and reused internally,
+        so calling this function repeatedly is cheap.
+        """
+        ...
     @overload
-    def POINTER(type: type[_CT], /) -> type[_Pointer[_CT]]: ...
-    def pointer(obj: _CT, /) -> _Pointer[_CT]: ...
+    def POINTER(type: type[_CT], /) -> type[_Pointer[_CT]]:
+        """
+        Create and return a new ctypes pointer type.
+
+          type
+            A ctypes type.
+
+        Pointer types are cached and reused internally,
+        so calling this function repeatedly is cheap.
+        """
+        ...
+    def pointer(obj: _CT, /) -> _Pointer[_CT]:
+        """
+        Create a new pointer instance, pointing to 'obj'.
+
+        The returned object is of the type POINTER(type(obj)). Note that if you
+        just want to pass a pointer to an object to a foreign function call, you
+        should use byref(obj) which is much faster.
+        """
+        ...
 
 # This class is not exposed. It calls itself _ctypes.CArgObject.
 @final
@@ -163,7 +191,13 @@ if sys.version_info >= (3, 14):
     def byref(obj: _CData | _CDataType, offset: int = 0, /) -> _CArgObject: ...
 
 else:
-    def byref(obj: _CData | _CDataType, offset: int = 0) -> _CArgObject: ...
+    def byref(obj: _CData | _CDataType, offset: int = 0) -> _CArgObject:
+        """
+        byref(C instance[, offset=0]) -> byref-object
+        Return a pointer lookalike to a C instance, only usable
+        as function argument
+        """
+        ...
 
 _ECT: TypeAlias = Callable[[_CData | _CDataType | None, CFuncPtr, tuple[_CData | _CDataType, ...]], _CDataType]
 _PF: TypeAlias = tuple[int] | tuple[int, str | None] | tuple[int, str | None, Any]

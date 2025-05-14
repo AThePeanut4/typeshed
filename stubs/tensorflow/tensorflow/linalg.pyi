@@ -1,3 +1,5 @@
+"""Public API for tf._api.v2.linalg namespace"""
+
 from builtins import bool as _bool
 from collections.abc import Iterable
 from typing import Literal, overload
@@ -414,6 +416,97 @@ def eye(
     batch_shape: Iterable[int] | IntArray | tf.Tensor | None = None,
     dtype: DTypeLike = ...,
     name: str | None = None,
-) -> Tensor: ...
-def band_part(input: TensorCompatible, num_lower: Integer, num_upper: Integer, name: str | None = None) -> Tensor: ...
+) -> Tensor:
+    """
+    Construct an identity matrix, or a batch of matrices.
+
+    See also `tf.ones`, `tf.zeros`, `tf.fill`, `tf.one_hot`.
+
+    ```python
+    # Construct one identity matrix.
+    tf.eye(2)
+    ==> [[1., 0.],
+         [0., 1.]]
+
+    # Construct a batch of 3 identity matrices, each 2 x 2.
+    # batch_identity[i, :, :] is a 2 x 2 identity matrix, i = 0, 1, 2.
+    batch_identity = tf.eye(2, batch_shape=[3])
+
+    # Construct one 2 x 3 "identity" matrix
+    tf.eye(2, num_columns=3)
+    ==> [[ 1.,  0.,  0.],
+         [ 0.,  1.,  0.]]
+    ```
+
+    Args:
+      num_rows: Non-negative `int32` scalar `Tensor` giving the number of rows
+        in each batch matrix.
+      num_columns: Optional non-negative `int32` scalar `Tensor` giving the number
+        of columns in each batch matrix.  Defaults to `num_rows`.
+      batch_shape:  A list or tuple of Python integers or a 1-D `int32` `Tensor`.
+        If provided, the returned `Tensor` will have leading batch dimensions of
+        this shape.
+      dtype:  The type of an element in the resulting `Tensor`
+      name:  A name for this `Op`.  Defaults to "eye".
+
+    Returns:
+      A `Tensor` of shape `batch_shape + [num_rows, num_columns]`
+    """
+    ...
+def band_part(input: TensorCompatible, num_lower: Integer, num_upper: Integer, name: str | None = None) -> Tensor:
+    """
+    Copy a tensor setting everything outside a central band in each innermost matrix to zero.
+
+    The `band` part is computed as follows:
+    Assume `input` has `k` dimensions `[I, J, K, ..., M, N]`, then the output is a
+    tensor with the same shape where
+
+    `band[i, j, k, ..., m, n] = in_band(m, n) * input[i, j, k, ..., m, n]`.
+
+    The indicator function
+
+    `in_band(m, n) = (num_lower < 0 || (m-n) <= num_lower)) &&
+                     (num_upper < 0 || (n-m) <= num_upper)`.
+
+    For example:
+
+    ```
+    # if 'input' is [[ 0,  1,  2, 3]
+    #                [-1,  0,  1, 2]
+    #                [-2, -1,  0, 1]
+    #                [-3, -2, -1, 0]],
+
+    tf.linalg.band_part(input, 1, -1) ==> [[ 0,  1,  2, 3]
+                                           [-1,  0,  1, 2]
+                                           [ 0, -1,  0, 1]
+                                           [ 0,  0, -1, 0]],
+
+    tf.linalg.band_part(input, 2, 1) ==> [[ 0,  1,  0, 0]
+                                          [-1,  0,  1, 0]
+                                          [-2, -1,  0, 1]
+                                          [ 0, -2, -1, 0]]
+    ```
+
+    Useful special cases:
+
+    ```
+     tf.linalg.band_part(input, 0, -1) ==> Upper triangular part.
+     tf.linalg.band_part(input, -1, 0) ==> Lower triangular part.
+     tf.linalg.band_part(input, 0, 0) ==> Diagonal.
+    ```
+
+    Args:
+      input: A `Tensor`. Rank `k` tensor.
+      num_lower: A `Tensor`. Must be one of the following types: `int32`, `int64`.
+        0-D tensor. Number of subdiagonals to keep. If negative, keep entire
+        lower triangle.
+      num_upper: A `Tensor`. Must have the same type as `num_lower`.
+        0-D tensor. Number of superdiagonals to keep. If negative, keep
+        entire upper triangle.
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor`. Has the same type as `input`.
+    """
+    ...
 def __getattr__(name: str): ...  # incomplete module

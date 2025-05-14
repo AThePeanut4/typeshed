@@ -1,3 +1,5 @@
+"""LaTeX2e document tree Writer."""
+
 from typing import ClassVar
 
 from docutils.utils import Reporter

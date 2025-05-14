@@ -182,9 +182,90 @@ class NodeView(Mapping[_Node, dict[str, Any]], AbstractSet[_Node]):
     def __call__(self, data: Literal[False] = False, default=None) -> Iterator[_Node]: ...
     @overload
     def __call__(self, data: Literal[True] | str, default=None) -> Iterator[tuple[_Node, dict[str, Any]]]: ...
-    def data(self, data: bool | str = True, default=None) -> NodeDataView[_Node]: ...
+    def data(self, data: bool | str = True, default=None) -> NodeDataView[_Node]:
+        """
+        Return a read-only view of node data.
+
+        Parameters
+        ----------
+        data : bool or node data key, default=True
+            If ``data=True`` (the default), return a `NodeDataView` object that
+            maps each node to *all* of its attributes. `data` may also be an
+            arbitrary key, in which case the `NodeDataView` maps each node to
+            the value for the keyed attribute. In this case, if a node does
+            not have the `data` attribute, the `default` value is used.
+        default : object, default=None
+            The value used when a node does not have a specific attribute.
+
+        Returns
+        -------
+        NodeDataView
+            The layout of the returned NodeDataView depends on the value of the
+            `data` parameter.
+
+        Notes
+        -----
+        If ``data=False``, returns a `NodeView` object without data.
+
+        See Also
+        --------
+        NodeDataView
+
+        Examples
+        --------
+        >>> G = nx.Graph()
+        >>> G.add_nodes_from(
+        ...     [
+        ...         (0, {"color": "red", "weight": 10}),
+        ...         (1, {"color": "blue"}),
+        ...         (2, {"color": "yellow", "weight": 2}),
+        ...     ]
+        ... )
+
+        Accessing node data with ``data=True`` (the default) returns a
+        NodeDataView mapping each node to all of its attributes:
+
+        >>> G.nodes.data()
+        NodeDataView({0: {'color': 'red', 'weight': 10}, 1: {'color': 'blue'}, 2: {'color': 'yellow', 'weight': 2}})
+
+        If `data` represents  a key in the node attribute dict, a NodeDataView mapping
+        the nodes to the value for that specific key is returned:
+
+        >>> G.nodes.data("color")
+        NodeDataView({0: 'red', 1: 'blue', 2: 'yellow'}, data='color')
+
+        If a specific key is not found in an attribute dict, the value specified
+        by `default` is returned:
+
+        >>> G.nodes.data("weight", default=-999)
+        NodeDataView({0: 10, 1: -999, 2: 2}, data='weight')
+
+        Note that there is no check that the `data` key is in any of the
+        node attribute dictionaries:
+
+        >>> G.nodes.data("height")
+        NodeDataView({0: None, 1: None, 2: None}, data='height')
+        """
+        ...
 
 class NodeDataView(AbstractSet[_Node]):
+    """
+    A DataView class for nodes of a NetworkX Graph
+
+    The main use for this class is to iterate through node-data pairs.
+    The data can be the entire data-dictionary for each node, or it
+    can be a specific attribute (with default) for each node.
+    Set operations are enabled with NodeDataView, but don't work in
+    cases where the data is not hashable. Use with caution.
+    Typically, set operations on nodes use NodeView, not NodeDataView.
+    That is, they use `G.nodes` instead of `G.nodes(data='foo')`.
+
+    Parameters
+    ==========
+    graph : NetworkX graph-like class
+    data : bool or string (default=False)
+    default : object (default=None)
+    """
     def __init__(self, nodedict: Mapping[str, Incomplete], data: bool | str = False, default=None) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[tuple[_Node, Incomplete]]: ...  # type: ignore[override]
@@ -301,6 +382,7 @@ class OutMultiDegreeView(DiDegreeView[_Node]):
 class EdgeViewABC(ABC): ...
 
 class OutEdgeDataView(EdgeViewABC, Generic[_Node, _D]):
+    """EdgeDataView for outward edges of DiGraph; See EdgeDataView"""
     def __init__(self, viewer, nbunch: _NBunch[_Node] = None, data: bool = False, *, default=None) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[_D]: ...

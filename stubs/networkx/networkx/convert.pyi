@@ -94,7 +94,28 @@ def to_dict_of_lists(G: Graph[_Node], nodelist: Collection[_Node] | None = None)
     """
     ...
 @_dispatchable
-def from_dict_of_lists(d: dict[_Node, Iterable[_Node]], create_using=None) -> Graph[_Node]: ...
+def from_dict_of_lists(d: dict[_Node, Iterable[_Node]], create_using=None) -> Graph[_Node]:
+    """
+    Returns a graph from a dictionary of lists.
+
+    Parameters
+    ----------
+    d : dictionary of lists
+      A dictionary of lists adjacency representation.
+
+    create_using : NetworkX graph constructor, optional (default=nx.Graph)
+        Graph type to create. If graph instance, then cleared before populated.
+
+    Examples
+    --------
+    >>> dol = {0: [1]}  # single edge (0,1)
+    >>> G = nx.from_dict_of_lists(dol)
+
+    or
+
+    >>> G = nx.Graph(dol)  # use Graph constructor
+    """
+    ...
 def to_dict_of_dicts(
     G: Graph[_Node], nodelist: Collection[_Node] | None = None, edge_data=None
 ) -> dict[Incomplete, Incomplete]:

@@ -1,3 +1,13 @@
+"""
+pygments.styles
+~~~~~~~~~~~~~~~
+
+Contains built-in styles.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from collections.abc import Iterator, Mapping
 
 from pygments.style import Style

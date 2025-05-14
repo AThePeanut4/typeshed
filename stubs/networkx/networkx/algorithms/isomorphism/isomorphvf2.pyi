@@ -427,8 +427,18 @@ class GMState:
     G2_node: Incomplete
     depth: Incomplete
 
-    def __init__(self, GM, G1_node=None, G2_node=None) -> None: ...
-    def restore(self) -> None: ...
+    def __init__(self, GM, G1_node=None, G2_node=None) -> None:
+        """
+        Initializes GMState object.
+
+        Pass in the GraphMatcher to which this GMState belongs and the
+        new node pair that will be added to the GraphMatcher's current
+        isomorphism mapping.
+        """
+        ...
+    def restore(self) -> None:
+        """Deletes the GMState object and restores the class variables."""
+        ...
 
 class DiGMState:
     """
@@ -444,5 +454,15 @@ class DiGMState:
     G2_node: Incomplete
     depth: Incomplete
 
-    def __init__(self, GM, G1_node=None, G2_node=None) -> None: ...
-    def restore(self) -> None: ...
+    def __init__(self, GM, G1_node=None, G2_node=None) -> None:
+        """
+        Initializes DiGMState object.
+
+        Pass in the DiGraphMatcher to which this DiGMState belongs and the
+        new node pair that will be added to the GraphMatcher's current
+        isomorphism mapping.
+        """
+        ...
+    def restore(self) -> None:
+        """Deletes the DiGMState object and restores the class variables."""
+        ...

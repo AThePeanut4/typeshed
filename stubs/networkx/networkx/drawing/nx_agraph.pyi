@@ -32,9 +32,77 @@ _AGraph: TypeAlias = Incomplete
 __all__ = ["from_agraph", "to_agraph", "write_dot", "read_dot", "graphviz_layout", "pygraphviz_layout", "view_pygraphviz"]
 
 @_dispatchable
-def from_agraph(A, create_using=None) -> Graph[Incomplete]: ...
-def to_agraph(N: Graph[Hashable]) -> _AGraph: ...
-def write_dot(G: Graph[Hashable], path: str | TextIOBase) -> None: ...
+def from_agraph(A, create_using=None) -> Graph[Incomplete]:
+    """
+    Returns a NetworkX Graph or DiGraph from a PyGraphviz graph.
+
+    Parameters
+    ----------
+    A : PyGraphviz AGraph
+      A graph created with PyGraphviz
+
+    create_using : NetworkX graph constructor, optional (default=None)
+       Graph type to create. If graph instance, then cleared before populated.
+       If `None`, then the appropriate Graph type is inferred from `A`.
+
+    Examples
+    --------
+    >>> K5 = nx.complete_graph(5)
+    >>> A = nx.nx_agraph.to_agraph(K5)
+    >>> G = nx.nx_agraph.from_agraph(A)
+
+    Notes
+    -----
+    The Graph G will have a dictionary G.graph_attr containing
+    the default graphviz attributes for graphs, nodes and edges.
+
+    Default node attributes will be in the dictionary G.node_attr
+    which is keyed by node.
+
+    Edge attributes will be returned as edge data in G.  With
+    edge_attr=False the edge data will be the Graphviz edge weight
+    attribute or the value 1 if no edge weight attribute is found.
+    """
+    ...
+def to_agraph(N: Graph[Hashable]) -> _AGraph:
+    """
+    Returns a pygraphviz graph from a NetworkX graph N.
+
+    Parameters
+    ----------
+    N : NetworkX graph
+      A graph created with NetworkX
+
+    Examples
+    --------
+    >>> K5 = nx.complete_graph(5)
+    >>> A = nx.nx_agraph.to_agraph(K5)
+
+    Notes
+    -----
+    If N has an dict N.graph_attr an attempt will be made first
+    to copy properties attached to the graph (see from_agraph)
+    and then updated with the calling arguments if any.
+    """
+    ...
+def write_dot(G: Graph[Hashable], path: str | TextIOBase) -> None:
+    """
+    Write NetworkX graph G to Graphviz dot format on path.
+
+    Parameters
+    ----------
+    G : graph
+       A networkx graph
+    path : filename
+       Filename or file handle to write
+
+    Notes
+    -----
+    To use a specific graph layout, call ``A.layout`` prior to `write_dot`.
+    Note that some graphviz layouts are not guaranteed to be deterministic,
+    see https://gitlab.com/graphviz/graphviz/-/issues/1767 for more info.
+    """
+    ...
 @_dispatchable
 def read_dot(path: str | TextIOBase) -> Graph[Incomplete]:
     """

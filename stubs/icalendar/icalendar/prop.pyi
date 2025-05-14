@@ -99,10 +99,7 @@ DURATION_REGEX: Final[Pattern[str]]
 WEEKDAY_RULE: Final[Pattern[str]]
 
 class vBinary:
-    """
-    Binary property values are base 64 encoded.
-    
-    """
+    """Binary property values are base 64 encoded."""
     obj: str
     params: Parameters
     def __init__(self, obj: str | bytes) -> None: ...
@@ -160,10 +157,7 @@ class vBoolean(int):
     def from_ical(cls, ical: ICAL_TYPE) -> bool: ...
 
 class vText(str):
-    """
-    Simple text.
-    
-    """
+    """Simple text."""
     encoding: str
     params: Parameters
     def __new__(cls, value: ICAL_TYPE, encoding: str = "utf-8", params: SupportsKeysAndGetItem[str, str] = {}) -> Self: ...
@@ -185,13 +179,6 @@ class vCalAddress(str):
         This value type is used to identify properties that contain a
         calendar user address.
 
-    Format Definition:
-        This value type is defined by the following notation:
-
-    .. code-block:: text
-
-        cal-address        = uri
-
     Description:
         The value is a URI as defined by [RFC3986] or any other
         IANA-registered form for a URI.  When used to address an Internet
@@ -199,17 +186,34 @@ class vCalAddress(str):
         mailto URI, as defined by [RFC2368].
 
     Example:
+        ``mailto:`` is in front of the address.
 
-    .. code-block:: text
+        .. code-block:: text
 
-        mailto:jane_doe@example.com
+            mailto:jane_doe@example.com
 
-    .. code-block:: pycon
+        Parsing:
 
-        >>> from icalendar.prop import vCalAddress
-        >>> cal_address = vCalAddress.from_ical('mailto:jane_doe@example.com')
-        >>> cal_address
-        vCalAddress('mailto:jane_doe@example.com')
+        .. code-block:: pycon
+
+            >>> from icalendar import vCalAddress
+            >>> cal_address = vCalAddress.from_ical('mailto:jane_doe@example.com')
+            >>> cal_address
+            vCalAddress('mailto:jane_doe@example.com')
+
+        Encoding:
+
+        .. code-block:: pycon
+
+            >>> from icalendar import vCalAddress, Event
+            >>> event = Event()
+            >>> jane = vCalAddress("mailto:jane_doe@example.com")
+            >>> jane.name = "Jane"
+            >>> event["organizer"] = jane
+            >>> print(event.to_ical())
+            BEGIN:VEVENT
+            ORGANIZER;CN=Jane:mailto:jane_doe@example.com
+            END:VEVENT
     """
     params: Parameters
     def __new__(cls, value: ICAL_TYPE, encoding="utf-8", params: SupportsKeysAndGetItem[str, str] = {}) -> Self: ...
@@ -222,12 +226,46 @@ class vCalAddress(str):
         ...
     @property
     def name(self) -> str:
-        """The CN parameter or an empty string."""
+        """
+        Specify the common name to be associated with the calendar user specified.
+
+        Description:
+            This parameter can be specified on properties with a
+            CAL-ADDRESS value type.  The parameter specifies the common name
+            to be associated with the calendar user specified by the property.
+            The parameter value is text.  The parameter value can be used for
+            display text to be associated with the calendar address specified
+            by the property.
+        """
         ...
     @name.setter
-    def name(self, value: str) -> None: ...
+    def name(self, value: str) -> None:
+        """
+        Specify the common name to be associated with the calendar user specified.
+
+        Description:
+            This parameter can be specified on properties with a
+            CAL-ADDRESS value type.  The parameter specifies the common name
+            to be associated with the calendar user specified by the property.
+            The parameter value is text.  The parameter value can be used for
+            display text to be associated with the calendar address specified
+            by the property.
+        """
+        ...
     @name.deleter
-    def name(self) -> None: ...
+    def name(self) -> None:
+        """
+        Specify the common name to be associated with the calendar user specified.
+
+        Description:
+            This parameter can be specified on properties with a
+            CAL-ADDRESS value type.  The parameter specifies the common name
+            to be associated with the calendar user specified by the property.
+            The parameter value is text.  The parameter value can be used for
+            display text to be associated with the calendar address specified
+            by the property.
+        """
+        ...
     CN: property
     CUTYPE: property
     DELEGATED_FROM: property
@@ -347,10 +385,7 @@ class vInt(int):
     def from_ical(cls, ical: ICAL_TYPE) -> Self: ...
 
 class vDDDLists:
-    """
-    A list of vDDDTypes values.
-    
-    """
+    """A list of vDDDTypes values."""
     params: Parameters
     dts: list[vDDDTypes]
     def __init__(self, dt_list: Iterable[_AnyTimeType] | _AnyTimeType) -> None: ...
@@ -367,7 +402,9 @@ class vCategory:
     def to_ical(self) -> bytes: ...
     @staticmethod
     def from_ical(ical: ICAL_TYPE) -> str: ...
-    def __eq__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> bool:
+        """self == other"""
+        ...
     RANGE: property
     RELATED: property
     TZID: property
@@ -662,7 +699,9 @@ class vPeriod(TimeBase):
     @staticmethod
     def from_ical(ical: str, timezone: datetime.timezone | str | None = None) -> tuple[Any, Any]: ...
     @property
-    def dt(self) -> _PeriodTuple: ...
+    def dt(self) -> _PeriodTuple:
+        """Make this cooperate with the other vDDDTypes."""
+        ...
     FBTYPE: property
 
 class vWeekday(str):
@@ -703,10 +742,7 @@ class vWeekday(str):
     def from_ical(cls, ical: ICAL_TYPE) -> Self: ...
 
 class vFrequency(str):
-    """
-    A simple class that catches illegal values.
-    
-    """
+    """A simple class that catches illegal values."""
     frequencies: Final[CaselessDict[str]]
     params: Parameters
     def __new__(cls, value: ICAL_TYPE, encoding: str = "utf-8", params: SupportsKeysAndGetItem[str, str] = {}) -> Self: ...
@@ -765,12 +801,26 @@ class vSkip(vText, Enum):
     These are defined in :rfc:`7529`.
 
     OMIT  is the default value.
+
+    Examples:
+
+    .. code-block:: pycon
+
+        >>> from icalendar import vSkip
+        >>> vSkip.OMIT
+        vSkip('OMIT')
+        >>> vSkip.FORWARD
+        vSkip('FORWARD')
+        >>> vSkip.BACKWARD
+        vSkip('BACKWARD')
     """
     OMIT = "OMIT"
     FORWARD = "FORWARD"
     BACKWARD = "BACKWARD"
 
-    def __reduce_ex__(self, _p: Unused) -> tuple[Self, tuple[str]]: ...
+    def __reduce_ex__(self, _p: Unused) -> tuple[Self, tuple[str]]:
+        """For pickling."""
+        ...
 
 # The type of the values depend on the key. Each key maps to a v* class, and
 # the allowed types are the types that the corresponding v* class can parse.
@@ -1195,10 +1245,7 @@ class TypesFactory(CaselessDict[_PropType]):
     all_types: tuple[_PropType, ...]
     types_map: CaselessDict[str]
     def for_property(self, name: str) -> _PropType:
-        """
-        Returns a the default type for a property or parameter
-        
-        """
+        """Returns a the default type for a property or parameter"""
         ...
     # value is str | bytes, depending on what the v* class supports
     def to_ical(self, name: str, value: Any) -> bytes:

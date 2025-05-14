@@ -52,8 +52,19 @@ class Bdb:
     else:
         def __init__(self, skip: Iterable[str] | None = None) -> None: ...
 
-    def canonic(self, filename: str) -> str: ...
-    def reset(self) -> None: ...
+    def canonic(self, filename: str) -> str:
+        """
+        Return canonical form of filename.
+
+        For real filenames, the canonical form is a case-normalized (on
+        case insensitive filesystems) absolute path.  'Filenames' with
+        angle brackets, such as "<stdin>", generated in interactive
+        mode, are returned unchanged.
+        """
+        ...
+    def reset(self) -> None:
+        """Set values of attributes as ready to start debugging."""
+        ...
     if sys.version_info >= (3, 12):
         @contextmanager
         def set_enterframe(self, frame: FrameType) -> Iterator[None]: ...
@@ -301,10 +312,30 @@ class Bdb:
         ...
     def run(
         self, cmd: str | CodeType, globals: dict[str, Any] | None = None, locals: Mapping[str, Any] | None = None
-    ) -> None: ...
-    def runeval(self, expr: str, globals: dict[str, Any] | None = None, locals: Mapping[str, Any] | None = None) -> None: ...
-    def runctx(self, cmd: str | CodeType, globals: dict[str, Any] | None, locals: Mapping[str, Any] | None) -> None: ...
-    def runcall(self, func: Callable[_P, _T], /, *args: _P.args, **kwds: _P.kwargs) -> _T | None: ...
+    ) -> None:
+        """
+        Debug a statement executed via the exec() function.
+
+        globals defaults to __main__.dict; locals defaults to globals.
+        """
+        ...
+    def runeval(self, expr: str, globals: dict[str, Any] | None = None, locals: Mapping[str, Any] | None = None) -> None:
+        """
+        Debug an expression executed via the eval() function.
+
+        globals defaults to __main__.dict; locals defaults to globals.
+        """
+        ...
+    def runctx(self, cmd: str | CodeType, globals: dict[str, Any] | None, locals: Mapping[str, Any] | None) -> None:
+        """For backwards-compatibility.  Defers to run()."""
+        ...
+    def runcall(self, func: Callable[_P, _T], /, *args: _P.args, **kwds: _P.kwargs) -> _T | None:
+        """
+        Debug a single function call.
+
+        Return the result of the function call.
+        """
+        ...
     if sys.version_info >= (3, 14):
         def start_trace(self) -> None: ...
         def stop_trace(self) -> None: ...

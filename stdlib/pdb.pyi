@@ -383,7 +383,16 @@ def runeval(expression: str, globals: dict[str, Any] | None = None, locals: Mapp
     """
     ...
 def runctx(statement: str, globals: dict[str, Any], locals: Mapping[str, Any]) -> None: ...
-def runcall(func: Callable[_P, _T], *args: _P.args, **kwds: _P.kwargs) -> _T | None: ...
+def runcall(func: Callable[_P, _T], *args: _P.args, **kwds: _P.kwargs) -> _T | None:
+    """
+    Call the function (a function or method object, not a string)
+    with the given arguments.
+
+    When runcall() returns, it returns whatever the function call
+    returned. The debugger prompt appears as soon as the function is
+    entered.
+    """
+    ...
 
 if sys.version_info >= (3, 14):
     def set_default_backend(backend: _Backend) -> None: ...
@@ -392,10 +401,33 @@ if sys.version_info >= (3, 14):
     async def set_trace_async(*, header: str | None = None, commands: Iterable[str] | None = None) -> None: ...
 
 else:
-    def set_trace(*, header: str | None = None) -> None: ...
+    def set_trace(*, header: str | None = None) -> None:
+        """
+        Enter the debugger at the calling stack frame.
 
-def post_mortem(t: TracebackType | None = None) -> None: ...
-def pm() -> None: ...
+        This is useful to hard-code a breakpoint at a given point in a
+        program, even if the code is not otherwise being debugged (e.g. when
+        an assertion fails). If given, *header* is printed to the console
+        just before debugging begins.
+        """
+        ...
+
+def post_mortem(t: TracebackType | None = None) -> None:
+    """
+    Enter post-mortem debugging of the given *traceback*, or *exception*
+    object.
+
+    If no traceback is given, it uses the one of the exception that is
+    currently being handled (an exception must be being handled if the
+    default is to be used).
+
+    If `t` is an exception object, the `exceptions` command makes it possible to
+    list and inspect its chained exceptions (if any).
+    """
+    ...
+def pm() -> None:
+    """Enter post-mortem debugging of the traceback found in sys.last_exc."""
+    ...
 
 class Pdb(Bdb, Cmd):
     # Everything here is undocumented, except for __init__
@@ -487,7 +519,14 @@ class Pdb(Bdb, Cmd):
     if sys.version_info >= (3, 14):
         def checkline(self, filename: str, lineno: int, module_globals: _ModuleGlobals | None = None) -> int: ...
     else:
-        def checkline(self, filename: str, lineno: int) -> int: ...
+        def checkline(self, filename: str, lineno: int) -> int:
+            """
+            Check whether specified line seems to be executable.
+
+            Return `lineno` if it is, 0 if not (e.g. a docstring, comment, blank
+            line or EOF). Warning: testing is not comprehensive.
+            """
+            ...
 
     def _getval(self, arg: str) -> object: ...
     if sys.version_info >= (3, 14):

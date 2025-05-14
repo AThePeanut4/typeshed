@@ -163,7 +163,9 @@ class Instruction(_Instruction):
             """
             ...
         @property
-        def is_jump_target(self) -> bool: ...
+        def is_jump_target(self) -> bool:
+            """True if other code jumps to here, otherwise False"""
+            ...
     if sys.version_info >= (3, 14):
         @staticmethod
         def make(
