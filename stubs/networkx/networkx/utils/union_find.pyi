@@ -27,34 +27,8 @@ class UnionFind:
     """
     parents: Incomplete
     weights: Incomplete
-    def __init__(self, elements: Incomplete | None = None) -> None:
-        """
-        Create a new empty union-find structure.
-
-        If *elements* is an iterable, this structure will be initialized
-        with the discrete partition on the given set of elements.
-        """
-        ...
-    def __getitem__(self, object):
-        """Find and return the name of the set containing the object."""
-        ...
-    def __iter__(self) -> Iterator[Incomplete]:
-        """Iterate through all items ever found or unioned by this structure."""
-        ...
-    def to_sets(self) -> Generator[Incomplete, Incomplete, None]:
-        """
-        Iterates over the sets stored in this structure.
-
-        For example::
-
-            >>> partition = UnionFind("xyz")
-            >>> sorted(map(sorted, partition.to_sets()))
-            [['x'], ['y'], ['z']]
-            >>> partition.union("x", "y")
-            >>> sorted(map(sorted, partition.to_sets()))
-            [['x', 'y'], ['z']]
-        """
-        ...
-    def union(self, *objects):
-        """Find the sets containing the objects and merge them all."""
-        ...
+    def __init__(self, elements=None) -> None: ...
+    def __getitem__(self, object): ...
+    def __iter__(self) -> Iterator[Incomplete]: ...
+    def to_sets(self) -> Generator[Incomplete, Incomplete, None]: ...
+    def union(self, *objects): ...

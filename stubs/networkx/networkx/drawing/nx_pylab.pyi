@@ -37,219 +37,8 @@ __all__ = [
     "draw_forceatlas2",
 ]
 
-def draw(G, pos: Incomplete | None = None, ax: Incomplete | None = None, **kwds) -> None:
-    """
-    Draw the graph G with Matplotlib.
-
-    Draw the graph as a simple representation with no node
-    labels or edge labels and using the full Matplotlib figure area
-    and no axis labels by default.  See draw_networkx() for more
-    full-featured drawing that allows title, axis labels etc.
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    pos : dictionary, optional
-        A dictionary with nodes as keys and positions as values.
-        If not specified a spring layout positioning will be computed.
-        See :py:mod:`networkx.drawing.layout` for functions that
-        compute node positions.
-
-    ax : Matplotlib Axes object, optional
-        Draw the graph in specified Matplotlib axes.
-
-    kwds : optional keywords
-        See networkx.draw_networkx() for a description of optional keywords.
-
-    Examples
-    --------
-    >>> G = nx.dodecahedral_graph()
-    >>> nx.draw(G)
-    >>> nx.draw(G, pos=nx.spring_layout(G))  # use spring layout
-
-    See Also
-    --------
-    draw_networkx
-    draw_networkx_nodes
-    draw_networkx_edges
-    draw_networkx_labels
-    draw_networkx_edge_labels
-
-    Notes
-    -----
-    This function has the same name as pylab.draw and pyplot.draw
-    so beware when using `from networkx import *`
-
-    since you might overwrite the pylab.draw function.
-
-    With pyplot use
-
-    >>> import matplotlib.pyplot as plt
-    >>> G = nx.dodecahedral_graph()
-    >>> nx.draw(G)  # networkx draw()
-    >>> plt.draw()  # pyplot draw()
-
-    Also see the NetworkX drawing examples at
-    https://networkx.org/documentation/latest/auto_examples/index.html
-    """
-    ...
-def draw_networkx(
-    G, pos: Incomplete | None = None, arrows: Incomplete | None = None, with_labels: bool = True, **kwds
-) -> None:
-    r"""
-    Draw the graph G using Matplotlib.
-
-    Draw the graph with Matplotlib with options for node positions,
-    labeling, titles, and many other drawing features.
-    See draw() for simple drawing without labels or axes.
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    pos : dictionary, optional
-        A dictionary with nodes as keys and positions as values.
-        If not specified a spring layout positioning will be computed.
-        See :py:mod:`networkx.drawing.layout` for functions that
-        compute node positions.
-
-    arrows : bool or None, optional (default=None)
-        If `None`, directed graphs draw arrowheads with
-        `~matplotlib.patches.FancyArrowPatch`, while undirected graphs draw edges
-        via `~matplotlib.collections.LineCollection` for speed.
-        If `True`, draw arrowheads with FancyArrowPatches (bendable and stylish).
-        If `False`, draw edges using LineCollection (linear and fast).
-        For directed graphs, if True draw arrowheads.
-        Note: Arrows will be the same color as edges.
-
-    arrowstyle : str (default='-\|>' for directed graphs)
-        For directed graphs, choose the style of the arrowsheads.
-        For undirected graphs default to '-'
-
-        See `matplotlib.patches.ArrowStyle` for more options.
-
-    arrowsize : int or list (default=10)
-        For directed graphs, choose the size of the arrow head's length and
-        width. A list of values can be passed in to assign a different size for arrow head's length and width.
-        See `matplotlib.patches.FancyArrowPatch` for attribute `mutation_scale`
-        for more info.
-
-    with_labels :  bool (default=True)
-        Set to True to draw labels on the nodes.
-
-    ax : Matplotlib Axes object, optional
-        Draw the graph in the specified Matplotlib axes.
-
-    nodelist : list (default=list(G))
-        Draw only specified nodes
-
-    edgelist : list (default=list(G.edges()))
-        Draw only specified edges
-
-    node_size : scalar or array (default=300)
-        Size of nodes.  If an array is specified it must be the
-        same length as nodelist.
-
-    node_color : color or array of colors (default='#1f78b4')
-        Node color. Can be a single color or a sequence of colors with the same
-        length as nodelist. Color can be string or rgb (or rgba) tuple of
-        floats from 0-1. If numeric values are specified they will be
-        mapped to colors using the cmap and vmin,vmax parameters. See
-        matplotlib.scatter for more details.
-
-    node_shape :  string (default='o')
-        The shape of the node.  Specification is as matplotlib.scatter
-        marker, one of 'so^>v<dph8'.
-
-    alpha : float or None (default=None)
-        The node and edge transparency
-
-    cmap : Matplotlib colormap, optional
-        Colormap for mapping intensities of nodes
-
-    vmin,vmax : float, optional
-        Minimum and maximum for node colormap scaling
-
-    linewidths : scalar or sequence (default=1.0)
-        Line width of symbol border
-
-    width : float or array of floats (default=1.0)
-        Line width of edges
-
-    edge_color : color or array of colors (default='k')
-        Edge color. Can be a single color or a sequence of colors with the same
-        length as edgelist. Color can be string or rgb (or rgba) tuple of
-        floats from 0-1. If numeric values are specified they will be
-        mapped to colors using the edge_cmap and edge_vmin,edge_vmax parameters.
-
-    edge_cmap : Matplotlib colormap, optional
-        Colormap for mapping intensities of edges
-
-    edge_vmin,edge_vmax : floats, optional
-        Minimum and maximum for edge colormap scaling
-
-    style : string (default=solid line)
-        Edge line style e.g.: '-', '--', '-.', ':'
-        or words like 'solid' or 'dashed'.
-        (See `matplotlib.patches.FancyArrowPatch`: `linestyle`)
-
-    labels : dictionary (default=None)
-        Node labels in a dictionary of text labels keyed by node
-
-    font_size : int (default=12 for nodes, 10 for edges)
-        Font size for text labels
-
-    font_color : color (default='k' black)
-        Font color string. Color can be string or rgb (or rgba) tuple of
-        floats from 0-1.
-
-    font_weight : string (default='normal')
-        Font weight
-
-    font_family : string (default='sans-serif')
-        Font family
-
-    label : string, optional
-        Label for graph legend
-
-    hide_ticks : bool, optional
-        Hide ticks of axes. When `True` (the default), ticks and ticklabels
-        are removed from the axes. To set ticks and tick labels to the pyplot default,
-        use ``hide_ticks=False``.
-
-    kwds : optional keywords
-        See networkx.draw_networkx_nodes(), networkx.draw_networkx_edges(), and
-        networkx.draw_networkx_labels() for a description of optional keywords.
-
-    Notes
-    -----
-    For directed graphs, arrows  are drawn at the head end.  Arrows can be
-    turned off with keyword arrows=False.
-
-    Examples
-    --------
-    >>> G = nx.dodecahedral_graph()
-    >>> nx.draw(G)
-    >>> nx.draw(G, pos=nx.spring_layout(G))  # use spring layout
-
-    >>> import matplotlib.pyplot as plt
-    >>> limits = plt.axis("off")  # turn off axis
-
-    Also see the NetworkX drawing examples at
-    https://networkx.org/documentation/latest/auto_examples/index.html
-
-    See Also
-    --------
-    draw
-    draw_networkx_nodes
-    draw_networkx_edges
-    draw_networkx_labels
-    draw_networkx_edge_labels
-    """
-    ...
+def draw(G, pos=None, ax=None, **kwds) -> None: ...
+def draw_networkx(G, pos=None, arrows=None, with_labels: bool = True, **kwds) -> None: ...
 def draw_networkx_nodes(
     G,
     pos,
@@ -257,15 +46,15 @@ def draw_networkx_nodes(
     node_size: Incomplete | int = 300,
     node_color: str = "#1f78b4",
     node_shape: str = "o",
-    alpha: Incomplete | None = None,
-    cmap: Incomplete | None = None,
-    vmin: Incomplete | None = None,
-    vmax: Incomplete | None = None,
-    ax: Incomplete | None = None,
-    linewidths: Incomplete | None = None,
-    edgecolors: Incomplete | None = None,
-    label: Incomplete | None = None,
-    margins: Incomplete | None = None,
+    alpha=None,
+    cmap=None,
+    vmin=None,
+    vmax=None,
+    ax=None,
+    linewidths=None,
+    edgecolors=None,
+    label=None,
+    margins=None,
     hide_ticks: bool = True,
 ):
     """
@@ -362,19 +151,19 @@ def draw_networkx_nodes(
 def draw_networkx_edges(
     G,
     pos,
-    edgelist: Incomplete | None = None,
+    edgelist=None,
     width: float = 1.0,
     edge_color: str = "k",
     style: str = "solid",
-    alpha: Incomplete | None = None,
-    arrowstyle: Incomplete | None = None,
+    alpha=None,
+    arrowstyle=None,
     arrowsize: int = 10,
-    edge_cmap: Incomplete | None = None,
-    edge_vmin: Incomplete | None = None,
-    edge_vmax: Incomplete | None = None,
-    ax: Incomplete | None = None,
-    arrows: Incomplete | None = None,
-    label: Incomplete | None = None,
+    edge_cmap=None,
+    edge_vmin=None,
+    edge_vmax=None,
+    ax=None,
+    arrows=None,
+    label=None,
     node_size: Incomplete | int = 300,
     nodelist: list[Incomplete] | None = None,
     node_shape: str = "o",
@@ -548,16 +337,16 @@ def draw_networkx_edges(
 def draw_networkx_labels(
     G,
     pos,
-    labels: Incomplete | None = None,
+    labels=None,
     font_size: int = 12,
     font_color: str = "k",
     font_family: str = "sans-serif",
     font_weight: str = "normal",
-    alpha: Incomplete | None = None,
-    bbox: Incomplete | None = None,
+    alpha=None,
+    bbox=None,
     horizontalalignment: str = "center",
     verticalalignment: str = "center",
-    ax: Incomplete | None = None,
+    ax=None,
     clip_on: bool = True,
     hide_ticks: bool = True,
 ):
@@ -641,419 +430,29 @@ def draw_networkx_labels(
 def draw_networkx_edge_labels(
     G,
     pos,
-    edge_labels: Incomplete | None = None,
+    edge_labels=None,
     label_pos: float = 0.5,
     font_size: int = 10,
     font_color: str = "k",
     font_family: str = "sans-serif",
     font_weight: str = "normal",
-    alpha: Incomplete | None = None,
-    bbox: Incomplete | None = None,
+    alpha=None,
+    bbox=None,
     horizontalalignment: str = "center",
     verticalalignment: str = "center",
-    ax: Incomplete | None = None,
+    ax=None,
     rotate: bool = True,
     clip_on: bool = True,
     node_size: int = 300,
     nodelist: list[Incomplete] | None = None,
     connectionstyle: str = "arc3",
     hide_ticks: bool = True,
-):
-    """
-    Draw edge labels.
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    pos : dictionary
-        A dictionary with nodes as keys and positions as values.
-        Positions should be sequences of length 2.
-
-    edge_labels : dictionary (default=None)
-        Edge labels in a dictionary of labels keyed by edge two-tuple.
-        Only labels for the keys in the dictionary are drawn.
-
-    label_pos : float (default=0.5)
-        Position of edge label along edge (0=head, 0.5=center, 1=tail)
-
-    font_size : int (default=10)
-        Font size for text labels
-
-    font_color : color (default='k' black)
-        Font color string. Color can be string or rgb (or rgba) tuple of
-        floats from 0-1.
-
-    font_weight : string (default='normal')
-        Font weight
-
-    font_family : string (default='sans-serif')
-        Font family
-
-    alpha : float or None (default=None)
-        The text transparency
-
-    bbox : Matplotlib bbox, optional
-        Specify text box properties (e.g. shape, color etc.) for edge labels.
-        Default is {boxstyle='round', ec=(1.0, 1.0, 1.0), fc=(1.0, 1.0, 1.0)}.
-
-    horizontalalignment : string (default='center')
-        Horizontal alignment {'center', 'right', 'left'}
-
-    verticalalignment : string (default='center')
-        Vertical alignment {'center', 'top', 'bottom', 'baseline', 'center_baseline'}
-
-    ax : Matplotlib Axes object, optional
-        Draw the graph in the specified Matplotlib axes.
-
-    rotate : bool (default=True)
-        Rotate edge labels to lie parallel to edges
-
-    clip_on : bool (default=True)
-        Turn on clipping of edge labels at axis boundaries
-
-    node_size : scalar or array (default=300)
-        Size of nodes.  If an array it must be the same length as nodelist.
-
-    nodelist : list, optional (default=G.nodes())
-       This provides the node order for the `node_size` array (if it is an array).
-
-    connectionstyle : string or iterable of strings (default="arc3")
-        Pass the connectionstyle parameter to create curved arc of rounding
-        radius rad. For example, connectionstyle='arc3,rad=0.2'.
-        See `matplotlib.patches.ConnectionStyle` and
-        `matplotlib.patches.FancyArrowPatch` for more info.
-        If Iterable, index indicates i'th edge key of MultiGraph
-
-    hide_ticks : bool, optional
-        Hide ticks of axes. When `True` (the default), ticks and ticklabels
-        are removed from the axes. To set ticks and tick labels to the pyplot default,
-        use ``hide_ticks=False``.
-
-    Returns
-    -------
-    dict
-        `dict` of labels keyed by edge
-
-    Examples
-    --------
-    >>> G = nx.dodecahedral_graph()
-    >>> edge_labels = nx.draw_networkx_edge_labels(G, pos=nx.spring_layout(G))
-
-    Also see the NetworkX drawing examples at
-    https://networkx.org/documentation/latest/auto_examples/index.html
-
-    See Also
-    --------
-    draw
-    draw_networkx
-    draw_networkx_nodes
-    draw_networkx_edges
-    draw_networkx_labels
-    """
-    ...
-def draw_circular(G, **kwargs) -> None:
-    """
-    Draw the graph `G` with a circular layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.circular_layout(G), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Notes
-    -----
-    The layout is computed each time this function is called. For
-    repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.circular_layout` directly and reuse the result::
-
-        >>> G = nx.complete_graph(5)
-        >>> pos = nx.circular_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.path_graph(5)
-    >>> nx.draw_circular(G)
-
-    See Also
-    --------
-    :func:`~networkx.drawing.layout.circular_layout`
-    """
-    ...
-def draw_kamada_kawai(G, **kwargs) -> None:
-    """
-    Draw the graph `G` with a Kamada-Kawai force-directed layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.kamada_kawai_layout(G), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Notes
-    -----
-    The layout is computed each time this function is called.
-    For repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.kamada_kawai_layout` directly and reuse the
-    result::
-
-        >>> G = nx.complete_graph(5)
-        >>> pos = nx.kamada_kawai_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.path_graph(5)
-    >>> nx.draw_kamada_kawai(G)
-
-    See Also
-    --------
-    :func:`~networkx.drawing.layout.kamada_kawai_layout`
-    """
-    ...
-def draw_random(G, **kwargs) -> None:
-    """
-    Draw the graph `G` with a random layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.random_layout(G), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Notes
-    -----
-    The layout is computed each time this function is called.
-    For repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.random_layout` directly and reuse the result::
-
-        >>> G = nx.complete_graph(5)
-        >>> pos = nx.random_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.lollipop_graph(4, 3)
-    >>> nx.draw_random(G)
-
-    See Also
-    --------
-    :func:`~networkx.drawing.layout.random_layout`
-    """
-    ...
-def draw_spectral(G, **kwargs) -> None:
-    """
-    Draw the graph `G` with a spectral 2D layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.spectral_layout(G), **kwargs)
-
-    For more information about how node positions are determined, see
-    `~networkx.drawing.layout.spectral_layout`.
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Notes
-    -----
-    The layout is computed each time this function is called.
-    For repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.spectral_layout` directly and reuse the result::
-
-        >>> G = nx.complete_graph(5)
-        >>> pos = nx.spectral_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.path_graph(5)
-    >>> nx.draw_spectral(G)
-
-    See Also
-    --------
-    :func:`~networkx.drawing.layout.spectral_layout`
-    """
-    ...
-def draw_spring(G, **kwargs) -> None:
-    """
-    Draw the graph `G` with a spring layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.spring_layout(G), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Notes
-    -----
-    `~networkx.drawing.layout.spring_layout` is also the default layout for
-    `draw`, so this function is equivalent to `draw`.
-
-    The layout is computed each time this function is called.
-    For repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.spring_layout` directly and reuse the result::
-
-        >>> G = nx.complete_graph(5)
-        >>> pos = nx.spring_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.path_graph(20)
-    >>> nx.draw_spring(G)
-
-    See Also
-    --------
-    draw
-    :func:`~networkx.drawing.layout.spring_layout`
-    """
-    ...
-def draw_shell(G, nlist: Incomplete | None = None, **kwargs) -> None:
-    """
-    Draw networkx graph `G` with shell layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.shell_layout(G, nlist=nlist), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-        A networkx graph
-
-    nlist : list of list of nodes, optional
-        A list containing lists of nodes representing the shells.
-        Default is `None`, meaning all nodes are in a single shell.
-        See `~networkx.drawing.layout.shell_layout` for details.
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Notes
-    -----
-    The layout is computed each time this function is called.
-    For repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.shell_layout` directly and reuse the result::
-
-        >>> G = nx.complete_graph(5)
-        >>> pos = nx.shell_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> shells = [[0], [1, 2, 3]]
-    >>> nx.draw_shell(G, nlist=shells)
-
-    See Also
-    --------
-    :func:`~networkx.drawing.layout.shell_layout`
-    """
-    ...
-def draw_planar(G, **kwargs) -> None:
-    """
-    Draw a planar networkx graph `G` with planar layout.
-
-    This is a convenience function equivalent to::
-
-        nx.draw(G, pos=nx.planar_layout(G), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-        A planar networkx graph
-
-    kwargs : optional keywords
-        See `draw_networkx` for a description of optional keywords.
-
-    Raises
-    ------
-    NetworkXException
-        When `G` is not planar
-
-    Notes
-    -----
-    The layout is computed each time this function is called.
-    For repeated drawing it is much more efficient to call
-    `~networkx.drawing.layout.planar_layout` directly and reuse the result::
-
-        >>> G = nx.path_graph(5)
-        >>> pos = nx.planar_layout(G)
-        >>> nx.draw(G, pos=pos)  # Draw the original graph
-        >>> # Draw a subgraph, reusing the same node positions
-        >>> nx.draw(G.subgraph([0, 1, 2]), pos=pos, node_color="red")
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> nx.draw_planar(G)
-
-    See Also
-    --------
-    :func:`~networkx.drawing.layout.planar_layout`
-    """
-    ...
-def draw_forceatlas2(G, **kwargs) -> None:
-    """
-    Draw a networkx graph with forceatlas2 layout.
-
-    This is a convenience function equivalent to::
-
-       nx.draw(G, pos=nx.forceatlas2_layout(G), **kwargs)
-
-    Parameters
-    ----------
-    G : graph
-       A networkx graph
-
-    kwargs : optional keywords
-       See networkx.draw_networkx() for a description of optional keywords,
-       with the exception of the pos parameter which is not used by this
-       function.
-    """
-    ...
+): ...
+def draw_circular(G, **kwargs) -> None: ...
+def draw_kamada_kawai(G, **kwargs) -> None: ...
+def draw_random(G, **kwargs) -> None: ...
+def draw_spectral(G, **kwargs) -> None: ...
+def draw_spring(G, **kwargs) -> None: ...
+def draw_shell(G, nlist=None, **kwargs) -> None: ...
+def draw_planar(G, **kwargs) -> None: ...
+def draw_forceatlas2(G, **kwargs) -> None: ...

@@ -300,29 +300,7 @@ class ArborescenceIterator:
     partition_key: str
     init_partition: Incomplete
 
-    def __init__(self, G, weight: str = "weight", minimum: bool = True, init_partition: Incomplete | None = None) -> None:
-        """
-        Initialize the iterator
-
-        Parameters
-        ----------
-        G : nx.DiGraph
-            The directed graph which we need to iterate trees over
-
-        weight : String, default = "weight"
-            The edge attribute used to store the weight of the edge
-
-        minimum : bool, default = True
-            Return the trees in increasing order while true and decreasing order
-            while false.
-
-        init_partition : tuple, default = None
-            In the case that certain edges have to be included or excluded from
-            the arborescences, `init_partition` should be in the form
-            `(included_edges, excluded_edges)` where each edges is a
-            `(u, v)`-tuple inside an iterable such as a list or set.
-        """
-        ...
+    def __init__(self, G, weight: str = "weight", minimum: bool = True, init_partition=None) -> None: ...
     partition_queue: Incomplete
 
     def __iter__(self) -> Iterator[Incomplete]:

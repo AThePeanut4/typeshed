@@ -1,7 +1,6 @@
 """Public API for tf._api.v2.types.experimental namespace"""
 
 import abc
-from _typeshed import Incomplete
 from typing import Any, Generic, TypeVar, overload
 from typing_extensions import ParamSpec
 
@@ -299,4 +298,4 @@ class PolymorphicFunction(Callable[_P, _R_co], metaclass=abc.ABCMeta):
 
 GenericFunction = PolymorphicFunction
 
-def __getattr__(name: str) -> Incomplete: ...
+def __getattr__(name: str): ...  # incomplete module

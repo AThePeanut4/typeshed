@@ -1,7 +1,7 @@
 """Utilities needed to emulate Python's interactive interpreter."""
 
 import sys
-from codeop import CommandCompiler
+from codeop import CommandCompiler, compile_command as compile_command
 from collections.abc import Callable
 from types import CodeType
 from typing import Any
@@ -243,41 +243,4 @@ else:
         readfunc: Callable[[str], str] | None = None,
         local: dict[str, Any] | None = None,
         exitmsg: str | None = None,
-    ) -> None:
-        """
-        Closely emulate the interactive Python interpreter.
-
-        This is a backwards compatible interface to the InteractiveConsole
-        class.  When readfunc is not specified, it attempts to import the
-        readline module to enable GNU readline if it is available.
-
-        Arguments (all optional, all default to None):
-
-        banner -- passed to InteractiveConsole.interact()
-        readfunc -- if not None, replaces InteractiveConsole.raw_input()
-        local -- passed to InteractiveInterpreter.__init__()
-        exitmsg -- passed to InteractiveConsole.interact()
-        """
-        ...
-
-def compile_command(source: str, filename: str = "<input>", symbol: str = "single") -> CodeType | None:
-    r"""
-    Compile a command and determine whether it is incomplete.
-
-    Arguments:
-
-    source -- the source string; may contain \n characters
-    filename -- optional filename from which source was read; default
-                "<input>"
-    symbol -- optional grammar start symbol; "single" (default), "exec"
-              or "eval"
-
-    Return value / exceptions raised:
-
-    - Return a code object if the command is complete and valid
-    - Return None if the command is incomplete
-    - Raise SyntaxError, ValueError or OverflowError if the command is a
-      syntax error (OverflowError and ValueError can be produced by
-      malformed literals).
-    """
-    ...
+    ) -> None: ...

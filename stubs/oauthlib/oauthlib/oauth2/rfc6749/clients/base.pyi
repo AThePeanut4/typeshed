@@ -292,8 +292,8 @@ class Client:
         ...
     def prepare_token_revocation_request(
         self,
-        revocation_url,
-        token,
+        revocation_url: str,
+        token: str,
         token_type_hint: Literal["access_token", "refresh_token"] | None = "access_token",
         body: str = "",
         callback: Callable[[Incomplete], Incomplete] | None = None,

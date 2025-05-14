@@ -1,7 +1,6 @@
 """Public API for tf._api.v2.train.experimental namespace"""
 
 import abc
-from _typeshed import Incomplete
 from typing_extensions import Self
 
 from tensorflow.python.trackable.base import Trackable
@@ -61,4 +60,4 @@ class PythonState(Trackable, metaclass=abc.ABCMeta):
         """Callback to deserialize the object."""
         ...
 
-def __getattr__(name: str) -> Incomplete: ...
+def __getattr__(name: str): ...  # incomplete module

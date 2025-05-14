@@ -1,7 +1,3 @@
-"""Eigenvalue spectrum of graphs."""
-
-from _typeshed import Incomplete
-
 from networkx.utils.backends import _dispatchable
 
 __all__ = [
@@ -136,31 +132,4 @@ def modularity_spectrum(G):
     """
     ...
 @_dispatchable
-def bethe_hessian_spectrum(G, r: Incomplete | None = None):
-    """
-    Returns eigenvalues of the Bethe Hessian matrix of G.
-
-    Parameters
-    ----------
-    G : Graph
-       A NetworkX Graph or DiGraph
-
-    r : float
-       Regularizer parameter
-
-    Returns
-    -------
-    evals : NumPy array
-      Eigenvalues
-
-    See Also
-    --------
-    bethe_hessian_matrix
-
-    References
-    ----------
-    .. [1] A. Saade, F. Krzakala and L. Zdeborová
-       "Spectral clustering of graphs with the bethe hessian",
-       Advances in Neural Information Processing Systems. 2014.
-    """
-    ...
+def bethe_hessian_spectrum(G, r=None): ...

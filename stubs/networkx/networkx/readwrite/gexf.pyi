@@ -122,43 +122,7 @@ def generate_gexf(
     """
     ...
 @_dispatchable
-def read_gexf(path, node_type: Incomplete | None = None, relabel: bool = False, version: str = "1.2draft"):
-    """
-    Read graph in GEXF format from path.
-
-    "GEXF (Graph Exchange XML Format) is a language for describing
-    complex networks structures, their associated data and dynamics" [1]_.
-
-    Parameters
-    ----------
-    path : file or string
-       File or file name to read.
-       File names ending in .gz or .bz2 will be decompressed.
-    node_type: Python type (default: None)
-       Convert node ids to this type if not None.
-    relabel : bool (default: False)
-       If True relabel the nodes to use the GEXF node "label" attribute
-       instead of the node "id" attribute as the NetworkX node label.
-    version : string (default: 1.2draft)
-    Version of GEFX File Format (see http://gexf.net/schema.html)
-       Supported values: "1.1draft", "1.2draft"
-
-    Returns
-    -------
-    graph: NetworkX graph
-        If no parallel edges are found a Graph or DiGraph is returned.
-        Otherwise a MultiGraph or MultiDiGraph is returned.
-
-    Notes
-    -----
-    This implementation does not support mixed graphs (directed and undirected
-    edges together).
-
-    References
-    ----------
-    .. [1] GEXF File Format, http://gexf.net/
-    """
-    ...
+def read_gexf(path, node_type=None, relabel: bool = False, version: str = "1.2draft"): ...
 
 class GEXF:
     versions: Incomplete
@@ -182,9 +146,7 @@ class GEXFWriter(GEXF):
     attr_id: Incomplete
     all_edge_ids: Incomplete
     attr: Incomplete
-    def __init__(
-        self, graph: Incomplete | None = None, encoding: str = "utf-8", prettyprint: bool = True, version: str = "1.2draft"
-    ) -> None: ...
+    def __init__(self, graph=None, encoding: str = "utf-8", prettyprint: bool = True, version: str = "1.2draft") -> None: ...
     graph_element: Incomplete
     def add_graph(self, G) -> None: ...
     def add_nodes(self, G, graph_element) -> None: ...
@@ -202,12 +164,12 @@ class GEXFWriter(GEXF):
 class GEXFReader(GEXF):
     node_type: Incomplete
     simple_graph: bool
-    def __init__(self, node_type: Incomplete | None = None, version: str = "1.2draft") -> None: ...
+    def __init__(self, node_type=None, version: str = "1.2draft") -> None: ...
     xml: Incomplete
     def __call__(self, stream): ...
     timeformat: Incomplete
     def make_graph(self, graph_xml): ...
-    def add_node(self, G, node_xml, node_attr, node_pid: Incomplete | None = None) -> None: ...
+    def add_node(self, G, node_xml, node_attr, node_pid=None) -> None: ...
     def add_start_end(self, data, xml): ...
     def add_viz(self, data, node_xml): ...
     def add_parents(self, data, node_xml): ...

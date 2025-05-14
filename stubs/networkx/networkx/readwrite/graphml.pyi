@@ -65,44 +65,8 @@ def write_graphml_xml(
     prettyprint: bool = True,
     infer_numeric_types: bool = False,
     named_key_ids: bool = False,
-    edge_id_from_attribute: Incomplete | None = None,
-) -> None:
-    """
-    Write G in GraphML XML format to path
-
-    Parameters
-    ----------
-    G : graph
-       A networkx graph
-    path : file or string
-       File or filename to write.
-       Filenames ending in .gz or .bz2 will be compressed.
-    encoding : string (optional)
-       Encoding for text data.
-    prettyprint : bool (optional)
-       If True use line breaks and indenting in output XML.
-    infer_numeric_types : boolean
-       Determine if numeric types should be generalized.
-       For example, if edges have both int and float 'weight' attributes,
-       we infer in GraphML that both are floats.
-    named_key_ids : bool (optional)
-       If True use attr.name as value for key elements' id attribute.
-    edge_id_from_attribute : dict key (optional)
-        If provided, the graphml edge id is set by looking up the corresponding
-        edge data attribute keyed by this parameter. If `None` or the key does not exist in edge data,
-        the edge id is set by the edge key if `G` is a MultiGraph, else the edge id is left unset.
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> nx.write_graphml(G, "test.graphml")
-
-    Notes
-    -----
-    This implementation does not support mixed graphs (directed
-    and unidirected edges together) hyperedges, nested graphs, or ports.
-    """
-    ...
+    edge_id_from_attribute=None,
+) -> None: ...
 def write_graphml_lxml(
     G,
     path,
@@ -110,87 +74,11 @@ def write_graphml_lxml(
     prettyprint: bool = True,
     infer_numeric_types: bool = False,
     named_key_ids: bool = False,
-    edge_id_from_attribute: Incomplete | None = None,
-):
-    """
-    Write G in GraphML XML format to path
-
-    This function uses the LXML framework and should be faster than
-    the version using the xml library.
-
-    Parameters
-    ----------
-    G : graph
-       A networkx graph
-    path : file or string
-       File or filename to write.
-       Filenames ending in .gz or .bz2 will be compressed.
-    encoding : string (optional)
-       Encoding for text data.
-    prettyprint : bool (optional)
-       If True use line breaks and indenting in output XML.
-    infer_numeric_types : boolean
-       Determine if numeric types should be generalized.
-       For example, if edges have both int and float 'weight' attributes,
-       we infer in GraphML that both are floats.
-    named_key_ids : bool (optional)
-       If True use attr.name as value for key elements' id attribute.
-    edge_id_from_attribute : dict key (optional)
-        If provided, the graphml edge id is set by looking up the corresponding
-        edge data attribute keyed by this parameter. If `None` or the key does not exist in edge data,
-        the edge id is set by the edge key if `G` is a MultiGraph, else the edge id is left unset.
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> nx.write_graphml_lxml(G, "fourpath.graphml")
-
-    Notes
-    -----
-    This implementation does not support mixed graphs (directed
-    and unidirected edges together) hyperedges, nested graphs, or ports.
-    """
-    ...
+    edge_id_from_attribute=None,
+): ...
 def generate_graphml(
-    G,
-    encoding: str = "utf-8",
-    prettyprint: bool = True,
-    named_key_ids: bool = False,
-    edge_id_from_attribute: Incomplete | None = None,
-) -> Generator[Incomplete, Incomplete, None]:
-    """
-    Generate GraphML lines for G
-
-    Parameters
-    ----------
-    G : graph
-       A networkx graph
-    encoding : string (optional)
-       Encoding for text data.
-    prettyprint : bool (optional)
-       If True use line breaks and indenting in output XML.
-    named_key_ids : bool (optional)
-       If True use attr.name as value for key elements' id attribute.
-    edge_id_from_attribute : dict key (optional)
-        If provided, the graphml edge id is set by looking up the corresponding
-        edge data attribute keyed by this parameter. If `None` or the key does not exist in edge data,
-        the edge id is set by the edge key if `G` is a MultiGraph, else the edge id is left unset.
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> linefeed = chr(10)  # linefeed = 
-
-    >>> s = linefeed.join(nx.generate_graphml(G))
-    >>> for line in nx.generate_graphml(G):  # doctest: +SKIP
-    ...     print(line)
-
-    Notes
-    -----
-    This implementation does not support mixed graphs (directed and unidirected
-    edges together) hyperedges, nested graphs, or ports.
-    """
-    ...
+    G, encoding: str = "utf-8", prettyprint: bool = True, named_key_ids: bool = False, edge_id_from_attribute=None
+) -> Generator[Incomplete, Incomplete, None]: ...
 @_dispatchable
 def read_graphml(path, node_type=..., edge_key_type=..., force_multigraph: bool = False):
     """
@@ -342,12 +230,12 @@ class GraphMLWriter(GraphML):
     attribute_types: Incomplete
     def __init__(
         self,
-        graph: Incomplete | None = None,
+        graph=None,
         encoding: str = "utf-8",
         prettyprint: bool = True,
         infer_numeric_types: bool = False,
         named_key_ids: bool = False,
-        edge_id_from_attribute: Incomplete | None = None,
+        edge_id_from_attribute=None,
     ) -> None: ...
     def attr_type(self, name, scope, value):
         """
@@ -361,18 +249,8 @@ class GraphMLWriter(GraphML):
         """
         ...
     def get_key(self, name, attr_type, scope, default): ...
-    def add_data(self, name, element_type, value, scope: str = "all", default: Incomplete | None = None):
-        """
-        Make a data element for an edge or a node. Keep a log of the
-        type in the keys table.
-        """
-        ...
-    def add_attributes(self, scope, xml_obj, data, default) -> None:
-        """
-        Appends attribute data to edges or nodes, and stores type information
-        to be added later. See add_graph_element.
-        """
-        ...
+    def add_data(self, name, element_type, value, scope: str = "all", default=None): ...
+    def add_attributes(self, scope, xml_obj, data, default) -> None: ...
     def add_nodes(self, G, graph_element) -> None: ...
     def add_edges(self, G, graph_element) -> None: ...
     def add_graph_element(self, G) -> None:
@@ -407,20 +285,16 @@ class GraphMLWriterLxml(GraphMLWriter):
     def __init__(
         self,
         path,
-        graph: Incomplete | None = None,
+        graph=None,
         encoding: str = "utf-8",
         prettyprint: bool = True,
         infer_numeric_types: bool = False,
         named_key_ids: bool = False,
-        edge_id_from_attribute: Incomplete | None = None,
+        edge_id_from_attribute=None,
     ) -> None: ...
-    def add_graph_element(self, G) -> None:
-        """Serialize graph G in GraphML to the stream."""
-        ...
-    def add_attributes(self, scope, xml_obj, data, default) -> None:
-        """Appends attribute data."""
-        ...
-    def dump(self, stream: Incomplete | None = None) -> None: ...
+    def add_graph_element(self, G) -> None: ...
+    def add_attributes(self, scope, xml_obj, data, default) -> None: ...
+    def dump(self, stream=None) -> None: ...
 
 write_graphml = write_graphml_lxml
 
@@ -432,17 +306,9 @@ class GraphMLReader(GraphML):
     edge_ids: Incomplete
     def __init__(self, node_type=..., edge_key_type=..., force_multigraph: bool = False) -> None: ...
     xml: Incomplete
-    def __call__(self, path: Incomplete | None = None, string: Incomplete | None = None) -> Generator[Incomplete, None, None]: ...
-    def make_graph(self, graph_xml, graphml_keys, defaults, G: Incomplete | None = None): ...
-    def add_node(self, G, node_xml, graphml_keys, defaults) -> None:
-        """Add a node to the graph."""
-        ...
-    def add_edge(self, G, edge_element, graphml_keys) -> None:
-        """Add an edge to the graph."""
-        ...
-    def decode_data_elements(self, graphml_keys, obj_xml):
-        """Use the key information to decode the data XML if present."""
-        ...
-    def find_graphml_keys(self, graph_element):
-        """Extracts all the keys and key defaults from the xml."""
-        ...
+    def __call__(self, path=None, string=None) -> Generator[Incomplete, None, None]: ...
+    def make_graph(self, graph_xml, graphml_keys, defaults, G=None): ...
+    def add_node(self, G, node_xml, graphml_keys, defaults) -> None: ...
+    def add_edge(self, G, edge_element, graphml_keys) -> None: ...
+    def decode_data_elements(self, graphml_keys, obj_xml): ...
+    def find_graphml_keys(self, graph_element): ...

@@ -1,7 +1,6 @@
 """Public API for tf._api.v2.config.experimental namespace"""
 
 import typing_extensions
-from _typeshed import Incomplete
 from typing import TypedDict
 
 from tensorflow.config import PhysicalDevice
@@ -94,95 +93,7 @@ def reset_memory_stats(device: str) -> None:
     """
     ...
 @typing_extensions.deprecated("This function is deprecated in favor of tf.config.experimental.get_memory_info")
-def get_memory_usage(device: PhysicalDevice) -> int:
-    """
-    Get the current memory usage, in bytes, for the chosen device. (deprecated)
-
-    Deprecated: THIS FUNCTION IS DEPRECATED. It will be removed in a future version.
-    Instructions for updating:
-    Use tf.config.experimental.get_memory_info(device)['current'] instead.
-
-    This function is deprecated in favor of
-    `tf.config.experimental.get_memory_info`. Calling this function is equivalent
-    to calling `tf.config.experimental.get_memory_info()['current']`.
-
-    See https://www.tensorflow.org/api_docs/python/tf/device for specifying device
-    strings.
-
-    For example:
-
-    >>> gpu_devices = tf.config.list_physical_devices('GPU')
-    >>> if gpu_devices:
-    ...   tf.config.experimental.get_memory_usage('GPU:0')
-
-    Does not work for CPU.
-
-    For GPUs, TensorFlow will allocate all the memory by default, unless changed
-    with `tf.config.experimental.set_memory_growth`. This function only returns
-    the memory that TensorFlow is actually using, not the memory that TensorFlow
-    has allocated on the GPU.
-
-    Args:
-      device: Device string to get the bytes in use for, e.g. `"GPU:0"`
-
-    Returns:
-      Total memory usage in bytes.
-
-    Raises:
-      ValueError: Non-existent or CPU device specified.
-    """
-    ...
-def get_memory_growth(device: PhysicalDevice) -> bool:
-    """
-    Get if memory growth is enabled for a `PhysicalDevice`.
-
-    If memory growth is enabled for a `PhysicalDevice`, the runtime initialization
-    will not allocate all memory on the device.
-
-    For example:
-
-    >>> physical_devices = tf.config.list_physical_devices('GPU')
-    >>> try:
-    ...   tf.config.experimental.set_memory_growth(physical_devices[0], True)
-    ...   assert tf.config.experimental.get_memory_growth(physical_devices[0])
-    ... except:
-    ...   # Invalid device or cannot modify virtual devices once initialized.
-    ...   pass
-
-    Args:
-      device: `PhysicalDevice` to query
-
-    Returns:
-      A boolean indicating the memory growth setting for the `PhysicalDevice`.
-
-    Raises:
-      ValueError: Invalid `PhysicalDevice` specified.
-    """
-    ...
-def set_memory_growth(device: PhysicalDevice, enable: bool) -> None:
-    """
-    Set if memory growth should be enabled for a `PhysicalDevice`.
-
-    If memory growth is enabled for a `PhysicalDevice`, the runtime initialization
-    will not allocate all memory on the device. Memory growth cannot be configured
-    on a `PhysicalDevice` with virtual devices configured.
-
-    For example:
-
-    >>> physical_devices = tf.config.list_physical_devices('GPU')
-    >>> try:
-    ...   tf.config.experimental.set_memory_growth(physical_devices[0], True)
-    ... except:
-    ...   # Invalid device or cannot modify virtual devices once initialized.
-    ...   pass
-
-    Args:
-      device: `PhysicalDevice` to configure
-      enable: (Boolean) Whether to enable or disable memory growth
-
-    Raises:
-      ValueError: Invalid `PhysicalDevice` specified.
-      RuntimeError: Runtime is already initialized.
-    """
-    ...
-def __getattr__(name: str) -> Incomplete: ...
+def get_memory_usage(device: PhysicalDevice) -> int: ...
+def get_memory_growth(device: PhysicalDevice) -> bool: ...
+def set_memory_growth(device: PhysicalDevice, enable: bool) -> None: ...
+def __getattr__(name: str): ...  # incomplete module

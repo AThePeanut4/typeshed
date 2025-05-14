@@ -1,6 +1,3 @@
-"""LaTeX2e document tree Writer."""
-
-from _typeshed import Incomplete
 from typing import ClassVar
 
 from docutils.utils import Reporter
@@ -24,4 +21,4 @@ class Babel:
         ...
     def get_language(self) -> str: ...
 
-def __getattr__(name: str) -> Incomplete: ...
+def __getattr__(name: str): ...  # incomplete module

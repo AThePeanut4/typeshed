@@ -1,3 +1,4 @@
+from _typeshed import Unused
 from collections.abc import Callable, Sequence
 from enum import Enum
 from typing import Any, Literal, NamedTuple, TypeVar, overload
@@ -444,36 +445,11 @@ class JWK(dict[str, Any]):
             | X25519PublicKey
         ),
     ) -> None: ...
-    def import_from_pem(self, data: bytes, password: bytes | None = None, kid: str | None = None) -> None:
-        """
-        Imports a key from data loaded from a PEM file.
-        The key may be encrypted with a password.
-        Private keys (PKCS#8 format), public keys, and X509 certificate's
-        public keys can be imported with this interface.
-
-        :param data(bytes): The data contained in a PEM file.
-        :param password(bytes): An optional password to unwrap the key.
-        """
-        ...
-    def export_to_pem(self, private_key: bool = False, password: bool = False) -> bytes:
-        """
-        Exports keys to a data buffer suitable to be stored as a PEM file.
-        Either the public or the private key can be exported to a PEM file.
-        For private keys the PKCS#8 format is used. If a password is provided
-        the best encryption method available as determined by the cryptography
-        module is used to wrap the key.
-
-        :param private_key: Whether the private key should be exported.
-         Defaults to `False` which means the public key is exported by default.
-        :param password(bytes): A password for wrapping the private key.
-         Defaults to False which will cause the operation to fail. To avoid
-         encryption the user must explicitly pass None, otherwise the user
-         needs to provide a password in a bytes buffer.
-
-        :return: A serialized bytes buffer containing a PEM formatted key.
-        :rtype: `bytes`
-        """
-        ...
+    def import_from_pem(self, data: bytes, password: bytes | None = None, kid: str | None = None) -> None: ...
+    @overload
+    def export_to_pem(self, private_key: Literal[False] = False, password: Unused = False) -> bytes: ...
+    @overload
+    def export_to_pem(self, private_key: Literal[True], password: bytes | None) -> bytes: ...
     @classmethod
     def from_pyca(
         cls,

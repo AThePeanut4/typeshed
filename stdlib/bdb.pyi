@@ -5,13 +5,14 @@ from _typeshed import ExcInfo, TraceFunction, Unused
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextlib import contextmanager
 from types import CodeType, FrameType, TracebackType
-from typing import IO, Any, Final, SupportsInt, TypeVar
-from typing_extensions import ParamSpec
+from typing import IO, Any, Final, Literal, SupportsInt, TypeVar
+from typing_extensions import ParamSpec, TypeAlias
 
 __all__ = ["BdbQuit", "Bdb", "Breakpoint"]
 
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
+_Backend: TypeAlias = Literal["settrace", "monitoring"]
 
 # A union of code-object flags at runtime.
 # The exact values of code-object flags are implementation details,
@@ -45,20 +46,14 @@ class Bdb:
     stopframe: FrameType | None
     returnframe: FrameType | None
     stoplineno: int
-    def __init__(self, skip: Iterable[str] | None = None) -> None: ...
-    def canonic(self, filename: str) -> str:
-        """
-        Return canonical form of filename.
+    if sys.version_info >= (3, 14):
+        backend: _Backend
+        def __init__(self, skip: Iterable[str] | None = None, backend: _Backend = "settrace") -> None: ...
+    else:
+        def __init__(self, skip: Iterable[str] | None = None) -> None: ...
 
-        For real filenames, the canonical form is a case-normalized (on
-        case insensitive filesystems) absolute path.  'Filenames' with
-        angle brackets, such as "<stdin>", generated in interactive
-        mode, are returned unchanged.
-        """
-        ...
-    def reset(self) -> None:
-        """Set values of attributes as ready to start debugging."""
-        ...
+    def canonic(self, filename: str) -> str: ...
+    def reset(self) -> None: ...
     if sys.version_info >= (3, 12):
         @contextmanager
         def set_enterframe(self, frame: FrameType) -> Iterator[None]: ...
@@ -306,30 +301,15 @@ class Bdb:
         ...
     def run(
         self, cmd: str | CodeType, globals: dict[str, Any] | None = None, locals: Mapping[str, Any] | None = None
-    ) -> None:
-        """
-        Debug a statement executed via the exec() function.
-
-        globals defaults to __main__.dict; locals defaults to globals.
-        """
-        ...
-    def runeval(self, expr: str, globals: dict[str, Any] | None = None, locals: Mapping[str, Any] | None = None) -> None:
-        """
-        Debug an expression executed via the eval() function.
-
-        globals defaults to __main__.dict; locals defaults to globals.
-        """
-        ...
-    def runctx(self, cmd: str | CodeType, globals: dict[str, Any] | None, locals: Mapping[str, Any] | None) -> None:
-        """For backwards-compatibility.  Defers to run()."""
-        ...
-    def runcall(self, func: Callable[_P, _T], /, *args: _P.args, **kwds: _P.kwargs) -> _T | None:
-        """
-        Debug a single function call.
-
-        Return the result of the function call.
-        """
-        ...
+    ) -> None: ...
+    def runeval(self, expr: str, globals: dict[str, Any] | None = None, locals: Mapping[str, Any] | None = None) -> None: ...
+    def runctx(self, cmd: str | CodeType, globals: dict[str, Any] | None, locals: Mapping[str, Any] | None) -> None: ...
+    def runcall(self, func: Callable[_P, _T], /, *args: _P.args, **kwds: _P.kwargs) -> _T | None: ...
+    if sys.version_info >= (3, 14):
+        def start_trace(self) -> None: ...
+        def stop_trace(self) -> None: ...
+        def disable_current_event(self) -> None: ...
+        def restart_events(self) -> None: ...
 
 class Breakpoint:
     """

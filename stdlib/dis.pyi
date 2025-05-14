@@ -163,9 +163,22 @@ class Instruction(_Instruction):
             """
             ...
         @property
-        def is_jump_target(self) -> bool:
-            """True if other code jumps to here, otherwise False"""
-            ...
+        def is_jump_target(self) -> bool: ...
+    if sys.version_info >= (3, 14):
+        @staticmethod
+        def make(
+            opname: str,
+            arg: int | None,
+            argval: Any,
+            argrepr: str,
+            offset: int,
+            start_offset: int,
+            starts_line: bool,
+            line_number: int | None,
+            label: int | None = None,
+            positions: Positions | None = None,
+            cache_info: list[tuple[str, int, Any]] | None = None,
+        ) -> Instruction: ...
 
 class Bytecode:
     """

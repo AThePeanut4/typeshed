@@ -13,8 +13,9 @@ from typing_extensions import Self
 
 from .alarms import Alarms
 from .caselessdict import CaselessDict
+from .error import IncompleteComponent as IncompleteComponent
 from .parser import Contentline, Contentlines
-from .prop import TypesFactory
+from .prop import TypesFactory, vRecur
 from .timezone.tzp import TZP
 
 __all__ = [
@@ -33,7 +34,6 @@ __all__ = [
     "component_factory",
     "get_example",
     "IncompleteComponent",
-    "InvalidCalendar",
 ]
 
 def get_example(component_directory: str, example_name: str) -> bytes:
@@ -53,35 +53,6 @@ class ComponentFactory(CaselessDict[Incomplete]):
         ...
 
 INLINE: CaselessDict[int]
-
-class InvalidCalendar(ValueError):
-    """
-    The calendar given is not valid.
-
-    This calendar does not conform with RFC 5545 or breaks other RFCs.
-    """
-    ...
-class IncompleteComponent(ValueError):
-    """
-    The component is missing attributes.
-
-    The attributes are not required, otherwise this would be
-    an InvalidCalendar. But in order to perform calculations,
-    this attribute is required.
-
-    This error is not raised in the UPPERCASE properties like .DTSTART,
-    only in the lowercase computations like .start.
-    """
-    ...
-
-def create_utc_property(name: str, docs: str) -> property:
-    """
-    Create a property to access a value of datetime in UTC timezone.
-
-    name - name of the property
-    docs - documentation string
-    """
-    ...
 
 class Component(CaselessDict[Incomplete]):
     """
@@ -296,31 +267,9 @@ class Component(CaselessDict[Incomplete]):
         """
         ...
     @DTSTAMP.setter
-    def DTSTAMP(self, value: datetime.datetime) -> None:
-        """
-        The DTSTAMP property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        RFC 5545:
-
-            Conformance:  This property MUST be included in the "VEVENT",
-            "VTODO", "VJOURNAL", or "VFREEBUSY" calendar components.
-
-            Description: In the case of an iCalendar object that specifies a
-            "METHOD" property, this property specifies the date and time that
-            the instance of the iCalendar object was created.  In the case of
-            an iCalendar object that doesn't specify a "METHOD" property, this
-            property specifies the date and time that the information
-            associated with the calendar component was last revised in the
-            calendar store.
-
-            The value MUST be specified in the UTC time format.
-
-            In the case of an iCalendar object that doesn't specify a "METHOD"
-            property, this property is equivalent to the "LAST-MODIFIED"
-            property.
-        """
-        ...
+    def DTSTAMP(self, value: datetime.datetime) -> None: ...
+    @DTSTAMP.deleter
+    def DTSTAMP(self) -> None: ...
     @property
     def LAST_MODIFIED(self) -> datetime.datetime | None:
         """
@@ -341,27 +290,10 @@ class Component(CaselessDict[Incomplete]):
         """
         ...
     @LAST_MODIFIED.setter
-    def LAST_MODIFIED(self, value: datetime.datetime) -> None:
-        """
-        The LAST-MODIFIED property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        RFC 5545:
-
-            Purpose:  This property specifies the date and time that the
-            information associated with the calendar component was last
-            revised in the calendar store.
-
-            Note: This is analogous to the modification date and time for a
-            file in the file system.
-
-            Conformance:  This property can be specified in the "VEVENT",
-            "VTODO", "VJOURNAL", or "VTIMEZONE" calendar components.
-        """
-        ...
-    def is_thunderbird(self) -> bool:
-        """Whether this component has attributes that indicate that Mozilla Thunderbird created it."""
-        ...
+    def LAST_MODIFIED(self, value: datetime.datetime) -> None: ...
+    @LAST_MODIFIED.deleter
+    def LAST_MODIFIED(self) -> None: ...
+    def is_thunderbird(self) -> bool: ...
 
 # type_def is a TypeForm
 def create_single_property(
@@ -424,18 +356,9 @@ class Event(Component):
         """
         ...
     @DTSTART.setter
-    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None:
-        """
-        The DTSTART property.
-
-        The "DTSTART" property for a "VEVENT" specifies the inclusive start of the event.
-
-        Accepted values: datetime, date.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None: ...
+    @DTSTART.deleter
+    def DTSTART(self) -> None: ...
     @property
     def DTEND(self) -> datetime.date | datetime.datetime | None:
         """
@@ -450,18 +373,9 @@ class Event(Component):
         """
         ...
     @DTEND.setter
-    def DTEND(self, value: datetime.date | datetime.datetime | None) -> None:
-        """
-        The DTEND property.
-
-        The "DTEND" property for a "VEVENT" calendar component specifies the non-inclusive end of the event.
-
-        Accepted values: datetime, date.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DTEND(self, value: datetime.date | datetime.datetime | None) -> None: ...
+    @DTEND.deleter
+    def DTEND(self) -> None: ...
     @property
     def DURATION(self) -> datetime.timedelta | None:
         """
@@ -477,19 +391,9 @@ class Event(Component):
         """
         ...
     @DURATION.setter
-    def DURATION(self, value: datetime.timedelta | None) -> None:
-        """
-        The DURATION property.
-
-        The "DTSTART" property for a "VEVENT" specifies the inclusive start of the event.
-        The "DURATION" property in conjunction with the DTSTART property
-        for a "VEVENT" calendar component specifies the non-inclusive end
-        of the event.
-
-        If you would like to calculate the duration of a VEVENT, do not use this.
-        Instead use the duration property (lower case).
-        """
-        ...
+    def DURATION(self, value: datetime.timedelta | None) -> None: ...
+    @DURATION.deleter
+    def DURATION(self) -> None: ...
     @property
     def duration(self) -> datetime.timedelta:
         """
@@ -575,14 +479,9 @@ class Event(Component):
         """
         ...
     @X_MOZ_SNOOZE_TIME.setter
-    def X_MOZ_SNOOZE_TIME(self, value: datetime.datetime) -> None:
-        """
-        The X-MOZ-SNOOZE-TIME property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        Thunderbird: Alarms before this time are snoozed.
-        """
-        ...
+    def X_MOZ_SNOOZE_TIME(self, value: datetime.datetime) -> None: ...
+    @X_MOZ_SNOOZE_TIME.deleter
+    def X_MOZ_SNOOZE_TIME(self) -> None: ...
     @property
     def X_MOZ_LASTACK(self) -> datetime.datetime | None:
         """
@@ -593,14 +492,35 @@ class Event(Component):
         """
         ...
     @X_MOZ_LASTACK.setter
-    def X_MOZ_LASTACK(self, value: datetime.datetime) -> None:
-        """
-        The X-MOZ-LASTACK property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        Thunderbird: Alarms before this time are acknowledged.
-        """
-        ...
+    def X_MOZ_LASTACK(self, value: datetime.datetime) -> None: ...
+    @X_MOZ_LASTACK.deleter
+    def X_MOZ_LASTACK(self) -> None: ...
+    @property
+    def color(self) -> str: ...
+    @color.setter
+    def color(self, value: str) -> None: ...
+    @color.deleter
+    def color(self) -> None: ...
+    @property
+    def sequence(self) -> int: ...
+    @sequence.setter
+    def sequence(self, value: int) -> None: ...
+    @sequence.deleter
+    def sequence(self) -> None: ...
+    @property
+    def categories(self) -> list[str]: ...
+    @categories.setter
+    def categories(self, cats: list[str]) -> None: ...
+    @categories.deleter
+    def categories(self) -> None: ...
+    @property
+    def rdates(
+        self,
+    ) -> list[tuple[datetime.date, None] | tuple[datetime.datetime, None] | tuple[datetime.datetime, datetime.datetime]]: ...
+    @property
+    def exdates(self) -> list[datetime.date | datetime.datetime]: ...
+    @property
+    def rrules(self) -> list[vRecur]: ...
 
 class Todo(Component):
     """
@@ -625,18 +545,9 @@ class Todo(Component):
         """
         ...
     @DTSTART.setter
-    def DTSTART(self, value: datetime.datetime | datetime.date | None) -> None:
-        """
-        The DTSTART property.
-
-        The "DTSTART" property for a "VTODO" specifies the inclusive start of the Todo.
-
-        Accepted values: datetime, date.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DTSTART(self, value: datetime.datetime | datetime.date | None) -> None: ...
+    @DTSTART.deleter
+    def DTSTART(self) -> None: ...
     @property
     def DUE(self) -> datetime.datetime | datetime.date | None:
         """
@@ -651,18 +562,9 @@ class Todo(Component):
         """
         ...
     @DUE.setter
-    def DUE(self, value: datetime.datetime | datetime.date | None) -> None:
-        """
-        The DUE property.
-
-        The "DUE" property for a "VTODO" calendar component specifies the non-inclusive end of the Todo.
-
-        Accepted values: datetime, date.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DUE(self, value: datetime.datetime | datetime.date | None) -> None: ...
+    @DUE.deleter
+    def DUE(self) -> None: ...
     @property
     def DURATION(self) -> datetime.timedelta | None:
         """
@@ -678,19 +580,9 @@ class Todo(Component):
         """
         ...
     @DURATION.setter
-    def DURATION(self, value: datetime.timedelta | None) -> None:
-        """
-        The DURATION property.
-
-        The "DTSTART" property for a "VTODO" specifies the inclusive start of the event.
-        The "DURATION" property in conjunction with the DTSTART property
-        for a "VTODO" calendar component specifies the non-inclusive end
-        of the event.
-
-        If you would like to calculate the duration of a VTODO, do not use this.
-        Instead use the duration property (lower case).
-        """
-        ...
+    def DURATION(self, value: datetime.timedelta | None) -> None: ...
+    @DURATION.deleter
+    def DURATION(self) -> None: ...
     @property
     def start(self) -> datetime.datetime | datetime.date:
         """
@@ -776,14 +668,9 @@ class Todo(Component):
         """
         ...
     @X_MOZ_SNOOZE_TIME.setter
-    def X_MOZ_SNOOZE_TIME(self, value: datetime.datetime) -> None:
-        """
-        The X-MOZ-SNOOZE-TIME property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        Thunderbird: Alarms before this time are snoozed.
-        """
-        ...
+    def X_MOZ_SNOOZE_TIME(self, value: datetime.datetime) -> None: ...
+    @X_MOZ_SNOOZE_TIME.deleter
+    def X_MOZ_SNOOZE_TIME(self) -> None: ...
     @property
     def X_MOZ_LASTACK(self) -> datetime.datetime | None:
         """
@@ -794,30 +681,37 @@ class Todo(Component):
         """
         ...
     @X_MOZ_LASTACK.setter
-    def X_MOZ_LASTACK(self, value: datetime.datetime) -> None:
-        """
-        The X-MOZ-LASTACK property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        Thunderbird: Alarms before this time are acknowledged.
-        """
-        ...
+    def X_MOZ_LASTACK(self, value: datetime.datetime) -> None: ...
+    @X_MOZ_LASTACK.deleter
+    def X_MOZ_LASTACK(self) -> None: ...
     @property
-    def alarms(self) -> Alarms:
-        """
-        Compute the alarm times for this component.
-
-        >>> from datetime import datetime
-        >>> from icalendar import Todo
-        >>> todo = Todo()  # empty without alarms
-        >>> todo.start = datetime(2024, 10, 26, 10, 21)
-        >>> len(todo.alarms.times)
-        0
-
-        Note that this only uses DTSTART and DUE, but ignores
-        RDATE, EXDATE, and RRULE properties.
-        """
-        ...
+    def alarms(self) -> Alarms: ...
+    @property
+    def color(self) -> str: ...
+    @color.setter
+    def color(self, value: str) -> None: ...
+    @color.deleter
+    def color(self) -> None: ...
+    @property
+    def sequence(self) -> int: ...
+    @sequence.setter
+    def sequence(self, value: int) -> None: ...
+    @sequence.deleter
+    def sequence(self) -> None: ...
+    @property
+    def categories(self) -> list[str]: ...
+    @categories.setter
+    def categories(self, cats: list[str]) -> None: ...
+    @categories.deleter
+    def categories(self) -> None: ...
+    @property
+    def rdates(
+        self,
+    ) -> list[tuple[datetime.date, None] | tuple[datetime.datetime, None] | tuple[datetime.datetime, datetime.datetime]]: ...
+    @property
+    def exdates(self) -> list[datetime.date | datetime.datetime]: ...
+    @property
+    def rrules(self) -> list[vRecur]: ...
 
 class Journal(Component):
     """
@@ -849,18 +743,9 @@ class Journal(Component):
         """
         ...
     @DTSTART.setter
-    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None:
-        """
-        The DTSTART property.
-
-        The "DTSTART" property for a "VJOURNAL" that specifies the exact date at which the journal entry was made.
-
-        Accepted values: datetime, date.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None: ...
+    @DTSTART.deleter
+    def DTSTART(self) -> None: ...
     @property
     def start(self) -> datetime.date | datetime.datetime:
         """
@@ -883,9 +768,33 @@ class Journal(Component):
         ...
     end = start
     @property
-    def duration(self) -> datetime.timedelta:
-        """The journal has no duration: timedelta(0)."""
-        ...
+    def duration(self) -> datetime.timedelta: ...
+    @property
+    def color(self) -> str: ...
+    @color.setter
+    def color(self, value: str) -> None: ...
+    @color.deleter
+    def color(self) -> None: ...
+    @property
+    def sequence(self) -> int: ...
+    @sequence.setter
+    def sequence(self, value: int) -> None: ...
+    @sequence.deleter
+    def sequence(self) -> None: ...
+    @property
+    def categories(self) -> list[str]: ...
+    @categories.setter
+    def categories(self, cats: list[str]) -> None: ...
+    @categories.deleter
+    def categories(self) -> None: ...
+    @property
+    def rdates(
+        self,
+    ) -> list[tuple[datetime.date, None] | tuple[datetime.datetime, None] | tuple[datetime.datetime, datetime.datetime]]: ...
+    @property
+    def exdates(self) -> list[datetime.date | datetime.datetime]: ...
+    @property
+    def rrules(self) -> list[vRecur]: ...
 
 class FreeBusy(Component):
     """
@@ -897,11 +806,7 @@ class FreeBusy(Component):
     name: ClassVar[Literal["VFREEBUSY"]]
 
 class Timezone(Component):
-    """
-    A "VTIMEZONE" calendar component is a grouping of component
-    properties that defines a time zone. It is used to describe the
-    way in which a time zone changes its offset from UTC over time.
-    """
+    subcomponents: list[TimezoneStandard | TimezoneDaylight]
     name: ClassVar[Literal["VTIMEZONE"]]
     @classmethod
     def example(cls, name: str = "pacific_fiji") -> Calendar:
@@ -1017,21 +922,9 @@ class TimezoneStandard(Component):
         """
         ...
     @DTSTART.setter
-    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None:
-        """
-        The DTSTART property.
-
-        The mandatory "DTSTART" property gives the effective onset date
-            and local time for the time zone sub-component definition.
-            "DTSTART" in this usage MUST be specified as a date with a local
-            time value.
-
-        Accepted values: datetime.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None: ...
+    @DTSTART.deleter
+    def DTSTART(self) -> None: ...
     @property
     def TZOFFSETTO(self) -> datetime.timedelta | None:
         """
@@ -1049,21 +942,9 @@ class TimezoneStandard(Component):
         """
         ...
     @TZOFFSETTO.setter
-    def TZOFFSETTO(self, value: datetime.timedelta | None) -> None:
-        """
-        The TZOFFSETTO property.
-
-        The mandatory "TZOFFSETTO" property gives the UTC offset for the
-            time zone sub-component (Standard Time or Daylight Saving Time)
-            when this observance is in use.
-    
-
-        Accepted values: timedelta.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def TZOFFSETTO(self, value: datetime.timedelta | None) -> None: ...
+    @TZOFFSETTO.deleter
+    def TZOFFSETTO(self) -> None: ...
     @property
     def TZOFFSETFROM(self) -> datetime.timedelta | None:
         """
@@ -1087,27 +968,17 @@ class TimezoneStandard(Component):
         """
         ...
     @TZOFFSETFROM.setter
-    def TZOFFSETFROM(self, value: datetime.timedelta | None) -> None:
-        """
-        The TZOFFSETFROM property.
-
-        The mandatory "TZOFFSETFROM" property gives the UTC offset that is
-            in use when the onset of this time zone observance begins.
-            "TZOFFSETFROM" is combined with "DTSTART" to define the effective
-            onset for the time zone sub-component definition.  For example,
-            the following represents the time at which the observance of
-            Standard Time took effect in Fall 1967 for New York City:
-
-                DTSTART:19671029T020000
-                TZOFFSETFROM:-0400
-    
-
-        Accepted values: timedelta.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def TZOFFSETFROM(self, value: datetime.timedelta | None) -> None: ...
+    @TZOFFSETFROM.deleter
+    def TZOFFSETFROM(self) -> None: ...
+    @property
+    def rdates(
+        self,
+    ) -> list[tuple[datetime.date, None] | tuple[datetime.datetime, None] | tuple[datetime.datetime, datetime.datetime]]: ...
+    @property
+    def exdates(self) -> list[datetime.date | datetime.datetime]: ...
+    @property
+    def rrules(self) -> list[vRecur]: ...
 
 class TimezoneDaylight(Component):
     """
@@ -1134,21 +1005,9 @@ class TimezoneDaylight(Component):
         """
         ...
     @DTSTART.setter
-    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None:
-        """
-        The DTSTART property.
-
-        The mandatory "DTSTART" property gives the effective onset date
-            and local time for the time zone sub-component definition.
-            "DTSTART" in this usage MUST be specified as a date with a local
-            time value.
-
-        Accepted values: datetime.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def DTSTART(self, value: datetime.date | datetime.datetime | None) -> None: ...
+    @DTSTART.deleter
+    def DTSTART(self) -> None: ...
     @property
     def TZOFFSETTO(self) -> datetime.timedelta | None:
         """
@@ -1166,21 +1025,9 @@ class TimezoneDaylight(Component):
         """
         ...
     @TZOFFSETTO.setter
-    def TZOFFSETTO(self, value: datetime.timedelta | None) -> None:
-        """
-        The TZOFFSETTO property.
-
-        The mandatory "TZOFFSETTO" property gives the UTC offset for the
-            time zone sub-component (Standard Time or Daylight Saving Time)
-            when this observance is in use.
-    
-
-        Accepted values: timedelta.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def TZOFFSETTO(self, value: datetime.timedelta | None) -> None: ...
+    @TZOFFSETTO.deleter
+    def TZOFFSETTO(self) -> None: ...
     @property
     def TZOFFSETFROM(self) -> datetime.timedelta | None:
         """
@@ -1204,27 +1051,17 @@ class TimezoneDaylight(Component):
         """
         ...
     @TZOFFSETFROM.setter
-    def TZOFFSETFROM(self, value: datetime.timedelta | None) -> None:
-        """
-        The TZOFFSETFROM property.
-
-        The mandatory "TZOFFSETFROM" property gives the UTC offset that is
-            in use when the onset of this time zone observance begins.
-            "TZOFFSETFROM" is combined with "DTSTART" to define the effective
-            onset for the time zone sub-component definition.  For example,
-            the following represents the time at which the observance of
-            Standard Time took effect in Fall 1967 for New York City:
-
-                DTSTART:19671029T020000
-                TZOFFSETFROM:-0400
-    
-
-        Accepted values: timedelta.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def TZOFFSETFROM(self, value: datetime.timedelta | None) -> None: ...
+    @TZOFFSETFROM.deleter
+    def TZOFFSETFROM(self) -> None: ...
+    @property
+    def rdates(
+        self,
+    ) -> list[tuple[datetime.date, None] | tuple[datetime.datetime, None] | tuple[datetime.datetime, datetime.datetime]]: ...
+    @property
+    def exdates(self) -> list[datetime.date | datetime.datetime]: ...
+    @property
+    def rrules(self) -> list[vRecur]: ...
 
 class Alarm(Component):
     """
@@ -1249,19 +1086,9 @@ class Alarm(Component):
         """
         ...
     @REPEAT.setter
-    def REPEAT(self, value: int) -> None:
-        """
-        The REPEAT property of an alarm component.
-
-        The alarm can be defined such that it triggers repeatedly.  A
-        definition of an alarm with a repeating trigger MUST include both
-        the "DURATION" and "REPEAT" properties.  The "DURATION" property
-        specifies the delay period, after which the alarm will repeat.
-        The "REPEAT" property specifies the number of additional
-        repetitions that the alarm will be triggered.  This repetition
-        count is in addition to the initial triggering of the alarm.
-        """
-        ...
+    def REPEAT(self, value: int) -> None: ...
+    @REPEAT.deleter
+    def REPEAT(self) -> None: ...
     @property
     def DURATION(self) -> datetime.timedelta | None:
         """
@@ -1274,16 +1101,9 @@ class Alarm(Component):
         """
         ...
     @DURATION.setter
-    def DURATION(self, value: datetime.timedelta | None) -> None:
-        """
-        The DURATION property of an alarm component.
-
-        The alarm can be defined such that it triggers repeatedly.  A
-        definition of an alarm with a repeating trigger MUST include both
-        the "DURATION" and "REPEAT" properties.  The "DURATION" property
-        specifies the delay period, after which the alarm will repeat.
-        """
-        ...
+    def DURATION(self, value: datetime.timedelta | None) -> None: ...
+    @DURATION.deleter
+    def DURATION(self) -> None: ...
     @property
     def ACKNOWLEDGED(self) -> datetime.datetime | None:
         """
@@ -1319,39 +1139,9 @@ class Alarm(Component):
         """
         ...
     @ACKNOWLEDGED.setter
-    def ACKNOWLEDGED(self, value: datetime.datetime | None) -> None:
-        """
-        The ACKNOWLEDGED property. datetime in UTC
-
-        All values will be converted to a datetime in UTC.
-        This is defined in RFC 9074:
-
-        Purpose: This property specifies the UTC date and time at which the
-        corresponding alarm was last sent or acknowledged.
-
-        This property is used to specify when an alarm was last sent or acknowledged.
-        This allows clients to determine when a pending alarm has been acknowledged
-        by a calendar user so that any alerts can be dismissed across multiple devices.
-        It also allows clients to track repeating alarms or alarms on recurring events or
-        to-dos to ensure that the right number of missed alarms can be tracked.
-
-        Clients SHOULD set this property to the current date-time value in UTC
-        when a calendar user acknowledges a pending alarm. Certain kinds of alarms,
-        such as email-based alerts, might not provide feedback as to when the calendar user
-        sees them. For those kinds of alarms, the client SHOULD set this property
-        when the alarm is triggered and the action is successfully carried out.
-
-        When an alarm is triggered on a client, clients can check to see if an "ACKNOWLEDGED"
-        property is present. If it is, and the value of that property is greater than or
-        equal to the computed trigger time for the alarm, then the client SHOULD NOT trigger
-        the alarm. Similarly, if an alarm has been triggered and
-        an "alert" has been presented to a calendar user, clients can monitor
-        the iCalendar data to determine whether an "ACKNOWLEDGED" property is added or
-        changed in the alarm component. If the value of any "ACKNOWLEDGED" property
-        in the alarm changes and is greater than or equal to the trigger time of the alarm,
-        then clients SHOULD dismiss or cancel any "alert" presented to the calendar user.
-        """
-        ...
+    def ACKNOWLEDGED(self, value: datetime.datetime | None) -> None: ...
+    @ACKNOWLEDGED.deleter
+    def ACKNOWLEDGED(self) -> None: ...
     @property
     def TRIGGER(self) -> datetime.timedelta | datetime.datetime | None:
         """
@@ -1376,28 +1166,9 @@ class Alarm(Component):
         """
         ...
     @TRIGGER.setter
-    def TRIGGER(self, value: datetime.timedelta | datetime.datetime | None) -> None:
-        """
-        The TRIGGER property.
-
-        Purpose:  This property specifies when an alarm will trigger.
-
-        Value Type:  The default value type is DURATION.  The value type can
-        be set to a DATE-TIME value type, in which case the value MUST
-        specify a UTC-formatted DATE-TIME value.
-
-        Either a positive or negative duration may be specified for the
-        "TRIGGER" property.  An alarm with a positive duration is
-        triggered after the associated start or end of the event or to-do.
-        An alarm with a negative duration is triggered before the
-        associated start or end of the event or to-do.
-
-        Accepted values: datetime, timedelta.
-        If the attribute has invalid values, we raise InvalidCalendar.
-        If the value is absent, we return None.
-        You can also delete the value with del or by setting it to None.
-        """
-        ...
+    def TRIGGER(self, value: datetime.timedelta | datetime.datetime | None) -> None: ...
+    @TRIGGER.deleter
+    def TRIGGER(self) -> None: ...
     @property
     def TRIGGER_RELATED(self) -> Literal["START", "END"]:
         """
@@ -1493,23 +1264,9 @@ class Calendar(Component):
         """Return the calendar example with the given name."""
         ...
     @property
-    def events(self) -> list[Event]:
-        """
-        All event components in the calendar.
-
-        This is a shortcut to get all events.
-        Modifications do not change the calendar.
-        Use :py:meth:`Component.add_component`.
-
-        >>> from icalendar import Calendar
-        >>> calendar = Calendar.example()
-        >>> event = calendar.events[0]
-        >>> event.start
-        datetime.date(2022, 1, 1)
-        >>> print(event["SUMMARY"])
-        New Year's Day
-        """
-        ...
+    def freebusy(self) -> list[FreeBusy]: ...
+    @property
+    def events(self) -> list[Event]: ...
     @property
     def todos(self) -> list[Todo]:
         """
@@ -1544,49 +1301,32 @@ class Calendar(Component):
         """
         ...
     @property
-    def timezones(self) -> list[Timezone]:
-        """
-        Return the timezones components in this calendar.
-
-        >>> from icalendar import Calendar
-        >>> calendar = Calendar.example("pacific_fiji")
-        >>> [timezone.tz_name for timezone in calendar.timezones]
-        ['custom_Pacific/Fiji']
-
-        .. note::
-
-            This is a read-only property.
-        """
-        ...
-    def add_missing_timezones(self, first_date: datetime.date = ..., last_date: datetime.date = ...) -> None:
-        """
-        Add all missing VTIMEZONE components.
-
-        This adds all the timezone components that are required.
-
-        .. note::
-
-            Timezones that are not known will not be added.
-
-        :param first_date: earlier than anything that happens in the calendar
-        :param last_date: later than anything happening in the calendar
-
-        >>> from icalendar import Calendar, Event
-        >>> from datetime import datetime
-        >>> from zoneinfo import ZoneInfo
-        >>> calendar = Calendar()
-        >>> event = Event()
-        >>> calendar.add_component(event)
-        >>> event.start = datetime(1990, 10, 11, 12, tzinfo=ZoneInfo("Europe/Berlin"))
-        >>> calendar.timezones
-        []
-        >>> calendar.add_missing_timezones()
-        >>> calendar.timezones[0].tz_name
-        'Europe/Berlin'
-        >>> calendar.get_missing_tzids()  # check that all are added
-        set()
-        """
-        ...
+    def timezones(self) -> list[Timezone]: ...
+    def add_missing_timezones(self, first_date: datetime.date = ..., last_date: datetime.date = ...) -> None: ...
+    @property
+    def calendar_name(self) -> str | None: ...
+    @calendar_name.setter
+    def calendar_name(self, value: str) -> None: ...
+    @calendar_name.deleter
+    def calendar_name(self) -> None: ...
+    @property
+    def description(self) -> str | None: ...
+    @description.setter
+    def description(self, value: str) -> None: ...
+    @description.deleter
+    def description(self) -> None: ...
+    @property
+    def color(self) -> str: ...
+    @color.setter
+    def color(self, value: str) -> None: ...
+    @color.deleter
+    def color(self) -> None: ...
+    @property
+    def categories(self) -> list[str]: ...
+    @categories.setter
+    def categories(self, cats: list[str]) -> None: ...
+    @categories.deleter
+    def categories(self) -> None: ...
 
 types_factory: Final[TypesFactory]
 component_factory: Final[ComponentFactory]

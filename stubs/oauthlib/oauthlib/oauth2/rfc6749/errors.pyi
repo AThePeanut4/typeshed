@@ -16,18 +16,18 @@ class OAuth2Error(Exception):
     status_code: int
     description: str
     uri: str | None
-    state: Any
-    redirect_uri: Any
-    client_id: Any
+    state: str | None
+    redirect_uri: str | None
+    client_id: str | None
     scopes: Any
-    response_type: Any
-    response_mode: Any
-    grant_type: Any
+    response_type: str | None
+    response_mode: str | None
+    grant_type: str | None
     def __init__(
         self,
         description: str | None = None,
         uri: str | None = None,
-        state: Incomplete | None = None,
+        state: str | None = None,
         status_code: int | None = None,
         request: Request | None = None,
     ) -> None:
@@ -56,7 +56,7 @@ class OAuth2Error(Exception):
         ...
     def in_uri(self, uri: str) -> str: ...
     @property
-    def twotuples(self) -> list[tuple[str, Incomplete | str | None]]: ...
+    def twotuples(self) -> list[tuple[str, str | None]]: ...
     @property
     def urlencoded(self) -> str: ...
     @property
@@ -302,7 +302,7 @@ class CustomOAuth2Error(OAuth2Error):
         error: str,
         description: str | None = None,
         uri: str | None = None,
-        state: Incomplete | None = None,
+        state: str | None = None,
         status_code: int | None = None,
         request: Request | None = None,
     ) -> None: ...

@@ -16,42 +16,16 @@ import datetime
 from typing_extensions import TypeAlias
 
 from .cal import Alarm, Event, Todo
+from .error import (
+    ComponentEndMissing as ComponentEndMissing,
+    ComponentStartMissing as ComponentStartMissing,
+    IncompleteAlarmInformation as IncompleteAlarmInformation,
+    LocalTimezoneMissing as LocalTimezoneMissing,
+)
 
-__all__ = [
-    "Alarms",
-    "AlarmTime",
-    "IncompleteAlarmInformation",
-    "ComponentEndMissing",
-    "ComponentStartMissing",
-    "LocalTimezoneMissing",
-]
+__all__ = ["Alarms", "AlarmTime", "IncompleteAlarmInformation", "ComponentEndMissing", "ComponentStartMissing"]
 
 Parent: TypeAlias = Event | Todo
-
-class IncompleteAlarmInformation(ValueError):
-    """The alarms cannot be calculated yet because information is missing."""
-    ...
-class ComponentStartMissing(IncompleteAlarmInformation):
-    """
-    We are missing the start of a component that the alarm is for.
-
-    Use Alarms.set_start().
-    """
-    ...
-class ComponentEndMissing(IncompleteAlarmInformation):
-    """
-    We are missing the end of a component that the alarm is for.
-
-    Use Alarms.set_end().
-    """
-    ...
-class LocalTimezoneMissing(IncompleteAlarmInformation):
-    """
-    We are missing the local timezone to compute the value.
-
-    Use Alarms.set_local_timezone().
-    """
-    ...
 
 class AlarmTime:
     """An alarm time with all the information."""

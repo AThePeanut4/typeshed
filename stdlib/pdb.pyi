@@ -335,18 +335,22 @@ a 'global' command, e.g.:
 
 import signal
 import sys
-from bdb import Bdb
+from bdb import Bdb, _Backend
 from cmd import Cmd
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from inspect import _SourceObjectType
+from linecache import _ModuleGlobals
 from types import CodeType, FrameType, TracebackType
-from typing import IO, Any, ClassVar, Final, TypeVar
-from typing_extensions import ParamSpec, Self
+from typing import IO, Any, ClassVar, Final, Literal, TypeVar
+from typing_extensions import ParamSpec, Self, TypeAlias
 
 __all__ = ["run", "pm", "Pdb", "runeval", "runctx", "runcall", "set_trace", "post_mortem", "help"]
+if sys.version_info >= (3, 14):
+    __all__ += ["set_default_backend", "get_default_backend"]
 
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
+_Mode: TypeAlias = Literal["inline", "cli"]
 
 line_prefix: str  # undocumented
 
@@ -379,42 +383,19 @@ def runeval(expression: str, globals: dict[str, Any] | None = None, locals: Mapp
     """
     ...
 def runctx(statement: str, globals: dict[str, Any], locals: Mapping[str, Any]) -> None: ...
-def runcall(func: Callable[_P, _T], *args: _P.args, **kwds: _P.kwargs) -> _T | None:
-    """
-    Call the function (a function or method object, not a string)
-    with the given arguments.
+def runcall(func: Callable[_P, _T], *args: _P.args, **kwds: _P.kwargs) -> _T | None: ...
 
-    When runcall() returns, it returns whatever the function call
-    returned. The debugger prompt appears as soon as the function is
-    entered.
-    """
-    ...
-def set_trace(*, header: str | None = None) -> None:
-    """
-    Enter the debugger at the calling stack frame.
+if sys.version_info >= (3, 14):
+    def set_default_backend(backend: _Backend) -> None: ...
+    def get_default_backend() -> _Backend: ...
+    def set_trace(*, header: str | None = None, commands: Iterable[str] | None = None) -> None: ...
+    async def set_trace_async(*, header: str | None = None, commands: Iterable[str] | None = None) -> None: ...
 
-    This is useful to hard-code a breakpoint at a given point in a
-    program, even if the code is not otherwise being debugged (e.g. when
-    an assertion fails). If given, *header* is printed to the console
-    just before debugging begins.
-    """
-    ...
-def post_mortem(t: TracebackType | None = None) -> None:
-    """
-    Enter post-mortem debugging of the given *traceback*, or *exception*
-    object.
+else:
+    def set_trace(*, header: str | None = None) -> None: ...
 
-    If no traceback is given, it uses the one of the exception that is
-    currently being handled (an exception must be being handled if the
-    default is to be used).
-
-    If `t` is an exception object, the `exceptions` command makes it possible to
-    list and inspect its chained exceptions (if any).
-    """
-    ...
-def pm() -> None:
-    """Enter post-mortem debugging of the traceback found in sys.last_exc."""
-    ...
+def post_mortem(t: TracebackType | None = None) -> None: ...
+def pm() -> None: ...
 
 class Pdb(Bdb, Cmd):
     # Everything here is undocumented, except for __init__
@@ -438,15 +419,35 @@ class Pdb(Bdb, Cmd):
     curindex: int
     curframe: FrameType | None
     curframe_locals: Mapping[str, Any]
-    def __init__(
-        self,
-        completekey: str = "tab",
-        stdin: IO[str] | None = None,
-        stdout: IO[str] | None = None,
-        skip: Iterable[str] | None = None,
-        nosigint: bool = False,
-        readrc: bool = True,
-    ) -> None: ...
+    if sys.version_info >= (3, 14):
+        mode: _Mode | None
+        colorize: bool
+        def __init__(
+            self,
+            completekey: str = "tab",
+            stdin: IO[str] | None = None,
+            stdout: IO[str] | None = None,
+            skip: Iterable[str] | None = None,
+            nosigint: bool = False,
+            readrc: bool = True,
+            mode: _Mode | None = None,
+            backend: _Backend | None = None,
+            colorize: bool = False,
+        ) -> None: ...
+    else:
+        def __init__(
+            self,
+            completekey: str = "tab",
+            stdin: IO[str] | None = None,
+            stdout: IO[str] | None = None,
+            skip: Iterable[str] | None = None,
+            nosigint: bool = False,
+            readrc: bool = True,
+        ) -> None: ...
+    if sys.version_info >= (3, 14):
+        def set_trace(self, frame: FrameType | None = None, *, commands: Iterable[str] | None = None) -> None: ...
+        async def set_trace_async(self, frame: FrameType | None = None, *, commands: Iterable[str] | None = None) -> None: ...
+
     def forget(self) -> None: ...
     def setup(self, f: FrameType | None, tb: TracebackType | None) -> None: ...
     if sys.version_info < (3, 11):
@@ -483,16 +484,17 @@ class Pdb(Bdb, Cmd):
         """Produce a reasonable default."""
         ...
     def lineinfo(self, identifier: str) -> tuple[None, None, None] | tuple[str, str, int]: ...
-    def checkline(self, filename: str, lineno: int) -> int:
-        """
-        Check whether specified line seems to be executable.
+    if sys.version_info >= (3, 14):
+        def checkline(self, filename: str, lineno: int, module_globals: _ModuleGlobals | None = None) -> int: ...
+    else:
+        def checkline(self, filename: str, lineno: int) -> int: ...
 
-        Return `lineno` if it is, 0 if not (e.g. a docstring, comment, blank
-        line or EOF). Warning: testing is not comprehensive.
-        """
-        ...
     def _getval(self, arg: str) -> object: ...
-    def print_stack_trace(self) -> None: ...
+    if sys.version_info >= (3, 14):
+        def print_stack_trace(self, count: int | None = None) -> None: ...
+    else:
+        def print_stack_trace(self) -> None: ...
+
     def print_stack_entry(self, frame_lineno: tuple[FrameType, int], prompt_prefix: str = "\n-> ") -> None: ...
     def lookupmodule(self, filename: str) -> str | None:
         """
@@ -511,6 +513,9 @@ class Pdb(Bdb, Cmd):
         ...
     if sys.version_info < (3, 11):
         def _runscript(self, filename: str) -> None: ...
+
+    if sys.version_info >= (3, 14):
+        def complete_multiline_names(self, text: str, line: str, begidx: int, endidx: int) -> list[str]: ...
 
     if sys.version_info >= (3, 13):
         def completedefault(self, text: str, line: str, begidx: int, endidx: int) -> list[str]: ...

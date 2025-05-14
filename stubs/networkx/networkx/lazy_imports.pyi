@@ -1,47 +1,8 @@
 import types
-from _typeshed import Incomplete
 
 __all__ = ["attach", "_lazy_import"]
 
-def attach(module_name, submodules: Incomplete | None = None, submod_attrs: Incomplete | None = None):
-    """
-    Attach lazily loaded submodules, and functions or other attributes.
-
-    Typically, modules import submodules and attributes as follows::
-
-      import mysubmodule
-      import anothersubmodule
-
-      from .foo import someattr
-
-    The idea of  this function is to replace the `__init__.py`
-    module's `__getattr__`, `__dir__`, and `__all__` attributes such that
-    all imports work exactly the way they normally would, except that the
-    actual import is delayed until the resulting module object is first used.
-
-    The typical way to call this function, replacing the above imports, is::
-
-      __getattr__, __lazy_dir__, __all__ = lazy.attach(
-          __name__, ["mysubmodule", "anothersubmodule"], {"foo": "someattr"}
-      )
-
-    This functionality requires Python 3.7 or higher.
-
-    Parameters
-    ----------
-    module_name : str
-        Typically use __name__.
-    submodules : set
-        List of submodules to lazily import.
-    submod_attrs : dict
-        Dictionary of submodule -> list of attributes / functions.
-        These attributes are imported as they are used.
-
-    Returns
-    -------
-    __getattr__, __dir__, __all__
-    """
-    ...
+def attach(module_name, submodules=None, submod_attrs=None): ...
 
 class DelayedImportErrorModule(types.ModuleType):
     def __init__(self, frame_data, *args, **kwargs) -> None: ...

@@ -61,6 +61,7 @@ __all__ = [
     "TimeBase",
     "TypesFactory",
     "WEEKDAY_RULE",
+    "tzid_from_dt",
     "vBinary",
     "vBoolean",
     "vCalAddress",
@@ -78,14 +79,13 @@ __all__ = [
     "vMonth",
     "vPeriod",
     "vRecur",
-    "vSkip",
     "vText",
     "vTime",
     "vUTCOffset",
     "vUri",
     "vWeekday",
-    "tzid_from_dt",
     "tzid_from_tzinfo",
+    "vSkip",
 ]
 
 _PropType: TypeAlias = type[Any]  # any of the v* classes in this file
@@ -170,6 +170,9 @@ class vText(str):
     def to_ical(self) -> bytes: ...
     @classmethod
     def from_ical(cls, ical: ICAL_TYPE) -> Self: ...
+    ALTREP: property
+    LANGUAGE: property
+    RELTYPE: property
 
 class vCalAddress(str):
     """
@@ -222,9 +225,19 @@ class vCalAddress(str):
         """The CN parameter or an empty string."""
         ...
     @name.setter
-    def name(self, value: str) -> None:
-        """The CN parameter or an empty string."""
-        ...
+    def name(self, value: str) -> None: ...
+    @name.deleter
+    def name(self) -> None: ...
+    CN: property
+    CUTYPE: property
+    DELEGATED_FROM: property
+    DELEGATED_TO: property
+    DIR: property
+    LANGUAGE: property
+    PARTSTAT: property
+    ROLE: property
+    RSVP: property
+    SENT_BY: property
 
 class vFloat(float):
     """
@@ -354,9 +367,10 @@ class vCategory:
     def to_ical(self) -> bytes: ...
     @staticmethod
     def from_ical(ical: ICAL_TYPE) -> str: ...
-    def __eq__(self, other: object) -> bool:
-        """self == other"""
-        ...
+    def __eq__(self, other: object) -> bool: ...
+    RANGE: property
+    RELATED: property
+    TZID: property
 
 class TimeBase:
     """Make classes with a datetime/date comparable."""
@@ -364,6 +378,9 @@ class TimeBase:
         """self == other"""
         ...
     def __hash__(self) -> int: ...
+    RANGE: property
+    RELATED: property
+    TZID: property
 
 class vDDDTypes(TimeBase):
     """
@@ -645,9 +662,8 @@ class vPeriod(TimeBase):
     @staticmethod
     def from_ical(ical: str, timezone: datetime.timezone | str | None = None) -> tuple[Any, Any]: ...
     @property
-    def dt(self) -> _PeriodTuple:
-        """Make this cooperate with the other vDDDTypes."""
-        ...
+    def dt(self) -> _PeriodTuple: ...
+    FBTYPE: property
 
 class vWeekday(str):
     """
@@ -754,9 +770,7 @@ class vSkip(vText, Enum):
     FORWARD = "FORWARD"
     BACKWARD = "BACKWARD"
 
-    def __reduce_ex__(self, proto: Unused) -> tuple[Any, ...]:
-        """For pickling."""
-        ...
+    def __reduce_ex__(self, _p: Unused) -> tuple[Self, tuple[str]]: ...
 
 # The type of the values depend on the key. Each key maps to a v* class, and
 # the allowed types are the types that the corresponding v* class can parse.

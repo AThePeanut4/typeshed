@@ -1,14 +1,4 @@
-"""
-pygments.lexers
-~~~~~~~~~~~~~~~
-
-Pygments lexers.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from _typeshed import FileDescriptorOrPath, Incomplete, StrPath
+from _typeshed import FileDescriptorOrPath, StrPath
 from collections.abc import Iterator
 from typing import Any
 
@@ -125,4 +115,4 @@ def guess_lexer(_text: str | bytes, **options: Any) -> Lexer:
     ...
 
 # Having every lexer class here doesn't seem to be worth it
-def __getattr__(name: str) -> Incomplete: ...
+def __getattr__(name: str): ...  # incomplete module

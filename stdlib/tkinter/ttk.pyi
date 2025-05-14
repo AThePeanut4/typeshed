@@ -1119,95 +1119,16 @@ class Notebook(Widget):
         image=...,
         compound: tkinter._Compound = ...,
         underline: int = ...,
-    ) -> None:
-        """
-        Adds a new tab to the notebook.
-
-        If window is currently managed by the notebook but hidden, it is
-        restored to its previous position.
-        """
-        ...
-    def forget(self, tab_id) -> None:
-        """
-        Removes the tab specified by tab_id, unmaps and unmanages the
-        associated window.
-        """
-        ...
-    def hide(self, tab_id) -> None:
-        """
-        Hides the tab specified by tab_id.
-
-        The tab will not be displayed, but the associated window remains
-        managed by the notebook and its configuration remembered. Hidden
-        tabs may be restored with the add command.
-        """
-        ...
-    def identify(self, x: int, y: int) -> str:
-        """
-        Returns the name of the tab element at position x, y, or the
-        empty string if none.
-        """
-        ...
-    def index(self, tab_id):
-        """
-        Returns the numeric index of the tab specified by tab_id, or
-        the total number of tabs if tab_id is the string "end".
-        """
-        ...
-    def insert(self, pos, child, **kw) -> None:
-        """
-        Inserts a pane at the specified position.
-
-        pos is either the string end, an integer index, or the name of
-        a managed child. If child is already managed by the notebook,
-        moves it to the specified position.
-        """
-        ...
-    def select(self, tab_id: Incomplete | None = None):
-        """
-        Selects the specified tab.
-
-        The associated child window will be displayed, and the
-        previously-selected window (if different) is unmapped. If tab_id
-        is omitted, returns the widget name of the currently selected
-        pane.
-        """
-        ...
-    def tab(self, tab_id, option: Incomplete | None = None, **kw):
-        """
-        Query or modify the options of the specific tab_id.
-
-        If kw is not given, returns a dict of the tab option values. If option
-        is specified, returns the value of that option. Otherwise, sets the
-        options to the corresponding values.
-        """
-        ...
-    def tabs(self):
-        """Returns a list of windows managed by the notebook."""
-        ...
-    def enable_traversal(self) -> None:
-        """
-        Enable keyboard traversal for a toplevel window containing
-        this notebook.
-
-        This will extend the bindings for the toplevel window containing
-        this notebook as follows:
-
-            Control-Tab: selects the tab following the currently selected
-                         one
-
-            Shift-Control-Tab: selects the tab preceding the currently
-                               selected one
-
-            Alt-K: where K is the mnemonic (underlined) character of any
-                   tab, will select that tab.
-
-        Multiple notebooks in a single toplevel may be enabled for
-        traversal, including nested notebooks. However, notebook traversal
-        only works properly if all panes are direct children of the
-        notebook.
-        """
-        ...
+    ) -> None: ...
+    def forget(self, tab_id) -> None: ...  # type: ignore[override]
+    def hide(self, tab_id) -> None: ...
+    def identify(self, x: int, y: int) -> str: ...
+    def index(self, tab_id): ...
+    def insert(self, pos, child, **kw) -> None: ...
+    def select(self, tab_id: Incomplete | None = None): ...
+    def tab(self, tab_id, option: Incomplete | None = None, **kw): ...
+    def tabs(self): ...
+    def enable_traversal(self) -> None: ...
 
 class Panedwindow(Widget, tkinter.PanedWindow):
     """

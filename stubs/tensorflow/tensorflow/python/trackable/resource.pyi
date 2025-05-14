@@ -1,7 +1,3 @@
-"""Definitions for resource-type trackable object classes."""
-
-from _typeshed import Incomplete
-
 from tensorflow.python.trackable.base import Trackable
 
 class _ResourceMetaclass(type):
@@ -22,4 +18,4 @@ class CapturableResource(Trackable, metaclass=_ResourceMetaclass):
     """
     ...
 
-def __getattr__(name: str) -> Incomplete: ...
+def __getattr__(name: str): ...  # incomplete module
