@@ -1,4 +1,4 @@
-"""Threshold Graphs - Creation, manipulation and identification."""
+from collections.abc import Sequence
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
@@ -6,35 +6,8 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["is_threshold_graph", "find_threshold_graph"]
 
 @_dispatchable
-def is_threshold_graph(G: Graph[_Node]):
-    """
-    Returns `True` if `G` is a threshold graph.
-
-    Parameters
-    ----------
-    G : NetworkX graph instance
-        An instance of `Graph`, `DiGraph`, `MultiGraph` or `MultiDiGraph`
-
-    Returns
-    -------
-    bool
-        `True` if `G` is a threshold graph, `False` otherwise.
-
-    Examples
-    --------
-    >>> from networkx.algorithms.threshold import is_threshold_graph
-    >>> G = nx.path_graph(3)
-    >>> is_threshold_graph(G)
-    True
-    >>> G = nx.barbell_graph(3, 3)
-    >>> is_threshold_graph(G)
-    False
-
-    References
-    ----------
-    .. [1] Threshold graphs: https://en.wikipedia.org/wiki/Threshold_graph
-    """
-    ...
+def is_threshold_graph(G: Graph[_Node]) -> bool: ...
+def is_threshold_sequence(degree_sequence: Sequence[list[int]]) -> bool: ...
 @_dispatchable
 def find_threshold_graph(G: Graph[_Node], create_using: Graph[_Node] | None = None):
     """

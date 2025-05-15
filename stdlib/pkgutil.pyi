@@ -10,8 +10,6 @@ from typing_extensions import deprecated
 __all__ = [
     "get_importer",
     "iter_importers",
-    "get_loader",
-    "find_loader",
     "walk_packages",
     "iter_modules",
     "get_data",
@@ -19,6 +17,8 @@ __all__ = [
     "extend_path",
     "ModuleInfo",
 ]
+if sys.version_info < (3, 14):
+    __all__ += ["get_loader", "find_loader"]
 if sys.version_info < (3, 12):
     __all__ += ["ImpImporter", "ImpLoader"]
 
@@ -86,63 +86,15 @@ if sys.version_info < (3, 12):
         """
         def __init__(self, fullname: str, file: IO[str], filename: StrOrBytesPath, etc: tuple[str, str, int]) -> None: ...
 
-@deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
-def find_loader(fullname: str) -> LoaderProtocol | None:
-    """
-    Find a "loader" object for fullname
+if sys.version_info < (3, 14):
+    @deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
+    def find_loader(fullname: str) -> LoaderProtocol | None: ...
+    @deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
+    def get_loader(module_or_name: str) -> LoaderProtocol | None: ...
 
-    This is a backwards compatibility wrapper around
-    importlib.util.find_spec that converts most failures to ImportError
-    and only returns the loader rather than the full spec
-    """
-    ...
-def get_importer(path_item: StrOrBytesPath) -> PathEntryFinderProtocol | None:
-    """
-    Retrieve a finder for the given path item
-
-    The returned finder is cached in sys.path_importer_cache
-    if it was newly created by a path hook.
-
-    The cache (or part of it) can be cleared manually if a
-    rescan of sys.path_hooks is necessary.
-    """
-    ...
-@deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
-def get_loader(module_or_name: str) -> LoaderProtocol | None:
-    """
-    Get a "loader" object for module_or_name
-
-    Returns None if the module cannot be found or imported.
-    If the named module is not already imported, its containing package
-    (if any) is imported, in order to establish the package __path__.
-    """
-    ...
-def iter_importers(fullname: str = "") -> Iterator[MetaPathFinderProtocol | PathEntryFinderProtocol]:
-    """
-    Yield finders for the given module name
-
-    If fullname contains a '.', the finders will be for the package
-    containing fullname, otherwise they will be all registered top level
-    finders (i.e. those on both sys.meta_path and sys.path_hooks).
-
-    If the named module is in a package, that package is imported as a side
-    effect of invoking this function.
-
-    If no module name is specified, all top level finders are produced.
-    """
-    ...
-def iter_modules(path: Iterable[StrOrBytesPath] | None = None, prefix: str = "") -> Iterator[ModuleInfo]:
-    """
-    Yields ModuleInfo for all submodules on path,
-    or, if path is None, all top-level modules on sys.path.
-
-    'path' should be either None or a list of paths to look for
-    modules in.
-
-    'prefix' is a string to output on the front of every module name
-    on output.
-    """
-    ...
+def get_importer(path_item: StrOrBytesPath) -> PathEntryFinderProtocol | None: ...
+def iter_importers(fullname: str = "") -> Iterator[MetaPathFinderProtocol | PathEntryFinderProtocol]: ...
+def iter_modules(path: Iterable[StrOrBytesPath] | None = None, prefix: str = "") -> Iterator[ModuleInfo]: ...
 def read_code(stream: SupportsRead[bytes]) -> Any: ...  # undocumented
 def walk_packages(
     path: Iterable[StrOrBytesPath] | None = None, prefix: str = "", onerror: Callable[[str], object] | None = None

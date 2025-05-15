@@ -77,7 +77,7 @@ from http.client import HTTPConnection, HTTPMessage, HTTPResponse
 from http.cookiejar import CookieJar
 from re import Pattern
 from typing import IO, Any, ClassVar, NoReturn, Protocol, TypeVar, overload
-from typing_extensions import TypeAlias
+from typing_extensions import TypeAlias, deprecated
 from urllib.error import HTTPError as HTTPError
 from urllib.response import addclosehook, addinfourl
 
@@ -113,10 +113,10 @@ __all__ = [
     "getproxies",
     "urlretrieve",
     "urlcleanup",
-    "URLopener",
-    "FancyURLopener",
     "HTTPSHandler",
 ]
+if sys.version_info < (3, 14):
+    __all__ += ["URLopener", "FancyURLopener"]
 
 _T = TypeVar("_T")
 _UrlopenRet: TypeAlias = Any
@@ -244,21 +244,16 @@ def build_opener(*handlers: BaseHandler | Callable[[], BaseHandler]) -> OpenerDi
     """
     ...
 
-if sys.platform == "win32":
-    from nturl2path import pathname2url as pathname2url, url2pathname as url2pathname
+if sys.version_info >= (3, 14):
+    def url2pathname(url: str, *, require_scheme: bool = False, resolve_host: bool = False) -> str: ...
+    def pathname2url(pathname: str, *, add_scheme: bool = False) -> str: ...
+
 else:
-    def url2pathname(pathname: str) -> str:
-        """
-        OS-specific conversion from a relative URL of the 'file' scheme
-        to a file system path; not recommended for general use.
-        """
-        ...
-    def pathname2url(pathname: str) -> str:
-        """
-        OS-specific conversion from a file system path to a relative URL
-        of the 'file' scheme; not recommended for general use.
-        """
-        ...
+    if sys.platform == "win32":
+        from nturl2path import pathname2url as pathname2url, url2pathname as url2pathname
+    else:
+        def url2pathname(pathname: str) -> str: ...
+        def pathname2url(pathname: str) -> str: ...
 
 def getproxies() -> dict[str, str]:
     """
@@ -590,161 +585,94 @@ def urlcleanup() -> None:
     """Clean up temporary files from urlretrieve calls."""
     ...
 
-class URLopener:
-    """
-    Class to open URLs.
-    This is a class rather than just a subroutine because we may need
-    more than one set of global protocol-specific options.
-    Note -- this is a base class for those who don't want the
-    automatic handling of errors type 302 (relocated) and 401
-    (authorization needed).
-    """
-    version: ClassVar[str]
-    def __init__(self, proxies: dict[str, str] | None = None, **x509: str) -> None: ...
-    def open(self, fullurl: str, data: ReadableBuffer | None = None) -> _UrlopenRet:
-        """Use URLopener().open(file) instead of open(file, 'r')."""
-        ...
-    def open_unknown(self, fullurl: str, data: ReadableBuffer | None = None) -> _UrlopenRet:
-        """Overridable interface to open unknown URL type."""
-        ...
-    def retrieve(
-        self,
-        url: str,
-        filename: str | None = None,
-        reporthook: Callable[[int, int, int], object] | None = None,
-        data: ReadableBuffer | None = None,
-    ) -> tuple[str, Message | None]:
-        """
-        retrieve(url) returns (filename, headers) for a local object
-        or (tempfilename, headers) for a remote object.
-        """
-        ...
-    def addheader(self, *args: tuple[str, str]) -> None:
-        """
-        Add a header to be used by the HTTP interface only
-        e.g. u.addheader('Accept', 'sound/basic')
-        """
-        ...
-    def cleanup(self) -> None: ...  # undocumented
-    def close(self) -> None: ...  # undocumented
-    def http_error(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: bytes | None = None
-    ) -> _UrlopenRet:
-        """
-        Handle http errors.
+if sys.version_info < (3, 14):
+    @deprecated("Deprecated since Python 3.3; Removed in 3.14; Use newer urlopen functions and methods.")
+    class URLopener:
+        version: ClassVar[str]
+        def __init__(self, proxies: dict[str, str] | None = None, **x509: str) -> None: ...
+        def open(self, fullurl: str, data: ReadableBuffer | None = None) -> _UrlopenRet: ...
+        def open_unknown(self, fullurl: str, data: ReadableBuffer | None = None) -> _UrlopenRet: ...
+        def retrieve(
+            self,
+            url: str,
+            filename: str | None = None,
+            reporthook: Callable[[int, int, int], object] | None = None,
+            data: ReadableBuffer | None = None,
+        ) -> tuple[str, Message | None]: ...
+        def addheader(self, *args: tuple[str, str]) -> None: ...  # undocumented
+        def cleanup(self) -> None: ...  # undocumented
+        def close(self) -> None: ...  # undocumented
+        def http_error(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: bytes | None = None
+        ) -> _UrlopenRet: ...  # undocumented
+        def http_error_default(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage
+        ) -> _UrlopenRet: ...  # undocumented
+        def open_data(self, url: str, data: ReadableBuffer | None = None) -> addinfourl: ...  # undocumented
+        def open_file(self, url: str) -> addinfourl: ...  # undocumented
+        def open_ftp(self, url: str) -> addinfourl: ...  # undocumented
+        def open_http(self, url: str, data: ReadableBuffer | None = None) -> _UrlopenRet: ...  # undocumented
+        def open_https(self, url: str, data: ReadableBuffer | None = None) -> _UrlopenRet: ...  # undocumented
+        def open_local_file(self, url: str) -> addinfourl: ...  # undocumented
+        def open_unknown_proxy(self, proxy: str, fullurl: str, data: ReadableBuffer | None = None) -> None: ...  # undocumented
+        def __del__(self) -> None: ...
 
-        Derived class can override this, or provide specific handlers
-        named http_error_DDD where DDD is the 3-digit error code.
-        """
-        ...
-    def http_error_default(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage
-    ) -> _UrlopenRet:
-        """Default error handler: close the connection and raise OSError."""
-        ...
-    def open_data(self, url: str, data: ReadableBuffer | None = None) -> addinfourl:
-        """Use "data" URL."""
-        ...
-    def open_file(self, url: str) -> addinfourl:
-        """Use local file or FTP depending on form of URL."""
-        ...
-    def open_ftp(self, url: str) -> addinfourl:
-        """Use FTP protocol."""
-        ...
-    def open_http(self, url: str, data: ReadableBuffer | None = None) -> _UrlopenRet:
-        """Use HTTP protocol."""
-        ...
-    def open_https(self, url: str, data: ReadableBuffer | None = None) -> _UrlopenRet:
-        """Use HTTPS protocol."""
-        ...
-    def open_local_file(self, url: str) -> addinfourl:
-        """Use local file."""
-        ...
-    def open_unknown_proxy(self, proxy: str, fullurl: str, data: ReadableBuffer | None = None) -> None:
-        """Overridable interface to open unknown URL type."""
-        ...
-    def __del__(self) -> None: ...
-
-class FancyURLopener(URLopener):
-    """Derived class with handlers for errors we can handle (perhaps)."""
-    def prompt_user_passwd(self, host: str, realm: str) -> tuple[str, str]:
-        """Override this in a GUI environment!"""
-        ...
-    def get_user_passwd(self, host: str, realm: str, clear_cache: int = 0) -> tuple[str, str]: ...  # undocumented
-    def http_error_301(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | addinfourl | None:
-        """Error 301 -- also relocated (permanently)."""
-        ...
-    def http_error_302(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | addinfourl | None:
-        """Error 302 -- relocated (temporarily)."""
-        ...
-    def http_error_303(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | addinfourl | None:
-        """Error 303 -- also relocated (essentially identical to 302)."""
-        ...
-    def http_error_307(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | addinfourl | None:
-        """Error 307 -- relocated, but turn POST into error."""
-        ...
-    if sys.version_info >= (3, 11):
-        def http_error_308(
+    @deprecated("Deprecated since Python 3.3; Removed in 3.14; Use newer urlopen functions and methods.")
+    class FancyURLopener(URLopener):
+        def prompt_user_passwd(self, host: str, realm: str) -> tuple[str, str]: ...
+        def get_user_passwd(self, host: str, realm: str, clear_cache: int = 0) -> tuple[str, str]: ...  # undocumented
+        def http_error_301(
             self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
-        ) -> _UrlopenRet | addinfourl | None:
-            """Error 308 -- relocated, but turn POST into error."""
-            ...
+        ) -> _UrlopenRet | addinfourl | None: ...  # undocumented
+        def http_error_302(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | addinfourl | None: ...  # undocumented
+        def http_error_303(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | addinfourl | None: ...  # undocumented
+        def http_error_307(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | addinfourl | None: ...  # undocumented
+        if sys.version_info >= (3, 11):
+            def http_error_308(
+                self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None = None
+            ) -> _UrlopenRet | addinfourl | None: ...  # undocumented
 
-    def http_error_401(
-        self,
-        url: str,
-        fp: IO[bytes],
-        errcode: int,
-        errmsg: str,
-        headers: HTTPMessage,
-        data: ReadableBuffer | None = None,
-        retry: bool = False,
-    ) -> _UrlopenRet | None:
-        """
-        Error 401 -- authentication required.
-        This function supports Basic authentication only.
-        """
-        ...
-    def http_error_407(
-        self,
-        url: str,
-        fp: IO[bytes],
-        errcode: int,
-        errmsg: str,
-        headers: HTTPMessage,
-        data: ReadableBuffer | None = None,
-        retry: bool = False,
-    ) -> _UrlopenRet | None:
-        """
-        Error 407 -- proxy authentication required.
-        This function supports Basic authentication only.
-        """
-        ...
-    def http_error_default(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage
-    ) -> addinfourl:
-        """Default error handling -- don't raise an exception."""
-        ...
-    def redirect_internal(
-        self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None
-    ) -> _UrlopenRet | None: ...  # undocumented
-    def retry_http_basic_auth(
-        self, url: str, realm: str, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | None: ...  # undocumented
-    def retry_https_basic_auth(
-        self, url: str, realm: str, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | None: ...  # undocumented
-    def retry_proxy_http_basic_auth(
-        self, url: str, realm: str, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | None: ...  # undocumented
-    def retry_proxy_https_basic_auth(
-        self, url: str, realm: str, data: ReadableBuffer | None = None
-    ) -> _UrlopenRet | None: ...  # undocumented
+        def http_error_401(
+            self,
+            url: str,
+            fp: IO[bytes],
+            errcode: int,
+            errmsg: str,
+            headers: HTTPMessage,
+            data: ReadableBuffer | None = None,
+            retry: bool = False,
+        ) -> _UrlopenRet | None: ...  # undocumented
+        def http_error_407(
+            self,
+            url: str,
+            fp: IO[bytes],
+            errcode: int,
+            errmsg: str,
+            headers: HTTPMessage,
+            data: ReadableBuffer | None = None,
+            retry: bool = False,
+        ) -> _UrlopenRet | None: ...  # undocumented
+        def http_error_default(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage
+        ) -> addinfourl: ...  # undocumented
+        def redirect_internal(
+            self, url: str, fp: IO[bytes], errcode: int, errmsg: str, headers: HTTPMessage, data: ReadableBuffer | None
+        ) -> _UrlopenRet | None: ...  # undocumented
+        def retry_http_basic_auth(
+            self, url: str, realm: str, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | None: ...  # undocumented
+        def retry_https_basic_auth(
+            self, url: str, realm: str, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | None: ...  # undocumented
+        def retry_proxy_http_basic_auth(
+            self, url: str, realm: str, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | None: ...  # undocumented
+        def retry_proxy_https_basic_auth(
+            self, url: str, realm: str, data: ReadableBuffer | None = None
+        ) -> _UrlopenRet | None: ...  # undocumented

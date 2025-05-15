@@ -3,6 +3,9 @@
 from _typeshed import Incomplete
 from collections.abc import Generator
 
+from networkx.classes.digraph import DiGraph
+from networkx.classes.graph import _Node
+from networkx.classes.multidigraph import MultiDiGraph
 from networkx.utils.backends import _dispatchable
 
 __all__ = ["number_attracting_components", "attracting_components", "is_attracting_component"]
@@ -71,28 +74,4 @@ def number_attracting_components(G):
     """
     ...
 @_dispatchable
-def is_attracting_component(G):
-    """
-    Returns True if `G` consists of a single attracting component.
-
-    Parameters
-    ----------
-    G : DiGraph, MultiDiGraph
-        The graph to be analyzed.
-
-    Returns
-    -------
-    attracting : bool
-        True if `G` has a single attracting component. Otherwise, False.
-
-    Raises
-    ------
-    NetworkXNotImplemented
-        If the input graph is undirected.
-
-    See Also
-    --------
-    attracting_components
-    number_attracting_components
-    """
-    ...
+def is_attracting_component(G: DiGraph[_Node] | MultiDiGraph[_Node]) -> bool: ...

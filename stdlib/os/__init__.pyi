@@ -184,6 +184,8 @@ __all__ = [
     "walk",
     "write",
 ]
+if sys.version_info >= (3, 14):
+    __all__ += ["readinto"]
 if sys.platform == "darwin" and sys.version_info >= (3, 12):
     __all__ += ["PRIO_DARWIN_BG", "PRIO_DARWIN_NONUI", "PRIO_DARWIN_PROCESS", "PRIO_DARWIN_THREAD"]
 if sys.platform == "darwin" and sys.version_info >= (3, 10):
@@ -232,6 +234,8 @@ if sys.platform == "linux":
         "removexattr",
         "setxattr",
     ]
+if sys.platform == "linux" and sys.version_info >= (3, 14):
+    __all__ += ["SCHED_DEADLINE", "SCHED_NORMAL"]
 if sys.platform == "linux" and sys.version_info >= (3, 13):
     __all__ += [
         "POSIX_SPAWN_CLOSEFROM",
@@ -593,6 +597,10 @@ if sys.platform == "linux":
     SCHED_BATCH: int
     SCHED_IDLE: int
     SCHED_RESET_ON_FORK: int
+
+if sys.version_info >= (3, 14) and sys.platform == "linux":
+    SCHED_DEADLINE: int
+    SCHED_NORMAL: int
 
 if sys.platform != "win32":
     RTLD_LAZY: int
@@ -1714,6 +1722,9 @@ if sys.platform != "win32":
         buffers must be a sequence of bytes-like objects.
         """
         ...
+
+if sys.version_info >= (3, 14):
+    def readinto(fd: int, buffer: ReadableBuffer, /) -> int: ...
 
 @final
 class terminal_size(structseq[int], tuple[int, int]):
