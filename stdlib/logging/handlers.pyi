@@ -352,19 +352,19 @@ class SysLogHandler(Handler):
     else:
         def __init__(
             self, address: tuple[str, int] | str = ("localhost", 514), facility: str | int = 1, socktype: SocketKind | None = None
-        ) -> None: ...
-    if sys.version_info >= (3, 11):
-        def createSocket(self) -> None: ...
+        ) -> None:
+            """
+            Initialize a handler.
 
-        If address is specified as a string, a UNIX socket is used. To log to a
-        local syslogd, "SysLogHandler(address="/dev/log")" can be used.
-        If facility is not specified, LOG_USER is used. If socktype is
-        specified as socket.SOCK_DGRAM or socket.SOCK_STREAM, that specific
-        socket type will be used. For Unix sockets, you can also specify a
-        socktype of None, in which case socket.SOCK_DGRAM will be used, falling
-        back to socket.SOCK_STREAM.
-        """
-        ...
+            If address is specified as a string, a UNIX socket is used. To log to a
+            local syslogd, "SysLogHandler(address="/dev/log")" can be used.
+            If facility is not specified, LOG_USER is used. If socktype is
+            specified as socket.SOCK_DGRAM or socket.SOCK_STREAM, that specific
+            socket type will be used. For Unix sockets, you can also specify a
+            socktype of None, in which case socket.SOCK_DGRAM will be used, falling
+            back to socket.SOCK_STREAM.
+            """
+            ...
     if sys.version_info >= (3, 11):
         def createSocket(self) -> None:
             """

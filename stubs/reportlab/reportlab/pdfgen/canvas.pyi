@@ -590,12 +590,45 @@ class Canvas(_PDFColorSetter):
         dashArray: Incomplete | None = None,
         kind: str = "URI",
         **kw,
-    ) -> None: ...
-    def getPageNumber(self) -> int: ...
-    def save(self) -> None: ...
-    def getpdfdata(self): ...
-    def setPageSize(self, size: tuple[float, float]) -> None: ...
-    def setCropBox(self, size, name: str = "crop") -> None: ...
+    ) -> None:
+        """
+        Create a rectangular URL 'hotspot' in the given rectangle.
+
+        if relative=1, this is in the current coord system, otherwise
+        in absolute page space.
+        The remaining options affect the border appearance; the border is
+        drawn by Acrobat, not us.  Set thickness to zero to hide it.
+        Any border drawn this way is NOT part of the page stream and
+        will not show when printed to a Postscript printer or distilled;
+        it is safest to draw your own.
+        """
+        ...
+    def getPageNumber(self) -> int:
+        """get the page number for the current page being generated."""
+        ...
+    def save(self) -> None:
+        """
+        Saves and close the PDF document in the file.
+        If there is current data a ShowPage is executed automatically.
+        After this operation the canvas must not be used further.
+        """
+        ...
+    def getpdfdata(self):
+        """
+        Returns the PDF data that would normally be written to a file.
+        If there is current data a ShowPage is executed automatically.
+        After this operation the canvas must not be used further.
+        """
+        ...
+    def setPageSize(self, size: tuple[float, float]) -> None:
+        """
+        accepts a 2-tuple in points for paper size for this
+        and subsequent pages
+        """
+        ...
+    def setCropBox(self, size, name: str = "crop") -> None:
+        """accepts a 2-tuple in points for name+'Box' size for this and subsequent pages"""
+        ...
     def setTrimBox(self, size) -> None: ...
     def setArtBox(self, size) -> None: ...
     def setBleedBox(self, size) -> None: ...

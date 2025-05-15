@@ -1,3 +1,5 @@
+"""Threshold Graphs - Creation, manipulation and identification."""
+
 from collections.abc import Sequence
 
 from networkx.classes.graph import Graph, _Node
@@ -6,8 +8,46 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["is_threshold_graph", "find_threshold_graph"]
 
 @_dispatchable
-def is_threshold_graph(G: Graph[_Node]) -> bool: ...
-def is_threshold_sequence(degree_sequence: Sequence[list[int]]) -> bool: ...
+def is_threshold_graph(G: Graph[_Node]) -> bool:
+    """
+    Returns `True` if `G` is a threshold graph.
+
+    Parameters
+    ----------
+    G : NetworkX graph instance
+        An instance of `Graph`, `DiGraph`, `MultiGraph` or `MultiDiGraph`
+
+    Returns
+    -------
+    bool
+        `True` if `G` is a threshold graph, `False` otherwise.
+
+    Examples
+    --------
+    >>> from networkx.algorithms.threshold import is_threshold_graph
+    >>> G = nx.path_graph(3)
+    >>> is_threshold_graph(G)
+    True
+    >>> G = nx.barbell_graph(3, 3)
+    >>> is_threshold_graph(G)
+    False
+
+    References
+    ----------
+    .. [1] Threshold graphs: https://en.wikipedia.org/wiki/Threshold_graph
+    """
+    ...
+def is_threshold_sequence(degree_sequence: Sequence[list[int]]) -> bool:
+    """
+    Returns True if the sequence is a threshold degree sequence.
+
+    Uses the property that a threshold graph must be constructed by
+    adding either dominating or isolated nodes. Thus, it can be
+    deconstructed iteratively by removing a node of degree zero or a
+    node that connects to the remaining nodes.  If this deconstruction
+    fails then the sequence is not a threshold sequence.
+    """
+    ...
 @_dispatchable
 def find_threshold_graph(G: Graph[_Node], create_using: Graph[_Node] | None = None):
     """

@@ -1,3 +1,11 @@
+"""
+requests.sessions
+~~~~~~~~~~~~~~~~~
+
+This module provides a Session object to manage and persist settings across
+requests (cookies, auth, proxies).
+"""
+
 from _typeshed import SupportsItems, SupportsRead, Unused
 from collections.abc import Callable, Iterable, Mapping, MutableMapping
 from typing import Any, TypedDict
@@ -231,7 +239,52 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = None,
         cert: _Cert | None = None,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        """
+        Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+
+        :param method: method for the new :class:`Request` object.
+        :param url: URL for the new :class:`Request` object.
+        :param params: (optional) Dictionary or bytes to be sent in the query
+            string for the :class:`Request`.
+        :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the :class:`Request`.
+        :param json: (optional) json to send in the body of the
+            :class:`Request`.
+        :param headers: (optional) Dictionary of HTTP Headers to send with the
+            :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with the
+            :class:`Request`.
+        :param files: (optional) Dictionary of ``'filename': file-like-objects``
+            for multipart encoding upload.
+        :param auth: (optional) Auth tuple or callable to enable
+            Basic/Digest/Custom HTTP Auth.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple
+        :param allow_redirects: (optional) Set to True by default.
+        :type allow_redirects: bool
+        :param proxies: (optional) Dictionary mapping protocol or protocol and
+            hostname to the URL of the proxy.
+        :param hooks: (optional) Dictionary mapping hook name to one event or
+            list of events, event must be callable.
+        :param stream: (optional) whether to immediately download the response
+            content. Defaults to ``False``.
+        :param verify: (optional) Either a boolean, in which case it controls whether we verify
+            the server's TLS certificate, or a string, in which case it must be a path
+            to a CA bundle to use. Defaults to ``True``. When set to
+            ``False``, requests will accept any TLS certificate presented by
+            the server, and will ignore hostname mismatches and/or expired
+            certificates, which will make your application vulnerable to
+            man-in-the-middle (MitM) attacks. Setting verify to ``False``
+            may be useful during local development or testing.
+        :param cert: (optional) if String, path to ssl client cert file (.pem).
+            If Tuple, ('cert', 'key') pair.
+        :rtype: requests.Response
+        """
+        ...
     def get(
         self,
         url: str | bytes,
@@ -250,7 +303,15 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = ...,
         cert: _Cert | None = ...,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        r"""
+        Sends a GET request. Returns :class:`Response` object.
+
+        :param url: URL for the new :class:`Request` object.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
+        ...
     def options(
         self,
         url: str | bytes,
@@ -269,7 +330,15 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = ...,
         cert: _Cert | None = ...,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        r"""
+        Sends a OPTIONS request. Returns :class:`Response` object.
+
+        :param url: URL for the new :class:`Request` object.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
+        ...
     def head(
         self,
         url: str | bytes,
@@ -288,7 +357,15 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = ...,
         cert: _Cert | None = ...,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        r"""
+        Sends a HEAD request. Returns :class:`Response` object.
+
+        :param url: URL for the new :class:`Request` object.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
+        ...
     def post(
         self,
         url: str | bytes,
@@ -337,7 +414,17 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = ...,
         cert: _Cert | None = ...,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        r"""
+        Sends a PUT request. Returns :class:`Response` object.
+
+        :param url: URL for the new :class:`Request` object.
+        :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the :class:`Request`.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
+        ...
     def patch(
         self,
         url: str | bytes,
@@ -356,7 +443,17 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = ...,
         cert: _Cert | None = ...,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        r"""
+        Sends a PATCH request. Returns :class:`Response` object.
+
+        :param url: URL for the new :class:`Request` object.
+        :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the :class:`Request`.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
+        ...
     def delete(
         self,
         url: str | bytes,
@@ -375,7 +472,15 @@ class Session(SessionRedirectMixin):
         verify: _Verify | None = ...,
         cert: _Cert | None = ...,
         json: _JSON | None = None,
-    ) -> Response: ...
+    ) -> Response:
+        r"""
+        Sends a DELETE request. Returns :class:`Response` object.
+
+        :param url: URL for the new :class:`Request` object.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
+        ...
     def send(
         self,
         request: PreparedRequest,

@@ -1318,13 +1318,66 @@ if sys.platform != "win32":
         """
         sethostname(name)
 
-def if_nameindex() -> list[tuple[int, str]]: ...
-def if_nametoindex(oname: str, /) -> int: ...
+        Sets the hostname to name.
+        """
+        ...
+    def CMSG_LEN(length: int, /) -> int:
+        """
+        CMSG_LEN(length) -> control message length
+
+        Return the total length, without trailing padding, of an ancillary
+        data item with associated data of the given length.  This value can
+        often be used as the buffer size for recvmsg() to receive a single
+        item of ancillary data, but RFC 3542 requires portable applications to
+        use CMSG_SPACE() and thus include space for padding, even when the
+        item will be the last in the buffer.  Raises OverflowError if length
+        is outside the permissible range of values.
+        """
+        ...
+    def CMSG_SPACE(length: int, /) -> int:
+        """
+        CMSG_SPACE(length) -> buffer size
+
+        Return the buffer size needed for recvmsg() to receive an ancillary
+        data item with associated data of the given length, along with any
+        trailing padding.  The buffer space needed to receive multiple items
+        is the sum of the CMSG_SPACE() values for their associated data
+        lengths.  Raises OverflowError if length is outside the permissible
+        range of values.
+        """
+        ...
+    def socketpair(family: int = ..., type: int = ..., proto: int = ..., /) -> tuple[socket, socket]:
+        """
+        socketpair([family[, type [, proto]]]) -> (socket object, socket object)
+
+        Create a pair of socket objects from the sockets returned by the platform
+        socketpair() function.
+        The arguments are the same as for socket() except the default family is
+        AF_UNIX if defined on the platform; otherwise, the default is AF_INET.
+        """
+        ...
+
+def if_nameindex() -> list[tuple[int, str]]:
+    """
+    if_nameindex()
+
+    Returns a list of network interface information (index, name) tuples.
+    """
+    ...
+def if_nametoindex(oname: str, /) -> int:
+    """Returns the interface index corresponding to the interface name if_name."""
+    ...
 
 if sys.version_info >= (3, 14):
     def if_indextoname(if_index: int, /) -> str: ...
 
 else:
-    def if_indextoname(index: int, /) -> str: ...
+    def if_indextoname(index: int, /) -> str:
+        """
+        if_indextoname(if_index)
+
+        Returns the interface name corresponding to the interface index if_index.
+        """
+        ...
 
 CAPI: CapsuleType

@@ -74,4 +74,28 @@ def number_attracting_components(G):
     """
     ...
 @_dispatchable
-def is_attracting_component(G: DiGraph[_Node] | MultiDiGraph[_Node]) -> bool: ...
+def is_attracting_component(G: DiGraph[_Node] | MultiDiGraph[_Node]) -> bool:
+    """
+    Returns True if `G` consists of a single attracting component.
+
+    Parameters
+    ----------
+    G : DiGraph, MultiDiGraph
+        The graph to be analyzed.
+
+    Returns
+    -------
+    attracting : bool
+        True if `G` has a single attracting component. Otherwise, False.
+
+    Raises
+    ------
+    NetworkXNotImplemented
+        If the input graph is undirected.
+
+    See Also
+    --------
+    attracting_components
+    number_attracting_components
+    """
+    ...

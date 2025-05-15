@@ -83,7 +83,30 @@ def triadic_census(G: DiGraph[_Node], nodelist: Collection[_Node] | None = None)
     """
     ...
 @_dispatchable
-def is_triad(G: Graph[_Node]) -> bool: ...
+def is_triad(G: Graph[_Node]) -> bool:
+    """
+    Returns True if the graph G is a triad, else False.
+
+    Parameters
+    ----------
+    G : graph
+       A NetworkX Graph
+
+    Returns
+    -------
+    istriad : boolean
+       Whether G is a valid triad
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(1, 2), (2, 3), (3, 1)])
+    >>> nx.is_triad(G)
+    True
+    >>> G.add_edge(0, 1)
+    >>> nx.is_triad(G)
+    False
+    """
+    ...
 @_dispatchable
 def all_triplets(G: DiGraph[_Node]):
     """
