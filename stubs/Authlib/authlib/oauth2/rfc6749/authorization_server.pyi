@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from collections.abc import Callable, Collection, Mapping
 from typing_extensions import TypeAlias
 
@@ -31,7 +30,7 @@ class AuthorizationServer:
         self,
         grant_type: str,
         client: ClientMixin,
-        user: Incomplete | None = None,
+        user=None,
         scope: str | None = None,
         expires_in: int | None = None,
         include_refresh_token: bool = True,
@@ -155,80 +154,12 @@ class AuthorizationServer:
         ...
     def register_grant(
         self, grant_cls: type[BaseGrant], extensions: Collection[Callable[[BaseGrant], None]] | None = None
-    ) -> None:
-        """
-        Register a grant class into the endpoint registry. Developers
-        can implement the grants in ``authlib.oauth2.rfc6749.grants`` and
-        register with this method::
-
-            class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
-                def authenticate_user(self, credential):
-                    # ...
-
-            authorization_server.register_grant(AuthorizationCodeGrant)
-
-        :param grant_cls: a grant class.
-        :param extensions: extensions for the grant class.
-        """
-        ...
-    def register_endpoint(self, endpoint) -> None:
-        """
-        Add extra endpoint to authorization server. e.g.
-        RevocationEndpoint::
-
-            authorization_server.register_endpoint(RevocationEndpoint)
-
-        :param endpoint_cls: A endpoint class or instance.
-        """
-        ...
-    def get_authorization_grant(self, request: OAuth2Request) -> BaseGrant:
-        """
-        Find the authorization grant for current request.
-
-        :param request: OAuth2Request instance.
-        :return: grant instance
-        """
-        ...
-    def get_consent_grant(self, request: Incomplete | None = None, end_user: Incomplete | None = None):
-        """
-        Validate current HTTP request for authorization page. This page
-        is designed for resource owner to grant or deny the authorization.
-        """
-        ...
-    def get_token_grant(self, request: OAuth2Request) -> BaseGrant:
-        """
-        Find the token grant for current request.
-
-        :param request: OAuth2Request instance.
-        :return: grant instance
-        """
-        ...
-    def create_endpoint_response(self, name, request: Incomplete | None = None):
-        """
-        Validate endpoint request and create endpoint response.
-
-        :param name: Endpoint name
-        :param request: HTTP request instance.
-        :return: Response
-        """
-        ...
-    def create_authorization_response(
-        self, request: Incomplete | None = None, grant_user: Incomplete | None = None
-    ) -> object:
-        """
-        Validate authorization request and create authorization response.
-
-        :param request: HTTP request instance.
-        :param grant_user: if granted, it is resource owner. If denied,
-            it is None.
-        :returns: Response
-        """
-        ...
-    def create_token_response(self, request: Incomplete | None = None) -> _ServerResponse:
-        """
-        Validate token request and create token response.
-
-        :param request: HTTP request instance
-        """
-        ...
+    ) -> None: ...
+    def register_endpoint(self, endpoint) -> None: ...
+    def get_authorization_grant(self, request: OAuth2Request) -> BaseGrant: ...
+    def get_consent_grant(self, request=None, end_user=None): ...
+    def get_token_grant(self, request: OAuth2Request) -> BaseGrant: ...
+    def create_endpoint_response(self, name, request=None): ...
+    def create_authorization_response(self, request=None, grant_user=None) -> object: ...
+    def create_token_response(self, request=None) -> _ServerResponse: ...
     def handle_error_response(self, request: OAuth2Request, error: OAuth2Error) -> object: ...

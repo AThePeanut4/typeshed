@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from collections.abc import Iterable
 from dataclasses import dataclass
 from io import BytesIO
@@ -68,15 +67,8 @@ def get_svg_info(filename: str, img: BytesIO, image_cache: ImageCache) -> tuple[
 
 # Returned dict could be typed as a TypedDict.
 def get_img_info(
-    filename, img: BytesIO | Image.Image | None = None, image_filter: _ImageFilter = "AUTO", dims: Incomplete | None = None
-) -> dict[str, Any]:
-    """
-    Args:
-        filename: in a format that can be passed to load_image
-        img: optional `bytes`, `BytesIO` or `PIL.Image.Image` instance
-        image_filter (str): one of the SUPPORTED_IMAGE_FILTERS
-    """
-    ...
+    filename, img: BytesIO | Image.Image | None = None, image_filter: _ImageFilter = "AUTO", dims=None
+) -> dict[str, Any]: ...
 
 class temp_attr:
     """temporary change the attribute of an object using a context manager"""

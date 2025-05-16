@@ -1,21 +1,4 @@
-"""
-Beautiful Soup Elixir and Tonic - "The Screen-Scraper's Friend".
-
-http://www.crummy.com/software/BeautifulSoup/
-
-Beautiful Soup uses a pluggable XML or HTML parser to parse a
-(possibly invalid) document into a tree representation. Beautiful Soup
-provides methods and Pythonic idioms that make it easy to navigate,
-search, and modify the parse tree.
-
-Beautiful Soup works with Python 3.6 and up. It works better if lxml
-and/or html5lib is installed.
-
-For more than you ever wanted to know about Beautiful Soup, see the
-documentation: http://www.crummy.com/software/BeautifulSoup/bs4/doc/
-"""
-
-from _typeshed import Incomplete, SupportsRead
+from _typeshed import SupportsRead
 from collections.abc import Iterator, Sequence
 from typing import Any
 from typing_extensions import Self
@@ -169,112 +152,21 @@ class BeautifulSoup(Tag):
     open_tag_counter: Any
     preserve_whitespace_tag_stack: Any
     string_container_stack: Any
-    def reset(self) -> None:
-        """
-        Reset this object to a state as though it had never parsed any
-        markup.
-        """
-        ...
-    def new_tag(
-        self,
-        name,
-        namespace: Incomplete | None = None,
-        nsprefix: Incomplete | None = None,
-        attrs={},
-        sourceline: Incomplete | None = None,
-        sourcepos: Incomplete | None = None,
-        **kwattrs,
-    ) -> Tag:
-        """
-        Create a new Tag associated with this BeautifulSoup object.
-
-        :param name: The name of the new Tag.
-        :param namespace: The URI of the new Tag's XML namespace, if any.
-        :param prefix: The prefix for the new Tag's XML namespace, if any.
-        :param attrs: A dictionary of this Tag's attribute values; can
-            be used instead of `kwattrs` for attributes like 'class'
-            that are reserved words in Python.
-        :param sourceline: The line number where this tag was
-            (purportedly) found in its source document.
-        :param sourcepos: The character position within `sourceline` where this
-            tag was (purportedly) found.
-        :param kwattrs: Keyword arguments for the new Tag's attribute values.
-        """
-        ...
-    def string_container(self, base_class: Incomplete | None = None): ...
-    def new_string(self, s, subclass: Incomplete | None = None):
-        """
-        Create a new NavigableString associated with this BeautifulSoup
-        object.
-        """
-        ...
-    def insert_before(self, *args) -> None:
-        """
-        This method is part of the PageElement API, but `BeautifulSoup` doesn't implement
-        it because there is nothing before or after it in the parse tree.
-        """
-        ...
-    def insert_after(self, *args) -> None:
-        """
-        This method is part of the PageElement API, but `BeautifulSoup` doesn't implement
-        it because there is nothing before or after it in the parse tree.
-        """
-        ...
-    def popTag(self):
-        """Internal method called by _popToTag when a tag is closed."""
-        ...
-    def pushTag(self, tag) -> None:
-        """Internal method called by handle_starttag when a tag is opened."""
-        ...
-    def endData(self, containerClass: Incomplete | None = None) -> None:
-        """
-        Method called by the TreeBuilder when the end of a data segment
-        occurs.
-        """
-        ...
-    def object_was_parsed(self, o, parent: Incomplete | None = None, most_recent_element: Incomplete | None = None) -> None:
-        """Method called by the TreeBuilder to integrate an object into the parse tree."""
-        ...
+    def reset(self) -> None: ...
+    def new_tag(self, name, namespace=None, nsprefix=None, attrs={}, sourceline=None, sourcepos=None, **kwattrs) -> Tag: ...
+    def string_container(self, base_class=None): ...
+    def new_string(self, s, subclass=None): ...
+    def insert_before(self, *args) -> None: ...
+    def insert_after(self, *args) -> None: ...
+    def popTag(self): ...
+    def pushTag(self, tag) -> None: ...
+    def endData(self, containerClass=None) -> None: ...
+    def object_was_parsed(self, o, parent=None, most_recent_element=None) -> None: ...
     def handle_starttag(
-        self,
-        name,
-        namespace,
-        nsprefix,
-        attrs,
-        sourceline: Incomplete | None = None,
-        sourcepos: Incomplete | None = None,
-        namespaces: dict[str, str] | None = None,
-    ):
-        """
-        Called by the tree builder when a new tag is encountered.
-
-        :param name: Name of the tag.
-        :param nsprefix: Namespace prefix for the tag.
-        :param attrs: A dictionary of attribute values.
-        :param sourceline: The line number where this tag was found in its
-            source document.
-        :param sourcepos: The character position within `sourceline` where this
-            tag was found.
-        :param namespaces: A dictionary of all namespace prefix mappings 
-            currently in scope in the document.
-
-        If this method returns None, the tag was rejected by an active
-        SoupStrainer. You should proceed as if the tag had not occurred
-        in the document. For instance, if this was a self-closing tag,
-        don't call handle_endtag.
-        """
-        ...
-    def handle_endtag(self, name, nsprefix: Incomplete | None = None) -> None:
-        """
-        Called by the tree builder when an ending tag is encountered.
-
-        :param name: Name of the tag.
-        :param nsprefix: Namespace prefix for the tag.
-        """
-        ...
-    def handle_data(self, data) -> None:
-        """Called by the tree builder when a chunk of textual data is encountered."""
-        ...
+        self, name, namespace, nsprefix, attrs, sourceline=None, sourcepos=None, namespaces: dict[str, str] | None = None
+    ): ...
+    def handle_endtag(self, name, nsprefix=None) -> None: ...
+    def handle_data(self, data) -> None: ...
     def decode(  # type: ignore[override]
         self,
         pretty_print: bool = False,

@@ -147,13 +147,8 @@ class RSTState(StateWS[list[str]]):
         node,
         match_titles: bool = False,
         state_machine_class: type[StateMachine[list[str]]] | None = None,
-        state_machine_kwargs: Incomplete | None = None,
-    ):
-        """
-        Create a new StateMachine rooted at `node` and run it over the input
-        `block`.
-        """
-        ...
+        state_machine_kwargs=None,
+    ): ...
     def nested_list_parse(
         self,
         block,
@@ -161,38 +156,14 @@ class RSTState(StateWS[list[str]]):
         node,
         initial_state,
         blank_finish,
-        blank_finish_state: Incomplete | None = None,
+        blank_finish_state=None,
         extra_settings={},
         match_titles: bool = False,
-        state_machine_class: Incomplete | None = None,
-        state_machine_kwargs: Incomplete | None = None,
-    ):
-        """
-        Create a new StateMachine rooted at `node` and run it over the input
-        `block`. Also keep track of optional intermediate blank lines and the
-        required final one.
-        """
-        ...
-    def section(self, title: str, source, style, lineno: int, messages) -> None:
-        """Check for a valid subsection and create one if it checks out."""
-        ...
-    def check_subsection(self, source, style, lineno: int):
-        """
-        Check for a valid subsection header.  Return True or False.
-
-        When a new section is reached that isn't a subsection of the current
-        section, back up the line count (use ``previous_line(-x)``), then
-        ``raise EOFError``.  The current StateMachine will finish, then the
-        calling StateMachine can re-examine the title.  This will work its way
-        back up the calling chain until the correct section level isreached.
-
-        @@@ Alternative: Evaluate the title, store the title info & level, and
-        back up the chain until that level is reached.  Store in memo? Or
-        return in results?
-
-        :Exception: `EOFError` when a sibling or supersection encountered.
-        """
-        ...
+        state_machine_class=None,
+        state_machine_kwargs=None,
+    ): ...
+    def section(self, title: str, source, style, lineno: int, messages) -> None: ...
+    def check_subsection(self, source, style, lineno: int): ...
     def title_inconsistent(self, sourcetext: str, lineno: int): ...
     def new_subsection(self, title: str, lineno: int, messages) -> None:
         """Append new subsection to document tree. On return, check level."""

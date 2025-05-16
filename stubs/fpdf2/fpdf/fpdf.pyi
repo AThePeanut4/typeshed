@@ -651,150 +651,19 @@ class FPDF(GraphicsStateMixin):
         """Get the current page number"""
         ...
     def get_page_label(self) -> str: ...
-    def set_draw_color(self, r: int, g: int = -1, b: int = -1) -> None:
-        """
-        Defines the color used for all stroking operations (lines, rectangles and cell borders).
-        Accepts either a single greyscale value, 3 values as RGB components, a single `#abc` or `#abcdef` hexadecimal color string,
-        or an instance of `fpdf.drawing.DeviceCMYK`, `fpdf.drawing.DeviceRGB` or `fpdf.drawing.DeviceGray`.
-        The method can be called before the first page is created and the value is retained from page to page.
-
-        Args:
-            r (int, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): if `g` and `b` are given, this indicates the red component.
-                Else, this indicates the grey level. The value must be between 0 and 255.
-            g (int): green component (between 0 and 255)
-            b (int): blue component (between 0 and 255)
-        """
-        ...
-    def set_fill_color(self, r: int, g: int = -1, b: int = -1) -> None:
-        """
-        Defines the color used for all filling operations (filled rectangles and cell backgrounds).
-        Accepts either a single greyscale value, 3 values as RGB components, a single `#abc` or `#abcdef` hexadecimal color string,
-        or an instance of `fpdf.drawing.DeviceCMYK`, `fpdf.drawing.DeviceRGB` or `fpdf.drawing.DeviceGray`.
-        The method can be called before the first page is created and the value is retained from page to page.
-
-        Args:
-            r (int, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): if `g` and `b` are given, this indicates the red component.
-                Else, this indicates the grey level. The value must be between 0 and 255.
-            g (int): green component (between 0 and 255)
-            b (int): blue component (between 0 and 255)
-        """
-        ...
-    def set_text_color(self, r: int, g: int = -1, b: int = -1) -> None:
-        """
-        Defines the color used for text.
-        Accepts either a single greyscale value, 3 values as RGB components, a single `#abc` or `#abcdef` hexadecimal color string,
-        or an instance of `fpdf.drawing.DeviceCMYK`, `fpdf.drawing.DeviceRGB` or `fpdf.drawing.DeviceGray`.
-        The method can be called before the first page is created and the value is retained from page to page.
-
-        Args:
-            r (int, tuple, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): if `g` and `b` are given, this indicates the red component.
-                Else, this indicates the grey level. The value must be between 0 and 255.
-            g (int): green component (between 0 and 255)
-            b (int): blue component (between 0 and 255)
-        """
-        ...
-    def get_string_width(self, s: str, normalized: bool = False, markdown: bool = False) -> float:
-        """
-        Returns the length of a string in user unit. A font must be selected.
-        The value is calculated with stretching and spacing.
-
-        Note that the width of a cell has some extra padding added to this width,
-        on the left & right sides, equal to the .c_margin property.
-
-        Args:
-            s (str): the string whose length is to be computed.
-            normalized (bool): whether normalization needs to be performed on the input string.
-            markdown (bool): indicates if basic markdown support is enabled
-        """
-        ...
-    def set_line_width(self, width: float) -> None:
-        """
-        Defines the line width of all stroking operations (lines, rectangles and cell borders).
-        By default, the value equals 0.2 mm.
-        The method can be called before the first page is created and the value is retained from page to page.
-
-        Args:
-            width (float): the width in user unit
-        """
-        ...
-    def set_page_background(self, background) -> None:
-        """
-        Sets a background color or image to be drawn every time `FPDF.add_page()` is called, or removes a previously set background.
-        The method can be called before the first page is created and the value is retained from page to page.
-
-        Args:
-            background: either a string representing a file path or URL to an image,
-                an io.BytesIO containing an image as bytes, an instance of `PIL.Image.Image`, drawing.DeviceRGB
-                or a RGB tuple representing a color to fill the background with or `None` to remove the background
-        """
-        ...
-    def drawing_context(self, debug_stream: Incomplete | None = None) -> _GeneratorContextManager[DrawingContext]:
-        """
-        Create a context for drawing paths on the current page.
-
-        If this context manager is called again inside of an active context, it will
-        raise an exception, as base drawing contexts cannot be nested.
-
-        Args:
-            debug_stream (TextIO): print a pretty tree of all items to be rendered
-                to the provided stream. To store the output in a string, use
-                `io.StringIO`.
-        """
-        ...
+    def set_draw_color(self, r: int, g: int = -1, b: int = -1) -> None: ...
+    def set_fill_color(self, r: int, g: int = -1, b: int = -1) -> None: ...
+    def set_text_color(self, r: int, g: int = -1, b: int = -1) -> None: ...
+    def get_string_width(self, s: str, normalized: bool = False, markdown: bool = False) -> float: ...
+    def set_line_width(self, width: float) -> None: ...
+    def set_page_background(self, background) -> None: ...
+    def drawing_context(self, debug_stream=None) -> _GeneratorContextManager[DrawingContext]: ...
     def new_path(
-        self, x: float = 0, y: float = 0, paint_rule: PathPaintRule = ..., debug_stream: Incomplete | None = None
-    ) -> _GeneratorContextManager[PaintedPath]:
-        """
-        Create a path for appending lines and curves to.
-
-        Args:
-            x (float): Abscissa of the path starting point
-            y (float): Ordinate of the path starting point
-            paint_rule (PathPaintRule): Optional choice of how the path should
-                be painted. The default (AUTO) automatically selects stroke/fill based
-                on the path style settings.
-            debug_stream (TextIO): print a pretty tree of all items to be rendered
-                to the provided stream. To store the output in a string, use
-                `io.StringIO`.
-        """
-        ...
-    def draw_path(self, path: PaintedPath, debug_stream: Incomplete | None = None) -> None:
-        """
-        Add a pre-constructed path to the document.
-
-        Args:
-            path (drawing.PaintedPath): the path to be drawn.
-            debug_stream (TextIO): print a pretty tree of all items to be rendered
-                to the provided stream. To store the output in a string, use
-                `io.StringIO`.
-        """
-        ...
-    def set_dash_pattern(self, dash: float = 0, gap: float = 0, phase: float = 0) -> None:
-        """
-        Set the current dash pattern for lines and curves.
-
-        Args:
-            dash (float): The length of the dashes in current units.
-
-            gap (float): The length of the gaps between dashes in current units.
-                If omitted, the dash length will be used.
-
-            phase (float): Where in the sequence to start drawing.
-
-        Omitting 'dash' (= 0) resets the pattern to a solid line.
-        """
-        ...
-    def line(self, x1: float, y1: float, x2: float, y2: float) -> None:
-        """
-        Draw a line between two points.
-
-        Args:
-            x1 (float): Abscissa of first point
-            y1 (float): Ordinate of first point
-            x2 (float): Abscissa of second point
-            y2 (float): Ordinate of second point
-        """
-        ...
+        self, x: float = 0, y: float = 0, paint_rule: PathPaintRule = ..., debug_stream=None
+    ) -> _GeneratorContextManager[PaintedPath]: ...
+    def draw_path(self, path: PaintedPath, debug_stream=None) -> None: ...
+    def set_dash_pattern(self, dash: float = 0, gap: float = 0, phase: float = 0) -> None: ...
+    def line(self, x1: float, y1: float, x2: float, y2: float) -> None: ...
     def polyline(
         self,
         point_list: list[tuple[float, float]],
@@ -1528,14 +1397,14 @@ class FPDF(GraphicsStateMixin):
     def local_context(
         self,
         *,
-        font_family: Incomplete | None = None,
-        font_style: Incomplete | None = None,
-        font_size_pt: Incomplete | None = None,
-        line_width: Incomplete | None = None,
-        draw_color: Incomplete | None = None,
-        fill_color: Incomplete | None = None,
-        text_color: Incomplete | None = None,
-        dash_pattern: Incomplete | None = None,
+        font_family=None,
+        font_style=None,
+        font_size_pt=None,
+        line_width=None,
+        draw_color=None,
+        fill_color=None,
+        text_color=None,
+        dash_pattern=None,
         font_size=...,  # semi-deprecated, prefer font_size_pt
         char_vpos=...,
         char_spacing=...,

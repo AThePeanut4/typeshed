@@ -60,18 +60,7 @@ class Subscription(Resource):
         Pending: Final = "Pending"
 
     @staticmethod
-    def create(params: Incomplete | None = None):
-        """
-        Create a Subscription
-
-        Token and Plan are required:::
-
-            result = braintree.Subscription.create({
-                "payment_method_token": "my_payment_token",
-                "plan_id": "some_plan_id",
-            })
-        """
-        ...
+    def create(params=None): ...
     @staticmethod
     def create_signature(): ...
     @staticmethod
@@ -85,20 +74,9 @@ class Subscription(Resource):
         """
         ...
     @staticmethod
-    def retry_charge(subscription_id, amount: Incomplete | None = None, submit_for_settlement: bool = False): ...
+    def retry_charge(subscription_id, amount=None, submit_for_settlement: bool = False): ...
     @staticmethod
-    def update(subscription_id, params: Incomplete | None = None):
-        """
-        Update an existing subscription
-
-        By subscription_id. The params are similar to create::
-
-
-            result = braintree.Subscription.update("my_subscription_id", {
-                "price": "9.99",
-            })
-        """
-        ...
+    def update(subscription_id, params=None): ...
     @staticmethod
     def cancel(subscription_id):
         """

@@ -8,86 +8,23 @@ DEFAULT_MOUNT_POINT: str
 logger: Incomplete
 
 class Azure(VaultApiBase):
-    """
-    Azure Auth Method (API).
-
-    Reference: https://www.vaultproject.io/api/auth/azure/index.html
-    """
-    def configure(
-        self,
-        tenant_id,
-        resource,
-        environment: Incomplete | None = None,
-        client_id: Incomplete | None = None,
-        client_secret: Incomplete | None = None,
-        mount_point="azure",
-    ):
-        """
-        Configure the credentials required for the plugin to perform API calls to Azure.
-
-        These credentials will be used to query the metadata about the virtual machine.
-
-        Supported methods:
-            POST: /auth/{mount_point}/config. Produces: 204 (empty body)
-
-        :param tenant_id: The tenant id for the Azure Active Directory organization.
-        :type tenant_id: str | unicode
-        :param resource: The configured URL for the application registered in Azure Active Directory.
-        :type resource: str | unicode
-        :param environment: The Azure cloud environment. Valid values: AzurePublicCloud, AzureUSGovernmentCloud,
-            AzureChinaCloud, AzureGermanCloud.
-        :type environment: str | unicode
-        :param client_id: The client id for credentials to query the Azure APIs.  Currently read permissions to query
-            compute resources are required.
-        :type client_id: str | unicode
-        :param client_secret: The client secret for credentials to query the Azure APIs.
-        :type client_secret: str | unicode
-        :param mount_point: The "path" the azure auth method was mounted on.
-        :type mount_point: str | unicode
-        :return: The response of the request.
-        :rtype: requests.Response
-        """
-        ...
-    def read_config(self, mount_point="azure"):
-        """
-        Return the previously configured config, including credentials.
-
-        Supported methods:
-            GET: /auth/{mount_point}/config. Produces: 200 application/json
-
-        :param mount_point: The "path" the azure auth method was mounted on.
-        :type mount_point: str | unicode
-        :return: The data key from the JSON response of the request.
-        :rtype: dict
-        """
-        ...
-    def delete_config(self, mount_point="azure"):
-        """
-        Delete the previously configured Azure config and credentials.
-
-        Supported methods:
-            DELETE: /auth/{mount_point}/config. Produces: 204 (empty body)
-
-        :param mount_point: The "path" the azure auth method was mounted on.
-        :type mount_point: str | unicode
-        :return: The response of the request.
-        :rtype: requests.Response
-        """
-        ...
+    def configure(self, tenant_id, resource, environment=None, client_id=None, client_secret=None, mount_point="azure"): ...
+    def read_config(self, mount_point="azure"): ...
+    def delete_config(self, mount_point="azure"): ...
     def create_role(
         self,
         name,
-        policies: Incomplete | None = None,
-        ttl: Incomplete | None = None,
-        max_ttl: Incomplete | None = None,
-        period: Incomplete | None = None,
-        bound_service_principal_ids: Incomplete | None = None,
-        bound_group_ids: Incomplete | None = None,
-        bound_locations: Incomplete | None = None,
-        bound_subscription_ids: Incomplete | None = None,
-        bound_resource_groups: Incomplete | None = None,
-        bound_scale_sets: Incomplete | None = None,
-        num_uses: Incomplete | None = None,
+        policies=None,
+        ttl=None,
+        max_ttl=None,
+        period=None,
+        bound_service_principal_ids=None,
+        bound_group_ids=None,
+        bound_locations=None,
+        bound_subscription_ids=None,
+        bound_resource_groups=None,
+        bound_scale_sets=None,
+        num_uses=None,
         mount_point="azure",
     ):
         """
@@ -182,10 +119,10 @@ class Azure(VaultApiBase):
         self,
         role,
         jwt,
-        subscription_id: Incomplete | None = None,
-        resource_group_name: Incomplete | None = None,
-        vm_name: Incomplete | None = None,
-        vmss_name: Incomplete | None = None,
+        subscription_id=None,
+        resource_group_name=None,
+        vm_name=None,
+        vmss_name=None,
         use_token: bool = True,
         mount_point="azure",
     ):

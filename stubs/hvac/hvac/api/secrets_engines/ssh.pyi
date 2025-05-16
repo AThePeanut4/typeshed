@@ -1,7 +1,3 @@
-"""SSH vault secrets backend module."""
-
-from _typeshed import Incomplete
-
 from hvac.api.vault_api_base import VaultApiBase
 
 DEFAULT_MOUNT_POINT: str
@@ -57,15 +53,15 @@ class Ssh(VaultApiBase):
         max_ttl: str = "",
         allowed_critical_options: str = "",
         allowed_extensions: str = "",
-        default_critical_options: Incomplete | None = None,
-        default_extensions: Incomplete | None = None,
+        default_critical_options=None,
+        default_extensions=None,
         allow_user_certificates: str = "",
         allow_host_certificates: bool = False,
         allow_bare_domains: bool = False,
         allow_subdomains: bool = False,
         allow_user_key_ids: bool = False,
         key_id_format: str = "",
-        allowed_user_key_lengths: Incomplete | None = None,
+        allowed_user_key_lengths=None,
         algorithm_signer: str = "",
         mount_point="ssh",
     ):
@@ -309,8 +305,8 @@ class Ssh(VaultApiBase):
         valid_principals: str = "",
         cert_type: str = "user",
         key_id: str = "",
-        critical_options: Incomplete | None = None,
-        extensions: Incomplete | None = None,
+        critical_options=None,
+        extensions=None,
         mount_point: str = "ssh",
     ):
         """

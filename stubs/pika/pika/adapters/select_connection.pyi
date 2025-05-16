@@ -21,11 +21,11 @@ class SelectConnection(BaseConnection):
     """
     def __init__(
         self,
-        parameters: Incomplete | None = None,
-        on_open_callback: Incomplete | None = None,
-        on_open_error_callback: Incomplete | None = None,
-        on_close_callback: Incomplete | None = None,
-        custom_ioloop: Incomplete | None = None,
+        parameters=None,
+        on_open_callback=None,
+        on_open_error_callback=None,
+        on_close_callback=None,
+        custom_ioloop=None,
         internal_connection_workflow: bool = True,
     ) -> None:
         """
@@ -51,14 +51,7 @@ class SelectConnection(BaseConnection):
         """
         ...
     @classmethod
-    def create_connection(
-        cls, connection_configs, on_done, custom_ioloop: Incomplete | None = None, workflow: Incomplete | None = None
-    ):
-        """
-        Implement
-        :py:classmethod::`pika.adapters.BaseConnection.create_connection()`.
-        """
-        ...
+    def create_connection(cls, connection_configs, on_done, custom_ioloop=None, workflow=None): ...
 
 class _Timeout:
     """Represents a timeout"""

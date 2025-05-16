@@ -179,26 +179,7 @@ class Command(_Command):
     command_consumes_arguments: bool
     distribution: Distribution
     # Any: Dynamic command subclass attributes
-    def __init__(self, dist: Distribution, **kw: Any) -> None:
-        """
-        Construct the command for dist, updating
-        vars(self) with any keyword parameters.
-        """
-        ...
-    def ensure_string_list(self, option: str) -> None:
-        r"""
-        Ensure that 'option' is a list of strings.  If 'option' is
-        currently a string, we split it either on /,\s*/ or /\s+/, so
-        "foo bar baz", "foo,bar,baz", and "foo,   bar baz" all become
-        ["foo", "bar", "baz"].
-
-        ..
-           TODO: This method seems to be similar to the one in ``distutils.cmd``
-           Probably it is just here for backward compatibility with old Python versions?
-
-        :meta private:
-        """
-        ...
+    def __init__(self, dist: Distribution, **kw: Any) -> None: ...
     # Note: Commands that setuptools doesn't re-expose are considered deprecated (they must be imported from distutils directly)
     # So we're not listing them here. This list comes directly from the setuptools/command folder. Minus the test command.
     @overload  # type: ignore[override]

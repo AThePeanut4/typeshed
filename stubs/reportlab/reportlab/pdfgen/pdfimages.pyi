@@ -23,9 +23,7 @@ class PDFImage:
     bitsPerComponent: int
     filters: Incomplete
     source: Incomplete
-    def __init__(
-        self, image, x, y, width: Incomplete | None = None, height: Incomplete | None = None, caching: int = 0
-    ) -> None: ...
+    def __init__(self, image, x, y, width=None, height=None, caching: int = 0) -> None: ...
     def jpg_imagedata(self): ...
     def cache_imagedata(self): ...
     def PIL_imagedata(self): ...
@@ -43,18 +41,6 @@ class PDFImage:
         anchor: str = "sw",
         anchorAtXY: bool = False,
         showBoundary: bool = False,
-        extraReturn: Incomplete | None = None,
-    ):
-        """
-        Draw an Image into the specified rectangle.  If width and
-        height are omitted, they are calculated from the image size.
-        Also allow file names as well as images.  This allows a
-        caching mechanism
-        """
-        ...
-    def format(self, document):
-        """
-        Allow it to be used within pdfdoc framework.  This only
-        defines how it is stored, not how it is drawn later.
-        """
-        ...
+        extraReturn=None,
+    ): ...
+    def format(self, document): ...

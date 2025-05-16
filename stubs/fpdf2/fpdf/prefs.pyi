@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from typing import Literal
 
 from .enums import Duplex, PageBoundaries, PageMode, TextDirection
@@ -27,7 +26,7 @@ class ViewerPreferences:
         view_clip: PageBoundaries | None = None,
         print_area: PageBoundaries | None = None,
         print_clip: PageBoundaries | None = None,
-        print_scaling: Incomplete | None = None,
+        print_scaling=None,
     ) -> None: ...
     @property
     def non_full_screen_page_mode(self) -> PageMode | None: ...

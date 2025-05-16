@@ -1,6 +1,3 @@
-""""""
-
-from _typeshed import Incomplete
 from typing import Final
 
 from pyasn1.type.constraint import ConstraintsIntersection, ValueRangeConstraint
@@ -19,4 +16,4 @@ class Cookie(OctetString): ...
 class RealSearchControlValue(Sequence):
     componentType: NamedTypes
 
-def paged_search_control(criticality: bool = False, size: int = 10, cookie: Incomplete | None = None): ...
+def paged_search_control(criticality: bool = False, size: int = 10, cookie=None): ...

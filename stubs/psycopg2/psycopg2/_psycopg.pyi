@@ -1371,64 +1371,9 @@ def new_array_type(values: tuple[int, ...], name: str, baseobj: _type) -> _type:
     """
     ...
 def new_type(
-    values: tuple[int, ...],
-    name: str,
-    castobj: Callable[[str | bytes | None, cursor], Any] | None = None,
-    baseobj: Incomplete | None = None,
-) -> _type:
-    """
-    new_type(oids, name, castobj) -> new type object
-
-    Create a new binding object. The object can be used with the
-    `register_type()` function to bind PostgreSQL objects to python objects.
-
-    :Parameters:
-      * `oids`: Tuple of ``oid`` of the PostgreSQL types to convert.
-      * `name`: Name for the new type
-      * `adapter`: Callable to perform type conversion.
-        It must have the signature ``fun(value, cur)`` where ``value`` is
-        the string representation returned by PostgreSQL (`!None` if ``NULL``)
-        and ``cur`` is the cursor from which data are read.
-    """
-    ...
-def parse_dsn(dsn: str | bytes) -> dict[str, Any]:
-    """parse_dsn(dsn) -> dict -- parse a connection string into parameters"""
-    ...
-def quote_ident(ident: str | bytes, scope) -> str:
-    """
-    quote_ident(str, conn_or_curs) -> str -- wrapper around PQescapeIdentifier
-
-    :Parameters:
-      * `str`: A bytes or unicode object
-      * `conn_or_curs`: A connection or cursor, required
-    """
-    ...
-def register_type(obj: _type, conn_or_curs: connection | cursor | None = None, /) -> None:
-    """
-    register_type(obj, conn_or_curs) -> None -- register obj with psycopg type system
-
-    :Parameters:
-      * `obj`: A type adapter created by `new_type()`
-      * `conn_or_curs`: A connection, cursor or None
-    """
-    ...
-def set_wait_callback(none: Callable[..., Incomplete] | None, /) -> None:
-    """
-    Register a callback function to block waiting for data.
-
-    The callback should have signature :samp:`fun({conn})` and
-    is called to wait for data available whenever a blocking function from the
-    libpq is called.  Use `!set_wait_callback(None)` to revert to the
-    original behaviour (i.e. using blocking libpq functions).
-
-    The function is an hook to allow coroutine-based libraries (such as
-    Eventlet_ or gevent_) to switch when Psycopg is blocked, allowing
-    other coroutines to run concurrently.
-
-    See `~psycopg2.extras.wait_select()` for an example of a wait callback
-    implementation.
-
-    .. _Eventlet: https://eventlet.net/
-    .. _gevent: http://www.gevent.org/
-    """
-    ...
+    values: tuple[int, ...], name: str, castobj: Callable[[str | bytes | None, cursor], Any] | None = None, baseobj=None
+) -> _type: ...
+def parse_dsn(dsn: str | bytes) -> dict[str, Any]: ...
+def quote_ident(ident: str | bytes, scope) -> str: ...
+def register_type(obj: _type, conn_or_curs: connection | cursor | None = None, /) -> None: ...
+def set_wait_callback(none: Callable[..., Incomplete] | None, /) -> None: ...

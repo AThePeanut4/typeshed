@@ -1,6 +1,3 @@
-"""Use the HTMLParser library to parse HTML files that aren't too bad."""
-
-from _typeshed import Incomplete
 from html.parser import HTMLParser
 from typing import Any
 
@@ -122,49 +119,8 @@ class HTMLParserTreeBuilder(HTMLTreeBuilder):
     features: Any
     TRACKS_LINE_NUMBERS: bool
     parser_args: Any
-    def __init__(self, parser_args: Incomplete | None = None, parser_kwargs: Incomplete | None = None, **kwargs) -> None:
-        """
-        Constructor.
-
-        :param parser_args: Positional arguments to pass into 
-            the BeautifulSoupHTMLParser constructor, once it's
-            invoked.
-        :param parser_kwargs: Keyword arguments to pass into 
-            the BeautifulSoupHTMLParser constructor, once it's
-            invoked.
-        :param kwargs: Keyword arguments for the superclass constructor.
-        """
-        ...
+    def __init__(self, parser_args=None, parser_kwargs=None, **kwargs) -> None: ...
     def prepare_markup(
-        self,
-        markup,
-        user_specified_encoding: Incomplete | None = None,
-        document_declared_encoding: Incomplete | None = None,
-        exclude_encodings: Incomplete | None = None,
-    ) -> None:
-        """
-        Run any preliminary steps necessary to make incoming markup
-        acceptable to the parser.
-
-        :param markup: Some markup -- probably a bytestring.
-        :param user_specified_encoding: The user asked to try this encoding.
-        :param document_declared_encoding: The markup itself claims to be
-            in this encoding.
-        :param exclude_encodings: The user asked _not_ to try any of
-            these encodings.
-
-        :yield: A series of 4-tuples:
-         (markup, encoding, declared encoding,
-          has undergone character replacement)
-
-         Each 4-tuple represents a strategy for converting the
-         document to Unicode and parsing it. Each strategy will be tried 
-         in turn.
-        """
-        ...
-    def feed(self, markup) -> None:
-        """
-        Run some incoming markup through some parsing process,
-        populating the `BeautifulSoup` object in self.soup.
-        """
-        ...
+        self, markup, user_specified_encoding=None, document_declared_encoding=None, exclude_encodings=None
+    ) -> None: ...
+    def feed(self, markup) -> None: ...

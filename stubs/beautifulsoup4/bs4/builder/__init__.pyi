@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from typing import Any
 
 class TreeBuilderRegistry:
@@ -132,66 +131,10 @@ class TreeBuilder:
         """
         ...
     def prepare_markup(
-        self,
-        markup,
-        user_specified_encoding: Incomplete | None = None,
-        document_declared_encoding: Incomplete | None = None,
-        exclude_encodings: Incomplete | None = None,
-    ) -> None:
-        """
-        Run any preliminary steps necessary to make incoming markup
-        acceptable to the parser.
-
-        :param markup: Some markup -- probably a bytestring.
-        :param user_specified_encoding: The user asked to try this encoding.
-        :param document_declared_encoding: The markup itself claims to be
-            in this encoding. NOTE: This argument is not used by the
-            calling code and can probably be removed.
-        :param exclude_encodings: The user asked _not_ to try any of
-            these encodings.
-
-        :yield: A series of 4-tuples:
-         (markup, encoding, declared encoding,
-          has undergone character replacement)
-
-         Each 4-tuple represents a strategy for converting the
-         document to Unicode and parsing it. Each strategy will be tried 
-         in turn.
-
-         By default, the only strategy is to parse the markup
-         as-is. See `LXMLTreeBuilderForXML` and
-         `HTMLParserTreeBuilder` for implementations that take into
-         account the quirks of particular parsers.
-        """
-        ...
-    def test_fragment_to_document(self, fragment):
-        """
-        Wrap an HTML fragment to make it look like a document.
-
-        Different parsers do this differently. For instance, lxml
-        introduces an empty <head> tag, and html5lib
-        doesn't. Abstracting this away lets us write simple tests
-        which run HTML fragments through the parser and compare the
-        results against other HTML fragments.
-
-        This method should not be used outside of tests.
-
-        :param fragment: A string -- fragment of HTML.
-        :return: A string -- a full HTML document.
-        """
-        ...
-    def set_up_substitutions(self, tag):
-        """
-        Set up any substitutions that will need to be performed on 
-        a `Tag` when it's output as a string.
-
-        By default, this does nothing. See `HTMLTreeBuilder` for a
-        case where this is used.
-
-        :param tag: A `Tag`
-        :return: Whether or not a substitution was performed.
-        """
-        ...
+        self, markup, user_specified_encoding=None, document_declared_encoding=None, exclude_encodings=None
+    ) -> None: ...
+    def test_fragment_to_document(self, fragment): ...
+    def set_up_substitutions(self, tag): ...
 
 class SAXTreeBuilder(TreeBuilder):
     """

@@ -259,83 +259,20 @@ class Process:
         """
         ...
     def as_dict(
-        self, attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value: Incomplete | None = None
-    ) -> dict[str, Any]:
-        """
-        Utility method returning process information as a
-        hashable dictionary.
-        If *attrs* is specified it must be a list of strings
-        reflecting available Process class' attribute names
-        (e.g. ['cpu_times', 'name']) else all public (read
-        only) attributes are assumed.
-        *ad_value* is the value which gets assigned in case
-        AccessDenied or ZombieProcess exception is raised when
-        retrieving that particular process information.
-        """
-        ...
-    def parent(self) -> Process | None:
-        """
-        Return the parent process as a Process object pre-emptively
-        checking whether PID has been reused.
-        If no parent is known return None.
-        """
-        ...
-    def parents(self) -> list[Process]:
-        """
-        Return the parents of this process as a list of Process
-        instances. If no parents are known return an empty list.
-        """
-        ...
-    def is_running(self) -> bool:
-        """
-        Return whether this process is running.
-
-        It also checks if PID has been reused by another process, in
-        which case it will remove the process from `process_iter()`
-        internal cache and return False.
-        """
-        ...
-    def ppid(self) -> int:
-        """
-        The process parent PID.
-        On Windows the return value is cached after first call.
-        """
-        ...
-    def name(self) -> str:
-        """The process name. The return value is cached after first call."""
-        ...
-    def exe(self) -> str:
-        """
-        The process executable as an absolute path.
-        May also be an empty string.
-        The return value is cached after first call.
-        """
-        ...
-    def cmdline(self) -> list[str]:
-        """The command line this process has been called with."""
-        ...
-    def status(self) -> _Status:
-        """The process current status as a STATUS_* constant."""
-        ...
-    def username(self) -> str:
-        """
-        The name of the user that owns the process.
-        On UNIX this is calculated by using *real* process uid.
-        """
-        ...
-    def create_time(self) -> float:
-        """
-        The process creation time as a floating point number
-        expressed in seconds since the epoch.
-        The return value is cached after first call.
-        """
-        ...
-    def cwd(self) -> str:
-        """Process current working directory as an absolute path."""
-        ...
-    def nice(self, value: int | None = None) -> int:
-        """Get or set process niceness (priority)."""
-        ...
+        self, attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value=None
+    ) -> dict[str, Any]: ...
+    def parent(self) -> Process | None: ...
+    def parents(self) -> list[Process]: ...
+    def is_running(self) -> bool: ...
+    def ppid(self) -> int: ...
+    def name(self) -> str: ...
+    def exe(self) -> str: ...
+    def cmdline(self) -> list[str]: ...
+    def status(self) -> _Status: ...
+    def username(self) -> str: ...
+    def create_time(self) -> float: ...
+    def cwd(self) -> str: ...
+    def nice(self, value: int | None = None) -> int: ...
     if sys.platform != "win32":
         def uids(self) -> puids:
             """
@@ -684,27 +621,8 @@ def pid_exists(pid: int) -> bool:
     """
     ...
 def process_iter(
-    attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value: Incomplete | None = None
-) -> Iterator[Process]:
-    """
-    Return a generator yielding a Process instance for all
-    running processes.
-
-    Every new Process instance is only created once and then cached
-    into an internal table which is updated every time this is used.
-    Cache can optionally be cleared via `process_iter.clear_cache()`.
-
-    The sorting order in which processes are yielded is based on
-    their PIDs.
-
-    *attrs* and *ad_value* have the same meaning as in
-    Process.as_dict(). If *attrs* is specified as_dict() is called
-    and the resulting dict is stored as a 'info' attribute attached
-    to returned Process instance.
-    If *attrs* is an empty list it will retrieve all process info
-    (slow).
-    """
-    ...
+    attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value=None
+) -> Iterator[Process]: ...
 def wait_procs(
     procs: Iterable[Process], timeout: float | None = None, callback: Callable[[Process], object] | None = None
 ) -> tuple[list[Process], list[Process]]:

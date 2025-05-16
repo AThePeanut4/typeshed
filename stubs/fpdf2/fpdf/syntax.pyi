@@ -79,27 +79,10 @@ def create_dictionary_string(
     field_join: str = "\n",
     key_value_join: str = " ",
     has_empty_fields: bool = False,
-) -> str:
-    """
-    format dictionary as PDF dictionary
-
-    @param dict_: dictionary of values to render
-    @param open_dict: string to open PDF dictionary
-    @param close_dict: string to close PDF dictionary
-    @param field_join: string to join fields with
-    @param key_value_join: string to join key to value with
-    @param has_empty_fields: whether or not to clear_empty_fields first.
-    """
-    ...
-def create_list_string(list_):
-    """format list of strings as PDF array"""
-    ...
-def iobj_ref(n):
-    """format an indirect PDF Object reference from its id number"""
-    ...
-def create_stream(
-    stream: str | bytes | bytearray, encryption_handler: StandardSecurityHandler | None = None, obj_id: Incomplete | None = None
-): ...
+) -> str: ...
+def create_list_string(list_): ...
+def iobj_ref(n): ...
+def create_stream(stream: str | bytes | bytearray, encryption_handler: StandardSecurityHandler | None = None, obj_id=None): ...
 
 class Raw(str):
     """str subclass signifying raw data to be directly emitted to PDF without transformation."""
@@ -117,12 +100,8 @@ class PDFObject:
     def id(self, n: int) -> None: ...
     @property
     def ref(self) -> str: ...
-    def serialize(self, obj_dict: Incomplete | None = None, _security_handler: StandardSecurityHandler | None = None) -> str:
-        """Serialize the PDF object as an obj<</>>endobj text block"""
-        ...
-    def content_stream(self) -> bytes:
-        """Subclasses can override this method to indicate the presence of a content stream"""
-        ...
+    def serialize(self, obj_dict=None, _security_handler: StandardSecurityHandler | None = None) -> str: ...
+    def content_stream(self) -> bytes: ...
 
 class PDFContentStream(PDFObject):
     filter: Name | None
@@ -181,9 +160,5 @@ class DestinationXYZ(Destination):
     def __init__(self, page: int, top: float, left: float = 0, zoom: float | Literal["null"] = "null") -> None: ...
     def serialize(self) -> str: ...
     def replace(
-        self,
-        page: Incomplete | None = None,
-        top: float | None = None,
-        left: float | None = None,
-        zoom: float | Literal["null"] | None = None,
+        self, page=None, top: float | None = None, left: float | None = None, zoom: float | Literal["null"] | None = None
     ) -> DestinationXYZ: ...

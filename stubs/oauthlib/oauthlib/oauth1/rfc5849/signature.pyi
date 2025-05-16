@@ -1,40 +1,4 @@
-"""
-This module is an implementation of `section 3.4`_ of RFC 5849.
-
-**Usage**
-
-Steps for signing a request:
-
-1. Collect parameters from the request using ``collect_parameters``.
-2. Normalize those parameters using ``normalize_parameters``.
-3. Create the *base string URI* using ``base_string_uri``.
-4. Create the *signature base string* from the above three components
-   using ``signature_base_string``.
-5. Pass the *signature base string* and the client credentials to one of the
-   sign-with-client functions. The HMAC-based signing functions needs
-   client credentials with secrets. The RSA-based signing functions needs
-   client credentials with an RSA private key.
-
-To verify a request, pass the request and credentials to one of the verify
-functions. The HMAC-based signing functions needs the shared secrets. The
-RSA-based verify functions needs the RSA public key.
-
-**Scope**
-
-All of the functions in this module should be considered internal to OAuthLib,
-since they are not imported into the "oauthlib.oauth1" module. Programs using
-OAuthLib should not use directly invoke any of the functions in this module.
-
-**Deprecated functions**
-
-The "sign_" methods that are not "_with_client" have been deprecated. They may
-be removed in a future release. Since they are all internal functions, this
-should have no impact on properly behaving programs.
-
-.. _`section 3.4`: https://tools.ietf.org/html/rfc5849#section-3.4
-"""
-
-from _typeshed import Incomplete, Unused
+from _typeshed import Unused
 from collections.abc import Iterable
 from logging import Logger
 
@@ -123,37 +87,11 @@ def normalize_parameters(params: dict[str, str]) -> str:
     """
     ...
 def sign_hmac_sha1_with_client(sig_base_str: str, client): ...
-def verify_hmac_sha1(
-    request: Request, client_secret: Incomplete | None = None, resource_owner_secret: Incomplete | None = None
-) -> bool: ...
-def sign_hmac_sha1(base_string: str | bytes, client_secret, resource_owner_secret):
-    """
-    Deprecated function for calculating a HMAC-SHA1 signature.
-
-    This function has been replaced by invoking ``sign_hmac`` with "SHA-1"
-    as the hash algorithm name.
-
-    This function was invoked by sign_hmac_sha1_with_client and
-    test_signatures.py, but does any application invoke it directly? If not,
-    it can be removed.
-    """
-    ...
+def verify_hmac_sha1(request: Request, client_secret=None, resource_owner_secret=None) -> bool: ...
+def sign_hmac_sha1(base_string: str | bytes, client_secret, resource_owner_secret): ...
 def sign_hmac_sha256_with_client(sig_base_str, client): ...
-def verify_hmac_sha256(
-    request, client_secret: Incomplete | None = None, resource_owner_secret: Incomplete | None = None
-) -> bool: ...
-def sign_hmac_sha256(base_string: str | bytes, client_secret, resource_owner_secret):
-    """
-    Deprecated function for calculating a HMAC-SHA256 signature.
-
-    This function has been replaced by invoking ``sign_hmac`` with "SHA-256"
-    as the hash algorithm name.
-
-    This function was invoked by sign_hmac_sha256_with_client and
-    test_signatures.py, but does any application invoke it directly? If not,
-    it can be removed.
-    """
-    ...
+def verify_hmac_sha256(request, client_secret=None, resource_owner_secret=None) -> bool: ...
+def sign_hmac_sha256(base_string: str | bytes, client_secret, resource_owner_secret): ...
 def sign_hmac_sha512_with_client(sig_base_str: str, client): ...
 def verify_hmac_sha512(request, client_secret: str | None = None, resource_owner_secret: str | None = None) -> bool: ...
 def sign_rsa_sha1_with_client(sig_base_str: str | bytes, client): ...

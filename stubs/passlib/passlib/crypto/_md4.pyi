@@ -1,20 +1,3 @@
-"""
-passlib.crypto._md4 -- fallback implementation of MD4
-
-Helper implementing insecure and obsolete md4 algorithm.
-used for NTHASH format, which is also insecure and broken,
-since it's just md4(password).
-
-Implementated based on rfc at http://www.faqs.org/rfcs/rfc1320.html
-
-.. note::
-
-    This shouldn't be imported directly, it's merely used conditionally
-    by ``passlib.crypto.lookup_hash()`` when a native implementation can't be found.
-"""
-
-from _typeshed import Incomplete
-
 class md4:
     """
     pep-247 compatible implementation of MD4 hash algorithm
@@ -43,7 +26,7 @@ class md4:
     digest_size: int
     digestsize: int
     block_size: int
-    def __init__(self, content: Incomplete | None = None) -> None: ...
+    def __init__(self, content=None) -> None: ...
     def update(self, content) -> None: ...
     def copy(self): ...
     def digest(self): ...

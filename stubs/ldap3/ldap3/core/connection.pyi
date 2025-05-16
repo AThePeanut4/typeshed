@@ -154,7 +154,7 @@ class Connection:
         auto_referrals: bool = True,
         auto_range: bool = True,
         sasl_mechanism: str | None = None,
-        sasl_credentials: Incomplete | None = None,
+        sasl_credentials=None,
         check_names: bool = True,
         collect_usage: bool = False,
         read_only: bool = False,
@@ -163,17 +163,17 @@ class Connection:
         pool_name: str | None = None,
         pool_size: int | None = None,
         pool_lifetime: int | None = None,
-        cred_store: Incomplete | None = None,
+        cred_store=None,
         fast_decoder: bool = True,
-        receive_timeout: Incomplete | None = None,
+        receive_timeout=None,
         return_empty_attributes: bool = True,
         use_referral_cache: bool = False,
         auto_escape: bool = True,
         auto_encode: bool = True,
-        pool_keepalive: Incomplete | None = None,
+        pool_keepalive=None,
         source_address: str | None = None,
         source_port: int | None = None,
-        source_port_list: Incomplete | None = None,
+        source_port_list=None,
     ) -> None: ...
     def repr_with_sensitive_data_stripped(self): ...
     @property
@@ -201,137 +201,58 @@ class Connection:
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> Literal[False] | None: ...
-    def bind(self, read_server_info: bool = True, controls: Incomplete | None = None):
-        """
-        Bind to ldap Server with the authentication method and the user defined in the connection
-
-        :param read_server_info: reads info from server
-        :param controls: LDAP controls to send along with the bind operation
-        :type controls: list of tuple
-        :return: bool
-        """
-        ...
+    def bind(self, read_server_info: bool = True, controls=None): ...
     def rebind(
         self,
-        user: Incomplete | None = None,
-        password: Incomplete | None = None,
-        authentication: Incomplete | None = None,
-        sasl_mechanism: Incomplete | None = None,
-        sasl_credentials: Incomplete | None = None,
+        user=None,
+        password=None,
+        authentication=None,
+        sasl_mechanism=None,
+        sasl_credentials=None,
         read_server_info: bool = True,
-        controls: Incomplete | None = None,
+        controls=None,
     ): ...
-    def unbind(self, controls: Incomplete | None = None):
-        """
-        Unbind the connected user. Unbind implies closing session as per RFC4511 (4.3)
-
-        :param controls: LDAP controls to send along with the bind operation
-        """
-        ...
+    def unbind(self, controls=None): ...
     def search(
         self,
         search_base: str,
         search_filter: str,
         search_scope: Literal["BASE", "LEVEL", "SUBTREE"] = "SUBTREE",
         dereference_aliases: Literal["NEVER", "SEARCH", "FINDING_BASE", "ALWAYS"] = "ALWAYS",
-        attributes: Incomplete | None = None,
+        attributes=None,
         size_limit: int = 0,
         time_limit: int = 0,
         types_only: bool = False,
         get_operational_attributes: bool = False,
-        controls: Incomplete | None = None,
+        controls=None,
         paged_size: int | None = None,
         paged_criticality: bool = False,
         paged_cookie: str | bytes | None = None,
         auto_escape: bool | None = None,
-    ):
-        """
-        Perform an ldap search:
-
-        - If attributes is empty noRFC2696 with the specified size
-        - If paged is 0 and cookie is present the search is abandoned on
-          server attribute is returned
-        - If attributes is ALL_ATTRIBUTES all attributes are returned
-        - If paged_size is an int greater than 0 a simple paged search
-          is tried as described in
-        - Cookie is an opaque string received in the last paged search
-          and must be used on the next paged search response
-        - If lazy == True open and bind will be deferred until another
-          LDAP operation is performed
-        - If mssing_attributes == True then an attribute not returned by the server is set to None
-        - If auto_escape is set it overrides the Connection auto_escape
-        """
-        ...
-    def compare(self, dn, attribute, value, controls: Incomplete | None = None):
-        """Perform a compare operation"""
-        ...
-    def add(
-        self, dn, object_class: Incomplete | None = None, attributes: Incomplete | None = None, controls: Incomplete | None = None
-    ):
-        """
-        Add dn to the DIT, object_class is None, a class name or a list
-        of class names.
-
-        Attributes is a dictionary in the form 'attr': 'val' or 'attr':
-        ['val1', 'val2', ...] for multivalued attributes
-        """
-        ...
-    def delete(self, dn, controls: Incomplete | None = None):
-        """Delete the entry identified by the DN from the DIB."""
-        ...
-    def modify(self, dn, changes, controls: Incomplete | None = None):
-        """
-        Modify attributes of entry
-
-        - changes is a dictionary in the form {'attribute1': change), 'attribute2': [change, change, ...], ...}
-        - change is (operation, [value1, value2, ...])
-        - operation is 0 (MODIFY_ADD), 1 (MODIFY_DELETE), 2 (MODIFY_REPLACE), 3 (MODIFY_INCREMENT)
-        """
-        ...
-    def modify_dn(
-        self,
-        dn,
-        relative_dn,
-        delete_old_dn: bool = True,
-        new_superior: Incomplete | None = None,
-        controls: Incomplete | None = None,
-    ):
-        """
-        Modify DN of the entry or performs a move of the entry in the
-        DIT.
-        """
-        ...
-    def abandon(self, message_id, controls: Incomplete | None = None):
-        """Abandon the operation indicated by message_id"""
-        ...
+    ): ...
+    def compare(self, dn, attribute, value, controls=None): ...
+    def add(self, dn, object_class=None, attributes=None, controls=None): ...
+    def delete(self, dn, controls=None): ...
+    def modify(self, dn, changes, controls=None): ...
+    def modify_dn(self, dn, relative_dn, delete_old_dn: bool = True, new_superior=None, controls=None): ...
+    def abandon(self, message_id, controls=None): ...
     def extended(
-        self,
-        request_name,
-        request_value: Asn1Item | ReadableBuffer | None = None,
-        controls: Incomplete | None = None,
-        no_encode: bool | None = None,
-    ):
-        """Performs an extended operation"""
-        ...
+        self, request_name, request_value: Asn1Item | ReadableBuffer | None = None, controls=None, no_encode: bool | None = None
+    ): ...
     def start_tls(self, read_server_info: bool = True): ...
     def do_sasl_bind(self, controls): ...
     def do_ntlm_bind(self, controls): ...
     def refresh_server_info(self) -> None: ...
     def response_to_ldif(
-        self,
-        search_result: Incomplete | None = None,
-        all_base64: bool = False,
-        line_separator: Incomplete | None = None,
-        sort_order: Incomplete | None = None,
-        stream: Incomplete | None = None,
+        self, search_result=None, all_base64: bool = False, line_separator=None, sort_order=None, stream=None
     ): ...
     def response_to_json(
         self,
         raw: bool = False,
-        search_result: Incomplete | None = None,
+        search_result=None,
         indent: int = 4,
         sort: bool = True,
-        stream: Incomplete | None = None,
+        stream=None,
         checked_attributes: bool = True,
         include_empty: bool = True,
     ): ...

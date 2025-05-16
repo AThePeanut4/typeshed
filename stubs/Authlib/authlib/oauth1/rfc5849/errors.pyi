@@ -1,24 +1,8 @@
-"""
-authlib.oauth1.rfc5849.errors.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-RFC5849 has no definition on errors. This module is designed by
-Authlib based on OAuth 1.0a `Section 10`_ with some changes.
-
-.. _`Section 10`: https://oauth.net/core/1.0a/#rfc.section.10
-"""
-
-from _typeshed import Incomplete
-
 from authlib.common.errors import AuthlibHTTPError
 
 class OAuth1Error(AuthlibHTTPError):
-    def __init__(
-        self, description: Incomplete | None = None, uri: Incomplete | None = None, status_code: Incomplete | None = None
-    ) -> None: ...
-    def get_headers(self):
-        """Get a list of headers."""
-        ...
+    def __init__(self, description=None, uri=None, status_code=None) -> None: ...
+    def get_headers(self): ...
 
 class InsecureTransportError(OAuth1Error):
     error: str

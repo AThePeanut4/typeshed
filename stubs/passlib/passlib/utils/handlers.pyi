@@ -14,81 +14,10 @@ PADDED_B64_CHARS = PADDED_BASE64_CHARS
 UC_HEX_CHARS = UPPER_HEX_CHARS
 LC_HEX_CHARS = LOWER_HEX_CHARS
 
-def parse_mc2(hash, prefix, sep="$", handler: Incomplete | None = None):
-    """
-    parse hash using 2-part modular crypt format.
-
-    this expects a hash of the format :samp:`{prefix}{salt}[${checksum}]`,
-    such as md5_crypt, and parses it into salt / checksum portions.
-
-    :arg hash: the hash to parse (bytes or unicode)
-    :arg prefix: the identifying prefix (unicode)
-    :param sep: field separator (unicode, defaults to ``$``).
-    :param handler: handler class to pass to error constructors.
-
-    :returns:
-        a ``(salt, chk | None)`` tuple.
-    """
-    ...
-def parse_mc3(
-    hash, prefix, sep="$", rounds_base: int = 10, default_rounds: Incomplete | None = None, handler: Incomplete | None = None
-):
-    """
-    parse hash using 3-part modular crypt format.
-
-    this expects a hash of the format :samp:`{prefix}[{rounds}]${salt}[${checksum}]`,
-    such as sha1_crypt, and parses it into rounds / salt / checksum portions.
-    tries to convert the rounds to an integer,
-    and throws error if it has zero-padding.
-
-    :arg hash: the hash to parse (bytes or unicode)
-    :arg prefix: the identifying prefix (unicode)
-    :param sep: field separator (unicode, defaults to ``$``).
-    :param rounds_base:
-        the numeric base the rounds are encoded in (defaults to base 10).
-    :param default_rounds:
-        the default rounds value to return if the rounds field was omitted.
-        if this is ``None`` (the default), the rounds field is *required*.
-    :param handler: handler class to pass to error constructors.
-
-    :returns:
-        a ``(rounds : int, salt, chk | None)`` tuple.
-    """
-    ...
-def render_mc2(ident, salt, checksum, sep="$"):
-    """
-    format hash using 2-part modular crypt format; inverse of parse_mc2()
-
-    returns native string with format :samp:`{ident}{salt}[${checksum}]`,
-    such as used by md5_crypt.
-
-    :arg ident: identifier prefix (unicode)
-    :arg salt: encoded salt (unicode)
-    :arg checksum: encoded checksum (unicode or None)
-    :param sep: separator char (unicode, defaults to ``$``)
-
-    :returns:
-        config or hash (native str)
-    """
-    ...
-def render_mc3(ident, rounds, salt, checksum, sep="$", rounds_base: int = 10):
-    """
-    format hash using 3-part modular crypt format; inverse of parse_mc3()
-
-    returns native string with format :samp:`{ident}[{rounds}$]{salt}[${checksum}]`,
-    such as used by sha1_crypt.
-
-    :arg ident: identifier prefix (unicode)
-    :arg rounds: rounds field (int or None)
-    :arg salt: encoded salt (unicode)
-    :arg checksum: encoded checksum (unicode or None)
-    :param sep: separator char (unicode, defaults to ``$``)
-    :param rounds_base: base to encode rounds value (defaults to base 10)
-
-    :returns:
-        config or hash (native str)
-    """
-    ...
+def parse_mc2(hash, prefix, sep="$", handler=None): ...
+def parse_mc3(hash, prefix, sep="$", rounds_base: int = 10, default_rounds=None, handler=None): ...
+def render_mc2(ident, salt, checksum, sep="$"): ...
+def render_mc3(ident, rounds, salt, checksum, sep="$", rounds_base: int = 10): ...
 
 class MinimalHandler(PasswordHash, metaclass=abc.ABCMeta):
     """
@@ -323,13 +252,13 @@ class HasEncodingContext(GenericHandler):
 class HasUserContext(GenericHandler):
     """helper for classes which require a user context keyword"""
     user: Incomplete | None
-    def __init__(self, user: Incomplete | None = None, **kwds) -> None: ...
+    def __init__(self, user=None, **kwds) -> None: ...
     @classmethod
-    def hash(cls, secret, user: Incomplete | None = None, **context): ...
+    def hash(cls, secret, user=None, **context): ...
     @classmethod
-    def verify(cls, secret, hash, user: Incomplete | None = None, **context): ...
+    def verify(cls, secret, hash, user=None, **context): ...
     @classmethod
-    def genhash(cls, secret, config, user: Incomplete | None = None, **context): ...
+    def genhash(cls, secret, config, user=None, **context): ...
 
 class HasRawChecksum(GenericHandler):
     """
@@ -365,20 +294,8 @@ class HasManyIdents(GenericHandler):
     ident_aliases: ClassVar[dict[str, str] | None]
     ident: str  # type: ignore[misc]
     @classmethod
-    def using(  # type: ignore[override]
-        cls, default_ident: Incomplete | None = None, ident: Incomplete | None = None, **kwds
-    ):
-        """
-        This mixin adds support for the following :meth:`~passlib.ifc.PasswordHash.using` keywords:
-
-        :param default_ident:
-            default identifier that will be used by resulting customized hasher.
-
-        :param ident:
-            supported as alternate alias for **default_ident**.
-        """
-        ...
-    def __init__(self, ident: Incomplete | None = None, **kwds) -> None: ...
+    def using(cls, default_ident=None, ident=None, **kwds): ...  # type: ignore[override]
+    def __init__(self, ident=None, **kwds) -> None: ...
 
 class HasSalt(GenericHandler):
     """
@@ -546,27 +463,25 @@ class HasRounds(GenericHandler):
     @classmethod
     def using(  # type: ignore[override]
         cls,
-        min_desired_rounds: Incomplete | None = None,
-        max_desired_rounds: Incomplete | None = None,
-        default_rounds: Incomplete | None = None,
-        vary_rounds: Incomplete | None = None,
-        min_rounds: Incomplete | None = None,
-        max_rounds: Incomplete | None = None,
-        rounds: Incomplete | None = None,
+        min_desired_rounds=None,
+        max_desired_rounds=None,
+        default_rounds=None,
+        vary_rounds=None,
+        min_rounds=None,
+        max_rounds=None,
+        rounds=None,
         **kwds,
     ): ...
-    def __init__(self, rounds: Incomplete | None = None, **kwds) -> None: ...
+    def __init__(self, rounds=None, **kwds) -> None: ...
     @classmethod
-    def bitsize(cls, rounds: Incomplete | None = None, vary_rounds: float = 0.1, **kwds):
-        """[experimental method] return info about bitsizes of hash"""
-        ...
+    def bitsize(cls, rounds=None, vary_rounds: float = 0.1, **kwds): ...
 
 class ParallelismMixin(GenericHandler):
     """mixin which provides common behavior for 'parallelism' setting"""
     parallelism: int
     @classmethod
-    def using(cls, parallelism: Incomplete | None = None, **kwds): ...  # type: ignore[override]
-    def __init__(self, parallelism: Incomplete | None = None, **kwds) -> None: ...
+    def using(cls, parallelism=None, **kwds): ...  # type: ignore[override]
+    def __init__(self, parallelism=None, **kwds) -> None: ...
 
 class BackendMixin(PasswordHash, metaclass=abc.ABCMeta):
     """
@@ -786,16 +701,7 @@ class PrefixWrapper:
     prefix: Any
     orig_prefix: Any
     __doc__: Any
-    def __init__(
-        self,
-        name,
-        wrapped,
-        prefix="",
-        orig_prefix="",
-        lazy: bool = False,
-        doc: Incomplete | None = None,
-        ident: Incomplete | None = None,
-    ) -> None: ...
+    def __init__(self, name, wrapped, prefix="", orig_prefix="", lazy: bool = False, doc=None, ident=None) -> None: ...
     @property
     def wrapped(self): ...
     @property

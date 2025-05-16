@@ -1,6 +1,3 @@
-"""PDF Template Helpers for fpdf.py"""
-
-from _typeshed import Incomplete
 from os import PathLike
 from typing import Any
 
@@ -19,15 +16,7 @@ class FlexTemplate:
     splitting_pdf: Any
     handlers: Any
     texts: Any
-    def __init__(self, pdf, elements: Incomplete | None = None) -> None:
-        """
-        Arguments: pdf (fpdf.FPDF() instance): All content will be added to this object.
-
-            elements (list of dicts): A template definition in a list of dicts.
-                If you omit this, then you need to call either load_elements()
-                or parse_csv() before doing anything else.
-        """
-        ...
+    def __init__(self, pdf, elements=None) -> None: ...
     elements: Any
     keys: Any
     def load_elements(self, elements) -> None:
@@ -114,8 +103,8 @@ class Template(FlexTemplate):
     """
     def __init__(
         self,
-        infile: Incomplete | None = None,
-        elements: Incomplete | None = None,
+        infile=None,
+        elements=None,
         format: str = "A4",
         orientation: str = "portrait",
         unit: str = "mm",
@@ -124,45 +113,6 @@ class Template(FlexTemplate):
         subject: str = "",
         creator: str = "",
         keywords: str = "",
-    ) -> None:
-        """
-        Arguments:
-
-            infile (str): [**DEPRECATED since 2.2.0**] unused, will be removed in a later version
-
-            elements (list of dicts): A template definition in a list of dicts.
-                If you omit this, then you need to call either load_elements()
-                or parse_csv() before doing anything else.
-
-            format (str): The page format of the document (eg. "A4" or "letter").
-
-            orientation (str): The orientation of the document.
-                Possible values are "portrait"/"P" or "landscape"/"L"
-
-            unit (str): The units used in the template definition.
-                One of "mm", "cm", "in", "pt", or a number for points per unit.
-
-            title (str): The title of the document.
-
-            author (str): The author of the document.
-
-            subject (str): The subject matter of the document.
-
-            creator (str): The creator of the document.
-        """
-        ...
-    def add_page(self) -> None:
-        """Finish the current page, and proceed to the next one."""
-        ...
-    def render(self, outfile: Incomplete | None = None, dest: Incomplete | None = None) -> None:
-        """
-        Finish the document and process all pending data.
-
-        Arguments:
-
-            outfile (str): If given, the PDF file will be written to this file name.
-                Alternatively, the `.pdf.output()` method can be manually called.
-
-            dest (str): [**DEPRECATED since 2.2.0**] unused, will be removed in a later version.
-        """
-        ...
+    ) -> None: ...
+    def add_page(self) -> None: ...
+    def render(self, outfile=None, dest=None) -> None: ...  # type: ignore[override]

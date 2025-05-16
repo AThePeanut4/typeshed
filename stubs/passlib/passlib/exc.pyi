@@ -1,6 +1,3 @@
-"""passlib.exc -- exceptions & warnings raised by passlib"""
-
-from _typeshed import Incomplete
 from typing import Any
 
 class UnknownBackendError(ValueError):
@@ -76,23 +73,10 @@ class PasswordSizeError(PasswordValueError):
     .. versionadded:: 1.6
     """
     max_size: Any
-    def __init__(self, max_size, msg: Incomplete | None = None) -> None: ...
+    def __init__(self, max_size, msg=None) -> None: ...
 
 class PasswordTruncateError(PasswordSizeError):
-    """
-    Error raised if password would be truncated by hash.
-    This derives from :exc:`PasswordSizeError` (above).
-
-    Hashers such as :class:`~passlib.hash.bcrypt` can be configured to raises
-    this error by setting ``truncate_error=True``.
-
-    .. attribute:: max_size
-
-        indicates the maximum allowed size.
-
-    .. versionadded:: 1.7
-    """
-    def __init__(self, cls, msg: Incomplete | None = None) -> None: ...
+    def __init__(self, cls, msg=None) -> None: ...
 
 class PasslibSecurityError(RuntimeError):
     """
@@ -104,20 +88,7 @@ class PasslibSecurityError(RuntimeError):
     ...
 
 class TokenError(ValueError):
-    """
-    Base error raised by v:mod:`passlib.totp` when
-    a token can't be parsed / isn't valid / etc.
-    Derives from :exc:`!ValueError`.
-
-    Usually one of the more specific subclasses below will be raised:
-
-    * :class:`MalformedTokenError` -- invalid chars, too few digits
-    * :class:`InvalidTokenError` -- no match found
-    * :class:`UsedTokenError` -- match found, but token already used
-
-    .. versionadded:: 1.7
-    """
-    def __init__(self, msg: Incomplete | None = None, *args, **kwds) -> None: ...
+    def __init__(self, msg=None, *args, **kwds) -> None: ...
 
 class MalformedTokenError(TokenError):
     """
@@ -165,98 +136,22 @@ class UnknownHashError(ValueError):
     """
     value: Any
     message: Any
-    def __init__(self, message: Incomplete | None = None, value: Incomplete | None = None) -> None: ...
+    def __init__(self, message=None, value=None) -> None: ...
 
 class PasslibWarning(UserWarning):
     """
     base class for Passlib's user warnings,
     derives from the builtin :exc:`UserWarning`.
 
-    .. versionadded:: 1.6
-    """
-    ...
-class PasslibConfigWarning(PasslibWarning):
-    """
-    Warning issued when non-fatal issue is found related to the configuration
-    of a :class:`~passlib.context.CryptContext` instance.
-
-    This occurs primarily in one of two cases:
-
-    * The CryptContext contains rounds limits which exceed the hard limits
-      imposed by the underlying algorithm.
-    * An explicit rounds value was provided which exceeds the limits
-      imposed by the CryptContext.
-
-    In both of these cases, the code will perform correctly & securely;
-    but the warning is issued as a sign the configuration may need updating.
-
-    .. versionadded:: 1.6
-    """
-    ...
-class PasslibHashWarning(PasslibWarning):
-    """
-    Warning issued when non-fatal issue is found with parameters
-    or hash string passed to a passlib hash class.
-
-    This occurs primarily in one of two cases:
-
-    * A rounds value or other setting was explicitly provided which
-      exceeded the handler's limits (and has been clamped
-      by the :ref:`relaxed<relaxed-keyword>` flag).
-
-    * A malformed hash string was encountered which (while parsable)
-      should be re-encoded.
-
-    .. versionadded:: 1.6
-    """
-    ...
-class PasslibRuntimeWarning(PasslibWarning):
-    """
-    Warning issued when something unexpected happens during runtime.
-
-    The fact that it's a warning instead of an error means Passlib
-    was able to correct for the issue, but that it's anomalous enough
-    that the developers would love to hear under what conditions it occurred.
-
-    .. versionadded:: 1.6
-    """
-    ...
-class PasslibSecurityWarning(PasslibWarning):
-    """
-    Special warning issued when Passlib encounters something
-    that might affect security.
-
-    .. versionadded:: 1.6
-    """
-    ...
-
-def type_name(value):
-    """return pretty-printed string containing name of value's type"""
-    ...
-def ExpectedTypeError(value, expected, param):
-    """error message when param was supposed to be one type, but found another"""
-    ...
-def ExpectedStringError(value, param):
-    """error message when param was supposed to be unicode or bytes"""
-    ...
-def MissingDigestError(handler: Incomplete | None = None):
-    """raised when verify() method gets passed config string instead of hash"""
-    ...
-def NullPasswordError(handler: Incomplete | None = None):
-    """raised by OS crypt() supporting hashes, which forbid NULLs in password"""
-    ...
-def InvalidHashError(handler: Incomplete | None = None):
-    """error raised if unrecognized hash provided to handler"""
-    ...
-def MalformedHashError(handler: Incomplete | None = None, reason: Incomplete | None = None):
-    """error raised if recognized-but-malformed hash provided to handler"""
-    ...
-def ZeroPaddedRoundsError(handler: Incomplete | None = None):
-    """error raised if hash was recognized but contained zero-padded rounds field"""
-    ...
-def ChecksumSizeError(handler, raw: bool = False):
-    """error raised if hash was recognized, but checksum was wrong size"""
-    ...
+def type_name(value): ...
+def ExpectedTypeError(value, expected, param): ...
+def ExpectedStringError(value, param): ...
+def MissingDigestError(handler=None): ...
+def NullPasswordError(handler=None): ...
+def InvalidHashError(handler=None): ...
+def MalformedHashError(handler=None, reason=None): ...
+def ZeroPaddedRoundsError(handler=None): ...
+def ChecksumSizeError(handler, raw: bool = False): ...
 
 ENABLE_DEBUG_ONLY_REPR: bool
 

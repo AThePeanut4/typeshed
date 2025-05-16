@@ -4,7 +4,6 @@ pika connection adapters.
 """
 
 import abc
-from _typeshed import Incomplete
 
 from pika.adapters.utils.nbio_interface import AbstractIOReference, AbstractStreamTransport
 
@@ -42,20 +41,7 @@ class SocketConnectionMixin:
         ...
 
 class StreamingConnectionMixin:
-    """
-    Implements
-    `.nbio_interface.AbstractIOServices.create_streaming_connection()` on
-    top of `.nbio_interface.AbstractFileDescriptorServices` and basic
-    `nbio_interface.AbstractIOServices` services.
-    """
-    def create_streaming_connection(
-        self, protocol_factory, sock, on_done, ssl_context: Incomplete | None = None, server_hostname: Incomplete | None = None
-    ):
-        """
-        Implement
-        :py:meth:`.nbio_interface.AbstractIOServices.create_streaming_connection()`.
-        """
-        ...
+    def create_streaming_connection(self, protocol_factory, sock, on_done, ssl_context=None, server_hostname=None): ...
 
 class _AsyncServiceAsyncHandle(AbstractIOReference):
     """

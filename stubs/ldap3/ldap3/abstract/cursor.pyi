@@ -1,6 +1,3 @@
-""""""
-
-from _typeshed import Incomplete
 from typing import Any, NamedTuple
 
 class Operation(NamedTuple):
@@ -23,9 +20,9 @@ class Cursor:
         connection,
         object_def,
         get_operational_attributes: bool = False,
-        attributes: Incomplete | None = None,
-        controls: Incomplete | None = None,
-        auxiliary_class: Incomplete | None = None,
+        attributes=None,
+        controls=None,
+        auxiliary_class=None,
     ) -> None: ...
     def __iter__(self): ...
     def __getitem__(self, item):
@@ -90,9 +87,9 @@ class Reader(Cursor):
         components_in_and: bool = True,
         sub_tree: bool = True,
         get_operational_attributes: bool = False,
-        attributes: Incomplete | None = None,
-        controls: Incomplete | None = None,
-        auxiliary_class: Incomplete | None = None,
+        attributes=None,
+        controls=None,
+        auxiliary_class=None,
     ) -> None: ...
     @property
     def query(self): ...
@@ -111,81 +108,30 @@ class Reader(Cursor):
         ...
     execution_time: Any
     entries: Any
-    def reset(self) -> None:
-        """
-        Clear all the Reader parameters
-
-        
-        """
-        ...
-    def search(self, attributes: Incomplete | None = None):
-        """
-        Perform the LDAP search
-
-        :return: Entries found in search
-        """
-        ...
-    def search_object(self, entry_dn: Incomplete | None = None, attributes: Incomplete | None = None):
-        """
-        Perform the LDAP search operation SINGLE_OBJECT scope
-
-        :return: Entry found in search
-        """
-        ...
-    def search_level(self, attributes: Incomplete | None = None):
-        """
-        Perform the LDAP search operation with SINGLE_LEVEL scope
-
-        :return: Entries found in search
-        """
-        ...
-    def search_subtree(self, attributes: Incomplete | None = None):
-        """
-        Perform the LDAP search operation WHOLE_SUBTREE scope
-
-        :return: Entries found in search
-        """
-        ...
-    def search_paged(
-        self, paged_size, paged_criticality: bool = True, generator: bool = True, attributes: Incomplete | None = None
-    ):
-        """
-        Perform a paged search, can be called as an Iterator
-
-        :param attributes: optional attributes to search
-        :param paged_size: number of entries returned in each search
-        :type paged_size: int
-        :param paged_criticality: specify if server must not execute the search if it is not capable of paging searches
-        :type paged_criticality: bool
-        :param generator: if True the paged searches are executed while generating the entries,
-                          if False all the paged searches are execute before returning the generator
-        :type generator: bool
-        :return: Entries found in search
-        """
-        ...
+    def reset(self) -> None: ...
+    def search(self, attributes=None): ...
+    def search_object(self, entry_dn=None, attributes=None): ...
+    def search_level(self, attributes=None): ...
+    def search_subtree(self, attributes=None): ...
+    def search_paged(self, paged_size, paged_criticality: bool = True, generator: bool = True, attributes=None): ...
 
 class Writer(Cursor):
     entry_class: Any
     attribute_class: Any
     entry_initial_status: Any
     @staticmethod
-    def from_cursor(
-        cursor,
-        connection: Incomplete | None = None,
-        object_def: Incomplete | None = None,
-        custom_validator: Incomplete | None = None,
-    ): ...
+    def from_cursor(cursor, connection=None, object_def=None, custom_validator=None): ...
     @staticmethod
-    def from_response(connection, object_def, response: Incomplete | None = None): ...
+    def from_response(connection, object_def, response=None): ...
     dereference_aliases: Any
     def __init__(
         self,
         connection,
         object_def,
         get_operational_attributes: bool = False,
-        attributes: Incomplete | None = None,
-        controls: Incomplete | None = None,
-        auxiliary_class: Incomplete | None = None,
+        attributes=None,
+        controls=None,
+        auxiliary_class=None,
     ) -> None: ...
     execution_time: Any
     def commit(self, refresh: bool = True): ...

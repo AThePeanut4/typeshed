@@ -69,24 +69,12 @@ class _Call(tuple[Any, ...]):
     If the _Call has no name then it will match any name.
     """
     def __new__(
-        cls,
-        value: Any = (),
-        name: Incomplete | None = "",
-        parent: Incomplete | None = None,
-        two: bool = False,
-        from_kall: bool = True,
+        cls, value: Any = (), name: Incomplete | None = "", parent=None, two: bool = False, from_kall: bool = True
     ) -> Self: ...
     name: Any
     parent: Any
     from_kall: Any
-    def __init__(
-        self,
-        value: Any = (),
-        name: Incomplete | None = None,
-        parent: Incomplete | None = None,
-        two: bool = False,
-        from_kall: bool = True,
-    ) -> None: ...
+    def __init__(self, value: Any = (), name=None, parent=None, two: bool = False, from_kall: bool = True) -> None: ...
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object, /) -> bool:
         """Return self!=value."""
@@ -124,7 +112,7 @@ class NonCallableMock(Base, Any):
         name: str | None = None,
         spec_set: list[str] | object | type[object] | None = None,
         parent: NonCallableMock | None = None,
-        _spec_state: Incomplete | None = None,
+        _spec_state=None,
         _new_name: str = "",
         _new_parent: NonCallableMock | None = None,
         _spec_as_instance: bool = False,
@@ -139,7 +127,7 @@ class NonCallableMock(Base, Any):
         name: str | None = None,
         spec_set: list[str] | object | type[object] | None = None,
         parent: NonCallableMock | None = None,
-        _spec_state: Incomplete | None = None,
+        _spec_state=None,
         _new_name: str = "",
         _new_parent: NonCallableMock | None = None,
         _spec_as_instance: bool = False,
@@ -280,16 +268,16 @@ class CallableMixin(Base):
     side_effect: Any
     def __init__(
         self,
-        spec: Incomplete | None = None,
-        side_effect: Incomplete | None = None,
+        spec=None,
+        side_effect=None,
         return_value: Any = ...,
-        wraps: Incomplete | None = None,
-        name: Incomplete | None = None,
-        spec_set: Incomplete | None = None,
-        parent: Incomplete | None = None,
-        _spec_state: Incomplete | None = None,
+        wraps=None,
+        name=None,
+        spec_set=None,
+        parent=None,
+        _spec_state=None,
         _new_name: Any = "",
-        _new_parent: Incomplete | None = None,
+        _new_parent=None,
         **kwargs: Any,
     ) -> None: ...
     def __call__(_mock_self, *args: Any, **kwargs: Any) -> Any: ...
@@ -669,7 +657,7 @@ class MagicProxy(Base):
     parent: Any
     def __init__(self, name: str, parent: Any) -> None: ...
     def create_mock(self) -> Any: ...
-    def __get__(self, obj: Any, _type: Incomplete | None = None) -> Any: ...
+    def __get__(self, obj: Any, _type=None) -> Any: ...
 
 class _ANY:
     """A helper object that compares equal to everything."""
@@ -679,39 +667,8 @@ class _ANY:
 ANY: Any
 
 def create_autospec(
-    spec: Any,
-    spec_set: Any = False,
-    instance: Any = False,
-    _parent: Incomplete | None = None,
-    _name: Incomplete | None = None,
-    *,
-    unsafe: bool = False,
-    **kwargs: Any,
-) -> Any:
-    """
-    Create a mock object using another object as a spec. Attributes on the
-    mock will use the corresponding attribute on the `spec` object as their
-    spec.
-
-    Functions or methods being mocked will have their arguments checked
-    to check that they are called with the correct signature.
-
-    If `spec_set` is True then attempting to set attributes that don't exist
-    on the spec object will raise an `AttributeError`.
-
-    If a class is used as a spec then the return value of the mock (the
-    instance of the class) will have the same spec. You can use a class as the
-    spec for an instance object by passing `instance=True`. The returned mock
-    will only be callable if instances of the mock are callable.
-
-    `create_autospec` will raise a `RuntimeError` if passed some common
-    misspellings of the arguments autospec and spec_set. Pass the argument
-    `unsafe` with the value True to disable that check.
-
-    `create_autospec` also takes arbitrary keyword arguments that are passed to
-    the constructor of the created mock.
-    """
-    ...
+    spec: Any, spec_set: Any = False, instance: Any = False, _parent=None, _name=None, *, unsafe: bool = False, **kwargs: Any
+) -> Any: ...
 
 class _SpecState:
     spec: Any
@@ -720,29 +677,9 @@ class _SpecState:
     parent: Any
     instance: Any
     name: Any
-    def __init__(
-        self,
-        spec: Any,
-        spec_set: Any = False,
-        parent: Incomplete | None = None,
-        name: Incomplete | None = None,
-        ids: Incomplete | None = None,
-        instance: Any = False,
-    ) -> None: ...
+    def __init__(self, spec: Any, spec_set: Any = False, parent=None, name=None, ids=None, instance: Any = False) -> None: ...
 
-def mock_open(mock: Incomplete | None = None, read_data: Any = "") -> Any:
-    """
-    A helper function to create a mock to replace the use of `open`. It works
-    for `open` called directly or used as a context manager.
-
-    The `mock` argument is the mock object to configure. If `None` (the
-    default) then a `MagicMock` will be created for you, with the API limited
-    to methods or attributes available on standard file handles.
-
-    `read_data` is a string for the `read`, `readline` and `readlines` of the
-    file handle to return.  This is an empty string by default.
-    """
-    ...
+def mock_open(mock=None, read_data: Any = "") -> Any: ...
 
 class PropertyMock(Mock):
     """

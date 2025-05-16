@@ -1,6 +1,3 @@
-""""""
-
-from _typeshed import Incomplete
 from typing import Any, Literal
 
 unix_socket_available: bool
@@ -40,68 +37,30 @@ class Server:
         host: str,
         port: int | None = None,
         use_ssl: bool = False,
-        allowed_referral_hosts: Incomplete | None = None,
+        allowed_referral_hosts=None,
         get_info: Literal["NO_INFO", "DSA", "SCHEMA", "ALL"] = "SCHEMA",
-        tls: Incomplete | None = None,
-        formatter: Incomplete | None = None,
-        connect_timeout: Incomplete | None = None,
+        tls=None,
+        formatter=None,
+        connect_timeout=None,
         mode: Literal["IP_SYSTEM_DEFAULT", "IP_V4_ONLY", "IP_V6_ONLY", "IP_V4_PREFERRED", "IP_V6_PREFERRED"] = "IP_V6_PREFERRED",
-        validator: Incomplete | None = None,
+        validator=None,
     ) -> None: ...
     @property
     def address_info(self): ...
     def update_availability(self, address, available) -> None: ...
     def reset_availability(self) -> None: ...
-    def check_availability(
-        self,
-        source_address: Incomplete | None = None,
-        source_port: Incomplete | None = None,
-        source_port_list: Incomplete | None = None,
-    ):
-        """
-        Tries to open, connect and close a socket to specified address and port to check availability.
-        Timeout in seconds is specified in CHECK_AVAILABITY_TIMEOUT if not specified in
-        the Server object.
-        If specified, use a specific address, port, or list of possible ports, when attempting to check availability.
-        NOTE: This will only consider multiple ports from the source port list if the first ones we try to bind to are
-              already in use. This will not attempt using different ports in the list if the server is unavailable,
-              as that could result in the runtime of check_availability significantly exceeding the connection timeout.
-        """
-        ...
+    def check_availability(self, source_address=None, source_port=None, source_port_list=None): ...
     @staticmethod
-    def next_message_id():
-        """LDAP messageId is unique for all connections to same server"""
-        ...
-    def get_info_from_server(self, connection) -> None:
-        """reads info from DSE and from subschema"""
-        ...
-    def attach_dsa_info(self, dsa_info: Incomplete | None = None) -> None: ...
-    def attach_schema_info(self, dsa_schema: Incomplete | None = None) -> None: ...
+    def next_message_id(): ...
+    def get_info_from_server(self, connection) -> None: ...
+    def attach_dsa_info(self, dsa_info=None) -> None: ...
+    def attach_schema_info(self, dsa_schema=None) -> None: ...
     @property
     def info(self): ...
     @property
     def schema(self): ...
     @staticmethod
-    def from_definition(
-        host,
-        dsa_info,
-        dsa_schema,
-        port: Incomplete | None = None,
-        use_ssl: bool = False,
-        formatter: Incomplete | None = None,
-        validator: Incomplete | None = None,
-    ):
-        """
-        Define a dummy server with preloaded schema and info
-        :param host: host name
-        :param dsa_info: DsaInfo preloaded object or a json formatted string or a file name
-        :param dsa_schema: SchemaInfo preloaded object or a json formatted string or a file name
-        :param port: fake port
-        :param use_ssl: use_ssl
-        :param formatter: custom formatters
-        :return: Server object
-        """
-        ...
+    def from_definition(host, dsa_info, dsa_schema, port=None, use_ssl: bool = False, formatter=None, validator=None): ...
     def candidate_addresses(self): ...
     def has_control(self, control): ...
     def has_extension(self, extension): ...

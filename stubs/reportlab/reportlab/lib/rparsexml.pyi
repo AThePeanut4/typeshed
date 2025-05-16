@@ -73,9 +73,7 @@ CDATAENDMARKER: str
 replacelist: Incomplete
 
 def unEscapeContentList(contentList): ...
-def parsexmlSimple(xmltext, oneOutermostTag: int = 0, eoCB: Incomplete | None = None, entityReplacer=...):
-    """official interface: discard unused cursor info"""
-    ...
+def parsexmlSimple(xmltext, oneOutermostTag: int = 0, eoCB=None, entityReplacer=...): ...
 
 parsexml = parsexmlSimple
 

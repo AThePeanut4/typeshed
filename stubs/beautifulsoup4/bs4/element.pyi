@@ -1,4 +1,4 @@
-from _typeshed import Incomplete, ReadableBuffer
+from _typeshed import ReadableBuffer
 from collections.abc import Callable, Iterable, Iterator
 from re import Pattern
 from typing import Any, Literal, TypeVar, overload
@@ -1229,69 +1229,14 @@ class Tag(PageElement):
         """
         ...
     def select_one(
-        self, selector: str, namespaces: Incomplete | None = None, *, flags: int = ..., custom: dict[str, str] | None = ...
-    ) -> Tag | None:
-        """
-        Perform a CSS selection operation on the current element.
-
-        :param selector: A CSS selector.
-
-        :param namespaces: A dictionary mapping namespace prefixes
-           used in the CSS selector to namespace URIs. By default,
-           Beautiful Soup will use the prefixes it encountered while
-           parsing the document.
-
-        :param kwargs: Keyword arguments to be passed into Soup Sieve's
-           soupsieve.select() method.
-
-        :return: A Tag.
-        :rtype: bs4.element.Tag
-        """
-        ...
+        self, selector: str, namespaces=None, *, flags: int = ..., custom: dict[str, str] | None = ...
+    ) -> Tag | None: ...
     def select(
-        self,
-        selector: str,
-        namespaces: Incomplete | None = None,
-        limit: int | None = None,
-        *,
-        flags: int = ...,
-        custom: dict[str, str] | None = ...,
-    ) -> ResultSet[Tag]:
-        """
-        Perform a CSS selection operation on the current element.
-
-        This uses the SoupSieve library.
-
-        :param selector: A string containing a CSS selector.
-
-        :param namespaces: A dictionary mapping namespace prefixes
-           used in the CSS selector to namespace URIs. By default,
-           Beautiful Soup will use the prefixes it encountered while
-           parsing the document.
-
-        :param limit: After finding this number of results, stop looking.
-
-        :param kwargs: Keyword arguments to be passed into SoupSieve's
-           soupsieve.select() method.
-
-        :return: A ResultSet of Tags.
-        :rtype: bs4.element.ResultSet
-        """
-        ...
-    def childGenerator(self) -> Iterable[PageElement]:
-        """Deprecated generator."""
-        ...
-    def recursiveChildGenerator(self) -> Iterable[PageElement]:
-        """Deprecated generator."""
-        ...
-    def has_key(self, key: str) -> bool:
-        """
-        Deprecated method. This was kind of misleading because has_key()
-        (attributes) was different from __in__ (contents).
-
-        has_key() is gone in Python 3, anyway.
-        """
-        ...
+        self, selector: str, namespaces=None, limit: int | None = None, *, flags: int = ..., custom: dict[str, str] | None = ...
+    ) -> ResultSet[Tag]: ...
+    def childGenerator(self) -> Iterable[PageElement]: ...
+    def recursiveChildGenerator(self) -> Iterable[PageElement]: ...
+    def has_key(self, key: str) -> bool: ...
 
 class SoupStrainer:
     """

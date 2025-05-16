@@ -6,16 +6,8 @@ from reportlab.graphics.widgetbase import Widget
 
 __version__: Final[str]
 
-def frange(start, end: Incomplete | None = None, inc: Incomplete | None = None):
-    """A range function, that does accept float increments..."""
-    ...
-def makeDistancesList(list):
-    """
-    Returns a list of distances between adjacent numbers in some input list.
-
-    E.g. [1, 1, 2, 3, 5, 7] -> [0, 1, 1, 2, 2]
-    """
-    ...
+def frange(start, end=None, inc=None): ...
+def makeDistancesList(list): ...
 
 class Grid(Widget):
     """

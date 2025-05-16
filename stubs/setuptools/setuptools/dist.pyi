@@ -1,5 +1,6 @@
 from _typeshed import Incomplete, StrPath
 from collections.abc import Iterable, Iterator, MutableMapping
+from importlib import metadata
 from typing import Literal, TypeVar, overload
 
 from . import Command, SetuptoolsDeprecationWarning
@@ -84,9 +85,7 @@ class Distribution(_Distribution):
     setup_requires: list[str]
     def __init__(self, attrs: MutableMapping[str, Incomplete] | None = None) -> None: ...
     def parse_config_files(self, filenames: Iterable[StrPath] | None = None, ignore_option_errors: bool = False) -> None: ...
-    def fetch_build_eggs(self, requires: str | Iterable[str]):
-        """Resolve pre-setup requirements"""
-        ...
+    def fetch_build_eggs(self, requires: str | Iterable[str]) -> list[metadata.Distribution]: ...
     def get_egg_cache_dir(self) -> str: ...
     def fetch_build_egg(self, req):
         """Fetch an egg needed for building"""

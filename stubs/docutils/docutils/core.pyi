@@ -28,87 +28,36 @@ class Publisher:
     settings: Incomplete
     def __init__(
         self,
-        reader: Incomplete | None = None,
-        parser: Incomplete | None = None,
-        writer: Incomplete | None = None,
-        source: Incomplete | None = None,
+        reader=None,
+        parser=None,
+        writer=None,
+        source=None,
         source_class=...,
-        destination: Incomplete | None = None,
+        destination=None,
         destination_class=...,
-        settings: Incomplete | None = None,
-    ) -> None:
-        """
-        Initial setup.  If any of `reader`, `parser`, or `writer` are not
-        specified, ``set_components()`` or the corresponding ``set_...()``
-        method should be called with component names
-        (`set_reader` sets the parser as well).
-        """
-        ...
-    def set_reader(self, reader_name, parser, parser_name) -> None:
-        """Set `self.reader` by name."""
-        ...
-    def set_writer(self, writer_name) -> None:
-        """Set `self.writer` by name."""
-        ...
+        settings=None,
+    ) -> None: ...
+    def set_reader(self, reader_name, parser, parser_name) -> None: ...
+    def set_writer(self, writer_name) -> None: ...
     def set_components(self, reader_name, parser_name, writer_name) -> None: ...
-    def setup_option_parser(
-        self,
-        usage: Incomplete | None = None,
-        description: Incomplete | None = None,
-        settings_spec: Incomplete | None = None,
-        config_section: Incomplete | None = None,
-        **defaults,
-    ): ...
-    def get_settings(
-        self,
-        usage: Incomplete | None = None,
-        description: Incomplete | None = None,
-        settings_spec: Incomplete | None = None,
-        config_section: Incomplete | None = None,
-        **defaults,
-    ):
-        """
-        Return settings from components and config files.
-
-        Please set components first (`self.set_reader` & `self.set_writer`).
-        Use keyword arguments to override component defaults
-        (before updating from configuration files).
-
-        Calling this function also sets `self.settings` which makes
-        `self.publish()` skip parsing command line options.
-        """
-        ...
+    def setup_option_parser(self, usage=None, description=None, settings_spec=None, config_section=None, **defaults): ...
+    def get_settings(self, usage=None, description=None, settings_spec=None, config_section=None, **defaults): ...
     def process_programmatic_settings(self, settings_spec, settings_overrides, config_section) -> None: ...
     def process_command_line(
-        self,
-        argv: Incomplete | None = None,
-        usage: Incomplete | None = None,
-        description: Incomplete | None = None,
-        settings_spec: Incomplete | None = None,
-        config_section: Incomplete | None = None,
-        **defaults,
-    ) -> None:
-        """
-        Parse command line arguments and set ``self.settings``.
-
-        Pass an empty sequence to `argv` to avoid reading `sys.argv`
-        (the default behaviour).
-
-        Set components first (`self.set_reader` & `self.set_writer`).
-        """
-        ...
-    def set_io(self, source_path: Incomplete | None = None, destination_path: Incomplete | None = None) -> None: ...
-    def set_source(self, source: Incomplete | None = None, source_path: Incomplete | None = None) -> None: ...
-    def set_destination(self, destination: Incomplete | None = None, destination_path: Incomplete | None = None) -> None: ...
+        self, argv=None, usage=None, description=None, settings_spec=None, config_section=None, **defaults
+    ) -> None: ...
+    def set_io(self, source_path=None, destination_path=None) -> None: ...
+    def set_source(self, source=None, source_path=None) -> None: ...
+    def set_destination(self, destination=None, destination_path=None) -> None: ...
     def apply_transforms(self) -> None: ...
     def publish(
         self,
-        argv: Incomplete | None = None,
-        usage: Incomplete | None = None,
-        description: Incomplete | None = None,
-        settings_spec: Incomplete | None = None,
-        settings_overrides: Incomplete | None = None,
-        config_section: Incomplete | None = None,
+        argv=None,
+        usage=None,
+        description=None,
+        settings_spec=None,
+        settings_overrides=None,
+        config_section=None,
         enable_exit_status: bool = False,
     ):
         """
@@ -129,18 +78,18 @@ default_usage: str
 default_description: str
 
 def publish_cmdline(
-    reader: Incomplete | None = None,
+    reader=None,
     reader_name: str = "standalone",
-    parser: Incomplete | None = None,
+    parser=None,
     parser_name: str = "restructuredtext",
-    writer: Incomplete | None = None,
+    writer=None,
     writer_name: str = "pseudoxml",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = True,
-    argv: Incomplete | None = None,
+    argv=None,
     usage=...,
     description=...,
 ):
@@ -160,20 +109,20 @@ def publish_cmdline(
     """
     ...
 def publish_file(
-    source: Incomplete | None = None,
-    source_path: Incomplete | None = None,
-    destination: Incomplete | None = None,
-    destination_path: Incomplete | None = None,
-    reader: Incomplete | None = None,
+    source=None,
+    source_path=None,
+    destination=None,
+    destination_path=None,
+    reader=None,
     reader_name: str = "standalone",
-    parser: Incomplete | None = None,
+    parser=None,
     parser_name: str = "restructuredtext",
-    writer: Incomplete | None = None,
+    writer=None,
     writer_name: str = "pseudoxml",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = False,
 ):
     """
@@ -186,37 +135,37 @@ def publish_file(
     ...
 def publish_string(
     source,
-    source_path: Incomplete | None = None,
-    destination_path: Incomplete | None = None,
-    reader: Incomplete | None = None,
+    source_path=None,
+    destination_path=None,
+    reader=None,
     reader_name: str = "standalone",
-    parser: Incomplete | None = None,
+    parser=None,
     parser_name: str = "restructuredtext",
-    writer: Incomplete | None = None,
+    writer=None,
     writer_name: str = "pseudoxml",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = False,
 ):
     'Set up & run a `Publisher` for programmatic use with string I/O.\n\nAccepts a `bytes` or `str` instance as `source`.\n\nThe output is encoded according to the `output_encoding`_ setting;\nthe return value is a `bytes` instance (unless `output_encoding`_ is\n"unicode", cf. `docutils.io.StringOutput.write()`).\n\nParameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nno longer match.\n\n.. _output_encoding:\n    https://docutils.sourceforge.io/docs/user/config.html#output-encoding'
     ...
 def publish_parts(
     source,
-    source_path: Incomplete | None = None,
+    source_path=None,
     source_class=...,
-    destination_path: Incomplete | None = None,
-    reader: Incomplete | None = None,
+    destination_path=None,
+    reader=None,
     reader_name: str = "standalone",
-    parser: Incomplete | None = None,
+    parser=None,
     parser_name: str = "restructuredtext",
-    writer: Incomplete | None = None,
+    writer=None,
     writer_name: str = "pseudoxml",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = False,
 ) -> _WriterParts:
     """
@@ -238,16 +187,16 @@ def publish_parts(
     ...
 def publish_doctree(
     source,
-    source_path: Incomplete | None = None,
+    source_path=None,
     source_class=...,
-    reader: Incomplete | None = None,
+    reader=None,
     reader_name: str = "standalone",
-    parser: Incomplete | None = None,
+    parser=None,
     parser_name: str = "restructuredtext",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = False,
 ):
     """
@@ -258,33 +207,33 @@ def publish_doctree(
     ...
 def publish_from_doctree(
     document,
-    destination_path: Incomplete | None = None,
-    writer: Incomplete | None = None,
+    destination_path=None,
+    writer=None,
     writer_name: str = "pseudoxml",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = False,
 ):
     'Set up & run a `Publisher` to render from an existing document tree\ndata structure. For programmatic use with string output\n(`bytes` or `str`, cf. `publish_string()`).\n\nNote that ``document.settings`` is overridden; if you want to use the\nsettings of the original `document`, pass ``settings=document.settings``.\n\nAlso, new `document.transformer` and `document.reporter` objects are\ngenerated.\n\nParameters: `document` is a `docutils.nodes.document` object, an existing\ndocument tree.\n\nOther parameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nof the `io.StringOutput` class no longer match.'
     ...
 def publish_cmdline_to_binary(
-    reader: Incomplete | None = None,
+    reader=None,
     reader_name: str = "standalone",
-    parser: Incomplete | None = None,
+    parser=None,
     parser_name: str = "restructuredtext",
-    writer: Incomplete | None = None,
+    writer=None,
     writer_name: str = "pseudoxml",
-    settings: Incomplete | None = None,
-    settings_spec: Incomplete | None = None,
-    settings_overrides: Incomplete | None = None,
-    config_section: Incomplete | None = None,
+    settings=None,
+    settings_spec=None,
+    settings_overrides=None,
+    config_section=None,
     enable_exit_status: bool = True,
-    argv: Incomplete | None = None,
+    argv=None,
     usage=...,
     description=...,
-    destination: Incomplete | None = None,
+    destination=None,
     destination_class=...,
 ):
     """

@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from collections.abc import Callable
 from typing import Protocol
 
@@ -43,7 +42,7 @@ class BearerTokenGenerator:
         self,
         grant_type: str,
         client: ClientMixin,
-        user: Incomplete | None = None,
+        user=None,
         scope: str | None = None,
         expires_in: int | None = None,
         include_refresh_token: bool = True,
@@ -64,7 +63,7 @@ class BearerTokenGenerator:
         self,
         grant_type: str,
         client: ClientMixin,
-        user: Incomplete | None = None,
+        user=None,
         scope: str | None = None,
         expires_in: int | None = None,
         include_refresh_token: bool = True,

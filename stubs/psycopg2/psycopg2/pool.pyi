@@ -1,10 +1,4 @@
-"""
-Connection pooling for psycopg2
-
-This module implements thread-safe (and not) connection pools.
-"""
-
-from _typeshed import ConvertibleToInt, Incomplete
+from _typeshed import ConvertibleToInt
 from collections.abc import Hashable
 
 import psycopg2
@@ -39,6 +33,4 @@ class ThreadedConnectionPool(AbstractConnectionPool):
     """A connection pool that works with the threading module."""
     # This subclass has a default value for conn which doesn't exist
     # in the SimpleConnectionPool class, nor in the documentation
-    def putconn(self, conn: Incomplete | None = None, key: Hashable | None = None, close: bool = False) -> None:
-        """Put away an unused connection."""
-        ...
+    def putconn(self, conn=None, key: Hashable | None = None, close: bool = False) -> None: ...

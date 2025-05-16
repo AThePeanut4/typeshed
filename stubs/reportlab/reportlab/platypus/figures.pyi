@@ -32,13 +32,13 @@ class Figure(Flowable):
         caption: str = "",
         captionFont="Helvetica-Oblique",
         captionSize: int = 12,
-        background: Incomplete | None = None,
+        background=None,
         captionTextColor=...,
-        captionBackColor: Incomplete | None = None,
-        border: Incomplete | None = None,
+        captionBackColor=None,
+        border=None,
         spaceBefore: int = 12,
         spaceAfter: int = 12,
-        captionGap: Incomplete | None = None,
+        captionGap=None,
         captionAlign: str = "centre",
         captionPosition: str = "bottom",
         hAlign: str = "CENTER",
@@ -67,7 +67,7 @@ class PageFigure(Figure):
     caption: str
     captionStyle: Incomplete
     background: Incomplete
-    def __init__(self, background: Incomplete | None = None) -> None: ...
+    def __init__(self, background=None) -> None: ...
     def drawVirtualPage(self) -> None: ...
     def drawFigure(self) -> None: ...
 
@@ -88,7 +88,7 @@ class FlexFigure(Figure):
         width,
         height,
         caption,
-        background: Incomplete | None = None,
+        background=None,
         captionFont: str = "Helvetica-Oblique",
         captionSize: int = 8,
         captionTextColor=...,
@@ -99,7 +99,7 @@ class FlexFigure(Figure):
         captionGap: int = 9,
         captionAlign: str = "centre",
         captionPosition: str = "top",
-        scaleFactor: Incomplete | None = None,
+        scaleFactor=None,
         hAlign: str = "CENTER",
         border: int = 1,
     ) -> None: ...
@@ -109,24 +109,14 @@ class FlexFigure(Figure):
 class ImageFigure(FlexFigure):
     """Image with a caption below it"""
     filename: Incomplete
-    def __init__(
-        self,
-        filename,
-        caption,
-        background: Incomplete | None = None,
-        scaleFactor: Incomplete | None = None,
-        hAlign: str = "CENTER",
-        border: Incomplete | None = None,
-    ) -> None: ...
+    def __init__(self, filename, caption, background=None, scaleFactor=None, hAlign: str = "CENTER", border=None) -> None: ...
     def drawFigure(self) -> None: ...
 
 class DrawingFigure(FlexFigure):
     """Drawing with a caption below it.  Clunky, scaling fails."""
     drawing: Incomplete
     growToFit: int
-    def __init__(
-        self, modulename, classname, caption, baseDir: Incomplete | None = None, background: Incomplete | None = None
-    ) -> None: ...
+    def __init__(self, modulename, classname, caption, baseDir=None, background=None) -> None: ...
     def drawFigure(self) -> None: ...
 
 def demo1(canvas) -> None: ...

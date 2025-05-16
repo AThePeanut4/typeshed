@@ -140,8 +140,8 @@ class Container(Model):
         detach: bool = False,
         stream: bool = False,
         socket: bool = False,
-        environment: Incomplete | None = None,
-        workdir: Incomplete | None = None,
+        environment=None,
+        workdir=None,
         demux: bool = False,
     ) -> ExecResult:
         """
@@ -202,51 +202,8 @@ class Container(Model):
         ...
     def get_archive(
         self, path: str, chunk_size: int | None = 2097152, encode_stream: bool = False
-    ) -> tuple[Incomplete, Incomplete]:
-        """
-        Retrieve a file or folder from the container in the form of a tar
-        archive.
-
-        Args:
-            path (str): Path to the file or folder to retrieve
-            chunk_size (int): The number of bytes returned by each iteration
-                of the generator. If ``None``, data will be streamed as it is
-                received. Default: 2 MB
-            encode_stream (bool): Determines if data should be encoded
-                (gzip-compressed) during transmission. Default: False
-
-        Returns:
-            (tuple): First element is a raw tar data stream. Second element is
-            a dict containing ``stat`` information on the specified ``path``.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-
-        Example:
-
-            >>> f = open('./sh_bin.tar', 'wb')
-            >>> bits, stat = container.get_archive('/bin/sh')
-            >>> print(stat)
-            {'name': 'sh', 'size': 1075464, 'mode': 493,
-             'mtime': '2018-10-01T15:37:48-07:00', 'linkTarget': ''}
-            >>> for chunk in bits:
-            ...    f.write(chunk)
-            >>> f.close()
-        """
-        ...
-    def kill(self, signal: Incomplete | None = None):
-        """
-        Kill or send a signal to the container.
-
-        Args:
-            signal (str or int): The signal to send. Defaults to ``SIGKILL``
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
+    ) -> tuple[Incomplete, Incomplete]: ...
+    def kill(self, signal=None): ...
     @overload
     def logs(
         self,
@@ -571,9 +528,9 @@ class ContainerCollection(Collection[Container]):
         detach: Literal[False] = False,
         device_cgroup_rules: list[Incomplete] | None = None,
         device_read_bps: list[Incomplete] | None = None,
-        device_read_iops: Incomplete | None = None,
-        device_write_bps: Incomplete | None = None,
-        device_write_iops: Incomplete | None = None,
+        device_read_iops=None,
+        device_write_bps=None,
+        device_write_iops=None,
         devices: list[str] | None = None,
         device_requests: list[DeviceRequest] | None = None,
         dns: list[Incomplete] | None = None,
@@ -981,9 +938,9 @@ class ContainerCollection(Collection[Container]):
         detach: Literal[True],
         device_cgroup_rules: list[Incomplete] | None = None,
         device_read_bps: list[Incomplete] | None = None,
-        device_read_iops: Incomplete | None = None,
-        device_write_bps: Incomplete | None = None,
-        device_write_iops: Incomplete | None = None,
+        device_read_iops=None,
+        device_write_bps=None,
+        device_write_iops=None,
         devices: list[str] | None = None,
         device_requests: list[DeviceRequest] | None = None,
         dns: list[Incomplete] | None = None,
@@ -1387,9 +1344,9 @@ class ContainerCollection(Collection[Container]):
         detach: Literal[True],
         device_cgroup_rules: list[Incomplete] | None = None,
         device_read_bps: list[Incomplete] | None = None,
-        device_read_iops: Incomplete | None = None,
-        device_write_bps: Incomplete | None = None,
-        device_write_iops: Incomplete | None = None,
+        device_read_iops=None,
+        device_write_bps=None,
+        device_write_iops=None,
         devices: list[str] | None = None,
         device_requests: list[DeviceRequest] | None = None,
         dns: list[Incomplete] | None = None,
@@ -1491,79 +1448,13 @@ class ContainerCollection(Collection[Container]):
         self,
         all: bool = False,
         before: str | None = None,
-        filters: Incomplete | None = None,
+        filters=None,
         limit: int = -1,
         since: str | None = None,
         sparse: bool = False,
         ignore_removed: bool = False,
-    ):
-        """
-        List containers. Similar to the ``docker ps`` command.
-
-        Args:
-            all (bool): Show all containers. Only running containers are shown
-                by default
-            since (str): Show only containers created since Id or Name, include
-                non-running ones
-            before (str): Show only container created before Id or Name,
-                include non-running ones
-            limit (int): Show `limit` last created containers, include
-                non-running ones
-            filters (dict): Filters to be processed on the image list.
-                Available filters:
-
-                - `exited` (int): Only containers with specified exit code
-                - `status` (str): One of ``restarting``, ``running``,
-                    ``paused``, ``exited``
-                - `label` (str|list): format either ``"key"``, ``"key=value"``
-                    or a list of such.
-                - `id` (str): The id of the container.
-                - `name` (str): The name of the container.
-                - `ancestor` (str): Filter by container ancestor. Format of
-                    ``<image-name>[:tag]``, ``<image-id>``, or
-                    ``<image@digest>``.
-                - `before` (str): Only containers created before a particular
-                    container. Give the container name or id.
-                - `since` (str): Only containers created after a particular
-                    container. Give container name or id.
-
-                A comprehensive list can be found in the documentation for
-                `docker ps
-                <https://docs.docker.com/engine/reference/commandline/ps>`_.
-
-            sparse (bool): Do not inspect containers. Returns partial
-                information, but guaranteed not to block. Use
-                :py:meth:`Container.reload` on resulting objects to retrieve
-                all attributes. Default: ``False``
-            ignore_removed (bool): Ignore failures due to missing containers
-                when attempting to inspect containers from the original list.
-                Set to ``True`` if race conditions are likely. Has no effect
-                if ``sparse=True``. Default: ``False``
-
-        Returns:
-            (list of :py:class:`Container`)
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def prune(self, filters: Incomplete | None = None):
-        """
-        Delete stopped containers
-
-        Args:
-            filters (dict): Filters to process on the prune list.
-
-        Returns:
-            (dict): A dict containing a list of deleted container IDs and
-                the amount of disk space reclaimed in bytes.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
+    ): ...
+    def prune(self, filters=None): ...
 
 RUN_CREATE_KWARGS: list[str]
 RUN_HOST_CONFIG_KWARGS: list[str]

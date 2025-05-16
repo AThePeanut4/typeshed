@@ -245,7 +245,7 @@ class _FileDescriptorCallbacks:
     """Holds reader and writer callbacks for a file descriptor"""
     reader: Incomplete
     writer: Incomplete
-    def __init__(self, reader: Incomplete | None = None, writer: Incomplete | None = None) -> None: ...
+    def __init__(self, reader=None, writer=None) -> None: ...
 
 class _TimerHandle(nbio_interface.AbstractTimerReference):
     """

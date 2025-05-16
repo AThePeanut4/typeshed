@@ -116,7 +116,7 @@ class Frame:
     args: Incomplete
     prev: Incomplete
     depth: Incomplete
-    def __init__(self, title: str = "", args=[], prev: Incomplete | None = None) -> None: ...
+    def __init__(self, title: str = "", args=[], prev=None) -> None: ...
     def push(self, title, args): ...
     def pop(self): ...
 
@@ -365,12 +365,10 @@ class Infix:
 
 ROUND: Incomplete
 
-def sharp_expr(extr, expr):
-    """Tries converting a lua expr into a Python expr."""
-    ...
-def sharp_if(extr, testValue, valueIfTrue, valueIfFalse: Incomplete | None = None, *args): ...
-def sharp_ifeq(extr, lvalue, rvalue, valueIfTrue, valueIfFalse: Incomplete | None = None, *args): ...
-def sharp_iferror(extr, test, then: str = "", Else: Incomplete | None = None, *args): ...
+def sharp_expr(extr, expr): ...
+def sharp_if(extr, testValue, valueIfTrue, valueIfFalse=None, *args): ...
+def sharp_ifeq(extr, lvalue, rvalue, valueIfTrue, valueIfFalse=None, *args): ...
+def sharp_iferror(extr, test, then: str = "", Else=None, *args): ...
 def sharp_switch(extr, primary, *params): ...
 def sharp_invoke(module, function, args): ...
 
@@ -479,52 +477,14 @@ tagRE: Incomplete
 keyRE: Incomplete
 catRE: Incomplete
 
-def load_templates(file, output_file: Incomplete | None = None) -> None:
-    """
-    Load templates from :param file:.
-    :param output_file: file where to save templates and modules.
-    """
-    ...
-def pages_from(input) -> Generator[Incomplete]:
-    """
-    Scans input extracting pages.
-    :return: (id, revid, title, namespace key, page), page is a list of lines.
-    """
-    ...
-def process_dump(input_file, template_file, out_file, file_size, file_compress, process_count) -> None:
-    """
-    :param input_file: name of the wikipedia dump file; '-' to read from stdin
-    :param template_file: optional file with template definitions.
-    :param out_file: directory where to store extracted data, or '-' for stdout
-    :param file_size: max size of each extracted file, or None for no max (one file)
-    :param file_compress: whether to compress files with bzip.
-    :param process_count: number of extraction processes to spawn.
-    """
-    ...
-def extract_process(opts, i, jobs_queue, output_queue) -> None:
-    """
-    Pull tuples of raw page content, do CPU/regex-heavy fixup, push finished text
-    :param i: process id.
-    :param jobs_queue: where to get jobs.
-    :param output_queue: where to queue extracted text for output.
-    """
-    ...
+def load_templates(file, output_file=None) -> None: ...
+def pages_from(input) -> Generator[Incomplete]: ...
+def process_dump(input_file, template_file, out_file, file_size, file_compress, process_count) -> None: ...
+def extract_process(opts, i, jobs_queue, output_queue) -> None: ...
 
 report_period: int
 
-def reduce_process(
-    opts, output_queue, spool_length, out_file: Incomplete | None = None, file_size: int = 0, file_compress: bool = True
-) -> None:
-    """
-    Pull finished article text, write series of files (or stdout)
-    :param opts: global parameters.
-    :param output_queue: text to be output.
-    :param spool_length: spool length.
-    :param out_file: filename where to print.
-    :param file_size: max file size.
-    :param file_compress: whether to compress output.
-    """
-    ...
+def reduce_process(opts, output_queue, spool_length, out_file=None, file_size: int = 0, file_compress: bool = True) -> None: ...
 
 minFileSize: Incomplete
 

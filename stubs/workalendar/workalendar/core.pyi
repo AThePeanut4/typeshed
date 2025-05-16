@@ -225,137 +225,18 @@ class CoreCalendar:
         """
         ...
     def get_variable_days(self, year): ...
-    def get_calendar_holidays(self, year):
-        """
-        Get calendar holidays.
-        If you want to override this, please make sure that it **must** return
-        a list of tuples (date, holiday_name).
-        """
-        ...
-    def holidays(self, year: Incomplete | None = None):
-        """
-        Computes holidays (non-working days) for a given year.
-        Return a 2-item tuple, composed of the date and a label.
-        """
-        ...
-    def get_holiday_label(self, day):
-        """Return the label of the holiday, if the date is a holiday"""
-        ...
-    def holidays_set(self, year: Incomplete | None = None):
-        """Return a quick date index (set)"""
-        ...
-    def get_weekend_days(self):
-        """
-        Return a list (or a tuple) of weekdays that are *not* working days.
-
-        e.g: return (SAT, SUN,)
-        """
-        ...
-    def is_working_day(self, day, extra_working_days: Incomplete | None = None, extra_holidays: Incomplete | None = None):
-        """
-        Return True if it's a working day.
-        In addition to the regular holidays, you can add exceptions.
-
-        By providing ``extra_working_days``, you'll state that these dates
-        **are** working days.
-
-        By providing ``extra_holidays``, you'll state that these dates **are**
-        holidays, even if not in the regular calendar holidays (or weekends).
-
-        Please note that the ``extra_working_days`` list has priority over the
-        ``extra_holidays`` list.
-        """
-        ...
-    def is_holiday(self, day, extra_holidays: Incomplete | None = None):
-        """
-        Return True if it's an holiday.
-        In addition to the regular holidays, you can add exceptions.
-
-        By providing ``extra_holidays``, you'll state that these dates **are**
-        holidays, even if not in the regular calendar holidays (or weekends).
-        """
-        ...
-    def add_working_days(
-        self,
-        day,
-        delta,
-        extra_working_days: Incomplete | None = None,
-        extra_holidays: Incomplete | None = None,
-        keep_datetime: bool = False,
-    ):
-        """
-        Add `delta` working days to the date.
-
-        You can provide either a date or a datetime to this function that will
-        output a ``date`` result. You can alter this behaviour using the
-        ``keep_datetime`` option set to ``True``.
-
-        the ``delta`` parameter might be positive or negative. If it's
-        negative, you may want to use the ``sub_working_days()`` method with
-        a positive ``delta`` argument.
-
-        By providing ``extra_working_days``, you'll state that these dates
-        **are** working days.
-
-        By providing ``extra_holidays``, you'll state that these dates **are**
-        holidays, even if not in the regular calendar holidays (or weekends).
-
-        Please note that the ``extra_working_days`` list has priority over the
-        ``extra_holidays`` list.
-        """
-        ...
-    def sub_working_days(
-        self,
-        day,
-        delta,
-        extra_working_days: Incomplete | None = None,
-        extra_holidays: Incomplete | None = None,
-        keep_datetime: bool = False,
-    ):
-        """
-        Substract `delta` working days to the date.
-
-        This method is a shortcut / helper. Users may want to use either::
-
-            cal.add_working_days(my_date, -7)
-            cal.sub_working_days(my_date, 7)
-
-        The other parameters are to be used exactly as in the
-        ``add_working_days`` method.
-
-        A negative ``delta`` argument will be converted into its absolute
-        value. Hence, the two following calls are equivalent::
-
-            cal.sub_working_days(my_date, -7)
-            cal.sub_working_days(my_date, 7)
-
-        As in ``add_working_days()`` you can set the parameter
-        ``keep_datetime`` to ``True`` to make sure that if your ``day``
-        argument is a ``datetime``, the returned date will also be a
-        ``datetime`` object.
-        """
-        ...
-    def find_following_working_day(self, day):
-        """
-        Looks for the following working day, if not already a working day.
-
-        **WARNING**: this function doesn't take into account the calendar
-        holidays, only the days of the week and the weekend days parameters.
-        """
-        ...
+    def get_calendar_holidays(self, year): ...
+    def holidays(self, year=None): ...
+    def get_holiday_label(self, day): ...
+    def holidays_set(self, year=None): ...
+    def get_weekend_days(self): ...
+    def is_working_day(self, day, extra_working_days=None, extra_holidays=None): ...
+    def is_holiday(self, day, extra_holidays=None): ...
+    def add_working_days(self, day, delta, extra_working_days=None, extra_holidays=None, keep_datetime: bool = False): ...
+    def sub_working_days(self, day, delta, extra_working_days=None, extra_holidays=None, keep_datetime: bool = False): ...
+    def find_following_working_day(self, day): ...
     @staticmethod
-    def get_nth_weekday_in_month(year, month, weekday, n: int = 1, start: Incomplete | None = None):
-        """
-        Get the nth weekday in a given month. e.g:
-
-        >>> # the 1st monday in Jan 2013
-        >>> Calendar.get_nth_weekday_in_month(2013, 1, MON)
-        datetime.date(2013, 1, 7)
-        >>> # The 2nd monday in Jan 2013
-        >>> Calendar.get_nth_weekday_in_month(2013, 1, MON, 2)
-        datetime.date(2013, 1, 14)
-        """
-        ...
+    def get_nth_weekday_in_month(year, month, weekday, n: int = 1, start=None): ...
     @staticmethod
     def get_last_weekday_in_month(year, month, weekday):
         """
@@ -394,84 +275,9 @@ class CoreCalendar:
         """
         ...
     @staticmethod
-    def get_first_weekday_after(day, weekday):
-        """
-        Get the first weekday after a given day. If the day is the same
-        weekday, the same day will be returned.
-
-        >>> # the first monday after Apr 1 2015
-        >>> Calendar.get_first_weekday_after(date(2015, 4, 1), MON)
-        datetime.date(2015, 4, 6)
-
-        >>> # the first tuesday after Apr 14 2015
-        >>> Calendar.get_first_weekday_after(date(2015, 4, 14), TUE)
-        datetime.date(2015, 4, 14)
-        """
-        ...
-    def get_working_days_delta(
-        self,
-        start,
-        end,
-        include_start: bool = False,
-        extra_working_days: Incomplete | None = None,
-        extra_holidays: Incomplete | None = None,
-    ):
-        """
-        Return the number of working day between two given dates.
-        The order of the dates provided doesn't matter.
-
-        In the following example, there are 5 days, because of the week-end:
-
-        >>> cal = WesternCalendar()  # does not include easter monday
-        >>> day1 = date(2018, 3, 29)
-        >>> day2 = date(2018, 4, 5)
-        >>> cal.get_working_days_delta(day1, day2)
-        5
-
-        In France, April 1st 2018 is a holiday because it's Easter monday:
-
-        >>> cal = France()
-        >>> cal.get_working_days_delta(day1, day2)
-        4
-
-        This method should even work if your ``start`` and ``end`` arguments
-        are datetimes.
-
-        By default, if the day after you start is not a working day,
-        the count will start at 0. If include_start is set to true,
-        this day will be taken into account.
-
-        Example:
-
-        >>> from dateutil.parser import parse
-        >>> cal = France()
-        >>> day1 = parse('09/05/2018 00:01', dayfirst=True)
-        >>> day2 = parse('10/05/2018 19:01', dayfirst=True) # holiday in france
-        >>> cal.get_working_days_delta(day1, day2)
-        0
-
-        >>> cal.get_working_days_delta(day1, day2, include_start=True)
-        1
-
-        As in many other methods, you can use the ``extra_holidays`` and
-        ``extra_working_days`` to exclude
-        """
-        ...
-    def export_to_ical(self, period=[2000, 2030], target_path: Incomplete | None = None):
-        """
-        Export the calendar to iCal (RFC 5545) format.
-
-        Parameters
-        ----------
-        period: [int, int]
-            start and end year (inclusive) of calendar
-            Default is [2000, 2030]
-
-        target_path: str or pathlib.Path
-            the name or path of the exported file. If this argument is missing,
-            the function will return the ical content.
-        """
-        ...
+    def get_first_weekday_after(day, weekday): ...
+    def get_working_days_delta(self, start, end, include_start: bool = False, extra_working_days=None, extra_holidays=None): ...
+    def export_to_ical(self, period=[2000, 2030], target_path=None): ...
 
 class Calendar(CoreCalendar):
     """

@@ -207,11 +207,9 @@ class SaveOptions:
         experimental_custom_gradients: bool = True,
         experimental_image_format: bool = False,
         experimental_skip_saver: bool = False,
-        experimental_sharding_callback: Incomplete | None = None,
-        extra_tags: Incomplete | None = None,
-    ) -> None:
-        """
-        Creates an object that stores options for SavedModel saving.
+        experimental_sharding_callback=None,
+        extra_tags=None,
+    ) -> None: ...
 
         Args:
           namespace_whitelist: List of strings containing op namespaces to whitelist

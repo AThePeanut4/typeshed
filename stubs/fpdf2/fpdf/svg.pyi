@@ -197,64 +197,13 @@ class SVGObject:
         ...
     def transform_to_rect_viewport(
         self, scale, width, height, align_viewbox: bool = True, ignore_svg_top_attrs: bool = False
-    ):
-        """
-        Size the converted SVG paths to an arbitrarily sized viewport.
-
-        The SVG document size can be specified relative to the rendering viewport
-        (e.g. width=50%). If the converted SVG sizes are relative units, then this
-        computes the appropriate scale transform to size the SVG to the correct
-        dimensions for a page in the current PDF document.
-
-        Args:
-            scale (Number): the scale factor from document units to PDF points.
-            width (Number): the width of the viewport to scale to in document units.
-            height (Number): the height of the viewport to scale to in document units.
-            align_viewbox (bool): if True, mimic some of the SVG alignment rules if the
-                viewbox aspect ratio does not match that of the viewport.
-            ignore_svg_top_attrs (bool): ignore <svg> top attributes like "width", "height"
-                or "preserveAspectRatio" when figuring the image dimensions.
-                Require width & height to be provided as parameters.
-
-        Returns:
-            A tuple of (width, height, `fpdf.drawing.GraphicsContext`), where width and
-            height are the resolved width and height (they may be 0. If 0, the returned
-            `fpdf.drawing.GraphicsContext` will be empty). The
-            `fpdf.drawing.GraphicsContext` contains all of the paths that were
-            converted from the SVG, scaled to the given viewport size.
-        """
-        ...
-    def draw_to_page(
-        self, pdf: FPDF, x: Incomplete | None = None, y: Incomplete | None = None, debug_stream: Incomplete | None = None
-    ) -> None:
-        """
-        Directly draw the converted SVG to the given PDF's current page.
-
-        The page viewport is used for sizing the SVG.
-
-        Args:
-            pdf (fpdf.FPDF): the document to which the converted SVG is rendered.
-            x (Number): abscissa of the converted SVG's top-left corner.
-            y (Number): ordinate of the converted SVG's top-left corner.
-            debug_stream (io.TextIO): the stream to which rendering debug info will be
-                written.
-        """
-        ...
-    def handle_defs(self, defs) -> None:
-        """Produce lookups for groups and paths inside the <defs> tag"""
-        ...
-    def build_xref(self, xref):
-        """Resolve a cross-reference to an already-seen SVG element by ID."""
-        ...
-    def build_group(self, group, pdf_group: Incomplete | None = None):
-        """Handle nested items within a group <g> tag."""
-        ...
-    def build_path(self, path):
-        """Convert an SVG <path> tag into a PDF path object."""
-        ...
-    def build_shape(self, shape):
-        """Convert an SVG shape tag into a PDF path object. Necessary to make xref (because ShapeBuilder doesn't have access to this object.)"""
-        ...
+    ): ...
+    def draw_to_page(self, pdf: FPDF, x=None, y=None, debug_stream=None) -> None: ...
+    def handle_defs(self, defs) -> None: ...
+    def build_xref(self, xref): ...
+    def build_group(self, group, pdf_group=None): ...
+    def build_path(self, path): ...
+    def build_shape(self, shape): ...
     def build_clipping_path(self, shape, clip_id): ...
     def apply_clipping_path(self, stylable, svg_element) -> None: ...
     def build_image(self, image) -> SVGImage: ...

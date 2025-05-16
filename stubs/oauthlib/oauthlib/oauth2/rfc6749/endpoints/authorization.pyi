@@ -73,7 +73,7 @@ class AuthorizationEndpoint(BaseEndpoint):
         http_method: _HTTPMethod = "GET",
         body: str | None = None,
         headers: dict[str, str] | None = None,
-        scopes: Incomplete | None = None,
+        scopes=None,
         credentials: dict[str, Incomplete] | None = None,
     ):
         """Extract response_type and route to the designated handler."""

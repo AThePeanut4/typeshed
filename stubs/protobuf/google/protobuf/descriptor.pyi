@@ -1,9 +1,3 @@
-"""
-Descriptors essentially contain exactly the information found in a .proto
-file, in types that make this information accessible in Python.
-"""
-
-from _typeshed import Incomplete
 from typing import Any
 
 from .descriptor_pb2 import (
@@ -181,60 +175,21 @@ class Descriptor(_NestedDescriptorBase):
         nested_types: list[FieldDescriptor],
         enum_types: list[EnumDescriptor],
         extensions: list[FieldDescriptor],
-        options: Incomplete | None = None,
-        serialized_options: Incomplete | None = None,
+        options=None,
+        serialized_options=None,
         is_extendable: bool | None = True,
-        extension_ranges: Incomplete | None = None,
+        extension_ranges=None,
         oneofs: list[OneofDescriptor] | None = None,
         file: FileDescriptor | None = None,
-        serialized_start: Incomplete | None = None,
-        serialized_end: Incomplete | None = None,
+        serialized_start=None,
+        serialized_end=None,
         syntax: str | None = None,
         is_map_entry=False,
-        create_key: Incomplete | None = None,
-    ):
-        """
-        Arguments to __init__() are as described in the description
-        of Descriptor fields above.
-
-        Note that filename is an obsolete argument, that is not used anymore.
-        Please use file.name to access this as an attribute.
-        """
-        ...
-    def EnumValueName(self, enum, value):
-        """
-        Returns the string name of an enum value.
-
-        This is just a small helper method to simplify a common operation.
-
-        Args:
-          enum: string name of the Enum.
-          value: int, value of the enum.
-
-        Returns:
-          string name of the enum value.
-
-        Raises:
-          KeyError if either the Enum doesn't exist or the value is not a valid
-            value for the enum.
-        """
-        ...
-    def CopyToProto(self, proto):
-        """
-        Copies this to a descriptor_pb2.DescriptorProto.
-
-        Args:
-          proto: An empty descriptor_pb2.DescriptorProto.
-        """
-        ...
-    def GetOptions(self) -> MessageOptions:
-        """
-        Retrieves descriptor options.
-
-        Returns:
-          The options set on this descriptor.
-        """
-        ...
+        create_key=None,
+    ): ...
+    def EnumValueName(self, enum, value): ...
+    def CopyToProto(self, proto): ...
+    def GetOptions(self) -> MessageOptions: ...
 
 class FieldDescriptor(DescriptorBase):
     """
@@ -615,11 +570,11 @@ class ServiceDescriptor(_NestedDescriptorBase):
         index: int,
         methods: list[MethodDescriptor],
         options: ServiceOptions | None = None,
-        serialized_options: Incomplete | None = None,
+        serialized_options=None,
         file: FileDescriptor | None = None,
-        serialized_start: Incomplete | None = None,
-        serialized_end: Incomplete | None = None,
-        create_key: Incomplete | None = None,
+        serialized_start=None,
+        serialized_end=None,
+        create_key=None,
     ): ...
     def FindMethodByName(self, name):
         """

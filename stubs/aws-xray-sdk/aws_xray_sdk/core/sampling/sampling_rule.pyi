@@ -1,18 +1,7 @@
-from _typeshed import Incomplete
-
 class SamplingRule:
     """Data model for a single centralized sampling rule definition."""
     def __init__(
-        self,
-        name,
-        priority,
-        rate,
-        reservoir_size,
-        host: Incomplete | None = None,
-        method: Incomplete | None = None,
-        path: Incomplete | None = None,
-        service: Incomplete | None = None,
-        service_type: Incomplete | None = None,
+        self, name, priority, rate, reservoir_size, host=None, method=None, path=None, service=None, service_type=None
     ) -> None: ...
     def match(self, sampling_req):
         """

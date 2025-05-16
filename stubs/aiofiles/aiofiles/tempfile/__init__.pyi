@@ -1,7 +1,6 @@
 import sys
 from _typeshed import (
     BytesPath,
-    Incomplete,
     OpenBinaryMode,
     OpenBinaryModeReading,
     OpenBinaryModeUpdating,
@@ -29,10 +28,8 @@ def TemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncTextIOWrapper]:
-    """Async open an unnamed temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
 
 # Unbuffered binary: returns a FileIO
 @overload
@@ -45,10 +42,8 @@ def TemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncFileIO]:
-    """Async open an unnamed temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncFileIO]: ...
 
 # Buffered binary reading/updating: AsyncBufferedReader
 @overload
@@ -61,10 +56,8 @@ def TemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncBufferedReader]:
-    """Async open an unnamed temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncBufferedReader]: ...
 
 # Buffered binary writing: AsyncBufferedIOBase
 @overload
@@ -77,10 +70,8 @@ def TemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncBufferedIOBase]:
-    """Async open an unnamed temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncBufferedIOBase]: ...
 
 # 3.12 added `delete_on_close`
 if sys.version_info >= (3, 12):
@@ -97,10 +88,8 @@ if sys.version_info >= (3, 12):
         delete: bool = True,
         delete_on_close: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncTextIOWrapper]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
 
     # Unbuffered binary: returns a FileIO
     @overload
@@ -115,10 +104,8 @@ if sys.version_info >= (3, 12):
         delete: bool = True,
         delete_on_close: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncFileIO]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncFileIO]: ...
 
     # Buffered binary reading/updating: AsyncBufferedReader
     @overload
@@ -133,10 +120,8 @@ if sys.version_info >= (3, 12):
         delete: bool = True,
         delete_on_close: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncBufferedReader]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncBufferedReader]: ...
 
     # Buffered binary writing: AsyncBufferedIOBase
     @overload
@@ -151,10 +136,8 @@ if sys.version_info >= (3, 12):
         delete: bool = True,
         delete_on_close: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncBufferedIOBase]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncBufferedIOBase]: ...
 
 else:
     # Text mode: always returns AsyncTextIOWrapper
@@ -169,10 +152,8 @@ else:
         dir: StrOrBytesPath | None = None,
         delete: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncTextIOWrapper]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
 
     # Unbuffered binary: returns a FileIO
     @overload
@@ -186,10 +167,8 @@ else:
         dir: StrOrBytesPath | None = None,
         delete: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncFileIO]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncFileIO]: ...
 
     # Buffered binary reading/updating: AsyncBufferedReader
     @overload
@@ -203,10 +182,8 @@ else:
         dir: StrOrBytesPath | None = None,
         delete: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncBufferedReader]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncBufferedReader]: ...
 
     # Buffered binary writing: AsyncBufferedIOBase
     @overload
@@ -220,10 +197,8 @@ else:
         dir: StrOrBytesPath | None = None,
         delete: bool = True,
         loop: AbstractEventLoop | None = None,
-        executor: Incomplete | None = None,
-    ) -> AiofilesContextManager[AsyncBufferedIOBase]:
-        """Async open a named temporary file"""
-        ...
+        executor=None,
+    ) -> AiofilesContextManager[AsyncBufferedIOBase]: ...
 
 # Text mode: always returns AsyncTextIOWrapper
 @overload
@@ -238,10 +213,8 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncTextIOWrapper]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
 @overload
 def SpooledTemporaryFile(
     max_size: int,
@@ -253,10 +226,8 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncTextIOWrapper]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
 
 # Unbuffered binary: returns a FileIO
 @overload
@@ -271,10 +242,8 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncFileIO]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncFileIO]: ...
 @overload
 def SpooledTemporaryFile(
     max_size: int,
@@ -286,10 +255,8 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncFileIO]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncFileIO]: ...
 
 # Buffered binary reading/updating: AsyncBufferedReader
 @overload
@@ -303,10 +270,8 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncBufferedReader]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncBufferedReader]: ...
 
 # Buffered binary writing: AsyncBufferedIOBase
 @overload
@@ -321,10 +286,8 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncBufferedIOBase]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncBufferedIOBase]: ...
 @overload
 def SpooledTemporaryFile(
     max_size: int,
@@ -336,30 +299,24 @@ def SpooledTemporaryFile(
     prefix: AnyStr | None = None,
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManager[AsyncBufferedIOBase]:
-    """Async open a spooled temporary file"""
-    ...
+    executor=None,
+) -> AiofilesContextManager[AsyncBufferedIOBase]: ...
 @overload
 def TemporaryDirectory(
     suffix: str | None = None,
     prefix: str | None = None,
     dir: StrPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManagerTempDir:
-    """Async open a temporary directory"""
-    ...
+    executor=None,
+) -> AiofilesContextManagerTempDir: ...
 @overload
 def TemporaryDirectory(
     suffix: bytes | None = None,
     prefix: bytes | None = None,
     dir: BytesPath | None = None,
     loop: AbstractEventLoop | None = None,
-    executor: Incomplete | None = None,
-) -> AiofilesContextManagerTempDir:
-    """Async open a temporary directory"""
-    ...
+    executor=None,
+) -> AiofilesContextManagerTempDir: ...
 
 class AiofilesContextManagerTempDir(AiofilesContextManager[AsyncTemporaryDirectory]):
     """With returns the directory location, not the object (matching sync lib)"""

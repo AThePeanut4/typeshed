@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from logging import Logger
 from traceback import StackSummary
 from typing import Any
@@ -24,66 +23,14 @@ class Entity:
     cause: Any
     subsegments: Any
     end_time: Any
-    def __init__(self, name, entity_id: Incomplete | None = None) -> None: ...
-    def close(self, end_time: Incomplete | None = None) -> None:
-        """
-        Close the trace entity by setting `end_time`
-        and flip the in progress flag to False.
-
-        :param float end_time: Epoch in seconds. If not specified
-            current time will be used.
-        """
-        ...
-    def add_subsegment(self, subsegment) -> None:
-        """Add input subsegment as a child subsegment."""
-        ...
-    def remove_subsegment(self, subsegment) -> None:
-        """Remove input subsegment from child subsegments."""
-        ...
-    def put_http_meta(self, key, value) -> None:
-        """
-        Add http related metadata.
-
-        :param str key: Currently supported keys are:
-            * url
-            * method
-            * user_agent
-            * client_ip
-            * status
-            * content_length
-        :param value: status and content_length are int and for other
-            supported keys string should be used.
-        """
-        ...
-    def put_annotation(self, key, value) -> None:
-        """
-        Annotate segment or subsegment with a key-value pair.
-        Annotations will be indexed for later search query.
-
-        :param str key: annotation key
-        :param object value: annotation value. Any type other than
-            string/number/bool will be dropped
-        """
-        ...
-    def put_metadata(self, key, value, namespace: str = "default") -> None:
-        """
-        Add metadata to segment or subsegment. Metadata is not indexed
-        but can be later retrieved by BatchGetTraces API.
-
-        :param str namespace: optional. Default namespace is `default`.
-            It must be a string and prefix `AWS.` is reserved.
-        :param str key: metadata key under specified namespace
-        :param object value: any object that can be serialized into JSON string
-        """
-        ...
-    def set_aws(self, aws_meta) -> None:
-        """
-        set aws section of the entity.
-        This method is called by global recorder and botocore patcher
-        to provide additonal information about AWS runtime.
-        It is not recommended to manually set aws section.
-        """
-        ...
+    def __init__(self, name, entity_id=None) -> None: ...
+    def close(self, end_time=None) -> None: ...
+    def add_subsegment(self, subsegment) -> None: ...
+    def remove_subsegment(self, subsegment) -> None: ...
+    def put_http_meta(self, key, value) -> None: ...
+    def put_annotation(self, key, value) -> None: ...
+    def put_metadata(self, key, value, namespace: str = "default") -> None: ...
+    def set_aws(self, aws_meta) -> None: ...
     throttle: bool
     def add_throttle_flag(self) -> None: ...
     fault: bool

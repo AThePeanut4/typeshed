@@ -83,7 +83,7 @@ class FormatError(Exception):
     """Validating a format failed."""
     message: Incomplete
     cause: Incomplete
-    def __init__(self, message, cause: Incomplete | None = None) -> None: ...
+    def __init__(self, message, cause=None) -> None: ...
 
 class ErrorTree:
     """ErrorTrees make it easier to check which validations failed."""

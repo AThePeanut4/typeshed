@@ -1,14 +1,3 @@
-"""
-pygments.formatters.html
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Formatter for HTML output.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from _typeshed import Incomplete
 from typing import Any, TypeVar
 
 from pygments.formatter import Formatter
@@ -335,15 +324,9 @@ class HtmlFormatter(Formatter[_T]):
     linespans: Any
     anchorlinenos: Any
     hl_lines: Any
-    def get_style_defs(self, arg: Incomplete | None = None):
-        """
-        Return CSS style definitions for the classes produced by the current
-        highlighting style. ``arg`` can be a string or list of selectors to
-        insert before the token type classes.
-        """
-        ...
-    def get_token_style_defs(self, arg: Incomplete | None = None): ...
-    def get_background_style_defs(self, arg: Incomplete | None = None): ...
+    def get_style_defs(self, arg=None): ...
+    def get_token_style_defs(self, arg=None): ...
+    def get_background_style_defs(self, arg=None): ...
     def get_linenos_style_defs(self): ...
     def get_css_prefix(self, arg): ...
     def wrap(self, source):

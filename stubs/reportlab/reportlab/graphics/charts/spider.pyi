@@ -45,9 +45,7 @@ class StrandLabel(SpokeLabel):
 
 class SpiderChart(PlotArea):
     def makeSwatchSample(self, rowNo, x, y, width, height): ...
-    def getSeriesName(self, i, default: Incomplete | None = None):
-        """return series name i or default"""
-        ...
+    def getSeriesName(self, i, default=None): ...
     data: Incomplete
     labels: Incomplete
     startAngle: int

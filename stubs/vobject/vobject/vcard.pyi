@@ -132,14 +132,7 @@ def splitFields(string):
     """Return a list of strings or lists from a Name or Address."""
     ...
 def toList(stringOrList): ...
-def serializeFields(obj, order: Incomplete | None = None):
-    """
-    Turn an object's fields into a ';' and ',' seperated string.
-
-    If order is None, obj should be a list, backslash escape each field and
-    return a ';' separated string.
-    """
-    ...
+def serializeFields(obj, order=None): ...
 
 NAME_ORDER: Incomplete
 ADDRESS_ORDER: Incomplete

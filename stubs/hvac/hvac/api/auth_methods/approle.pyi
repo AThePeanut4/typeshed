@@ -1,7 +1,3 @@
-"""APPROLE methods module."""
-
-from _typeshed import Incomplete
-
 from hvac.api.vault_api_base import VaultApiBase
 
 class AppRole(VaultApiBase):
@@ -12,20 +8,20 @@ class AppRole(VaultApiBase):
     def create_or_update_approle(
         self,
         role_name,
-        bind_secret_id: Incomplete | None = None,
-        secret_id_bound_cidrs: Incomplete | None = None,
-        secret_id_num_uses: Incomplete | None = None,
-        secret_id_ttl: Incomplete | None = None,
-        enable_local_secret_ids: Incomplete | None = None,
-        token_ttl: Incomplete | None = None,
-        token_max_ttl: Incomplete | None = None,
-        token_policies: Incomplete | None = None,
-        token_bound_cidrs: Incomplete | None = None,
-        token_explicit_max_ttl: Incomplete | None = None,
-        token_no_default_policy: Incomplete | None = None,
-        token_num_uses: Incomplete | None = None,
-        token_period: Incomplete | None = None,
-        token_type: Incomplete | None = None,
+        bind_secret_id=None,
+        secret_id_bound_cidrs=None,
+        secret_id_num_uses=None,
+        secret_id_ttl=None,
+        enable_local_secret_ids=None,
+        token_ttl=None,
+        token_max_ttl=None,
+        token_policies=None,
+        token_bound_cidrs=None,
+        token_explicit_max_ttl=None,
+        token_no_default_policy=None,
+        token_num_uses=None,
+        token_period=None,
+        token_type=None,
         mount_point="approle",
     ):
         """
@@ -150,168 +146,14 @@ class AppRole(VaultApiBase):
         """
         ...
     def generate_secret_id(
-        self,
-        role_name,
-        metadata: Incomplete | None = None,
-        cidr_list: Incomplete | None = None,
-        token_bound_cidrs: Incomplete | None = None,
-        mount_point="approle",
-        wrap_ttl: Incomplete | None = None,
-    ):
-        """
-        Generates and issues a new Secret ID on a role in the auth method.
-
-        Supported methods:
-            POST: /auth/{mount_point}/role/{role_name}/secret-id. Produces: 200 application/json
-
-        :param role_name: The name for the role.
-        :type role_name: str | unicode
-        :param metadata: Metadata to be tied to the Secret ID.
-        :type metadata: dict
-        :param cidr_list: Blocks of IP addresses which can perform login operations.
-        :type cidr_list: list
-        :param token_bound_cidrs: Blocks of IP addresses which can authenticate successfully.
-        :type token_bound_cidrs: list
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        :param wrap_ttl: Returns the request as a response-wrapping token.
-            Can be either an integer number of seconds or a string duration of seconds (`15s`), minutes (`20m`), or hours (`25h`).
-        :type wrap_ttl: int | str
-        :return: The JSON response of the read_role_id request.
-        :rtype: dict
-        """
-        ...
+        self, role_name, metadata=None, cidr_list=None, token_bound_cidrs=None, mount_point="approle", wrap_ttl=None
+    ): ...
     def create_custom_secret_id(
-        self,
-        role_name,
-        secret_id,
-        metadata: Incomplete | None = None,
-        cidr_list: Incomplete | None = None,
-        token_bound_cidrs: Incomplete | None = None,
-        mount_point="approle",
-        wrap_ttl: Incomplete | None = None,
-    ):
-        """
-        Generates and issues a new Secret ID on a role in the auth method.
-
-        Supported methods:
-            POST: /auth/{mount_point}/role/{role_name}/custom-secret-id. Produces: 200 application/json
-
-        :param role_name: The name for the role.
-        :type role_name: str | unicode
-        :param secret_id: The Secret ID to read.
-        :type secret_id: str | unicode
-        :param metadata: Metadata to be tied to the Secret ID.
-        :type metadata: dict
-        :param cidr_list: Blocks of IP addresses which can perform login operations.
-        :type cidr_list: list
-        :param token_bound_cidrs: Blocks of IP addresses which can authenticate successfully.
-        :type token_bound_cidrs: list
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        :param wrap_ttl: Returns the request as a response-wrapping token.
-            Can be either an integer number of seconds or a string duration of seconds (`15s`), minutes (`20m`), or hours (`25h`).
-        :type wrap_ttl: int | str
-        :return: The JSON response of the read_role_id request.
-        :rtype: dict
-        """
-        ...
-    def read_secret_id(self, role_name, secret_id, mount_point="approle"):
-        """
-        Read the properties of a Secret ID for a role in the auth method.
-
-        Supported methods:
-            POST: /auth/{mount_point}/role/{role_name}/secret-id/lookup. Produces: 200 application/json
-
-        :param role_name: The name for the role
-        :type role_name: str | unicode
-        :param secret_id: The Secret ID to read.
-        :type secret_id: str | unicode
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        :return: The JSON response of the read_role_id request.
-        :rtype: dict
-        """
-        ...
-    def destroy_secret_id(self, role_name, secret_id, mount_point="approle"):
-        """
-        Destroys a Secret ID for a role in the auth method.
-
-        Supported methods:
-            POST: /auth/{mount_point}/role/{role_name}/secret-id/destroy. Produces 204 (empty body)
-
-        :param role_name: The name for the role
-        :type role_name: str | unicode
-        :param secret_id: The Secret ID to read.
-        :type secret_id: str | unicode
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        """
-        ...
-    def list_secret_id_accessors(self, role_name, mount_point="approle"):
-        """
-        Lists accessors of all issued Secret IDs for a role in the auth method.
-
-        Supported methods:
-            LIST: /auth/{mount_point}/role/{role_name}/secret-id. Produces: 200 application/json
-
-        :param role_name: The name for the role
-        :type role_name: str | unicode
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        :return: The JSON response of the read_role_id request.
-        :rtype: dict
-        """
-        ...
-    def read_secret_id_accessor(self, role_name, secret_id_accessor, mount_point="approle"):
-        """
-        Read the properties of a Secret ID for a role in the auth method.
-
-        Supported methods:
-            POST: /auth/{mount_point}/role/{role_name}/secret-id-accessor/lookup. Produces: 200 application/json
-
-        :param role_name: The name for the role
-        :type role_name: str | unicode
-        :param secret_id_accessor: The accessor for the Secret ID to read.
-        :type secret_id_accessor: str | unicode
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        :return: The JSON response of the read_role_id request.
-        :rtype: dict
-        """
-        ...
-    def destroy_secret_id_accessor(self, role_name, secret_id_accessor, mount_point="approle"):
-        """
-        Destroys a Secret ID for a role in the auth method.
-
-        Supported methods:
-            POST: /auth/{mount_point}/role/{role_name}/secret-id-accessor/destroy. Produces: 204 (empty body)
-
-        :param role_name: The name for the role
-        :type role_name: str | unicode
-        :param secret_id_accessor: The accessor for the Secret ID to read.
-        :type secret_id_accessor: str | unicode
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        """
-        ...
-    def login(self, role_id, secret_id: Incomplete | None = None, use_token: bool = True, mount_point="approle"):
-        """
-        Login with APPROLE credentials.
-
-        Supported methods:
-            POST: /auth/{mount_point}/login. Produces: 200 application/json
-
-        :param role_id: Role ID of the role.
-        :type role_id: str | unicode
-        :param secret_id: Secret ID of the role.
-        :type secret_id: str | unicode
-        :param use_token: if True, uses the token in the response received from the auth request to set the "token"
-            attribute on the the :py:meth:`hvac.adapters.Adapter` instance under the _adapter Client attribute.
-        :type use_token: bool
-        :param mount_point: The "path" the method/backend was mounted on.
-        :type mount_point: str | unicode
-        :return: The JSON response of the read_role_id request.
-        :rtype: dict
-        """
-        ...
+        self, role_name, secret_id, metadata=None, cidr_list=None, token_bound_cidrs=None, mount_point="approle", wrap_ttl=None
+    ): ...
+    def read_secret_id(self, role_name, secret_id, mount_point="approle"): ...
+    def destroy_secret_id(self, role_name, secret_id, mount_point="approle"): ...
+    def list_secret_id_accessors(self, role_name, mount_point="approle"): ...
+    def read_secret_id_accessor(self, role_name, secret_id_accessor, mount_point="approle"): ...
+    def destroy_secret_id_accessor(self, role_name, secret_id_accessor, mount_point="approle"): ...
+    def login(self, role_id, secret_id=None, use_token: bool = True, mount_point="approle"): ...

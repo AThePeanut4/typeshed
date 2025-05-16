@@ -298,7 +298,7 @@ class KeepTogether(_ContainerSpace, Flowable):
     splitAtTop: bool
     # TODO: Consider using Sequence[Flowable] for covariance, even if reportlab
     #       only supports list/tuple
-    def __init__(self, flowables: _FlowableSublist | None, maxHeight: Incomplete | None = None) -> None: ...
+    def __init__(self, flowables: _FlowableSublist | None, maxHeight=None) -> None: ...
 
 class KeepTogetherSplitAtTop(KeepTogether):
     """
@@ -362,7 +362,7 @@ class HRFlowable(Flowable):
         spaceAfter: float = 1,
         hAlign: _HAlignment = "CENTER",
         vAlign: _VAlignment = "BOTTOM",
-        dash: Incomplete | None = None,
+        dash=None,
     ) -> None: ...
     def draw(self) -> None: ...
 
@@ -465,7 +465,7 @@ class BalancedColumns(_FindSplitterMixin, NullDraw):
         needed: float = 72,
         spaceBefore: float = 0,
         spaceAfter: float = 0,
-        showBoundary: Incomplete | None = None,
+        showBoundary=None,
         leftPadding: float | None = None,
         innerPadding: float | None = None,
         rightPadding: float | None = None,
@@ -544,7 +544,7 @@ class BulletDrawer:
         bulletOffsetY: int = 0,
         bulletDedent: int = 0,
         bulletDir: str = "ltr",
-        bulletFormat: Incomplete | None = None,
+        bulletFormat=None,
     ) -> None: ...
     def drawOn(self, indenter: DDIndenter, canv: Canvas, x: float, y: float) -> None: ...
 
@@ -557,7 +557,7 @@ class LIIndenter(DDIndenter):
         flowable: Flowable,
         leftIndent: float = 0,
         rightIndent: float = 0,
-        bullet: Incomplete | None = None,
+        bullet=None,
         spaceBefore: float | None = None,
         spaceAfter: float | None = None,
     ) -> None: ...
@@ -571,9 +571,7 @@ class ListFlowable(_Container, Flowable):
     style: ListStyle
     # NOTE: style has to be a ListStyle, but this will be annoying with sheet["ul"]
     # TODO: Use Unpack for kwds with the ListStyle properties + spaceBefore/spaceAfter
-    def __init__(
-        self, flowables: Iterable[_NestedFlowable], start: Incomplete | None = None, style: PropertySet | None = None, **kwds
-    ) -> None: ...
+    def __init__(self, flowables: Iterable[_NestedFlowable], start=None, style: PropertySet | None = None, **kwds) -> None: ...
 
 class TopPadder(Flowable):
     """

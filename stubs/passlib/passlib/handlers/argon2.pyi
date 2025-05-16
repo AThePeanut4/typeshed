@@ -1,20 +1,3 @@
-"""
-passlib.handlers.argon2 -- argon2 password hash wrapper
-
-References
-==========
-* argon2
-    - home: https://github.com/P-H-C/phc-winner-argon2
-    - whitepaper: https://github.com/P-H-C/phc-winner-argon2/blob/master/argon2-specs.pdf
-* argon2 cffi wrapper
-    - pypi: https://pypi.python.org/pypi/argon2_cffi
-    - home: https://github.com/hynek/argon2_cffi
-* argon2 pure python
-    - pypi: https://pypi.python.org/pypi/argon2pure
-    - home: https://github.com/bwesterb/argon2pure
-"""
-
-from _typeshed import Incomplete
 from typing import Any, ClassVar
 
 import passlib.utils.handlers as uh
@@ -76,29 +59,21 @@ class _Argon2Common(  # type: ignore[misc]
     @classmethod
     def using(  # type: ignore[override]
         cls,
-        type: Incomplete | None = None,
-        memory_cost: Incomplete | None = None,
-        salt_len: Incomplete | None = None,
-        time_cost: Incomplete | None = None,
-        digest_size: Incomplete | None = None,
-        checksum_size: Incomplete | None = None,
-        hash_len: Incomplete | None = None,
-        max_threads: Incomplete | None = None,
+        type=None,
+        memory_cost=None,
+        salt_len=None,
+        time_cost=None,
+        digest_size=None,
+        checksum_size=None,
+        hash_len=None,
+        max_threads=None,
         **kwds,
     ): ...
     @classmethod
     def identify(cls, hash): ...
     @classmethod
     def from_string(cls, hash): ...
-    def __init__(
-        self,
-        type: Incomplete | None = None,
-        type_d: bool = False,
-        version: Incomplete | None = None,
-        memory_cost: Incomplete | None = None,
-        data: Incomplete | None = None,
-        **kwds,
-    ) -> None: ...
+    def __init__(self, type=None, type_d: bool = False, version=None, memory_cost=None, data=None, **kwds) -> None: ...
 
 class _NoBackend(_Argon2Common):
     """

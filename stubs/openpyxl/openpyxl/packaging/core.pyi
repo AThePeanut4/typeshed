@@ -54,7 +54,7 @@ class DocumentProperties(Serialisable):
         contentStatus: object = None,
         keywords: object = None,
         lastModifiedBy: object = None,
-        lastPrinted: Incomplete | None = None,
+        lastPrinted=None,
         revision: object = None,
         version: object = None,
         created=None,

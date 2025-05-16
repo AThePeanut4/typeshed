@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from types import TracebackType
 from typing import Any
 from typing_extensions import Self
@@ -190,18 +189,6 @@ class Span:
         ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
-    ) -> None:
-        """
-        Ends context manager and calls finish() on the :class:`Span`.
-
-        If exception has occurred during execution, it is automatically logged
-        and added as a tag. :attr:`~operation.ext.tags.ERROR` will also be set
-        to `True`.
-        """
-        ...
-    def log_event(self, event: Any, payload: Incomplete | None = None) -> Self:
-        """DEPRECATED"""
-        ...
-    def log(self, **kwargs: Any) -> Self:
-        """DEPRECATED"""
-        ...
+    ) -> None: ...
+    def log_event(self, event: Any, payload=None) -> Self: ...
+    def log(self, **kwargs: Any) -> Self: ...

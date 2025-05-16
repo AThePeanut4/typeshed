@@ -35,7 +35,7 @@ class PrintPageSetup(Serialisable):
     id: Incomplete
     def __init__(
         self,
-        worksheet: Incomplete | None = None,
+        worksheet=None,
         orientation: _PrintPageSetupOrientation | Literal["none"] | None = None,
         paperSize: ConvertibleToInt | None = None,
         scale: ConvertibleToInt | None = None,
@@ -43,8 +43,8 @@ class PrintPageSetup(Serialisable):
         fitToWidth: ConvertibleToInt | None = None,
         firstPageNumber: ConvertibleToInt | None = None,
         useFirstPageNumber: _ConvertibleToBool | None = None,
-        paperHeight: Incomplete | None = None,
-        paperWidth: Incomplete | None = None,
+        paperHeight=None,
+        paperWidth=None,
         pageOrder: _PrintPageSetupPageOrder | Literal["none"] | None = None,
         usePrinterDefaults: _ConvertibleToBool | None = None,
         blackAndWhite: _ConvertibleToBool | None = None,
@@ -54,7 +54,7 @@ class PrintPageSetup(Serialisable):
         horizontalDpi: ConvertibleToInt | None = None,
         verticalDpi: ConvertibleToInt | None = None,
         copies: ConvertibleToInt | None = None,
-        id: Incomplete | None = None,
+        id=None,
     ) -> None: ...
     def __bool__(self) -> bool: ...
     @property

@@ -1,6 +1,3 @@
-""""""
-
-from _typeshed import Incomplete
 from typing import Any
 
 class EntryState:
@@ -73,17 +70,11 @@ class EntryBase:
         raw: bool = False,
         indent: int = 4,
         sort: bool = True,
-        stream: Incomplete | None = None,
+        stream=None,
         checked_attributes: bool = True,
         include_empty: bool = True,
     ): ...
-    def entry_to_ldif(
-        self,
-        all_base64: bool = False,
-        line_separator: Incomplete | None = None,
-        sort_order: Incomplete | None = None,
-        stream: Incomplete | None = None,
-    ): ...
+    def entry_to_ldif(self, all_base64: bool = False, line_separator=None, sort_order=None, stream=None): ...
 
 class Entry(EntryBase):
     """
@@ -99,12 +90,7 @@ class Entry(EntryBase):
       _raw_attribute() methods
     """
     def entry_writable(
-        self,
-        object_def: Incomplete | None = None,
-        writer_cursor: Incomplete | None = None,
-        attributes: Incomplete | None = None,
-        custom_validator: Incomplete | None = None,
-        auxiliary_class: Incomplete | None = None,
+        self, object_def=None, writer_cursor=None, attributes=None, custom_validator=None, auxiliary_class=None
     ): ...
 
 class WritableEntry(EntryBase):
@@ -113,7 +99,7 @@ class WritableEntry(EntryBase):
     def __getattr__(self, item: str): ...
     @property
     def entry_virtual_attributes(self): ...
-    def entry_commit_changes(self, refresh: bool = True, controls: Incomplete | None = None, clear_history: bool = True): ...
+    def entry_commit_changes(self, refresh: bool = True, controls=None, clear_history: bool = True): ...
     def entry_discard_changes(self) -> None: ...
     def entry_delete(self) -> None: ...
     def entry_refresh(self, tries: int = 4, seconds: int = 2):

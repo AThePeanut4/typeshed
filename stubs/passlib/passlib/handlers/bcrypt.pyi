@@ -1,15 +1,3 @@
-"""
-passlib.bcrypt -- implementation of OpenBSD's BCrypt algorithm.
-
-TODO:
-
-* support 2x and altered-2a hashes?
-  http://www.openwall.com/lists/oss-security/2011/06/27/9
-
-* deal with lack of PY3-compatibile c-ext implementation
-"""
-
-from _typeshed import Incomplete
 from typing import Any, ClassVar
 
 import passlib.utils.handlers as uh
@@ -174,12 +162,12 @@ class bcrypt_sha256(_wrapped_bcrypt):
     default_ident: ClassVar[str]
     version: ClassVar[int]
     @classmethod
-    def using(cls, version: Incomplete | None = None, **kwds): ...  # type: ignore[override]
+    def using(cls, version=None, **kwds): ...  # type: ignore[override]
     prefix: Any
     @classmethod
     def identify(cls, hash): ...
     @classmethod
     def from_string(cls, hash): ...
-    def __init__(self, version: Incomplete | None = None, **kwds) -> None: ...
+    def __init__(self, version=None, **kwds) -> None: ...
 
 __all__ = ["bcrypt"]

@@ -1,7 +1,3 @@
-"""Database methods module."""
-
-from _typeshed import Incomplete
-
 from hvac.api.vault_api_base import VaultApiBase
 
 DEFAULT_MOUNT_POINT: str
@@ -16,9 +12,9 @@ class Database(VaultApiBase):
         self,
         name,
         plugin_name,
-        verify_connection: Incomplete | None = None,
-        allowed_roles: Incomplete | None = None,
-        root_rotation_statements: Incomplete | None = None,
+        verify_connection=None,
+        allowed_roles=None,
+        root_rotation_statements=None,
         mount_point="database",
         *args,
         **kwargs,
@@ -101,11 +97,11 @@ class Database(VaultApiBase):
         name,
         db_name,
         creation_statements,
-        default_ttl: Incomplete | None = None,
-        max_ttl: Incomplete | None = None,
-        revocation_statements: Incomplete | None = None,
-        rollback_statements: Incomplete | None = None,
-        renew_statements: Incomplete | None = None,
+        default_ttl=None,
+        max_ttl=None,
+        revocation_statements=None,
+        rollback_statements=None,
+        renew_statements=None,
         mount_point="database",
     ):
         """

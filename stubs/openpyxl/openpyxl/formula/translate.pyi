@@ -54,21 +54,5 @@ class Translator:
         """Splits out the worksheet reference, if any, from a range reference."""
         ...
     @classmethod
-    def translate_range(cls, range_str, rdelta, cdelta):
-        """
-        Translate an A1-style range reference to the destination cell.
-
-        `rdelta`: the row offset to add to the range
-        `cdelta`: the column offset to add to the range
-        `range_str`: an A1-style reference to a range. Potentially includes
-                     the worksheet reference. Could also be a named range.
-        """
-        ...
-    def translate_formula(self, dest: Incomplete | None = None, row_delta: int = 0, col_delta: int = 0):
-        """
-        Convert the formula into A1 notation, or as row and column coordinates
-
-        The formula is converted into A1 assuming it is assigned to the cell
-        whose address is `dest` (no worksheet name).
-        """
-        ...
+    def translate_range(cls, range_str, rdelta, cdelta): ...
+    def translate_formula(self, dest=None, row_delta: int = 0, col_delta: int = 0): ...

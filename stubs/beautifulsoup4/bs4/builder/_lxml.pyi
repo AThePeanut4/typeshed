@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from typing import Any
 
 from bs4.builder import HTMLTreeBuilder, TreeBuilder
@@ -41,41 +40,10 @@ class LXMLTreeBuilderForXML(TreeBuilder):
     empty_element_tags: Any
     soup: Any
     nsmaps: Any
-    def __init__(self, parser: Incomplete | None = None, empty_element_tags: Incomplete | None = None, **kwargs) -> None: ...
+    def __init__(self, parser=None, empty_element_tags=None, **kwargs) -> None: ...
     def prepare_markup(  # type: ignore[override]  # the order of the parameters is different
-        self,
-        markup,
-        user_specified_encoding: Incomplete | None = None,
-        exclude_encodings: Incomplete | None = None,
-        document_declared_encoding: Incomplete | None = None,
-    ) -> None:
-        """
-        Run any preliminary steps necessary to make incoming markup
-        acceptable to the parser.
-
-        lxml really wants to get a bytestring and convert it to
-        Unicode itself. So instead of using UnicodeDammit to convert
-        the bytestring to Unicode using different encodings, this
-        implementation uses EncodingDetector to iterate over the
-        encodings, and tell lxml to try to parse the document as each
-        one in turn.
-
-        :param markup: Some markup -- hopefully a bytestring.
-        :param user_specified_encoding: The user asked to try this encoding.
-        :param document_declared_encoding: The markup itself claims to be
-            in this encoding.
-        :param exclude_encodings: The user asked _not_ to try any of
-            these encodings.
-
-        :yield: A series of 4-tuples:
-         (markup, encoding, declared encoding,
-          has undergone character replacement)
-
-         Each 4-tuple represents a strategy for converting the
-         document to Unicode and parsing it. Each strategy will be tried 
-         in turn.
-        """
-        ...
+        self, markup, user_specified_encoding=None, exclude_encodings=None, document_declared_encoding=None
+    ) -> None: ...
     parser: Any
     def feed(self, markup) -> None: ...
     def close(self) -> None: ...

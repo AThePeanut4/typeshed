@@ -37,103 +37,15 @@ class URLParseError(ValueError):
 DEFAULT_ENCODING: str
 
 def to_unicode(obj: object) -> str: ...
-def find_all_links(text, with_text: bool = False, default_scheme: str = "https", schemes=()):
-    """
-    This function uses heuristics to searches plain text for strings
-    that look like URLs, returning a :class:`list` of :class:`URL`
-    objects. It supports limiting the accepted schemes, and returning
-    interleaved text as well.
-
-    >>> find_all_links('Visit https://boltons.rtfd.org!')
-    [URL(u'https://boltons.rtfd.org')]
-    >>> find_all_links('Visit https://boltons.rtfd.org!', with_text=True)
-    [u'Visit ', URL(u'https://boltons.rtfd.org'), u'!']
-
-    Args:
-       text (str): The text to search.
-
-       with_text (bool): Whether or not to interleave plaintext blocks
-          with the returned URL objects. Having all tokens can be
-          useful for transforming the text, e.g., replacing links with
-          HTML equivalents. Defaults to ``False``.
-
-       default_scheme (str): Many URLs are written without the scheme
-          component. This function can match a reasonable subset of
-          those, provided *default_scheme* is set to a string. Set to
-          ``False`` to disable matching scheme-less URLs. Defaults to
-          ``'https'``.
-
-       schemes (list): A list of strings that a URL's scheme must
-          match in order to be included in the results. Defaults to
-          empty, which matches all schemes.
-
-    .. note:: Currently this function does not support finding IPv6
-      addresses or URLs with netloc-less schemes, like mailto.
-    """
-    ...
-def quote_path_part(text, full_quote: bool = True):
-    """Percent-encode a single segment of a URL path."""
-    ...
-def quote_query_part(text, full_quote: bool = True):
-    """Percent-encode a single query string key or value."""
-    ...
-def quote_fragment_part(text, full_quote: bool = True):
-    """
-    Quote the fragment part of the URL. Fragments don't have
-    subdelimiters, so the whole URL fragment can be passed.
-    """
-    ...
-def quote_userinfo_part(text, full_quote: bool = True):
-    """
-    Quote special characters in either the username or password
-    section of the URL. Note that userinfo in URLs is considered
-    deprecated in many circles (especially browsers), and support for
-    percent-encoded userinfo can be spotty.
-    """
-    ...
-def unquote(string, encoding: str = "utf-8", errors: str = "replace"):
-    """
-    Percent-decode a string, by replacing %xx escapes with their
-    single-character equivalent. The optional *encoding* and *errors*
-    parameters specify how to decode percent-encoded sequences into
-    Unicode characters, as accepted by the :meth:`bytes.decode()` method.  By
-    default, percent-encoded sequences are decoded with UTF-8, and
-    invalid sequences are replaced by a placeholder character.
-
-    >>> unquote(u'abc%20def')
-    u'abc def'
-    """
-    ...
-def unquote_to_bytes(string):
-    """unquote_to_bytes('abc%20def') -> b'abc def'."""
-    ...
-def register_scheme(text, uses_netloc: Incomplete | None = None, default_port: Incomplete | None = None) -> None:
-    """
-    Registers new scheme information, resulting in correct port and
-    slash behavior from the URL object. There are dozens of standard
-    schemes preregistered, so this function is mostly meant for
-    proprietary internal customizations or stopgaps on missing
-    standards information. If a scheme seems to be missing, please
-    `file an issue`_!
-
-    Args:
-        text (str): Text representing the scheme.
-           (the 'http' in 'http://hatnote.com')
-        uses_netloc (bool): Does the scheme support specifying a
-           network host? For instance, "http" does, "mailto" does not.
-        default_port (int): The default port, if any, for netloc-using
-           schemes.
-
-    .. _file an issue: https://github.com/mahmoud/boltons/issues
-    """
-    ...
-def resolve_path_parts(path_parts):
-    """
-    Normalize the URL path by resolving segments of '.' and '..',
-    resulting in a dot-free path.  See RFC 3986 section 5.2.4, Remove
-    Dot Segments.
-    """
-    ...
+def find_all_links(text, with_text: bool = False, default_scheme: str = "https", schemes=()): ...
+def quote_path_part(text, full_quote: bool = True): ...
+def quote_query_part(text, full_quote: bool = True): ...
+def quote_fragment_part(text, full_quote: bool = True): ...
+def quote_userinfo_part(text, full_quote: bool = True): ...
+def unquote(string, encoding: str = "utf-8", errors: str = "replace"): ...
+def unquote_to_bytes(string): ...
+def register_scheme(text, uses_netloc=None, default_port=None) -> None: ...
+def resolve_path_parts(path_parts): ...
 
 class cachedproperty:
     """
@@ -149,7 +61,7 @@ class cachedproperty:
     __doc__: Incomplete
     func: Incomplete
     def __init__(self, func) -> None: ...
-    def __get__(self, obj, objtype: Incomplete | None = None): ...
+    def __get__(self, obj, objtype=None): ...
 
 class URL:
     r"""
@@ -213,39 +125,8 @@ class URL:
     def __init__(self, url: str = "") -> None: ...
     @classmethod
     def from_parts(
-        cls,
-        scheme: Incomplete | None = None,
-        host: Incomplete | None = None,
-        path_parts=(),
-        query_params=(),
-        fragment: str = "",
-        port: Incomplete | None = None,
-        username: Incomplete | None = None,
-        password: Incomplete | None = None,
-    ):
-        """
-        Build a new URL from parts. Note that the respective arguments are
-        not in the order they would appear in a URL:
-
-        Args:
-           scheme (str): The scheme of a URL, e.g., 'http'
-           host (str): The host string, e.g., 'hatnote.com'
-           path_parts (tuple): The individual text segments of the
-             path, e.g., ('post', '123')
-           query_params (dict): An OMD, dict, or list of (key, value)
-             pairs representing the keys and values of the URL's query
-             parameters.
-           fragment (str): The fragment of the URL, e.g., 'anchor1'
-           port (int): The integer port of URL, automatic defaults are
-             available for registered schemes.
-           username (str): The username for the userinfo part of the URL.
-           password (str): The password for the userinfo part of the URL.
-
-        Note that this method does relatively little
-        validation. :meth:`URL.to_text()` should be used to check if
-        any errors are produced while composing the final textual URL.
-        """
-        ...
+        cls, scheme=None, host=None, path_parts=(), query_params=(), fragment: str = "", port=None, username=None, password=None
+    ): ...
     query_params: Incomplete
     qp: Incomplete
     @property
