@@ -78,17 +78,215 @@ class SwarmApiMixin:
         subnet_size=None,
         data_path_addr=None,
         data_path_port=None,
-    ): ...
-    def inspect_swarm(self): ...
-    def inspect_node(self, node_id): ...
+    ):
+        """
+        Initialize a new Swarm using the current connected engine as the first
+        node.
+
+        Args:
+            advertise_addr (string): Externally reachable address advertised
+                to other nodes. This can either be an address/port combination
+                in the form ``192.168.1.1:4567``, or an interface followed by a
+                port number, like ``eth0:4567``. If the port number is omitted,
+                the port number from the listen address is used. If
+                ``advertise_addr`` is not specified, it will be automatically
+                detected when possible. Default: None
+            listen_addr (string): Listen address used for inter-manager
+                communication, as well as determining the networking interface
+                used for the VXLAN Tunnel Endpoint (VTEP). This can either be
+                an address/port combination in the form ``192.168.1.1:4567``,
+                or an interface followed by a port number, like ``eth0:4567``.
+                If the port number is omitted, the default swarm listening port
+                is used. Default: '0.0.0.0:2377'
+            force_new_cluster (bool): Force creating a new Swarm, even if
+                already part of one. Default: False
+            swarm_spec (dict): Configuration settings of the new Swarm. Use
+                ``APIClient.create_swarm_spec`` to generate a valid
+                configuration. Default: None
+            default_addr_pool (list of strings): Default Address Pool specifies
+                default subnet pools for global scope networks. Each pool
+                should be specified as a CIDR block, like '10.0.0.0/8'.
+                Default: None
+            subnet_size (int): SubnetSize specifies the subnet size of the
+                networks created from the default subnet pool. Default: None
+            data_path_addr (string): Address or interface to use for data path
+                traffic. For example, 192.168.1.1, or an interface, like eth0.
+            data_path_port (int): Port number to use for data path traffic.
+                Acceptable port range is 1024 to 49151. If set to ``None`` or
+                0, the default port 4789 will be used. Default: None
+
+        Returns:
+            (str): The ID of the created node.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def inspect_swarm(self):
+        """
+        Retrieve low-level information about the current swarm.
+
+        Returns:
+            A dictionary containing data about the swarm.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def inspect_node(self, node_id):
+        """
+        Retrieve low-level information about a swarm node
+
+        Args:
+            node_id (string): ID of the node to be inspected.
+
+        Returns:
+            A dictionary containing data about this node.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
     def join_swarm(
         self, remote_addrs, join_token, listen_addr: str = "0.0.0.0:2377", advertise_addr=None, data_path_addr=None
-    ): ...
-    def leave_swarm(self, force: bool = False): ...
-    def nodes(self, filters=None): ...
-    def remove_node(self, node_id, force: bool = False): ...
-    def unlock_swarm(self, key): ...
-    def update_node(self, node_id, version, node_spec=None): ...
+    ):
+        """
+        Make this Engine join a swarm that has already been created.
+
+        Args:
+            remote_addrs (:py:class:`list`): Addresses of one or more manager
+                nodes already participating in the Swarm to join.
+            join_token (string): Secret token for joining this Swarm.
+            listen_addr (string): Listen address used for inter-manager
+                communication if the node gets promoted to manager, as well as
+                determining the networking interface used for the VXLAN Tunnel
+                Endpoint (VTEP). Default: ``'0.0.0.0:2377``
+            advertise_addr (string): Externally reachable address advertised
+                to other nodes. This can either be an address/port combination
+                in the form ``192.168.1.1:4567``, or an interface followed by a
+                port number, like ``eth0:4567``. If the port number is omitted,
+                the port number from the listen address is used. If
+                AdvertiseAddr is not specified, it will be automatically
+                detected when possible. Default: ``None``
+            data_path_addr (string): Address or interface to use for data path
+                traffic. For example, 192.168.1.1, or an interface, like eth0.
+
+        Returns:
+            ``True`` if the request went through.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def leave_swarm(self, force: bool = False):
+        """
+        Leave a swarm.
+
+        Args:
+            force (bool): Leave the swarm even if this node is a manager.
+                Default: ``False``
+
+        Returns:
+            ``True`` if the request went through.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def nodes(self, filters=None):
+        """
+        List swarm nodes.
+
+        Args:
+            filters (dict): Filters to process on the nodes list. Valid
+                filters: ``id``, ``name``, ``membership`` and ``role``.
+                Default: ``None``
+
+        Returns:
+            A list of dictionaries containing data about each swarm node.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def remove_node(self, node_id, force: bool = False):
+        """
+        Remove a node from the swarm.
+
+        Args:
+            node_id (string): ID of the node to be removed.
+            force (bool): Force remove an active node. Default: `False`
+
+        Raises:
+            :py:class:`docker.errors.NotFound`
+                If the node referenced doesn't exist in the swarm.
+
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        Returns:
+            `True` if the request was successful.
+        """
+        ...
+    def unlock_swarm(self, key):
+        """
+        Unlock a locked swarm.
+
+        Args:
+            key (string): The unlock key as provided by
+                :py:meth:`get_unlock_key`
+
+        Raises:
+            :py:class:`docker.errors.InvalidArgument`
+                If the key argument is in an incompatible format
+
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+
+        Returns:
+            `True` if the request was successful.
+
+        Example:
+
+            >>> key = client.api.get_unlock_key()
+            >>> client.unlock_swarm(key)
+        """
+        ...
+    def update_node(self, node_id, version, node_spec=None):
+        """
+        Update the node's configuration
+
+        Args:
+
+            node_id (string): ID of the node to be updated.
+            version (int): The version number of the node object being
+                updated. This is required to avoid conflicting writes.
+            node_spec (dict): Configuration settings to update. Any values
+                not provided will be removed. Default: ``None``
+
+        Returns:
+            `True` if the request went through.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+
+        Example:
+
+            >>> node_spec = {'Availability': 'active',
+                         'Name': 'node-name',
+                         'Role': 'manager',
+                         'Labels': {'foo': 'bar'}
+                        }
+            >>> client.api.update_node(node_id='24ifsmvkjbyhk', version=8,
+                node_spec=node_spec)
+        """
+        ...
     def update_swarm(
         self,
         version,

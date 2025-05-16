@@ -159,7 +159,38 @@ class AbstractIOServices(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
         """
         ...
     @abc.abstractmethod
-    def create_streaming_connection(self, protocol_factory, sock, on_done, ssl_context=None, server_hostname=None): ...
+    def create_streaming_connection(self, protocol_factory, sock, on_done, ssl_context=None, server_hostname=None):
+        """
+        Perform SSL session establishment, if requested, on the already-
+        connected socket and link the streaming transport/protocol pair.
+
+        NOTE: This method takes ownership of the socket.
+
+        :param callable protocol_factory: called without args, returns an
+            instance with the `AbstractStreamProtocol` interface. The protocol's
+            `connection_made(transport)` method will be called to link it to
+            the transport after remaining connection activity (e.g., SSL session
+            establishment), if any, is completed successfully.
+        :param socket.socket sock: Already-connected, non-blocking
+            `socket.SOCK_STREAM` socket to be used by the transport. We take
+            ownership of this socket.
+        :param callable on_done: User callback
+            `on_done(BaseException | (transport, protocol))` to be notified when
+            the asynchronous operation completes. An exception arg indicates
+            failure (check for `BaseException`); otherwise the two-tuple will
+            contain the linked transport/protocol pair having
+            AbstractStreamTransport and AbstractStreamProtocol interfaces
+            respectively.
+        :param None | ssl.SSLContext ssl_context: if None, this will proceed as
+            a plaintext connection; otherwise, if not None, SSL session
+            establishment will be performed prior to linking the transport and
+            protocol.
+        :param str | None server_hostname: For use during SSL session
+            establishment to match against the target server's certificate. The
+            value `None` disables this check (which is a huge security risk)
+        :rtype: AbstractIOReference
+        """
+        ...
 
 class AbstractFileDescriptorServices(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
     """

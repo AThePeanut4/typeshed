@@ -237,9 +237,29 @@ class words(Future):
     def get(self): ...
 
 class RegexLexerMeta(LexerMeta):
-    def process_tokendef(cls, name, tokendefs=None): ...
-    def get_tokendefs(cls): ...
-    def __call__(cls, *args, **kwds): ...
+    """
+    Metaclass for RegexLexer, creates the self._tokens attribute from
+    self.tokens on the first instantiation.
+    """
+    def process_tokendef(cls, name, tokendefs=None):
+        """Preprocess a dictionary of token definitions."""
+        ...
+    def get_tokendefs(cls):
+        """
+        Merge tokens from superclasses in MRO order, returning a single tokendef
+        dictionary.
+
+        Any state that is not defined by a subclass will be inherited
+        automatically.  States that *are* defined by subclasses will, by
+        default, override that state in the superclass.  If a subclass wishes to
+        inherit definitions from a superclass, it can use the special value
+        "inherit", which will cause the superclass' state definition to be
+        included at that point in the state.
+        """
+        ...
+    def __call__(cls, *args, **kwds):
+        """Instantiate cls after preprocessing its token definitions."""
+        ...
 
 class RegexLexer(Lexer, metaclass=RegexLexerMeta):
     """

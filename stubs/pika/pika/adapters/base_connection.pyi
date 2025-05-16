@@ -55,7 +55,32 @@ class BaseConnection(Connection, metaclass=abc.ABCMeta):
         ...
     @classmethod
     @abc.abstractmethod
-    def create_connection(cls, connection_configs, on_done, custom_ioloop=None, workflow=None): ...
+    def create_connection(cls, connection_configs, on_done, custom_ioloop=None, workflow=None):
+        """
+        Asynchronously create a connection to an AMQP broker using the given
+        configurations. Will attempt to connect using each config in the given
+        order, including all compatible resolved IP addresses of the hostname
+        supplied in each config, until one is established or all attempts fail.
+
+        See also `_start_connection_workflow()`.
+
+        :param sequence connection_configs: A sequence of one or more
+            `pika.connection.Parameters`-based objects.
+        :param callable on_done: as defined in
+            `connection_workflow.AbstractAMQPConnectionWorkflow.start()`.
+        :param object | None custom_ioloop: Provide a custom I/O loop that is
+            native to the specific adapter implementation; if None, the adapter
+            will use a default loop instance, which is typically a singleton.
+        :param connection_workflow.AbstractAMQPConnectionWorkflow | None workflow:
+            Pass an instance of an implementation of the
+            `connection_workflow.AbstractAMQPConnectionWorkflow` interface;
+            defaults to a `connection_workflow.AMQPConnectionWorkflow` instance
+            with default values for optional args.
+        :returns: Connection workflow instance in use. The user should limit
+            their interaction with this object only to it's `abort()` method.
+        :rtype: connection_workflow.AbstractAMQPConnectionWorkflow
+        """
+        ...
     @property
     def ioloop(self):
         """

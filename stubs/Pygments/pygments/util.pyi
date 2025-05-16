@@ -1,3 +1,13 @@
+"""
+pygments.util
+~~~~~~~~~~~~~
+
+Utility functions.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from io import TextIOWrapper
 from typing import Any
 
@@ -16,10 +26,35 @@ class OptionError(Exception):
     """
     ...
 
-def get_choice_opt(options, optname, allowed, default=None, normcase: bool = False): ...
-def get_bool_opt(options, optname, default=None): ...
-def get_int_opt(options, optname, default=None): ...
-def get_list_opt(options, optname, default=None): ...
+def get_choice_opt(options, optname, allowed, default=None, normcase: bool = False):
+    """
+    If the key `optname` from the dictionary is not in the sequence
+    `allowed`, raise an error, otherwise return it.
+    """
+    ...
+def get_bool_opt(options, optname, default=None):
+    """
+    Intuitively, this is `options.get(optname, default)`, but restricted to
+    Boolean value. The Booleans can be represented as string, in order to accept
+    Boolean value from the command line arguments. If the key `optname` is
+    present in the dictionary `options` and is not associated with a Boolean,
+    raise an `OptionError`. If it is absent, `default` is returned instead.
+
+    The valid string values for ``True`` are ``1``, ``yes``, ``true`` and
+    ``on``, the ones for ``False`` are ``0``, ``no``, ``false`` and ``off``
+    (matched case-insensitively).
+    """
+    ...
+def get_int_opt(options, optname, default=None):
+    """As :func:`get_bool_opt`, but interpret the value as an integer."""
+    ...
+def get_list_opt(options, optname, default=None):
+    """
+    If the key `optname` from the dictionary `options` is a string,
+    split it at whitespace and return it. If it is already a list
+    or a tuple, it is returned as a list.
+    """
+    ...
 def docstring_headline(obj): ...
 def make_analysator(f):
     """Return a static text analyser function that returns float values."""

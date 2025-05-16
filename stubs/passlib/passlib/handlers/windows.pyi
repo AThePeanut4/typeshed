@@ -1,3 +1,5 @@
+"""passlib.handlers.nthash - Microsoft Windows -related hashes"""
+
 from typing import Any, ClassVar, Literal, overload
 
 import passlib.utils.handlers as uh
@@ -36,7 +38,21 @@ class lmhash(uh.TruncateMixin, uh.HasEncodingContext, uh.StaticHandler):
     checksum_size: ClassVar[int]
     truncate_size: ClassVar[int]
     @classmethod
-    def raw(cls, secret, encoding=None): ...
+    def raw(cls, secret, encoding=None):
+        """
+        encode password using LANMAN hash algorithm.
+
+        :type secret: unicode or utf-8 encoded bytes
+        :arg secret: secret to hash
+        :type encoding: str
+        :arg encoding:
+            optional encoding to use for unicode inputs.
+            this defaults to ``cp437``, which is the
+            common case for most situations.
+
+        :returns: returns string of raw bytes
+        """
+        ...
 
 class nthash(uh.StaticHandler):
     """

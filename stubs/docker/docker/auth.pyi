@@ -36,7 +36,15 @@ class AuthConfig(dict[str, Incomplete]):
     @classmethod
     def load_config(
         cls, config_path: FileDescriptorOrPath | None, config_dict: dict[str, Incomplete] | None, credstore_env=None
-    ) -> Self: ...
+    ) -> Self:
+        """
+        Loads authentication data from a Docker configuration file in the given
+        root directory or if config_path is passed use given path.
+        Lookup priority:
+            explicit config_path parameter > DOCKER_CONFIG environment
+            variable > ~/.docker/config.json > ~/.dockercfg
+        """
+        ...
     @property
     def auths(self) -> dict[str, Incomplete]: ...
     @property

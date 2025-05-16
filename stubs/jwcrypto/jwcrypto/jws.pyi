@@ -99,7 +99,14 @@ class JWS:
     objects: Incomplete
     verifylog: list[str] | None
     header_registry: Incomplete
-    def __init__(self, payload=None, header_registry=None) -> None: ...
+    def __init__(self, payload=None, header_registry=None) -> None:
+        """
+        Creates a JWS object.
+
+        :param payload(bytes): An arbitrary value (optional).
+        :param header_registry: Optional additions to the header registry
+        """
+        ...
     @property
     def allowed_algs(self):
         """
@@ -120,10 +127,83 @@ class JWS:
         ...
     @property
     def is_valid(self): ...
-    def verify(self, key, alg=None, detached_payload=None) -> None: ...
-    def deserialize(self, raw_jws, key=None, alg=None) -> None: ...
-    def add_signature(self, key, alg=None, protected=None, header=None) -> None: ...
-    def serialize(self, compact: bool = False) -> str: ...
+    def verify(self, key, alg=None, detached_payload=None) -> None:
+        """
+        Verifies a JWS token.
+
+        :param key: A (:class:`jwcrypto.jwk.JWK`) verification or
+         a (:class:`jwcrypto.jwk.JWKSet`) that contains a key indexed by the
+         'kid' header.
+        :param alg: The signing algorithm (optional). Usually the algorithm
+            is known as it is provided with the JOSE Headers of the token.
+        :param detached_payload: A detached payload to verify the signature
+            against. Only valid for tokens that are not carrying a payload.
+
+        :raises InvalidJWSSignature: if the verification fails.
+        :raises InvalidJWSOperation: if a detached_payload is provided but
+                                     an object payload exists
+        :raises JWKeyNotFound: if key is a JWKSet and the key is not found.
+        """
+        ...
+    def deserialize(self, raw_jws, key=None, alg=None) -> None:
+        """
+        Deserialize a JWS token.
+
+        NOTE: Destroys any current status and tries to import the raw
+        JWS provided.
+
+        If a key is provided a verification step will be attempted after
+        the object is successfully deserialized.
+
+        :param raw_jws: a 'raw' JWS token (JSON Encoded or Compact
+         notation) string.
+        :param key: A (:class:`jwcrypto.jwk.JWK`) verification or
+         a (:class:`jwcrypto.jwk.JWKSet`) that contains a key indexed by the
+         'kid' header (optional).
+        :param alg: The signing algorithm (optional). Usually the algorithm
+         is known as it is provided with the JOSE Headers of the token.
+
+        :raises InvalidJWSObject: if the raw object is an invalid JWS token.
+        :raises InvalidJWSSignature: if the verification fails.
+        :raises JWKeyNotFound: if key is a JWKSet and the key is not found.
+        """
+        ...
+    def add_signature(self, key, alg=None, protected=None, header=None) -> None:
+        """
+        Adds a new signature to the object.
+
+        :param key: A (:class:`jwcrypto.jwk.JWK`) key of appropriate for
+         the "alg" provided.
+        :param alg: An optional algorithm name. If already provided as an
+         element of the protected or unprotected header it can be safely
+         omitted.
+        :param protected: The Protected Header (optional)
+        :param header: The Unprotected Header (optional)
+
+        :raises InvalidJWSObject: if invalid headers are provided.
+        :raises ValueError: if the key is not a (:class:`jwcrypto.jwk.JWK`)
+        :raises ValueError: if the algorithm is missing or is not provided
+         by one of the headers.
+        :raises InvalidJWAAlgorithm: if the algorithm is not valid, is
+         unknown or otherwise not yet implemented.
+        """
+        ...
+    def serialize(self, compact: bool = False) -> str:
+        """
+        Serializes the object into a JWS token.
+
+        :param compact(boolean): if True generates the compact
+         representation, otherwise generates a standard JSON format.
+
+        :raises InvalidJWSOperation: if the object cannot serialized
+         with the compact representation and `compact` is True.
+        :raises InvalidJWSSignature: if no signature has been added
+         to the object, or no valid signature can be found.
+
+        :return: A json formatted string or a compact representation string
+        :rtype: `str`
+        """
+        ...
     @property
     def payload(self): ...
     def detach_payload(self) -> None: ...

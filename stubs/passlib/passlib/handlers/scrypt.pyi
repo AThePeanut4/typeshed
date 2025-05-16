@@ -1,3 +1,5 @@
+"""passlib.handlers.scrypt -- scrypt password hash"""
+
 from typing import ClassVar
 
 import passlib.utils.handlers as uh

@@ -1,3 +1,5 @@
+"""passlib.handlers.misc - misc generic handlers"""
+
 from typing import Any, ClassVar
 
 import passlib.utils.handlers as uh

@@ -201,7 +201,16 @@ class Connection:
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> Literal[False] | None: ...
-    def bind(self, read_server_info: bool = True, controls=None): ...
+    def bind(self, read_server_info: bool = True, controls=None):
+        """
+        Bind to ldap Server with the authentication method and the user defined in the connection
+
+        :param read_server_info: reads info from server
+        :param controls: LDAP controls to send along with the bind operation
+        :type controls: list of tuple
+        :return: bool
+        """
+        ...
     def rebind(
         self,
         user=None,
@@ -212,7 +221,13 @@ class Connection:
         read_server_info: bool = True,
         controls=None,
     ): ...
-    def unbind(self, controls=None): ...
+    def unbind(self, controls=None):
+        """
+        Unbind the connected user. Unbind implies closing session as per RFC4511 (4.3)
+
+        :param controls: LDAP controls to send along with the bind operation
+        """
+        ...
     def search(
         self,
         search_base: str,
@@ -229,16 +244,62 @@ class Connection:
         paged_criticality: bool = False,
         paged_cookie: str | bytes | None = None,
         auto_escape: bool | None = None,
-    ): ...
-    def compare(self, dn, attribute, value, controls=None): ...
-    def add(self, dn, object_class=None, attributes=None, controls=None): ...
-    def delete(self, dn, controls=None): ...
-    def modify(self, dn, changes, controls=None): ...
-    def modify_dn(self, dn, relative_dn, delete_old_dn: bool = True, new_superior=None, controls=None): ...
-    def abandon(self, message_id, controls=None): ...
+    ):
+        """
+        Perform an ldap search:
+
+        - If attributes is empty noRFC2696 with the specified size
+        - If paged is 0 and cookie is present the search is abandoned on
+          server attribute is returned
+        - If attributes is ALL_ATTRIBUTES all attributes are returned
+        - If paged_size is an int greater than 0 a simple paged search
+          is tried as described in
+        - Cookie is an opaque string received in the last paged search
+          and must be used on the next paged search response
+        - If lazy == True open and bind will be deferred until another
+          LDAP operation is performed
+        - If mssing_attributes == True then an attribute not returned by the server is set to None
+        - If auto_escape is set it overrides the Connection auto_escape
+        """
+        ...
+    def compare(self, dn, attribute, value, controls=None):
+        """Perform a compare operation"""
+        ...
+    def add(self, dn, object_class=None, attributes=None, controls=None):
+        """
+        Add dn to the DIT, object_class is None, a class name or a list
+        of class names.
+
+        Attributes is a dictionary in the form 'attr': 'val' or 'attr':
+        ['val1', 'val2', ...] for multivalued attributes
+        """
+        ...
+    def delete(self, dn, controls=None):
+        """Delete the entry identified by the DN from the DIB."""
+        ...
+    def modify(self, dn, changes, controls=None):
+        """
+        Modify attributes of entry
+
+        - changes is a dictionary in the form {'attribute1': change), 'attribute2': [change, change, ...], ...}
+        - change is (operation, [value1, value2, ...])
+        - operation is 0 (MODIFY_ADD), 1 (MODIFY_DELETE), 2 (MODIFY_REPLACE), 3 (MODIFY_INCREMENT)
+        """
+        ...
+    def modify_dn(self, dn, relative_dn, delete_old_dn: bool = True, new_superior=None, controls=None):
+        """
+        Modify DN of the entry or performs a move of the entry in the
+        DIT.
+        """
+        ...
+    def abandon(self, message_id, controls=None):
+        """Abandon the operation indicated by message_id"""
+        ...
     def extended(
         self, request_name, request_value: Asn1Item | ReadableBuffer | None = None, controls=None, no_encode: bool | None = None
-    ): ...
+    ):
+        """Performs an extended operation"""
+        ...
     def start_tls(self, read_server_info: bool = True): ...
     def do_sasl_bind(self, controls): ...
     def do_ntlm_bind(self, controls): ...

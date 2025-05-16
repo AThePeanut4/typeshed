@@ -18,11 +18,79 @@ class NormalDateException(Exception):
     ...
 
 class NormalDate:
-    def __init__(self, normalDate=None) -> None: ...
-    def add(self, days) -> None: ...
-    def __add__(self, days): ...
-    def __radd__(self, days): ...
-    def clone(self): ...
+    """
+    NormalDate is a specialized class to handle dates without
+    all the excess baggage (time zones, daylight savings, leap
+    seconds, etc.) of other date structures.  The minimalist
+    strategy greatly simplifies its implementation and use.
+
+    Internally, NormalDate is stored as an integer with values
+    in a discontinuous range of -99990101 to 99991231.  The
+    integer value is used principally for storage and to simplify
+    the user interface.  Internal calculations are performed by
+    a scalar based on Jan 1, 1900.
+
+    Valid NormalDate ranges include (-9999,1,1) B.C.E. through
+    (9999,12,31) C.E./A.D.
+
+
+    1.0
+        No changes, except the version number.  After 3 years of use by
+        various parties I think we can consider it stable.
+
+    0.8
+        Added Prof. Stephen Walton's suggestion for a range method
+         - module author resisted the temptation to use lambda <0.5 wink>
+
+    0.7
+        Added Dan Winkler's suggestions for __add__, __sub__ methods
+
+    0.6
+        Modifications suggested by Kevin Digweed to fix:
+         - dayOfWeek, dayOfWeekAbbrev, clone methods
+         - Permit NormalDate to be a better behaved superclass
+
+    0.5
+        Minor tweaking
+
+    0.4
+         - Added methods __cmp__, __hash__
+         - Added Epoch variable, scoped to the module
+         - Added setDay, setMonth, setYear methods
+
+    0.3
+        Minor touch-ups
+
+    0.2
+         - Fixed bug for certain B.C.E leap years
+         - Added Jim Fulton's suggestions for short alias class name =ND
+           and __getstate__, __setstate__ methods
+
+    Special thanks:  Roedy Green
+    """
+    def __init__(self, normalDate=None) -> None:
+        """
+        Accept 1 of 4 values to initialize a NormalDate:
+            1. None - creates a NormalDate for the current day
+            2. integer in yyyymmdd format
+            3. string in yyyymmdd format
+            4. tuple in (yyyy, mm, dd) - localtime/gmtime can also be used
+            5. string iso date format see _iso_re above
+            6. datetime.datetime or datetime.date
+        """
+        ...
+    def add(self, days) -> None:
+        """add days to date; use negative integers to subtract"""
+        ...
+    def __add__(self, days):
+        """add integer to normalDate and return a new, calculated value"""
+        ...
+    def __radd__(self, days):
+        """for completeness"""
+        ...
+    def clone(self):
+        """return a cloned instance of this normalDate"""
+        ...
     def __lt__(self, other): ...
     def __le__(self, other): ...
     def __eq__(self, other): ...

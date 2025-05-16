@@ -1,3 +1,11 @@
+"""
+oauthlib.oauth1.rfc5849.endpoints.authorization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module is an implementation of various logic needed
+for signing and checking OAuth 1.0 RFC 5849 requests.
+"""
+
 from .base import BaseEndpoint as BaseEndpoint
 
 class AuthorizationEndpoint(BaseEndpoint):
@@ -31,5 +39,70 @@ class AuthorizationEndpoint(BaseEndpoint):
         ...
     def create_authorization_response(
         self, uri, http_method: str = "GET", body=None, headers=None, realms=None, credentials=None
-    ): ...
-    def get_realms_and_credentials(self, uri, http_method: str = "GET", body=None, headers=None): ...
+    ):
+        """
+        Create an authorization response, with a new request token if valid.
+
+        :param uri: The full URI of the token request.
+        :param http_method: A valid HTTP verb, i.e. GET, POST, PUT, HEAD, etc.
+        :param body: The request body as a string.
+        :param headers: The request headers as a dict.
+        :param credentials: A list of credentials to include in the verifier.
+        :returns: A tuple of 3 elements.
+                  1. A dict of headers to set on the response.
+                  2. The response body as a string.
+                  3. The response status code as an integer.
+
+        If the callback URI tied to the current token is "oob", a response with
+        a 200 status code will be returned. In this case, it may be desirable to
+        modify the response to better display the verifier to the client.
+
+        An example of an authorization request::
+
+            >>> from your_validator import your_validator
+            >>> from oauthlib.oauth1 import AuthorizationEndpoint
+            >>> endpoint = AuthorizationEndpoint(your_validator)
+            >>> h, b, s = endpoint.create_authorization_response(
+            ...     'https://your.provider/authorize?oauth_token=...',
+            ...     credentials={
+            ...         'extra': 'argument',
+            ...     })
+            >>> h
+            {'Location': 'https://the.client/callback?oauth_verifier=...&extra=argument'}
+            >>> b
+            None
+            >>> s
+            302
+
+        An example of a request with an "oob" callback::
+
+            >>> from your_validator import your_validator
+            >>> from oauthlib.oauth1 import AuthorizationEndpoint
+            >>> endpoint = AuthorizationEndpoint(your_validator)
+            >>> h, b, s = endpoint.create_authorization_response(
+            ...     'https://your.provider/authorize?foo=bar',
+            ...     credentials={
+            ...         'extra': 'argument',
+            ...     })
+            >>> h
+            {'Content-Type': 'application/x-www-form-urlencoded'}
+            >>> b
+            'oauth_verifier=...&extra=argument'
+            >>> s
+            200
+        """
+        ...
+    def get_realms_and_credentials(self, uri, http_method: str = "GET", body=None, headers=None):
+        """
+        Fetch realms and credentials for the presented request token.
+
+        :param uri: The full URI of the token request.
+        :param http_method: A valid HTTP verb, i.e. GET, POST, PUT, HEAD, etc.
+        :param body: The request body as a string.
+        :param headers: The request headers as a dict.
+        :returns: A tuple of 2 elements.
+                  1. A list of request realms.
+                  2. A dict of credentials which may be useful in creating the
+                  authorization form.
+        """
+        ...

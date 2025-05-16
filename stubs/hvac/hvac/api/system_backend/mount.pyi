@@ -1,7 +1,17 @@
 from hvac.api.system_backend.system_backend_mixin import SystemBackendMixin
 
 class Mount(SystemBackendMixin):
-    def list_mounted_secrets_engines(self): ...
+    def list_mounted_secrets_engines(self):
+        """
+        Lists all the mounted secrets engines.
+
+        Supported methods:
+            POST: /sys/mounts. Produces: 200 application/json
+
+        :return: JSON response of the request.
+        :rtype: dict
+        """
+        ...
     def retrieve_mount_option(self, mount_point, option_name, default_value=None): ...
     def enable_secrets_engine(
         self,

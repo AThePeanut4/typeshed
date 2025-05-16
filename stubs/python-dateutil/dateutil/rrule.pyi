@@ -38,11 +38,53 @@ class rrulebase:
     def __iter__(self) -> Iterator[datetime.datetime]: ...
     def __getitem__(self, item): ...
     def __contains__(self, item): ...
-    def count(self): ...
-    def before(self, dt, inc: bool = False): ...
-    def after(self, dt, inc: bool = False): ...
-    def xafter(self, dt, count=None, inc: bool = False): ...
-    def between(self, after, before, inc: bool = False, count: int = 1): ...
+    def count(self):
+        """
+        Returns the number of recurrences in this set. It will have go
+        through the whole recurrence, if this hasn't been done before. 
+        """
+        ...
+    def before(self, dt, inc: bool = False):
+        """
+        Returns the last recurrence before the given datetime instance. The
+        inc keyword defines what happens if dt is an occurrence. With
+        inc=True, if dt itself is an occurrence, it will be returned. 
+        """
+        ...
+    def after(self, dt, inc: bool = False):
+        """
+        Returns the first recurrence after the given datetime instance. The
+        inc keyword defines what happens if dt is an occurrence. With
+        inc=True, if dt itself is an occurrence, it will be returned.  
+        """
+        ...
+    def xafter(self, dt, count=None, inc: bool = False):
+        """
+        Generator which yields up to `count` recurrences after the given
+        datetime instance, equivalent to `after`.
+
+        :param dt:
+            The datetime at which to start generating recurrences.
+
+        :param count:
+            The maximum number of recurrences to generate. If `None` (default),
+            dates are generated until the recurrence rule is exhausted.
+
+        :param inc:
+            If `dt` is an instance of the rule and `inc` is `True`, it is
+            included in the output.
+
+        :yields: Yields a sequence of `datetime` objects.
+        """
+        ...
+    def between(self, after, before, inc: bool = False, count: int = 1):
+        """
+        Returns all the occurrences of the rrule between after and before.
+        The inc keyword defines what happens if after and/or before are
+        themselves occurrences. With inc=True, they will be included in the
+        list, if they are found in the recurrence set. 
+        """
+        ...
 
 class rrule(rrulebase):
     """

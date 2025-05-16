@@ -9,7 +9,18 @@ class JWTBearerGrant(BaseGrant, TokenEndpointMixin):
     CLAIMS_OPTIONS: Incomplete
     @staticmethod
     def sign(key, issuer, audience, subject=None, issued_at=None, expires_at=None, claims=None, **kwargs): ...
-    def process_assertion_claims(self, assertion): ...
+    def process_assertion_claims(self, assertion):
+        """
+        Extract JWT payload claims from request "assertion", per
+        `Section 3.1`_.
+
+        :param assertion: assertion string value in the request
+        :return: JWTClaims
+        :raise: InvalidGrantError
+
+        .. _`Section 3.1`: https://tools.ietf.org/html/rfc7523#section-3.1
+        """
+        ...
     def resolve_public_key(self, headers, payload): ...
     def validate_token_request(self) -> None:
         """

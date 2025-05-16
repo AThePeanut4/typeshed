@@ -1,3 +1,10 @@
+"""
+Miscellaneous goodies for psycopg2
+
+This module is a generic place used to hold little helper functions
+and classes until a better place in the distribution is found.
+"""
+
 from collections import OrderedDict
 from collections.abc import Callable
 from typing import Any, NamedTuple, TypeVar, overload
@@ -219,6 +226,7 @@ class LoggingConnection(_connection):
     def cursor(self, *args, **kwargs): ...
 
 class LoggingCursor(_cursor):
+    """A cursor that logs queries using its connection logging facilities."""
     def execute(self, query, vars=None): ...
     def callproc(self, procname, vars=None): ...
 
@@ -262,8 +270,13 @@ class StopReplication(Exception):
     ...
 
 class ReplicationCursor(_replicationCursor):
-    def create_replication_slot(self, slot_name, slot_type=None, output_plugin=None) -> None: ...
-    def drop_replication_slot(self, slot_name) -> None: ...
+    """A cursor used for communication on replication connections."""
+    def create_replication_slot(self, slot_name, slot_type=None, output_plugin=None) -> None:
+        """Create streaming replication slot."""
+        ...
+    def drop_replication_slot(self, slot_name) -> None:
+        """Drop streaming replication slot."""
+        ...
     def start_replication(
         self,
         slot_name=None,
@@ -294,7 +307,17 @@ class UUID_adapter:
     def __conform__(self, proto): ...
     def getquoted(self): ...
 
-def register_uuid(oids=None, conn_or_curs=None): ...
+def register_uuid(oids=None, conn_or_curs=None):
+    """
+    Create the UUID type and an uuid.UUID adapter.
+
+    :param oids: oid for the PostgreSQL :sql:`uuid` type, or 2-items sequence
+        with oids of the type and the array. If not specified, use PostgreSQL
+        standard oids.
+    :param conn_or_curs: where to register the typecaster. If not specified,
+        register it globally.
+    """
+    ...
 
 class Inet:
     """
@@ -311,8 +334,27 @@ class Inet:
     def getquoted(self): ...
     def __conform__(self, proto): ...
 
-def register_inet(oid=None, conn_or_curs=None): ...
-def wait_select(conn) -> None: ...
+def register_inet(oid=None, conn_or_curs=None):
+    """
+    Create the INET type and an Inet adapter.
+
+    :param oid: oid for the PostgreSQL :sql:`inet` type, or 2-items sequence
+        with oids of the type and the array. If not specified, use PostgreSQL
+        standard oids.
+    :param conn_or_curs: where to register the typecaster. If not specified,
+        register it globally.
+    """
+    ...
+def wait_select(conn) -> None:
+    """
+    Wait until a connection or cursor has data available.
+
+    The function is an example of a wait callback to be registered with
+    `~psycopg2.extensions.set_wait_callback()`. This function uses
+    :py:func:`~select.select()` to wait for data to become available, and
+    therefore is able to handle/receive SIGINT/KeyboardInterrupt.
+    """
+    ...
 
 class HstoreAdapter:
     """Adapt a Python dict to the hstore syntax."""
@@ -345,7 +387,38 @@ class HstoreAdapter:
         """
         ...
 
-def register_hstore(conn_or_curs, globally: bool = False, unicode: bool = False, oid=None, array_oid=None) -> None: ...
+def register_hstore(conn_or_curs, globally: bool = False, unicode: bool = False, oid=None, array_oid=None) -> None:
+    r"""
+    Register adapter and typecaster for `!dict`\-\ |hstore| conversions.
+
+    :param conn_or_curs: a connection or cursor: the typecaster will be
+        registered only on this object unless *globally* is set to `!True`
+    :param globally: register the adapter globally, not only on *conn_or_curs*
+    :param unicode: if `!True`, keys and values returned from the database
+        will be `!unicode` instead of `!str`. The option is not available on
+        Python 3
+    :param oid: the OID of the |hstore| type if known. If not, it will be
+        queried on *conn_or_curs*.
+    :param array_oid: the OID of the |hstore| array type if known. If not, it
+        will be queried on *conn_or_curs*.
+
+    The connection or cursor passed to the function will be used to query the
+    database and look for the OID of the |hstore| type (which may be different
+    across databases). If querying is not desirable (e.g. with
+    :ref:`asynchronous connections <async-support>`) you may specify it in the
+    *oid* parameter, which can be found using a query such as :sql:`SELECT
+    'hstore'::regtype::oid`. Analogously you can obtain a value for *array_oid*
+    using a query such as :sql:`SELECT 'hstore[]'::regtype::oid`.
+
+    Note that, when passing a dictionary from Python to the database, both
+    strings and unicode keys and values are supported. Dictionaries returned
+    from the database have keys/values according to the *unicode* parameter.
+
+    The |hstore| contrib module must be already installed in the database
+    (executing the ``hstore.sql`` script in your ``contrib`` directory).
+    Raise `~psycopg2.ProgrammingError` if the type is not found.
+    """
+    ...
 
 class CompositeCaster:
     """
@@ -380,6 +453,102 @@ class CompositeCaster:
     @classmethod
     def tokenize(cls, s): ...
 
-def register_composite(name, conn_or_curs, globally: bool = False, factory=None): ...
-def execute_batch(cur, sql, argslist, page_size: int = 100) -> None: ...
-def execute_values(cur, sql, argslist, template=None, page_size: int = 100, fetch: bool = False): ...
+def register_composite(name, conn_or_curs, globally: bool = False, factory=None):
+    """
+    Register a typecaster to convert a composite type into a tuple.
+
+    :param name: the name of a PostgreSQL composite type, e.g. created using
+        the |CREATE TYPE|_ command
+    :param conn_or_curs: a connection or cursor used to find the type oid and
+        components; the typecaster is registered in a scope limited to this
+        object, unless *globally* is set to `!True`
+    :param globally: if `!False` (default) register the typecaster only on
+        *conn_or_curs*, otherwise register it globally
+    :param factory: if specified it should be a `CompositeCaster` subclass: use
+        it to :ref:`customize how to cast composite types <custom-composite>`
+    :return: the registered `CompositeCaster` or *factory* instance
+        responsible for the conversion
+    """
+    ...
+def execute_batch(cur, sql, argslist, page_size: int = 100) -> None:
+    r"""
+    Execute groups of statements in fewer server roundtrips.
+
+    Execute *sql* several times, against all parameters set (sequences or
+    mappings) found in *argslist*.
+
+    The function is semantically similar to
+
+    .. parsed-literal::
+
+        *cur*\.\ `~cursor.executemany`\ (\ *sql*\ , *argslist*\ )
+
+    but has a different implementation: Psycopg will join the statements into
+    fewer multi-statement commands, each one containing at most *page_size*
+    statements, resulting in a reduced number of server roundtrips.
+
+    After the execution of the function the `cursor.rowcount` property will
+    **not** contain a total result.
+    """
+    ...
+def execute_values(cur, sql, argslist, template=None, page_size: int = 100, fetch: bool = False):
+    """
+    Execute a statement using :sql:`VALUES` with a sequence of parameters.
+
+    :param cur: the cursor to use to execute the query.
+
+    :param sql: the query to execute. It must contain a single ``%s``
+        placeholder, which will be replaced by a `VALUES list`__.
+        Example: ``"INSERT INTO mytable (id, f1, f2) VALUES %s"``.
+
+    :param argslist: sequence of sequences or dictionaries with the arguments
+        to send to the query. The type and content must be consistent with
+        *template*.
+
+    :param template: the snippet to merge to every item in *argslist* to
+        compose the query.
+
+        - If the *argslist* items are sequences it should contain positional
+          placeholders (e.g. ``"(%s, %s, %s)"``, or ``"(%s, %s, 42)``" if there
+          are constants value...).
+
+        - If the *argslist* items are mappings it should contain named
+          placeholders (e.g. ``"(%(id)s, %(f1)s, 42)"``).
+
+        If not specified, assume the arguments are sequence and use a simple
+        positional template (i.e.  ``(%s, %s, ...)``), with the number of
+        placeholders sniffed by the first element in *argslist*.
+
+    :param page_size: maximum number of *argslist* items to include in every
+        statement. If there are more items the function will execute more than
+        one statement.
+
+    :param fetch: if `!True` return the query results into a list (like in a
+        `~cursor.fetchall()`).  Useful for queries with :sql:`RETURNING`
+        clause.
+
+    .. __: https://www.postgresql.org/docs/current/static/queries-values.html
+
+    After the execution of the function the `cursor.rowcount` property will
+    **not** contain a total result.
+
+    While :sql:`INSERT` is an obvious candidate for this function it is
+    possible to use it with other statements, for example::
+
+        >>> cur.execute(
+        ... "create table test (id int primary key, v1 int, v2 int)")
+
+        >>> execute_values(cur,
+        ... "INSERT INTO test (id, v1, v2) VALUES %s",
+        ... [(1, 2, 3), (4, 5, 6), (7, 8, 9)])
+
+        >>> execute_values(cur,
+        ... \"\"\"UPDATE test SET v1 = data.v1 FROM (VALUES %s) AS data (id, v1)
+        ... WHERE test.id = data.id\"\"\",
+        ... [(1, 20), (4, 50)])
+
+        >>> cur.execute("select * from test order by id")
+        >>> cur.fetchall()
+        [(1, 20, 3), (4, 50, 6), (7, 8, 9)])
+    """
+    ...

@@ -51,7 +51,12 @@ class SelectConnection(BaseConnection):
         """
         ...
     @classmethod
-    def create_connection(cls, connection_configs, on_done, custom_ioloop=None, workflow=None): ...
+    def create_connection(cls, connection_configs, on_done, custom_ioloop=None, workflow=None):
+        """
+        Implement
+        :py:classmethod::`pika.adapters.BaseConnection.create_connection()`.
+        """
+        ...
 
 class _Timeout:
     """Represents a timeout"""

@@ -124,8 +124,27 @@ class OAuth2Session(requests.Session):
     @access_token.deleter
     def access_token(self) -> None: ...
     @property
-    def authorized(self) -> bool: ...
-    def authorization_url(self, url: str, state=None, **kwargs) -> tuple[str, str]: ...
+    def authorized(self) -> bool:
+        """
+        Boolean that indicates whether this session has an OAuth token
+        or not. If `self.authorized` is True, you can reasonably expect
+        OAuth-protected requests to the resource to succeed. If
+        `self.authorized` is False, you need the user to go through the OAuth
+        authentication dance before OAuth-protected requests to the resource
+        will succeed.
+        """
+        ...
+    def authorization_url(self, url: str, state=None, **kwargs) -> tuple[str, str]:
+        """
+        Form an authorization URL.
+
+        :param url: Authorization endpoint url, must be HTTPS.
+        :param state: An optional state string for CSRF protection. If not
+                      given it will be generated for you.
+        :param kwargs: Extra parameters to include.
+        :return: authorization_url, state
+        """
+        ...
     def fetch_token(
         self,
         token_url: str,
@@ -251,7 +270,9 @@ class OAuth2Session(requests.Session):
         verify: requests.sessions._Verify | None = None,
         cert: requests.sessions._Cert | None = None,
         json=None,
-    ) -> requests.Response: ...
+    ) -> requests.Response:
+        """Intercept all requests and add the OAuth 2 token if present."""
+        ...
     @overload
     def register_compliance_hook(self, hook_type: Literal["access_token_response"], hook: _AccessTokenResponseHook) -> None:
         """

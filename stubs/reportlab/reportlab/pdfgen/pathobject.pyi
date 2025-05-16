@@ -1,10 +1,33 @@
+"""
+PDFPathObject is an efficient way to draw paths on a Canvas. Do not
+instantiate directly, obtain one from the Canvas instead.
+
+Progress Reports:
+8.83, 2000-01-13, gmcm: created from pdfgen.py
+"""
+
 from typing import Final
 
 __version__: Final[str]
 
 class PDFPathObject:
+    """
+    Represents a graphic path.  There are certain 'modes' to PDF
+    drawing, and making a separate object to expose Path operations
+    ensures they are completed with no run-time overhead.  Ask
+    the Canvas for a PDFPath with getNewPathObject(); moveto/lineto/
+    curveto wherever you want; add whole shapes; and then add it back
+    into the canvas with one of the relevant operators.
+
+    Path objects are probably not long, so we pack onto one line
+
+    the code argument allows a canvas to get the operations appended directly so
+    avoiding the final getCode
+    """
     def __init__(self, code=None) -> None: ...
-    def getCode(self): ...
+    def getCode(self):
+        """pack onto one line; used internally"""
+        ...
     def moveTo(self, x, y) -> None: ...
     def lineTo(self, x, y) -> None: ...
     def curveTo(self, x1, y1, x2, y2, x3, y3) -> None: ...

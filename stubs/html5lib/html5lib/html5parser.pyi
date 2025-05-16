@@ -82,7 +82,25 @@ class HTMLParser:
     tree: Any
     errors: list[Incomplete]
     phases: Any
-    def __init__(self, tree=None, strict: bool = False, namespaceHTMLElements: bool = True, debug: bool = False) -> None: ...
+    def __init__(self, tree=None, strict: bool = False, namespaceHTMLElements: bool = True, debug: bool = False) -> None:
+        """
+        :arg tree: a treebuilder class controlling the type of tree that will be
+            returned. Built in treebuilders can be accessed through
+            html5lib.treebuilders.getTreeBuilder(treeType)
+
+        :arg strict: raise an exception when a parse error is encountered
+
+        :arg namespaceHTMLElements: whether or not to namespace HTML elements
+
+        :arg debug: whether or not to enable debug mode which logs things
+
+        Example:
+
+        >>> from html5lib.html5parser import HTMLParser
+        >>> parser = HTMLParser()                     # generates parser with etree builder
+        >>> parser = HTMLParser('lxml', strict=True)  # generates parser with lxml builder which is strict
+        """
+        ...
     firstStartTag: bool
     log: Any
     compatMode: str
@@ -104,8 +122,55 @@ class HTMLParser:
     def isHTMLIntegrationPoint(self, element: Element) -> bool: ...
     def isMathMLTextIntegrationPoint(self, element: Element) -> bool: ...
     def mainLoop(self) -> None: ...
-    def parse(self, stream: _InputStream, scripting: bool = ..., **kwargs): ...
-    def parseFragment(self, stream: _InputStream, *args, **kwargs): ...
+    def parse(self, stream: _InputStream, scripting: bool = ..., **kwargs):
+        """
+        Parse a HTML document into a well-formed tree
+
+        :arg stream: a file-like object or string containing the HTML to be parsed
+
+            The optional encoding parameter must be a string that indicates
+            the encoding.  If specified, that encoding will be used,
+            regardless of any BOM or later declaration (such as in a meta
+            element).
+
+        :arg scripting: treat noscript elements as if JavaScript was turned on
+
+        :returns: parsed tree
+
+        Example:
+
+        >>> from html5lib.html5parser import HTMLParser
+        >>> parser = HTMLParser()
+        >>> parser.parse('<html><body><p>This is a doc</p></body></html>')
+        <Element u'{http://www.w3.org/1999/xhtml}html' at 0x7feac4909db0>
+        """
+        ...
+    def parseFragment(self, stream: _InputStream, *args, **kwargs):
+        """
+        Parse a HTML fragment into a well-formed tree fragment
+
+        :arg container: name of the element we're setting the innerHTML
+            property if set to None, default to 'div'
+
+        :arg stream: a file-like object or string containing the HTML to be parsed
+
+            The optional encoding parameter must be a string that indicates
+            the encoding.  If specified, that encoding will be used,
+            regardless of any BOM or later declaration (such as in a meta
+            element)
+
+        :arg scripting: treat noscript elements as if JavaScript was turned on
+
+        :returns: parsed tree
+
+        Example:
+
+        >>> from html5lib.html5libparser import HTMLParser
+        >>> parser = HTMLParser()
+        >>> parser.parseFragment('<b>this is a fragment</b>')
+        <Element u'DOCUMENT_FRAGMENT' at 0x7feac484b090>
+        """
+        ...
     def parseError(self, errorcode: str = "XXX-undefined-error", datavars=None) -> None: ...
     def adjustMathMLAttributes(self, token) -> None: ...
     def adjustSVGAttributes(self, token) -> None: ...

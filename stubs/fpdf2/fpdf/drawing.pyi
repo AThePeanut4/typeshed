@@ -133,8 +133,41 @@ class DeviceCMYK(_DeviceCMYKBase):
         ...
     def serialize(self) -> str: ...
 
-def rgb8(r, g, b, a=None) -> DeviceRGB: ...
-def gray8(g, a=None) -> DeviceGray: ...
+def rgb8(r, g, b, a=None) -> DeviceRGB:
+    """
+    Produce a DeviceRGB color from the given 8-bit RGB values.
+
+    Args:
+        r (Number): red color component. Must be in the interval [0, 255].
+        g (Number): green color component. Must be in the interval [0, 255].
+        b (Number): blue color component. Must be in the interval [0, 255].
+        a (Optional[Number]): alpha component. Must be `None` or in the interval
+            [0, 255]. 0 is fully transparent, 255 is fully opaque
+
+    Returns:
+        DeviceRGB color representation.
+
+    Raises:
+        ValueError: if any components are not in their valid interval.
+    """
+    ...
+def gray8(g, a=None) -> DeviceGray:
+    """
+    Produce a DeviceGray color from the given 8-bit gray value.
+
+    Args:
+        g (Number): gray color component. Must be in the interval [0, 255]. 0 is black,
+            255 is white.
+        a (Optional[Number]): alpha component. Must be `None` or in the interval
+            [0, 255]. 0 is fully transparent, 255 is fully opaque
+
+    Returns:
+        DeviceGray color representation.
+
+    Raises:
+        ValueError: if any components are not in their valid interval.
+    """
+    ...
 @overload
 def convert_to_device_color(r: DeviceCMYK) -> DeviceCMYK: ...
 @overload
@@ -147,9 +180,52 @@ def convert_to_device_color(r: str) -> DeviceRGB: ...
 def convert_to_device_color(r: int, g: Literal[-1] = -1, b: Literal[-1] = -1) -> DeviceGray: ...
 @overload
 def convert_to_device_color(r: Sequence[int] | int, g: int, b: int) -> DeviceGray | DeviceRGB: ...
-def cmyk8(c, m, y, k, a=None) -> DeviceCMYK: ...
-def color_from_hex_string(hexstr) -> DeviceRGB: ...
-def color_from_rgb_string(rgbstr) -> DeviceRGB: ...
+def cmyk8(c, m, y, k, a=None) -> DeviceCMYK:
+    """
+    Produce a DeviceCMYK color from the given 8-bit CMYK values.
+
+    Args:
+        c (Number): red color component. Must be in the interval [0, 255].
+        m (Number): green color component. Must be in the interval [0, 255].
+        y (Number): blue color component. Must be in the interval [0, 255].
+        k (Number): blue color component. Must be in the interval [0, 255].
+        a (Optional[Number]): alpha component. Must be `None` or in the interval
+            [0, 255]. 0 is fully transparent, 255 is fully opaque
+
+    Returns:
+        DeviceCMYK color representation.
+
+    Raises:
+        ValueError: if any components are not in their valid interval.
+    """
+    ...
+def color_from_hex_string(hexstr) -> DeviceRGB:
+    """
+    Parse an RGB color from a css-style 8-bit hexadecimal color string.
+
+    Args:
+        hexstr (str): of the form `#RGB`, `#RGBA`, `#RRGGBB`, or `#RRGGBBAA` (case
+            insensitive). Must include the leading octothorp. Forms omitting the alpha
+            field are interpreted as not specifying the opacity, so it will not be
+            explicitly set.
+
+            An alpha value of `00` is fully transparent and `FF` is fully opaque.
+
+    Returns:
+        DeviceRGB representation of the color.
+    """
+    ...
+def color_from_rgb_string(rgbstr) -> DeviceRGB:
+    """
+    Parse an RGB color from a css-style rgb(R, G, B, A) color string.
+
+    Args:
+        rgbstr (str): of the form `rgb(R, G, B)` or `rgb(R, G, B, A)`.
+
+    Returns:
+        DeviceRGB representation of the color.
+    """
+    ...
 
 class Point(NamedTuple):
     """An x-y coordinate pair within the two-dimensional coordinate frame."""
@@ -399,7 +475,21 @@ class Transform(NamedTuple):
         """
         ...
     @classmethod
-    def scaling(cls, x, y=None): ...
+    def scaling(cls, x, y=None):
+        """
+        Create a transform that performs scaling.
+
+        Args:
+            x (Number): scaling ratio in the x (horizontal) axis. A value of 1
+                results in no scale change in the x axis.
+            y (Number): optional scaling ratio in the y (vertical) axis. A value of 1
+                results in no scale change in the y axis. If this value is omitted, it
+                defaults to the value provided to the `x` argument.
+
+        Returns:
+            A Transform representing the specified scaling.
+        """
+        ...
     @classmethod
     def rotation(cls, theta):
         """
@@ -427,17 +517,168 @@ class Transform(NamedTuple):
         """
         ...
     @classmethod
-    def shearing(cls, x, y=None): ...
-    def translate(self, x, y): ...
-    def scale(self, x, y=None): ...
-    def rotate(self, theta): ...
-    def rotate_d(self, theta_d): ...
-    def shear(self, x, y=None): ...
-    def about(self, x, y): ...
-    def __mul__(self, other): ...
-    def __rmul__(self, other): ...
-    def __matmul__(self, other): ...
-    def render(self, last_item): ...
+    def shearing(cls, x, y=None):
+        """
+        Create a transform that performs shearing (not of sheep).
+
+        Args:
+            x (Number): The amount to shear along the x (horizontal) axis.
+            y (Number): Optional amount to shear along the y (vertical) axis. If omitted,
+                this defaults to the value provided to the `x` argument.
+
+        Returns:
+            A Transform representing the specified shearing.
+        """
+        ...
+    def translate(self, x, y):
+        """
+        Produce a transform by composing the current transform with a translation.
+
+        .. note::
+            Transforms are immutable, so this returns a new transform rather than
+            mutating self.
+
+        Args:
+            x (Number): distance to translate points along the x (horizontal) axis.
+            y (Number): distance to translate points along the y (vertical) axis.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def scale(self, x, y=None):
+        """
+        Produce a transform by composing the current transform with a scaling.
+
+        .. note::
+            Transforms are immutable, so this returns a new transform rather than
+            mutating self.
+
+        Args:
+            x (Number): scaling ratio in the x (horizontal) axis. A value of 1
+                results in no scale change in the x axis.
+            y (Number): optional scaling ratio in the y (vertical) axis. A value of 1
+                results in no scale change in the y axis. If this value is omitted, it
+                defaults to the value provided to the `x` argument.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def rotate(self, theta):
+        """
+        Produce a transform by composing the current transform with a rotation.
+
+        .. note::
+            Transforms are immutable, so this returns a new transform rather than
+            mutating self.
+
+        Args:
+            theta (Number): the angle **in radians** by which to rotate. Positive
+                values represent clockwise rotations.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def rotate_d(self, theta_d):
+        """
+        Produce a transform by composing the current transform with a rotation
+        **in degrees**.
+
+        .. note::
+            Transforms are immutable, so this returns a new transform rather than
+            mutating self.
+
+        Args:
+            theta_d (Number): the angle **in degrees** by which to rotate. Positive
+                values represent clockwise rotations.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def shear(self, x, y=None):
+        """
+        Produce a transform by composing the current transform with a shearing.
+
+        .. note::
+            Transforms are immutable, so this returns a new transform rather than
+            mutating self.
+
+        Args:
+            x (Number): The amount to shear along the x (horizontal) axis.
+            y (Number): Optional amount to shear along the y (vertical) axis. If omitted,
+                this defaults to the value provided to the `x` argument.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def about(self, x, y):
+        """
+        Bracket the given transform in a pair of translations to make it appear about a
+        point that isn't the origin.
+
+        This is a useful shorthand for performing a transform like a rotation around the
+        center point of an object that isn't centered at the origin.
+
+        .. note::
+            Transforms are immutable, so this returns a new transform rather than
+            mutating self.
+
+        Args:
+            x (Number): the point along the x (horizontal) axis about which to transform.
+            y (Number): the point along the y (vertical) axis about which to transform.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def __mul__(self, other):
+        """
+        Multiply the individual transform parameters by a scalar value.
+
+        Args:
+            other (Number): the scalar value by which to multiply the parameters
+
+        Returns:
+            A Transform with the modified parameters.
+        """
+        ...
+    def __rmul__(self, other):
+        """
+        Multiply the individual transform parameters by a scalar value.
+
+        Args:
+            other (Number): the scalar value by which to multiply the parameters
+
+        Returns:
+            A Transform with the modified parameters.
+        """
+        ...
+    def __matmul__(self, other):
+        """
+        Compose two transforms into a single transform.
+
+        Args:
+            other (Transform): the right-hand side transform of the infix operator.
+
+        Returns:
+            A Transform representing the composed transform.
+        """
+        ...
+    def render(self, last_item):
+        """
+        Render the transform to its PDF output representation.
+
+        Args:
+            last_item: the last path element this transform applies to
+
+        Returns:
+            A tuple of `(str, last_item)`. `last_item` is returned unchanged.
+        """
+        ...
 
 class GraphicsStyle:
     """
@@ -1683,26 +1924,339 @@ class PaintedPath:
         """
         ...
     def remove_last_path_element(self) -> None: ...
-    def rectangle(self, x, y, w, h, rx: int = 0, ry: int = 0) -> Self: ...
-    def circle(self, cx, cy, r) -> Self: ...
-    def ellipse(self, cx, cy, rx, ry) -> Self: ...
-    def move_to(self, x, y) -> Self: ...
-    def move_relative(self, x, y) -> Self: ...
-    def line_to(self, x, y) -> Self: ...
-    def line_relative(self, dx, dy) -> Self: ...
-    def horizontal_line_to(self, x) -> Self: ...
-    def horizontal_line_relative(self, dx) -> Self: ...
-    def vertical_line_to(self, y) -> Self: ...
-    def vertical_line_relative(self, dy) -> Self: ...
-    def curve_to(self, x1, y1, x2, y2, x3, y3) -> Self: ...
-    def curve_relative(self, dx1, dy1, dx2, dy2, dx3, dy3) -> Self: ...
-    def quadratic_curve_to(self, x1, y1, x2, y2) -> Self: ...
-    def quadratic_curve_relative(self, dx1, dy1, dx2, dy2) -> Self: ...
-    def arc_to(self, rx, ry, rotation, large_arc, positive_sweep, x, y) -> Self: ...
-    def arc_relative(self, rx, ry, rotation, large_arc, positive_sweep, dx, dy) -> Self: ...
-    def close(self) -> None: ...
+    def rectangle(self, x, y, w, h, rx: int = 0, ry: int = 0) -> Self:
+        """
+        Append a rectangle as a closed subpath to the current path.
+
+        If the width or the height are 0, the rectangle will be collapsed to a line
+        (unless they're both 0, in which case it's collapsed to nothing).
+
+        Args:
+            x (Number): the abscissa of the starting corner of the rectangle.
+            y (Number): the ordinate of the starting corner of the rectangle.
+            w (Number): the width of the rectangle (if 0, the rectangle will be
+                rendered as a vertical line).
+            h (Number): the height of the rectangle (if 0, the rectangle will be
+                rendered as a horizontal line).
+            rx (Number): the x-radius of the rectangle rounded corner (if 0 the corners
+                will not be rounded).
+            ry (Number): the y-radius of the rectangle rounded corner (if 0 the corners
+                will not be rounded).
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def circle(self, cx, cy, r) -> Self:
+        """
+        Append a circle as a closed subpath to the current path.
+
+        Args:
+            cx (Number): the abscissa of the circle's center point.
+            cy (Number): the ordinate of the circle's center point.
+            r (Number): the radius of the circle.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def ellipse(self, cx, cy, rx, ry) -> Self:
+        """
+        Append an ellipse as a closed subpath to the current path.
+
+        Args:
+            cx (Number): the abscissa of the ellipse's center point.
+            cy (Number): the ordinate of the ellipse's center point.
+            rx (Number): the x-radius of the ellipse.
+            ry (Number): the y-radius of the ellipse.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def move_to(self, x, y) -> Self:
+        """
+        Start a new subpath or move the path starting point.
+
+        If no path elements have been added yet, this will change the path starting
+        point. If path elements have been added, this will insert an implicit close in
+        order to start a new subpath.
+
+        Args:
+            x (Number): abscissa of the (sub)path starting point.
+            y (Number): ordinate of the (sub)path starting point.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def move_relative(self, x, y) -> Self:
+        """
+        Start a new subpath or move the path start point relative to the previous point.
+
+        If no path elements have been added yet, this will change the path starting
+        point. If path elements have been added, this will insert an implicit close in
+        order to start a new subpath.
+
+        This will overwrite an absolute move_to as long as no non-move path items have
+        been appended. The relative position is resolved from the previous item when
+        the path is being rendered, or from 0, 0 if it is the first item.
+
+        Args:
+            x (Number): abscissa of the (sub)path starting point relative to the.
+            y (Number): ordinate of the (sub)path starting point relative to the.
+        """
+        ...
+    def line_to(self, x, y) -> Self:
+        """
+        Append a straight line to this path.
+
+        Args:
+            x (Number): abscissa the line's end point.
+            y (Number): ordinate of the line's end point.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def line_relative(self, dx, dy) -> Self:
+        """
+        Append a straight line whose end is computed as an offset from the end of the
+        previous path element.
+
+        Args:
+            x (Number): abscissa the line's end point relative to the end point of the
+                previous path element.
+            y (Number): ordinate of the line's end point relative to the end point of
+                the previous path element.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def horizontal_line_to(self, x) -> Self:
+        """
+        Append a straight horizontal line to the given abscissa. The ordinate is
+        retrieved from the end point of the previous path element.
+
+        Args:
+            x (Number): abscissa of the line's end point.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def horizontal_line_relative(self, dx) -> Self:
+        """
+        Append a straight horizontal line to the given offset from the previous path
+        element. The ordinate is retrieved from the end point of the previous path
+        element.
+
+        Args:
+            x (Number): abscissa of the line's end point relative to the end point of
+                the previous path element.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def vertical_line_to(self, y) -> Self:
+        """
+        Append a straight vertical line to the given ordinate. The abscissa is
+        retrieved from the end point of the previous path element.
+
+        Args:
+            y (Number): ordinate of the line's end point.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def vertical_line_relative(self, dy) -> Self:
+        """
+        Append a straight vertical line to the given offset from the previous path
+        element. The abscissa is retrieved from the end point of the previous path
+        element.
+
+        Args:
+            y (Number): ordinate of the line's end point relative to the end point of
+                the previous path element.
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def curve_to(self, x1, y1, x2, y2, x3, y3) -> Self:
+        """
+        Append a cubic Bézier curve to this path.
+
+        Args:
+            x1 (Number): abscissa of the first control point
+            y1 (Number): ordinate of the first control point
+            x2 (Number): abscissa of the second control point
+            y2 (Number): ordinate of the second control point
+            x3 (Number): abscissa of the end point
+            y3 (Number): ordinate of the end point
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def curve_relative(self, dx1, dy1, dx2, dy2, dx3, dy3) -> Self:
+        """
+        Append a cubic Bézier curve whose points are expressed relative to the
+        end point of the previous path element.
+
+        E.g. with a start point of (0, 0), given (1, 1), (2, 2), (3, 3), the output
+        curve would have the points:
+
+        (0, 0) c1 (1, 1) c2 (3, 3) e (6, 6)
+
+        Args:
+            dx1 (Number): abscissa of the first control point relative to the end point
+                of the previous path element
+            dy1 (Number): ordinate of the first control point relative to the end point
+                of the previous path element
+            dx2 (Number): abscissa offset of the second control point relative to the
+                end point of the previous path element
+            dy2 (Number): ordinate offset of the second control point relative to the
+                end point of the previous path element
+            dx3 (Number): abscissa offset of the end point relative to the end point of
+                the previous path element
+            dy3 (Number): ordinate offset of the end point relative to the end point of
+                the previous path element
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def quadratic_curve_to(self, x1, y1, x2, y2) -> Self:
+        """
+        Append a cubic Bézier curve mimicking the specified quadratic Bézier curve.
+
+        Args:
+            x1 (Number): abscissa of the control point
+            y1 (Number): ordinate of the control point
+            x2 (Number): abscissa of the end point
+            y2 (Number): ordinate of the end point
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def quadratic_curve_relative(self, dx1, dy1, dx2, dy2) -> Self:
+        """
+        Append a cubic Bézier curve mimicking the specified quadratic Bézier curve.
+
+        Args:
+            dx1 (Number): abscissa of the control point relative to the end point of
+                the previous path element
+            dy1 (Number): ordinate of the control point relative to the end point of
+                the previous path element
+            dx2 (Number): abscissa offset of the end point relative to the end point of
+                the previous path element
+            dy2 (Number): ordinate offset of the end point relative to the end point of
+                the previous path element
+
+        Returns:
+            The path, to allow chaining method calls.
+        """
+        ...
+    def arc_to(self, rx, ry, rotation, large_arc, positive_sweep, x, y) -> Self:
+        """
+        Append an elliptical arc from the end of the previous path point to the
+        specified end point.
+
+        The arc is approximated using Bézier curves, so it is not perfectly accurate.
+        However, the error is small enough to not be noticeable at any reasonable
+        (and even most unreasonable) scales, with a worst-case deviation of around 3‱.
+
+        Notes:
+            - The signs of the radii arguments (`rx` and `ry`) are ignored (i.e. their
+              absolute values are used instead).
+            - If either radius is 0, then a straight line will be emitted instead of an
+              arc.
+            - If the radii are too small for the arc to reach from the current point to
+              the specified end point (`x` and `y`), then they will be proportionally
+              scaled up until they are big enough, which will always result in a
+              half-ellipse arc (i.e. an 180 degree sweep)
+
+        Args:
+            rx (Number): radius in the x-direction.
+            ry (Number): radius in the y-direction.
+            rotation (Number): angle (in degrees) that the arc should be rotated
+                clockwise from the principle axes. This parameter does not have
+                a visual effect in the case that `rx == ry`.
+            large_arc (bool): if True, the arc will cover a sweep angle of at least 180
+                degrees. Otherwise, the sweep angle will be at most 180 degrees.
+            positive_sweep (bool): if True, the arc will be swept over a positive angle,
+                i.e. clockwise. Otherwise, the arc will be swept over a negative
+                angle.
+            x (Number): abscissa of the arc's end point.
+            y (Number): ordinate of the arc's end point.
+        """
+        ...
+    def arc_relative(self, rx, ry, rotation, large_arc, positive_sweep, dx, dy) -> Self:
+        """
+        Append an elliptical arc from the end of the previous path point to an offset
+        point.
+
+        The arc is approximated using Bézier curves, so it is not perfectly accurate.
+        However, the error is small enough to not be noticeable at any reasonable
+        (and even most unreasonable) scales, with a worst-case deviation of around 3‱.
+
+        Notes:
+            - The signs of the radii arguments (`rx` and `ry`) are ignored (i.e. their
+              absolute values are used instead).
+            - If either radius is 0, then a straight line will be emitted instead of an
+              arc.
+            - If the radii are too small for the arc to reach from the current point to
+              the specified end point (`x` and `y`), then they will be proportionally
+              scaled up until they are big enough, which will always result in a
+              half-ellipse arc (i.e. an 180 degree sweep)
+
+        Args:
+            rx (Number): radius in the x-direction.
+            ry (Number): radius in the y-direction.
+            rotation (Number): angle (in degrees) that the arc should be rotated
+                clockwise from the principle axes. This parameter does not have
+                a visual effect in the case that `rx == ry`.
+            large_arc (bool): if True, the arc will cover a sweep angle of at least 180
+                degrees. Otherwise, the sweep angle will be at most 180 degrees.
+            positive_sweep (bool): if True, the arc will be swept over a positive angle,
+                i.e. clockwise. Otherwise, the arc will be swept over a negative
+                angle.
+            dx (Number): abscissa of the arc's end point relative to the end point of
+                the previous path element.
+            dy (Number): ordinate of the arc's end point relative to the end point of
+                the previous path element.
+        """
+        ...
+    def close(self) -> None:
+        """Explicitly close the current (sub)path."""
+        ...
     def render(self, gsd_registry, style, last_item, initial_point, debug_stream=None, pfx=None): ...
-    def render_debug(self, gsd_registry, style, last_item, initial_point, debug_stream, pfx): ...
+    def render_debug(self, gsd_registry, style, last_item, initial_point, debug_stream, pfx):
+        """
+        Render this path element to its PDF representation and produce debug
+        information.
+
+        Args:
+            gsd_registry (GraphicsStateDictRegistry): the owner's graphics state
+                dictionary registry.
+            style (GraphicsStyle): the current resolved graphics style
+            last_item: the previous path element.
+            initial_point: last position set by a "M" or "m" command
+            debug_stream (io.TextIO): the stream to which the debug output should be
+                written. This is not guaranteed to be seekable (e.g. it may be stdout or
+                stderr).
+            pfx (str): the current debug output prefix string (only needed if emitting
+                more than one line).
+
+        Returns:
+            The same tuple as `PaintedPath.render`.
+        """
+        ...
 
 class ClippingPath(PaintedPath):
     """
@@ -1724,7 +2278,26 @@ class ClippingPath(PaintedPath):
     paint_rule: Incomplete
     def __init__(self, x: int = 0, y: int = 0) -> None: ...
     def render(self, gsd_registry, style, last_item, initial_point, debug_stream=None, pfx=None): ...
-    def render_debug(self, gsd_registry, style, last_item, initial_point, debug_stream, pfx): ...
+    def render_debug(self, gsd_registry, style, last_item, initial_point, debug_stream, pfx):
+        """
+        Render this path element to its PDF representation and produce debug
+        information.
+
+        Args:
+            gsd_registry (GraphicsStateDictRegistry): the owner's graphics state
+                dictionary registry.
+            style (GraphicsStyle): the current resolved graphics style
+            last_item: the previous path element.
+            debug_stream (io.TextIO): the stream to which the debug output should be
+                written. This is not guaranteed to be seekable (e.g. it may be stdout or
+                stderr).
+            pfx (str): the current debug output prefix string (only needed if emitting
+                more than one line).
+
+        Returns:
+            The same tuple as `ClippingPath.render`.
+        """
+        ...
 
 class GraphicsContext:
     style: GraphicsStyle
@@ -1762,7 +2335,34 @@ class GraphicsContext:
         ...
     def build_render_list(
         self, gsd_registry, style, last_item, initial_point, debug_stream=None, pfx=None, _push_stack: bool = True
-    ): ...
+    ):
+        """
+        Build a list composed of all all the individual elements rendered.
+
+        This is used by `PaintedPath` and `ClippingPath` to reuse the `GraphicsContext`
+        rendering process while still being able to inject some path specific items
+        (e.g. the painting directive) before the render is collapsed into a single
+        string.
+
+        Args:
+            gsd_registry (GraphicsStateDictRegistry): the owner's graphics state
+                dictionary registry.
+            style (GraphicsStyle): the current resolved graphics style
+            last_item: the previous path element.
+            initial_point: last position set by a "M" or "m" command
+            debug_stream (io.TextIO): the stream to which the debug output should be
+                written. This is not guaranteed to be seekable (e.g. it may be stdout or
+                stderr).
+            pfx (str): the current debug output prefix string (only needed if emitting
+                more than one line).
+            _push_stack (bool): if True, wrap the resulting render list in a push/pop
+                graphics stack directive pair.
+
+        Returns:
+            `tuple[list[str], last_item]` where `last_item` is the past path element in
+            this `GraphicsContext`
+        """
+        ...
     def render(
         self, gsd_registry, style: DrawingContext, last_item, initial_point, debug_stream=None, pfx=None, _push_stack: bool = True
     ): ...

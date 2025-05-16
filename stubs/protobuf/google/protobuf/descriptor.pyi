@@ -1,3 +1,8 @@
+"""
+Descriptors essentially contain exactly the information found in a .proto
+file, in types that make this information accessible in Python.
+"""
+
 from typing import Any
 
 from .descriptor_pb2 import (
@@ -186,10 +191,49 @@ class Descriptor(_NestedDescriptorBase):
         syntax: str | None = None,
         is_map_entry=False,
         create_key=None,
-    ): ...
-    def EnumValueName(self, enum, value): ...
-    def CopyToProto(self, proto): ...
-    def GetOptions(self) -> MessageOptions: ...
+    ):
+        """
+        Arguments to __init__() are as described in the description
+        of Descriptor fields above.
+
+        Note that filename is an obsolete argument, that is not used anymore.
+        Please use file.name to access this as an attribute.
+        """
+        ...
+    def EnumValueName(self, enum, value):
+        """
+        Returns the string name of an enum value.
+
+        This is just a small helper method to simplify a common operation.
+
+        Args:
+          enum: string name of the Enum.
+          value: int, value of the enum.
+
+        Returns:
+          string name of the enum value.
+
+        Raises:
+          KeyError if either the Enum doesn't exist or the value is not a valid
+            value for the enum.
+        """
+        ...
+    def CopyToProto(self, proto):
+        """
+        Copies this to a descriptor_pb2.DescriptorProto.
+
+        Args:
+          proto: An empty descriptor_pb2.DescriptorProto.
+        """
+        ...
+    def GetOptions(self) -> MessageOptions:
+        """
+        Retrieves descriptor options.
+
+        Returns:
+          The options set on this descriptor.
+        """
+        ...
 
 class FieldDescriptor(DescriptorBase):
     """

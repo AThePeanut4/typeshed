@@ -10,7 +10,10 @@ class ZoneInfoFile:
     zones: dict[Incomplete, Incomplete]
     metadata: _MetadataType | None
     def __init__(self, zonefile_stream: IO[bytes] | None = None) -> None: ...
-    def get(self, name, default=None): ...
+    def get(self, name, default=None):
+        """
+        Wrapper for :func:`ZoneInfoFile.zones.get`. This is a convenience method
+        for retrieving zones from the zone dictionary.
 
         :param name:
             The name of the zone to retrieve. (Generally IANA zone names)

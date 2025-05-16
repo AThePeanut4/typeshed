@@ -1,3 +1,5 @@
+""""""
+
 from typing import Any
 
 def constant_to_class_kind(value): ...
@@ -160,6 +162,7 @@ class AttributeTypeInfo(BaseObjectInfo):
     ) -> None: ...
 
 class LdapSyntaxInfo(BaseObjectInfo):
+    """As per RFC 4512 (4.1.5)"""
     def __init__(self, oid=None, description=None, extensions=None, experimental=None, definition=None) -> None: ...
 
 class DitContentRuleInfo(BaseObjectInfo):

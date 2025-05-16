@@ -1,3 +1,5 @@
+"""Defused xml.dom.minidom"""
+
 from xml.dom.minidom import Document
 
 __origin__: str
@@ -14,4 +16,6 @@ def parse(
     ...
 def parseString(
     string: str, parser=None, forbid_dtd: bool = False, forbid_entities: bool = True, forbid_external: bool = True
-) -> Document: ...
+) -> Document:
+    """Parse a file into a DOM from a string."""
+    ...

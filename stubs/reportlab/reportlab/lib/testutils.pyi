@@ -43,8 +43,19 @@ def outputfile(fn):
     """
     ...
 def printLocation(depth: int = 1) -> None: ...
-def makeSuiteForClasses(*classes, testMethodPrefix=None): ...
-def getCVSEntries(folder, files: int = 1, folders: int = 0): ...
+def makeSuiteForClasses(*classes, testMethodPrefix=None):
+    """Return a test suite with tests loaded from provided classes."""
+    ...
+def getCVSEntries(folder, files: int = 1, folders: int = 0):
+    """
+    Returns a list of filenames as listed in the CVS/Entries file.
+
+    'folder' is the folder that should contain the CVS subfolder.
+    If there is no such subfolder an empty list is returned.
+    'files' is a boolean; 1 and 0 means to return files or not.
+    'folders' is a boolean; 1 and 0 means to return folders or not.
+    """
+    ...
 
 class ExtConfigParser(ConfigParser):
     """A slightly extended version to return lists of strings."""
@@ -70,7 +81,9 @@ class RestrictedGlobDirectoryWalker(GlobDirectoryWalker):
     """An restricted directory tree iterator."""
     ignorePatterns: Incomplete
     def __init__(self, directory, pattern: str = "*", ignore=None) -> None: ...
-    def filterFiles(self, folder, files): ...
+    def filterFiles(self, folder, files):
+        """Filters all items from files matching patterns to ignore."""
+        ...
 
 class CVSGlobDirectoryWalker(GlobDirectoryWalker):
     """An directory tree iterator that checks for CVS data."""

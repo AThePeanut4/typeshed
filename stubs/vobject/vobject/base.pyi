@@ -95,9 +95,17 @@ class VBase:
     @overload
     def serialize(
         self, buf: None = None, lineLength: int = 75, validate: bool = True, behavior=None, *args: Any, **kwargs: Any
-    ) -> str: ...
+    ) -> str:
+        """
+        Serialize to buf if it exists, otherwise return a string.
+
+        Use self.behavior.serialize if behavior exists.
+        """
+        ...
     @overload
-    def serialize(self, buf: _W, lineLength: int = 75, validate: bool = True, behavior=None, *args: Any, **kwargs: Any) -> _W: ...
+    def serialize(self, buf: _W, lineLength: int = 75, validate: bool = True, behavior=None, *args: Any, **kwargs: Any) -> _W:
+        """
+        Serialize to buf if it exists, otherwise return a string.
 
         Use self.behavior.serialize if behavior exists.
         """
@@ -145,7 +153,13 @@ class ContentLine(VBase):
     value: Incomplete
     def __init__(
         self, name, params, value, group=None, encoded: bool = False, isNative: bool = False, lineNumber=None, *args, **kwds
-    ) -> None: ...
+    ) -> None:
+        """
+        Take output from parseLine, convert params list to dictionary.
+
+        Group is used as a positional argument to match parseLine's return
+        """
+        ...
     @classmethod
     def duplicate(cls, copyit): ...
     def copy(self, copyit) -> None: ...
@@ -226,7 +240,9 @@ class Component(VBase):
         """
         ...
     def __delattr__(self, name: str) -> None: ...
-    def getChildValue(self, childName, default=None, childNumber: int = 0): ...
+    def getChildValue(self, childName, default=None, childNumber: int = 0):
+        """Return a child's value (the first, by default), or None."""
+        ...
     @overload
     def add(self, objOrName: _V, group: str | None = None) -> _V:
         """
@@ -317,18 +333,56 @@ params_re: Incomplete
 line_re: Incomplete
 begin_re: Incomplete
 
-def parseParams(string): ...
-def parseLine(line, lineNumber=None): ...
+def parseParams(string):
+    """Parse parameters"""
+    ...
+def parseLine(line, lineNumber=None):
+    """Parse line"""
+    ...
 
 wrap_re: Incomplete
 logical_lines_re: Incomplete
 testLines: str
 
-def getLogicalLines(fp, allowQP: bool = True) -> None: ...
+def getLogicalLines(fp, allowQP: bool = True) -> None:
+    """
+    Iterate through a stream, yielding one logical line at a time.
+
+    Because many applications still use vCard 2.1, we have to deal with the
+    quoted-printable encoding for long lines, as well as the vCard 3.0 and
+    vCalendar line folding technique, a whitespace character at the start
+    of the line.
+
+    Quoted-printable data will be decoded in the Behavior decoding phase.
+
+    # We're leaving this test in for awhile, because the unittest was ugly and dumb.
+    >>> from six import StringIO
+    >>> f=StringIO(testLines)
+    >>> for n, l in enumerate(getLogicalLines(f)):
+    ...     print("Line %s: %s" % (n, l[0]))
+    ...
+    Line 0: Line 0 text, Line 0 continued.
+    Line 1: Line 1;encoding=quoted-printable:this is an evil=
+     evil=
+     format.
+    Line 2: Line 2 is a new line, it does not start with whitespace.
+    """
+    ...
 def textLineToContentLine(text, n=None): ...
-def dquoteEscape(param): ...
-def foldOneLine(outbuf, input, lineLength: int = 75) -> None: ...
-def defaultSerialize(obj, buf, lineLength): ...
+def dquoteEscape(param):
+    """Return param, or "param" if ',' or ';' or ':' is in param."""
+    ...
+def foldOneLine(outbuf, input, lineLength: int = 75) -> None:
+    """
+    Folding line procedure that ensures multi-byte utf-8 sequences are not
+    broken across lines
+
+    TO-DO: This all seems odd. Is it still needed, especially in python3?
+    """
+    ...
+def defaultSerialize(obj, buf, lineLength):
+    """Encode and fold obj and its children, write to buf or return a string."""
+    ...
 
 class Stack:
     stack: Incomplete
@@ -341,9 +395,28 @@ class Stack:
 
 def readComponents(
     streamOrString, validate: bool = False, transform: bool = True, ignoreUnreadable: bool = False, allowQP: bool = False
-) -> Iterator[Component]: ...
-def readOne(stream, validate: bool = False, transform: bool = True, ignoreUnreadable: bool = False, allowQP: bool = False): ...
-def registerBehavior(behavior, name=None, default: bool = False, id=None) -> None: ...
-def getBehavior(name, id=None): ...
-def newFromBehavior(name, id=None): ...
+) -> Iterator[Component]:
+    """Generate one Component at a time from a stream."""
+    ...
+def readOne(stream, validate: bool = False, transform: bool = True, ignoreUnreadable: bool = False, allowQP: bool = False):
+    """Return the first component from stream."""
+    ...
+def registerBehavior(behavior, name=None, default: bool = False, id=None) -> None:
+    """
+    Register the given behavior.
+
+    If default is True (or if this is the first version registered with this
+    name), the version will be the default if no id is given.
+    """
+    ...
+def getBehavior(name, id=None):
+    """
+    Return a matching behavior if it exists, or None.
+
+    If id is None, return the default for name.
+    """
+    ...
+def newFromBehavior(name, id=None):
+    """Given a name, return a behaviored ContentLine or Component."""
+    ...
 def backslashEscape(s): ...

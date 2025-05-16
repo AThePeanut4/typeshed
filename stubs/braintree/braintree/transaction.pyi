@@ -204,7 +204,32 @@ class Transaction(Resource):
     @staticmethod
     def clone_transaction(transaction_id, params): ...
     @staticmethod
-    def credit(params=None): ...
+    def credit(params=None):
+        """
+        Creates a transaction of type Credit.
+
+        Amount is required. Also, a credit card,
+        customer_id or payment_method_token is required. ::
+
+            result = braintree.Transaction.credit({
+                "amount": "100.00",
+                "payment_method_token": "my_token"
+            })
+
+            result = braintree.Transaction.credit({
+                "amount": "100.00",
+                "credit_card": {
+                    "number": "4111111111111111",
+                    "expiration_date": "12/2012"
+                }
+            })
+
+            result = braintree.Transaction.credit({
+                "amount": "100.00",
+                "customer_id": "my_customer_id"
+            })
+        """
+        ...
     @staticmethod
     def find(transaction_id):
         """
@@ -216,15 +241,70 @@ class Transaction(Resource):
         """
         ...
     @staticmethod
-    def refund(transaction_id, amount_or_options=None): ...
+    def refund(transaction_id, amount_or_options=None):
+        """
+        Refunds an existing transaction.
+
+        It expects a transaction_id.::
+
+            result = braintree.Transaction.refund("my_transaction_id")
+        """
+        ...
     @staticmethod
-    def sale(params=None): ...
+    def sale(params=None):
+        """
+        Creates a transaction of type Sale. Amount is required. Also, a credit card,
+        customer_id or payment_method_token is required. ::
+
+            result = braintree.Transaction.sale({
+                "amount": "100.00",
+                "payment_method_token": "my_token"
+            })
+
+            result = braintree.Transaction.sale({
+                "amount": "100.00",
+                "credit_card": {
+                    "number": "4111111111111111",
+                    "expiration_date": "12/2012"
+                }
+            })
+
+            result = braintree.Transaction.sale({
+                "amount": "100.00",
+                "customer_id": "my_customer_id"
+            })
+        """
+        ...
     @staticmethod
     def search(*query): ...
     @staticmethod
-    def submit_for_settlement(transaction_id, amount=None, params=None): ...
+    def submit_for_settlement(transaction_id, amount=None, params=None):
+        """
+        Submits an authorized transaction for settlement.
+
+        Requires the transaction id::
+
+            result = braintree.Transaction.submit_for_settlement("my_transaction_id")
+        """
+        ...
     @staticmethod
-    def update_details(transaction_id, params=None): ...
+    def update_details(transaction_id, params=None):
+        """
+        Updates existing details for transaction submitted_for_settlement.
+
+        Requires the transaction id::
+
+            result = braintree.Transaction.update_details("my_transaction_id", {
+                "amount": "100.00",
+                "order_id": "123",
+                "descriptor": {
+                    "name": "123*123456789012345678",
+                    "phone": "3334445555",
+                    "url": "url.com"
+                }
+            )
+        """
+        ...
     @staticmethod
     def void(transaction_id):
         """
@@ -274,13 +354,29 @@ class Transaction(Resource):
     @staticmethod
     def package_tracking_signature(): ...
     @staticmethod
-    def package_tracking(transaction_id, params=None): ...
+    def package_tracking(transaction_id, params=None):
+        """
+        Creates a request to send package tracking information for a transaction which has already submitted for settlement.
+
+        Requires the transaction id of the transaction and the package tracking request details::
+
+            result = braintree.Transaction.package_tracking("my_transaction_id", params )
+        """
+        ...
     @staticmethod
     def update_details_signature(): ...
     @staticmethod
     def refund_signature(): ...
     @staticmethod
-    def submit_for_partial_settlement(transaction_id, amount, params=None): ...
+    def submit_for_partial_settlement(transaction_id, amount, params=None):
+        """
+        Creates a partial settlement transaction for an authorized transaction
+
+        Requires the transaction id of the authorized transaction and an amount::
+
+            result = braintree.Transaction.submit_for_partial_settlement("my_transaction_id", "20.00")
+        """
+        ...
     amount: Decimal
     tax_amount: Decimal | None
     discount_amount: Decimal | None

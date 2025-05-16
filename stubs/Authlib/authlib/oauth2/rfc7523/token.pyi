@@ -30,7 +30,26 @@ class JWTBearerTokenGenerator:
     @staticmethod
     def get_allowed_scope(client, scope): ...
     @staticmethod
-    def get_sub_value(user): ...
+    def get_sub_value(user):
+        """
+        Return user's ID as ``sub`` value in token payload. For instance::
+
+        @staticmethod
+        def get_sub_value(user):
+            return str(user.id)
+        """
+        ...
     def get_token_data(self, grant_type, client, expires_in, user=None, scope=None): ...
-    def generate(self, grant_type, client, user=None, scope=None, expires_in=None): ...
+    def generate(self, grant_type, client, user=None, scope=None, expires_in=None):
+        """
+        Generate a bearer token for OAuth 2.0 authorization token endpoint.
+
+        :param client: the client that making the request.
+        :param grant_type: current requested grant_type.
+        :param user: current authorized user.
+        :param expires_in: if provided, use this value as expires_in.
+        :param scope: current requested scope.
+        :return: Token dict
+        """
+        ...
     def __call__(self, grant_type, client, user=None, scope=None, expires_in=None, include_refresh_token: bool = True): ...

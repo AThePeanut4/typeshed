@@ -125,10 +125,28 @@ class PDFDocument(PDFObject):
     def getAvailableFonts(self): ...
     __accum__: Incomplete
     def format(self): ...
-    def hasForm(self, name): ...
-    def getFormBBox(self, name, boxType: str = "MediaBox"): ...
-    def getXObjectName(self, name): ...
-    def xobjDict(self, formnames): ...
+    def hasForm(self, name):
+        """test for existence of named form"""
+        ...
+    def getFormBBox(self, name, boxType: str = "MediaBox"):
+        """
+        get the declared bounding box of the form as a list.
+        If you specify a different PDF box definition (e.g. the
+        ArtBox) and it has one, that's what you'll get.
+        """
+        ...
+    def getXObjectName(self, name):
+        """
+        Lets canvas find out what form is called internally.
+        Never mind whether it is defined yet or not.
+        """
+        ...
+    def xobjDict(self, formnames):
+        """
+        construct an xobject dict (for inclusion in a resource dict, usually)
+        from a list of form names (images not yet supported)
+        """
+        ...
     def Reference(self, obj, name=None): ...
 
 PDFtrue: str
@@ -165,7 +183,9 @@ def PDFName(data, lo="!", hi="~"): ...
 class PDFDictionary(PDFObject):
     multiline: bool
     dict: Incomplete
-    def __init__(self, dict=None) -> None: ...
+    def __init__(self, dict=None) -> None:
+        """dict should be namestring to value eg "a": 122 NOT pdfname to value NOT "/a":122"""
+        ...
     def __setitem__(self, name, value) -> None: ...
     def __getitem__(self, a): ...
     def __contains__(self, a) -> bool: ...
@@ -370,7 +390,56 @@ class PDFPageLabel(PDFCatalog):
     S: Incomplete
     St: Incomplete
     P: Incomplete
-    def __init__(self, style=None, start=None, prefix=None) -> None: ...
+    def __init__(self, style=None, start=None, prefix=None) -> None:
+        """
+        A PDFPageLabel changes the style of page numbering as displayed in a PDF
+        viewer. PDF page labels have nothing to do with 'physical' page numbers
+        printed on a canvas, but instead influence the 'logical' page numbers
+        displayed by PDF viewers. However, when using roman numerals (i, ii,
+        iii...) or page prefixes for appendecies (A.1, A.2...) on the physical
+        pages PDF page labels are necessary to change the logical page numbers
+        displayed by the PDF viewer to match up with the physical numbers. A
+        PDFPageLabel changes the properties of numbering at the page on which it
+        appears (see the class 'PDFPageLabels' for specifying where a PDFPageLabel
+        is associated) and all subsequent pages, until a new PDFPageLabel is
+        encountered.
+
+        The arguments to this initialiser determine the properties of all
+        subsequent page labels. 'style' determines the numberings style, arabic,
+        roman, letters; 'start' specifies the starting number; and 'prefix' any
+        prefix to be applied to the page numbers. All these arguments can be left
+        out or set to None.
+
+        * style:
+
+            - None:                       No numbering, can be used to display the prefix only.
+            - PDFPageLabel.ARABIC:        Use arabic numbers: 1, 2, 3, 4...
+            - PDFPageLabel.ROMAN_UPPER:   Use upper case roman numerals: I, II, III...
+            - PDFPageLabel.ROMAN_LOWER:   Use lower case roman numerals: i, ii, iii...
+            - PDFPageLabel.LETTERS_UPPER: Use upper case letters: A, B, C, D...
+            - PDFPageLabel.LETTERS_LOWER: Use lower case letters: a, b, c, d...
+
+        * start:
+
+            -   An integer specifying the starting number for this PDFPageLabel. This
+                can be used when numbering style changes to reset the page number back
+                to one, ie from roman to arabic, or from arabic to appendecies. Can be
+                any positive integer or None. I'm not sure what the effect of
+                specifying None is, probably that page numbering continues with the
+                current sequence, I'd have to check the spec to clarify though.
+
+        * prefix:
+
+            -   A string which is prefixed to the page numbers. Can be used to display
+                appendecies in the format: A.1, A.2, ..., B.1, B.2, ... where a
+                PDFPageLabel is used to set the properties for the first page of each
+                appendix to restart the page numbering at one and set the prefix to the
+                appropriate letter for current appendix. The prefix can also be used to
+                display text only, if the 'style' is set to None. This can be used to
+                display strings such as 'Front', 'Back', or 'Cover' for the covers on
+                books.
+        """
+        ...
     def __lt__(self, oth): ...
 
 def testpage(document) -> None: ...
@@ -423,7 +492,9 @@ class PDFOutlines(PDFObject):
     buildtree: Incomplete
     closedict: Incomplete
     def __init__(self) -> None: ...
-    def addOutlineEntry(self, destinationname, level: int = 0, title=None, closed=None) -> None: ...
+    def addOutlineEntry(self, destinationname, level: int = 0, title=None, closed=None) -> None:
+        """destinationname of None means "close the tree" """
+        ...
     def setDestinations(self, destinationtree) -> None: ...
     def format(self, document): ...
     def setNames(self, canvas, *nametree) -> None: ...
@@ -435,10 +506,14 @@ class PDFOutlines(PDFObject):
         ...
     first: Incomplete
     count: int
-    def prepare(self, document, canvas) -> None: ...
+    def prepare(self, document, canvas) -> None:
+        """prepare all data structures required for save operation (create related objects)"""
+        ...
     def maketree(self, document, destinationtree, Parent=None, toplevel: int = 0): ...
 
-def count(tree, closedict=None): ...
+def count(tree, closedict=None):
+    """utility for outline: recursively count leaves in a tuple/list tree"""
+    ...
 
 class PDFInfo(PDFObject):
     """

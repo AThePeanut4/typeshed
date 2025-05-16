@@ -25,8 +25,21 @@ class BaseLTOLabel(Standard39):
     label: Incomplete
     def __init__(
         self, prefix: str = "", number=None, subtype: str = "1", border=None, checksum: bool = False, availheight=None
-    ) -> None: ...
-    def drawOn(self, canvas, x, y) -> None: ...
+    ) -> None:
+        """
+        Initializes an LTO label.
+
+        prefix : Up to six characters from [A-Z][0-9]. Defaults to "".
+        number : Label's number or None. Defaults to None.
+        subtype : LTO subtype string , e.g. "1" for LTO1. Defaults to "1".
+        border : None, or the width of the label's border. Defaults to None.
+        checksum : Boolean indicates if checksum char has to be printed. Defaults to False.
+        availheight : Available height on the label, or None for automatic. Defaults to None.
+        """
+        ...
+    def drawOn(self, canvas, x, y) -> None:
+        """Draws the LTO label onto the canvas."""
+        ...
 
 class VerticalLTOLabel(BaseLTOLabel):
     """A class for LTO labels with rectangular blocks around the tape identifier."""

@@ -1,3 +1,5 @@
+"""A frame is a container for content on a page."""
+
 from typing import Literal
 
 from reportlab.pdfgen.canvas import Canvas

@@ -179,7 +179,12 @@ class Command(_Command):
     command_consumes_arguments: bool
     distribution: Distribution
     # Any: Dynamic command subclass attributes
-    def __init__(self, dist: Distribution, **kw: Any) -> None: ...
+    def __init__(self, dist: Distribution, **kw: Any) -> None:
+        """
+        Construct the command for dist, updating
+        vars(self) with any keyword parameters.
+        """
+        ...
     # Note: Commands that setuptools doesn't re-expose are considered deprecated (they must be imported from distutils directly)
     # So we're not listing them here. This list comes directly from the setuptools/command folder. Minus the test command.
     @overload  # type: ignore[override]

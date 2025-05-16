@@ -571,9 +571,52 @@ class Connection(AbstractBase, metaclass=abc.ABCMeta):
         ...
     def channel(
         self, channel_number: int | None = None, on_open_callback: Callable[[Channel], object] | None = None
-    ) -> Channel: ...
-    def update_secret(self, new_secret, reason, callback=None) -> None: ...
-    def close(self, reply_code: int = 200, reply_text: str = "Normal shutdown") -> None: ...
+    ) -> Channel:
+        """
+        Create a new channel with the next available channel number or pass
+        in a channel number to use. Must be non-zero if you would like to
+        specify but it is recommended that you let Pika manage the channel
+        numbers.
+
+        :param int channel_number: The channel number to use, defaults to the
+                                   next available.
+        :param callable on_open_callback: The callback when the channel is
+            opened.  The callback will be invoked with the `Channel` instance
+            as its only argument.
+        :rtype: pika.channel.Channel
+        """
+        ...
+    def update_secret(self, new_secret, reason, callback=None) -> None:
+        """
+        RabbitMQ AMQP extension - This method updates the secret used to authenticate this connection. 
+        It is used when secrets have an expiration date and need to be renewed, like OAuth 2 tokens.
+        Pass a callback to be notified of the response from the server.
+
+        :param string new_secret: The new secret
+        :param string reason: The reason for the secret update
+        :param callable callback: Callback to call on
+            `Connection.UpdateSecretOk`, having the signature
+            `callback(pika.frame.Method)`, where the method frame's
+            `method` member is of type `pika.spec.Connection.UpdateSecretOk`
+
+        :raises pika.exceptions.ConnectionWrongStateError: if connection is
+            not open.
+        """
+        ...
+    def close(self, reply_code: int = 200, reply_text: str = "Normal shutdown") -> None:
+        """
+        Disconnect from RabbitMQ. If there are any open channels, it will
+        attempt to close them prior to fully disconnecting. Channels which
+        have active consumers will attempt to send a Basic.Cancel to RabbitMQ
+        to cleanly stop the delivery of messages prior to closing the channel.
+
+        :param int reply_code: The code number for the close
+        :param str reply_text: The text reason for the close
+
+        :raises pika.exceptions.ConnectionWrongStateError: if connection is
+            closed or closing.
+        """
+        ...
     @property
     def is_closed(self) -> bool:
         """Returns a boolean reporting the current connection state."""

@@ -668,7 +668,31 @@ ANY: Any
 
 def create_autospec(
     spec: Any, spec_set: Any = False, instance: Any = False, _parent=None, _name=None, *, unsafe: bool = False, **kwargs: Any
-) -> Any: ...
+) -> Any:
+    """
+    Create a mock object using another object as a spec. Attributes on the
+    mock will use the corresponding attribute on the `spec` object as their
+    spec.
+
+    Functions or methods being mocked will have their arguments checked
+    to check that they are called with the correct signature.
+
+    If `spec_set` is True then attempting to set attributes that don't exist
+    on the spec object will raise an `AttributeError`.
+
+    If a class is used as a spec then the return value of the mock (the
+    instance of the class) will have the same spec. You can use a class as the
+    spec for an instance object by passing `instance=True`. The returned mock
+    will only be callable if instances of the mock are callable.
+
+    `create_autospec` will raise a `RuntimeError` if passed some common
+    misspellings of the arguments autospec and spec_set. Pass the argument
+    `unsafe` with the value True to disable that check.
+
+    `create_autospec` also takes arbitrary keyword arguments that are passed to
+    the constructor of the created mock.
+    """
+    ...
 
 class _SpecState:
     spec: Any
@@ -679,7 +703,19 @@ class _SpecState:
     name: Any
     def __init__(self, spec: Any, spec_set: Any = False, parent=None, name=None, ids=None, instance: Any = False) -> None: ...
 
-def mock_open(mock=None, read_data: Any = "") -> Any: ...
+def mock_open(mock=None, read_data: Any = "") -> Any:
+    """
+    A helper function to create a mock to replace the use of `open`. It works
+    for `open` called directly or used as a context manager.
+
+    The `mock` argument is the mock object to configure. If `None` (the
+    default) then a `MagicMock` will be created for you, with the API limited
+    to methods or attributes available on standard file handles.
+
+    `read_data` is a string for the `read`, `readline` and `readlines` of the
+    file handle to return.  This is an empty string by default.
+    """
+    ...
 
 class PropertyMock(Mock):
     """

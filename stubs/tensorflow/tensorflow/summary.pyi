@@ -364,11 +364,231 @@ def image(
     """
     ...
 @contextmanager
-def record_if(condition: bool | tf.Tensor | Callable[[], bool]) -> Generator[None]: ...
-def scalar(name: str, data: float | tf.Tensor, step: int | tf.Tensor | None = None, description: str | None = None) -> bool: ...
-def should_record_summaries() -> bool: ...
-def text(name: str, data: str | tf.Tensor, step: int | tf.Tensor | None = None, description: str | None = None) -> bool: ...
-def trace_export(name: str, step: int | tf.Tensor | None = None, profiler_outdir: str | None = None) -> None: ...
-def trace_off() -> None: ...
-def trace_on(graph: bool = True, profiler: bool = False, profiler_outdir: str | None = None) -> None: ...
-def write(tag: str, tensor: tf.Tensor, step: int | tf.Tensor | None = None, metadata=None, name: str | None = None) -> bool: ...
+def record_if(condition: bool | tf.Tensor | Callable[[], bool]) -> Generator[None]:
+    """
+    Sets summary recording on or off per the provided boolean value.
+
+    The provided value can be a python boolean, a scalar boolean Tensor, or
+    or a callable providing such a value; if a callable is passed it will be
+    invoked on-demand to determine whether summary writing will occur.  Note that
+    when calling record_if() in an eager mode context, if you intend to provide a
+    varying condition like `step % 100 == 0`, you must wrap this in a
+    callable to avoid immediate eager evaluation of the condition.  In particular,
+    using a callable is the only way to have your condition evaluated as part of
+    the traced body of an @tf.function that is invoked from within the
+    `record_if()` context.
+
+    Args:
+      condition: can be True, False, a bool Tensor, or a callable providing such.
+
+    Yields:
+      Returns a context manager that sets this value on enter and restores the
+      previous value on exit.
+    """
+    ...
+def scalar(name: str, data: float | tf.Tensor, step: int | tf.Tensor | None = None, description: str | None = None) -> bool:
+    """
+    Write a scalar summary.
+
+    See also `tf.summary.image`, `tf.summary.histogram`,
+    `tf.summary.SummaryWriter`.
+
+    Writes simple numeric values for later analysis in TensorBoard.  Writes go to
+    the current default summary writer. Each summary point is associated with an
+    integral `step` value. This enables the incremental logging of time series
+    data.  A common usage of this API is to log loss during training to produce
+    a loss curve.
+
+    For example:
+
+    ```python
+    test_summary_writer = tf.summary.create_file_writer('test/logdir')
+    with test_summary_writer.as_default():
+        tf.summary.scalar('loss', 0.345, step=1)
+        tf.summary.scalar('loss', 0.234, step=2)
+        tf.summary.scalar('loss', 0.123, step=3)
+    ```
+
+    Multiple independent time series may be logged by giving each series a unique
+    `name` value.
+
+    See [Get started with
+    TensorBoard](https://www.tensorflow.org/tensorboard/get_started)
+    for more examples of effective usage of `tf.summary.scalar`.
+
+    In general, this API expects that data points are logged with a monotonically
+    increasing step value. Duplicate points for a single step or points logged out
+    of order by step are not guaranteed to display as desired in TensorBoard.
+
+    Arguments:
+      name: A name for this summary. The summary tag used for TensorBoard will be
+        this name prefixed by any active name scopes.
+      data: A real numeric scalar value, convertible to a `float32` Tensor.
+      step: Explicit `int64`-castable monotonic step value for this summary. If
+        omitted, this defaults to `tf.summary.experimental.get_step()`, which must
+        not be None.
+      description: Optional long-form description for this summary, as a constant
+        `str`. Markdown is supported. Defaults to empty.
+
+    Returns:
+      True on success, or false if no summary was written because no default
+      summary writer was available.
+
+    Raises:
+      ValueError: if a default writer exists, but no step was provided and
+        `tf.summary.experimental.get_step()` is None.
+    """
+    ...
+def should_record_summaries() -> bool:
+    """
+    Returns boolean Tensor which is True if summaries will be recorded.
+
+    If no default summary writer is currently registered, this always returns
+    False. Otherwise, this reflects the recording condition has been set via
+    `tf.summary.record_if()` (except that it may return False for some replicas
+    when using `tf.distribute.Strategy`). If no recording condition is active,
+    it defaults to True.
+    """
+    ...
+def text(name: str, data: str | tf.Tensor, step: int | tf.Tensor | None = None, description: str | None = None) -> bool:
+    r"""
+    Write a text summary.
+
+    See also `tf.summary.scalar`, `tf.summary.SummaryWriter`, `tf.summary.image`.
+
+    Writes text Tensor values for later visualization and analysis in TensorBoard.
+    Writes go to the current default summary writer.  Like `tf.summary.scalar`
+    points, text points are each associated with a `step` and a `name`.
+    All the points with the same `name` constitute a time series of text values.
+
+    For Example:
+    ```python
+    test_summary_writer = tf.summary.create_file_writer('test/logdir')
+    with test_summary_writer.as_default():
+        tf.summary.text('first_text', 'hello world!', step=0)
+        tf.summary.text('first_text', 'nice to meet you!', step=1)
+    ```
+
+    The text summary can also contain Markdown, and TensorBoard will render the
+    text
+    as such.
+
+    ```python
+    with test_summary_writer.as_default():
+        text_data = '''
+              | *hello* | *there* |
+              |---------|---------|
+              | this    | is      |
+              | a       | table   |
+        '''
+        text_data = '\n'.join(l.strip() for l in text_data.splitlines())
+        tf.summary.text('markdown_text', text_data, step=0)
+    ```
+
+    Since text is Tensor valued, each text point may be a Tensor of string values.
+    rank-1 and rank-2 Tensors are rendered as tables in TensorBoard.  For higher
+    ranked
+    Tensors, you'll see just a 2D slice of the data.  To avoid this, reshape the
+    Tensor
+    to at most rank-2 prior to passing it to this function.
+
+    Demo notebook at
+    ["Displaying text data in
+    TensorBoard"](https://www.tensorflow.org/tensorboard/text_summaries).
+
+    Arguments:
+      name: A name for this summary. The summary tag used for TensorBoard will be
+        this name prefixed by any active name scopes.
+      data: A UTF-8 string Tensor value.
+      step: Explicit `int64`-castable monotonic step value for this summary. If
+        omitted, this defaults to `tf.summary.experimental.get_step()`, which must
+        not be None.
+      description: Optional long-form description for this summary, as a constant
+        `str`. Markdown is supported. Defaults to empty.
+
+    Returns:
+      True on success, or false if no summary was emitted because no default
+      summary writer was available.
+
+    Raises:
+      ValueError: if a default writer exists, but no step was provided and
+        `tf.summary.experimental.get_step()` is None.
+    """
+    ...
+def trace_export(name: str, step: int | tf.Tensor | None = None, profiler_outdir: str | None = None) -> None:
+    """
+    Stops and exports the active trace as a Summary and/or profile file.
+
+    Stops the trace and exports all metadata collected during the trace to the
+    default SummaryWriter, if one has been set.
+
+    Args:
+      name: A name for the summary to be written.
+      step: Explicit `int64`-castable monotonic step value for this summary. If
+        omitted, this defaults to `tf.summary.experimental.get_step()`, which must
+        not be None.
+      profiler_outdir: This arg is a no-op. Please set this in trace_on().
+
+    Raises:
+      ValueError: if a default writer exists, but no step was provided and
+        `tf.summary.experimental.get_step()` is None.
+    """
+    ...
+def trace_off() -> None:
+    """Stops the current trace and discards any collected information."""
+    ...
+def trace_on(graph: bool = True, profiler: bool = False, profiler_outdir: str | None = None) -> None:
+    """
+    Starts a trace to record computation graphs and profiling information.
+
+    Must be invoked in eager mode.
+
+    When enabled, TensorFlow runtime will collect information that can later be
+    exported and consumed by TensorBoard. The trace is activated across the entire
+    TensorFlow runtime and affects all threads of execution.
+
+    To stop the trace and export the collected information, use
+    `tf.summary.trace_export`. To stop the trace without exporting, use
+    `tf.summary.trace_off`.
+
+    Args:
+      graph: If True, enables collection of executed graphs. It includes ones from
+        tf.function invocation and ones from the legacy graph mode. The default is
+        True.
+      profiler: If True, enables the advanced profiler. Enabling profiler
+        implicitly enables the graph collection. The profiler may incur a high
+        memory overhead. The default is False.
+      profiler_outdir: Output directory for profiler. It is required when profiler
+        is enabled when trace was started. Otherwise, it is ignored.
+    """
+    ...
+def write(tag: str, tensor: tf.Tensor, step: int | tf.Tensor | None = None, metadata=None, name: str | None = None) -> bool:
+    """
+    Writes a generic summary to the default SummaryWriter if one exists.
+
+    This exists primarily to support the definition of type-specific summary ops
+    like scalar() and image(), and is not intended for direct use unless defining
+    a new type-specific summary op.
+
+    Args:
+      tag: string tag used to identify the summary (e.g. in TensorBoard), usually
+        generated with `tf.summary.summary_scope`
+      tensor: the Tensor holding the summary data to write or a callable that
+        returns this Tensor. If a callable is passed, it will only be called when
+        a default SummaryWriter exists and the recording condition specified by
+        `record_if()` is met.
+      step: Explicit `int64`-castable monotonic step value for this summary. If
+        omitted, this defaults to `tf.summary.experimental.get_step()`, which must
+        not be None.
+      metadata: Optional SummaryMetadata, as a proto or serialized bytes
+      name: Optional string name for this op.
+
+    Returns:
+      True on success, or false if no summary was written because no default
+      summary writer was available.
+
+    Raises:
+      ValueError: if a default writer exists, but no step was provided and
+        `tf.summary.experimental.get_step()` is None.
+    """
+    ...

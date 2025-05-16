@@ -78,10 +78,48 @@ class DAVObject:
         """
         ...
     def get_property(self, prop, use_cached: bool = False, **passthrough) -> Incomplete | None: ...
-    def get_properties(self, props=None, depth: int = 0, parse_response_xml: bool = True, parse_props: bool = True): ...
-    def set_properties(self, props=None) -> Self: ...
-    def save(self) -> Self: ...
-    def delete(self) -> None: ...
+    def get_properties(self, props=None, depth: int = 0, parse_response_xml: bool = True, parse_props: bool = True):
+        """
+        Get properties (PROPFIND) for this object.
+
+        With parse_response_xml and parse_props set to True a
+        best-attempt will be done on decoding the XML we get from the
+        server - but this works only for properties that don't have
+        complex types.  With parse_response_xml set to False, a
+        DAVResponse object will be returned, and it's up to the caller
+        to decode.  With parse_props set to false but
+        parse_response_xml set to true, xml elements will be returned
+        rather than values.
+
+        Parameters:
+         * props = [dav.ResourceType(), dav.DisplayName(), ...]
+
+        Returns:
+         * {proptag: value, ...}
+        """
+        ...
+    def set_properties(self, props=None) -> Self:
+        """
+        Set properties (PROPPATCH) for this object.
+
+         * props = [dav.DisplayName('name'), ...]
+
+        Returns:
+         * self
+        """
+        ...
+    def save(self) -> Self:
+        """
+        Save the object. This is an abstract method, that all classes
+        derived from DAVObject implement.
+
+        Returns:
+         * self
+        """
+        ...
+    def delete(self) -> None:
+        """Delete the object."""
+        ...
 
 class CalendarSet(DAVObject):
     """A CalendarSet is a set of calendars."""
@@ -95,8 +133,35 @@ class CalendarSet(DAVObject):
         ...
     def make_calendar(
         self, name: str | None = None, cal_id: str | None = None, supported_calendar_component_set=None
-    ) -> Calendar: ...
-    def calendar(self, name: str | None = None, cal_id: str | None = None) -> Calendar: ...
+    ) -> Calendar:
+        """
+        Utility method for creating a new calendar.
+
+        Parameters:
+         * name: the display name of the new calendar
+         * cal_id: the uuid of the new calendar
+         * supported_calendar_component_set: what kind of objects
+           (EVENT, VTODO, VFREEBUSY, VJOURNAL) the calendar should handle.
+           Should be set to ['VTODO'] when creating a task list in Zimbra -
+           in most other cases the default will be OK.
+
+        Returns:
+         * Calendar(...)-object
+        """
+        ...
+    def calendar(self, name: str | None = None, cal_id: str | None = None) -> Calendar:
+        """
+        The calendar method will return a calendar object.  If it gets a cal_id
+        but no name, it will not initiate any communication with the server
+
+        Parameters:
+         * name: return the calendar with this display name
+         * cal_id: return the calendar with this calendar id or URL
+
+        Returns:
+         * Calendar(...)-object
+        """
+        ...
 
 class Principal(DAVObject):
     """
@@ -129,9 +194,21 @@ class Principal(DAVObject):
         ...
     def make_calendar(
         self, name: str | None = None, cal_id: str | None = None, supported_calendar_component_set=None
-    ) -> Calendar: ...
-    def calendar(self, name: str | None = None, cal_id: str | None = None, cal_url: str | None = None) -> Calendar: ...
-    def get_vcal_address(self) -> _VCalAddress: ...
+    ) -> Calendar:
+        """
+        Convenience method, bypasses the self.calendar_home_set object.
+        See CalendarSet.make_calendar for details.
+        """
+        ...
+    def calendar(self, name: str | None = None, cal_id: str | None = None, cal_url: str | None = None) -> Calendar:
+        """
+        The calendar method will return a calendar object.
+        It will not initiate any communication with the server.
+        """
+        ...
+    def get_vcal_address(self) -> _VCalAddress:
+        """Returns the principal, as an icalendar.vCalAddress object"""
+        ...
     calendar_home_set: CalendarSet  # can also be set to anything URL.objectify() accepts
     def freebusy_request(self, dtstart, dtend, attendees): ...
     def calendar_user_address_set(self) -> list[str]:
@@ -477,15 +554,67 @@ class Calendar(DAVObject):
         ...
     def todos(
         self, sort_keys: Iterable[str] = ("due", "priority"), include_completed: bool = False, sort_key: str | None = None
-    ) -> list[Todo]: ...
-    def event_by_url(self, href, data=None) -> Event: ...
-    def object_by_uid(self, uid: str, comp_filter: CompFilter | None = None, comp_class: _CompClass | None = None) -> Event: ...
+    ) -> list[Todo]:
+        """
+        fetches a list of todo events (refactored to a wrapper around search)
+
+        Parameters:
+         * sort_keys: use this field in the VTODO for sorting (iterable of
+           lower case string, i.e. ('priority','due')).
+         * include_completed: boolean -
+           by default, only pending tasks are listed
+         * sort_key: DEPRECATED, for backwards compatibility with version 0.4.
+        """
+        ...
+    def event_by_url(self, href, data=None) -> Event:
+        """Returns the event with the given URL"""
+        ...
+    def object_by_uid(self, uid: str, comp_filter: CompFilter | None = None, comp_class: _CompClass | None = None) -> Event:
+        """
+        Get one event from the calendar.
+
+        Parameters:
+         * uid: the event uid
+         * comp_class: filter by component type (Event, Todo, Journal)
+         * comp_filter: for backward compatibility
+
+        Returns:
+         * Event() or None
+        """
+        ...
     def todo_by_uid(self, uid: str) -> CalendarObjectResource: ...
     def event_by_uid(self, uid: str) -> CalendarObjectResource: ...
     def journal_by_uid(self, uid: str) -> CalendarObjectResource: ...
     event = event_by_uid
-    def events(self) -> list[Event]: ...
-    def objects_by_sync_token(self, sync_token=None, load_objects: bool = False) -> SynchronizableCalendarObjectCollection: ...
+    def events(self) -> list[Event]:
+        """
+        List all events from the calendar.
+
+        Returns:
+         * [Event(), ...]
+        """
+        ...
+    def objects_by_sync_token(self, sync_token=None, load_objects: bool = False) -> SynchronizableCalendarObjectCollection:
+        """
+        objects_by_sync_token aka objects
+
+        Do a sync-collection report, ref RFC 6578 and
+        https://github.com/python-caldav/caldav/issues/87
+
+        This method will return all objects in the calendar if no
+        sync_token is passed (the method should then be referred to as
+        "objects"), or if the sync_token is unknown to the server.  If
+        a sync-token known by the server is passed, it will return
+        objects that are added, deleted or modified since last time
+        the sync-token was set.
+
+        If load_objects is set to True, the objects will be loaded -
+        otherwise empty CalendarObjectResource objects will be returned.
+
+        This method will return a SynchronizableCalendarObjectCollection object, which is
+        an iterable.
+        """
+        ...
     objects = objects_by_sync_token
     def journals(self) -> list[Journal]:
         """
@@ -561,8 +690,18 @@ class CalendarObjectResource(DAVObject):
         parent=None,
         id=None,
         props=None,
-    ) -> None: ...
-    def add_organizer(self) -> None: ...
+    ) -> None:
+        """
+        CalendarObjectResource has an additional parameter for its constructor:
+         * data = "...", vCal data for the event
+        """
+        ...
+    def add_organizer(self) -> None:
+        """
+        goes via self.client, finds the principal, figures out the right attendee-format and adds an
+        organizer line to the event
+        """
+        ...
     def split_expanded(self) -> list[Self]: ...
     def expand_rrule(self, start: datetime.datetime, end: datetime.datetime) -> None:
         """
@@ -628,8 +767,15 @@ class CalendarObjectResource(DAVObject):
     def accept_invite(self, calendar=None) -> None: ...
     def decline_invite(self, calendar=None) -> None: ...
     def tentatively_accept_invite(self, calendar=None) -> None: ...
-    def copy(self, keep_uid: bool = False, new_parent=None) -> Self: ...
-    def load(self, only_if_unloaded: bool = False) -> Self: ...
+    def copy(self, keep_uid: bool = False, new_parent=None) -> Self:
+        """
+        Events, todos etc can be copied within the same calendar, to another
+        calendar or even to another caldav server
+        """
+        ...
+    def load(self, only_if_unloaded: bool = False) -> Self:
+        """(Re)load the object from the caldav server."""
+        ...
     def change_attendee_status(self, attendee=None, **kwargs) -> None: ...
     def save(
         self,
@@ -702,6 +848,15 @@ class Journal(CalendarObjectResource):
     ...
 
 class FreeBusy(CalendarObjectResource):
+    """
+    The `FreeBusy` object is used to represent a freebusy response from
+    the server.  __init__ is overridden, as a FreeBusy response has no
+    URL or ID.  The inheritated methods .save and .load is moot and
+    will probably throw errors (perhaps the class hierarchy should be
+    rethought, to prevent the FreeBusy from inheritating moot methods)
+
+    Update: With RFC6638 a freebusy object can have a URL and an ID.
+    """
     def __init__(self, parent, data, url: str | ParseResult | SplitResult | URL | None = None, id=None) -> None: ...
 
 class Todo(CalendarObjectResource):

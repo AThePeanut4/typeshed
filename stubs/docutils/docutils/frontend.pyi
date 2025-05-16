@@ -57,12 +57,36 @@ from docutils.utils import DependencyList
 
 __docformat__: str
 
-def store_multiple(option, opt, value, parser, *args, **kwargs) -> None: ...
-def read_config_file(option, opt, value, parser) -> None: ...
+def store_multiple(option, opt, value, parser, *args, **kwargs) -> None:
+    """
+    Store multiple values in `parser.values`.  (Option callback.)
+
+    Store `None` for each attribute named in `args`, and store the value for
+    each key (attribute name) in `kwargs`.
+    """
+    ...
+def read_config_file(option, opt, value, parser) -> None:
+    """Read a configuration file during option processing.  (Option callback.)"""
+    ...
 def validate_encoding(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
 def validate_encoding_error_handler(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
-def validate_encoding_and_error_handler(setting, value, option_parser, config_parser=None, config_section=None): ...
-def validate_boolean(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> bool: ...
+def validate_encoding_and_error_handler(setting, value, option_parser, config_parser=None, config_section=None):
+    """
+    Side-effect: if an error handler is included in the value, it is inserted
+    into the appropriate place as if it were a separate setting/option.
+    """
+    ...
+def validate_boolean(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> bool:
+    """
+    Check/normalize boolean settings:
+         True:  '1', 'on', 'yes', 'true'
+         False: '0', 'off', 'no','false', ''
+
+    All arguments except `value` are ignored
+    (kept for compatibility with "optparse" module).
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
 def validate_nonnegative_int(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> int: ...
 def validate_threshold(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> int: ...
 def validate_colon_separated_string_list(
@@ -70,7 +94,15 @@ def validate_colon_separated_string_list(
 ) -> list[str]: ...
 def validate_comma_separated_list(
     setting, value=None, option_parser=None, config_parser=None, config_section=None
-) -> list[str]: ...
+) -> list[str]:
+    """
+    Check/normalize list arguments (split at "," and strip whitespace).
+
+    All arguments except `value` are ignored
+    (kept for compatibility with "optparse" module).
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
 def validate_url_trailing_slash(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> str: ...
 def validate_dependency_file(
     setting, value=None, option_parser=None, config_parser=None, config_section=None
@@ -78,8 +110,25 @@ def validate_dependency_file(
 def validate_strip_class(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
 def validate_smartquotes_locales(
     setting, value=None, option_parser=None, config_parser=None, config_section=None
-) -> list[tuple[str, str]]: ...
-def make_paths_absolute(pathdict, keys, base_path=None) -> None: ...
+) -> list[tuple[str, str]]:
+    """
+    Check/normalize a comma separated list of smart quote definitions.
+
+    Return a list of (language-tag, quotes) string tuples.
+
+    All arguments except `value` are ignored
+    (kept for compatibility with "optparse" module).
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
+def make_paths_absolute(pathdict, keys, base_path=None) -> None:
+    """
+    Interpret filesystem path settings relative to the `base_path` given.
+
+    Paths are values in `pathdict` whose keys are in `keys`.  Get `keys` from
+    `OptionParser.relative_path_settings`.
+    """
+    ...
 def make_one_path_absolute(base_path, path) -> str: ...
 def filter_settings_spec(settings_spec, *exclude, **replace) -> tuple[Any, ...]:
     """

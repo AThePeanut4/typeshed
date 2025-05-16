@@ -25,7 +25,9 @@ class BarChartProperties(PropHolder):
 class BarChart(PlotArea):
     """Abstract base class, unusable by itself."""
     def makeSwatchSample(self, rowNo, x, y, width, height): ...
-    def getSeriesName(self, i, default=None): ...
+    def getSeriesName(self, i, default=None):
+        """return series name i or default"""
+        ...
     categoryAxis: Incomplete
     valueAxis: Incomplete
     barSpacing: int

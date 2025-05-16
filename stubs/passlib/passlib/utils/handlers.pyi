@@ -14,10 +14,79 @@ PADDED_B64_CHARS = PADDED_BASE64_CHARS
 UC_HEX_CHARS = UPPER_HEX_CHARS
 LC_HEX_CHARS = LOWER_HEX_CHARS
 
-def parse_mc2(hash, prefix, sep="$", handler=None): ...
-def parse_mc3(hash, prefix, sep="$", rounds_base: int = 10, default_rounds=None, handler=None): ...
-def render_mc2(ident, salt, checksum, sep="$"): ...
-def render_mc3(ident, rounds, salt, checksum, sep="$", rounds_base: int = 10): ...
+def parse_mc2(hash, prefix, sep="$", handler=None):
+    """
+    parse hash using 2-part modular crypt format.
+
+    this expects a hash of the format :samp:`{prefix}{salt}[${checksum}]`,
+    such as md5_crypt, and parses it into salt / checksum portions.
+
+    :arg hash: the hash to parse (bytes or unicode)
+    :arg prefix: the identifying prefix (unicode)
+    :param sep: field separator (unicode, defaults to ``$``).
+    :param handler: handler class to pass to error constructors.
+
+    :returns:
+        a ``(salt, chk | None)`` tuple.
+    """
+    ...
+def parse_mc3(hash, prefix, sep="$", rounds_base: int = 10, default_rounds=None, handler=None):
+    """
+    parse hash using 3-part modular crypt format.
+
+    this expects a hash of the format :samp:`{prefix}[{rounds}]${salt}[${checksum}]`,
+    such as sha1_crypt, and parses it into rounds / salt / checksum portions.
+    tries to convert the rounds to an integer,
+    and throws error if it has zero-padding.
+
+    :arg hash: the hash to parse (bytes or unicode)
+    :arg prefix: the identifying prefix (unicode)
+    :param sep: field separator (unicode, defaults to ``$``).
+    :param rounds_base:
+        the numeric base the rounds are encoded in (defaults to base 10).
+    :param default_rounds:
+        the default rounds value to return if the rounds field was omitted.
+        if this is ``None`` (the default), the rounds field is *required*.
+    :param handler: handler class to pass to error constructors.
+
+    :returns:
+        a ``(rounds : int, salt, chk | None)`` tuple.
+    """
+    ...
+def render_mc2(ident, salt, checksum, sep="$"):
+    """
+    format hash using 2-part modular crypt format; inverse of parse_mc2()
+
+    returns native string with format :samp:`{ident}{salt}[${checksum}]`,
+    such as used by md5_crypt.
+
+    :arg ident: identifier prefix (unicode)
+    :arg salt: encoded salt (unicode)
+    :arg checksum: encoded checksum (unicode or None)
+    :param sep: separator char (unicode, defaults to ``$``)
+
+    :returns:
+        config or hash (native str)
+    """
+    ...
+def render_mc3(ident, rounds, salt, checksum, sep="$", rounds_base: int = 10):
+    """
+    format hash using 3-part modular crypt format; inverse of parse_mc3()
+
+    returns native string with format :samp:`{ident}[{rounds}$]{salt}[${checksum}]`,
+    such as used by sha1_crypt.
+
+    :arg ident: identifier prefix (unicode)
+    :arg rounds: rounds field (int or None)
+    :arg salt: encoded salt (unicode)
+    :arg checksum: encoded checksum (unicode or None)
+    :param sep: separator char (unicode, defaults to ``$``)
+    :param rounds_base: base to encode rounds value (defaults to base 10)
+
+    :returns:
+        config or hash (native str)
+    """
+    ...
 
 class MinimalHandler(PasswordHash, metaclass=abc.ABCMeta):
     """
@@ -294,7 +363,17 @@ class HasManyIdents(GenericHandler):
     ident_aliases: ClassVar[dict[str, str] | None]
     ident: str  # type: ignore[misc]
     @classmethod
-    def using(cls, default_ident=None, ident=None, **kwds): ...  # type: ignore[override]
+    def using(cls, default_ident=None, ident=None, **kwds):
+        """
+        This mixin adds support for the following :meth:`~passlib.ifc.PasswordHash.using` keywords:
+
+        :param default_ident:
+            default identifier that will be used by resulting customized hasher.
+
+        :param ident:
+            supported as alternate alias for **default_ident**.
+        """
+        ...
     def __init__(self, ident=None, **kwds) -> None: ...
 
 class HasSalt(GenericHandler):
@@ -474,7 +553,9 @@ class HasRounds(GenericHandler):
     ): ...
     def __init__(self, rounds=None, **kwds) -> None: ...
     @classmethod
-    def bitsize(cls, rounds=None, vary_rounds: float = 0.1, **kwds): ...
+    def bitsize(cls, rounds=None, vary_rounds: float = 0.1, **kwds):
+        """[experimental method] return info about bitsizes of hash"""
+        ...
 
 class ParallelismMixin(GenericHandler):
     """mixin which provides common behavior for 'parallelism' setting"""

@@ -1,3 +1,5 @@
+""""""
+
 from typing import Any, NamedTuple
 
 class Operation(NamedTuple):
@@ -108,12 +110,56 @@ class Reader(Cursor):
         ...
     execution_time: Any
     entries: Any
-    def reset(self) -> None: ...
-    def search(self, attributes=None): ...
-    def search_object(self, entry_dn=None, attributes=None): ...
-    def search_level(self, attributes=None): ...
-    def search_subtree(self, attributes=None): ...
-    def search_paged(self, paged_size, paged_criticality: bool = True, generator: bool = True, attributes=None): ...
+    def reset(self) -> None:
+        """
+        Clear all the Reader parameters
+
+        
+        """
+        ...
+    def search(self, attributes=None):
+        """
+        Perform the LDAP search
+
+        :return: Entries found in search
+        """
+        ...
+    def search_object(self, entry_dn=None, attributes=None):
+        """
+        Perform the LDAP search operation SINGLE_OBJECT scope
+
+        :return: Entry found in search
+        """
+        ...
+    def search_level(self, attributes=None):
+        """
+        Perform the LDAP search operation with SINGLE_LEVEL scope
+
+        :return: Entries found in search
+        """
+        ...
+    def search_subtree(self, attributes=None):
+        """
+        Perform the LDAP search operation WHOLE_SUBTREE scope
+
+        :return: Entries found in search
+        """
+        ...
+    def search_paged(self, paged_size, paged_criticality: bool = True, generator: bool = True, attributes=None):
+        """
+        Perform a paged search, can be called as an Iterator
+
+        :param attributes: optional attributes to search
+        :param paged_size: number of entries returned in each search
+        :type paged_size: int
+        :param paged_criticality: specify if server must not execute the search if it is not capable of paging searches
+        :type paged_criticality: bool
+        :param generator: if True the paged searches are executed while generating the entries,
+                          if False all the paged searches are execute before returning the generator
+        :type generator: bool
+        :return: Entries found in search
+        """
+        ...
 
 class Writer(Cursor):
     entry_class: Any

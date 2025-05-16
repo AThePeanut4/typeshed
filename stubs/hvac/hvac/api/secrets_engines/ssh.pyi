@@ -1,3 +1,5 @@
+"""SSH vault secrets backend module."""
+
 from hvac.api.vault_api_base import VaultApiBase
 
 DEFAULT_MOUNT_POINT: str

@@ -42,5 +42,17 @@ class PDFImage:
         anchorAtXY: bool = False,
         showBoundary: bool = False,
         extraReturn=None,
-    ): ...
-    def format(self, document): ...
+    ):
+        """
+        Draw an Image into the specified rectangle.  If width and
+        height are omitted, they are calculated from the image size.
+        Also allow file names as well as images.  This allows a
+        caching mechanism
+        """
+        ...
+    def format(self, document):
+        """
+        Allow it to be used within pdfdoc framework.  This only
+        defines how it is stored, not how it is drawn later.
+        """
+        ...

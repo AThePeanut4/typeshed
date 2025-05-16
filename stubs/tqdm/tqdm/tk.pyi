@@ -130,8 +130,15 @@ class tqdm_tk(std_tqdm[_T]):
     def set_description(self, desc: str | None = None, refresh: bool | None = True) -> None: ...
     desc: Incomplete
     def set_description_str(self, desc: str | None = None, refresh: bool | None = True) -> None: ...
-    def cancel(self) -> None: ...
-    def reset(self, total=None) -> None: ...
+    def cancel(self) -> None:
+        """
+        `cancel_callback()` followed by `close()`
+        when close/cancel buttons clicked.
+        """
+        ...
+    def reset(self, total=None) -> None:
+        """
+        Resets to 0 iterations for repeated use.
 
         Parameters
         ----------

@@ -332,8 +332,61 @@ class Model(Layer[_InputT_contra, _OutputT_co]):
         ...
     def compute_metrics(
         self, x: TensorCompatible, y: TensorCompatible, y_pred: TensorCompatible, sample_weight=None
-    ) -> dict[str, float]: ...
-    def get_metrics_result(self) -> dict[str, float]: ...
+    ) -> dict[str, float]:
+        """
+        Update metric states and collect all metrics to be returned.
+
+        Subclasses can optionally override this method to provide custom metric
+        updating and collection logic. Custom metrics are not passed in
+        `compile()`, they can be created in `__init__` or `build`. They are
+        automatically tracked and returned by `self.metrics`.
+
+        Example:
+
+        ```python
+        class MyModel(Sequential):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.custom_metric = MyMetric(name="custom_metric")
+
+            def compute_metrics(self, x, y, y_pred, sample_weight):
+                # This super call updates metrics from `compile` and returns
+                # results for all metrics listed in `self.metrics`.
+                metric_results = super().compute_metrics(
+                    x, y, y_pred, sample_weight)
+
+                # `metric_results` contains the previous result for
+                # `custom_metric`, this is where we update it.
+                self.custom_metric.update_state(x, y, y_pred, sample_weight)
+                metric_results['custom_metric'] = self.custom_metric.result()
+                return metric_results
+        ```
+
+        Args:
+            x: Input data.
+            y: Target data.
+            y_pred: Predictions returned by the model output of `model.call(x)`.
+            sample_weight: Sample weights for weighting the loss function.
+
+        Returns:
+            A `dict` containing values that will be passed to
+            `keras.callbacks.CallbackList.on_train_batch_end()`. Typically,
+            the values of the metrics listed in `self.metrics` are returned.
+            Example: `{'loss': 0.2, 'accuracy': 0.7}`.
+        """
+        ...
+    def get_metrics_result(self) -> dict[str, float]:
+        """
+        Returns the model's metrics values as a dict.
+
+        If any of the metric result is a dict (containing multiple metrics),
+        each of them gets added to the top level returned dict of this method.
+
+        Returns:
+            A `dict` containing values of the metrics listed in `self.metrics`.
+            Example: `{'loss': 0.2, 'accuracy': 0.7}`.
+        """
+        ...
     def make_train_function(self, force: bool = False) -> Callable[[tf.data.Iterator[Incomplete]], dict[str, float]]: ...
     def fit(
         self,
@@ -503,7 +556,21 @@ class Model(Layer[_InputT_contra, _OutputT_co]):
     def get_config(self) -> dict[str, Any]: ...
     @classmethod
     def from_config(cls, config: dict[str, Any], custom_objects=None) -> Self: ...
-    def to_json(self, **kwargs: Any) -> str: ...
+    def to_json(self, **kwargs: Any) -> str:
+        """
+        Returns a JSON string containing the network configuration.
+
+        To load a network from a JSON save file, use
+        `keras.models.model_from_json(json_string, custom_objects={...})`.
+
+        Args:
+            **kwargs: Additional keyword arguments to be passed to
+                `json.dumps()`.
+
+        Returns:
+            A JSON string.
+        """
+        ...
     @property
     def weights(self) -> list[Variable]:
         """

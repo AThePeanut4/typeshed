@@ -41,7 +41,18 @@ class SocketConnectionMixin:
         ...
 
 class StreamingConnectionMixin:
-    def create_streaming_connection(self, protocol_factory, sock, on_done, ssl_context=None, server_hostname=None): ...
+    """
+    Implements
+    `.nbio_interface.AbstractIOServices.create_streaming_connection()` on
+    top of `.nbio_interface.AbstractFileDescriptorServices` and basic
+    `nbio_interface.AbstractIOServices` services.
+    """
+    def create_streaming_connection(self, protocol_factory, sock, on_done, ssl_context=None, server_hostname=None):
+        """
+        Implement
+        :py:meth:`.nbio_interface.AbstractIOServices.create_streaming_connection()`.
+        """
+        ...
 
 class _AsyncServiceAsyncHandle(AbstractIOReference):
     """

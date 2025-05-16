@@ -1,3 +1,14 @@
+"""
+passlib.bcrypt -- implementation of OpenBSD's BCrypt algorithm.
+
+TODO:
+
+* support 2x and altered-2a hashes?
+  http://www.openwall.com/lists/oss-security/2011/06/27/9
+
+* deal with lack of PY3-compatibile c-ext implementation
+"""
+
 from typing import Any, ClassVar
 
 import passlib.utils.handlers as uh

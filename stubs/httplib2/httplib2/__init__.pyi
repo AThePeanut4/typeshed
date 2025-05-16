@@ -65,7 +65,9 @@ class DigestAuthentication(Authentication):
     challenge: Any
     A1: Any
     def __init__(self, credentials, host, request_uri, headers, response, content, http) -> None: ...
-    def request(self, method, request_uri, headers, content, cnonce=None): ...
+    def request(self, method, request_uri, headers, content, cnonce=None):
+        """Modify the request headers"""
+        ...
     def response(self, response, content): ...
 
 class HmacDigestAuthentication(Authentication):
@@ -144,7 +146,26 @@ class ProxyInfo:
     bypass_hosts: Any
     def __init__(
         self, proxy_type, proxy_host, proxy_port, proxy_rdns: bool = True, proxy_user=None, proxy_pass=None, proxy_headers=None
-    ) -> None: ...
+    ) -> None:
+        """
+        Args:
+
+        proxy_type: The type of proxy server.  This must be set to one of
+        socks.PROXY_TYPE_XXX constants.  For example:  p =
+        ProxyInfo(proxy_type=socks.PROXY_TYPE_HTTP, proxy_host='localhost',
+        proxy_port=8000)
+        proxy_host: The hostname or IP address of the proxy server.
+        proxy_port: The port that the proxy server is running on.
+        proxy_rdns: If True (default), DNS queries will not be performed
+        locally, and instead, handed to the proxy to resolve.  This is useful
+        if the network does not allow resolution of non-local names. In
+        httplib2 0.9 and earlier, this defaulted to False.
+        proxy_user: The username used to authenticate with the proxy server.
+        proxy_pass: The password used to authenticate with the proxy server.
+        proxy_headers: Additional or modified headers for the proxy connect
+        request.
+        """
+        ...
     def astuple(self): ...
     def isgood(self): ...
     def applies_to(self, hostname): ...
@@ -247,12 +268,83 @@ class Http:
         disable_ssl_certificate_validation: bool = False,
         tls_maximum_version=None,
         tls_minimum_version=None,
-    ) -> None: ...
-    def close(self) -> None: ...
-    def add_credentials(self, name, password, domain: str = "") -> None: ...
-    def add_certificate(self, key, cert, domain, password=None) -> None: ...
-    def clear_credentials(self) -> None: ...
-    def request(self, uri, method: str = "GET", body=None, headers=None, redirections=5, connection_type=None): ...
+    ) -> None:
+        """
+        If 'cache' is a string then it is used as a directory name for
+        a disk cache. Otherwise it must be an object that supports the
+        same interface as FileCache.
+
+        All timeouts are in seconds. If None is passed for timeout
+        then Python's default timeout for sockets will be used. See
+        for example the docs of socket.setdefaulttimeout():
+        http://docs.python.org/library/socket.html#socket.setdefaulttimeout
+
+        `proxy_info` may be:
+          - a callable that takes the http scheme ('http' or 'https') and
+            returns a ProxyInfo instance per request. By default, uses
+            proxy_info_from_environment.
+          - a ProxyInfo instance (static proxy config).
+          - None (proxy disabled).
+
+        ca_certs is the path of a file containing root CA certificates for SSL
+        server certificate validation.  By default, a CA cert file bundled with
+        httplib2 is used.
+
+        If disable_ssl_certificate_validation is true, SSL cert validation will
+        not be performed.
+
+        tls_maximum_version / tls_minimum_version require Python 3.7+ /
+        OpenSSL 1.1.0g+. A value of "TLSv1_3" requires OpenSSL 1.1.1+.
+        """
+        ...
+    def close(self) -> None:
+        """
+        Close persistent connections, clear sensitive data.
+        Not thread-safe, requires external synchronization against concurrent requests.
+        """
+        ...
+    def add_credentials(self, name, password, domain: str = "") -> None:
+        """
+        Add a name and password that will be used
+        any time a request requires authentication.
+        """
+        ...
+    def add_certificate(self, key, cert, domain, password=None) -> None:
+        """
+        Add a key and cert that will be used
+        any time a request requires authentication.
+        """
+        ...
+    def clear_credentials(self) -> None:
+        """
+        Remove all the names and passwords
+        that are used for authentication
+        """
+        ...
+    def request(self, uri, method: str = "GET", body=None, headers=None, redirections=5, connection_type=None):
+        """
+        Performs a single HTTP request.
+        The 'uri' is the URI of the HTTP resource and can begin
+        with either 'http' or 'https'. The value of 'uri' must be an absolute URI.
+
+        The 'method' is the HTTP method to perform, such as GET, POST, DELETE, etc.
+        There is no restriction on the methods allowed.
+
+        The 'body' is the entity body to be sent with the request. It is a string
+        object.
+
+        Any extra headers that are to be sent with the request should be provided in the
+        'headers' dictionary.
+
+        The maximum number of redirect to follow before raising an
+        exception is 'redirections. The default is 5.
+
+        The return value is a tuple of (response, content), the first
+        being and instance of the 'Response' class, the second being
+        a string that contains the response entity body.
+        
+        """
+        ...
 
 class Response(dict[str, Any]):
     """An object more like email.message than httplib.HTTPResponse."""

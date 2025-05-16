@@ -209,7 +209,9 @@ class SaveOptions:
         experimental_skip_saver: bool = False,
         experimental_sharding_callback=None,
         extra_tags=None,
-    ) -> None: ...
+    ) -> None:
+        """
+        Creates an object that stores options for SavedModel saving.
 
         Args:
           namespace_whitelist: List of strings containing op namespaces to whitelist

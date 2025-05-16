@@ -1,3 +1,5 @@
+"""Superclass for renderers to factor out common functionality and default implementations."""
+
 from typing import Final
 
 __version__: Final[str]
@@ -12,13 +14,43 @@ def getStateDelta(shape):
     ...
 
 class StateTracker:
+    """
+    Keeps a stack of transforms and state
+    properties.  It can contain any properties you
+    want, but the keys 'transform' and 'ctm' have
+    special meanings.  The getCTM()
+    method returns the current transformation
+    matrix at any point, without needing to
+    invert matrixes when you pop.
+    """
     def __init__(self, defaults=None, defaultObj=None) -> None: ...
-    def push(self, delta) -> None: ...
-    def pop(self): ...
-    def getState(self): ...
-    def getCTM(self): ...
-    def __getitem__(self, key): ...
-    def __setitem__(self, key, value) -> None: ...
+    def push(self, delta) -> None:
+        """
+        Take a new state dictionary of changes and push it onto
+        the stack.  After doing this, the combined state is accessible
+        through getState()
+        """
+        ...
+    def pop(self):
+        """
+        steps back one, and returns a state dictionary with the
+        deltas to reverse out of wherever you are.  Depending
+        on your back end, you may not need the return value,
+        since you can get the complete state afterwards with getState()
+        """
+        ...
+    def getState(self):
+        """returns the complete graphics state at this point"""
+        ...
+    def getCTM(self):
+        """returns the current transformation matrix at this point"""
+        ...
+    def __getitem__(self, key):
+        """returns the complete graphics state value of key at this point"""
+        ...
+    def __setitem__(self, key, value) -> None:
+        """sets the complete graphics state value of key to value"""
+        ...
 
 def testStateTracker() -> None: ...
 def renderScaledDrawing(d): ...

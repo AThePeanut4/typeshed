@@ -1,3 +1,19 @@
+"""
+passlib.handlers.argon2 -- argon2 password hash wrapper
+
+References
+==========
+* argon2
+    - home: https://github.com/P-H-C/phc-winner-argon2
+    - whitepaper: https://github.com/P-H-C/phc-winner-argon2/blob/master/argon2-specs.pdf
+* argon2 cffi wrapper
+    - pypi: https://pypi.python.org/pypi/argon2_cffi
+    - home: https://github.com/hynek/argon2_cffi
+* argon2 pure python
+    - pypi: https://pypi.python.org/pypi/argon2pure
+    - home: https://github.com/bwesterb/argon2pure
+"""
+
 from typing import Any, ClassVar
 
 import passlib.utils.handlers as uh

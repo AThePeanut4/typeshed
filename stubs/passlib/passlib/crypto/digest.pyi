@@ -1,3 +1,9 @@
+"""
+passlib.crypto.digest -- crytographic helpers used by the password hashes in passlib
+
+.. versionadded:: 1.7
+"""
+
 from typing import Any
 
 from passlib.utils import SequenceMixin
@@ -117,9 +123,104 @@ class HashInfo(SequenceMixin):
         """helper to detect if hash is supported by hashlib.pbkdf2_hmac()"""
         ...
 
-def compile_hmac(digest, key, multipart: bool = False): ...
-def pbkdf1(digest, secret, salt, rounds, keylen=None): ...
-def pbkdf2_hmac(digest, secret, salt, rounds, keylen=None): ...
+def compile_hmac(digest, key, multipart: bool = False):
+    """
+    This function returns an efficient HMAC function, hardcoded with a specific digest & key.
+    It can be used via ``hmac = compile_hmac(digest, key)``.
+
+    :arg digest:
+        digest name or constructor.
+
+    :arg key:
+        secret key as :class:`!bytes` or :class:`!unicode` (unicode will be encoded using utf-8).
+
+    :param multipart:
+        request a multipart constructor instead (see return description).
+
+    :returns:
+        By default, the returned function has the signature ``hmac(msg) -> digest output``.
+
+        However, if ``multipart=True``, the returned function has the signature
+        ``hmac() -> update, finalize``, where ``update(msg)`` may be called multiple times,
+        and ``finalize() -> digest_output`` may be repeatedly called at any point to
+        calculate the HMAC digest so far.
+
+        The returned object will also have a ``digest_info`` attribute, containing
+        a :class:`lookup_hash` instance for the specified digest.
+
+    This function exists, and has the weird signature it does, in order to squeeze as
+    provide as much efficiency as possible, by omitting much of the setup cost
+    and features of the stdlib :mod:`hmac` module.
+    """
+    ...
+def pbkdf1(digest, secret, salt, rounds, keylen=None):
+    """
+    pkcs#5 password-based key derivation v1.5
+
+    :arg digest:
+        digest name or constructor.
+    
+    :arg secret:
+        secret to use when generating the key.
+        may be :class:`!bytes` or :class:`unicode` (encoded using UTF-8).
+    
+    :arg salt:
+        salt string to use when generating key.
+        may be :class:`!bytes` or :class:`unicode` (encoded using UTF-8).
+
+    :param rounds:
+        number of rounds to use to generate key.
+
+    :arg keylen:
+        number of bytes to generate (if omitted / ``None``, uses digest's native size)
+
+    :returns:
+        raw :class:`bytes` of generated key
+
+    .. note::
+
+        This algorithm has been deprecated, new code should use PBKDF2.
+        Among other limitations, ``keylen`` cannot be larger
+        than the digest size of the specified hash.
+    """
+    ...
+def pbkdf2_hmac(digest, secret, salt, rounds, keylen=None):
+    """
+    pkcs#5 password-based key derivation v2.0 using HMAC + arbitrary digest.
+
+    :arg digest:
+        digest name or constructor.
+
+    :arg secret:
+        passphrase to use to generate key.
+        may be :class:`!bytes` or :class:`unicode` (encoded using UTF-8).
+
+    :arg salt:
+        salt string to use when generating key.
+        may be :class:`!bytes` or :class:`unicode` (encoded using UTF-8).
+
+    :param rounds:
+        number of rounds to use to generate key.
+
+    :arg keylen:
+        number of bytes to generate.
+        if omitted / ``None``, will use digest's native output size.
+
+    :returns:
+        raw bytes of generated key
+
+    .. versionchanged:: 1.7
+
+        This function will use the first available of the following backends:
+
+        * `fastpbk2 <https://pypi.python.org/pypi/fastpbkdf2>`_
+        * :func:`hashlib.pbkdf2_hmac` (only available in py2 >= 2.7.8, and py3 >= 3.4)
+        * builtin pure-python backend
+
+        See :data:`passlib.crypto.digest.PBKDF2_BACKENDS` to determine
+        which backend(s) are in use.
+    """
+    ...
 
 __all__ = [
     # hash utils

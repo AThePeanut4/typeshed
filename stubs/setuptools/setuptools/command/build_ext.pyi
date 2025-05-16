@@ -9,7 +9,9 @@ have_rtld: bool
 use_stubs: bool
 libtype: str
 
-def get_abi3_suffix(): ...
+def get_abi3_suffix():
+    """Return the file extension for an abi3-compliant Extension()"""
+    ...
 
 class build_ext(_build_ext):
     distribution: Distribution  # override distutils.dist.Distribution with setuptools.dist.Distribution

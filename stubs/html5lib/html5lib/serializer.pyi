@@ -181,7 +181,27 @@ class HTMLSerializer:
     def encodeStrict(self, string): ...
     encoding: Any
     def serialize(self, treewalker, encoding=None) -> Generator[Incomplete, None, None]: ...
-    def render(self, treewalker, encoding=None): ...
+    def render(self, treewalker, encoding=None):
+        """
+        Serializes the stream from the treewalker into a string
+
+        :arg treewalker: the treewalker to serialize
+
+        :arg encoding: the string encoding to use
+
+        :returns: the serialized tree
+
+        Example:
+
+        >>> from html5lib import parse, getTreeWalker
+        >>> from html5lib.serializer import HTMLSerializer
+        >>> token_stream = parse('<html><body>Hi!</body></html>')
+        >>> walker = getTreeWalker('etree')
+        >>> serializer = HTMLSerializer(omit_optional_tags=False)
+        >>> serializer.render(walker(token_stream))
+        '<html><head></head><body>Hi!</body></html>'
+        """
+        ...
     def serializeError(self, data: str = "XXX ERROR MESSAGE NEEDED") -> None: ...
 
 class SerializeError(Exception):

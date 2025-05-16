@@ -1,3 +1,5 @@
+"""Public API for tf._api.v2.train namespace"""
+
 from collections.abc import Callable
 from typing import Any, TypeVar
 from typing_extensions import Self
@@ -47,7 +49,52 @@ class CheckpointOptions:
         enable_async: bool = False,
         experimental_skip_slot_variables: bool = False,
         experimental_sharding_callback=None,
-    ) -> None: ...
+    ) -> None:
+        """
+        Creates an object that stores options for a Checkpoint. (deprecated arguments)
+
+        Deprecated: SOME ARGUMENTS ARE DEPRECATED: `(experimental_enable_async_checkpoint)`. They will be removed in a future version.
+        Instructions for updating:
+        Use enable_async instead
+
+        Args:
+          experimental_io_device: string. Applies in a distributed setting.
+            Tensorflow device to use to access the filesystem. If `None` (default)
+            then for each variable the filesystem is accessed from the CPU:0 device
+            of the host where that variable is assigned. If specified, the
+            filesystem is instead accessed from that device for all variables.  This
+            is for example useful if you want to save to a local directory, such as
+            "/tmp" when running in a distributed setting. In that case pass a device
+            for the host where the "/tmp" directory is accessible.
+          experimental_enable_async_checkpoint: bool Type. Deprecated, please use
+            the enable_async option.
+          experimental_write_callbacks: List[Callable]. A list of callback functions
+            that will be executed after each saving event finishes (i.e. after
+            `save()` or `write()`). For async checkpoint, the callbacks will be
+            executed only after the async thread finishes saving.  The return values
+            of the callback(s) will be ignored. The callback(s) can optionally take
+            the `save_path` (the result of `save()` or `write()`) as an argument.
+            The callbacks will be executed in the same order of this list after the
+            checkpoint has been written.
+          enable_async: bool Type. Indicates whether async checkpointing is enabled.
+            Default is False, i.e., no async checkpoint.  Async checkpoint moves the
+            checkpoint file writing off the main thread, so that the model can
+            continue to train while the checkpoint file writing runs in the
+            background. Async checkpoint reduces TPU device idle cycles and speeds
+            up model training process, while memory consumption may increase.
+          experimental_skip_slot_variables: bool Type. If true, ignores slot
+            variables during restore. Context: TPU Embedding layers for Serving do
+            not properly restore slot variables. This option is a way to omit
+            restoring slot variables which are not required for Serving usecase
+            anyways.(b/315912101)
+          experimental_sharding_callback: `tf.train.experimental.ShardingCallback`.
+            A pre-made or custom callback that determines how checkpoints are
+            sharded on disk. Pre-made callback options are
+            `tf.train.experimental.ShardByDevicePolicy` and
+            `tf.train.experimental.MaxShardSizePolicy`. You may also write a custom
+            callback, see `tf.train.experimental.ShardingCallback`.
+        """
+        ...
 
 _T = TypeVar("_T", bound=list[str] | tuple[str] | dict[int, str])
 

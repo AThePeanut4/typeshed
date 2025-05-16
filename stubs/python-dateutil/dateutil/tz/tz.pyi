@@ -417,8 +417,28 @@ class tzical:
     .. _`RFC 5545`: https://tools.ietf.org/html/rfc5545
     """
     def __init__(self, fileobj: str | _ICalReader) -> None: ...
-    def keys(self): ...
-    def get(self, tzid=None): ...
+    def keys(self):
+        """Retrieves the available time zones as a list."""
+        ...
+    def get(self, tzid=None):
+        """
+        Retrieve a :py:class:`datetime.tzinfo` object by its ``tzid``.
+
+        :param tzid:
+            If there is exactly one time zone available, omitting ``tzid``
+            or passing :py:const:`None` value returns it. Otherwise a valid
+            key (which can be retrieved from :func:`keys`) is required.
+
+        :raises ValueError:
+            Raised if ``tzid`` is not specified but there are either more
+            or fewer than 1 zone defined.
+
+        :returns:
+            Returns either a :py:class:`datetime.tzinfo` object representing
+            the relevant time zone or :py:const:`None` if the ``tzid`` was
+            not found.
+        """
+        ...
 
 TZFILES: list[str]
 TZPATHS: list[str]

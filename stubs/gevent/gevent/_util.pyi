@@ -1,3 +1,5 @@
+"""internal gevent utilities, not for external use."""
+
 from collections.abc import Callable, Iterable, MutableMapping, Sequence
 from types import ModuleType
 from typing import Any, Generic, TypeVar, overload

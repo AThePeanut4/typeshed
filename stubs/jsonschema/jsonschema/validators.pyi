@@ -80,8 +80,132 @@ def create(
     format_checker: FormatChecker = ...,
     id_of: Callable[[Schema], str] = ...,
     applicable_validators: Callable[[Schema], Iterable[tuple[str, _ValidatorCallback]]] = ...,
-) -> type[_Validator]: ...
-def extend(validator, validators=(), version=None, type_checker=None, format_checker=None): ...
+) -> type[_Validator]:
+    """
+    Create a new validator class.
+
+    Arguments:
+
+        meta_schema:
+
+            the meta schema for the new validator class
+
+        validators:
+
+            a mapping from names to callables, where each callable will
+            validate the schema property with the given name.
+
+            Each callable should take 4 arguments:
+
+                1. a validator instance,
+                2. the value of the property being validated within the
+                   instance
+                3. the instance
+                4. the schema
+
+        version:
+
+            an identifier for the version that this validator class will
+            validate. If provided, the returned validator class will
+            have its ``__name__`` set to include the version, and also
+            will have `jsonschema.validators.validates` automatically
+            called for the given version.
+
+        type_checker:
+
+            a type checker, used when applying the :kw:`type` keyword.
+
+            If unprovided, a `jsonschema.TypeChecker` will be created
+            with a set of default types typical of JSON Schema drafts.
+
+        format_checker:
+
+            a format checker, used when applying the :kw:`format` keyword.
+
+            If unprovided, a `jsonschema.FormatChecker` will be created
+            with a set of default formats typical of JSON Schema drafts.
+
+        id_of:
+
+            A function that given a schema, returns its ID.
+
+        applicable_validators:
+
+            A function that, given a schema, returns the list of
+            applicable schema keywords and associated values
+            which will be used to validate the instance.
+            This is mostly used to support pre-draft 7 versions of JSON Schema
+            which specified behavior around ignoring keywords if they were
+            siblings of a ``$ref`` keyword. If you're not attempting to
+            implement similar behavior, you can typically ignore this argument
+            and leave it at its default.
+
+    Returns:
+
+        a new `jsonschema.protocols.Validator` class
+    """
+    ...
+def extend(validator, validators=(), version=None, type_checker=None, format_checker=None):
+    """
+    Create a new validator class by extending an existing one.
+
+    Arguments:
+
+        validator (jsonschema.protocols.Validator):
+
+            an existing validator class
+
+        validators (collections.abc.Mapping):
+
+            a mapping of new validator callables to extend with, whose
+            structure is as in `create`.
+
+            .. note::
+
+                Any validator callables with the same name as an
+                existing one will (silently) replace the old validator
+                callable entirely, effectively overriding any validation
+                done in the "parent" validator class.
+
+                If you wish to instead extend the behavior of a parent's
+                validator callable, delegate and call it directly in
+                the new validator function by retrieving it using
+                ``OldValidator.VALIDATORS["validation_keyword_name"]``.
+
+        version (str):
+
+            a version for the new validator class
+
+        type_checker (jsonschema.TypeChecker):
+
+            a type checker, used when applying the :kw:`type` keyword.
+
+            If unprovided, the type checker of the extended
+            `jsonschema.protocols.Validator` will be carried along.
+
+        format_checker (jsonschema.FormatChecker):
+
+            a format checker, used when applying the :kw:`format` keyword.
+
+            If unprovided, the format checker of the extended
+            `jsonschema.protocols.Validator` will be carried along.
+
+    Returns:
+
+        a new `jsonschema.protocols.Validator` class extending the one
+        provided
+
+    .. note:: Meta Schemas
+
+        The new validator class will have its parent's meta schema.
+
+        If you wish to change or extend the meta schema in the new
+        validator class, modify ``META_SCHEMA`` directly on the returned
+        class. Note that no implicit copying is done, so a copy should
+        likely be made before modifying it, in order to not affect the
+        old validator.
+    """
+    ...
 
 # At runtime these are fields that are assigned the return values of create() calls.
 class Draft3Validator(_Validator): ...

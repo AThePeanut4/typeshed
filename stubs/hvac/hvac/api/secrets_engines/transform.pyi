@@ -1,3 +1,5 @@
+"""Transform secrets engine methods module."""
+
 from hvac.api.vault_api_base import VaultApiBase
 
 DEFAULT_MOUNT_POINT: str
@@ -119,10 +121,68 @@ class Transform(VaultApiBase):
         ...
     def create_or_update_fpe_transformation(
         self, name, template, tweak_source: str = "supplied", allowed_roles=None, mount_point: str = "transform"
-    ): ...
+    ):
+        """
+        Creates or update an FPE transformation with the given name.
+
+        If a transformation with the name does not exist, it will be created. If the transformation exists, it will be
+        updated with the new attributes.
+
+        Supported methods:
+            POST: /{mount_point}/transformations/fpe/:name.
+
+
+        :param name: The name of the transformation to create or update. This is part of
+            the request URL.
+        :type name: str
+        :param template: The template name to use for matching value on encode and decode
+            operations when using this transformation.
+        :type template: str
+        :param tweak_source: Specifies the source of where the tweak value comes from. Valid sources are:
+            supplied, generated, and internal.
+        :type tweak_source: str
+        :param allowed_roles: A list of allowed roles that this transformation can be assigned to.
+            A role using this transformation must exist in this list in order for
+            encode and decode operations to properly function.
+        :type allowed_roles: list
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the create_or_update_fpe_transformation request.
+        :rtype: requests.Response
+        """
+        ...
     def create_or_update_masking_transformation(
         self, name, template, masking_character: str = "*", allowed_roles=None, mount_point: str = "transform"
-    ): ...
+    ):
+        """
+        Creates or update a masking transformation with the given name. If a
+        transformation with the name does not exist, it will be created. If the
+        transformation exists, it will be updated with the new attributes.
+
+        Supported methods:
+            POST: /{mount_point}/transformations/masking/:name.
+
+
+        :param name: The name of the transformation to create or update. This is part of
+            the request URL.
+        :type name: str
+        :param template: The template name to use for matching value on encode and decode
+            operations when using this transformation.
+        :type template: str
+        :param masking_character: The character to use for masking. If multiple characters are
+            provided, only the first one is used and the rest is ignored. Only used when
+            the type is masking.
+        :type masking_character: str
+        :param allowed_roles: A list of allowed roles that this transformation can be assigned to.
+            A role using this transformation must exist in this list in order for
+            encode and decode operations to properly function.
+        :type allowed_roles: list
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the create_or_update_masking_transformation request.
+        :rtype: requests.Response
+        """
+        ...
     def create_or_update_tokenization_transformation(
         self,
         name,
@@ -398,15 +458,207 @@ class Transform(VaultApiBase):
         ...
     def encode(
         self, role_name, value=None, transformation=None, tweak=None, batch_input=None, mount_point: str = "transform"
-    ): ...
+    ):
+        """
+        Encode the provided value using a named role.
+
+        Supported methods:
+            POST: /{mount_point}/encode/:role_name.
+
+        :param role_name: the role name to use for this operation. This is specified as part
+            of the URL.
+        :type role_name: str | unicode
+        :param value: the value to be encoded.
+        :type value: str | unicode
+        :param transformation: the transformation within the role that should be used for this
+            encode operation. If a single transformation exists for role, this parameter
+            may be skipped and will be inferred. If multiple transformations exist, one
+            must be specified.
+        :type transformation: str | unicode
+        :param tweak: the tweak source.
+        :type tweak: str | unicode
+        :param batch_input: a list of items to be encoded in a single batch. When this
+            parameter is set, the 'value', 'transformation' and 'tweak' parameters are
+            ignored. Instead, the aforementioned parameters should be provided within
+            each object in the list.
+        :type batch_input: list
+        :param mount_point: The "path" the secrets engine was mounted on.
+        :type mount_point: str | unicode
+        :return: The response of the encode request.
+        :rtype: requests.Response
+        """
+        ...
     def decode(
         self, role_name, value=None, transformation=None, tweak=None, batch_input=None, mount_point: str = "transform"
-    ): ...
-    def validate_token(self, role_name, value, transformation, batch_input=None, mount_point: str = "transform"): ...
-    def check_tokenization(self, role_name, value, transformation, batch_input=None, mount_point: str = "transform"): ...
-    def retrieve_token_metadata(self, role_name, value, transformation, batch_input=None, mount_point: str = "transform"): ...
-    def snapshot_tokenization_state(self, name, limit: int = 1000, continuation: str = "", mount_point: str = "transform"): ...
-    def restore_tokenization_state(self, name, values, mount_point: str = "transform"): ...
+    ):
+        """
+        Decode the provided value using a named role.
+
+        Supported methods:
+            POST: /{mount_point}/decode/:role_name.
+
+        :param role_name: the role name to use for this operation. This is specified as part
+            of the URL.
+        :type role_name: str | unicode
+        :param value: the value to be decoded.
+        :type value: str | unicode
+        :param transformation: the transformation within the role that should be used for this
+            decode operation. If a single transformation exists for role, this parameter
+            may be skipped and will be inferred. If multiple transformations exist, one
+            must be specified.
+        :type transformation: str | unicode
+        :param tweak: the tweak source.
+        :type tweak: str | unicode
+        :param batch_input: a list of items to be decoded in a single batch. When this
+            parameter is set, the 'value', 'transformation' and 'tweak' parameters are
+            ignored. Instead, the aforementioned parameters should be provided within
+            each object in the list.
+        :type batch_input: array<object>
+        :param mount_point: The "path" the secrets engine was mounted on.
+        :type mount_point: str | unicode
+        :return: The response of the decode request.
+        :rtype: requests.Response
+        """
+        ...
+    def validate_token(self, role_name, value, transformation, batch_input=None, mount_point: str = "transform"):
+        """
+        Determine if a provided tokenized value is valid and unexpired.
+        Only valid for tokenization transformations.
+
+        Supported methods:
+            POST: /{mount_point}/validate/:role_name.
+
+
+        :param role_name: the role name to use for this operation. This is specified as part
+            of the URL.
+        :type role_name: str
+        :param value: the token for which to check validity.
+        :type value: str
+        :param transformation: the transformation within the role that should be used for this
+            decode operation. If a single transformation exists for role, this parameter
+            may be skipped and will be inferred. If multiple transformations exist, one
+            must be specified.
+        :type transformation: str
+        :param batch_input: a list of items to be decoded in a single batch. When this
+            parameter is set, the 'value' parameter is
+            ignored. Instead, the aforementioned parameters should be provided within
+            each object in the list.
+        :type batch_input: list
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the validate_token request.
+        :rtype: requests.Response
+        """
+        ...
+    def check_tokenization(self, role_name, value, transformation, batch_input=None, mount_point: str = "transform"):
+        """
+        Determine if a provided plaintext value has an valid, unexpired tokenized value.
+        Note that this cannot return the token, just confirm that a
+        tokenized value exists. This endpoint is only valid for tokenization
+        transformations.
+
+        Supported methods:
+            POST: /{mount_point}/tokenized/:role_name.
+
+
+        :param role_name: the role name to use for this operation. This is specified as part
+            of the URL.
+        :type role_name: str
+        :param value: the token to test for whether it has a valid tokenization.
+        :type value: str
+        :param transformation: the transformation within the role that should be used for this
+            decode operation. If a single transformation exists for role, this parameter
+            may be skipped and will be inferred. If multiple transformations exist, one
+            must be specified.
+        :type transformation: str
+        :param batch_input: a list of items to be decoded in a single batch. When this
+            parameter is set, the 'value' parameter is
+            ignored. Instead, the aforementioned parameters should be provided within
+            each object in the list.
+        :type batch_input: list
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the check_tokenization request.
+        :rtype: requests.Response
+        """
+        ...
+    def retrieve_token_metadata(self, role_name, value, transformation, batch_input=None, mount_point: str = "transform"):
+        """
+        This endpoint retrieves metadata for a tokenized value using a named role.
+        Only valid for tokenization transformations.
+
+        Supported methods:
+            POST: /{mount_point}/metadata/:role_name.
+
+
+        :param role_name: the role name to use for this operation. This is specified as part
+            of the URL.
+        :type role_name: str
+        :param value: the token for which to retrieve metadata.
+        :type value: str
+        :param transformation: the transformation within the role that should be used for this
+            decode operation. If a single transformation exists for role, this parameter
+            may be skipped and will be inferred. If multiple transformations exist, one
+            must be specified.
+        :type transformation: str
+        :param batch_input: a list of items to be decoded in a single batch. When this
+            parameter is set, the 'value' parameter is
+            ignored. Instead, the aforementioned parameters should be provided within
+            each object in the list.
+        :type batch_input: list
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the retrieve_token_metadata request.
+        :rtype: requests.Response
+        """
+        ...
+    def snapshot_tokenization_state(self, name, limit: int = 1000, continuation: str = "", mount_point: str = "transform"):
+        """
+        This endpoint starts or continues retrieving a snapshot of the stored
+        state of a tokenization transform.  This state is protected as it is
+        in the underlying store, and so is safe for storage or transport.  Snapshots
+        may be used for backup purposes or to migrate from one store to another.
+        If more than one store is configured for a tokenization transform, the
+        snapshot data contains the contents of the first store.
+
+        Supported methods:
+            POST: /{mount_point}/transformations/tokenization/snapshot/:name.
+
+
+        :param name: the name of the transformation to snapshot.
+        :type name: str
+        :param limit: maximum number of tokenized value states to return on this call.
+        :type limit: int
+        :param continuation: absent or empty, a new snapshot is started.  If present, the
+            snapshot should continue at the next available value.
+        :type continuation: str
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the snapshot_tokenization_state request.
+        :rtype: requests.Response
+        """
+        ...
+    def restore_tokenization_state(self, name, values, mount_point: str = "transform"):
+        """
+        This endpoint restores previously snapshotted tokenization state values
+        to the underlying store(s) of a tokenization transform.  Calls to this
+        endpoint are idempotent, so multiple outputs from a snapshot run can
+        be applied via restore in any order and duplicates will not cause a problem.
+
+        Supported methods:
+            POST: /{mount_point}/transformations/tokenization/restore/:name.
+
+
+        :param name: the name of the transformation to restore.
+        :type name: str
+        :param values: number of tokenization state values from a previous snapshot call.
+        :type values: str
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str
+        :return: The response of the restore_tokenization_state request.
+        :rtype: requests.Response
+        """
+        ...
     def export_decoded_tokenization_state(
         self, name, limit: int = 1000, continuation: str = "", mount_point: str = "transform"
     ):

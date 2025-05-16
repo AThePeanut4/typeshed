@@ -1,3 +1,5 @@
+"""Aws methods module."""
+
 from hvac.api.vault_api_base import VaultApiBase
 
 class Aws(VaultApiBase):
@@ -8,10 +10,99 @@ class Aws(VaultApiBase):
     """
     def configure_root_iam_credentials(
         self, access_key, secret_key, region=None, iam_endpoint=None, sts_endpoint=None, max_retries=None, mount_point="aws"
-    ): ...
-    def rotate_root_iam_credentials(self, mount_point="aws"): ...
-    def configure_lease(self, lease, lease_max, mount_point="aws"): ...
-    def read_lease_config(self, mount_point="aws"): ...
+    ):
+        """
+        Configure the root IAM credentials to communicate with AWS.
+
+        There are multiple ways to pass root IAM credentials to the Vault server, specified below with the highest
+        precedence first. If credentials already exist, this will overwrite them.
+
+        The official AWS SDK is used for sourcing credentials from env vars, shared files, or IAM/ECS instances.
+
+            * Static credentials provided to the API as a payload
+            * Credentials in the AWS_ACCESS_KEY, AWS_SECRET_KEY, and AWS_REGION environment variables on the server
+            * Shared credentials files
+            * Assigned IAM role or ECS task role credentials
+
+        At present, this endpoint does not confirm that the provided AWS credentials are valid AWS credentials with
+        proper permissions.
+
+        Supported methods:
+            POST: /{mount_point}/config/root. Produces: 204 (empty body)
+
+        :param access_key: Specifies the AWS access key ID.
+        :type access_key: str | unicode
+        :param secret_key: Specifies the AWS secret access key.
+        :type secret_key: str | unicode
+        :param region: Specifies the AWS region. If not set it will use the AWS_REGION env var, AWS_DEFAULT_REGION env
+            var, or us-east-1 in that order.
+        :type region: str | unicode
+        :param iam_endpoint: Specifies a custom HTTP IAM endpoint to use.
+        :type iam_endpoint: str | unicode
+        :param sts_endpoint: Specifies a custom HTTP STS endpoint to use.
+        :type sts_endpoint: str | unicode
+        :param max_retries: Number of max retries the client should use for recoverable errors. The default (-1) falls
+            back to the AWS SDK's default behavior.
+        :type max_retries: int
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str | unicode
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+        ...
+    def rotate_root_iam_credentials(self, mount_point="aws"):
+        """
+        Rotate static root IAM credentials.
+
+        When you have configured Vault with static credentials, you can use this endpoint to have Vault rotate the
+        access key it used. Note that, due to AWS eventual consistency, after calling this endpoint, subsequent calls
+        from Vault to AWS may fail for a few seconds until AWS becomes consistent again.
+
+        In order to call this endpoint, Vault's AWS access key MUST be the only access key on the IAM user; otherwise,
+        generation of a new access key will fail. Once this method is called, Vault will now be the only entity that
+        knows the AWS secret key is used to access AWS.
+
+        Supported methods:
+            POST: /{mount_point}/config/rotate-root. Produces: 200 application/json
+
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+        ...
+    def configure_lease(self, lease, lease_max, mount_point="aws"):
+        """
+        Configure lease settings for the AWS secrets engine.
+
+        It is optional, as there are default values for lease and lease_max.
+
+        Supported methods:
+            POST: /{mount_point}/config/lease. Produces: 204 (empty body)
+
+        :param lease: Specifies the lease value provided as a string duration with time suffix. "h" (hour) is the
+            largest suffix.
+        :type lease: str | unicode
+        :param lease_max: Specifies the maximum lease value provided as a string duration with time suffix. "h" (hour)
+            is the largest suffix.
+        :type lease_max: str | unicode
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str | unicode
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+        ...
+    def read_lease_config(self, mount_point="aws"):
+        """
+        Read the current lease settings for the AWS secrets engine.
+
+        Supported methods:
+            GET: /{mount_point}/config/lease. Produces: 200 application/json
+
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str | unicode
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+        ...
     def create_or_update_role(
         self,
         name,
@@ -121,4 +212,43 @@ class Aws(VaultApiBase):
         ...
     def generate_credentials(
         self, name, role_arn=None, ttl=None, endpoint: str = "creds", mount_point="aws", role_session_name=None
-    ): ...
+    ):
+        """
+        Generates credential based on the named role.
+
+        This role must be created before queried.
+
+        The ``/aws/creds`` and ``/aws/sts`` endpoints are almost identical. The exception is when retrieving credentials for a
+        role that was specified with the legacy arn or policy parameter. In this case, credentials retrieved through
+        ``/aws/sts`` must be of either the ``assumed_role`` or ``federation_token`` types, and credentials retrieved through
+        ``/aws/creds`` must be of the ``iam_user`` type.
+
+        :param name: Specifies the name of the role to generate credentials against. This is part of the request URL.
+        :type name: str | unicode
+        :param role_arn: The ARN of the role to assume if ``credential_type`` on the Vault role is assumed_role. Must match
+            one of the allowed role ARNs in the Vault role. Optional if the Vault role only allows a single AWS role
+            ARN; required otherwise.
+        :type role_arn: str | unicode
+        :param ttl: Specifies the TTL for the use of the STS token. This is specified as a string with a duration
+            suffix. Valid only when ``credential_type`` is ``assumed_role`` or ``federation_token``. When not specified, the default
+            sts_ttl set for the role will be used. If that is also not set, then the default value of ``3600s`` will be
+            used. AWS places limits on the maximum TTL allowed. See the AWS documentation on the ``DurationSeconds``
+            parameter for AssumeRole (for ``assumed_role`` credential types) and GetFederationToken (for ``federation_token``
+            credential types) for more details.
+        :type ttl: str | unicode
+        :param endpoint: Supported endpoints are ``creds`` and ``sts``:
+            GET: ``/{mount_point}/creds/{name}``. Produces: 200 application/json
+            POST: ``/{mount_point}/sts/{name}``. Produces: 200 application/json
+        :type endpoint: str | unicode
+        :param mount_point: The "path" the method/backend was mounted on.
+        :type mount_point: str | unicode
+        :param role_session_name: The role session name to attach to the assumed role ARN.
+            ``role_session_name`` is limited to 64 characters; if exceeded, the ``role_session_name`` in the assumed role
+            ARN will be truncated to 64 characters. If ``role_session_name`` is not provided, then it will be generated
+            dynamically by default.
+        :type role_session_name: str | unicode
+
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+        ...

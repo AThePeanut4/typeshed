@@ -49,8 +49,23 @@ from typing import Literal
 
 from gevent._types import _ChildWatcher, _Loop
 
-def tp_read(fd: FileDescriptor, n: int) -> bytes: ...
-def tp_write(fd: FileDescriptor, buf: ReadableBuffer) -> int: ...
+def tp_read(fd: FileDescriptor, n: int) -> bytes:
+    """
+    Read up to *n* bytes from file descriptor *fd*. Return a string
+    containing the bytes read. If end-of-file is reached, an empty string
+    is returned.
+
+    Reading is done using the threadpool.
+    """
+    ...
+def tp_write(fd: FileDescriptor, buf: ReadableBuffer) -> int:
+    """
+    Write bytes from buffer *buf* to file descriptor *fd*. Return the
+    number of bytes written.
+
+    Writing is done using the threadpool.
+    """
+    ...
 
 if sys.platform != "win32":
     def make_nonblocking(fd: FileDescriptor) -> Literal[True] | None:
@@ -126,7 +141,32 @@ if sys.platform != "win32":
         loop: _Loop | None = None,
         ref: bool = False,
         fork: Callable[[], int] = ...,
-    ) -> int: ...
+    ) -> int:
+        """
+        Fork a child process and start a child watcher for it in the parent process.
+
+        This call cooperates with :func:`waitpid` to enable cooperatively waiting
+        for children to finish. When monkey-patching, these functions are patched in as
+        :func:`os.fork` and :func:`os.waitpid`, respectively.
+
+        In the child process, this function calls :func:`gevent.hub.reinit` before returning.
+
+        Availability: POSIX.
+
+        :keyword callback: If given, a callable that will be called with the child watcher
+            when the child finishes.
+        :keyword loop: The loop to start the watcher in. Defaults to the
+            loop of the current hub.
+        :keyword fork: The fork function. Defaults to :func:`the one defined in this
+            module <gevent.os.fork_gevent>` (which automatically calls :func:`gevent.hub.reinit`).
+            Pass the builtin :func:`os.fork` function if you do not need to
+            initialize gevent in the child process.
+
+        .. versionadded:: 1.1b1
+        .. seealso::
+            :func:`gevent.monkey.get_original` To access the builtin :func:`os.fork`.
+        """
+        ...
     def forkpty_and_watch(
         callback: Callable[[_ChildWatcher], object] | None = None,
         loop: _Loop | None = None,
