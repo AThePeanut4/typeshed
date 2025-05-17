@@ -13,7 +13,7 @@ first==2.0.*
 seaborn==0.13.2
 pytest-lazy-fixture==0.6.*
 grpcio-status==1.*
-icalendar==6.2.*
+icalendar==6.3.*
 flake8-builtins==2.5.*
 click-spinner==0.1.*
 TgCrypto==1.2.*
