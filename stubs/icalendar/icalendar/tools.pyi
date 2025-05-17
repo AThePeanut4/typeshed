@@ -1,3 +1,5 @@
+"""Utility functions for icalendar."""
+
 import datetime
 from typing import Final
 from typing_extensions import TypeGuard, TypeIs, deprecated
@@ -9,14 +11,42 @@ from .prop import vText
 __all__ = ["UIDGenerator", "is_date", "is_datetime", "to_datetime", "is_pytz", "is_pytz_dt", "normalize_pytz"]
 
 class UIDGenerator:
-    """If you are too lazy to create real uid's."""
+    """
+    Use this only if you're too lazy to create real UUIDs.
+
+    .. deprecated:: 6.2.1
+
+        Use the Python standard library's :func:`uuid.uuid4` instead.
+    """
     chars: Final[list[str]]
     @staticmethod
     @deprecated("Use the Python standard library's :func:`uuid.uuid4` instead.")
-    def rnd_string(length: int = 16) -> str: ...
+    def rnd_string(length: int = 16) -> str:
+        """
+        Generates a string with random characters of length.
+
+        .. deprecated:: 6.2.1
+
+            Use the Python standard library's :func:`uuid.uuid4` instead.
+        """
+        ...
     @staticmethod
     @deprecated("Use the Python standard library's :func:`uuid.uuid5` instead.")
-    def uid(host_name: str = "example.com", unique: str = "") -> vText: ...
+    def uid(host_name: str = "example.com", unique: str = "") -> vText:
+        """
+        Generates a unique ID consisting of ``datetime-uniquevalue@host``.
+
+        For example:
+    
+            .. code-block:: text
+
+                20050105T225746Z-HKtJMqUgdO0jDUwm@example.com
+
+        .. deprecated:: 6.2.1
+
+            Use the Python standard library's :func:`uuid.uuid5` instead.
+        """
+        ...
 
 def is_date(dt: datetime.date) -> bool:
     """Whether this is a date and not a datetime."""

@@ -49,8 +49,22 @@ __all__ = [
     "Spinbox",
 ]
 
-def tclobjs_to_py(adict: dict[Any, Any]) -> dict[Any, Any]: ...
-def setup_master(master=None): ...
+def tclobjs_to_py(adict: dict[Any, Any]) -> dict[Any, Any]:
+    """
+    Returns adict with its values converted from Tcl objects to Python
+    objects.
+    """
+    ...
+def setup_master(master=None):
+    """
+    If master is not None, itself is returned. If master is None,
+    the default master is returned if there is one, otherwise a new
+    master is created and returned.
+
+    If it is not allowed to use the default root and master is None,
+    RuntimeError is raised.
+    """
+    ...
 
 _Padding: TypeAlias = (
     tkinter._ScreenUnits
@@ -68,16 +82,103 @@ class Style:
     master: Incomplete
     tk: _tkinter.TkappType
     def __init__(self, master: tkinter.Misc | None = None) -> None: ...
-    def configure(self, style, query_opt=None, **kw): ...
-    def map(self, style, query_opt=None, **kw): ...
-    def lookup(self, style, option, state=None, default=None): ...
-    def layout(self, style, layoutspec=None): ...
-    def element_create(self, elementname, etype, *args, **kw) -> None: ...
-    def element_names(self): ...
-    def element_options(self, elementname): ...
-    def theme_create(self, themename, parent=None, settings=None) -> None: ...
-    def theme_settings(self, themename, settings) -> None: ...
-    def theme_names(self) -> tuple[str, ...]: ...
+    def configure(self, style, query_opt=None, **kw):
+        """
+        Query or sets the default value of the specified option(s) in
+        style.
+
+        Each key in kw is an option and each value is either a string or
+        a sequence identifying the value for that option.
+        """
+        ...
+    def map(self, style, query_opt=None, **kw):
+        """
+        Query or sets dynamic values of the specified option(s) in
+        style.
+
+        Each key in kw is an option and each value should be a list or a
+        tuple (usually) containing statespecs grouped in tuples, or list,
+        or something else of your preference. A statespec is compound of
+        one or more states and then a value.
+        """
+        ...
+    def lookup(self, style, option, state=None, default=None):
+        """
+        Returns the value specified for option in style.
+
+        If state is specified it is expected to be a sequence of one
+        or more states. If the default argument is set, it is used as
+        a fallback value in case no specification for option is found.
+        """
+        ...
+    def layout(self, style, layoutspec=None):
+        """
+        Define the widget layout for given style. If layoutspec is
+        omitted, return the layout specification for given style.
+
+        layoutspec is expected to be a list or an object different than
+        None that evaluates to False if you want to "turn off" that style.
+        If it is a list (or tuple, or something else), each item should be
+        a tuple where the first item is the layout name and the second item
+        should have the format described below:
+
+        LAYOUTS
+
+            A layout can contain the value None, if takes no options, or
+            a dict of options specifying how to arrange the element.
+            The layout mechanism uses a simplified version of the pack
+            geometry manager: given an initial cavity, each element is
+            allocated a parcel. Valid options/values are:
+
+                side: whichside
+                    Specifies which side of the cavity to place the
+                    element; one of top, right, bottom or left. If
+                    omitted, the element occupies the entire cavity.
+
+                sticky: nswe
+                    Specifies where the element is placed inside its
+                    allocated parcel.
+
+                children: [sublayout... ]
+                    Specifies a list of elements to place inside the
+                    element. Each element is a tuple (or other sequence)
+                    where the first item is the layout name, and the other
+                    is a LAYOUT.
+        """
+        ...
+    def element_create(self, elementname, etype, *args, **kw) -> None:
+        """Create a new element in the current theme of given etype."""
+        ...
+    def element_names(self):
+        """Returns the list of elements defined in the current theme."""
+        ...
+    def element_options(self, elementname):
+        """Return the list of elementname's options."""
+        ...
+    def theme_create(self, themename, parent=None, settings=None) -> None:
+        """
+        Creates a new theme.
+
+        It is an error if themename already exists. If parent is
+        specified, the new theme will inherit styles, elements and
+        layouts from the specified parent theme. If settings are present,
+        they are expected to have the same syntax used for theme_settings.
+        """
+        ...
+    def theme_settings(self, themename, settings) -> None:
+        """
+        Temporarily sets the current theme to themename, apply specified
+        settings and then restore the previous theme.
+
+        Each key in settings is a style and each value may contain the
+        keys 'configure', 'map', 'layout' and 'element create' and they
+        are expected to have the same format as specified by the methods
+        configure, map, layout and element_create respectively.
+        """
+        ...
+    def theme_names(self) -> tuple[str, ...]:
+        """Returns a list of all known themes."""
+        ...
     @overload
     def theme_use(self, themename: str) -> None:
         """
@@ -96,10 +197,57 @@ class Style:
         ...
 
 class Widget(tkinter.Widget):
-    def __init__(self, master: tkinter.Misc | None, widgetname, kw=None) -> None: ...
-    def identify(self, x: int, y: int) -> str: ...
-    def instate(self, statespec, callback=None, *args, **kw): ...
-    def state(self, statespec=None): ...
+    """Base class for Tk themed widgets."""
+    def __init__(self, master: tkinter.Misc | None, widgetname, kw=None) -> None:
+        """
+        Constructs a Ttk Widget with the parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, takefocus, style
+
+        SCROLLABLE WIDGET OPTIONS
+
+            xscrollcommand, yscrollcommand
+
+        LABEL WIDGET OPTIONS
+
+            text, textvariable, underline, image, compound, width
+
+        WIDGET STATES
+
+            active, disabled, focus, pressed, selected, background,
+            readonly, alternate, invalid
+        """
+        ...
+    def identify(self, x: int, y: int) -> str:
+        """
+        Returns the name of the element at position x, y, or the empty
+        string if the point does not lie within any element.
+
+        x and y are pixel coordinates relative to the widget.
+        """
+        ...
+    def instate(self, statespec, callback=None, *args, **kw):
+        """
+        Test the widget's state.
+
+        If callback is not specified, returns True if the widget state
+        matches statespec and False otherwise. If callback is specified,
+        then it will be invoked with *args, **kw if the widget state
+        matches statespec. statespec is expected to be a sequence.
+        """
+        ...
+    def state(self, statespec=None):
+        """
+        Modify or inquire widget state.
+
+        Widget state is returned if statespec is None, otherwise it is
+        set according to the statespec flags and then a new state spec
+        is returned indicating which flags were changed. statespec is
+        expected to be a sequence.
+        """
+        ...
 
 class Button(Widget):
     """
@@ -971,16 +1119,95 @@ class Notebook(Widget):
         image=...,
         compound: tkinter._Compound = ...,
         underline: int = ...,
-    ) -> None: ...
-    def forget(self, tab_id) -> None: ...  # type: ignore[override]
-    def hide(self, tab_id) -> None: ...
-    def identify(self, x: int, y: int) -> str: ...
-    def index(self, tab_id): ...
-    def insert(self, pos, child, **kw) -> None: ...
-    def select(self, tab_id=None): ...
-    def tab(self, tab_id, option=None, **kw): ...
-    def tabs(self): ...
-    def enable_traversal(self) -> None: ...
+    ) -> None:
+        """
+        Adds a new tab to the notebook.
+
+        If window is currently managed by the notebook but hidden, it is
+        restored to its previous position.
+        """
+        ...
+    def forget(self, tab_id) -> None:
+        """
+        Removes the tab specified by tab_id, unmaps and unmanages the
+        associated window.
+        """
+        ...
+    def hide(self, tab_id) -> None:
+        """
+        Hides the tab specified by tab_id.
+
+        The tab will not be displayed, but the associated window remains
+        managed by the notebook and its configuration remembered. Hidden
+        tabs may be restored with the add command.
+        """
+        ...
+    def identify(self, x: int, y: int) -> str:
+        """
+        Returns the name of the tab element at position x, y, or the
+        empty string if none.
+        """
+        ...
+    def index(self, tab_id):
+        """
+        Returns the numeric index of the tab specified by tab_id, or
+        the total number of tabs if tab_id is the string "end".
+        """
+        ...
+    def insert(self, pos, child, **kw) -> None:
+        """
+        Inserts a pane at the specified position.
+
+        pos is either the string end, an integer index, or the name of
+        a managed child. If child is already managed by the notebook,
+        moves it to the specified position.
+        """
+        ...
+    def select(self, tab_id=None):
+        """
+        Selects the specified tab.
+
+        The associated child window will be displayed, and the
+        previously-selected window (if different) is unmapped. If tab_id
+        is omitted, returns the widget name of the currently selected
+        pane.
+        """
+        ...
+    def tab(self, tab_id, option=None, **kw):
+        """
+        Query or modify the options of the specific tab_id.
+
+        If kw is not given, returns a dict of the tab option values. If option
+        is specified, returns the value of that option. Otherwise, sets the
+        options to the corresponding values.
+        """
+        ...
+    def tabs(self):
+        """Returns a list of windows managed by the notebook."""
+        ...
+    def enable_traversal(self) -> None:
+        """
+        Enable keyboard traversal for a toplevel window containing
+        this notebook.
+
+        This will extend the bindings for the toplevel window containing
+        this notebook as follows:
+
+            Control-Tab: selects the tab following the currently selected
+                         one
+
+            Shift-Control-Tab: selects the tab preceding the currently
+                               selected one
+
+            Alt-K: where K is the mnemonic (underlined) character of any
+                   tab, will select that tab.
+
+        Multiple notebooks in a single toplevel may be enabled for
+        traversal, including nested notebooks. However, notebook traversal
+        only works properly if all panes are direct children of the
+        notebook.
+        """
+        ...
 
 class Panedwindow(Widget, tkinter.PanedWindow):
     """
@@ -1087,9 +1314,36 @@ class Panedwindow(Widget, tkinter.PanedWindow):
         """
         ...
     forget: Incomplete
-    def insert(self, pos, child, **kw) -> None: ...
-    def pane(self, pane, option=None, **kw): ...
-    def sashpos(self, index, newpos=None): ...
+    def insert(self, pos, child, **kw) -> None:
+        """
+        Inserts a pane at the specified positions.
+
+        pos is either the string end, and integer index, or the name
+        of a child. If child is already managed by the paned window,
+        moves it to the specified position.
+        """
+        ...
+    def pane(self, pane, option=None, **kw):
+        """
+        Query or modify the options of the specified pane.
+
+        pane is either an integer index or the name of a managed subwindow.
+        If kw is not given, returns a dict of the pane option values. If
+        option is specified then the value for that option is returned.
+        Otherwise, sets the options to the corresponding values.
+        """
+        ...
+    def sashpos(self, index, newpos=None):
+        """
+        If newpos is specified, sets the position of sash number index.
+
+        May adjust the positions of adjacent sashes to ensure that
+        positions are monotonically increasing. Sash positions are further
+        constrained to be between 0 and the total size of the widget.
+
+        Returns the new position of sash number index.
+        """
+        ...
 
 PanedWindow = Panedwindow
 

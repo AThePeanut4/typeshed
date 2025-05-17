@@ -396,8 +396,27 @@ def NoDefaultRoot() -> None:
     ...
 
 class Variable:
-    def __init__(self, master: Misc | None = None, value=None, name: str | None = None) -> None: ...
-    def set(self, value) -> None: ...
+    """
+    Class to define value holders for e.g. buttons.
+
+    Subclasses StringVar, IntVar, DoubleVar, BooleanVar are specializations
+    that constrain the type of the value returned from get().
+    """
+    def __init__(self, master: Misc | None = None, value=None, name: str | None = None) -> None:
+        """
+        Construct a variable
+
+        MASTER can be given as master widget.
+        VALUE is an optional value (defaults to "")
+        NAME is an optional Tcl name (defaults to PY_VARnum).
+
+        If NAME matches an existing variable and VALUE is omitted
+        then the existing value is retained.
+        """
+        ...
+    def set(self, value) -> None:
+        """Set the variable to VALUE."""
+        ...
     initialize = set
     def get(self):
         """Return value of variable."""
@@ -602,12 +621,56 @@ class Misc:
     master: Misc | None
     tk: _tkinter.TkappType
     children: dict[str, Widget]
-    def destroy(self) -> None: ...
-    def deletecommand(self, name: str) -> None: ...
-    def tk_strictMotif(self, boolean=None): ...
-    def tk_bisque(self) -> None: ...
-    def tk_setPalette(self, *args, **kw) -> None: ...
-    def wait_variable(self, name: str | Variable = "PY_VAR") -> None: ...
+    def destroy(self) -> None:
+        """
+        Internal function.
+
+        Delete all Tcl commands created for
+        this widget in the Tcl interpreter.
+        """
+        ...
+    def deletecommand(self, name: str) -> None:
+        """
+        Internal function.
+
+        Delete the Tcl command provided in NAME.
+        """
+        ...
+    def tk_strictMotif(self, boolean=None):
+        """
+        Set Tcl internal variable, whether the look and feel
+        should adhere to Motif.
+
+        A parameter of 1 means adhere to Motif (e.g. no color
+        change if mouse passes over slider).
+        Returns the set value.
+        """
+        ...
+    def tk_bisque(self) -> None:
+        """Change the color scheme to light brown as used in Tk 3.6 and before."""
+        ...
+    def tk_setPalette(self, *args, **kw) -> None:
+        """
+        Set a new color scheme for all widget elements.
+
+        A single color as argument will cause that all colors of Tk
+        widget elements are derived from this.
+        Alternatively several keyword parameters and its associated
+        colors can be given. The following keywords are valid:
+        activeBackground, foreground, selectColor,
+        activeForeground, highlightBackground, selectBackground,
+        background, highlightColor, selectForeground,
+        disabledForeground, insertBackground, troughColor.
+        """
+        ...
+    def wait_variable(self, name: str | Variable = "PY_VAR") -> None:
+        """
+        Wait until the variable is modified.
+
+        A parameter of type IntVar, StringVar, DoubleVar or
+        BooleanVar must be given.
+        """
+        ...
     waitvar = wait_variable
     def wait_window(self, window: Misc | None = None) -> None:
         """
@@ -887,18 +950,95 @@ class Misc:
         ...
     def option_add(
         self, pattern, value, priority: int | Literal["widgetDefault", "startupFile", "userDefault", "interactive"] | None = None
-    ) -> None: ...
-    def option_clear(self) -> None: ...
-    def option_get(self, name, className): ...
-    def option_readfile(self, fileName, priority=None) -> None: ...
-    def selection_clear(self, **kw) -> None: ...
-    def selection_get(self, **kw): ...
-    def selection_handle(self, command, **kw) -> None: ...
-    def selection_own(self, **kw) -> None: ...
-    def selection_own_get(self, **kw): ...
-    def send(self, interp, cmd, *args): ...
-    def lower(self, belowThis=None) -> None: ...
-    def tkraise(self, aboveThis=None) -> None: ...
+    ) -> None:
+        """
+        Set a VALUE (second parameter) for an option
+        PATTERN (first parameter).
+
+        An optional third parameter gives the numeric priority
+        (defaults to 80).
+        """
+        ...
+    def option_clear(self) -> None:
+        """
+        Clear the option database.
+
+        It will be reloaded if option_add is called.
+        """
+        ...
+    def option_get(self, name, className):
+        """
+        Return the value for an option NAME for this widget
+        with CLASSNAME.
+
+        Values with higher priority override lower values.
+        """
+        ...
+    def option_readfile(self, fileName, priority=None) -> None:
+        """
+        Read file FILENAME into the option database.
+
+        An optional second parameter gives the numeric
+        priority.
+        """
+        ...
+    def selection_clear(self, **kw) -> None:
+        """Clear the current X selection."""
+        ...
+    def selection_get(self, **kw):
+        """
+        Return the contents of the current X selection.
+
+        A keyword parameter selection specifies the name of
+        the selection and defaults to PRIMARY.  A keyword
+        parameter displayof specifies a widget on the display
+        to use. A keyword parameter type specifies the form of data to be
+        fetched, defaulting to STRING except on X11, where UTF8_STRING is tried
+        before STRING.
+        """
+        ...
+    def selection_handle(self, command, **kw) -> None:
+        """
+        Specify a function COMMAND to call if the X
+        selection owned by this widget is queried by another
+        application.
+
+        This function must return the contents of the
+        selection. The function will be called with the
+        arguments OFFSET and LENGTH which allows the chunking
+        of very long selections. The following keyword
+        parameters can be provided:
+        selection - name of the selection (default PRIMARY),
+        type - type of the selection (e.g. STRING, FILE_NAME).
+        """
+        ...
+    def selection_own(self, **kw) -> None:
+        """
+        Become owner of X selection.
+
+        A keyword parameter selection specifies the name of
+        the selection (default PRIMARY).
+        """
+        ...
+    def selection_own_get(self, **kw):
+        """
+        Return owner of X selection.
+
+        The following keyword parameter can
+        be provided:
+        selection - name of the selection (default PRIMARY),
+        type - type of the selection (e.g. STRING, FILE_NAME).
+        """
+        ...
+    def send(self, interp, cmd, *args):
+        """Send Tcl command CMD to different interpreter INTERP to be executed."""
+        ...
+    def lower(self, belowThis=None) -> None:
+        """Lower this widget in the stacking order."""
+        ...
+    def tkraise(self, aboveThis=None) -> None:
+        """Raise this widget in the stacking order."""
+        ...
     lift = tkraise
     if sys.version_info >= (3, 11):
         def info_patchlevel(self) -> _VersionInfoType:
@@ -2309,19 +2449,52 @@ class Wm:
         """
         ...
     geometry = wm_geometry
-    def wm_grid(self, baseWidth=None, baseHeight=None, widthInc=None, heightInc=None): ...
+    def wm_grid(self, baseWidth=None, baseHeight=None, widthInc=None, heightInc=None):
+        """
+        Instruct the window manager that this widget shall only be
+        resized on grid boundaries. WIDTHINC and HEIGHTINC are the width and
+        height of a grid unit in pixels. BASEWIDTH and BASEHEIGHT are the
+        number of grid units requested in Tk_GeometryRequest.
+        """
+        ...
     grid = wm_grid
-    def wm_group(self, pathName=None): ...
+    def wm_group(self, pathName=None):
+        """
+        Set the group leader widgets for related widgets to PATHNAME. Return
+        the group leader of this widget if None is given.
+        """
+        ...
     group = wm_group
-    def wm_iconbitmap(self, bitmap=None, default=None): ...
+    def wm_iconbitmap(self, bitmap=None, default=None):
+        """
+        Set bitmap for the iconified widget to BITMAP. Return
+        the bitmap if None is given.
+
+        Under Windows, the DEFAULT parameter can be used to set the icon
+        for the widget and any descendants that don't have an icon set
+        explicitly.  DEFAULT can be the relative path to a .ico file
+        (example: root.iconbitmap(default='myicon.ico') ).  See Tk
+        documentation for more information.
+        """
+        ...
     iconbitmap = wm_iconbitmap
     def wm_iconify(self) -> None:
         """Display widget as icon."""
         ...
     iconify = wm_iconify
-    def wm_iconmask(self, bitmap=None): ...
+    def wm_iconmask(self, bitmap=None):
+        """
+        Set mask for the icon bitmap of this widget. Return the
+        mask if None is given.
+        """
+        ...
     iconmask = wm_iconmask
-    def wm_iconname(self, newName=None) -> str: ...
+    def wm_iconname(self, newName=None) -> str:
+        """
+        Set the name of the icon for this widget. Return the name if
+        None is given.
+        """
+        ...
     iconname = wm_iconname
     def wm_iconphoto(self, default: bool, image1: _PhotoImageLike | str, /, *args: _PhotoImageLike | str) -> None:
         """
@@ -2354,7 +2527,12 @@ class Wm:
         """
         ...
     iconposition = wm_iconposition
-    def wm_iconwindow(self, pathName=None): ...
+    def wm_iconwindow(self, pathName=None):
+        """
+        Set widget PATHNAME to be displayed instead of icon. Return the current
+        value if None is given.
+        """
+        ...
     iconwindow = wm_iconwindow
     def wm_manage(self, widget) -> None:
         """
@@ -3460,10 +3638,33 @@ class Canvas(Widget, XView, YView):
         """
         ...
     @overload
-    def tag_bind(self, tagOrId: str | int, *, func: str, add: Literal["", "+"] | bool | None = None) -> None: ...
-    def tag_unbind(self, tagOrId: str | int, sequence: str, funcid: str | None = None) -> None: ...
-    def canvasx(self, screenx, gridspacing=None): ...
-    def canvasy(self, screeny, gridspacing=None): ...
+    def tag_bind(self, tagOrId: str | int, *, func: str, add: Literal["", "+"] | bool | None = None) -> None:
+        """
+        Bind to all items with TAGORID at event SEQUENCE a call to function FUNC.
+
+        An additional boolean parameter ADD specifies whether FUNC will be
+        called additionally to the other bound function or whether it will
+        replace the previous function. See bind for the return value.
+        """
+        ...
+    def tag_unbind(self, tagOrId: str | int, sequence: str, funcid: str | None = None) -> None:
+        """
+        Unbind for all items with TAGORID for event SEQUENCE  the
+        function identified with FUNCID.
+        """
+        ...
+    def canvasx(self, screenx, gridspacing=None):
+        """
+        Return the canvas x coordinate of pixel position SCREENX rounded
+        to nearest multiple of GRIDSPACING units.
+        """
+        ...
+    def canvasy(self, screeny, gridspacing=None):
+        """
+        Return the canvas y coordinate of pixel position SCREENY rounded
+        to nearest multiple of GRIDSPACING units.
+        """
+        ...
     @overload
     def coords(self, tagOrId: str | int, /) -> list[float]:
         """Return a list of coordinates for the item given in ARGS."""
@@ -4850,9 +5051,23 @@ class Listbox(Widget, XView, YView):
         """
         ...
     select_set = selection_set
-    def size(self) -> int: ...  # type: ignore[override]
-    def itemcget(self, index: str | int, option): ...
-    def itemconfigure(self, index: str | int, cnf=None, **kw): ...
+    def size(self) -> int:
+        """Return the number of elements in the listbox."""
+        ...
+    def itemcget(self, index: str | int, option):
+        """Return the resource value for an ITEM and an OPTION."""
+        ...
+    def itemconfigure(self, index: str | int, cnf=None, **kw):
+        """
+        Configure resources of an ITEM.
+
+        The values for resources are specified as keyword arguments.
+        To get an overview about the allowed keyword arguments
+        call the method without arguments.
+        Valid resource names: background, bg, foreground, fg,
+        selectbackground, selectforeground.
+        """
+        ...
     itemconfig = itemconfigure
 
 class Menu(Widget):
@@ -5754,12 +5969,46 @@ class Scrollbar(Widget):
         """
         ...
     config = configure
-    def activate(self, index=None): ...
-    def delta(self, deltax: int, deltay: int) -> float: ...
-    def fraction(self, x: int, y: int) -> float: ...
-    def identify(self, x: int, y: int) -> Literal["arrow1", "arrow2", "slider", "trough1", "trough2", ""]: ...
-    def get(self) -> tuple[float, float, float, float] | tuple[float, float]: ...
-    def set(self, first: float | str, last: float | str) -> None: ...
+    def activate(self, index=None):
+        """
+        Marks the element indicated by index as active.
+        The only index values understood by this method are "arrow1",
+        "slider", or "arrow2".  If any other value is specified then no
+        element of the scrollbar will be active.  If index is not specified,
+        the method returns the name of the element that is currently active,
+        or None if no element is active.
+        """
+        ...
+    def delta(self, deltax: int, deltay: int) -> float:
+        """
+        Return the fractional change of the scrollbar setting if it
+        would be moved by DELTAX or DELTAY pixels.
+        """
+        ...
+    def fraction(self, x: int, y: int) -> float:
+        """
+        Return the fractional value which corresponds to a slider
+        position of X,Y.
+        """
+        ...
+    def identify(self, x: int, y: int) -> Literal["arrow1", "arrow2", "slider", "trough1", "trough2", ""]:
+        """
+        Return the element under position X,Y as one of
+        "arrow1","slider","arrow2" or "".
+        """
+        ...
+    def get(self) -> tuple[float, float, float, float] | tuple[float, float]:
+        """
+        Return the current fractional values (upper and lower end)
+        of the slider position.
+        """
+        ...
+    def set(self, first: float | str, last: float | str) -> None:
+        """
+        Set the fractional values of the slider position (upper and
+        lower ends as value between 0 and 1).
+        """
+        ...
 
 _TextIndex: TypeAlias = _tkinter.Tcl_Obj | str | float | Misc
 _WhatToCount: TypeAlias = Literal[
@@ -6873,6 +7122,7 @@ class Text(Widget, XView, YView):
         ...
 
 class _setit:
+    """Internal class. It wraps the command in the widget OptionMenu."""
     def __init__(self, var, value, callback=None) -> None: ...
     def __call__(self, *args) -> None: ...
 
@@ -7456,26 +7706,143 @@ class Spinbox(Widget, XView):
         """
         ...
     config = configure
-    def bbox(self, index) -> tuple[int, int, int, int] | None: ...  # type: ignore[override]
-    def delete(self, first, last=None) -> Literal[""]: ...
-    def get(self) -> str: ...
-    def icursor(self, index): ...
-    def identify(self, x: int, y: int) -> Literal["", "buttondown", "buttonup", "entry"]: ...
-    def index(self, index: str | int) -> int: ...
-    def insert(self, index: str | int, s: str) -> Literal[""]: ...
+    def bbox(self, index) -> tuple[int, int, int, int] | None:
+        """
+        Return a tuple of X1,Y1,X2,Y2 coordinates for a
+        rectangle which encloses the character given by index.
+
+        The first two elements of the list give the x and y
+        coordinates of the upper-left corner of the screen
+        area covered by the character (in pixels relative
+        to the widget) and the last two elements give the
+        width and height of the character, in pixels. The
+        bounding box may refer to a region outside the
+        visible area of the window.
+        """
+        ...
+    def delete(self, first, last=None) -> Literal[""]:
+        """
+        Delete one or more elements of the spinbox.
+
+        First is the index of the first character to delete,
+        and last is the index of the character just after
+        the last one to delete. If last isn't specified it
+        defaults to first+1, i.e. a single character is
+        deleted.  This command returns an empty string.
+        """
+        ...
+    def get(self) -> str:
+        """Returns the spinbox's string"""
+        ...
+    def icursor(self, index):
+        """
+        Alter the position of the insertion cursor.
+
+        The insertion cursor will be displayed just before
+        the character given by index. Returns an empty string
+        """
+        ...
+    def identify(self, x: int, y: int) -> Literal["", "buttondown", "buttonup", "entry"]:
+        """
+        Returns the name of the widget at position x, y
+
+        Return value is one of: none, buttondown, buttonup, entry
+        """
+        ...
+    def index(self, index: str | int) -> int:
+        """
+        Returns the numerical index corresponding to index
+        
+        """
+        ...
+    def insert(self, index: str | int, s: str) -> Literal[""]:
+        """
+        Insert string s at index
+
+        Returns an empty string.
+        """
+        ...
     # spinbox.invoke("asdf") gives error mentioning .invoke("none"), but it's not documented
-    def invoke(self, element: Literal["none", "buttonup", "buttondown"]) -> Literal[""]: ...
-    def scan(self, *args): ...
-    def scan_mark(self, x): ...
-    def scan_dragto(self, x): ...
-    def selection(self, *args) -> tuple[int, ...]: ...
-    def selection_adjust(self, index): ...
-    def selection_clear(self): ...  # type: ignore[override]
-    def selection_element(self, element=None): ...
-    def selection_from(self, index: int) -> None: ...
-    def selection_present(self) -> None: ...
-    def selection_range(self, start: int, end: int) -> None: ...
-    def selection_to(self, index: int) -> None: ...
+    def invoke(self, element: Literal["none", "buttonup", "buttondown"]) -> Literal[""]:
+        """
+        Causes the specified element to be invoked
+
+        The element could be buttondown or buttonup
+        triggering the action associated with it.
+        """
+        ...
+    def scan(self, *args):
+        """Internal function."""
+        ...
+    def scan_mark(self, x):
+        """
+        Records x and the current view in the spinbox window;
+
+        used in conjunction with later scan dragto commands.
+        Typically this command is associated with a mouse button
+        press in the widget. It returns an empty string.
+        """
+        ...
+    def scan_dragto(self, x):
+        """
+        Compute the difference between the given x argument
+        and the x argument to the last scan mark command
+
+        It then adjusts the view left or right by 10 times the
+        difference in x-coordinates. This command is typically
+        associated with mouse motion events in the widget, to
+        produce the effect of dragging the spinbox at high speed
+        through the window. The return value is an empty string.
+        """
+        ...
+    def selection(self, *args) -> tuple[int, ...]:
+        """Internal function."""
+        ...
+    def selection_adjust(self, index):
+        """
+        Locate the end of the selection nearest to the character
+        given by index,
+
+        Then adjust that end of the selection to be at index
+        (i.e including but not going beyond index). The other
+        end of the selection is made the anchor point for future
+        select to commands. If the selection isn't currently in
+        the spinbox, then a new selection is created to include
+        the characters between index and the most recent selection
+        anchor point, inclusive.
+        """
+        ...
+    def selection_clear(self):
+        """
+        Clear the selection
+
+        If the selection isn't in this widget then the
+        command has no effect.
+        """
+        ...
+    def selection_element(self, element=None):
+        """
+        Sets or gets the currently selected element.
+
+        If a spinbutton element is specified, it will be
+        displayed depressed.
+        """
+        ...
+    def selection_from(self, index: int) -> None:
+        """Set the fixed end of a selection to INDEX."""
+        ...
+    def selection_present(self) -> None:
+        """
+        Return True if there are characters selected in the spinbox, False
+        otherwise.
+        """
+        ...
+    def selection_range(self, start: int, end: int) -> None:
+        """Set the selection from START to END (not included)."""
+        ...
+    def selection_to(self, index: int) -> None:
+        """Set the variable end of a selection to INDEX."""
+        ...
 
 class LabelFrame(Widget):
     """labelframe widget."""
@@ -7685,17 +8052,145 @@ class PanedWindow(Widget):
         """
         ...
     forget: Incomplete
-    def identify(self, x: int, y: int): ...
-    def proxy(self, *args): ...
-    def proxy_coord(self): ...
-    def proxy_forget(self): ...
-    def proxy_place(self, x, y): ...
-    def sash(self, *args): ...
-    def sash_coord(self, index): ...
-    def sash_mark(self, index): ...
-    def sash_place(self, index, x, y): ...
-    def panecget(self, child, option): ...
-    def paneconfigure(self, tagOrId, cnf=None, **kw): ...
+    def identify(self, x: int, y: int):
+        """
+        Identify the panedwindow component at point x, y
+
+        If the point is over a sash or a sash handle, the result
+        is a two element list containing the index of the sash or
+        handle, and a word indicating whether it is over a sash
+        or a handle, such as {0 sash} or {2 handle}. If the point
+        is over any other part of the panedwindow, the result is
+        an empty list.
+        """
+        ...
+    def proxy(self, *args):
+        """Internal function."""
+        ...
+    def proxy_coord(self):
+        """
+        Return the x and y pair of the most recent proxy location
+        
+        """
+        ...
+    def proxy_forget(self):
+        """
+        Remove the proxy from the display.
+        
+        """
+        ...
+    def proxy_place(self, x, y):
+        """
+        Place the proxy at the given x and y coordinates.
+        
+        """
+        ...
+    def sash(self, *args):
+        """Internal function."""
+        ...
+    def sash_coord(self, index):
+        """
+        Return the current x and y pair for the sash given by index.
+
+        Index must be an integer between 0 and 1 less than the
+        number of panes in the panedwindow. The coordinates given are
+        those of the top left corner of the region containing the sash.
+        pathName sash dragto index x y This command computes the
+        difference between the given coordinates and the coordinates
+        given to the last sash coord command for the given sash. It then
+        moves that sash the computed difference. The return value is the
+        empty string.
+        """
+        ...
+    def sash_mark(self, index):
+        """
+        Records x and y for the sash given by index;
+
+        Used in conjunction with later dragto commands to move the sash.
+        """
+        ...
+    def sash_place(self, index, x, y):
+        """
+        Place the sash given by index at the given coordinates
+        
+        """
+        ...
+    def panecget(self, child, option):
+        """
+        Query a management option for window.
+
+        Option may be any value allowed by the paneconfigure subcommand
+        """
+        ...
+    def paneconfigure(self, tagOrId, cnf=None, **kw):
+        """
+        Query or modify the management options for window.
+
+        If no option is specified, returns a list describing all
+        of the available options for pathName.  If option is
+        specified with no value, then the command returns a list
+        describing the one named option (this list will be identical
+        to the corresponding sublist of the value returned if no
+        option is specified). If one or more option-value pairs are
+        specified, then the command modifies the given widget
+        option(s) to have the given value(s); in this case the
+        command returns an empty string. The following options
+        are supported:
+
+        after window
+            Insert the window after the window specified. window
+            should be the name of a window already managed by pathName.
+        before window
+            Insert the window before the window specified. window
+            should be the name of a window already managed by pathName.
+        height size
+            Specify a height for the window. The height will be the
+            outer dimension of the window including its border, if
+            any. If size is an empty string, or if -height is not
+            specified, then the height requested internally by the
+            window will be used initially; the height may later be
+            adjusted by the movement of sashes in the panedwindow.
+            Size may be any value accepted by Tk_GetPixels.
+        minsize n
+            Specifies that the size of the window cannot be made
+            less than n. This constraint only affects the size of
+            the widget in the paned dimension -- the x dimension
+            for horizontal panedwindows, the y dimension for
+            vertical panedwindows. May be any value accepted by
+            Tk_GetPixels.
+        padx n
+            Specifies a non-negative value indicating how much
+            extra space to leave on each side of the window in
+            the X-direction. The value may have any of the forms
+            accepted by Tk_GetPixels.
+        pady n
+            Specifies a non-negative value indicating how much
+            extra space to leave on each side of the window in
+            the Y-direction. The value may have any of the forms
+            accepted by Tk_GetPixels.
+        sticky style
+            If a window's pane is larger than the requested
+            dimensions of the window, this option may be used
+            to position (or stretch) the window within its pane.
+            Style is a string that contains zero or more of the
+            characters n, s, e or w. The string can optionally
+            contains spaces or commas, but they are ignored. Each
+            letter refers to a side (north, south, east, or west)
+            that the window will "stick" to. If both n and s
+            (or e and w) are specified, the window will be
+            stretched to fill the entire height (or width) of
+            its cavity.
+        width size
+            Specify a width for the window. The width will be
+            the outer dimension of the window including its
+            border, if any. If size is an empty string, or
+            if -width is not specified, then the width requested
+            internally by the window will be used initially; the
+            width may later be adjusted by the movement of sashes
+            in the panedwindow. Size may be any value accepted by
+            Tk_GetPixels.
+        """
+        ...
     paneconfig: Incomplete
     def panes(self):
         """Returns an ordered list of the child panes."""

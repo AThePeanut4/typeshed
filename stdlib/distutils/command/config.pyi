@@ -1,3 +1,15 @@
+"""
+distutils.command.config
+
+Implements the Distutils 'config' command, a (mostly) empty command class
+that exists mainly to be sub-classed by specific module distributions and
+applications.  The idea is that while every "config" command is different,
+at least they're all named the same, and users always see "config" in the
+list of standard commands.  Also, this is a good place to put common
+configure-like tasks: "try to compile this C code", or "figure out where
+this header file lives".
+"""
+
 from _typeshed import StrOrBytesPath
 from collections.abc import Sequence
 from re import Pattern
@@ -146,4 +158,10 @@ class config(Command):
         """
         ...
 
-def dump_file(filename: StrOrBytesPath, head=None) -> None: ...
+def dump_file(filename: StrOrBytesPath, head=None) -> None:
+    """
+    Dumps a file content into log.info.
+
+    If head is not None, will be dumped before the file content.
+    """
+    ...

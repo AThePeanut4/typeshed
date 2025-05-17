@@ -7,6 +7,13 @@
 # (since type checkers don't see `complex` as a subtype of `numbers.Complex`,
 # nor `float` as a subtype of `numbers.Real`, etc.)
 
+
+"""
+Abstract Base Classes (ABCs) for numbers, according to PEP 3141.
+
+TODO: Fill out more detailed documentation on the operators.
+"""
+
 from abc import ABCMeta, abstractmethod
 from typing import ClassVar, Literal, Protocol, overload
 
@@ -331,7 +338,16 @@ class Integral(Rational, _IntegralLike):
         """Called whenever an index is needed, such as in slicing"""
         ...
     @abstractmethod
-    def __pow__(self, exponent, modulus=None) -> _IntegralLike: ...
+    def __pow__(self, exponent, modulus=None) -> _IntegralLike:
+        """
+        self ** exponent % modulus, but maybe faster.
+
+        Accept the modulus argument if you want to support the
+        3-argument version of pow(). Raise a TypeError if exponent < 0
+        or any argument isn't Integral. Otherwise, just implement the
+        2-argument version described in Complex.
+        """
+        ...
     @abstractmethod
     def __lshift__(self, other) -> _IntegralLike:
         """self << other"""

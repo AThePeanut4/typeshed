@@ -410,9 +410,12 @@ class vCategory:
     TZID: property
 
 class TimeBase:
+    """Make classes with a datetime/date comparable."""
     params: Parameters
     ignore_for_equality: set[str]
-    def __eq__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> bool:
+        """self == other"""
+        ...
     def __hash__(self) -> int: ...
     RANGE: property
     RELATED: property
@@ -880,19 +883,32 @@ class vRecur(CaselessDict[Iterable[Any] | Any]):
         recurrence may be modified in an exception component or simply by using an
         "RDATE" property of PERIOD value type.
 
-    Example:
+    Examples:
         The following RRULE specifies daily events for 10 occurrences.
 
-    .. code-block:: text
+        .. code-block:: text
 
-        RRULE:FREQ=DAILY;COUNT=10
+            RRULE:FREQ=DAILY;COUNT=10
 
-    .. code-block:: pycon
+        Below, we parse the RRULE ical string.
 
-        >>> from icalendar.prop import vRecur
-        >>> rrule = vRecur.from_ical('FREQ=DAILY;COUNT=10')
-        >>> rrule
-        vRecur({'FREQ': ['DAILY'], 'COUNT': [10]})
+        .. code-block:: pycon
+
+            >>> from icalendar.prop import vRecur
+            >>> rrule = vRecur.from_ical('FREQ=DAILY;COUNT=10')
+            >>> rrule
+            vRecur({'FREQ': ['DAILY'], 'COUNT': [10]})
+
+        You can choose to add an rrule to an :class:`icalendar.cal.Event` or
+        :class:`icalendar.cal.Todo`.
+
+        .. code-block:: pycon
+
+            >>> from icalendar import Event
+            >>> event = Event()
+            >>> event.add('RRULE', 'FREQ=DAILY;COUNT=10')
+            >>> event.rrules
+            [vRecur({'FREQ': ['DAILY'], 'COUNT': [10]})]
     """
     params: Parameters
     frequencies: Final[list[str]]

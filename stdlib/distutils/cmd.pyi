@@ -1,3 +1,10 @@
+"""
+distutils.cmd
+
+Provides the Command class, the base class for the command classes
+in the distutils.command package.
+"""
+
 from _typeshed import BytesPath, StrOrBytesPath, StrPath, Unused
 from abc import abstractmethod
 from collections.abc import Callable, Iterable
