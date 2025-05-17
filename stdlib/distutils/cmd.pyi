@@ -1,11 +1,4 @@
-"""
-distutils.cmd
-
-Provides the Command class, the base class for the command classes
-in the distutils.command package.
-"""
-
-from _typeshed import BytesPath, Incomplete, StrOrBytesPath, StrPath, Unused
+from _typeshed import BytesPath, StrOrBytesPath, StrPath, Unused
 from abc import abstractmethod
 from collections.abc import Callable, Iterable
 from distutils.command.bdist import bdist
@@ -522,4 +515,4 @@ class Command:
         """
         ...
     def ensure_finalized(self) -> None: ...
-    def dump_options(self, header: Incomplete | None = None, indent: str = "") -> None: ...
+    def dump_options(self, header=None, indent: str = "") -> None: ...

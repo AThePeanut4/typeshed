@@ -166,26 +166,8 @@ class Distribution:
     command_obj: Incomplete
     have_run: Incomplete
     want_user_cfg: bool
-    def dump_option_dicts(
-        self, header: Incomplete | None = None, commands: Incomplete | None = None, indent: str = ""
-    ) -> None: ...
-    def find_config_files(self):
-        """
-        Find as many configuration files as should be processed for this
-        platform, and return a list of filenames in the order in which they
-        should be parsed.  The filenames returned are guaranteed to exist
-        (modulo nasty race conditions).
-
-        There are three possible config files: distutils.cfg in the
-        Distutils installation directory (ie. where the top-level
-        Distutils __inst__.py file lives), a file in the user's home
-        directory named .pydistutils.cfg on Unix and pydistutils.cfg
-        on Windows/Mac; and setup.cfg in the current directory.
-
-        The file in the user's home directory can be disabled with the
-        --no-user-cfg option.
-        """
-        ...
+    def dump_option_dicts(self, header=None, commands=None, indent: str = "") -> None: ...
+    def find_config_files(self): ...
     commands: Incomplete
     def parse_command_line(self):
         """

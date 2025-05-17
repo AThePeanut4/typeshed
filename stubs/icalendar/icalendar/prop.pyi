@@ -410,10 +410,9 @@ class vCategory:
     TZID: property
 
 class TimeBase:
-    """Make classes with a datetime/date comparable."""
-    def __eq__(self, other: object) -> bool:
-        """self == other"""
-        ...
+    params: Parameters
+    ignore_for_equality: set[str]
+    def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     RANGE: property
     RELATED: property

@@ -1,10 +1,3 @@
-"""
-distutils.command.register
-
-Implements the Distutils 'register' command (register with the repository).
-"""
-
-from _typeshed import Incomplete
 from collections.abc import Callable
 from typing import Any, ClassVar
 
@@ -64,9 +57,4 @@ class register(PyPIRCCommand):
         """
         ...
     def build_post_data(self, action): ...
-    def post_to_server(self, data, auth: Incomplete | None = None):
-        """
-        Post a query to the server, and return a string response.
-        
-        """
-        ...
+    def post_to_server(self, data, auth=None): ...

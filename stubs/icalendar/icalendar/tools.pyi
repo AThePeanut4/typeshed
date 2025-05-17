@@ -1,6 +1,6 @@
 import datetime
 from typing import Final
-from typing_extensions import TypeGuard, TypeIs
+from typing_extensions import TypeGuard, TypeIs, deprecated
 
 from pytz.tzinfo import BaseTzInfo
 
@@ -12,18 +12,11 @@ class UIDGenerator:
     """If you are too lazy to create real uid's."""
     chars: Final[list[str]]
     @staticmethod
-    def rnd_string(length: int = 16) -> str:
-        """Generates a string with random characters of length."""
-        ...
+    @deprecated("Use the Python standard library's :func:`uuid.uuid4` instead.")
+    def rnd_string(length: int = 16) -> str: ...
     @staticmethod
-    def uid(host_name: str = "example.com", unique: str = "") -> vText:
-        """
-        Generates a unique id consisting of:
-            datetime-uniquevalue@host.
-        Like:
-            20050105T225746Z-HKtJMqUgdO0jDUwm@example.com
-        """
-        ...
+    @deprecated("Use the Python standard library's :func:`uuid.uuid5` instead.")
+    def uid(host_name: str = "example.com", unique: str = "") -> vText: ...
 
 def is_date(dt: datetime.date) -> bool:
     """Whether this is a date and not a datetime."""
