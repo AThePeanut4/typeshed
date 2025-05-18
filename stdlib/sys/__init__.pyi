@@ -72,7 +72,7 @@ settrace() -- set the global debug tracing function
 """
 
 import sys
-from _typeshed import MaybeNone, OptExcInfo, ProfileFunction, TraceFunction, structseq
+from _typeshed import MaybeNone, OptExcInfo, ProfileFunction, StrOrBytesPath, TraceFunction, structseq
 from _typeshed.importlib import MetaPathFinderProtocol, PathEntryFinderProtocol
 from builtins import object as _object
 from collections.abc import AsyncGenerator, Callable, Sequence
@@ -776,3 +776,7 @@ if sys.version_info >= (3, 12):
     from . import _monitoring
 
     monitoring = _monitoring
+
+if sys.version_info >= (3, 14):
+    def is_remote_debug_enabled() -> bool: ...
+    def remote_exec(pid: int, script: StrOrBytesPath) -> None: ...

@@ -10,6 +10,8 @@ from .events import AbstractEventLoop
 
 # Keep asyncio.__all__ updated with any changes to __all__ here
 if sys.version_info >= (3, 14):
+    from _asyncio import future_add_to_awaited_by, future_discard_from_awaited_by
+
     __all__ = ("Future", "wrap_future", "isfuture", "future_discard_from_awaited_by", "future_add_to_awaited_by")
 else:
     __all__ = ("Future", "wrap_future", "isfuture")
@@ -19,19 +21,5 @@ _T = TypeVar("_T")
 # asyncio defines 'isfuture()' in base_futures.py and re-imports it in futures.py
 # but it leads to circular import error in pytype tool.
 # That's why the import order is reversed.
-def isfuture(obj: object) -> TypeIs[Future[Any]]:
-    """
-    Check for a Future.
-
-    This returns True when obj is a Future instance or is advertising
-    itself as duck-type compatible by setting _asyncio_future_blocking.
-    See comment in Future for more details.
-    """
-    ...
-def wrap_future(future: _ConcurrentFuture[_T] | Future[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]:
-    """Wrap concurrent.futures.Future object."""
-    ...
-
-if sys.version_info >= (3, 14):
-    def future_discard_from_awaited_by(future: Future[Any], waiter: Future[Any], /) -> None: ...
-    def future_add_to_awaited_by(future: Future[Any], waiter: Future[Any], /) -> None: ...
+def isfuture(obj: object) -> TypeIs[Future[Any]]: ...
+def wrap_future(future: _ConcurrentFuture[_T] | Future[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]: ...
