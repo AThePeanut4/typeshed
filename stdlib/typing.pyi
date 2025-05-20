@@ -1361,15 +1361,50 @@ class MutableMapping(Mapping[_KT, _VT]):
     # -- weakref.WeakValueDictionary.__ior__
     # -- weakref.WeakKeyDictionary.__ior__
     @overload
-    def update(self, m: SupportsKeysAndGetItem[_KT, _VT], /) -> None: ...
+    def update(self, m: SupportsKeysAndGetItem[_KT, _VT], /) -> None:
+        """
+        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
+        ...
     @overload
-    def update(self: Mapping[str, _VT], m: SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> None: ...
+    def update(self: Mapping[str, _VT], m: SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> None:
+        """
+        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
+        ...
     @overload
-    def update(self, m: Iterable[tuple[_KT, _VT]], /) -> None: ...
+    def update(self, m: Iterable[tuple[_KT, _VT]], /) -> None:
+        """
+        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
+        ...
     @overload
-    def update(self: Mapping[str, _VT], m: Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> None: ...
+    def update(self: Mapping[str, _VT], m: Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> None:
+        """
+        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
+        ...
     @overload
-    def update(self: Mapping[str, _VT], **kwargs: _VT) -> None: ...
+    def update(self: Mapping[str, _VT], **kwargs: _VT) -> None:
+        """
+        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
+        ...
 
 Text = str
 

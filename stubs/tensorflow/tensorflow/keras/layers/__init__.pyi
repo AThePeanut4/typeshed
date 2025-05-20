@@ -323,6 +323,9 @@ class Layer(tf.Module, Generic[_InputT_contra, _OutputT_co]):
                 the type of multi-replica aggregation to be used for this
                 variable when writing custom data parallel training loops.
                 Defaults to `"none"`.
+            overwrite_with_gradient: Boolean, whether to overwrite the variable
+                with the computed gradient. This is useful for float8 training.
+                Defaults to `False`.
             name: String name of the variable. Useful for debugging purposes.
         """
         ...
@@ -1191,6 +1194,11 @@ class Dense(Layer[tf.Tensor, tf.Tensor]):
             computation cost of fine-tuning large dense layers.
             You can also enable LoRA on an existing
             `Dense` layer by calling `layer.enable_lora(rank)`.
+        lora_alpha: Optional integer. If set, this parameter scales the
+            low-rank adaptation delta (computed as the product of two lower-rank
+            trainable matrices) during the forward pass. The delta is scaled by
+            `lora_alpha / lora_rank`, allowing you to fine-tune the strength of
+            the LoRA adjustment independently of `lora_rank`.
 
     Input shape:
         N-D tensor with shape: `(batch_size, ..., input_dim)`.
@@ -1509,6 +1517,11 @@ class Embedding(Layer[tf.Tensor, tf.Tensor]):
             computation cost of fine-tuning large embedding layers.
             You can also enable LoRA on an existing
             `Embedding` layer by calling `layer.enable_lora(rank)`.
+        lora_alpha: Optional integer. If set, this parameter scales the
+            low-rank adaptation delta (computed as the product of two lower-rank
+            trainable matrices) during the forward pass. The delta is scaled by
+            `lora_alpha / lora_rank`, allowing you to fine-tune the strength of
+            the LoRA adjustment independently of `lora_rank`.
 
     Input shape:
         2D tensor with shape: `(batch_size, input_length)`.

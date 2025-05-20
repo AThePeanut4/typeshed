@@ -1676,6 +1676,7 @@ class keyword(AST):
         def __replace__(self, *, arg: str | None = ..., value: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
 
 class alias(AST):
+    """alias(identifier name, identifier? asname)"""
     name: str
     asname: str | None
     if sys.version_info >= (3, 10):

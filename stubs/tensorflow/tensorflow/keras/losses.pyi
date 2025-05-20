@@ -798,6 +798,8 @@ class SparseCategoricalCrossentropy(Loss):
             sample size, and `"mean_with_sample_weight"` sums the loss and
             divides by the sum of the sample weights. `"none"` and `None`
             perform no aggregation. Defaults to `"sum_over_batch_size"`.
+        axis: The axis along which to compute crossentropy (the features
+            axis). Defaults to `-1`.
         name: Optional name for the loss instance.
         dtype: The dtype of the loss's computations. Defaults to `None`, which
             means using `keras.backend.floatx()`. `keras.backend.floatx()` is a
