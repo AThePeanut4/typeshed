@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from datetime import timedelta
 from logging import Logger
-from re import Pattern
+from re import Match, Pattern
 from typing import Any, Final, Literal, TypedDict, TypeVar, overload
 from typing_extensions import TypeAlias
 
@@ -70,34 +70,12 @@ def set_cors_headers(resp: flask.Response, options: _Options) -> flask.Response:
 def probably_regex(maybe_regex: Pattern[str]) -> Literal[True]: ...
 @overload
 def probably_regex(maybe_regex: str) -> bool: ...
-def re_fix(reg: str) -> str:
-    """
-    Replace the invalid regex r'*' with the valid, wildcard regex r'/.*' to
-    enable the CORS app extension to have a more user friendly api.
-    """
-    ...
-def try_match_any(inst: str, patterns: Iterable[str | Pattern[str]]) -> bool: ...
-def try_match(request_origin: str, maybe_regex: str | Pattern[str]) -> bool:
-    """Safely attempts to match a pattern or string to a request origin."""
-    ...
-def get_cors_options(appInstance: flask.Flask | None, *dicts: _Options) -> _Options:
-    """
-    Compute CORS options for an application by combining the DEFAULT_OPTIONS,
-    the app's configuration-specified options and any dictionaries passed. The
-    last specified option wins.
-    """
-    ...
-def get_app_kwarg_dict(appInstance: flask.Flask | None = None) -> _Options:
-    """Returns the dictionary of CORS specific app configurations."""
-    ...
-def flexible_str(obj: object) -> str | None:
-    """
-    A more flexible str function which intelligently handles stringifying
-    strings, lists and other iterables. The results are lexographically sorted
-    to ensure generated responses are consistent when iterables such as Set
-    are used.
-    """
-    ...
+def re_fix(reg: str) -> str: ...
+def try_match_any_pattern(inst: str, patterns: Iterable[str | Pattern[str]], caseSensitive: bool = True) -> bool: ...
+def try_match_pattern(value: str, pattern: str | Pattern[str], caseSensitive: bool = True) -> bool | Match[str]: ...
+def get_cors_options(appInstance: flask.Flask | None, *dicts: _Options) -> _Options: ...
+def get_app_kwarg_dict(appInstance: flask.Flask | None = None) -> _Options: ...
+def flexible_str(obj: object) -> str | None: ...
 def serialize_option(options_dict: _Options, key: str, upper: bool = False) -> None: ...
 @overload
 def ensure_iterable(inst: str) -> list[str]:
