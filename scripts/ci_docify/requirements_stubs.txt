@@ -118,7 +118,7 @@ colorama==0.4.*
 watchpoints==0.2.5
 atheris==2.3.*
 cffi==1.17.*
-Flask-Cors==5.0.*
+Flask-Cors==6.0.*
 Send2Trash==1.8.*
 greenlet==3.2.*
 fanstatic==1.5.*
