@@ -91,12 +91,8 @@ class Parameters(CaselessDict[str]):
     datatypes. Its main concern is textual structure.
     """
     always_quoted: ClassVar[tuple[str, ...]]
-    def params(self) -> dict_keys[str, str]:
-        """
-        In RFC 5545 keys are called parameters, so this is to be consitent
-        with the naming conventions.
-        """
-        ...
+    quote_also: ClassVar[dict[str, str]]
+    def params(self) -> dict_keys[str, str]: ...
     def to_ical(self, sorted: bool = True) -> bytes: ...
     @classmethod
     def from_ical(cls, st: str, strict: bool = False) -> Self:
