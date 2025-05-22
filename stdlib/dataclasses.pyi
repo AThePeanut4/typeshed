@@ -129,64 +129,29 @@ def astuple(obj: DataclassInstance) -> tuple[Any, ...]:
     """
     ...
 @overload
-def astuple(obj: DataclassInstance, *, tuple_factory: Callable[[list[Any]], _T]) -> _T:
-    """
-    Return the fields of a dataclass instance as a new tuple of field values.
-
-    Example usage::
-
-      @dataclass
-      class C:
-          x: int
-          y: int
-
-      c = C(1, 2)
-      assert astuple(c) == (1, 2)
-
-    If given, 'tuple_factory' will be used instead of built-in tuple.
-    The function applies recursively to field values that are
-    dataclass instances. This will also look into built-in containers:
-    tuples, lists, and dicts. Other objects are copied with 'copy.deepcopy()'.
-    """
-    ...
-@overload
-def dataclass(cls: None, /) -> Callable[[type[_T]], type[_T]]:
-    """
-    Add dunder methods based on the fields defined in the class.
-
-    Examines PEP 526 __annotations__ to determine fields.
-
-    If init is true, an __init__() method is added to the class. If repr
-    is true, a __repr__() method is added. If order is true, rich
-    comparison dunder methods are added. If unsafe_hash is true, a
-    __hash__() method is added. If frozen is true, fields may not be
-    assigned to after instance creation. If match_args is true, the
-    __match_args__ tuple is added. If kw_only is true, then by default
-    all fields are keyword-only. If slots is true, a new class with a
-    __slots__ attribute is returned.
-    """
-    ...
-@overload
-def dataclass(cls: type[_T], /) -> type[_T]:
-    """
-    Add dunder methods based on the fields defined in the class.
-
-    Examines PEP 526 __annotations__ to determine fields.
-
-    If init is true, an __init__() method is added to the class. If repr
-    is true, a __repr__() method is added. If order is true, rich
-    comparison dunder methods are added. If unsafe_hash is true, a
-    __hash__() method is added. If frozen is true, fields may not be
-    assigned to after instance creation. If match_args is true, the
-    __match_args__ tuple is added. If kw_only is true, then by default
-    all fields are keyword-only. If slots is true, a new class with a
-    __slots__ attribute is returned.
-    """
-    ...
+def astuple(obj: DataclassInstance, *, tuple_factory: Callable[[list[Any]], _T]) -> _T: ...
 
 if sys.version_info >= (3, 11):
     @overload
     def dataclass(
+        cls: type[_T],
+        /,
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        match_args: bool = True,
+        kw_only: bool = False,
+        slots: bool = False,
+        weakref_slot: bool = False,
+    ) -> type[_T]: ...
+    @overload
+    def dataclass(
+        cls: None = None,
+        /,
         *,
         init: bool = True,
         repr: bool = True,
@@ -218,6 +183,23 @@ if sys.version_info >= (3, 11):
 elif sys.version_info >= (3, 10):
     @overload
     def dataclass(
+        cls: type[_T],
+        /,
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        match_args: bool = True,
+        kw_only: bool = False,
+        slots: bool = False,
+    ) -> type[_T]: ...
+    @overload
+    def dataclass(
+        cls: None = None,
+        /,
         *,
         init: bool = True,
         repr: bool = True,
@@ -249,6 +231,20 @@ elif sys.version_info >= (3, 10):
 else:
     @overload
     def dataclass(
+        cls: type[_T],
+        /,
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+    ) -> type[_T]: ...
+    @overload
+    def dataclass(
+        cls: None = None,
+        /,
         *,
         init: bool = True,
         repr: bool = True,
