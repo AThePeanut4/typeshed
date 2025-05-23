@@ -60,7 +60,18 @@ class Publisher:
         settings_spec: SettingsSpec | None = None,
         config_section: str | None = None,
         **defaults,
-    ): ...
+    ):
+        """
+        Return settings from components and config files.
+
+        Please set components first (`self.set_reader` & `self.set_writer`).
+        Use keyword arguments to override component defaults
+        (before updating from configuration files).
+
+        Calling this function also sets `self.settings` which makes
+        `self.publish()` skip parsing command line options.
+        """
+        ...
     def process_programmatic_settings(self, settings_spec, settings_overrides, config_section) -> None: ...
     def process_command_line(
         self, argv=None, usage=None, description=None, settings_spec=None, config_section=None, **defaults

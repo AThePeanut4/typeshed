@@ -454,15 +454,68 @@ if sys.version_info >= (3, 10):
         """
         Return True if the module supports extended colors; otherwise, return False.
 
+        Extended color support allows more than 256 color-pairs for terminals
+        that support more than 16 colors (e.g. xterm-256color).
+        """
+        ...
+
 if sys.version_info >= (3, 14):
     def assume_default_colors(fg: int, bg: int, /) -> None: ...
 
-def has_ic() -> bool: ...
-def has_il() -> bool: ...
-def has_key(key: int, /) -> bool: ...
-def init_color(color_number: int, r: int, g: int, b: int, /) -> None: ...
-def init_pair(pair_number: int, fg: int, bg: int, /) -> None: ...
-def initscr() -> window: ...
+def has_ic() -> bool:
+    """Return True if the terminal has insert- and delete-character capabilities."""
+    ...
+def has_il() -> bool:
+    """Return True if the terminal has insert- and delete-line capabilities."""
+    ...
+def has_key(key: int, /) -> bool:
+    """
+    Return True if the current terminal type recognizes a key with that value.
+
+    key
+      Key number.
+    """
+    ...
+def init_color(color_number: int, r: int, g: int, b: int, /) -> None:
+    """
+    Change the definition of a color.
+
+      color_number
+        The number of the color to be changed (0 - (COLORS-1)).
+      r
+        Red component (0 - 1000).
+      g
+        Green component (0 - 1000).
+      b
+        Blue component (0 - 1000).
+
+    When init_color() is used, all occurrences of that color on the screen
+    immediately change to the new definition.  This function is a no-op on
+    most terminals; it is active only if can_change_color() returns true.
+    """
+    ...
+def init_pair(pair_number: int, fg: int, bg: int, /) -> None:
+    """
+    Change the definition of a color-pair.
+
+      pair_number
+        The number of the color-pair to be changed (1 - (COLOR_PAIRS-1)).
+      fg
+        Foreground color number (-1 - (COLORS-1)).
+      bg
+        Background color number (-1 - (COLORS-1)).
+
+    If the color-pair was previously initialized, the screen is refreshed and
+    all occurrences of that color-pair are changed to the new definition.
+    """
+    ...
+def initscr() -> window:
+    """
+    Initialize the library.
+
+    Return a WindowObject which represents the whole screen.
+    """
+    ...
 def intrflush(flag: bool, /) -> None: ...
 def is_term_resized(nlines: int, ncols: int, /) -> bool:
     """

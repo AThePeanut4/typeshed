@@ -268,7 +268,12 @@ class Node:
 # Left out
 # - def ensure_str (deprecated)
 # - def unescape (canonical import from docutils.utils)
-def unescape(text: str, restore_backslashes: bool = False, respect_whitespace: bool = False) -> str: ...
+def unescape(text: str, restore_backslashes: bool = False, respect_whitespace: bool = False) -> str:
+    """
+    Return a string with nulls removed or restored to backslashes.
+    Backslash-escaped spaces are also removed.
+    """
+    ...
 
 class Text(Node, str):
     """
@@ -1075,6 +1080,17 @@ class NodeVisitor:
         """
         Called when entering unknown `Node` types.
 
+        Raise an exception unless overridden.
+        """
+        ...
+    def unknown_departure(self, node: Node) -> Any:
+        """
+        Called before exiting unknown `Node` types.
+
+        Raise exception unless overridden.
+        """
+        ...
+
     # These methods only exist on the subclasses `GenericNodeVisitor` and `SparseNodeVisitor` at runtime.
     # If subclassing `NodeVisitor` directly, `visit_*` methods must be implemented for nodes and children that will be called
     # with `Node.walk()` and `Node.walkabout()`.
@@ -1278,11 +1294,37 @@ class NodeVisitor:
     def depart_version(self, node: version) -> Any: ...
     def depart_warning(self, node: warning) -> Any: ...
 
-class SparseNodeVisitor(NodeVisitor): ...
+class SparseNodeVisitor(NodeVisitor):
+    """
+    Base class for sparse traversals, where only certain node types are of
+    interest.  When ``visit_...`` & ``depart_...`` methods should be
+    implemented for *all* node types (such as for `docutils.writers.Writer`
+    subclasses), subclass `NodeVisitor` instead.
+    """
+    ...
 
 class GenericNodeVisitor(NodeVisitor):
-    def default_visit(self, node: Node) -> None: ...
-    def default_departure(self, node: Node) -> None: ...
+    """
+    Generic "Visitor" abstract superclass, for simple traversals.
+
+    Unless overridden, each ``visit_...`` method calls `default_visit()`, and
+    each ``depart_...`` method (when using `Node.walkabout()`) calls
+    `default_departure()`. `default_visit()` (and `default_departure()`) must
+    be overridden in subclasses.
+
+    Define fully generic visitors by overriding `default_visit()` (and
+    `default_departure()`) only. Define semi-generic visitors by overriding
+    individual ``visit_...()`` (and ``depart_...()``) methods also.
+
+    `NodeVisitor.unknown_visit()` (`NodeVisitor.unknown_departure()`) should
+    be overridden for default behavior.
+    """
+    def default_visit(self, node: Node) -> None:
+        """Override for generic, uniform traversals."""
+        ...
+    def default_departure(self, node: Node) -> None:
+        """Override for generic, uniform traversals."""
+        ...
 
 class TreeCopyVisitor(GenericNodeVisitor):
     """Make a complete copy of a tree or branch, including element attributes."""

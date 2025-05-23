@@ -1,3 +1,5 @@
+"""Lukes Algorithm for exact optimal weighted tree partitioning."""
+
 from typing import Final
 
 from networkx.classes.graph import Graph, _Node

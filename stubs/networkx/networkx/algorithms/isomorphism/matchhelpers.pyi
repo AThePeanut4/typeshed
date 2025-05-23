@@ -20,8 +20,21 @@ __all__ = [
     "generic_multiedge_match",
 ]
 
-def copyfunc(f, name=None) -> FunctionType: ...
-def allclose(x, y, rtol: float = 1.0000000000000001e-05, atol=1e-08) -> bool: ...
+def copyfunc(f, name=None) -> FunctionType:
+    """Returns a deepcopy of a function."""
+    ...
+def allclose(x, y, rtol: float = 1.0000000000000001e-05, atol=1e-08) -> bool:
+    """
+    Returns True if x and y are sufficiently close, elementwise.
+
+    Parameters
+    ----------
+    rtol : float
+        The relative error tolerance.
+    atol : float
+        The absolute error tolerance.
+    """
+    ...
 @_dispatchable
 def categorical_node_match(attr, default):
     """

@@ -1,3 +1,5 @@
+"""Convert to and from Roman numerals"""
+
 import argparse
 import re
 from typing import Final, Literal
@@ -20,6 +22,8 @@ def toRoman(n: int) -> str:
 
 romanNumeralPattern: Final[re.Pattern[str]]
 
-def fromRoman(s: str) -> int: ...
+def fromRoman(s: str) -> int:
+    """convert Roman numeral to integer"""
+    ...
 def parse_args() -> argparse.Namespace: ...
 def main() -> Literal[0]: ...

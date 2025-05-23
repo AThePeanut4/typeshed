@@ -96,5 +96,27 @@ def read_pajek(path, encoding: str = "UTF-8"):
     """
     ...
 @_dispatchable
-def parse_pajek(lines): ...
-def make_qstr(t): ...
+def parse_pajek(lines):
+    """
+    Parse Pajek format graph from string or iterable.
+
+    Parameters
+    ----------
+    lines : string or iterable
+       Data in Pajek format.
+
+    Returns
+    -------
+    G : NetworkX graph
+
+    See Also
+    --------
+    read_pajek
+    """
+    ...
+def make_qstr(t):
+    """
+    Returns the string representation of t.
+    Add outer double-quotes if the string has a space.
+    """
+    ...

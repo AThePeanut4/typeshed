@@ -1,3 +1,5 @@
+"""Generators for the small graph atlas."""
+
 from importlib.abc import Traversable
 from typing import Final
 

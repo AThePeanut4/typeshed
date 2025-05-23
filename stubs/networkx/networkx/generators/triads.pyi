@@ -1,3 +1,8 @@
+"""
+Functions that generate the triad graphs, that is, the possible
+digraphs on three nodes.
+"""
+
 from typing import Final
 
 from networkx.utils.backends import _dispatchable

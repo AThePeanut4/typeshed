@@ -1,3 +1,39 @@
+"""
+=================================
+Travelling Salesman Problem (TSP)
+=================================
+
+Implementation of approximate algorithms
+for solving and approximating the TSP problem.
+
+Categories of algorithms which are implemented:
+
+- Christofides (provides a 3/2-approximation of TSP)
+- Greedy
+- Simulated Annealing (SA)
+- Threshold Accepting (TA)
+- Asadpour Asymmetric Traveling Salesman Algorithm
+
+The Travelling Salesman Problem tries to find, given the weight
+(distance) between all points where a salesman has to visit, the
+route so that:
+
+- The total distance (cost) which the salesman travels is minimized.
+- The salesman returns to the starting point.
+- Note that for a complete graph, the salesman visits each point once.
+
+The function `travelling_salesman_problem` allows for incomplete
+graphs by finding all-pairs shortest paths, effectively converting
+the problem to a complete graph problem. It calls one of the
+approximate methods on that problem and then converts the result
+back to the original graph using the previously found shortest paths.
+
+TSP is an NP-hard problem in combinatorial optimization,
+important in operations research and theoretical computer science.
+
+http://en.wikipedia.org/wiki/Travelling_salesman_problem
+"""
+
 from _typeshed import Incomplete, SupportsLenAndGetItem
 from collections.abc import Callable, Mapping
 from typing import Any, TypeVar
@@ -18,8 +54,74 @@ __all__ = [
 
 _SupportsLenAndGetItemT = TypeVar("_SupportsLenAndGetItemT", bound=SupportsLenAndGetItem[Any])
 
-def swap_two_nodes(soln: _SupportsLenAndGetItemT, seed) -> _SupportsLenAndGetItemT: ...
-def move_one_node(soln: _SupportsLenAndGetItemT, seed) -> _SupportsLenAndGetItemT: ...
+def swap_two_nodes(soln: _SupportsLenAndGetItemT, seed) -> _SupportsLenAndGetItemT:
+    """
+    Swap two nodes in `soln` to give a neighbor solution.
+
+    Parameters
+    ----------
+    soln : list of nodes
+        Current cycle of nodes
+
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    list
+        The solution after move is applied. (A neighbor solution.)
+
+    Notes
+    -----
+        This function assumes that the incoming list `soln` is a cycle
+        (that the first and last element are the same) and also that
+        we don't want any move to change the first node in the list
+        (and thus not the last node either).
+
+        The input list is changed as well as returned. Make a copy if needed.
+
+    See Also
+    --------
+        move_one_node
+    """
+    ...
+def move_one_node(soln: _SupportsLenAndGetItemT, seed) -> _SupportsLenAndGetItemT:
+    """
+    Move one node to another position to give a neighbor solution.
+
+    The node to move and the position to move to are chosen randomly.
+    The first and last nodes are left untouched as soln must be a cycle
+    starting at that node.
+
+    Parameters
+    ----------
+    soln : list of nodes
+        Current cycle of nodes
+
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    list
+        The solution after move is applied. (A neighbor solution.)
+
+    Notes
+    -----
+        This function assumes that the incoming list `soln` is a cycle
+        (that the first and last element are the same) and also that
+        we don't want any move to change the first node in the list
+        (and thus not the last node either).
+
+        The input list is changed as well as returned. Make a copy if needed.
+
+    See Also
+    --------
+        swap_two_nodes
+    """
+    ...
 @_dispatchable
 def christofides(G: Graph[_Node], weight: str | None = "weight", tree: Graph[_Node] | None = None):
     """
@@ -253,11 +355,161 @@ def asadpour_atsp(
     """
     ...
 @_dispatchable
-def held_karp_ascent(G: Graph[_Node], weight="weight"): ...
+def held_karp_ascent(G: Graph[_Node], weight="weight"):
+    """
+    Minimizes the Held-Karp relaxation of the TSP for `G`
+
+    Solves the Held-Karp relaxation of the input complete digraph and scales
+    the output solution for use in the Asadpour [1]_ ASTP algorithm.
+
+    The Held-Karp relaxation defines the lower bound for solutions to the
+    ATSP, although it does return a fractional solution. This is used in the
+    Asadpour algorithm as an initial solution which is later rounded to a
+    integral tree within the spanning tree polytopes. This function solves
+    the relaxation with the branch and bound method in [2]_.
+
+    Parameters
+    ----------
+    G : nx.DiGraph
+        The graph should be a complete weighted directed graph.
+        The distance between all paris of nodes should be included.
+
+    weight : string, optional (default="weight")
+        Edge data key corresponding to the edge weight.
+        If any edge does not have this attribute the weight is set to 1.
+
+    Returns
+    -------
+    OPT : float
+        The cost for the optimal solution to the Held-Karp relaxation
+    z : dict or nx.Graph
+        A symmetrized and scaled version of the optimal solution to the
+        Held-Karp relaxation for use in the Asadpour algorithm.
+
+        If an integral solution is found, then that is an optimal solution for
+        the ATSP problem and that is returned instead.
+
+    References
+    ----------
+    .. [1] A. Asadpour, M. X. Goemans, A. Madry, S. O. Gharan, and A. Saberi,
+       An o(log n/log log n)-approximation algorithm for the asymmetric
+       traveling salesman problem, Operations research, 65 (2017),
+       pp. 1043–1061
+
+    .. [2] M. Held, R. M. Karp, The traveling-salesman problem and minimum
+           spanning trees, Operations Research, 1970-11-01, Vol. 18 (6),
+           pp.1138-1162
+    """
+    ...
 @_dispatchable
-def spanning_tree_distribution(G: Graph[_Node], z: Mapping[Incomplete, Incomplete]) -> dict[Incomplete, Incomplete]: ...
+def spanning_tree_distribution(G: Graph[_Node], z: Mapping[Incomplete, Incomplete]) -> dict[Incomplete, Incomplete]:
+    """
+    Find the asadpour exponential distribution of spanning trees.
+
+    Solves the Maximum Entropy Convex Program in the Asadpour algorithm [1]_
+    using the approach in section 7 to build an exponential distribution of
+    undirected spanning trees.
+
+    This algorithm ensures that the probability of any edge in a spanning
+    tree is proportional to the sum of the probabilities of the tress
+    containing that edge over the sum of the probabilities of all spanning
+    trees of the graph.
+
+    Parameters
+    ----------
+    G : nx.MultiGraph
+        The undirected support graph for the Held Karp relaxation
+
+    z : dict
+        The output of `held_karp_ascent()`, a scaled version of the Held-Karp
+        solution.
+
+    Returns
+    -------
+    gamma : dict
+        The probability distribution which approximately preserves the marginal
+        probabilities of `z`.
+    """
+    ...
 @_dispatchable
-def greedy_tsp(G: Graph[_Node], weight: str | None = "weight", source=None): ...
+def greedy_tsp(G: Graph[_Node], weight: str | None = "weight", source=None):
+    """
+    Return a low cost cycle starting at `source` and its cost.
+
+    This approximates a solution to the traveling salesman problem.
+    It finds a cycle of all the nodes that a salesman can visit in order
+    to visit many nodes while minimizing total distance.
+    It uses a simple greedy algorithm.
+    In essence, this function returns a large cycle given a source point
+    for which the total cost of the cycle is minimized.
+
+    Parameters
+    ----------
+    G : Graph
+        The Graph should be a complete weighted undirected graph.
+        The distance between all pairs of nodes should be included.
+
+    weight : string, optional (default="weight")
+        Edge data key corresponding to the edge weight.
+        If any edge does not have this attribute the weight is set to 1.
+
+    source : node, optional (default: first node in list(G))
+        Starting node.  If None, defaults to ``next(iter(G))``
+
+    Returns
+    -------
+    cycle : list of nodes
+        Returns the cycle (list of nodes) that a salesman
+        can follow to minimize total weight of the trip.
+
+    Raises
+    ------
+    NetworkXError
+        If `G` is not complete, the algorithm raises an exception.
+
+    Examples
+    --------
+    >>> from networkx.algorithms import approximation as approx
+    >>> G = nx.DiGraph()
+    >>> G.add_weighted_edges_from(
+    ...     {
+    ...         ("A", "B", 3),
+    ...         ("A", "C", 17),
+    ...         ("A", "D", 14),
+    ...         ("B", "A", 3),
+    ...         ("B", "C", 12),
+    ...         ("B", "D", 16),
+    ...         ("C", "A", 13),
+    ...         ("C", "B", 12),
+    ...         ("C", "D", 4),
+    ...         ("D", "A", 14),
+    ...         ("D", "B", 15),
+    ...         ("D", "C", 2),
+    ...     }
+    ... )
+    >>> cycle = approx.greedy_tsp(G, source="D")
+    >>> cost = sum(G[n][nbr]["weight"] for n, nbr in nx.utils.pairwise(cycle))
+    >>> cycle
+    ['D', 'C', 'B', 'A', 'D']
+    >>> cost
+    31
+
+    Notes
+    -----
+    This implementation of a greedy algorithm is based on the following:
+
+    - The algorithm adds a node to the solution at every iteration.
+    - The algorithm selects a node not already in the cycle whose connection
+      to the previous node adds the least cost to the cycle.
+
+    A greedy algorithm does not always give the best solution.
+    However, it can construct a first feasible solution which can
+    be passed as a parameter to an iterative improvement algorithm such
+    as Simulated Annealing, or Threshold Accepting.
+
+    Time complexity: It has a running time $O(|V|^2)$
+    """
+    ...
 @_dispatchable
 def simulated_annealing_tsp(
     G: Graph[_Node],

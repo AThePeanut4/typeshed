@@ -1,3 +1,25 @@
+"""
+Simple API for XML (SAX) implementation for Python.
+
+This module provides an implementation of the SAX 2 interface;
+information about the Java version of the interface can be found at
+http://www.megginson.com/SAX/.  The Python version of the interface is
+documented at <...>.
+
+This package contains the following modules:
+
+handler -- Base classes and constants which define the SAX 2 API for
+           the 'client-side' of SAX for Python.
+
+saxutils -- Implementation of the convenience classes commonly used to
+            work with SAX.
+
+xmlreader -- Base classes and constants which define the SAX 2 API for
+             the parsers used with SAX for Python.
+
+expatreader -- Driver that allows use of the Expat parser with SAX.
+"""
+
 import sys
 from _typeshed import ReadableBuffer, StrPath, SupportsRead, _T_co
 from collections.abc import Iterable

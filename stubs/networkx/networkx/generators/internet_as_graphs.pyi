@@ -7,8 +7,41 @@ from networkx.utils.backends import _dispatchable
 
 __all__ = ["random_internet_as_graph"]
 
-def uniform_int_from_avg(a, m, seed): ...
-def choose_pref_attach(degs: Mapping[Incomplete, Incomplete], seed): ...
+def uniform_int_from_avg(a, m, seed):
+    """
+    Pick a random integer with uniform probability.
+
+    Returns a random integer uniformly taken from a distribution with
+    minimum value 'a' and average value 'm', X~U(a,b), E[X]=m, X in N where
+    b = 2*m - a.
+
+    Notes
+    -----
+    p = (b-floor(b))/2
+    X = X1 + X2; X1~U(a,floor(b)), X2~B(p)
+    E[X] = E[X1] + E[X2] = (floor(b)+a)/2 + (b-floor(b))/2 = (b+a)/2 = m
+    """
+    ...
+def choose_pref_attach(degs: Mapping[Incomplete, Incomplete], seed):
+    """
+    Pick a random value, with a probability given by its weight.
+
+    Returns a random choice among degs keys, each of which has a
+    probability proportional to the corresponding dictionary value.
+
+    Parameters
+    ----------
+    degs: dictionary
+        It contains the possible values (keys) and the corresponding
+        probabilities (values)
+    seed: random state
+
+    Returns
+    -------
+    v: object
+        A key of degs or None if degs is empty
+    """
+    ...
 
 class AS_graph_generator:
     """Generates random internet AS graphs."""

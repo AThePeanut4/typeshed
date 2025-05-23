@@ -260,9 +260,126 @@ class EdgeComponentAuxGraph:
     H: Incomplete
 
     @classmethod
-    def construct(cls, G): ...
-    def k_edge_components(self, k: int) -> Generator[Incomplete, Incomplete, None]: ...
-    def k_edge_subgraphs(self, k: int) -> Generator[Incomplete, Incomplete, None]: ...
+    def construct(cls, G):
+        """
+        Builds an auxiliary graph encoding edge-connectivity between nodes.
+
+        Notes
+        -----
+        Given G=(V, E), initialize an empty auxiliary graph A.
+        Choose an arbitrary source node s.  Initialize a set N of available
+        nodes (that can be used as the sink). The algorithm picks an
+        arbitrary node t from N - {s}, and then computes the minimum st-cut
+        (S, T) with value w. If G is directed the minimum of the st-cut or
+        the ts-cut is used instead. Then, the edge (s, t) is added to the
+        auxiliary graph with weight w. The algorithm is called recursively
+        first using S as the available nodes and s as the source, and then
+        using T and t. Recursion stops when the source is the only available
+        node.
+
+        Parameters
+        ----------
+        G : NetworkX graph
+        """
+        ...
+    def k_edge_components(self, k: int) -> Generator[Incomplete, Incomplete, None]:
+        """
+        Queries the auxiliary graph for k-edge-connected components.
+
+        Parameters
+        ----------
+        k : Integer
+            Desired edge connectivity
+
+        Returns
+        -------
+        k_edge_components : a generator of k-edge-ccs
+
+        Notes
+        -----
+        Given the auxiliary graph, the k-edge-connected components can be
+        determined in linear time by removing all edges with weights less than
+        k from the auxiliary graph.  The resulting connected components are the
+        k-edge-ccs in the original graph.
+        """
+        ...
+    def k_edge_subgraphs(self, k: int) -> Generator[Incomplete, Incomplete, None]:
+        """
+        Queries the auxiliary graph for k-edge-connected subgraphs.
+
+        Parameters
+        ----------
+        k : Integer
+            Desired edge connectivity
+
+        Returns
+        -------
+        k_edge_subgraphs : a generator of k-edge-subgraphs
+
+        Notes
+        -----
+        Refines the k-edge-ccs into k-edge-subgraphs. The running time is more
+        than $O(|V|)$.
+
+        For single values of k it is faster to use `nx.k_edge_subgraphs`.
+        But for multiple values of k, it can be faster to build AuxGraph and
+        then use this method.
+        """
+        ...
 
 @_dispatchable
-def general_k_edge_subgraphs(G: Graph[_Node], k): ...
+def general_k_edge_subgraphs(G: Graph[_Node], k):
+    """
+    General algorithm to find all maximal k-edge-connected subgraphs in `G`.
+
+    Parameters
+    ----------
+    G : nx.Graph
+       Graph in which all maximal k-edge-connected subgraphs will be found.
+
+    k : int
+
+    Yields
+    ------
+    k_edge_subgraphs : Graph instances that are k-edge-subgraphs
+        Each k-edge-subgraph contains a maximal set of nodes that defines a
+        subgraph of `G` that is k-edge-connected.
+
+    Notes
+    -----
+    Implementation of the basic algorithm from [1]_.  The basic idea is to find
+    a global minimum cut of the graph. If the cut value is at least k, then the
+    graph is a k-edge-connected subgraph and can be added to the results.
+    Otherwise, the cut is used to split the graph in two and the procedure is
+    applied recursively. If the graph is just a single node, then it is also
+    added to the results. At the end, each result is either guaranteed to be
+    a single node or a subgraph of G that is k-edge-connected.
+
+    This implementation contains optimizations for reducing the number of calls
+    to max-flow, but there are other optimizations in [1]_ that could be
+    implemented.
+
+    References
+    ----------
+    .. [1] Zhou, Liu, et al. (2012) Finding maximal k-edge-connected subgraphs
+        from a large graph.  ACM International Conference on Extending Database
+        Technology 2012 480-–491.
+        https://openproceedings.org/2012/conf/edbt/ZhouLYLCL12.pdf
+
+    Examples
+    --------
+    >>> from networkx.utils import pairwise
+    >>> paths = [
+    ...     (11, 12, 13, 14, 11, 13, 14, 12),  # a 4-clique
+    ...     (21, 22, 23, 24, 21, 23, 24, 22),  # another 4-clique
+    ...     # connect the cliques with high degree but low connectivity
+    ...     (50, 13),
+    ...     (12, 50, 22),
+    ...     (13, 102, 23),
+    ...     (14, 101, 24),
+    ... ]
+    >>> G = nx.Graph(it.chain(*[pairwise(path) for path in paths]))
+    >>> sorted(len(k_sg) for k_sg in k_edge_subgraphs(G, k=3))
+    [1, 1, 1, 4, 4]
+    """
+    ...

@@ -270,8 +270,22 @@ class FFI:
         python_callable: Callable[..., _T],
         error: Any = ...,
         onerror: Callable[[Exception, Any, Any], None] | None = ...,
-    ) -> Callable[..., _T]: ...
-    def cast(self, cdecl: str | CType, value: CData | int) -> CData: ...
+    ) -> Callable[..., _T]:
+        """
+        Return a callback object or a decorator making such a callback object.
+        'cdecl' must name a C function pointer type.  The callback invokes the
+        specified 'python_callable' (which may be provided either directly or
+        via a decorator).  Important: the callback object must be manually
+        kept alive for as long as the callback may be invoked from the C code.
+        """
+        ...
+    def cast(self, cdecl: str | CType, value: CData | int) -> CData:
+        """
+        Similar to a C cast: returns an instance of the named C
+        type initialized with the given 'source'.  The source is
+        casted between integers or pointers of any type.
+        """
+        ...
     def def_extern(
         self, name: str = ..., error: Any = ..., onerror: Callable[[Exception, Any, types.TracebackType], Any] = ...
     ) -> Callable[[Callable[..., _T]], Callable[..., _T]]:

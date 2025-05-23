@@ -121,7 +121,15 @@ def strategy_connected_sequential(G, colors, traversal: str = "bfs") -> Generato
     """
     ...
 @_dispatchable
-def strategy_saturation_largest_first(G, colors) -> Generator[Incomplete, None, Incomplete]: ...
+def strategy_saturation_largest_first(G, colors) -> Generator[Incomplete, None, Incomplete]:
+    """
+    Iterates over all the nodes of ``G`` in "saturation order" (also
+    known as "DSATUR").
+
+    ``G`` is a NetworkX graph. ``colors`` is a dictionary mapping nodes of
+    ``G`` to colors, for those nodes that have already been colored.
+    """
+    ...
 
 STRATEGIES: Final[dict[str, Callable[..., Incomplete]]]
 

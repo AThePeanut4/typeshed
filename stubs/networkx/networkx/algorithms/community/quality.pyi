@@ -17,11 +17,65 @@ class NotAPartition(NetworkXError):
 require_partition: argmap
 
 @_dispatchable
-def intra_community_edges(G: Graph[_Node], partition): ...
+def intra_community_edges(G: Graph[_Node], partition):
+    """
+    Returns the number of intra-community edges for a partition of `G`.
+
+    Parameters
+    ----------
+    G : NetworkX graph.
+
+    partition : iterable of sets of nodes
+        This must be a partition of the nodes of `G`.
+
+    The "intra-community edges" are those edges joining a pair of nodes
+    in the same block of the partition.
+    """
+    ...
 @_dispatchable
-def inter_community_edges(G: Graph[_Node], partition): ...
+def inter_community_edges(G: Graph[_Node], partition):
+    """
+    Returns the number of inter-community edges for a partition of `G`.
+    according to the given
+    partition of the nodes of `G`.
+
+    Parameters
+    ----------
+    G : NetworkX graph.
+
+    partition : iterable of sets of nodes
+        This must be a partition of the nodes of `G`.
+
+    The *inter-community edges* are those edges joining a pair of nodes
+    in different blocks of the partition.
+
+    Implementation note: this function creates an intermediate graph
+    that may require the same amount of memory as that of `G`.
+    """
+    ...
 @_dispatchable
-def inter_community_non_edges(G: Graph[_Node], partition): ...
+def inter_community_non_edges(G: Graph[_Node], partition):
+    """
+    Returns the number of inter-community non-edges according to the
+    given partition of the nodes of `G`.
+
+    Parameters
+    ----------
+    G : NetworkX graph.
+
+    partition : iterable of sets of nodes
+        This must be a partition of the nodes of `G`.
+
+    A *non-edge* is a pair of nodes (undirected if `G` is undirected)
+    that are not adjacent in `G`. The *inter-community non-edges* are
+    those non-edges on a pair of nodes in different blocks of the
+    partition.
+
+    Implementation note: this function creates two intermediate graphs,
+    which may require up to twice the amount of memory as required to
+    store `G`.
+    """
+    ...
 @_dispatchable
 def modularity(G: Graph[_Node], communities, weight: str | None = "weight", resolution: float = 1):
     r"""
