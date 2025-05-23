@@ -48,7 +48,8 @@ if sys.platform == "win32":
         def detach(self) -> int: ...
 
 else:
-    ACKNOWLEDGE: Final[bool]
+    if sys.version_info < (3, 14):
+        ACKNOWLEDGE: Final[bool]
 
     def recvfds(sock: socket, size: int) -> list[int]:
         """Receive an array of fds over an AF_UNIX socket."""

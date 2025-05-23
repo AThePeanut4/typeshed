@@ -250,9 +250,10 @@ class staticmethod(Generic[_P, _R_co]):
         __qualname__: str
         @property
         def __wrapped__(self) -> Callable[_P, _R_co]: ...
-        def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R_co:
-            """Call self as a function."""
-            ...
+        def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R_co: ...
+    if sys.version_info >= (3, 14):
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        __annotate__: AnnotateFunc | None
 
 class classmethod(Generic[_T, _P, _R_co]):
     """
@@ -293,6 +294,9 @@ class classmethod(Generic[_T, _P, _R_co]):
         __qualname__: str
         @property
         def __wrapped__(self) -> Callable[Concatenate[type[_T], _P], _R_co]: ...
+    if sys.version_info >= (3, 14):
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        __annotate__: AnnotateFunc | None
 
 class type:
     """
@@ -3116,6 +3120,8 @@ class memoryview(Sequence[_I]):
     # See https://github.com/python/cpython/issues/125420
     index: ClassVar[None]  # type: ignore[assignment]
     count: ClassVar[None]  # type: ignore[assignment]
+    if sys.version_info >= (3, 14):
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 @final
 class bool(int):

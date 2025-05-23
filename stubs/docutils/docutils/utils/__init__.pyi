@@ -4,15 +4,19 @@ import optparse
 from _typeshed import StrPath, SupportsWrite, Unused
 from collections.abc import Callable, Iterable, Mapping
 from re import Pattern
-from typing import Any, Literal, TypeVar
+from typing import Any, Final, Literal, TypeVar
 from typing_extensions import TypeAlias
 
 from docutils import ApplicationError, DataError, nodes
 from docutils.frontend import Values
 from docutils.io import ErrorOutput, FileOutput
-from docutils.nodes import document
+from docutils.nodes import document, unescape as unescape
 
+_T = TypeVar("_T")
 _Observer: TypeAlias = Callable[[nodes.system_message], object]
+_SystemMessageLevel: TypeAlias = Literal[0, 1, 2, 3, 4]
+
+__docformat__: Final = "reStructuredText"
 
 class DependencyList:
     """
@@ -23,39 +27,12 @@ class DependencyList:
     """
     list: list[str]
     file: FileOutput | None
-    def __init__(self, output_file: str | None = None, dependencies: Iterable[str] = ()) -> None:
-        """
-        Initialize the dependency list, automatically setting the
-        output file to `output_file` (see `set_output()`) and adding
-        all supplied dependencies.
+    def __init__(self, output_file: str | None = None, dependencies: Iterable[str] = ()) -> None: ...
+    def set_output(self, output_file: str | None) -> None: ...
+    def add(self, *paths: str) -> None: ...
+    def close(self) -> None: ...
 
-        If output_file is None, no file output is done when calling add().
-        """
-        ...
-    def set_output(self, output_file: str | None) -> None:
-        """
-        Set the output file and clear the list of already added
-        dependencies.
-
-        `output_file` must be a string.  The specified file is
-        immediately overwritten.
-
-        If output_file is '-', the output will be written to stdout.
-        """
-        ...
-    def add(self, *filenames: str) -> None:
-        """
-        Append `path` to `self.list` unless it is already there.
-
-        Also append to `self.file` unless it is already there
-        or `self.file is `None`.
-        """
-        ...
-    def close(self) -> None:
-        """Close the output file."""
-        ...
-
-_SystemMessageLevel: TypeAlias = Literal[0, 1, 2, 3, 4]
+class SystemMessagePropagation(ApplicationError): ...
 
 class Reporter:
     """
@@ -432,45 +409,11 @@ def column_indices(text: str) -> list[int]:
 
 east_asian_widths: dict[str, int]
 
-def column_width(text: str) -> int:
-    """
-    Return the column width of text.
-
-    Correct ``len(text)`` for wide East Asian and combining Unicode chars.
-    """
-    ...
-
-_T = TypeVar("_T")
-
+def column_width(text: str) -> int: ...
 def uniq(L: list[_T]) -> list[_T]: ...
-def normalize_language_tag(tag: str) -> list[str]:
-    """
-    Return a list of normalized combinations for a `BCP 47` language tag.
-
-    Example:
-
-    >>> from docutils.utils import normalize_language_tag
-    >>> normalize_language_tag('de_AT-1901')
-    ['de-at-1901', 'de-at', 'de-1901', 'de']
-    >>> normalize_language_tag('de-CH-x_altquot')
-    ['de-ch-x-altquot', 'de-ch', 'de-x-altquot', 'de']
-    """
-    ...
+def normalize_language_tag(tag: str) -> list[str]: ...
+def xml_declaration(encoding: str | None = None) -> str: ...
 
 release_level_abbreviations: dict[str, str]
 
-def version_identifier(version_info: tuple[int, int, int, str, int, bool] | None = None) -> str:
-    """
-    Return a version identifier string built from `version_info`, a
-    `docutils.VersionInfo` namedtuple instance or compatible tuple. If
-    `version_info` is not provided, by default return a version identifier
-    string based on `docutils.__version_info__` (i.e. the current Docutils
-    version).
-    """
-    ...
-def unescape(text: str, restore_backslashes: bool = False, respect_whitespace: bool = False) -> str:
-    """
-    Return a string with nulls removed or restored to backslashes.
-    Backslash-escaped spaces are also removed.
-    """
-    ...
+def version_identifier(version_info: tuple[int, int, int, str, int, bool] | None = None) -> str: ...

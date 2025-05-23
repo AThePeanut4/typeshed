@@ -417,9 +417,10 @@ class ZipFile:
         """
         ...
     if sys.version_info >= (3, 11):
-        def mkdir(self, zinfo_or_directory_name: str | ZipInfo, mode: int = 0o777) -> None:
-            """Creates a directory inside the zip archive."""
-            ...
+        def mkdir(self, zinfo_or_directory_name: str | ZipInfo, mode: int = 0o777) -> None: ...
+    if sys.version_info >= (3, 14):
+        @property
+        def data_offset(self) -> int | None: ...
 
     def __del__(self) -> None:
         """Call the "close()" method in case the user forgot."""

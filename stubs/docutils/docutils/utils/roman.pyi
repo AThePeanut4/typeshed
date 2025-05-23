@@ -1,6 +1,11 @@
-"""Convert to and from Roman numerals"""
-
+import argparse
 import re
+from typing import Final, Literal
+
+__author__: Final[str]
+__version__: Final[str]
+__date__: Final[str]
+__copyright__: Final[str]
 
 class RomanError(Exception): ...
 class OutOfRangeError(RomanError): ...
@@ -13,8 +18,8 @@ def toRoman(n: int) -> str:
     """convert integer to Roman numeral"""
     ...
 
-romanNumeralPattern: re.Pattern[str]
+romanNumeralPattern: Final[re.Pattern[str]]
 
-def fromRoman(s: str) -> int:
-    """convert Roman numeral to integer"""
-    ...
+def fromRoman(s: str) -> int: ...
+def parse_args() -> argparse.Namespace: ...
+def main() -> Literal[0]: ...

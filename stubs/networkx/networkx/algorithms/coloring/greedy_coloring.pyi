@@ -1,7 +1,8 @@
 """Greedy graph coloring using various strategies."""
 
 from _typeshed import Incomplete
-from collections.abc import Generator
+from collections.abc import Callable, Generator
+from typing import Final
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
@@ -120,15 +121,10 @@ def strategy_connected_sequential(G, colors, traversal: str = "bfs") -> Generato
     """
     ...
 @_dispatchable
-def strategy_saturation_largest_first(G, colors) -> Generator[Incomplete, None, Incomplete]:
-    """
-    Iterates over all the nodes of ``G`` in "saturation order" (also
-    known as "DSATUR").
+def strategy_saturation_largest_first(G, colors) -> Generator[Incomplete, None, Incomplete]: ...
 
-    ``G`` is a NetworkX graph. ``colors`` is a dictionary mapping nodes of
-    ``G`` to colors, for those nodes that have already been colored.
-    """
-    ...
+STRATEGIES: Final[dict[str, Callable[..., Incomplete]]]
+
 @_dispatchable
 def greedy_color(G: Graph[_Node], strategy="largest_first", interchange: bool = False):
     """

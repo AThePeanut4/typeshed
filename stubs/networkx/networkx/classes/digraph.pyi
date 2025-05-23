@@ -273,83 +273,12 @@ class DiGraph(Graph[_Node]):
         """
         ...
     @cached_property
-    def pred(self) -> AdjacencyView[_Node, _Node, dict[str, Incomplete]]:
-        """
-        Graph adjacency object holding the predecessors of each node.
-
-        This object is a read-only dict-like structure with node keys
-        and neighbor-dict values.  The neighbor-dict is keyed by neighbor
-        to the edge-data-dict.  So `G.pred[2][3]['color'] = 'blue'` sets
-        the color of the edge `(3, 2)` to `"blue"`.
-
-        Iterating over G.pred behaves like a dict. Useful idioms include
-        `for nbr, datadict in G.pred[n].items():`.  A data-view not provided
-        by dicts also exists: `for nbr, foovalue in G.pred[node].data('foo'):`
-        A default can be set via a `default` argument to the `data` method.
-        """
-        ...
-    def has_successor(self, u: _Node, v: _Node) -> bool:
-        """
-        Returns True if node u has successor v.
-
-        This is true if graph has the edge u->v.
-        """
-        ...
-    def has_predecessor(self, u: _Node, v: _Node) -> bool:
-        """
-        Returns True if node u has predecessor v.
-
-        This is true if graph has the edge u<-v.
-        """
-        ...
-    def successors(self, n: _Node) -> Iterator[_Node]:
-        """
-        Returns an iterator over successor nodes of n.
-
-        A successor of n is a node m such that there exists a directed
-        edge from n to m.
-
-        Parameters
-        ----------
-        n : node
-           A node in the graph
-
-        Raises
-        ------
-        NetworkXError
-           If n is not in the graph.
-
-        See Also
-        --------
-        predecessors
-
-        Notes
-        -----
-        neighbors() and successors() are the same.
-        """
-        ...
-    def predecessors(self, n: _Node) -> Iterator[_Node]:
-        """
-        Returns an iterator over predecessor nodes of n.
-
-        A predecessor of n is a node m such that there exists a directed
-        edge from m to n.
-
-        Parameters
-        ----------
-        n : node
-           A node in the graph
-
-        Raises
-        ------
-        NetworkXError
-           If n is not in the graph.
-
-        See Also
-        --------
-        successors
-        """
-        ...
+    def pred(self) -> AdjacencyView[_Node, _Node, dict[str, Incomplete]]: ...
+    def has_successor(self, u: _Node, v: _Node) -> bool: ...
+    def has_predecessor(self, u: _Node, v: _Node) -> bool: ...
+    def successors(self, n: _Node) -> Iterator[_Node]: ...
+    neighbors = successors
+    def predecessors(self, n: _Node) -> Iterator[_Node]: ...
     @cached_property
     def out_edges(self) -> OutEdgeView[_Node]:
         """

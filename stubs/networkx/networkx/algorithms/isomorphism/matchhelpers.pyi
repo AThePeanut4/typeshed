@@ -4,6 +4,7 @@ edge_match functions to use during isomorphism checks.
 """
 
 from _typeshed import Incomplete
+from types import FunctionType
 
 from networkx.utils.backends import _dispatchable
 
@@ -19,6 +20,8 @@ __all__ = [
     "generic_multiedge_match",
 ]
 
+def copyfunc(f, name=None) -> FunctionType: ...
+def allclose(x, y, rtol: float = 1.0000000000000001e-05, atol=1e-08) -> bool: ...
 @_dispatchable
 def categorical_node_match(attr, default):
     """
