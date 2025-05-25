@@ -3,10 +3,11 @@
 from _typeshed import IdentityFunction, Unused
 from collections.abc import Callable, Iterator, MutableMapping, Sequence
 from contextlib import AbstractContextManager
+from threading import Condition
 from typing import Any, TypeVar, overload
 from typing_extensions import deprecated
 
-__all__ = ("Cache", "FIFOCache", "LFUCache", "LRUCache", "MRUCache", "RRCache", "TLRUCache", "TTLCache", "cached", "cachedmethod")
+__all__ = ("Cache", "FIFOCache", "LFUCache", "LRUCache", "RRCache", "TLRUCache", "TTLCache", "cached", "cachedmethod")
 __version__: str
 
 _KT = TypeVar("_KT")
@@ -51,11 +52,6 @@ class LFUCache(Cache[_KT, _VT]):
     ...
 class LRUCache(Cache[_KT, _VT]):
     """Least Recently Used (LRU) cache implementation."""
-    ...
-
-@deprecated("@mru_cache is deprecated")
-class MRUCache(Cache[_KT, _VT]):
-    """Most Recently Used (MRU) cache implementation."""
     ...
 
 class RRCache(Cache[_KT, _VT]):
@@ -138,24 +134,25 @@ class TLRUCache(_TimedCache[_KT, _VT]):
         """
         ...
 
+@overload
 def cached(
     cache: MutableMapping[_KT, Any] | None,
     key: Callable[..., _KT] = ...,
     lock: AbstractContextManager[Any] | None = None,
+    condition: Condition | None = None,
     info: bool = False,
-) -> IdentityFunction:
-    """
-    Decorator to wrap a function with a memoizing callable that saves
-    results in a cache.
-    """
-    ...
+) -> IdentityFunction: ...
+@overload
+@deprecated("Passing `info` as positional parameter is deprecated.")
+def cached(
+    cache: MutableMapping[_KT, Any] | None,
+    key: Callable[..., _KT] = ...,
+    lock: AbstractContextManager[Any] | None = None,
+    condition: bool | None = None,
+) -> IdentityFunction: ...
 def cachedmethod(
     cache: Callable[[Any], MutableMapping[_KT, Any] | None],
     key: Callable[..., _KT] = ...,
     lock: Callable[[Any], AbstractContextManager[Any]] | None = None,
-) -> IdentityFunction:
-    """
-    Decorator to wrap a class or instance method with a memoizing
-    callable that saves results in a cache.
-    """
-    ...
+    condition: Condition | None = None,
+) -> IdentityFunction: ...
