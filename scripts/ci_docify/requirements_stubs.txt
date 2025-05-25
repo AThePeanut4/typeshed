@@ -160,7 +160,7 @@ hnswlib==0.8.*
 zstd==1.5.7.0
 Markdown==3.8.*
 bleach[css]==6.2.*
-cachetools==5.5.*
+cachetools==6.0.*
 inifile==0.4.*
 ttkthemes==3.2.*
 jsonschema[format]==4.23.*
