@@ -141,7 +141,12 @@ def cached(
     lock: AbstractContextManager[Any] | None = None,
     condition: Condition | None = None,
     info: bool = False,
-) -> IdentityFunction: ...
+) -> IdentityFunction:
+    """
+    Decorator to wrap a function with a memoizing callable that saves
+    results in a cache.
+    """
+    ...
 @overload
 @deprecated("Passing `info` as positional parameter is deprecated.")
 def cached(
@@ -149,10 +154,20 @@ def cached(
     key: Callable[..., _KT] = ...,
     lock: AbstractContextManager[Any] | None = None,
     condition: bool | None = None,
-) -> IdentityFunction: ...
+) -> IdentityFunction:
+    """
+    Decorator to wrap a function with a memoizing callable that saves
+    results in a cache.
+    """
+    ...
 def cachedmethod(
     cache: Callable[[Any], MutableMapping[_KT, Any] | None],
     key: Callable[..., _KT] = ...,
     lock: Callable[[Any], AbstractContextManager[Any]] | None = None,
     condition: Condition | None = None,
-) -> IdentityFunction: ...
+) -> IdentityFunction:
+    """
+    Decorator to wrap a class or instance method with a memoizing
+    callable that saves results in a cache.
+    """
+    ...
