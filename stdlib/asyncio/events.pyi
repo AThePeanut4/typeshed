@@ -30,12 +30,14 @@ if sys.version_info < (3, 14):
 # Keep asyncio.__all__ updated with any changes to __all__ here
 if sys.version_info >= (3, 14):
     __all__ = (
-        "AbstractEventLoopPolicy",
+        "_AbstractEventLoopPolicy",
         "AbstractEventLoop",
         "AbstractServer",
         "Handle",
         "TimerHandle",
+        "_get_event_loop_policy",
         "get_event_loop_policy",
+        "_set_event_loop_policy",
         "set_event_loop_policy",
         "get_event_loop",
         "set_event_loop",
@@ -1114,8 +1116,7 @@ class AbstractEventLoop:
         """Schedule the shutdown of the default executor."""
         ...
 
-class AbstractEventLoopPolicy:
-    """Abstract policy for accessing the event loop."""
+class _AbstractEventLoopPolicy:
     @abstractmethod
     def get_event_loop(self) -> AbstractEventLoop:
         """
@@ -1163,54 +1164,35 @@ class AbstractEventLoopPolicy:
                 """Set the watcher for child processes."""
                 ...
 
-class BaseDefaultEventLoopPolicy(AbstractEventLoopPolicy, metaclass=ABCMeta):
-    """
-    Default policy implementation for accessing the event loop.
+if sys.version_info < (3, 14):
+    AbstractEventLoopPolicy = _AbstractEventLoopPolicy
 
-    In this policy, each thread has its own event loop.  However, we
-    only automatically create an event loop by default for the main
-    thread; other threads by default have no event loop.
+if sys.version_info >= (3, 14):
+    class _BaseDefaultEventLoopPolicy(_AbstractEventLoopPolicy, metaclass=ABCMeta):
+        def get_event_loop(self) -> AbstractEventLoop: ...
+        def set_event_loop(self, loop: AbstractEventLoop | None) -> None: ...
+        def new_event_loop(self) -> AbstractEventLoop: ...
 
-    Other policies may have different rules (e.g. a single global
-    event loop, or automatically creating an event loop per thread, or
-    using some other notion of context to which an event loop is
-    associated).
-    """
-    def get_event_loop(self) -> AbstractEventLoop:
-        """
-        Get the event loop for the current context.
+else:
+    class BaseDefaultEventLoopPolicy(_AbstractEventLoopPolicy, metaclass=ABCMeta):
+        def get_event_loop(self) -> AbstractEventLoop: ...
+        def set_event_loop(self, loop: AbstractEventLoop | None) -> None: ...
+        def new_event_loop(self) -> AbstractEventLoop: ...
 
-        Returns an instance of EventLoop or raises an exception.
-        """
-        ...
-    def set_event_loop(self, loop: AbstractEventLoop | None) -> None:
-        """Set the event loop."""
-        ...
-    def new_event_loop(self) -> AbstractEventLoop:
-        """
-        Create a new event loop.
+if sys.version_info >= (3, 14):
+    def _get_event_loop_policy() -> _AbstractEventLoopPolicy: ...
+    def _set_event_loop_policy(policy: _AbstractEventLoopPolicy | None) -> None: ...
+    @deprecated("Deprecated as of Python 3.14; will be removed in Python 3.16")
+    def get_event_loop_policy() -> _AbstractEventLoopPolicy: ...
+    @deprecated("Deprecated as of Python 3.14; will be removed in Python 3.16")
+    def set_event_loop_policy(policy: _AbstractEventLoopPolicy | None) -> None: ...
 
-        You must call set_event_loop() to make this the current event
-        loop.
-        """
-        ...
+else:
+    def get_event_loop_policy() -> _AbstractEventLoopPolicy: ...
+    def set_event_loop_policy(policy: _AbstractEventLoopPolicy | None) -> None: ...
 
-def get_event_loop_policy() -> AbstractEventLoopPolicy:
-    """Get the current event loop policy."""
-    ...
-def set_event_loop_policy(policy: AbstractEventLoopPolicy | None) -> None:
-    """
-    Set the current event loop policy.
-
-    If policy is None, the default policy is restored.
-    """
-    ...
-def set_event_loop(loop: AbstractEventLoop | None) -> None:
-    """Equivalent to calling get_event_loop_policy().set_event_loop(loop)."""
-    ...
-def new_event_loop() -> AbstractEventLoop:
-    """Equivalent to calling get_event_loop_policy().new_event_loop()."""
-    ...
+def set_event_loop(loop: AbstractEventLoop | None) -> None: ...
+def new_event_loop() -> AbstractEventLoop: ...
 
 if sys.version_info < (3, 14):
     if sys.version_info >= (3, 12):
