@@ -1118,51 +1118,25 @@ class AbstractEventLoop:
 
 class _AbstractEventLoopPolicy:
     @abstractmethod
-    def get_event_loop(self) -> AbstractEventLoop:
-        """
-        Get the event loop for the current context.
-
-        Returns an event loop object implementing the AbstractEventLoop interface,
-        or raises an exception in case no event loop has been set for the
-        current context and the current policy does not specify to create one.
-
-        It should never return None.
-        """
-        ...
+    def get_event_loop(self) -> AbstractEventLoop: ...
     @abstractmethod
-    def set_event_loop(self, loop: AbstractEventLoop | None) -> None:
-        """Set the event loop for the current context to loop."""
-        ...
+    def set_event_loop(self, loop: AbstractEventLoop | None) -> None: ...
     @abstractmethod
-    def new_event_loop(self) -> AbstractEventLoop:
-        """
-        Create and return a new event loop object according to this
-        policy's rules. If there's need to set this loop as the event loop for
-        the current context, set_event_loop must be called explicitly.
-        """
-        ...
+    def new_event_loop(self) -> AbstractEventLoop: ...
     # Child processes handling (Unix only).
     if sys.version_info < (3, 14):
         if sys.version_info >= (3, 12):
             @abstractmethod
             @deprecated("Deprecated as of Python 3.12; will be removed in Python 3.14")
-            def get_child_watcher(self) -> AbstractChildWatcher:
-                """Get the watcher for child processes."""
-                ...
+            def get_child_watcher(self) -> AbstractChildWatcher: ...
             @abstractmethod
             @deprecated("Deprecated as of Python 3.12; will be removed in Python 3.14")
-            def set_child_watcher(self, watcher: AbstractChildWatcher) -> None:
-                """Set the watcher for child processes."""
-                ...
+            def set_child_watcher(self, watcher: AbstractChildWatcher) -> None: ...
         else:
             @abstractmethod
-            def get_child_watcher(self) -> AbstractChildWatcher:
-                """Get the watcher for child processes."""
-                ...
+            def get_child_watcher(self) -> AbstractChildWatcher: ...
             @abstractmethod
-            def set_child_watcher(self, watcher: AbstractChildWatcher) -> None:
-                """Set the watcher for child processes."""
-                ...
+            def set_child_watcher(self, watcher: AbstractChildWatcher) -> None: ...
 
 if sys.version_info < (3, 14):
     AbstractEventLoopPolicy = _AbstractEventLoopPolicy
@@ -1175,9 +1149,36 @@ if sys.version_info >= (3, 14):
 
 else:
     class BaseDefaultEventLoopPolicy(_AbstractEventLoopPolicy, metaclass=ABCMeta):
-        def get_event_loop(self) -> AbstractEventLoop: ...
-        def set_event_loop(self, loop: AbstractEventLoop | None) -> None: ...
-        def new_event_loop(self) -> AbstractEventLoop: ...
+        """
+        Default policy implementation for accessing the event loop.
+
+        In this policy, each thread has its own event loop.  However, we
+        only automatically create an event loop by default for the main
+        thread; other threads by default have no event loop.
+
+        Other policies may have different rules (e.g. a single global
+        event loop, or automatically creating an event loop per thread, or
+        using some other notion of context to which an event loop is
+        associated).
+        """
+        def get_event_loop(self) -> AbstractEventLoop:
+            """
+            Get the event loop for the current context.
+
+            Returns an instance of EventLoop or raises an exception.
+            """
+            ...
+        def set_event_loop(self, loop: AbstractEventLoop | None) -> None:
+            """Set the event loop."""
+            ...
+        def new_event_loop(self) -> AbstractEventLoop:
+            """
+            Create a new event loop.
+
+            You must call set_event_loop() to make this the current event
+            loop.
+            """
+            ...
 
 if sys.version_info >= (3, 14):
     def _get_event_loop_policy() -> _AbstractEventLoopPolicy: ...
@@ -1188,11 +1189,23 @@ if sys.version_info >= (3, 14):
     def set_event_loop_policy(policy: _AbstractEventLoopPolicy | None) -> None: ...
 
 else:
-    def get_event_loop_policy() -> _AbstractEventLoopPolicy: ...
-    def set_event_loop_policy(policy: _AbstractEventLoopPolicy | None) -> None: ...
+    def get_event_loop_policy() -> _AbstractEventLoopPolicy:
+        """Get the current event loop policy."""
+        ...
+    def set_event_loop_policy(policy: _AbstractEventLoopPolicy | None) -> None:
+        """
+        Set the current event loop policy.
 
-def set_event_loop(loop: AbstractEventLoop | None) -> None: ...
-def new_event_loop() -> AbstractEventLoop: ...
+        If policy is None, the default policy is restored.
+        """
+        ...
+
+def set_event_loop(loop: AbstractEventLoop | None) -> None:
+    """Equivalent to calling get_event_loop_policy().set_event_loop(loop)."""
+    ...
+def new_event_loop() -> AbstractEventLoop:
+    """Equivalent to calling get_event_loop_policy().new_event_loop()."""
+    ...
 
 if sys.version_info < (3, 14):
     if sys.version_info >= (3, 12):

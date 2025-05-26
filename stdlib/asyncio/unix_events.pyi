@@ -98,7 +98,16 @@ if sys.version_info < (3, 14):
                 """
                 ...
             @abstractmethod
-            def attach_loop(self, loop: events.AbstractEventLoop | None) -> None: ...
+            def attach_loop(self, loop: events.AbstractEventLoop | None) -> None:
+                """
+                Attach the watcher to an event loop.
+
+                If the watcher was previously attached to an event loop, then it is
+                first detached before attaching to the new loop.
+
+                Note: loop may be None.
+                """
+                ...
             @abstractmethod
             def close(self) -> None:
                 """
@@ -179,7 +188,16 @@ if sys.version_info < (3, 14):
                 """
                 ...
             @abstractmethod
-            def attach_loop(self, loop: events.AbstractEventLoop | None) -> None: ...
+            def attach_loop(self, loop: events.AbstractEventLoop | None) -> None:
+                """
+                Attach the watcher to an event loop.
+
+                If the watcher was previously attached to an event loop, then it is
+                first detached before attaching to the new loop.
+
+                Note: loop may be None.
+                """
+                ...
             @abstractmethod
             def close(self) -> None:
                 """
@@ -337,6 +355,7 @@ if sys.platform != "win32":
         class _UnixDefaultEventLoopPolicy(events._BaseDefaultEventLoopPolicy): ...
     else:
         class _UnixDefaultEventLoopPolicy(events.BaseDefaultEventLoopPolicy):
+            """UNIX event loop policy with a watcher for child processes."""
             if sys.version_info >= (3, 12):
                 @deprecated("Deprecated as of Python 3.12; will be removed in Python 3.14")
                 def get_child_watcher(self) -> AbstractChildWatcher:

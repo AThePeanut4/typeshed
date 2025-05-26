@@ -47,17 +47,33 @@ _StrPathT = TypeVar("_StrPathT", bound=StrPath)
 _BytesPathT = TypeVar("_BytesPathT", bound=BytesPath)
 
 class Error(OSError): ...
-class SameFileError(Error): ...
-class SpecialFileError(OSError): ...
+class SameFileError(Error):
+    """Raised when source and destination are the same file."""
+    ...
+class SpecialFileError(OSError):
+    """
+    Raised when trying to do a kind of operation (e.g. copying) which is
+    not supported on a special file (e.g. a named pipe)
+    """
+    ...
 
 if sys.version_info >= (3, 14):
     ExecError = RuntimeError  # Deprecated in Python 3.14; removal scheduled for Python 3.16
 
 else:
-    class ExecError(OSError): ...
+    class ExecError(OSError):
+        """Raised when a command could not be executed"""
+        ...
 
-class ReadError(OSError): ...
-class RegistryError(Exception): ...
+class ReadError(OSError):
+    """Raised when an archive cannot be read"""
+    ...
+class RegistryError(Exception):
+    """
+    Raised when a registry operation with the archiving
+    and unpacking registries fails
+    """
+    ...
 
 def copyfileobj(fsrc: SupportsRead[AnyStr], fdst: SupportsWrite[AnyStr], length: int = 0) -> None:
     """copy data from file-like object fsrc to file-like object fdst"""
