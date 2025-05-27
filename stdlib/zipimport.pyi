@@ -13,10 +13,14 @@ to Zip archives.
 
 import sys
 from _typeshed import StrOrBytesPath
-from importlib.abc import ResourceReader
 from importlib.machinery import ModuleSpec
 from types import CodeType, ModuleType
 from typing_extensions import deprecated
+
+if sys.version_info >= (3, 10):
+    from importlib.readers import ZipReader
+else:
+    from importlib.abc import ResourceReader
 
 if sys.version_info >= (3, 10):
     from _frozen_importlib_external import _LoaderBasics
@@ -54,74 +58,18 @@ class zipimporter(_LoaderBasics):
             """
             find_loader(fullname, path=None) -> self, str or None.
 
-            Search for a module specified by 'fullname'. 'fullname' must be the
-            fully qualified (dotted) module name. It returns the zipimporter
-            instance itself if the module was found, a string containing the
-            full path name if it's possibly a portion of a namespace package,
-            or None otherwise. The optional 'path' argument is ignored -- it's
-            there for compatibility with the importer protocol.
+    def get_code(self, fullname: str) -> CodeType: ...
+    def get_data(self, pathname: str) -> bytes: ...
+    def get_filename(self, fullname: str) -> str: ...
+    if sys.version_info >= (3, 14):
+        def get_resource_reader(self, fullname: str) -> ZipReader: ...  # undocumented
+    elif sys.version_info >= (3, 10):
+        def get_resource_reader(self, fullname: str) -> ZipReader | None: ...  # undocumented
+    else:
+        def get_resource_reader(self, fullname: str) -> ResourceReader | None: ...  # undocumented
 
-            Deprecated since Python 3.10. Use find_spec() instead.
-            """
-            ...
-        def find_module(self, fullname: str, path: str | None = None) -> zipimporter | None:
-            """
-            find_module(fullname, path=None) -> self or None.
-
-            Search for a module specified by 'fullname'. 'fullname' must be the
-            fully qualified (dotted) module name. It returns the zipimporter
-            instance itself if the module was found, or None if it wasn't.
-            The optional 'path' argument is ignored -- it's there for compatibility
-            with the importer protocol.
-
-            Deprecated since Python 3.10. Use find_spec() instead.
-            """
-            ...
-
-    def get_code(self, fullname: str) -> CodeType:
-        """
-        get_code(fullname) -> code object.
-
-        Return the code object for the specified module. Raise ZipImportError
-        if the module couldn't be imported.
-        """
-        ...
-    def get_data(self, pathname: str) -> bytes:
-        """
-        get_data(pathname) -> string with file data.
-
-        Return the data associated with 'pathname'. Raise OSError if
-        the file wasn't found.
-        """
-        ...
-    def get_filename(self, fullname: str) -> str:
-        """
-        get_filename(fullname) -> filename string.
-
-        Return the filename for the specified module or raise ZipImportError
-        if it couldn't be imported.
-        """
-        ...
-    def get_resource_reader(self, fullname: str) -> ResourceReader | None:
-        """Return the ResourceReader for a module in a zip file."""
-        ...
-    def get_source(self, fullname: str) -> str | None:
-        """
-        get_source(fullname) -> source string.
-
-        Return the source code for the specified module. Raise ZipImportError
-        if the module couldn't be found, return None if the archive does
-        contain the module, but has no source for it.
-        """
-        ...
-    def is_package(self, fullname: str) -> bool:
-        """
-        is_package(fullname) -> bool.
-
-        Return True if the module specified by fullname is a package.
-        Raise ZipImportError if the module couldn't be found.
-        """
-        ...
+    def get_source(self, fullname: str) -> str | None: ...
+    def is_package(self, fullname: str) -> bool: ...
     @deprecated("Deprecated since 3.10; use exec_module() instead")
     def load_module(self, fullname: str) -> ModuleType:
         """

@@ -4,11 +4,15 @@ import os
 import sys
 from collections.abc import Iterator
 from contextlib import AbstractContextManager
-from importlib.abc import Traversable
 from pathlib import Path
 from types import ModuleType
 from typing import Any, BinaryIO, Literal, TextIO
 from typing_extensions import TypeAlias
+
+if sys.version_info >= (3, 11):
+    from importlib.resources.abc import Traversable
+else:
+    from importlib.abc import Traversable
 
 if sys.version_info >= (3, 11):
     from importlib.resources._common import Package as Package
@@ -118,5 +122,7 @@ else:
         """Get a Traversable resource from a package"""
         ...
 
-if sys.version_info >= (3, 10):
+if sys.version_info >= (3, 11):
+    from importlib.resources.abc import ResourceReader as ResourceReader
+elif sys.version_info >= (3, 10):
     from importlib.abc import ResourceReader as ResourceReader

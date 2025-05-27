@@ -1,6 +1,3 @@
-"""Utility code for constructing importers, etc."""
-
-import importlib.abc
 import importlib.machinery
 import sys
 import types
@@ -14,6 +11,7 @@ from importlib._bootstrap_external import (
     source_from_cache as source_from_cache,
     spec_from_file_location as spec_from_file_location,
 )
+from importlib.abc import Loader
 from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
@@ -75,17 +73,26 @@ def find_spec(name: str, package: str | None = None) -> importlib.machinery.Modu
     """
     ...
 
-class LazyLoader(importlib.abc.Loader):
-    """A loader that creates a module which defers loading until attribute access."""
-    def __init__(self, loader: importlib.abc.Loader) -> None: ...
+class LazyLoader(Loader):
+    def __init__(self, loader: Loader) -> None: ...
     @classmethod
-    def factory(cls, loader: importlib.abc.Loader) -> Callable[..., LazyLoader]:
-        """Construct a callable which returns the eager loader made lazy."""
-        ...
-    def exec_module(self, module: types.ModuleType) -> None:
-        """Make the module load lazily."""
-        ...
+    def factory(cls, loader: Loader) -> Callable[..., LazyLoader]: ...
+    def exec_module(self, module: types.ModuleType) -> None: ...
 
-def source_hash(source_bytes: ReadableBuffer) -> bytes:
-    """Return the hash of *source_bytes* as used in hash-based pyc files."""
-    ...
+def source_hash(source_bytes: ReadableBuffer) -> bytes: ...
+
+if sys.version_info >= (3, 14):
+    __all__ = [
+        "LazyLoader",
+        "Loader",
+        "MAGIC_NUMBER",
+        "cache_from_source",
+        "decode_source",
+        "find_spec",
+        "module_from_spec",
+        "resolve_name",
+        "source_from_cache",
+        "source_hash",
+        "spec_from_file_location",
+        "spec_from_loader",
+    ]
