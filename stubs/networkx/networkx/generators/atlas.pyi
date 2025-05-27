@@ -1,3 +1,5 @@
+"""Generators for the small graph atlas."""
+
 import sys
 from typing import Final
 

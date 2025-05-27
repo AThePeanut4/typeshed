@@ -804,7 +804,9 @@ class FrameType:
     f_trace: Callable[[FrameType, str, Any], Any] | None
     f_trace_lines: bool
     f_trace_opcodes: bool
-    def clear(self) -> None: ...
+    def clear(self) -> None:
+        """F.clear(): clear most references held by the frame"""
+        ...
     if sys.version_info >= (3, 14):
         @property
         def f_generator(self) -> GeneratorType[Any, Any, Any] | CoroutineType[Any, Any, Any] | None: ...

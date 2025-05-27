@@ -58,18 +58,87 @@ class zipimporter(_LoaderBasics):
             """
             find_loader(fullname, path=None) -> self, str or None.
 
-    def get_code(self, fullname: str) -> CodeType: ...
-    def get_data(self, pathname: str) -> bytes: ...
-    def get_filename(self, fullname: str) -> str: ...
+            Search for a module specified by 'fullname'. 'fullname' must be the
+            fully qualified (dotted) module name. It returns the zipimporter
+            instance itself if the module was found, a string containing the
+            full path name if it's possibly a portion of a namespace package,
+            or None otherwise. The optional 'path' argument is ignored -- it's
+            there for compatibility with the importer protocol.
+
+            Deprecated since Python 3.10. Use find_spec() instead.
+            """
+            ...
+        def find_module(self, fullname: str, path: str | None = None) -> zipimporter | None:
+            """
+            find_module(fullname, path=None) -> self or None.
+
+            Search for a module specified by 'fullname'. 'fullname' must be the
+            fully qualified (dotted) module name. It returns the zipimporter
+            instance itself if the module was found, or None if it wasn't.
+            The optional 'path' argument is ignored -- it's there for compatibility
+            with the importer protocol.
+
+            Deprecated since Python 3.10. Use find_spec() instead.
+            """
+            ...
+
+    def get_code(self, fullname: str) -> CodeType:
+        """
+        get_code(fullname) -> code object.
+
+        Return the code object for the specified module. Raise ZipImportError
+        if the module couldn't be imported.
+        """
+        ...
+    def get_data(self, pathname: str) -> bytes:
+        """
+        get_data(pathname) -> string with file data.
+
+        Return the data associated with 'pathname'. Raise OSError if
+        the file wasn't found.
+        """
+        ...
+    def get_filename(self, fullname: str) -> str:
+        """
+        get_filename(fullname) -> filename string.
+
+        Return the filename for the specified module or raise ZipImportError
+        if it couldn't be imported.
+        """
+        ...
     if sys.version_info >= (3, 14):
         def get_resource_reader(self, fullname: str) -> ZipReader: ...  # undocumented
     elif sys.version_info >= (3, 10):
-        def get_resource_reader(self, fullname: str) -> ZipReader | None: ...  # undocumented
+        def get_resource_reader(self, fullname: str) -> ZipReader | None:
+            """Return the ResourceReader for a module in a zip file."""
+            ...
     else:
-        def get_resource_reader(self, fullname: str) -> ResourceReader | None: ...  # undocumented
+        def get_resource_reader(self, fullname: str) -> ResourceReader | None:
+            """
+            Return the ResourceReader for a package in a zip file.
 
-    def get_source(self, fullname: str) -> str | None: ...
-    def is_package(self, fullname: str) -> bool: ...
+            If 'fullname' is a package within the zip file, return the
+            'ResourceReader' object for the package.  Otherwise return None.
+            """
+            ...
+
+    def get_source(self, fullname: str) -> str | None:
+        """
+        get_source(fullname) -> source string.
+
+        Return the source code for the specified module. Raise ZipImportError
+        if the module couldn't be found, return None if the archive does
+        contain the module, but has no source for it.
+        """
+        ...
+    def is_package(self, fullname: str) -> bool:
+        """
+        is_package(fullname) -> bool.
+
+        Return True if the module specified by fullname is a package.
+        Raise ZipImportError if the module couldn't be found.
+        """
+        ...
     @deprecated("Deprecated since 3.10; use exec_module() instead")
     def load_module(self, fullname: str) -> ModuleType:
         """

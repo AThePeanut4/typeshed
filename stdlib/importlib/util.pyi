@@ -1,3 +1,5 @@
+"""Utility code for constructing importers, etc."""
+
 import importlib.machinery
 import sys
 import types
@@ -74,12 +76,19 @@ def find_spec(name: str, package: str | None = None) -> importlib.machinery.Modu
     ...
 
 class LazyLoader(Loader):
+    """A loader that creates a module which defers loading until attribute access."""
     def __init__(self, loader: Loader) -> None: ...
     @classmethod
-    def factory(cls, loader: Loader) -> Callable[..., LazyLoader]: ...
-    def exec_module(self, module: types.ModuleType) -> None: ...
+    def factory(cls, loader: Loader) -> Callable[..., LazyLoader]:
+        """Construct a callable which returns the eager loader made lazy."""
+        ...
+    def exec_module(self, module: types.ModuleType) -> None:
+        """Make the module load lazily."""
+        ...
 
-def source_hash(source_bytes: ReadableBuffer) -> bytes: ...
+def source_hash(source_bytes: ReadableBuffer) -> bytes:
+    """Return the hash of *source_bytes* as used in hash-based pyc files."""
+    ...
 
 if sys.version_info >= (3, 14):
     __all__ = [
