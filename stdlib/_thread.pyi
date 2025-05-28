@@ -58,9 +58,9 @@ class RLock:
         """
         ...
     __enter__ = acquire
-    def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None:
-        """Release the lock."""
-        ...
+    def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
+    if sys.version_info >= (3, 14):
+        def locked(self) -> bool: ...
 
 if sys.version_info >= (3, 13):
     @final
@@ -396,6 +396,9 @@ if sys.version_info >= (3, 12):
         and False otherwise.
         """
         ...
+
+if sys.version_info >= (3, 14):
+    def set_name(name: str) -> None: ...
 
 class _local:
     """Thread-local data"""
