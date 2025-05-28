@@ -85,7 +85,6 @@ polib==1.2.*
 pytz==2025.2
 wurlitzer==3.1.*
 pyserial[cp2110]==3.5.*
-corus==0.10.*
 requests-oauthlib==2.0.*
 psycopg2~=2.9.10
 whatthepatch==1.0.*
@@ -162,7 +161,7 @@ bleach[css]==6.2.*
 cachetools==6.0.*
 inifile==0.4.*
 ttkthemes==3.2.*
-jsonschema[format]==4.23.*
+jsonschema[format]==4.24.*
 binaryornot==0.4.*
 pexpect==4.9.*
 Pygments==2.19.*
