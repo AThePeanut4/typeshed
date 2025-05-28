@@ -35,12 +35,62 @@ def format_as_index(container: str, indices) -> str:
     ...
 def find_additional_properties(
     instance: Iterable[Incomplete], schema: Mapping[Incomplete, Incomplete]
-) -> Generator[Incomplete, None, None]: ...
-def extras_msg(extras: Iterable[Incomplete] | Sized) -> str: ...
-def ensure_list(thing) -> list[Incomplete]: ...
-def equal(one, two) -> bool: ...
-def unbool(element, true=..., false=...): ...
-def uniq(container) -> bool: ...
-def find_evaluated_item_indexes_by_schema(validator, instance, schema) -> list[Incomplete]: ...
-def find_evaluated_property_keys_by_schema(validator, instance, schema) -> list[Incomplete]: ...
-def is_valid(errs_it: SupportsNext[object]) -> bool: ...
+) -> Generator[Incomplete, None, None]:
+    """
+    Return the set of additional properties for the given ``instance``.
+
+    Weeds out properties that should have been validated by ``properties`` and
+    / or ``patternProperties``.
+
+    Assumes ``instance`` is dict-like already.
+    """
+    ...
+def extras_msg(extras: Iterable[Incomplete] | Sized) -> str:
+    """Create an error message for extra items or properties."""
+    ...
+def ensure_list(thing) -> list[Incomplete]:
+    """
+    Wrap ``thing`` in a list if it's a single str.
+
+    Otherwise, return it unchanged.
+    """
+    ...
+def equal(one, two) -> bool:
+    """
+    Check if two things are equal evading some Python type hierarchy semantics.
+
+    Specifically in JSON Schema, evade `bool` inheriting from `int`,
+    recursing into sequences to do the same.
+    """
+    ...
+def unbool(element, true=..., false=...):
+    """A hack to make True and 1 and False and 0 unique for ``uniq``."""
+    ...
+def uniq(container) -> bool:
+    """
+    Check if all of a container's elements are unique.
+
+    Tries to rely on the container being recursively sortable, or otherwise
+    falls back on (slow) brute force.
+    """
+    ...
+def find_evaluated_item_indexes_by_schema(validator, instance, schema) -> list[Incomplete]:
+    """
+    Get all indexes of items that get evaluated under the current schema.
+
+    Covers all keywords related to unevaluatedItems: items, prefixItems, if,
+    then, else, contains, unevaluatedItems, allOf, oneOf, anyOf
+    """
+    ...
+def find_evaluated_property_keys_by_schema(validator, instance, schema) -> list[Incomplete]:
+    """
+    Get all keys of items that get evaluated under the current schema.
+
+    Covers all keywords related to unevaluatedProperties: properties,
+    additionalProperties, unevaluatedProperties, patternProperties,
+    dependentSchemas, allOf, oneOf, anyOf, if, then, else
+    """
+    ...
+def is_valid(errs_it: SupportsNext[object]) -> bool:
+    """Whether there are no errors in the given iterator."""
+    ...

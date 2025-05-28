@@ -683,20 +683,144 @@ class TurtleScreen(TurtleScreenBase):
         """
         ...
     @overload
-    def delay(self, delay: int) -> None: ...
+    def delay(self, delay: int) -> None:
+        """
+        Return or set the drawing delay in milliseconds.
+
+        Optional argument:
+        delay -- positive integer
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.delay(15)
+        >>> screen.delay()
+        15
+        """
+        ...
     if sys.version_info >= (3, 14):
         @contextmanager
         def no_animation(self) -> Generator[None]: ...
 
-    def update(self) -> None: ...
-    def window_width(self) -> int: ...
-    def window_height(self) -> int: ...
-    def getcanvas(self) -> Canvas: ...
-    def getshapes(self) -> list[str]: ...
-    def onclick(self, fun: Callable[[float, float], object], btn: int = 1, add: Any | None = None) -> None: ...
-    def onkey(self, fun: Callable[[], object], key: str) -> None: ...
-    def listen(self, xdummy: float | None = None, ydummy: float | None = None) -> None: ...
-    def ontimer(self, fun: Callable[[], object], t: int = 0) -> None: ...
+    def update(self) -> None:
+        """
+        Perform a TurtleScreen update.
+        
+        """
+        ...
+    def window_width(self) -> int:
+        """
+        Return the width of the turtle window.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.window_width()
+        640
+        """
+        ...
+    def window_height(self) -> int:
+        """
+        Return the height of the turtle window.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.window_height()
+        480
+        """
+        ...
+    def getcanvas(self) -> Canvas:
+        """
+        Return the Canvas of this TurtleScreen.
+
+        No argument.
+
+        Example (for a Screen instance named screen):
+        >>> cv = screen.getcanvas()
+        >>> cv
+        <turtle.ScrolledCanvas instance at 0x010742D8>
+        """
+        ...
+    def getshapes(self) -> list[str]:
+        """
+        Return a list of names of all currently available turtle shapes.
+
+        No argument.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.getshapes()
+        ['arrow', 'blank', 'circle', ... , 'turtle']
+        """
+        ...
+    def onclick(self, fun: Callable[[float, float], object], btn: int = 1, add: Any | None = None) -> None:
+        """
+        Bind fun to mouse-click event on canvas.
+
+        Arguments:
+        fun -- a function with two arguments, the coordinates of the
+               clicked point on the canvas.
+        btn -- the number of the mouse-button, defaults to 1
+
+        Example (for a TurtleScreen instance named screen)
+
+        >>> screen.onclick(goto)
+        >>> # Subsequently clicking into the TurtleScreen will
+        >>> # make the turtle move to the clicked point.
+        >>> screen.onclick(None)
+        """
+        ...
+    def onkey(self, fun: Callable[[], object], key: str) -> None:
+        """
+        Bind fun to key-release event of key.
+
+        Arguments:
+        fun -- a function with no arguments
+        key -- a string: key (e.g. "a") or key-symbol (e.g. "space")
+
+        In order to be able to register key-events, TurtleScreen
+        must have focus. (See method listen.)
+
+        Example (for a TurtleScreen instance named screen):
+
+        >>> def f():
+        ...     fd(50)
+        ...     lt(60)
+        ...
+        >>> screen.onkey(f, "Up")
+        >>> screen.listen()
+
+        Subsequently the turtle can be moved by repeatedly pressing
+        the up-arrow key, consequently drawing a hexagon
+        """
+        ...
+    def listen(self, xdummy: float | None = None, ydummy: float | None = None) -> None:
+        """
+        Set focus on TurtleScreen (in order to collect key-events)
+
+        No arguments.
+        Dummy arguments are provided in order
+        to be able to pass listen to the onclick method.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.listen()
+        """
+        ...
+    def ontimer(self, fun: Callable[[], object], t: int = 0) -> None:
+        """
+        Install a timer, which calls fun after t milliseconds.
+
+        Arguments:
+        fun -- a function with no arguments.
+        t -- a number >= 0
+
+        Example (for a TurtleScreen instance named screen):
+
+        >>> running = True
+        >>> def f():
+        ...     if running:
+        ...             fd(50)
+        ...             lt(60)
+        ...             screen.ontimer(f, 250)
+        ...
+        >>> f()   # makes the turtle marching around
+        >>> running = False
+        """
+        ...
     @overload
     def bgpic(self, picname: None = None) -> str:
         """
@@ -759,7 +883,25 @@ class TurtleScreen(TurtleScreenBase):
         ...
     # Looks like if self.cv is not a ScrolledCanvas, this could return a tuple as well
     @overload
-    def screensize(self, canvwidth: int, canvheight: int, bg: _Color | None = None) -> None: ...
+    def screensize(self, canvwidth: int, canvheight: int, bg: _Color | None = None) -> None:
+        """
+        Resize the canvas the turtles are drawing on.
+
+        Optional arguments:
+        canvwidth -- positive integer, new width of canvas in pixels
+        canvheight --  positive integer, new height of canvas in pixels
+        bg -- colorstring or color-tuple, new backgroundcolor
+        If no arguments are given, return current (canvaswidth, canvasheight)
+
+        Do not alter the drawing window. To observe hidden parts of
+        the canvas use the scrollbars. (Can make visible those parts
+        of a drawing, which were outside the canvas before!)
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.screensize(2000,1500)
+        >>> # e.g. to search for an erroneously escaped turtle ;-)
+        """
+        ...
     if sys.version_info >= (3, 14):
         def save(self, filename: StrPath, *, overwrite: bool = False) -> None: ...
     onscreenclick = onclick
@@ -2382,29 +2524,214 @@ class RawTurtle(TPen, TNavigator):  # type: ignore[misc]  # Conflicting methods 
     # Can return either 'int' or Tuple[int, ...] based on if the stamp is
     # a compound stamp or not. So, as per the "no Union return" policy,
     # we return Any.
-    def stamp(self) -> Any: ...
-    def clearstamp(self, stampid: int | tuple[int, ...]) -> None: ...
-    def clearstamps(self, n: int | None = None) -> None: ...
-    def filling(self) -> bool: ...
+    def stamp(self) -> Any:
+        """
+        Stamp a copy of the turtleshape onto the canvas and return its id.
+
+        No argument.
+
+        Stamp a copy of the turtle shape onto the canvas at the current
+        turtle position. Return a stamp_id for that stamp, which can be
+        used to delete it by calling clearstamp(stamp_id).
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.color("blue")
+        >>> turtle.stamp()
+        13
+        >>> turtle.fd(50)
+        """
+        ...
+    def clearstamp(self, stampid: int | tuple[int, ...]) -> None:
+        """
+        Delete stamp with given stampid
+
+        Argument:
+        stampid - an integer, must be return value of previous stamp() call.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.color("blue")
+        >>> astamp = turtle.stamp()
+        >>> turtle.fd(50)
+        >>> turtle.clearstamp(astamp)
+        """
+        ...
+    def clearstamps(self, n: int | None = None) -> None:
+        """
+        Delete all or first/last n of turtle's stamps.
+
+        Optional argument:
+        n -- an integer
+
+        If n is None, delete all of pen's stamps,
+        else if n > 0 delete first n stamps
+        else if n < 0 delete last n stamps.
+
+        Example (for a Turtle instance named turtle):
+        >>> for i in range(8):
+        ...     turtle.stamp(); turtle.fd(30)
+        ...
+        >>> turtle.clearstamps(2)
+        >>> turtle.clearstamps(-2)
+        >>> turtle.clearstamps()
+        """
+        ...
+    def filling(self) -> bool:
+        """
+        Return fillstate (True if filling, False else).
+
+        No argument.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.begin_fill()
+        >>> if turtle.filling():
+        ...     turtle.pensize(5)
+        ... else:
+        ...     turtle.pensize(3)
+        """
+        ...
     if sys.version_info >= (3, 14):
         @contextmanager
         def fill(self) -> Generator[None]: ...
 
-    def begin_fill(self) -> None: ...
-    def end_fill(self) -> None: ...
-    def dot(self, size: int | None = None, *color: _Color) -> None: ...
+    def begin_fill(self) -> None:
+        """
+        Called just before drawing a shape to be filled.
+
+        No argument.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.color("black", "red")
+        >>> turtle.begin_fill()
+        >>> turtle.circle(60)
+        >>> turtle.end_fill()
+        """
+        ...
+    def end_fill(self) -> None:
+        """
+        Fill the shape drawn after the call begin_fill().
+
+        No argument.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.color("black", "red")
+        >>> turtle.begin_fill()
+        >>> turtle.circle(60)
+        >>> turtle.end_fill()
+        """
+        ...
+    def dot(self, size: int | None = None, *color: _Color) -> None:
+        """
+        Draw a dot with diameter size, using color.
+
+        Optional arguments:
+        size -- an integer >= 1 (if given)
+        color -- a colorstring or a numeric color tuple
+
+        Draw a circular dot with diameter size, using color.
+        If size is not given, the maximum of pensize+4 and 2*pensize is used.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.dot()
+        >>> turtle.fd(50); turtle.dot(20, "blue"); turtle.fd(50)
+        """
+        ...
     def write(
         self, arg: object, move: bool = False, align: str = "left", font: tuple[str, int, str] = ("Arial", 8, "normal")
-    ) -> None: ...
+    ) -> None:
+        """
+        Write text at the current turtle position.
+
+        Arguments:
+        arg -- info, which is to be written to the TurtleScreen
+        move (optional) -- True/False
+        align (optional) -- one of the strings "left", "center" or right"
+        font (optional) -- a triple (fontname, fontsize, fonttype)
+
+        Write text - the string representation of arg - at the current
+        turtle position according to align ("left", "center" or right")
+        and with the given font.
+        If move is True, the pen is moved to the bottom-right corner
+        of the text. By default, move is False.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.write('Home = ', True, align="center")
+        >>> turtle.write((0,0), True)
+        """
+        ...
     if sys.version_info >= (3, 14):
         @contextmanager
         def poly(self) -> Generator[None]: ...
 
-    def begin_poly(self) -> None: ...
-    def end_poly(self) -> None: ...
-    def get_poly(self) -> _PolygonCoords | None: ...
-    def getscreen(self) -> TurtleScreen: ...
-    def getturtle(self) -> Self: ...
+    def begin_poly(self) -> None:
+        """
+        Start recording the vertices of a polygon.
+
+        No argument.
+
+        Start recording the vertices of a polygon. Current turtle position
+        is first point of polygon.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.begin_poly()
+        """
+        ...
+    def end_poly(self) -> None:
+        """
+        Stop recording the vertices of a polygon.
+
+        No argument.
+
+        Stop recording the vertices of a polygon. Current turtle position is
+        last point of polygon. This will be connected with the first point.
+
+        Example (for a Turtle instance named turtle):
+        >>> turtle.end_poly()
+        """
+        ...
+    def get_poly(self) -> _PolygonCoords | None:
+        """
+        Return the lastly recorded polygon.
+
+        No argument.
+
+        Example (for a Turtle instance named turtle):
+        >>> p = turtle.get_poly()
+        >>> turtle.register_shape("myFavouriteShape", p)
+        """
+        ...
+    def getscreen(self) -> TurtleScreen:
+        """
+        Return the TurtleScreen object, the turtle is drawing  on.
+
+        No argument.
+
+        Return the TurtleScreen object, the turtle is drawing  on.
+        So TurtleScreen-methods can be called for that object.
+
+        Example (for a Turtle instance named turtle):
+        >>> ts = turtle.getscreen()
+        >>> ts
+        <turtle.TurtleScreen object at 0x0106B770>
+        >>> ts.bgcolor("pink")
+        """
+        ...
+    def getturtle(self) -> Self:
+        """
+        Return the Turtleobject itself.
+
+        No argument.
+
+        Only reasonable use: as a function to return the 'anonymous turtle':
+
+        Example:
+        >>> pet = getturtle()
+        >>> pet.fd(50)
+        >>> pet
+        <turtle.Turtle object at 0x0187D810>
+        >>> turtles()
+        [<turtle.Turtle object at 0x0187D810>]
+        """
+        ...
     getpen = getturtle
     def onclick(self, fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None:
         """
@@ -2948,21 +3275,148 @@ def delay(delay: None = None) -> int:
     """
     ...
 @overload
-def delay(delay: int) -> None: ...
+def delay(delay: int) -> None:
+    """
+    Return or set the drawing delay in milliseconds.
+
+    Optional argument:
+    delay -- positive integer
+
+    Example:
+    >>> delay(15)
+    >>> delay()
+    15
+    """
+    ...
 
 if sys.version_info >= (3, 14):
     @contextmanager
     def no_animation() -> Generator[None]: ...
 
-def update() -> None: ...
-def window_width() -> int: ...
-def window_height() -> int: ...
-def getcanvas() -> Canvas: ...
-def getshapes() -> list[str]: ...
-def onclick(fun: Callable[[float, float], object], btn: int = 1, add: Any | None = None) -> None: ...
-def onkey(fun: Callable[[], object], key: str) -> None: ...
-def listen(xdummy: float | None = None, ydummy: float | None = None) -> None: ...
-def ontimer(fun: Callable[[], object], t: int = 0) -> None: ...
+def update() -> None:
+    """
+    Perform a TurtleScreen update.
+        
+    """
+    ...
+def window_width() -> int:
+    """
+    Return the width of the turtle window.
+
+    Example:
+    >>> window_width()
+    640
+    """
+    ...
+def window_height() -> int:
+    """
+    Return the height of the turtle window.
+
+    Example:
+    >>> window_height()
+    480
+    """
+    ...
+def getcanvas() -> Canvas:
+    """
+    Return the Canvas of this TurtleScreen.
+
+    No argument.
+
+    Example:
+    >>> cv = getcanvas()
+    >>> cv
+    <turtle.ScrolledCanvas instance at 0x010742D8>
+    """
+    ...
+def getshapes() -> list[str]:
+    """
+    Return a list of names of all currently available turtle shapes.
+
+    No argument.
+
+    Example:
+    >>> getshapes()
+    ['arrow', 'blank', 'circle', ... , 'turtle']
+    """
+    ...
+def onclick(fun: Callable[[float, float], object], btn: int = 1, add: Any | None = None) -> None:
+    """
+    Bind fun to mouse-click event on this turtle on canvas.
+
+    Arguments:
+    fun --  a function with two arguments, to which will be assigned
+            the coordinates of the clicked point on the canvas.
+    btn --  number of the mouse-button defaults to 1 (left mouse button).
+    add --  True or False. If True, new binding will be added, otherwise
+            it will replace a former binding.
+
+    Example for the anonymous turtle, i. e. the procedural way:
+
+    >>> def turn(x, y):
+    ...     left(360)
+    ...
+    >>> onclick(turn)  # Now clicking into the turtle will turn it.
+    >>> onclick(None)  # event-binding will be removed
+    """
+    ...
+def onkey(fun: Callable[[], object], key: str) -> None:
+    """
+    Bind fun to key-release event of key.
+
+    Arguments:
+    fun -- a function with no arguments
+    key -- a string: key (e.g. "a") or key-symbol (e.g. "space")
+
+    In order to be able to register key-events, TurtleScreen
+    must have focus. (See method listen.)
+
+    Example:
+
+    >>> def f():
+    ...     fd(50)
+    ...     lt(60)
+    ...
+    >>> onkey(f, "Up")
+    >>> listen()
+
+    Subsequently the turtle can be moved by repeatedly pressing
+    the up-arrow key, consequently drawing a hexagon
+    """
+    ...
+def listen(xdummy: float | None = None, ydummy: float | None = None) -> None:
+    """
+    Set focus on TurtleScreen (in order to collect key-events)
+
+    No arguments.
+    Dummy arguments are provided in order
+    to be able to pass listen to the onclick method.
+
+    Example:
+    >>> listen()
+    """
+    ...
+def ontimer(fun: Callable[[], object], t: int = 0) -> None:
+    """
+    Install a timer, which calls fun after t milliseconds.
+
+    Arguments:
+    fun -- a function with no arguments.
+    t -- a number >= 0
+
+    Example:
+
+    >>> running = True
+    >>> def f():
+    ...     if running:
+    ...             fd(50)
+    ...             lt(60)
+    ...             ontimer(f, 250)
+    ...
+    >>> f()   # makes the turtle marching around
+    >>> running = False
+    """
+    ...
 @overload
 def bgpic(picname: None = None) -> str:
     """
@@ -4689,29 +5143,214 @@ def tilt(angle: float) -> None:
 # Can return either 'int' or Tuple[int, ...] based on if the stamp is
 # a compound stamp or not. So, as per the "no Union return" policy,
 # we return Any.
-def stamp() -> Any: ...
-def clearstamp(stampid: int | tuple[int, ...]) -> None: ...
-def clearstamps(n: int | None = None) -> None: ...
-def filling() -> bool: ...
+def stamp() -> Any:
+    """
+    Stamp a copy of the turtleshape onto the canvas and return its id.
+
+    No argument.
+
+    Stamp a copy of the turtle shape onto the canvas at the current
+    turtle position. Return a stamp_id for that stamp, which can be
+    used to delete it by calling clearstamp(stamp_id).
+
+    Example:
+    >>> color("blue")
+    >>> stamp()
+    13
+    >>> fd(50)
+    """
+    ...
+def clearstamp(stampid: int | tuple[int, ...]) -> None:
+    """
+    Delete stamp with given stampid
+
+    Argument:
+    stampid - an integer, must be return value of previous stamp() call.
+
+    Example:
+    >>> color("blue")
+    >>> astamp = stamp()
+    >>> fd(50)
+    >>> clearstamp(astamp)
+    """
+    ...
+def clearstamps(n: int | None = None) -> None:
+    """
+    Delete all or first/last n of turtle's stamps.
+
+    Optional argument:
+    n -- an integer
+
+    If n is None, delete all of pen's stamps,
+    else if n > 0 delete first n stamps
+    else if n < 0 delete last n stamps.
+
+    Example:
+    >>> for i in range(8):
+    ...     stamp(); fd(30)
+    ...
+    >>> clearstamps(2)
+    >>> clearstamps(-2)
+    >>> clearstamps()
+    """
+    ...
+def filling() -> bool:
+    """
+    Return fillstate (True if filling, False else).
+
+    No argument.
+
+    Example:
+    >>> begin_fill()
+    >>> if filling():
+    ...     pensize(5)
+    ... else:
+    ...     pensize(3)
+    """
+    ...
 
 if sys.version_info >= (3, 14):
     @contextmanager
     def fill() -> Generator[None]: ...
 
-def begin_fill() -> None: ...
-def end_fill() -> None: ...
-def dot(size: int | None = None, *color: _Color) -> None: ...
-def write(arg: object, move: bool = False, align: str = "left", font: tuple[str, int, str] = ("Arial", 8, "normal")) -> None: ...
+def begin_fill() -> None:
+    """
+    Called just before drawing a shape to be filled.
+
+    No argument.
+
+    Example:
+    >>> color("black", "red")
+    >>> begin_fill()
+    >>> circle(60)
+    >>> end_fill()
+    """
+    ...
+def end_fill() -> None:
+    """
+    Fill the shape drawn after the call begin_fill().
+
+    No argument.
+
+    Example:
+    >>> color("black", "red")
+    >>> begin_fill()
+    >>> circle(60)
+    >>> end_fill()
+    """
+    ...
+def dot(size: int | None = None, *color: _Color) -> None:
+    """
+    Draw a dot with diameter size, using color.
+
+    Optional arguments:
+    size -- an integer >= 1 (if given)
+    color -- a colorstring or a numeric color tuple
+
+    Draw a circular dot with diameter size, using color.
+    If size is not given, the maximum of pensize+4 and 2*pensize is used.
+
+    Example:
+    >>> dot()
+    >>> fd(50); dot(20, "blue"); fd(50)
+    """
+    ...
+def write(arg: object, move: bool = False, align: str = "left", font: tuple[str, int, str] = ("Arial", 8, "normal")) -> None:
+    """
+    Write text at the current turtle position.
+
+    Arguments:
+    arg -- info, which is to be written to the TurtleScreen
+    move (optional) -- True/False
+    align (optional) -- one of the strings "left", "center" or right"
+    font (optional) -- a triple (fontname, fontsize, fonttype)
+
+    Write text - the string representation of arg - at the current
+    turtle position according to align ("left", "center" or right")
+    and with the given font.
+    If move is True, the pen is moved to the bottom-right corner
+    of the text. By default, move is False.
+
+    Example:
+    >>> write('Home = ', True, align="center")
+    >>> write((0,0), True)
+    """
+    ...
 
 if sys.version_info >= (3, 14):
     @contextmanager
     def poly() -> Generator[None]: ...
 
-def begin_poly() -> None: ...
-def end_poly() -> None: ...
-def get_poly() -> _PolygonCoords | None: ...
-def getscreen() -> TurtleScreen: ...
-def getturtle() -> Turtle: ...
+def begin_poly() -> None:
+    """
+    Start recording the vertices of a polygon.
+
+    No argument.
+
+    Start recording the vertices of a polygon. Current turtle position
+    is first point of polygon.
+
+    Example:
+    >>> begin_poly()
+    """
+    ...
+def end_poly() -> None:
+    """
+    Stop recording the vertices of a polygon.
+
+    No argument.
+
+    Stop recording the vertices of a polygon. Current turtle position is
+    last point of polygon. This will be connected with the first point.
+
+    Example:
+    >>> end_poly()
+    """
+    ...
+def get_poly() -> _PolygonCoords | None:
+    """
+    Return the lastly recorded polygon.
+
+    No argument.
+
+    Example:
+    >>> p = get_poly()
+    >>> register_shape("myFavouriteShape", p)
+    """
+    ...
+def getscreen() -> TurtleScreen:
+    """
+    Return the TurtleScreen object, the turtle is drawing  on.
+
+    No argument.
+
+    Return the TurtleScreen object, the turtle is drawing  on.
+    So TurtleScreen-methods can be called for that object.
+
+    Example:
+    >>> ts = getscreen()
+    >>> ts
+    <TurtleScreen object at 0x0106B770>
+    >>> ts.bgcolor("pink")
+    """
+    ...
+def getturtle() -> Turtle:
+    """
+    Return the Turtleobject itself.
+
+    No argument.
+
+    Only reasonable use: as a function to return the 'anonymous turtle':
+
+    Example:
+    >>> pet = getturtle()
+    >>> pet.fd(50)
+    >>> pet
+    <Turtle object at 0x0187D810>
+    >>> turtles()
+    [<Turtle object at 0x0187D810>]
+    """
+    ...
 
 getpen = getturtle
 

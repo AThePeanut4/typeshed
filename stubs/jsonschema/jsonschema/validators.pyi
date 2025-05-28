@@ -292,22 +292,238 @@ class RefResolver:
         remote_cache=None,
     ) -> None: ...
     @classmethod
-    def from_schema(cls, schema: Schema, id_of=..., *args, **kwargs): ...
-    def push_scope(self, scope) -> None: ...
-    def pop_scope(self) -> None: ...
+    def from_schema(cls, schema: Schema, id_of=..., *args, **kwargs):
+        """
+        Construct a resolver from a JSON schema object.
+
+        Arguments:
+
+            schema:
+
+                the referring schema
+
+        Returns:
+
+            `_RefResolver`
+        """
+        ...
+    def push_scope(self, scope) -> None:
+        """
+        Enter a given sub-scope.
+
+        Treats further dereferences as being performed underneath the
+        given scope.
+        """
+        ...
+    def pop_scope(self) -> None:
+        """
+        Exit the most recent entered scope.
+
+        Treats further dereferences as being performed underneath the
+        original scope.
+
+        Don't call this method more times than `push_scope` has been
+        called.
+        """
+        ...
     @property
-    def resolution_scope(self): ...
+    def resolution_scope(self):
+        """Retrieve the current resolution scope."""
+        ...
     @property
-    def base_uri(self) -> str: ...
+    def base_uri(self) -> str:
+        """Retrieve the current base URI, not including any fragment."""
+        ...
     @contextmanager
     @deprecated("jsonschema.RefResolver.in_scope is deprecated and will be removed in a future release.")
-    def in_scope(self, scope) -> Generator[None]: ...
-    @contextmanager
-    def resolving(self, ref: str) -> Generator[Incomplete]: ...
-    def resolve(self, ref: str) -> tuple[str, Incomplete]: ...
-    def resolve_from_url(self, url: str): ...
-    def resolve_fragment(self, document, fragment: str): ...
-    def resolve_remote(self, uri: str): ...
+    def in_scope(self, scope) -> Generator[None]:
+        """
+        Temporarily enter the given scope for the duration of the context.
 
-def validate(instance: object, schema: Schema, cls: type[_Validator] | None = None, *args: Any, **kwargs: Any) -> None: ...
-def validator_for(schema: Schema | bool, default: type[Validator] | Unset = ...) -> type[Validator]: ...
+        .. deprecated:: v4.0.0
+        """
+        ...
+    @contextmanager
+    def resolving(self, ref: str) -> Generator[Incomplete]:
+        """
+        Resolve the given ``ref`` and enter its resolution scope.
+
+        Exits the scope on exit of this context manager.
+
+        Arguments:
+
+            ref (str):
+
+                The reference to resolve
+        """
+        ...
+    def resolve(self, ref: str) -> tuple[str, Incomplete]:
+        """Resolve the given reference."""
+        ...
+    def resolve_from_url(self, url: str):
+        """Resolve the given URL."""
+        ...
+    def resolve_fragment(self, document, fragment: str):
+        """
+        Resolve a ``fragment`` within the referenced ``document``.
+
+        Arguments:
+
+            document:
+
+                The referent document
+
+            fragment (str):
+
+                a URI fragment to resolve within it
+        """
+        ...
+    def resolve_remote(self, uri: str):
+        """
+        Resolve a remote ``uri``.
+
+        If called directly, does not check the store first, but after
+        retrieving the document at the specified URI it will be saved in
+        the store if :attr:`cache_remote` is True.
+
+        .. note::
+
+            If the requests_ library is present, ``jsonschema`` will use it to
+            request the remote ``uri``, so that the correct encoding is
+            detected and used.
+
+            If it isn't, or if the scheme of the ``uri`` is not ``http`` or
+            ``https``, UTF-8 is assumed.
+
+        Arguments:
+
+            uri (str):
+
+                The URI to resolve
+
+        Returns:
+
+            The retrieved document
+
+        .. _requests: https://pypi.org/project/requests/
+        """
+        ...
+
+def validate(instance: object, schema: Schema, cls: type[_Validator] | None = None, *args: Any, **kwargs: Any) -> None:
+    """
+    Validate an instance under the given schema.
+
+        >>> validate([2, 3, 4], {"maxItems": 2})
+        Traceback (most recent call last):
+            ...
+        ValidationError: [2, 3, 4] is too long
+
+    :func:`~jsonschema.validators.validate` will first verify that the
+    provided schema is itself valid, since not doing so can lead to less
+    obvious error messages and fail in less obvious or consistent ways.
+
+    If you know you have a valid schema already, especially
+    if you intend to validate multiple instances with
+    the same schema, you likely would prefer using the
+    `jsonschema.protocols.Validator.validate` method directly on a
+    specific validator (e.g. ``Draft202012Validator.validate``).
+
+
+    Arguments:
+
+        instance:
+
+            The instance to validate
+
+        schema:
+
+            The schema to validate with
+
+        cls (jsonschema.protocols.Validator):
+
+            The class that will be used to validate the instance.
+
+    If the ``cls`` argument is not provided, two things will happen
+    in accordance with the specification. First, if the schema has a
+    :kw:`$schema` keyword containing a known meta-schema [#]_ then the
+    proper validator will be used. The specification recommends that
+    all schemas contain :kw:`$schema` properties for this reason. If no
+    :kw:`$schema` property is found, the default validator class is the
+    latest released draft.
+
+    Any other provided positional and keyword arguments will be passed
+    on when instantiating the ``cls``.
+
+    Raises:
+
+        `jsonschema.exceptions.ValidationError`:
+
+            if the instance is invalid
+
+        `jsonschema.exceptions.SchemaError`:
+
+            if the schema itself is invalid
+
+    .. rubric:: Footnotes
+    .. [#] known by a validator registered with
+        `jsonschema.validators.validates`
+    """
+    ...
+def validator_for(schema: Schema | bool, default: type[Validator] | Unset = ...) -> type[Validator]:
+    """
+    Retrieve the validator class appropriate for validating the given schema.
+
+    Uses the :kw:`$schema` keyword that should be present in the given
+    schema to look up the appropriate validator class.
+
+    Arguments:
+
+        schema (collections.abc.Mapping or bool):
+
+            the schema to look at
+
+        default:
+
+            the default to return if the appropriate validator class
+            cannot be determined.
+
+            If unprovided, the default is to return the latest supported
+            draft.
+
+    Examples:
+
+        The :kw:`$schema` JSON Schema keyword will control which validator
+        class is returned:
+
+        >>> schema = {
+        ...     "$schema": "https://json-schema.org/draft/2020-12/schema",
+        ...     "type": "integer",
+        ... }
+        >>> jsonschema.validators.validator_for(schema)
+        <class 'jsonschema.validators.Draft202012Validator'>
+
+
+        Here, a draft 7 schema instead will return the draft 7 validator:
+
+        >>> schema = {
+        ...     "$schema": "http://json-schema.org/draft-07/schema#",
+        ...     "type": "integer",
+        ... }
+        >>> jsonschema.validators.validator_for(schema)
+        <class 'jsonschema.validators.Draft7Validator'>
+
+
+        Schemas with no ``$schema`` keyword will fallback to the default
+        argument:
+
+        >>> schema = {"type": "integer"}
+        >>> jsonschema.validators.validator_for(
+        ...     schema, default=Draft7Validator,
+        ... )
+        <class 'jsonschema.validators.Draft7Validator'>
+
+        or if none is provided, to the latest version supported.
+        Always including the keyword when authoring schemas is highly
+        recommended.
+    """
+    ...
