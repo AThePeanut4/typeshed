@@ -131,7 +131,10 @@ def find_cliques(G: Graph[_Node], nodes: Iterable[Incomplete] | None = None) -> 
     node. The following produces a dictionary keyed by node whose
     values are the number of maximal cliques in `G` that contain the node:
 
-    >>> pprint({n: sum(1 for c in nx.find_cliques(G) if n in c) for n in G})
+    >>> from collections import Counter
+    >>> from itertools import chain
+    >>> counts = Counter(chain.from_iterable(nx.find_cliques(G)))
+    >>> pprint(dict(counts))
     {0: 13,
      1: 6,
      2: 7,

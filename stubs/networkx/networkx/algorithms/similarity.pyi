@@ -819,4 +819,72 @@ def generate_random_paths(
     seed: int | RandomState | None = None,
     *,
     source: _Node | None = None,
-) -> Generator[list[Incomplete]]: ...
+) -> Generator[list[Incomplete]]:
+    """
+    Randomly generate `sample_size` paths of length `path_length`.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+    sample_size : integer
+        The number of paths to generate. This is ``R`` in [1]_.
+    path_length : integer (default = 5)
+        The maximum size of the path to randomly generate.
+        This is ``T`` in [1]_. According to the paper, ``T >= 5`` is
+        recommended.
+    index_map : dictionary, optional
+        If provided, this will be populated with the inverted
+        index of nodes mapped to the set of generated random path
+        indices within ``paths``.
+    weight : string or None, optional (default="weight")
+        The name of an edge attribute that holds the numerical value
+        used as a weight. If None then each edge has weight 1.
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+    source : node, optional
+        Node to use as the starting point for all generated paths.
+        If None then starting nodes are selected at random with uniform probability.
+
+    Returns
+    -------
+    paths : generator of lists
+        Generator of `sample_size` paths each with length `path_length`.
+
+    Examples
+    --------
+    The generator yields `sample_size` number of paths of length `path_length`
+    drawn from `G`:
+
+    >>> G = nx.complete_graph(5)
+    >>> next(nx.generate_random_paths(G, sample_size=1, path_length=3, seed=42))
+    [3, 4, 2, 3]
+    >>> list(nx.generate_random_paths(G, sample_size=3, path_length=4, seed=42))
+    [[3, 4, 2, 3, 0], [2, 0, 2, 1, 0], [2, 0, 4, 3, 0]]
+
+    By passing a dictionary into `index_map`, it will build an
+    inverted index mapping of nodes to the paths in which that node is present:
+
+    >>> G = nx.wheel_graph(10)
+    >>> index_map = {}
+    >>> random_paths = list(
+    ...     nx.generate_random_paths(G, sample_size=3, index_map=index_map, seed=2771)
+    ... )
+    >>> random_paths
+    [[3, 2, 1, 9, 8, 7], [4, 0, 5, 6, 7, 8], [3, 0, 5, 0, 9, 8]]
+    >>> paths_containing_node_0 = [
+    ...     random_paths[path_idx] for path_idx in index_map.get(0, [])
+    ... ]
+    >>> paths_containing_node_0
+    [[4, 0, 5, 6, 7, 8], [3, 0, 5, 0, 9, 8]]
+
+    References
+    ----------
+    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
+           Panther: Fast top-k similarity search on large networks.
+           In Proceedings of the ACM SIGKDD International Conference
+           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
+           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
+    """
+    ...

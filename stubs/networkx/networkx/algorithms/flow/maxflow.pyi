@@ -118,6 +118,10 @@ def maximum_flow(
     True, it can optionally terminate the algorithm as soon as the maximum flow
     value and the minimum cut can be determined.
 
+    Note that the resulting maximum flow may contain flow cycles,
+    back-flow to the source, or some flow exiting the sink.
+    These are possible if there are cycles in the network.
+
     Examples
     --------
     >>> G = nx.DiGraph()

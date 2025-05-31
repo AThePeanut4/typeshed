@@ -64,10 +64,10 @@ def min_edge_cover(G: Graph[_Node], matching_algorithm: Callable[..., Incomplete
     is bounded by the worst-case running time of the function
     ``matching_algorithm``.
 
-    Minimum edge cover for `G` can also be found using the `min_edge_covering`
-    function in :mod:`networkx.algorithms.bipartite.covering` which is
+    Minimum edge cover for `G` can also be found using
+    :func:`~networkx.algorithms.bipartite.covering.min_edge_covering` which is
     simply this function with a default matching algorithm of
-    :func:`~networkx.algorithms.bipartite.matching.hopcraft_karp_matching`
+    :func:`~networkx.algorithms.bipartite.matching.hopcroft_karp_matching`
     """
     ...
 @_dispatchable

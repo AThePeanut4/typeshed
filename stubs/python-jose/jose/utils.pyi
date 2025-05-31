@@ -29,7 +29,7 @@ def base64url_decode(input: bytes) -> bytes:
     Helper method to base64url_decode a string.
 
     Args:
-        input (str): A base64url_encoded string to decode.
+        input (bytes): A base64url_encoded string (bytes) to decode.
     """
     ...
 def base64url_encode(input: bytes) -> bytes:
@@ -37,7 +37,7 @@ def base64url_encode(input: bytes) -> bytes:
     Helper method to base64url_encode a string.
 
     Args:
-        input (str): A base64url_encoded string to encode.
+        input (bytes): A base64url_encoded string (bytes) to encode.
     """
     ...
 def timedelta_total_seconds(delta: timedelta) -> int:

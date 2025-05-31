@@ -529,5 +529,68 @@ class PlanarEmbedding(DiGraph[_Node]):
         ...
     def traverse_face(
         self, v: _Node, w: _Node, mark_half_edges: MutableSet[tuple[_Node, _Node]] | None = None
-    ) -> list[_Node]: ...
-    def to_undirected(self, reciprocal: bool = False, as_view: bool = False) -> Graph[_Node]: ...  # type: ignore[override]
+    ) -> list[_Node]:
+        """
+        Returns nodes on the face that belong to the half-edge (v, w).
+
+        The face that is traversed lies to the right of the half-edge (in an
+        orientation where v is below w).
+
+        Optionally it is possible to pass a set to which all encountered half
+        edges are added. Before calling this method, this set must not include
+        any half-edges that belong to the face.
+
+        Parameters
+        ----------
+        v : node
+            Start node of half-edge.
+        w : node
+            End node of half-edge.
+        mark_half_edges: set, optional
+            Set to which all encountered half-edges are added.
+
+        Returns
+        -------
+        face : list
+            A list of nodes that lie on this face.
+        """
+        ...
+    def to_undirected(self, reciprocal: bool = False, as_view: bool = False) -> Graph[_Node]:
+        """
+        Returns a non-embedding undirected representation of the graph.
+
+        This method strips the planar embedding information and provides
+        a simple undirected graph representation. While creating the undirected graph,
+        all edge attributes are retained except the ``"cw"`` and ``"ccw"`` attributes
+        which are removed from the edge data. Those attributes are specific to
+        the requirements of planar embeddings.
+
+        Parameters
+        ----------
+        reciprocal : bool (optional)
+            Not supported for PlanarEmbedding. This parameter raises an exception
+            if used. All valid embeddings include reciprocal half-edges by definition,
+            making this parameter unnecessary.
+        as_view : bool (optional, default=False)
+            Not supported for PlanarEmbedding. This parameter raises an exception
+            if used.
+
+        Returns
+        -------
+        G : Graph
+            An undirected graph with the same name and nodes as the PlanarEmbedding.
+            Edges are included with their data, except for the ``"cw"`` and ``"ccw"``
+            attributes, which are omitted.
+
+
+        Notes
+        -----
+        - If edges exist in both directions ``(u, v)`` and ``(v, u)`` in the PlanarEmbedding,
+          attributes for the resulting undirected edge will be combined, excluding ``"cw"``
+          and ``"ccw"``.
+        - A deep copy is made of the other edge attributes as well as the
+          node and graph attributes, ensuring independence of the resulting graph.
+        - Subclass-specific data structures used in the original graph may not transfer
+          to the undirected graph. The resulting graph will be of type ``nx.Graph``.
+        """
+        ...

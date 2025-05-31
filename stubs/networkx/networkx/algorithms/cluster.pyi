@@ -269,6 +269,8 @@ def square_clustering(G: Graph[_Node], nodes: Iterable[_Node] | None = None):
 
     Notes
     -----
+    Self loops are ignored.
+
     While :math:`C_3(v)` (triangle clustering) gives the probability that
     two neighbors of node v are connected with each other, :math:`C_4(v)` is
     the probability that two neighbors of node v share a common

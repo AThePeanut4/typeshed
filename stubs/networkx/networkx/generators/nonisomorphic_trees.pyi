@@ -14,11 +14,28 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["nonisomorphic_trees", "number_of_nonisomorphic_trees"]
 
 @_dispatchable
-def nonisomorphic_trees(order) -> Generator[list[Incomplete]]: ...
+def nonisomorphic_trees(order) -> Generator[list[Incomplete]]:
+    """
+    Generates lists of nonisomorphic trees
+
+    Parameters
+    ----------
+    order : int
+       order of the desired tree(s)
+
+    Yields
+    ------
+    list of `networkx.Graph` instances
+       A list of nonisomorphic trees
+    """
+    ...
 @_dispatchable
 def number_of_nonisomorphic_trees(order):
     """
     Returns the number of nonisomorphic trees
+
+    Based on an algorithm by Alois P. Heinz in
+    `OEIS entry A000055 <https://oeis.org/A000055>`_. Complexity is ``O(n ** 3)``
 
     Parameters
     ----------
@@ -27,9 +44,7 @@ def number_of_nonisomorphic_trees(order):
 
     Returns
     -------
-    length : Number of nonisomorphic graphs for the given order
-
-    References
-    ----------
+    int
+       Number of nonisomorphic graphs for the given order
     """
     ...

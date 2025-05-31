@@ -20,8 +20,8 @@ def read_leda(path, encoding: str = "UTF-8"):
     Parameters
     ----------
     path : file or string
-       File or filename to read.  Filenames ending in .gz or .bz2  will be
-       uncompressed.
+       Filename or file handle to read.
+       Filenames ending in .gz or .bz2 will be decompressed.
 
     Returns
     -------
@@ -29,7 +29,7 @@ def read_leda(path, encoding: str = "UTF-8"):
 
     Examples
     --------
-    G=nx.read_leda('file.leda')
+    >>> G = nx.read_leda("file.leda")  # doctest: +SKIP
 
     References
     ----------
@@ -52,7 +52,7 @@ def parse_leda(lines):
 
     Examples
     --------
-    G=nx.parse_leda(string)
+    >>> G = nx.parse_leda(string)  # doctest: +SKIP
 
     References
     ----------

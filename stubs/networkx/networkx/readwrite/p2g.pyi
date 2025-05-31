@@ -2,7 +2,9 @@
 This module provides the following: read and write of p2g format
 used in metabolic pathway studies.
 
-See https://web.archive.org/web/20080626113807/http://www.cs.purdue.edu/homes/koyuturk/pathway/ for a description.
+See:
+<https://web.archive.org/web/20080626113807/http://www.cs.purdue.edu/homes/koyuturk/pathway/>
+for a description.
 
 The summary is included here:
 
@@ -47,6 +49,12 @@ def write_p2g(G, path, encoding: str = "utf-8") -> None:
 def read_p2g(path, encoding: str = "utf-8"):
     """
     Read graph in p2g format from path.
+
+    Parameters
+    ----------
+    path : string or file
+       Filename or file handle to read.
+       Filenames ending in .gz or .bz2 will be decompressed.
 
     Returns
     -------

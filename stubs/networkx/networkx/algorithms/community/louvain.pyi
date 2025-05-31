@@ -1,5 +1,5 @@
 """
-Function for detecting communities based on Louvain Community Detection
+Functions for detecting communities based on Louvain Community Detection
 Algorithm
 """
 
@@ -124,6 +124,7 @@ def louvain_communities(
     See Also
     --------
     louvain_partitions
+    :any:`leiden_communities`
     """
     ...
 @_dispatchable
@@ -135,7 +136,7 @@ def louvain_partitions(
     seed: int | RandomState | None = None,
 ) -> Generator[Incomplete, None, None]:
     """
-    Yields partitions for each level of the Louvain Community Detection Algorithm
+    Yield partitions for each level of the Louvain Community Detection Algorithm
 
     Louvain Community Detection Algorithm is a simple method to extract the community
     structure of a network. This is a heuristic method based on modularity optimization. [1]_
@@ -188,5 +189,6 @@ def louvain_partitions(
     See Also
     --------
     louvain_communities
+    :any:`leiden_partitions`
     """
     ...

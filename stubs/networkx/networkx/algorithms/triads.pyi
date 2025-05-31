@@ -112,7 +112,31 @@ def is_triad(G: Graph[_Node]) -> bool:
     """
     ...
 @_dispatchable
-def all_triads(G: DiGraph[_Node]) -> Generator[Incomplete, None, None]: ...
+def all_triads(G: DiGraph[_Node]) -> Generator[Incomplete, None, None]:
+    """
+    A generator of all possible triads in G.
+
+    Parameters
+    ----------
+    G : digraph
+       A NetworkX DiGraph
+
+    Returns
+    -------
+    all_triads : generator of DiGraphs
+       Generator of triads (order-3 DiGraphs)
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(1, 2), (2, 3), (3, 1), (3, 4), (4, 1), (4, 2)])
+    >>> for triad in nx.all_triads(G):
+    ...     print(triad.edges)
+    [(1, 2), (2, 3), (3, 1)]
+    [(1, 2), (4, 1), (4, 2)]
+    [(3, 1), (3, 4), (4, 1)]
+    [(2, 3), (3, 4), (4, 2)]
+    """
+    ...
 @_dispatchable
 def triads_by_type(G: DiGraph[_Node]):
     """
@@ -168,4 +192,54 @@ def triads_by_type(G: DiGraph[_Node]):
     """
     ...
 @_dispatchable
-def triad_type(G: DiGraph[_Node]): ...
+def triad_type(G: DiGraph[_Node]):
+    """
+    Returns the sociological triad type for a triad.
+
+    Parameters
+    ----------
+    G : digraph
+       A NetworkX DiGraph with 3 nodes
+
+    Returns
+    -------
+    triad_type : str
+       A string identifying the triad type
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(1, 2), (2, 3), (3, 1)])
+    >>> nx.triad_type(G)
+    '030C'
+    >>> G.add_edge(1, 3)
+    >>> nx.triad_type(G)
+    '120C'
+
+    Notes
+    -----
+    There can be 6 unique edges in a triad (order-3 DiGraph) (so 2^^6=64 unique
+    triads given 3 nodes). These 64 triads each display exactly 1 of 16
+    topologies of triads (topologies can be permuted). These topologies are
+    identified by the following notation:
+
+    {m}{a}{n}{type} (for example: 111D, 210, 102)
+
+    Here:
+
+    {m}     = number of mutual ties (takes 0, 1, 2, 3); a mutual tie is (0,1)
+              AND (1,0)
+    {a}     = number of asymmetric ties (takes 0, 1, 2, 3); an asymmetric tie
+              is (0,1) BUT NOT (1,0) or vice versa
+    {n}     = number of null ties (takes 0, 1, 2, 3); a null tie is NEITHER
+              (0,1) NOR (1,0)
+    {type}  = a letter (takes U, D, C, T) corresponding to up, down, cyclical
+              and transitive. This is only used for topologies that can have
+              more than one form (eg: 021D and 021U).
+
+    References
+    ----------
+    .. [1] Snijders, T. (2012). "Transitivity and triads." University of
+        Oxford.
+        https://web.archive.org/web/20170830032057/http://www.stats.ox.ac.uk/~snijders/Trans_Triads_ha.pdf
+    """
+    ...

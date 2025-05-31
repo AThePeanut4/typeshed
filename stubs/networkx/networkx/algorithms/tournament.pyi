@@ -128,9 +128,70 @@ def random_tournament(n: int, seed: int | RandomState | None = None):
     """
     ...
 @_dispatchable
-def tournament_matrix(G: Graph[_Node]): ...
+def tournament_matrix(G: Graph[_Node]):
+    r"""
+    Returns the tournament matrix for the given tournament graph.
+
+    This function requires SciPy.
+
+    The *tournament matrix* of a tournament graph with edge set *E* is
+    the matrix *T* defined by
+
+    .. math::
+
+       T_{i j} =
+       \begin{cases}
+       +1 & \text{if } (i, j) \in E \\
+       -1 & \text{if } (j, i) \in E \\
+       0 & \text{if } i == j.
+       \end{cases}
+
+    An equivalent definition is `T = A - A^T`, where *A* is the
+    adjacency matrix of the graph `G`.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A directed graph representing a tournament.
+
+    Returns
+    -------
+    SciPy sparse array
+        The tournament matrix of the tournament graph `G`.
+
+    Raises
+    ------
+    ImportError
+        If SciPy is not available.
+    """
+    ...
 @_dispatchable
-def score_sequence(G: Graph[_Node]): ...
+def score_sequence(G: Graph[_Node]):
+    """
+    Returns the score sequence for the given tournament graph.
+
+    The score sequence is the sorted list of the out-degrees of the
+    nodes of the graph.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A directed graph representing a tournament.
+
+    Returns
+    -------
+    list
+        A sorted list of the out-degrees of the nodes of `G`.
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(1, 0), (1, 3), (0, 2), (0, 3), (2, 1), (3, 2)])
+    >>> nx.is_tournament(G)
+    True
+    >>> nx.tournament.score_sequence(G)
+    [1, 1, 2, 2]
+    """
+    ...
 @_dispatchable
 def is_reachable(G: Graph[_Node], s: _Node, t: _Node) -> bool:
     """

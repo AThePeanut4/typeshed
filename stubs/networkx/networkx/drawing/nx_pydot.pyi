@@ -28,7 +28,13 @@ def write_dot(G, path) -> None:
     """
     Write NetworkX graph G to Graphviz dot format on path.
 
-    Path can be a string or a file handle.
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    path : string or file
+       Filename or file handle for data output.
+       Filenames ending in .gz or .bz2 will be compressed.
     """
     ...
 @_dispatchable
@@ -43,7 +49,8 @@ def read_dot(path):
     Parameters
     ----------
     path : str or file
-        Filename or file handle.
+        Filename or file handle to read.
+        Filenames ending in .gz or .bz2 will be decompressed.
 
     Returns
     -------

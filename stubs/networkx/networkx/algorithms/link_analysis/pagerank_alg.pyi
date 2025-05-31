@@ -92,6 +92,7 @@ def pagerank(
     See Also
     --------
     google_matrix
+    :func:`~networkx.algorithms.bipartite.link_analysis.birank`
 
     Raises
     ------

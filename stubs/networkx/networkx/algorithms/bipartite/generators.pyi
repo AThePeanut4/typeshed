@@ -316,8 +316,7 @@ def gnmk_random_graph(n: int, m: int, k: int, seed: int | RandomState | None = N
 
     Examples
     --------
-    from nx.algorithms import bipartite
-    G = bipartite.gnmk_random_graph(10,20,50)
+    >>> G = nx.bipartite.gnmk_random_graph(10, 20, 50)
 
     See Also
     --------

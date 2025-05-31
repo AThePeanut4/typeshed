@@ -81,4 +81,31 @@ class CustomerSessionGateway:
         ...
     def get_customer_recommendations(
         self, get_customer_recommendations_input: CustomerRecommendationsInput
-    ) -> SuccessfulResult | ErrorResult: ...
+    ) -> SuccessfulResult | ErrorResult:
+        """
+        Retrieves customer recommendations associated with a customer session.
+
+        Example:
+
+          recommendations_input = (
+            CustomerRecommendationsInput
+              .builder()
+              .session_id(session_id)
+              .build()
+          )
+
+          result = gateway.customer_session.get_customer_recommendations(recommendations_input)
+ 
+          if result.is_success:
+            print(result.customer_recommendations.recommendations.payment_recommendations)
+
+        Args:
+            GenerateCustomerRecommendationsInput: Input object for retrieving customer recommendations.
+
+        Returns:
+            (Successful|Error)Result: A result object containing a GenerateCustomerRecommendationsPayload and a success flag if successful, or errors otherwise.
+
+        Raises:
+            UnexpectedError: If there is an unexpected error during the process.
+        """
+        ...

@@ -20,7 +20,7 @@ __all__ = [
 @_dispatchable
 def single_source_shortest_path_length(G: Graph[_Node], source: _Node, cutoff: int | None = None):
     """
-    Compute the shortest path lengths from source to all reachable nodes.
+    Compute the shortest path lengths from `source` to all reachable nodes in `G`.
 
     Parameters
     ----------
@@ -30,30 +30,27 @@ def single_source_shortest_path_length(G: Graph[_Node], source: _Node, cutoff: i
        Starting node for path
 
     cutoff : integer, optional
-        Depth to stop the search. Only paths of length <= cutoff are returned.
+        Depth to stop the search. Only paths of length <= `cutoff` are returned.
 
     Returns
     -------
     lengths : dict
-        Dict keyed by node to shortest path length to source.
+        Dict keyed by node to shortest path length to `source`.
 
     Examples
     --------
     >>> G = nx.path_graph(5)
-    >>> length = nx.single_source_shortest_path_length(G, 0)
-    >>> length[4]
-    4
-    >>> for node in length:
-    ...     print(f"{node}: {length[node]}")
-    0: 0
-    1: 1
-    2: 2
-    3: 3
-    4: 4
+    >>> nx.single_source_shortest_path_length(G, 0)
+    {0: 0, 1: 1, 2: 2, 3: 3, 4: 4}
 
     See Also
     --------
-    shortest_path_length
+    :any:`shortest_path_length` :
+       Shortest path length with specifiable source, target, and weight.
+    :any:`single_source_dijkstra_path_length` :
+       Shortest weighted path length from source with Dijkstra algorithm.
+    :any:`single_source_bellman_ford_path_length` :
+       Shortest weighted path length from source with Bellman-Ford algorithm.
     """
     ...
 @_dispatchable
@@ -73,13 +70,13 @@ def single_target_shortest_path_length(G: Graph[_Node], target: _Node, cutoff: i
 
     Returns
     -------
-    lengths : iterator
-        (source, shortest path length) iterator
+    lengths : dictionary
+        Dictionary, keyed by source, of shortest path lengths.
 
     Examples
     --------
     >>> G = nx.path_graph(5, create_using=nx.DiGraph())
-    >>> length = dict(nx.single_target_shortest_path_length(G, 4))
+    >>> length = nx.single_target_shortest_path_length(G, 4)
     >>> length[0]
     4
     >>> for node in range(5):

@@ -89,9 +89,6 @@ def k_core(G: Graph[_Node], k: int | None = None, core_number: SupportsGetItem[I
 
     A k-core is a maximal subgraph that contains nodes of degree `k` or more.
 
-    .. deprecated:: 3.3
-       `k_core` will not accept `MultiGraph` objects in version 3.5.
-
     Parameters
     ----------
     G : NetworkX graph
@@ -147,9 +144,6 @@ def k_shell(G: Graph[_Node], k: int | None = None, core_number: SupportsGetItem[
 
     The k-shell is the subgraph induced by nodes with core number k.
     That is, nodes in the k-core that are not in the (k+1)-core.
-
-    .. deprecated:: 3.3
-       `k_shell` will not accept `MultiGraph` objects in version 3.5.
 
     Parameters
     ----------
@@ -212,9 +206,6 @@ def k_crust(G: Graph[_Node], k: int | None = None, core_number: SupportsGetItem[
     The k-crust is the graph G with the edges of the k-core removed
     and isolated nodes found after the removal of edges are also removed.
 
-    .. deprecated:: 3.3
-       `k_crust` will not accept `MultiGraph` objects in version 3.5.
-
     Parameters
     ----------
     G : NetworkX graph
@@ -272,9 +263,6 @@ def k_corona(G: Graph[_Node], k: int, core_number: SupportsGetItem[Incomplete, I
 
     The k-corona is the subgraph of nodes in the k-core which have
     exactly k neighbors in the k-core.
-
-    .. deprecated:: 3.3
-       `k_corona` will not accept `MultiGraph` objects in version 3.5.
 
     Parameters
     ----------

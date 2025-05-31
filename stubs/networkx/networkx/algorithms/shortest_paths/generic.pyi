@@ -79,7 +79,7 @@ def shortest_path(
 
     Returns
     -------
-    path: list or dictionary
+    path: list or dictionary or iterator
         All returned paths include both the source and target in the path.
 
         If the source and target are both specified, return a single list
@@ -93,8 +93,9 @@ def shortest_path(
         sources with a list of nodes in a shortest path from one of the
         sources to the target.
 
-        If neither the source nor target are specified return a dictionary
-        of dictionaries with path[source][target]=[list of nodes in path].
+        If neither the source nor target are specified, return an iterator
+        over (source, dictionary) where dictionary is keyed by target to
+        list of nodes in a shortest path from the source to the target.
 
     Raises
     ------
@@ -176,7 +177,7 @@ def shortest_path(
 
     Returns
     -------
-    path: list or dictionary
+    path: list or dictionary or iterator
         All returned paths include both the source and target in the path.
 
         If the source and target are both specified, return a single list
@@ -190,8 +191,9 @@ def shortest_path(
         sources with a list of nodes in a shortest path from one of the
         sources to the target.
 
-        If neither the source nor target are specified return a dictionary
-        of dictionaries with path[source][target]=[list of nodes in path].
+        If neither the source nor target are specified, return an iterator
+        over (source, dictionary) where dictionary is keyed by target to
+        list of nodes in a shortest path from the source to the target.
 
     Raises
     ------
@@ -273,7 +275,7 @@ def shortest_path(
 
     Returns
     -------
-    path: list or dictionary
+    path: list or dictionary or iterator
         All returned paths include both the source and target in the path.
 
         If the source and target are both specified, return a single list
@@ -287,8 +289,9 @@ def shortest_path(
         sources with a list of nodes in a shortest path from one of the
         sources to the target.
 
-        If neither the source nor target are specified return a dictionary
-        of dictionaries with path[source][target]=[list of nodes in path].
+        If neither the source nor target are specified, return an iterator
+        over (source, dictionary) where dictionary is keyed by target to
+        list of nodes in a shortest path from the source to the target.
 
     Raises
     ------
@@ -621,7 +624,7 @@ def single_source_all_shortest_paths(
     >>> G = nx.Graph()
     >>> nx.add_path(G, [0, 1, 2, 3, 0])
     >>> dict(nx.single_source_all_shortest_paths(G, source=0))
-    {0: [[0]], 1: [[0, 1]], 2: [[0, 1, 2], [0, 3, 2]], 3: [[0, 3]]}
+    {0: [[0]], 1: [[0, 1]], 3: [[0, 3]], 2: [[0, 1, 2], [0, 3, 2]]}
 
     Notes
     -----

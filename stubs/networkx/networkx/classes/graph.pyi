@@ -1700,6 +1700,16 @@ class Graph(Collection[_Node]):
                 )
             SG.graph.update(G.graph)
 
+        Subgraphs are not guaranteed to preserve the order of nodes or edges
+        as they appear in the original graph. For example:
+
+        >>> G = nx.Graph()
+        >>> G.add_nodes_from(reversed(range(10)))
+        >>> list(G)
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        >>> list(G.subgraph([1, 3, 2]))
+        [1, 2, 3]
+
         Examples
         --------
         >>> G = nx.path_graph(4)  # or DiGraph, MultiGraph, MultiDiGraph, etc
@@ -1877,7 +1887,7 @@ class Graph(Collection[_Node]):
         Returns an iterator over nodes contained in nbunch that are
         also in the graph.
 
-        The nodes in nbunch are checked for membership in the graph
+        The nodes in an iterable nbunch are checked for membership in the graph
         and if not are silently ignored.
 
         Parameters

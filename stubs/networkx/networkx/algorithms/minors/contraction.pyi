@@ -272,7 +272,102 @@ def quotient_graph(
 @_dispatchable
 def contracted_nodes(
     G: Graph[_Node], u, v, self_loops: bool = True, copy: bool = True, *, store_contraction_as: str | None = "contraction"
-): ...
+):
+    """
+    Returns the graph that results from contracting `u` and `v`.
+
+    Node contraction identifies the two nodes as a single node incident to any
+    edge that was incident to the original two nodes.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        The graph whose nodes will be contracted.
+
+    u, v : nodes
+        Must be nodes in `G`.
+
+    self_loops : Boolean
+        If this is True, any edges joining `u` and `v` in `G` become
+        self-loops on the new node in the returned graph.
+
+    copy : Boolean
+        If this is True (default True), make a copy of
+        `G` and return that instead of directly changing `G`.
+
+    store_contraction_as : str or None, default="contraction"
+        Name of the node/edge attribute where information about the contraction
+        should be stored. By default information about the contracted node and
+        any contracted edges is stored in a ``"contraction"`` attribute on the
+        resulting node and edge. If `None`, information about the contracted
+        nodes/edges and their data are not stored.
+
+    Returns
+    -------
+    Networkx graph
+        If Copy is True,
+        A new graph object of the same type as `G` (leaving `G` unmodified)
+        with `u` and `v` identified in a single node. The right node `v`
+        will be merged into the node `u`, so only `u` will appear in the
+        returned graph.
+        If copy is False,
+        Modifies `G` with `u` and `v` identified in a single node.
+        The right node `v` will be merged into the node `u`, so
+        only `u` will appear in the returned graph.
+
+    Notes
+    -----
+    For multigraphs, the edge keys for the realigned edges may
+    not be the same as the edge keys for the old edges. This is
+    natural because edge keys are unique only within each pair of nodes.
+
+    For non-multigraphs where `u` and `v` are adjacent to a third node
+    `w`, the edge (`v`, `w`) will be contracted into the edge (`u`,
+    `w`) with its attributes stored into a "contraction" attribute.
+
+    This function is also available as `identified_nodes`.
+
+    Examples
+    --------
+    Contracting two nonadjacent nodes of the cycle graph on four nodes `C_4`
+    yields the path graph (ignoring parallel edges):
+
+    >>> G = nx.cycle_graph(4)
+    >>> M = nx.contracted_nodes(G, 1, 3)
+    >>> P3 = nx.path_graph(3)
+    >>> nx.is_isomorphic(M, P3)
+    True
+
+    >>> G = nx.MultiGraph(P3)
+    >>> M = nx.contracted_nodes(G, 0, 2)
+    >>> M.edges
+    MultiEdgeView([(0, 1, 0), (0, 1, 1)])
+
+    >>> G = nx.Graph([(1, 2), (2, 2)])
+    >>> H = nx.contracted_nodes(G, 1, 2, self_loops=False)
+    >>> list(H.nodes())
+    [1]
+    >>> list(H.edges())
+    [(1, 1)]
+
+    In a ``MultiDiGraph`` with a self loop, the in and out edges will
+    be treated separately as edges, so while contracting a node which
+    has a self loop the contraction will add multiple edges:
+
+    >>> G = nx.MultiDiGraph([(1, 2), (2, 2)])
+    >>> H = nx.contracted_nodes(G, 1, 2)
+    >>> list(H.edges())  # edge 1->2, 2->2, 2<-2 from the original Graph G
+    [(1, 1), (1, 1), (1, 1)]
+    >>> H = nx.contracted_nodes(G, 1, 2, self_loops=False)
+    >>> list(H.edges())  # edge 2->2, 2<-2 from the original Graph G
+    [(1, 1), (1, 1)]
+
+    See Also
+    --------
+    contracted_edge
+    quotient_graph
+    """
+    ...
 
 identified_nodes = contracted_nodes
 
@@ -284,4 +379,74 @@ def contracted_edge(
     copy: bool = True,
     *,
     store_contraction_as: str | None = "contraction",
-): ...
+):
+    """
+    Returns the graph that results from contracting the specified edge.
+
+    Edge contraction identifies the two endpoints of the edge as a single node
+    incident to any edge that was incident to the original two nodes. A graph
+    that results from edge contraction is called a *minor* of the original
+    graph.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+       The graph whose edge will be contracted.
+
+    edge : tuple
+       Must be a pair of nodes in `G`.
+
+    self_loops : Boolean
+       If this is True, any edges (including `edge`) joining the
+       endpoints of `edge` in `G` become self-loops on the new node in the
+       returned graph.
+
+    copy : Boolean (default True)
+        If this is True, a the contraction will be performed on a copy of `G`,
+        otherwise the contraction will happen in place.
+
+    store_contraction_as : str or None, default="contraction"
+        Name of the node/edge attribute where information about the contraction
+        should be stored. By default information about the contracted node and
+        any contracted edges is stored in a ``"contraction"`` attribute on the
+        resulting node and edge. If `None`, information about the contracted
+        nodes/edges and their data are not stored.
+
+    Returns
+    -------
+    Networkx graph
+       A new graph object of the same type as `G` (leaving `G` unmodified)
+       with endpoints of `edge` identified in a single node. The right node
+       of `edge` will be merged into the left one, so only the left one will
+       appear in the returned graph.
+
+    Raises
+    ------
+    ValueError
+       If `edge` is not an edge in `G`.
+
+    Examples
+    --------
+    Attempting to contract two nonadjacent nodes yields an error:
+
+    >>> G = nx.cycle_graph(4)
+    >>> nx.contracted_edge(G, (1, 3))
+    Traceback (most recent call last):
+      ...
+    ValueError: Edge (1, 3) does not exist in graph G; cannot contract it
+
+    Contracting two adjacent nodes in the cycle graph on *n* nodes yields the
+    cycle graph on *n - 1* nodes:
+
+    >>> C5 = nx.cycle_graph(5)
+    >>> C4 = nx.cycle_graph(4)
+    >>> M = nx.contracted_edge(C5, (0, 1), self_loops=False)
+    >>> nx.is_isomorphic(M, C4)
+    True
+
+    See also
+    --------
+    contracted_nodes
+    quotient_graph
+    """
+    ...

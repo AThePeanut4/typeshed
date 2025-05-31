@@ -14,7 +14,7 @@ def encrypt(
     kid: str | None = None,
 ) -> bytes:
     """
-    Encrypts plaintext and returns a JWE cmpact serialization string.
+    Encrypts plaintext and returns a JWE compact serialization string.
 
     Args:
         plaintext (bytes): A bytes object to encrypt

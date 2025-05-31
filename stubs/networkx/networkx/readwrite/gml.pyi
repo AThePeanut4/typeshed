@@ -77,8 +77,9 @@ def read_gml(path, label: str = "label", destringizer=None):
 
     Parameters
     ----------
-    path : filename or filehandle
-        The filename or filehandle to read from.
+    path : file or string
+        Filename or file handle to read.
+        Filenames ending in .gz or .bz2 will be decompressed.
 
     label : string, optional
         If not None, the parsed nodes will be renamed according to node
@@ -121,18 +122,18 @@ def read_gml(path, label: str = "label", destringizer=None):
     Examples
     --------
     >>> G = nx.path_graph(4)
-    >>> nx.write_gml(G, "test.gml")
+    >>> nx.write_gml(G, "test_path4.gml")
 
     GML values are interpreted as strings by default:
 
-    >>> H = nx.read_gml("test.gml")
+    >>> H = nx.read_gml("test_path4.gml")
     >>> H.nodes
     NodeView(('0', '1', '2', '3'))
 
     When a `destringizer` is provided, GML values are converted to the provided type.
     For example, integer nodes can be recovered as shown below:
 
-    >>> J = nx.read_gml("test.gml", destringizer=int)
+    >>> J = nx.read_gml("test_path4.gml", destringizer=int)
     >>> J.nodes
     NodeView((0, 1, 2, 3))
     """
@@ -331,9 +332,9 @@ def write_gml(G, path, stringizer=None) -> None:
     G : NetworkX graph
         The graph to be converted to GML.
 
-    path : filename or filehandle
-        The filename or filehandle to write. Files whose names end with .gz or
-        .bz2 will be compressed.
+    path : string or file
+        Filename or file handle to write to.
+        Filenames ending in .gz or .bz2 will be compressed.
 
     stringizer : callable, optional
         A `stringizer` which converts non-int/non-float/non-dict values into
@@ -376,11 +377,11 @@ def write_gml(G, path, stringizer=None) -> None:
 
     Examples
     --------
-    >>> G = nx.path_graph(4)
-    >>> nx.write_gml(G, "test.gml")
+    >>> G = nx.path_graph(5)
+    >>> nx.write_gml(G, "test_path5.gml")
 
     Filenames ending in .gz or .bz2 will be compressed.
 
-    >>> nx.write_gml(G, "test.gml.gz")
+    >>> nx.write_gml(G, "test_path5.gml.gz")
     """
     ...
