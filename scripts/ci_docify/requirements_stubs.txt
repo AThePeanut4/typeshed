@@ -44,12 +44,11 @@ WebOb==1.8.*
 hvac==2.3.*
 Flask-Migrate==4.1.*
 flake8-rst-docstrings==0.3.*
-tree-sitter-languages==1.10.*
 passpy==1.0.*
 assertpy==1.1.*
 editdistance==0.8.*
 parsimonious==0.10.*
-braintree==4.35.*
+braintree==4.36.*
 pysftp==0.2.*
 untangle==1.2.*
 str2bool==1.1
@@ -58,10 +57,10 @@ PyAutoGUI==0.9.*
 chevron==0.14.*
 peewee==3.18.1
 httplib2==0.22.*
-python-jose==3.4.*
+python-jose==3.5.*
 python-xlib==0.33.*
 tensorflow~=2.18.0
-networkx==3.4.2
+networkx==3.5
 pyfarmhash==0.4.*
 shapely==2.1.*
 portpicker==1.6.*
