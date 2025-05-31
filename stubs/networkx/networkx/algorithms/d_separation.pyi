@@ -218,7 +218,7 @@ from networkx.classes.digraph import DiGraph
 from networkx.classes.graph import _Node
 from networkx.utils.backends import _dispatchable
 
-__all__ = ["is_d_separator", "is_minimal_d_separator", "find_minimal_d_separator", "d_separated", "minimal_d_separator"]
+__all__ = ["is_d_separator", "is_minimal_d_separator", "find_minimal_d_separator"]
 
 @_dispatchable
 def is_d_separator(G: DiGraph[_Node], x: _Node | set[_Node], y: _Node | set[_Node], z: _Node | set[_Node]) -> bool:
@@ -324,28 +324,6 @@ def find_minimal_d_separator(G, x, y, *, included=None, restricted=None) -> set[
     .. [1] van der Zander, Benito, and Maciej Liśkiewicz. "Finding
         minimal d-separators in linear time and applications." In
         Uncertainty in Artificial Intelligence, pp. 637-647. PMLR, 2020.
-    """
-    ...
-@_dispatchable
-def d_separated(G, x, y, z):
-    """
-    Return whether nodes sets ``x`` and ``y`` are d-separated by ``z``.
-
-    .. deprecated:: 3.3
-
-        This function is deprecated and will be removed in NetworkX v3.5.
-        Please use `is_d_separator(G, x, y, z)`.
-    """
-    ...
-@_dispatchable
-def minimal_d_separator(G, u, v):
-    """
-    Returns a minimal_d-separating set between `x` and `y` if possible
-
-    .. deprecated:: 3.3
-
-        minimal_d_separator is deprecated and will be removed in NetworkX v3.5.
-        Please use `find_minimal_d_separator(G, x, y)`.
     """
     ...
 @_dispatchable

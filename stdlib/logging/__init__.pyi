@@ -916,17 +916,10 @@ class LoggerAdapter(Generic[_L]):
     else:
         extra: Mapping[str, object]
 
-    def process(self, msg: Any, kwargs: MutableMapping[str, Any]) -> tuple[Any, MutableMapping[str, Any]]:
-        """
-        Process the logging message and keyword arguments passed in to
-        a logging call to insert contextual information. You can either
-        manipulate the message itself, the keyword args or both. Return
-        the message and kwargs modified (or not) to suit your needs.
+    if sys.version_info >= (3, 13):
+        merge_extra: bool
 
-        Normally, you'll only need to override this one method in a
-        LoggerAdapter subclass for your specific needs.
-        """
-        ...
+    def process(self, msg: Any, kwargs: MutableMapping[str, Any]) -> tuple[Any, MutableMapping[str, Any]]: ...
     def debug(
         self,
         msg: object,

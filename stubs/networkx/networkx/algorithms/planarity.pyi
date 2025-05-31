@@ -529,29 +529,5 @@ class PlanarEmbedding(DiGraph[_Node]):
         ...
     def traverse_face(
         self, v: _Node, w: _Node, mark_half_edges: MutableSet[tuple[_Node, _Node]] | None = None
-    ) -> list[_Node]:
-        """
-        Returns nodes on the face that belong to the half-edge (v, w).
-
-        The face that is traversed lies to the right of the half-edge (in an
-        orientation where v is below w).
-
-        Optionally it is possible to pass a set to which all encountered half
-        edges are added. Before calling this method, this set must not include
-        any half-edges that belong to the face.
-
-        Parameters
-        ----------
-        v : node
-            Start node of half-edge.
-        w : node
-            End node of half-edge.
-        mark_half_edges: set, optional
-            Set to which all encountered half-edges are added.
-
-        Returns
-        -------
-        face : list
-            A list of nodes that lie on this face.
-        """
-        ...
+    ) -> list[_Node]: ...
+    def to_undirected(self, reciprocal: bool = False, as_view: bool = False) -> Graph[_Node]: ...  # type: ignore[override]

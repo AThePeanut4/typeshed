@@ -1,7 +1,10 @@
 from collections.abc import Container, Iterable, Mapping, MutableMapping
+from datetime import timezone
 from typing import Any
 
 from .backends.base import Key
+
+UTC: timezone
 
 def encode(
     claims: MutableMapping[str, Any],
@@ -43,7 +46,7 @@ def encode(
     ...
 def decode(
     token: str | bytes,
-    key: str | bytes | Mapping[str, Any] | Key,
+    key: str | bytes | Mapping[str, Any] | Key | Iterable[str],
     algorithms: str | Container[str] | None = None,
     options: Mapping[str, Any] | None = None,
     audience: str | None = None,

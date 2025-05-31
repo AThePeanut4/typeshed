@@ -1,20 +1,7 @@
 from typing import Any, ClassVar
 
+from . import get_random_bytes as get_random_bytes
 from .base import Key
-
-def get_random_bytes(num_bytes: int) -> bytes:
-    """
-    Get random bytes
-
-    Currently, Cryptography returns OS random bytes. If you want OpenSSL
-    generated random bytes, you'll have to switch the RAND engine after
-    initializing the OpenSSL backend
-    Args:
-        num_bytes (int): Number of random bytes to generate and return
-    Returns:
-        bytes: Random bytes
-    """
-    ...
 
 # Enable when we can use stubs from installed dependencies:
 # from cryptography.hazmat import backends

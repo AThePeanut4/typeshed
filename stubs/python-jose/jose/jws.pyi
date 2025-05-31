@@ -1,4 +1,4 @@
-from collections.abc import Container, Mapping
+from collections.abc import Container, Iterable, Mapping
 from typing import Any
 
 from .backends.base import Key
@@ -38,7 +38,7 @@ def sign(
     ...
 def verify(
     token: str | bytes,
-    key: str | bytes | Mapping[str, Any] | Key,
+    key: str | bytes | Mapping[str, Any] | Key | Iterable[str],
     # Callers of this function, like jwt.decode(), and functions called internally,
     # like jws._verify_signature(), use and accept algorithms=None
     algorithms: str | Container[str] | None,

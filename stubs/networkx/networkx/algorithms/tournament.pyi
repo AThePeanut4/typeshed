@@ -25,7 +25,15 @@ from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 from numpy.random import RandomState
 
-__all__ = ["hamiltonian_path", "is_reachable", "is_strongly_connected", "is_tournament", "random_tournament", "score_sequence"]
+__all__ = [
+    "hamiltonian_path",
+    "is_reachable",
+    "is_strongly_connected",
+    "is_tournament",
+    "random_tournament",
+    "score_sequence",
+    "tournament_matrix",
+]
 
 @_dispatchable
 def is_tournament(G: Graph[_Node]) -> bool:
@@ -120,32 +128,9 @@ def random_tournament(n: int, seed: int | RandomState | None = None):
     """
     ...
 @_dispatchable
-def score_sequence(G: Graph[_Node]):
-    """
-    Returns the score sequence for the given tournament graph.
-
-    The score sequence is the sorted list of the out-degrees of the
-    nodes of the graph.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-        A directed graph representing a tournament.
-
-    Returns
-    -------
-    list
-        A sorted list of the out-degrees of the nodes of `G`.
-
-    Examples
-    --------
-    >>> G = nx.DiGraph([(1, 0), (1, 3), (0, 2), (0, 3), (2, 1), (3, 2)])
-    >>> nx.is_tournament(G)
-    True
-    >>> nx.tournament.score_sequence(G)
-    [1, 1, 2, 2]
-    """
-    ...
+def tournament_matrix(G: Graph[_Node]): ...
+@_dispatchable
+def score_sequence(G: Graph[_Node]): ...
 @_dispatchable
 def is_reachable(G: Graph[_Node], s: _Node, t: _Node) -> bool:
     """

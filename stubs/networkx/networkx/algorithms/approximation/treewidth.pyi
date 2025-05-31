@@ -90,17 +90,7 @@ class MinDegreeHeuristic:
     def __init__(self, graph) -> None: ...
     def best_node(self, graph): ...
 
-def min_fill_in_heuristic(graph) -> Incomplete | None:
-    """
-    Implements the Minimum Degree heuristic.
-
-    Returns the node from the graph, where the number of edges added when
-    turning the neighborhood of the chosen node into clique is as small as
-    possible. This algorithm chooses the nodes using the Minimum Fill-In
-    heuristic. The running time of the algorithm is :math:`O(V^3)` and it uses
-    additional constant memory.
-    """
-    ...
+def min_fill_in_heuristic(graph_dict) -> Incomplete | None: ...
 @_dispatchable
 def treewidth_decomp(G: Graph[_Node], heuristic=...) -> tuple[int, Graph[_Node]]:
     """
