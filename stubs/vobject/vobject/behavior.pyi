@@ -54,7 +54,21 @@ class Behavior:
     forceUTC: bool
     sortFirst: Incomplete
     @classmethod
-    def validate(cls, obj, raiseException: bool = False, complainUnrecognized: bool = False) -> bool: ...
+    def validate(cls, obj, raiseException: bool = False, complainUnrecognized: bool = False) -> bool:
+        """
+        Check if the object satisfies this behavior's requirements.
+
+        @param obj:
+            The L{ContentLine<base.ContentLine>} or
+            L{Component<base.Component>} to be validated.
+        @param raiseException:
+            If True, raise a L{base.ValidateError} on validation failure.
+            Otherwise return a boolean.
+        @param complainUnrecognized:
+            If True, fail to validate if an uncrecognized parameter or child is
+            found.  Otherwise log the lack of recognition.
+        """
+        ...
     @classmethod
     def lineValidate(cls, line, raiseException, complainUnrecognized):
         """Examine a line's parameters and values, return True if valid."""

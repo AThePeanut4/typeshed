@@ -326,7 +326,18 @@ class VAlarm(VCalendarComponentBehavior):
         """Create default ACTION and TRIGGER if they're not set."""
         ...
     @classmethod
-    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
+    def validate(cls, obj, raiseException: bool, *args) -> bool:
+        """
+        # TODO
+        if obj.contents.has_key('dtend') and obj.contents.has_key('duration'):
+            if raiseException:
+                m = "VEVENT components cannot contain both DTEND and DURATION                     components"
+                raise ValidateError(m)
+            return False
+        else:
+            return super(VEvent, cls).validate(obj, raiseException, *args)
+        """
+        ...
 
 class VAvailability(VCalendarComponentBehavior):
     """

@@ -235,8 +235,31 @@ class GenericHandler(MinimalHandler):
     @classmethod
     def identify(cls, hash: str | bytes) -> bool: ...
     @classmethod
-    def from_string(cls, hash: str | bytes, **context: Any) -> Self: ...  # context parameters are passed to constructor
-    def to_string(self) -> str: ...
+    def from_string(cls, hash: str | bytes, **context: Any) -> Self:
+        r"""
+        return parsed instance from hash/configuration string
+
+        :param \\*\\*context:
+            context keywords to pass to constructor (if applicable).
+
+        :raises ValueError: if hash is incorrectly formatted
+
+        :returns:
+            hash parsed into components,
+            for formatting / calculating checksum.
+        """
+        ...
+    def to_string(self) -> str:
+        """
+        render instance to hash or configuration string
+
+        :returns:
+            hash string with salt & digest included.
+
+            should return native string type (ascii-bytes under python 2,
+            unicode under python 3)
+        """
+        ...
     @classmethod
     def hash(cls, secret: str | bytes, **kwds: Any) -> str: ...
     @classmethod

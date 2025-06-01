@@ -1,3 +1,5 @@
+"""passlib.handlers.digests - plain hash digests"""
+
 from _typeshed import Incomplete
 from typing import ClassVar
 from typing_extensions import deprecated
