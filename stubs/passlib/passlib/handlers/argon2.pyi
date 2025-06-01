@@ -15,6 +15,7 @@ References
 """
 
 from typing import Any, ClassVar
+from typing_extensions import Self
 
 import passlib.utils.handlers as uh
 
@@ -88,7 +89,7 @@ class _Argon2Common(  # type: ignore[misc]
     @classmethod
     def identify(cls, hash): ...
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     def __init__(self, type=None, type_d: bool = False, version=None, memory_cost=None, data=None, **kwds) -> None: ...
 
 class _NoBackend(_Argon2Common):
@@ -97,20 +98,20 @@ class _NoBackend(_Argon2Common):
     contains stubs that force loading of one of the available backends.
     """
     @classmethod
-    def hash(cls, secret): ...
+    def hash(cls, secret): ...  # type: ignore[override]
     @classmethod
-    def verify(cls, secret, hash): ...
+    def verify(cls, secret, hash): ...  # type: ignore[override]
     @classmethod
-    def genhash(cls, secret, config): ...
+    def genhash(cls, secret, config): ...  # type: ignore[override]
 
 class _CffiBackend(_Argon2Common):
     """argon2_cffi backend"""
     @classmethod
-    def hash(cls, secret): ...
+    def hash(cls, secret): ...  # type: ignore[override]
     @classmethod
-    def verify(cls, secret, hash): ...
+    def verify(cls, secret, hash): ...  # type: ignore[override]
     @classmethod
-    def genhash(cls, secret, config): ...
+    def genhash(cls, secret, config): ...  # type: ignore[override]
 
 class _PureBackend(_Argon2Common):
     """argon2pure backend"""

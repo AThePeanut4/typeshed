@@ -271,7 +271,7 @@ class VTimezone(VCalendarComponentBehavior):
     description: str
     sortFirst: Incomplete
     @classmethod
-    def validate(cls, obj, raiseException, *args): ...
+    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
     @staticmethod
     def transformToNative(obj): ...
     @staticmethod
@@ -298,14 +298,14 @@ class VEvent(RecurringBehavior):
     sortFirst: Incomplete
     description: str
     @classmethod
-    def validate(cls, obj, raiseException, *args): ...
+    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
 
 class VTodo(RecurringBehavior):
     """To-do behavior."""
     name: str
     description: str
     @classmethod
-    def validate(cls, obj, raiseException, *args): ...
+    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
 
 class VJournal(RecurringBehavior):
     """Journal entry behavior."""
@@ -326,18 +326,7 @@ class VAlarm(VCalendarComponentBehavior):
         """Create default ACTION and TRIGGER if they're not set."""
         ...
     @classmethod
-    def validate(cls, obj, raiseException, *args):
-        """
-        # TODO
-        if obj.contents.has_key('dtend') and obj.contents.has_key('duration'):
-            if raiseException:
-                m = "VEVENT components cannot contain both DTEND and DURATION                     components"
-                raise ValidateError(m)
-            return False
-        else:
-            return super(VEvent, cls).validate(obj, raiseException, *args)
-        """
-        ...
+    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
 
 class VAvailability(VCalendarComponentBehavior):
     """
@@ -349,7 +338,7 @@ class VAvailability(VCalendarComponentBehavior):
     description: str
     sortFirst: Incomplete
     @classmethod
-    def validate(cls, obj, raiseException, *args): ...
+    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
 
 class Available(RecurringBehavior):
     """Event behavior."""
@@ -357,7 +346,7 @@ class Available(RecurringBehavior):
     sortFirst: Incomplete
     description: str
     @classmethod
-    def validate(cls, obj, raiseException, *args): ...
+    def validate(cls, obj, raiseException: bool, *args) -> bool: ...  # type: ignore[override]
 
 class Duration(Behavior):
     """Behavior for Duration ContentLines.  Transform to datetime.timedelta."""

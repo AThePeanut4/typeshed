@@ -1,6 +1,7 @@
 """passlib.handlers.des_crypt - traditional unix (DES) crypt and variants"""
 
 from typing import ClassVar
+from typing_extensions import Self
 
 import passlib.utils.handlers as uh
 
@@ -43,7 +44,7 @@ class des_crypt(uh.TruncateMixin, uh.HasManyBackends, uh.HasSalt, uh.GenericHand
     salt_chars: ClassVar[str]
     truncate_size: ClassVar[int]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     backends: ClassVar[tuple[str, ...]]
 
 class bsdi_crypt(uh.HasManyBackends, uh.HasRounds, uh.HasSalt, uh.GenericHandler):  # type: ignore[misc]
@@ -90,9 +91,9 @@ class bsdi_crypt(uh.HasManyBackends, uh.HasRounds, uh.HasSalt, uh.GenericHandler
     max_rounds: ClassVar[int]
     rounds_cost: ClassVar[str]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     @classmethod
-    def using(cls, **kwds): ...
+    def using(cls, **kwds): ...  # type: ignore[override]
     backends: ClassVar[tuple[str, ...]]
 
 class bigcrypt(uh.HasSalt, uh.GenericHandler):
@@ -125,7 +126,7 @@ class bigcrypt(uh.HasSalt, uh.GenericHandler):
     max_salt_size: ClassVar[int]
     salt_chars: ClassVar[str]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
 
 class crypt16(uh.TruncateMixin, uh.HasSalt, uh.GenericHandler):  # type: ignore[misc]
     """
@@ -166,6 +167,6 @@ class crypt16(uh.TruncateMixin, uh.HasSalt, uh.GenericHandler):  # type: ignore[
     salt_chars: ClassVar[str]
     truncate_size: ClassVar[int]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
 
 __all__ = ["des_crypt", "bsdi_crypt", "bigcrypt", "crypt16"]

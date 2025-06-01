@@ -1,6 +1,7 @@
 """passlib.handlers.cisco -- Cisco password hashes"""
 
 from typing import ClassVar
+from typing_extensions import Self
 
 import passlib.utils.handlers as uh
 
@@ -106,7 +107,7 @@ class cisco_type7(uh.GenericHandler):
     @classmethod
     def using(cls, salt: int | None = None, **kwds): ...  # type: ignore[override]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     salt: int
     def __init__(self, salt: int | None = None, **kwds) -> None: ...
     @classmethod

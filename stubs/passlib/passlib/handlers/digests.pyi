@@ -1,6 +1,6 @@
-"""passlib.handlers.digests - plain hash digests"""
-
-from typing import Any, ClassVar
+from _typeshed import Incomplete
+from typing import ClassVar
+from typing_extensions import deprecated
 
 import passlib.utils.handlers as uh
 
@@ -21,11 +21,11 @@ def create_hex_hash(digest, module="passlib.handlers.digests", django_name=None,
     """
     ...
 
-hex_md4: Any
-hex_md5: Any
-hex_sha1: Any
-hex_sha256: Any
-hex_sha512: Any
+hex_md4: Incomplete
+hex_md5: Incomplete
+hex_sha1: Incomplete
+hex_sha256: Incomplete
+hex_sha512: Incomplete
 
 class htdigest(uh.MinimalHandler):
     """
@@ -44,8 +44,10 @@ class htdigest(uh.MinimalHandler):
     def verify(cls, secret, hash, user, realm, encoding: str = "utf-8"): ...  # type: ignore[override]
     @classmethod
     def identify(cls, hash): ...
+    @deprecated("Deprecated since Passlib 1.7, will be removed in 2.0")
     @classmethod
-    def genconfig(cls): ...
+    def genconfig(cls): ...  # type: ignore[override]
+    @deprecated("Deprecated since Passlib 1.7, will be removed in 2.0")
     @classmethod
     def genhash(cls, secret, config, user, realm, encoding=None): ...  # type: ignore[override]
 

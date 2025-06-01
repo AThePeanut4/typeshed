@@ -1,6 +1,7 @@
 """passlib.handlers.scrypt -- scrypt password hash"""
 
 from typing import ClassVar
+from typing_extensions import Self
 
 import passlib.utils.handlers as uh
 
@@ -85,7 +86,7 @@ class scrypt(uh.ParallelismMixin, uh.HasRounds, uh.HasRawSalt, uh.HasRawChecksum
     @classmethod
     def using(cls, block_size=None, **kwds): ...  # type: ignore[override]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     @classmethod
     def parse(cls, hash): ...
     def to_string(self): ...

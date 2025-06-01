@@ -2,6 +2,7 @@
 
 from _typeshed import Incomplete
 from typing import ClassVar
+from typing_extensions import Self
 
 import passlib.utils.handlers as uh
 
@@ -145,7 +146,7 @@ class scram(uh.HasRounds, uh.HasRawSalt, uh.HasRawChecksum, uh.GenericHandler): 
         """
         ...
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     @classmethod
     def using(cls, default_algs=None, algs=None, **kwds): ...  # type: ignore[override]
     def __init__(self, algs=None, **kwds) -> None: ...

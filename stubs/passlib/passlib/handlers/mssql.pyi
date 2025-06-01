@@ -34,6 +34,7 @@ http://www.theregister.co.uk/2002/07/08/cracking_ms_sql_server_passwords/
 """
 
 from typing import ClassVar
+from typing_extensions import Self
 
 import passlib.utils.handlers as uh
 
@@ -64,7 +65,7 @@ class mssql2000(uh.HasRawSalt, uh.HasRawChecksum, uh.GenericHandler):
     min_salt_size: ClassVar[int]
     max_salt_size: ClassVar[int]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
     @classmethod
     def verify(cls, secret: str | bytes, hash: str | bytes) -> bool: ...  # type: ignore[override]
 
@@ -95,6 +96,6 @@ class mssql2005(uh.HasRawSalt, uh.HasRawChecksum, uh.GenericHandler):
     min_salt_size: ClassVar[int]
     max_salt_size: ClassVar[int]
     @classmethod
-    def from_string(cls, hash): ...
+    def from_string(cls, hash) -> Self: ...  # type: ignore[override]
 
 __all__ = ["mssql2000", "mssql2005"]
