@@ -114,7 +114,6 @@ nanoid==2.0.0
 tabulate==0.9.*
 colorama==0.4.*
 watchpoints==0.2.5
-atheris==2.3.*
 cffi==1.17.*
 Flask-Cors==6.0.*
 Send2Trash==1.8.*
