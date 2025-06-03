@@ -9,7 +9,8 @@ import sys
 from _bz2 import BZ2Compressor as BZ2Compressor, BZ2Decompressor as BZ2Decompressor
 from _typeshed import ReadableBuffer, StrOrBytesPath, WriteableBuffer
 from collections.abc import Iterable
-from typing import IO, Literal, Protocol, SupportsIndex, TextIO, overload
+from io import TextIOWrapper
+from typing import IO, Literal, Protocol, SupportsIndex, overload
 from typing_extensions import Self, TypeAlias
 
 if sys.version_info >= (3, 14):
@@ -89,27 +90,7 @@ def open(
     encoding: str | None = None,
     errors: str | None = None,
     newline: str | None = None,
-) -> TextIO:
-    """
-    Open a bzip2-compressed file in binary or text mode.
-
-    The filename argument can be an actual filename (a str, bytes, or
-    PathLike object), or an existing file object to read from or write
-    to.
-
-    The mode argument can be "r", "rb", "w", "wb", "x", "xb", "a" or
-    "ab" for binary mode, or "rt", "wt", "xt" or "at" for text mode.
-    The default mode is "rb", and the default compresslevel is 9.
-
-    For binary mode, this function is equivalent to the BZ2File
-    constructor: BZ2File(filename, mode, compresslevel). In this case,
-    the encoding, errors and newline arguments must not be provided.
-
-    For text mode, a BZ2File object is created, and wrapped in an
-    io.TextIOWrapper instance with the specified encoding, error
-    handling behavior, and line ending(s).
-    """
-    ...
+) -> TextIOWrapper: ...
 @overload
 def open(
     filename: _WritableFileobj,
@@ -147,27 +128,7 @@ def open(
     encoding: str | None = None,
     errors: str | None = None,
     newline: str | None = None,
-) -> TextIO:
-    """
-    Open a bzip2-compressed file in binary or text mode.
-
-    The filename argument can be an actual filename (a str, bytes, or
-    PathLike object), or an existing file object to read from or write
-    to.
-
-    The mode argument can be "r", "rb", "w", "wb", "x", "xb", "a" or
-    "ab" for binary mode, or "rt", "wt", "xt" or "at" for text mode.
-    The default mode is "rb", and the default compresslevel is 9.
-
-    For binary mode, this function is equivalent to the BZ2File
-    constructor: BZ2File(filename, mode, compresslevel). In this case,
-    the encoding, errors and newline arguments must not be provided.
-
-    For text mode, a BZ2File object is created, and wrapped in an
-    io.TextIOWrapper instance with the specified encoding, error
-    handling behavior, and line ending(s).
-    """
-    ...
+) -> TextIOWrapper: ...
 @overload
 def open(
     filename: StrOrBytesPath,
@@ -205,27 +166,7 @@ def open(
     encoding: str | None = None,
     errors: str | None = None,
     newline: str | None = None,
-) -> TextIO:
-    """
-    Open a bzip2-compressed file in binary or text mode.
-
-    The filename argument can be an actual filename (a str, bytes, or
-    PathLike object), or an existing file object to read from or write
-    to.
-
-    The mode argument can be "r", "rb", "w", "wb", "x", "xb", "a" or
-    "ab" for binary mode, or "rt", "wt", "xt" or "at" for text mode.
-    The default mode is "rb", and the default compresslevel is 9.
-
-    For binary mode, this function is equivalent to the BZ2File
-    constructor: BZ2File(filename, mode, compresslevel). In this case,
-    the encoding, errors and newline arguments must not be provided.
-
-    For text mode, a BZ2File object is created, and wrapped in an
-    io.TextIOWrapper instance with the specified encoding, error
-    handling behavior, and line ending(s).
-    """
-    ...
+) -> TextIOWrapper: ...
 @overload
 def open(
     filename: StrOrBytesPath | _ReadableFileobj | _WritableFileobj,
@@ -234,27 +175,7 @@ def open(
     encoding: str | None = None,
     errors: str | None = None,
     newline: str | None = None,
-) -> BZ2File | TextIO:
-    """
-    Open a bzip2-compressed file in binary or text mode.
-
-    The filename argument can be an actual filename (a str, bytes, or
-    PathLike object), or an existing file object to read from or write
-    to.
-
-    The mode argument can be "r", "rb", "w", "wb", "x", "xb", "a" or
-    "ab" for binary mode, or "rt", "wt", "xt" or "at" for text mode.
-    The default mode is "rb", and the default compresslevel is 9.
-
-    For binary mode, this function is equivalent to the BZ2File
-    constructor: BZ2File(filename, mode, compresslevel). In this case,
-    the encoding, errors and newline arguments must not be provided.
-
-    For text mode, a BZ2File object is created, and wrapped in an
-    io.TextIOWrapper instance with the specified encoding, error
-    handling behavior, and line ending(s).
-    """
-    ...
+) -> BZ2File | TextIOWrapper: ...
 
 class BZ2File(BaseStream, IO[bytes]):
     """
