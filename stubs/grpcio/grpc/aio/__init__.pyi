@@ -268,28 +268,96 @@ class Channel(abc.ABC):
         method: str,
         request_serializer: _Serializer[_TRequest] | None = None,
         response_deserializer: _Deserializer[_TResponse] | None = None,
-    ) -> StreamStreamMultiCallable[_TRequest, _TResponse]: ...
+    ) -> StreamStreamMultiCallable[_TRequest, _TResponse]:
+        """
+        Creates a StreamStreamMultiCallable for a stream-stream method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A StreamStreamMultiCallable value for the named stream-stream method.
+        """
+        ...
     @abc.abstractmethod
     def stream_unary(
         self,
         method: str,
         request_serializer: _Serializer[_TRequest] | None = None,
         response_deserializer: _Deserializer[_TResponse] | None = None,
-    ) -> StreamUnaryMultiCallable[_TRequest, _TResponse]: ...
+    ) -> StreamUnaryMultiCallable[_TRequest, _TResponse]:
+        """
+        Creates a StreamUnaryMultiCallable for a stream-unary method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A StreamUnaryMultiCallable value for the named stream-unary method.
+        """
+        ...
     @abc.abstractmethod
     def unary_stream(
         self,
         method: str,
         request_serializer: _Serializer[_TRequest] | None = None,
         response_deserializer: _Deserializer[_TResponse] | None = None,
-    ) -> UnaryStreamMultiCallable[_TRequest, _TResponse]: ...
+    ) -> UnaryStreamMultiCallable[_TRequest, _TResponse]:
+        """
+        Creates a UnaryStreamMultiCallable for a unary-stream method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A UnaryStreamMultiCallable value for the named unary-stream method.
+        """
+        ...
     @abc.abstractmethod
     def unary_unary(
         self,
         method: str,
         request_serializer: _Serializer[_TRequest] | None = None,
         response_deserializer: _Deserializer[_TResponse] | None = None,
-    ) -> UnaryUnaryMultiCallable[_TRequest, _TResponse]: ...
+    ) -> UnaryUnaryMultiCallable[_TRequest, _TResponse]:
+        """
+        Creates a UnaryUnaryMultiCallable for a unary-unary method.
+
+        Args:
+          method: The name of the RPC method.
+          request_serializer: Optional :term:`serializer` for serializing the request
+            message. Request goes unserialized in case None is passed.
+          response_deserializer: Optional :term:`deserializer` for deserializing the
+            response message. Response goes undeserialized in case None
+            is passed.
+          _registered_method: Implementation Private. Optional: A bool representing
+            whether the method is registered.
+
+        Returns:
+          A UnaryUnaryMultiCallable value for the named unary-unary method.
+        """
+        ...
     @abc.abstractmethod
     async def __aenter__(self) -> Self:
         """
@@ -1012,7 +1080,9 @@ class InterceptedUnaryUnaryCall(_InterceptedCall[_TRequest, _TResponse], metacla
         request: _TRequest,
         request_serializer: _Serializer[_TRequest],
         response_deserializer: _Deserializer[_TResponse],
-    ) -> UnaryUnaryCall[_TRequest, _TResponse]: ...
+    ) -> UnaryUnaryCall[_TRequest, _TResponse]:
+        """Run the RPC call wrapped in interceptors"""
+        ...
     def time_remaining(self) -> float | None: ...
 
 class UnaryUnaryClientInterceptor(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
