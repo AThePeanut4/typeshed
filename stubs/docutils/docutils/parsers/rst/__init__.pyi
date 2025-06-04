@@ -77,6 +77,7 @@ from docutils.utils import Reporter
 __docformat__: Final = "reStructuredText"
 
 class Parser(parsers.Parser):
+    """The reStructuredText parser."""
     config_section_dependencies: ClassVar[tuple[str, ...]]
     initial_state: Literal["Body", "RFC2822Body"]
     state_classes: Sequence[type[RSTState]]

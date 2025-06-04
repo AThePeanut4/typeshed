@@ -1,3 +1,5 @@
+"""Admonition directives."""
+
 from typing import Final
 
 from docutils import nodes

@@ -41,8 +41,20 @@ class TableParser:
     head_body_separator_pat: ClassVar[Pattern[str] | None]
     double_width_pad_char: ClassVar[str]
     head_body_sep: int
-    def parse(self, block: StringList) -> tuple[_Colspecs, list[_Row], list[_Row]]: ...
-    def find_head_body_sep(self) -> None: ...
+    def parse(self, block: StringList) -> tuple[_Colspecs, list[_Row], list[_Row]]:
+        """
+        Analyze the text `block` and return a table data structure.
+
+        Given a plaintext-graphic table in `block` (list of lines of text; no
+        whitespace padding), parse the table, construct and return the data
+        necessary to construct a CALS table or equivalent.
+
+        Raise `TableMarkupError` if there is any problem with the markup.
+        """
+        ...
+    def find_head_body_sep(self) -> None:
+        """Look for a head/body row separator line; store the line index."""
+        ...
 
 class GridTableParser(TableParser):
     """

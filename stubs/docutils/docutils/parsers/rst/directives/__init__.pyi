@@ -11,7 +11,12 @@ from docutils.parsers.rst import Directive
 
 __docformat__: Final = "reStructuredText"
 
-def register_directive(name: str, directive: type[Directive]) -> None: ...
+def register_directive(name: str, directive: type[Directive]) -> None:
+    """
+    Register a nonstandard application-defined directive function.
+    Language lookups are not needed for such functions.
+    """
+    ...
 def directive(
     directive_name: str, language_module: _LanguageModule, document: document
 ) -> tuple[type[Directive] | None, list[system_message]]:
