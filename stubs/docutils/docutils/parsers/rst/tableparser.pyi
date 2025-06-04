@@ -14,7 +14,7 @@ and produce a well-formed data structure suitable for building a CALS table.
 """
 
 from re import Pattern
-from typing import ClassVar
+from typing import ClassVar, Final
 from typing_extensions import TypeAlias
 
 from docutils import DataError
@@ -24,7 +24,7 @@ _Cell: TypeAlias = tuple[int, int, int, list[str]]
 _Row: TypeAlias = list[_Cell | None]
 _Colspecs: TypeAlias = list[int]
 
-__docformat__: str
+__docformat__: Final = "reStructuredText"
 
 class TableMarkupError(DataError):
     """
@@ -40,20 +40,9 @@ class TableParser:
     """Abstract superclass for the common parts of the syntax-specific parsers."""
     head_body_separator_pat: ClassVar[Pattern[str] | None]
     double_width_pad_char: ClassVar[str]
-    def parse(self, block: StringList) -> tuple[_Colspecs, list[_Row], list[_Row]]:
-        """
-        Analyze the text `block` and return a table data structure.
-
-        Given a plaintext-graphic table in `block` (list of lines of text; no
-        whitespace padding), parse the table, construct and return the data
-        necessary to construct a CALS table or equivalent.
-
-        Raise `TableMarkupError` if there is any problem with the markup.
-        """
-        ...
-    def find_head_body_sep(self) -> None:
-        """Look for a head/body row separator line; store the line index."""
-        ...
+    head_body_sep: int
+    def parse(self, block: StringList) -> tuple[_Colspecs, list[_Row], list[_Row]]: ...
+    def find_head_body_sep(self) -> None: ...
 
 class GridTableParser(TableParser):
     """

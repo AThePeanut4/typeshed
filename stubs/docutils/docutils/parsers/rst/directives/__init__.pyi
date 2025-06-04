@@ -2,19 +2,16 @@
 
 from collections.abc import Callable, Container, Iterable, Sequence
 from re import Pattern
-from typing import Literal
+from typing import Final, Literal
 
 from docutils.languages import _LanguageModule
 from docutils.nodes import document, system_message
 from docutils.parsers import Parser
 from docutils.parsers.rst import Directive
 
-def register_directive(name: str, directive: type[Directive]) -> None:
-    """
-    Register a nonstandard application-defined directive function.
-    Language lookups are not needed for such functions.
-    """
-    ...
+__docformat__: Final = "reStructuredText"
+
+def register_directive(name: str, directive: type[Directive]) -> None: ...
 def directive(
     directive_name: str, language_module: _LanguageModule, document: document
 ) -> tuple[type[Directive] | None, list[system_message]]:
@@ -77,7 +74,7 @@ def percentage(argument: str) -> int:
     """
     ...
 
-length_units: list[str]
+length_units: Final[list[str]]
 
 def get_measure(argument: str, units: Iterable[str]) -> str:
     """
@@ -117,7 +114,7 @@ def class_option(argument: str) -> list[str]:
     """
     ...
 
-unicode_pattern: Pattern[str]
+unicode_pattern: Final[Pattern[str]]
 
 def unicode_code(code: str) -> str:
     r"""

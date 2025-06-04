@@ -1,8 +1,11 @@
 """Directives for document parts."""
 
 from collections.abc import Sequence
+from typing import Final
 
 from docutils.parsers.rst import Directive
+
+__docformat__: Final = "reStructuredText"
 
 class Contents(Directive):
     """
@@ -15,6 +18,7 @@ class Contents(Directive):
     replaced by a 'topic' element, a title and the table of contents proper.
     """
     backlinks_values: Sequence[str]
+    def backlinks(arg): ...
 
 class Sectnum(Directive):
     """Automatic section numbering."""

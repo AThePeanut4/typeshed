@@ -1,7 +1,5 @@
-"""
-Dummy module for backwards compatibility.
+from typing import Final
 
-This module is provisional: it will be removed in Docutils 2.0.
-"""
+from docutils.parsers.rst.directives.misc import Meta as Meta, MetaBody as MetaBody
 
-def __getattr__(name: str): ...  # incomplete module
+__docformat__: Final = "reStructuredText"
