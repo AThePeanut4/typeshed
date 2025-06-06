@@ -197,11 +197,28 @@ def join(a: StrPath, /, *paths: StrPath) -> str:
     """
     ...
 @overload
-def join(a: BytesPath, /, *paths: BytesPath) -> bytes: ...
+def join(a: BytesPath, /, *paths: BytesPath) -> bytes:
+    """
+    Join two or more pathname components, inserting '/' as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.  An empty last part will result in a path that
+    ends with a separator.
+    """
+    ...
 @overload
-def realpath(filename: PathLike[AnyStr], *, strict: bool | _AllowMissingType = False) -> AnyStr: ...
+def realpath(filename: PathLike[AnyStr], *, strict: bool | _AllowMissingType = False) -> AnyStr:
+    """
+    Return the canonical path of the specified filename, eliminating any
+    symbolic links encountered in the path.
+    """
+    ...
 @overload
-def realpath(filename: AnyStr, *, strict: bool | _AllowMissingType = False) -> AnyStr: ...
+def realpath(filename: AnyStr, *, strict: bool | _AllowMissingType = False) -> AnyStr:
+    """
+    Return the canonical path of the specified filename, eliminating any
+    symbolic links encountered in the path.
+    """
+    ...
 @overload
 def relpath(path: LiteralString, start: LiteralString | None = None) -> LiteralString:
     """Return a relative version of a path"""

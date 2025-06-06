@@ -1147,20 +1147,81 @@ class TarFile:
         *,
         filter_function: _FilterFunction | None = None,
         extraction_root: str | None = None,
-    ) -> None: ...  # undocumented
-    def extractfile(self, member: str | TarInfo) -> IO[bytes] | None: ...
-    def makedir(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
-    def makefile(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
-    def makeunknown(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
-    def makefifo(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
-    def makedev(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
-    def makelink(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
+    ) -> None:
+        """
+        Extract the TarInfo object tarinfo to a physical
+        file called targetpath.
+        """
+        ...
+    def extractfile(self, member: str | TarInfo) -> IO[bytes] | None:
+        """
+        Extract a member from the archive as a file object. `member' may be
+        a filename or a TarInfo object. If `member' is a regular file or
+        a link, an io.BufferedReader object is returned. For all other
+        existing members, None is returned. If `member' does not appear
+        in the archive, KeyError is raised.
+        """
+        ...
+    def makedir(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Make a directory called targetpath.
+        
+        """
+        ...
+    def makefile(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Make a file called targetpath.
+        
+        """
+        ...
+    def makeunknown(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Make a file from a TarInfo object with an unknown type
+        at targetpath.
+        """
+        ...
+    def makefifo(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Make a fifo called targetpath.
+        
+        """
+        ...
+    def makedev(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Make a character or block device called targetpath.
+        
+        """
+        ...
+    def makelink(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Make a (symbolic) link called targetpath. If it cannot be created
+        (platform limitation), we try to make a copy of the referenced file
+        instead of a link.
+        """
+        ...
     def makelink_with_filter(
         self, tarinfo: TarInfo, targetpath: StrOrBytesPath, filter_function: _FilterFunction, extraction_root: str
     ) -> None: ...  # undocumented
-    def chown(self, tarinfo: TarInfo, targetpath: StrOrBytesPath, numeric_owner: bool) -> None: ...  # undocumented
-    def chmod(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
-    def utime(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None: ...  # undocumented
+    def chown(self, tarinfo: TarInfo, targetpath: StrOrBytesPath, numeric_owner: bool) -> None:
+        """
+        Set owner of targetpath according to tarinfo. If numeric_owner
+        is True, use .gid/.uid instead of .gname/.uname. If numeric_owner
+        is False, fall back to .gid/.uid when the search based on name
+        fails.
+        """
+        ...
+    def chmod(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Set file permissions of targetpath according to tarinfo.
+        
+        """
+        ...
+    def utime(self, tarinfo: TarInfo, targetpath: StrOrBytesPath) -> None:
+        """
+        Set modification time of targetpath according to tarinfo.
+        
+        """
+        ...
     def add(
         self,
         name: StrPath,
