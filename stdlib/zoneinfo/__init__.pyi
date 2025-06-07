@@ -1,3 +1,4 @@
+import sys
 from collections.abc import Iterable
 from datetime import datetime, timedelta, tzinfo
 from typing_extensions import Self
@@ -16,13 +17,14 @@ class ZoneInfo(tzinfo):
     def key(self) -> str: ...
     def __new__(cls, key: str) -> Self: ...
     @classmethod
-    def no_cache(cls, key: str) -> Self:
-        """Get a new instance of ZoneInfo, bypassing the cache."""
-        ...
-    @classmethod
-    def from_file(cls, fobj: _IOBytes, /, key: str | None = None) -> Self:
-        """Create a ZoneInfo file from a file object."""
-        ...
+    def no_cache(cls, key: str) -> Self: ...
+    if sys.version_info >= (3, 12):
+        @classmethod
+        def from_file(cls, file_obj: _IOBytes, /, key: str | None = None) -> Self: ...
+    else:
+        @classmethod
+        def from_file(cls, fobj: _IOBytes, /, key: str | None = None) -> Self: ...
+
     @classmethod
     def clear_cache(cls, *, only_keys: Iterable[str] | None = None) -> None:
         """Clear the ZoneInfo cache."""
