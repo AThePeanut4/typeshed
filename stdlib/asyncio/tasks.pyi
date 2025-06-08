@@ -1579,6 +1579,25 @@ else:
         """Return a currently executed task."""
         ...
 
+if sys.version_info >= (3, 14):
+    def eager_task_factory(
+        loop: AbstractEventLoop | None,
+        coro: _TaskCompatibleCoro[_T_co],
+        *,
+        name: str | None = None,
+        context: Context | None = None,
+        eager_start: bool = True,
+    ) -> Task[_T_co]: ...
+
+elif sys.version_info >= (3, 12):
+    def eager_task_factory(
+        loop: AbstractEventLoop | None,
+        coro: _TaskCompatibleCoro[_T_co],
+        *,
+        name: str | None = None,
+        context: Context | None = None,
+    ) -> Task[_T_co]: ...
+
 if sys.version_info >= (3, 12):
     _TaskT_co = TypeVar("_TaskT_co", bound=Task[Any], covariant=True)
 
@@ -1606,30 +1625,4 @@ if sys.version_info >= (3, 12):
 
     def create_eager_task_factory(
         custom_task_constructor: _CustomTaskConstructor[_TaskT_co],
-    ) -> _EagerTaskFactoryType[_TaskT_co]:
-        """
-        Create a function suitable for use as a task factory on an event-loop.
-
-        Example usage:
-
-            loop.set_task_factory(
-                asyncio.create_eager_task_factory(my_task_constructor))
-
-        Now, tasks created will be started immediately (rather than being first
-        scheduled to an event loop). The constructor argument can be any callable
-        that returns a Task-compatible object and has a signature compatible
-        with `Task.__init__`; it must have the `eager_start` keyword argument.
-
-        Most applications will use `Task` for `custom_task_constructor` and in
-        this case there's no need to call `create_eager_task_factory()`
-        directly. Instead the  global `eager_task_factory` instance can be
-        used. E.g. `loop.set_task_factory(asyncio.eager_task_factory)`.
-        """
-        ...
-    def eager_task_factory(
-        loop: AbstractEventLoop | None,
-        coro: _TaskCompatibleCoro[_T_co],
-        *,
-        name: str | None = None,
-        context: Context | None = None,
-    ) -> Task[_T_co]: ...
+    ) -> _EagerTaskFactoryType[_TaskT_co]: ...
