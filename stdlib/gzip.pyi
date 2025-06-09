@@ -455,6 +455,19 @@ if sys.version_info >= (3, 14):
     def compress(data: SizedBuffer, compresslevel: int = 9, *, mtime: float = 0) -> bytes: ...
 
 else:
-    def compress(data: SizedBuffer, compresslevel: int = 9, *, mtime: float | None = None) -> bytes: ...
+    def compress(data: SizedBuffer, compresslevel: int = 9, *, mtime: float | None = None) -> bytes:
+        """
+        Compress data in one shot and return the compressed string.
 
-def decompress(data: ReadableBuffer) -> bytes: ...
+        compresslevel sets the compression level in range of 0-9.
+        mtime can be used to set the modification time. The modification time is
+        set to the current time by default.
+        """
+        ...
+
+def decompress(data: ReadableBuffer) -> bytes:
+    """
+    Decompress a gzip compressed string in one shot.
+    Return the decompressed string.
+    """
+    ...
