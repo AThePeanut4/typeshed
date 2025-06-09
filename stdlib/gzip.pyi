@@ -7,7 +7,7 @@ but random access is not allowed.
 
 import sys
 import zlib
-from _typeshed import ReadableBuffer, SizedBuffer, StrOrBytesPath
+from _typeshed import ReadableBuffer, SizedBuffer, StrOrBytesPath, WriteableBuffer
 from io import FileIO, TextIOWrapper
 from typing import Final, Literal, Protocol, overload
 from typing_extensions import TypeAlias
@@ -444,21 +444,17 @@ class GzipFile(BaseStream):
     def seek(self, offset: int, whence: int = 0) -> int: ...
     def readline(self, size: int | None = -1) -> bytes: ...
 
+    if sys.version_info >= (3, 14):
+        def readinto(self, b: WriteableBuffer) -> int: ...
+        def readinto1(self, b: WriteableBuffer) -> int: ...
+
 class _GzipReader(DecompressReader):
     def __init__(self, fp: _ReadableFileobj) -> None: ...
 
-def compress(data: SizedBuffer, compresslevel: int = 9, *, mtime: float | None = None) -> bytes:
-    """
-    Compress data in one shot and return the compressed string.
+if sys.version_info >= (3, 14):
+    def compress(data: SizedBuffer, compresslevel: int = 9, *, mtime: float = 0) -> bytes: ...
 
-    compresslevel sets the compression level in range of 0-9.
-    mtime can be used to set the modification time. The modification time is
-    set to the current time by default.
-    """
-    ...
-def decompress(data: ReadableBuffer) -> bytes:
-    """
-    Decompress a gzip compressed string in one shot.
-    Return the decompressed string.
-    """
-    ...
+else:
+    def compress(data: SizedBuffer, compresslevel: int = 9, *, mtime: float | None = None) -> bytes: ...
+
+def decompress(data: ReadableBuffer) -> bytes: ...
