@@ -79,7 +79,7 @@ from collections.abc import AsyncGenerator, Callable, Sequence
 from io import TextIOWrapper
 from types import FrameType, ModuleType, TracebackType
 from typing import Any, Final, Literal, NoReturn, Protocol, TextIO, TypeVar, final, type_check_only
-from typing_extensions import LiteralString, TypeAlias
+from typing_extensions import LiteralString, TypeAlias, deprecated
 
 _T = TypeVar("_T")
 
@@ -407,60 +407,21 @@ class _version_info(_UninstantiableStructseq, tuple[int, int, int, _ReleaseLevel
 
 version_info: _version_info
 
-def call_tracing(func: Callable[..., _T], args: Any, /) -> _T:
-    """
-    Call func(*args), while tracing is enabled.
+def call_tracing(func: Callable[..., _T], args: Any, /) -> _T: ...
 
-    The tracing state is saved, and restored afterwards.  This is intended
-    to be called from a debugger from a checkpoint, to recursively debug
-    some other code.
-    """
-    ...
-def _clear_type_cache() -> None:
-    """Clear the internal type lookup cache."""
-    ...
-def _current_frames() -> dict[int, FrameType]:
-    """
-    Return a dict mapping each thread's thread id to its current stack frame.
+if sys.version_info >= (3, 13):
+    @deprecated("Deprecated in Python 3.13; use _clear_internal_caches() instead.")
+    def _clear_type_cache() -> None: ...
 
-    This function should be used for specialized purposes only.
-    """
-    ...
-def _getframe(depth: int = 0, /) -> FrameType:
-    """
-    Return a frame object from the call stack.
+else:
+    def _clear_type_cache() -> None: ...
 
-    If optional integer depth is given, return the frame object that many
-    calls below the top of the stack.  If that is deeper than the call
-    stack, ValueError is raised.  The default for depth is zero, returning
-    the frame at the top of the call stack.
-
-    This function should be used for internal and specialized purposes
-    only.
-    """
-    ...
-def _debugmallocstats() -> None:
-    """
-    Print summary info to stderr about the state of pymalloc's structures.
-
-    In Py_DEBUG mode, also perform some expensive internal consistency
-    checks.
-    """
-    ...
-def __displayhook__(object: object, /) -> None:
-    """Print an object to sys.stdout and also save it in builtins._"""
-    ...
-def __excepthook__(exctype: type[BaseException], value: BaseException, traceback: TracebackType | None, /) -> None:
-    """Handle an exception by displaying it with a traceback on sys.stderr."""
-    ...
-def exc_info() -> OptExcInfo:
-    """
-    Return current exception information: (type, value, traceback).
-
-    Return information about the most recent exception caught by an except
-    clause in the current stack frame or in an older stack frame.
-    """
-    ...
+def _current_frames() -> dict[int, FrameType]: ...
+def _getframe(depth: int = 0, /) -> FrameType: ...
+def _debugmallocstats() -> None: ...
+def __displayhook__(object: object, /) -> None: ...
+def __excepthook__(exctype: type[BaseException], value: BaseException, traceback: TracebackType | None, /) -> None: ...
+def exc_info() -> OptExcInfo: ...
 
 if sys.version_info >= (3, 11):
     def exception() -> BaseException | None:
