@@ -1,3 +1,5 @@
+"""Small, fast HTTP client library for Python."""
+
 import email.message
 import http.client
 import re
@@ -30,13 +32,25 @@ CA_CERTS: Final[str]
 DEFAULT_TLS_VERSION: Final[_SSLMethod]
 URI: Final[re.Pattern[str]]
 
-def parse_uri(uri: str) -> tuple[str | MaybeNone, str | MaybeNone, str | MaybeNone, str | MaybeNone, str | MaybeNone]: ...
+def parse_uri(uri: str) -> tuple[str | MaybeNone, str | MaybeNone, str | MaybeNone, str | MaybeNone, str | MaybeNone]:
+    """
+    Parses a URI using the regex given in Appendix B of RFC 3986.
+
+    (scheme, authority, path, query, fragment) = parse_uri(uri)
+    """
+    ...
 def urlnorm(uri: str) -> tuple[str | MaybeNone, str | MaybeNone, str | MaybeNone, str | MaybeNone]: ...
 
 re_url_scheme: Final[re.Pattern[str]]
 re_unsafe: Final[re.Pattern[str]]
 
-def safename(filename: str | bytes) -> str: ...
+def safename(filename: str | bytes) -> str:
+    """
+    Return a filename suitable for the cache.
+    Strips dangerous and common characters to create a filename we
+    can use to store the cache in.
+    """
+    ...
 
 NORMALIZE_SPACE: Final[re.Pattern[str]]
 USE_WWW_AUTH_STRICT_PARSING: Final[int]
@@ -49,8 +63,22 @@ class Authentication:
     def __init__(self, credentials, host, request_uri: str, headers, response, content, http) -> None: ...
     def depth(self, request_uri: str) -> int: ...
     def inscope(self, host: str, request_uri: str) -> bool: ...
-    def request(self, method, request_uri, headers, content) -> None: ...
-    def response(self, response, content) -> bool: ...
+    def request(self, method, request_uri, headers, content) -> None:
+        """
+        Modify the request headers to add the appropriate
+        Authorization header. Over-rise this in sub-classes.
+        """
+        ...
+    def response(self, response, content) -> bool:
+        """
+        Gives us a chance to update with new nonces
+        or such returned from the last authorized response.
+        Over-rise this in sub-classes if necessary.
+
+        Return TRUE is the request is to be retried, for
+        example Digest may return stale=true.
+        """
+        ...
     def __eq__(self, auth: object) -> bool: ...
     def __ne__(self, auth: object) -> bool: ...
     def __lt__(self, auth: object) -> bool: ...
@@ -69,20 +97,29 @@ class BasicAuthentication(Authentication):
         ...
 
 class DigestAuthentication(Authentication):
+    """
+    Only do qop='auth' and MD5, since that
+    is all Apache currently implements
+    """
     challenge: Incomplete
     A1: Incomplete
     def __init__(self, credentials, host, request_uri, headers, response, content, http) -> None: ...
-    def request(self, method, request_uri, headers, content, cnonce=None): ...
+    def request(self, method, request_uri, headers, content, cnonce=None):
+        """Modify the request headers"""
+        ...
     def response(self, response, content) -> bool: ...
 
 class HmacDigestAuthentication(Authentication):
+    """Adapted from Robert Sayre's code and DigestAuthentication above."""
     challenge: Incomplete
     hashmod: Incomplete
     pwhashmod: Incomplete
     key: Incomplete
     __author__: ClassVar[str]
     def __init__(self, credentials, host, request_uri, headers, response, content, http) -> None: ...
-    def request(self, method, request_uri, headers, content) -> None: ...
+    def request(self, method, request_uri, headers, content) -> None:
+        """Modify the request headers"""
+        ...
     def response(self, response, content) -> bool: ...
 
 class WsseAuthentication(Authentication):
@@ -114,6 +151,11 @@ class GoogleLoginAuthentication(Authentication):
         ...
 
 class FileCache:
+    """
+    Uses a local directory as a store for cached files.
+    Not really safe to use if multiple threads or processes are going to
+    be running on the same cache.
+    """
     cache: Incomplete
     safe: Incomplete
     def __init__(self, cache, safe=...) -> None: ...
@@ -139,6 +181,7 @@ class KeyCerts(Credentials):
 class AllHosts: ...
 
 class ProxyInfo:
+    """Collect information required to use a proxy."""
     bypass_hosts: Incomplete
     def __init__(
         self, proxy_type, proxy_host, proxy_port, proxy_rdns: bool = True, proxy_user=None, proxy_pass=None, proxy_headers=None
@@ -169,16 +212,46 @@ class ProxyInfo:
         """Has this host been excluded from the proxy config"""
         ...
 
-def proxy_info_from_environment(method: Literal["http", "https"] = "http") -> ProxyInfo | None: ...
-def proxy_info_from_url(url: str, method: Literal["http", "https"] = "http", noproxy: str | None = None) -> ProxyInfo: ...
+def proxy_info_from_environment(method: Literal["http", "https"] = "http") -> ProxyInfo | None:
+    """
+    Read proxy info from the environment variables.
+    
+    """
+    ...
+def proxy_info_from_url(url: str, method: Literal["http", "https"] = "http", noproxy: str | None = None) -> ProxyInfo:
+    """
+    Construct a ProxyInfo from a URL (such as http_proxy env var)
+    
+    """
+    ...
 
 class HTTPConnectionWithTimeout(http.client.HTTPConnection):
+    """
+    HTTPConnection subclass that supports timeouts
+
+    HTTPConnection subclass that supports timeouts
+
+    All timeouts are in seconds. If None is passed for timeout then
+    Python's default timeout for sockets will be used. See for example
+    the docs of socket.setdefaulttimeout():
+    http://docs.python.org/library/socket.html#socket.setdefaulttimeout
+    """
     proxy_info: Incomplete
     def __init__(self, host, port=None, timeout=None, proxy_info=None) -> None: ...
     sock: Incomplete
-    def connect(self) -> None: ...
+    def connect(self) -> None:
+        """Connect to the host and port specified in __init__."""
+        ...
 
 class HTTPSConnectionWithTimeout(http.client.HTTPSConnection):
+    """
+    This class allows communication via SSL.
+
+    All timeouts are in seconds. If None is passed for timeout then
+    Python's default timeout for sockets will be used. See for example
+    the docs of socket.setdefaulttimeout():
+    http://docs.python.org/library/socket.html#socket.setdefaulttimeout
+    """
     disable_ssl_certificate_validation: bool
     ca_certs: StrOrBytesPath | None
     proxy_info: Incomplete
@@ -200,11 +273,27 @@ class HTTPSConnectionWithTimeout(http.client.HTTPSConnection):
         key_password: _PasswordType | None = None,
     ) -> None: ...
     sock: Incomplete
-    def connect(self) -> None: ...
+    def connect(self) -> None:
+        """Connect to a host on a given (SSL) port."""
+        ...
 
 SCHEME_TO_CONNECTION: Final[dict[Literal["http", "https"], type[http.client.HTTPConnection]]]
 
 class Http:
+    """
+    An HTTP client that handles:
+
+    - all methods
+    - caching
+    - ETags
+    - compression,
+    - HTTPS
+    - Basic
+    - Digest
+    - WSSE
+
+    and more.
+    """
     proxy_info: Incomplete
     ca_certs: Incomplete
     disable_ssl_certificate_validation: bool
@@ -312,6 +401,7 @@ class Http:
         ...
 
 class Response(dict[str, str | _T]):
+    """An object more like email.message than httplib.HTTPResponse."""
     fromcache: bool
     version: int
     status: int

@@ -28,7 +28,10 @@ from .revocation import RevocationEndpoint
 from .token import TokenEndpoint
 
 class Server(AuthorizationEndpoint, IntrospectEndpoint, TokenEndpoint, ResourceEndpoint, RevocationEndpoint):
-    """An all-in-one endpoint featuring all four major grant types."""
+    """
+    An all-in-one endpoint featuring all four major grant types
+    and extension grants.
+    """
     auth_grant: AuthorizationCodeGrant
     implicit_grant: ImplicitGrant
     password_grant: ResourceOwnerPasswordCredentialsGrant

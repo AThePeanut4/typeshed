@@ -425,7 +425,7 @@ class Client:
         ...
     def create_code_verifier(self, length: int) -> str:
         """
-        Create PKCE **code_verifier** used in computing **code_challenge**. 
+        Create PKCE **code_verifier** used in computing **code_challenge**.
         See `RFC7636 Section 4.1`_
 
         :param length: REQUIRED. The length of the code_verifier.

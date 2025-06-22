@@ -38,7 +38,10 @@ from ..tokens import JWTToken
 from .userinfo import UserInfoEndpoint
 
 class Server(AuthorizationEndpoint, IntrospectEndpoint, TokenEndpoint, ResourceEndpoint, RevocationEndpoint, UserInfoEndpoint):
-    """An all-in-one endpoint featuring all four major grant types."""
+    """
+    An all-in-one endpoint featuring all four major grant types
+    and extension grants.
+    """
     auth_grant: OAuth2AuthorizationCodeGrant
     implicit_grant: OAuth2ImplicitGrant
     password_grant: ResourceOwnerPasswordCredentialsGrant

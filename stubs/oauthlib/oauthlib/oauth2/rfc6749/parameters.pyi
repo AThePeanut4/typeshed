@@ -46,10 +46,10 @@ def prepare_grant_uri(
                   back to the client.  The parameter SHOULD be used for
                   preventing cross-site request forgery as described in
                   `Section 10.12`_.
-    :param code_challenge: PKCE parameter. A challenge derived from the 
-                           code_verifier that is sent in the authorization 
+    :param code_challenge: PKCE parameter. A challenge derived from the
+                           code_verifier that is sent in the authorization
                            request, to be verified against later.
-    :param code_challenge_method: PKCE parameter. A method that was used to derive the 
+    :param code_challenge_method: PKCE parameter. A method that was used to derive the
                                   code_challenge. Defaults to "plain" if not present in the request.
     :param kwargs: Extra arguments to embed in the grant/authorization URL.
 
@@ -270,6 +270,86 @@ def parse_implicit_response(
     ...
 def parse_token_response(
     body: str | bytes | bytearray, scope: str | set[object] | tuple[object] | list[object] | None = None
-) -> OAuth2Token: ...
-def validate_token_parameters(params: dict[str, Incomplete]) -> None: ...
-def parse_expires(params: dict[str, Incomplete]) -> tuple[int | None, float | None, float | None]: ...
+) -> OAuth2Token:
+    """
+    Parse the JSON token response body into a dict.
+
+    The authorization server issues an access token and optional refresh
+    token, and constructs the response by adding the following parameters
+    to the entity body of the HTTP response with a 200 (OK) status code:
+
+    access_token
+            REQUIRED.  The access token issued by the authorization server.
+    token_type
+            REQUIRED.  The type of the token issued as described in
+            `Section 7.1`_.  Value is case insensitive.
+    expires_in
+            RECOMMENDED.  The lifetime in seconds of the access token.  For
+            example, the value "3600" denotes that the access token will
+            expire in one hour from the time the response was generated.
+            If omitted, the authorization server SHOULD provide the
+            expiration time via other means or document the default value.
+    refresh_token
+            OPTIONAL.  The refresh token which can be used to obtain new
+            access tokens using the same authorization grant as described
+            in `Section 6`_.
+    scope
+            OPTIONAL, if identical to the scope requested by the client,
+            otherwise REQUIRED.  The scope of the access token as described
+            by `Section 3.3`_.
+
+    The parameters are included in the entity body of the HTTP response
+    using the "application/json" media type as defined by [`RFC4627`_].  The
+    parameters are serialized into a JSON structure by adding each
+    parameter at the highest structure level.  Parameter names and string
+    values are included as JSON strings.  Numerical values are included
+    as JSON numbers.  The order of parameters does not matter and can
+    vary.
+
+    :param body: The full json encoded response body.
+    :param scope: The scope requested during authorization.
+
+    For example:
+
+    .. code-block:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+        Cache-Control: no-store
+        Pragma: no-cache
+
+        {
+            "access_token":"2YotnFZFEjr1zCsicMWpAA",
+            "token_type":"example",
+            "expires_in":3600,
+            "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
+            "example_parameter":"example_value"
+        }
+
+    .. _`Section 7.1`: https://tools.ietf.org/html/rfc6749#section-7.1
+    .. _`Section 6`: https://tools.ietf.org/html/rfc6749#section-6
+    .. _`Section 3.3`: https://tools.ietf.org/html/rfc6749#section-3.3
+    .. _`RFC4627`: https://tools.ietf.org/html/rfc4627
+    """
+    ...
+def validate_token_parameters(params: dict[str, Incomplete]) -> None:
+    """Ensures token presence, token type, expiration and scope in params."""
+    ...
+def parse_expires(params: dict[str, Incomplete]) -> tuple[int | None, float | None, float | None]:
+    """
+    Parse `expires_in`, `expires_at` fields from params
+
+    Parse following these rules:
+    - `expires_in` must be either integer, float or None. If a float, it is converted into an integer.
+    - `expires_at` is not in specification so it does its best to:
+      - convert into a int, else
+      - convert into a float, else
+      - reuse the same type as-is (usually string)
+    - `_expires_at` is a special internal value returned to be always an `int`, based
+    either on the presence of `expires_at`, or reuse the current time plus
+    `expires_in`. This is typically used to validate token expiry.
+
+    :param params: Dict with expires_in and expires_at optionally set
+    :return: Tuple of `expires_in`, `expires_at`, and `_expires_at`. None if not set.
+    """
+    ...
