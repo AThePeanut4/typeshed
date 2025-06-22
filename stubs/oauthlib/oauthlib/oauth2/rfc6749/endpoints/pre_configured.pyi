@@ -10,6 +10,7 @@ from _typeshed import Unused
 from collections.abc import Callable
 
 from oauthlib.common import Request
+from oauthlib.oauth2.rfc8628.grant_types import DeviceCodeGrant
 
 from ..grant_types import (
     AuthorizationCodeGrant,
@@ -33,6 +34,7 @@ class Server(AuthorizationEndpoint, IntrospectEndpoint, TokenEndpoint, ResourceE
     password_grant: ResourceOwnerPasswordCredentialsGrant
     credentials_grant: ClientCredentialsGrant
     refresh_grant: RefreshTokenGrant
+    device_code_grant: DeviceCodeGrant
     bearer: BearerToken
     def __init__(
         self,
