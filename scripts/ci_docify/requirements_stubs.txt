@@ -130,7 +130,6 @@ retry==0.9.*
 grpcio-health-checking==1.*
 cachetools==6.0.*
 antlr4-python3-runtime==4.13.*
-python-datemath==3.0.1
 jwcrypto==1.5.*
 networkx==3.5
 singledispatch==4.1.*
