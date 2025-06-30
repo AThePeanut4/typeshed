@@ -1,5 +1,3 @@
-""""""
-
 from typing import Any
 
 RESULT_SUCCESS: int

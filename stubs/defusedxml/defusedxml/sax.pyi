@@ -1,5 +1,3 @@
-"""Defused xml.sax"""
-
 from _typeshed import Incomplete
 from xml.sax import ErrorHandler as _ErrorHandler
 

@@ -1,9 +1,3 @@
-"""
-Astronomical functions
-
-Computed years spread from 30 years before and after the release year.
-"""
-
 import datetime
 from _typeshed import Incomplete
 from collections.abc import Callable
@@ -16,10 +10,5 @@ pre_computed_solar_terms_path: Incomplete
 
 def fromisoformat(iso): ...
 def create_astronomical_data(progress: Callable[[int], int] | None = None): ...
-def calculate_equinoxes(year: int, timezone: str = "UTC") -> tuple[TZAwareDate, TZAwareDate]:
-    """
-    calculate equinox with time zone.
-    returns a 2-tuple with vernal and autumn equinoxes.
-    """
-    ...
+def calculate_equinoxes(year: int, timezone: str = "UTC") -> tuple[TZAwareDate, TZAwareDate]: ...
 def solar_term(year: int, degrees: int, timezone: str = "UTC") -> TZAwareDate: ...

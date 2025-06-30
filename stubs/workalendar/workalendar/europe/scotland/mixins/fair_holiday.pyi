@@ -1,5 +1,3 @@
-"""Fair Holiday mixins"""
-
 from typing import ClassVar
 
 class FairHoliday:

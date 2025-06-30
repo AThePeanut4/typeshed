@@ -1,5 +1,3 @@
-""""""
-
 from typing import Any
 
 OID_CONTROL: str

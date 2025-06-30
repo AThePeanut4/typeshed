@@ -4,7 +4,6 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class EuropeanCentralBank(WesternCalendar):
-    """European Central Bank"""
     include_labour_day: ClassVar[bool]
     FIXED_HOLIDAYS: Incomplete
     include_good_friday: ClassVar[bool]

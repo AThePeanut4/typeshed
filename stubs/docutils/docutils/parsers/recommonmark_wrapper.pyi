@@ -1,16 +1,3 @@
-"""
-A parser for CommonMark Markdown text using `recommonmark`__.
-
-__ https://pypi.org/project/recommonmark/
-
-.. important:: This module is provisional
-
-   * The "recommonmark" package is unmaintained and deprecated.
-     This wrapper module will be removed in a future Docutils version.
-
-   * The API is not settled and may change with any minor Docutils version.
-"""
-
 from types import ModuleType
 from typing import ClassVar
 
@@ -54,27 +41,10 @@ class _CommonMarkParser:
     def is_section_level(self, level, section): ...
 
 class Parser(_CommonMarkParser):
-    """
-    MarkDown parser based on recommonmark.
-
-    This parser is provisional:
-    the API is not settled and may change with any minor Docutils version.
-    """
     supported: ClassVar[tuple[str, ...]]
     config_section: ClassVar[str]
     config_section_dependencies: ClassVar[tuple[str, ...]]
     def get_transforms(self) -> list[type[Transform]]: ...
-    def parse(self, inputstring: str, document: nodes.document) -> None:
-        """
-        Use the upstream parser and clean up afterwards.
-        
-        """
-        ...
-    def visit_document(self, node) -> None:
-        """
-        Dummy function to prevent spurious warnings.
-
-        cf. https://github.com/readthedocs/recommonmark/issues/177
-        """
-        ...
+    def parse(self, inputstring: str, document: nodes.document) -> None: ...
+    def visit_document(self, node) -> None: ...
     def visit_text(self, mdnode) -> None: ...

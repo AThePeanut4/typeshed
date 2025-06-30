@@ -1,5 +1,3 @@
-"""Defused xml.sax.expatreader"""
-
 from _typeshed import Incomplete
 
 # Cannot type most things here as DefusedExpatParser is based off of

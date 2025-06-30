@@ -4,7 +4,6 @@ from typing import ClassVar
 from ..core import IslamicCalendar, OrthodoxCalendar
 
 class Kazakhstan(OrthodoxCalendar, IslamicCalendar):
-    """Kazakhstan"""
     include_christmas: ClassVar[bool]
     include_christmas_eve: ClassVar[bool]
     include_new_years_day: ClassVar[bool]

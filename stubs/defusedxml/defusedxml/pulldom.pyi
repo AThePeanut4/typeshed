@@ -1,5 +1,3 @@
-"""Defused xml.dom.pulldom"""
-
 from xml.dom.pulldom import DOMEventStream
 
 from .expatreader import DefusedExpatParser

@@ -115,9 +115,7 @@ class FileDescriptorSet(google.protobuf.message.Message):
     @property
     def file(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FileDescriptorProto]: ...
     def __init__(self, *, file: collections.abc.Iterable[global___FileDescriptorProto] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["file", b"file"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(self, field_name: typing.Literal["file", b"file"]) -> None: ...
 
 global___FileDescriptorSet = FileDescriptorSet
 
@@ -226,9 +224,7 @@ class FileDescriptorProto(google.protobuf.message.Message):
             "syntax",
             b"syntax",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -259,9 +255,7 @@ class FileDescriptorProto(google.protobuf.message.Message):
             "weak_dependency",
             b"weak_dependency",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___FileDescriptorProto = FileDescriptorProto
 
@@ -293,12 +287,8 @@ class DescriptorProto(google.protobuf.message.Message):
         ) -> None: ...
         def HasField(
             self, field_name: typing.Literal["end", b"end", "options", b"options", "start", b"start"]
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["end", b"end", "options", b"options", "start", b"start"]) -> None:
-            """Clears a message field."""
-            ...
+        ) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["end", b"end", "options", b"options", "start", b"start"]) -> None: ...
 
     @typing.final
     class ReservedRange(google.protobuf.message.Message):
@@ -316,12 +306,8 @@ class DescriptorProto(google.protobuf.message.Message):
         end: builtins.int
         """Exclusive."""
         def __init__(self, *, start: builtins.int | None = ..., end: builtins.int | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> None:
-            """Clears a message field."""
-            ...
+        def HasField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> None: ...
 
     NAME_FIELD_NUMBER: builtins.int
     FIELD_FIELD_NUMBER: builtins.int
@@ -376,9 +362,7 @@ class DescriptorProto(google.protobuf.message.Message):
         reserved_range: collections.abc.Iterable[global___DescriptorProto.ReservedRange] | None = ...,
         reserved_name: collections.abc.Iterable[builtins.str] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -403,9 +387,7 @@ class DescriptorProto(google.protobuf.message.Message):
             "reserved_range",
             b"reserved_range",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___DescriptorProto = DescriptorProto
 
@@ -476,17 +458,13 @@ class ExtensionRangeOptions(google.protobuf.message.Message):
             field_name: typing.Literal[
                 "full_name", b"full_name", "number", b"number", "repeated", b"repeated", "reserved", b"reserved", "type", b"type"
             ],
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
+        ) -> builtins.bool: ...
         def ClearField(
             self,
             field_name: typing.Literal[
                 "full_name", b"full_name", "number", b"number", "repeated", b"repeated", "reserved", b"reserved", "type", b"type"
             ],
-        ) -> None:
-            """Clears a message field."""
-            ...
+        ) -> None: ...
 
     UNINTERPRETED_OPTION_FIELD_NUMBER: builtins.int
     DECLARATION_FIELD_NUMBER: builtins.int
@@ -524,9 +502,7 @@ class ExtensionRangeOptions(google.protobuf.message.Message):
         features: global___FeatureSet | None = ...,
         verification: global___ExtensionRangeOptions.VerificationState.ValueType | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["features", b"features", "verification", b"verification"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    def HasField(self, field_name: typing.Literal["features", b"features", "verification", b"verification"]) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -539,9 +515,7 @@ class ExtensionRangeOptions(google.protobuf.message.Message):
             "verification",
             b"verification",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___ExtensionRangeOptions = ExtensionRangeOptions
 
@@ -597,9 +571,7 @@ class FieldDescriptorProto(google.protobuf.message.Message):
         TYPE_SINT64: FieldDescriptorProto._Type.ValueType  # 18
         """Uses ZigZag encoding."""
 
-    class Type(_Type, metaclass=_TypeEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     TYPE_DOUBLE: FieldDescriptorProto.Type.ValueType  # 1
     """0 is reserved for errors.
     Order is weird for historical reasons.
@@ -655,9 +627,7 @@ class FieldDescriptorProto(google.protobuf.message.Message):
         can be used to get this behavior.
         """
 
-    class Label(_Label, metaclass=_LabelEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class Label(_Label, metaclass=_LabelEnumTypeWrapper): ...
     LABEL_OPTIONAL: FieldDescriptorProto.Label.ValueType  # 1
     """0 is reserved for errors"""
     LABEL_REPEATED: FieldDescriptorProto.Label.ValueType  # 3
@@ -778,9 +748,7 @@ class FieldDescriptorProto(google.protobuf.message.Message):
             "type_name",
             b"type_name",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -807,9 +775,7 @@ class FieldDescriptorProto(google.protobuf.message.Message):
             "type_name",
             b"type_name",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___FieldDescriptorProto = FieldDescriptorProto
 
@@ -825,12 +791,8 @@ class OneofDescriptorProto(google.protobuf.message.Message):
     @property
     def options(self) -> global___OneofOptions: ...
     def __init__(self, *, name: builtins.str | None = ..., options: global___OneofOptions | None = ...) -> None: ...
-    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> None: ...
 
 global___OneofDescriptorProto = OneofDescriptorProto
 
@@ -859,12 +821,8 @@ class EnumDescriptorProto(google.protobuf.message.Message):
         end: builtins.int
         """Inclusive."""
         def __init__(self, *, start: builtins.int | None = ..., end: builtins.int | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> None:
-            """Clears a message field."""
-            ...
+        def HasField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["end", b"end", "start", b"start"]) -> None: ...
 
     NAME_FIELD_NUMBER: builtins.int
     VALUE_FIELD_NUMBER: builtins.int
@@ -900,9 +858,7 @@ class EnumDescriptorProto(google.protobuf.message.Message):
         reserved_range: collections.abc.Iterable[global___EnumDescriptorProto.EnumReservedRange] | None = ...,
         reserved_name: collections.abc.Iterable[builtins.str] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -917,9 +873,7 @@ class EnumDescriptorProto(google.protobuf.message.Message):
             "value",
             b"value",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___EnumDescriptorProto = EnumDescriptorProto
 
@@ -945,12 +899,8 @@ class EnumValueDescriptorProto(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["name", b"name", "number", b"number", "options", b"options"]
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "number", b"number", "options", b"options"]) -> None:
-        """Clears a message field."""
-        ...
+    ) -> builtins.bool: ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "number", b"number", "options", b"options"]) -> None: ...
 
 global___EnumValueDescriptorProto = EnumValueDescriptorProto
 
@@ -975,12 +925,8 @@ class ServiceDescriptorProto(google.protobuf.message.Message):
         method: collections.abc.Iterable[global___MethodDescriptorProto] | None = ...,
         options: global___ServiceOptions | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
-    def ClearField(self, field_name: typing.Literal["method", b"method", "name", b"name", "options", b"options"]) -> None:
-        """Clears a message field."""
-        ...
+    def HasField(self, field_name: typing.Literal["name", b"name", "options", b"options"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing.Literal["method", b"method", "name", b"name", "options", b"options"]) -> None: ...
 
 global___ServiceDescriptorProto = ServiceDescriptorProto
 
@@ -1034,9 +980,7 @@ class MethodDescriptorProto(google.protobuf.message.Message):
             "server_streaming",
             b"server_streaming",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1053,9 +997,7 @@ class MethodDescriptorProto(google.protobuf.message.Message):
             "server_streaming",
             b"server_streaming",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___MethodDescriptorProto = MethodDescriptorProto
 
@@ -1326,9 +1268,7 @@ class FileOptions(google.protobuf.message.Message):
             "swift_prefix",
             b"swift_prefix",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1375,9 +1315,7 @@ class FileOptions(google.protobuf.message.Message):
             "uninterpreted_option",
             b"uninterpreted_option",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___FileOptions = FileOptions
 
@@ -1499,9 +1437,7 @@ class MessageOptions(google.protobuf.message.Message):
             "no_standard_descriptor_accessor",
             b"no_standard_descriptor_accessor",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1520,9 +1456,7 @@ class MessageOptions(google.protobuf.message.Message):
             "uninterpreted_option",
             b"uninterpreted_option",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___MessageOptions = MessageOptions
 
@@ -1550,9 +1484,7 @@ class FieldOptions(google.protobuf.message.Message):
         """
         STRING_PIECE: FieldOptions._CType.ValueType  # 2
 
-    class CType(_CType, metaclass=_CTypeEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class CType(_CType, metaclass=_CTypeEnumTypeWrapper): ...
     STRING: FieldOptions.CType.ValueType  # 0
     """Default mode."""
     CORD: FieldOptions.CType.ValueType  # 1
@@ -1580,9 +1512,7 @@ class FieldOptions(google.protobuf.message.Message):
         JS_NUMBER: FieldOptions._JSType.ValueType  # 2
         """Use JavaScript numbers."""
 
-    class JSType(_JSType, metaclass=_JSTypeEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class JSType(_JSType, metaclass=_JSTypeEnumTypeWrapper): ...
     JS_NORMAL: FieldOptions.JSType.ValueType  # 0
     """Use the default type."""
     JS_STRING: FieldOptions.JSType.ValueType  # 1
@@ -1655,12 +1585,8 @@ class FieldOptions(google.protobuf.message.Message):
         value: builtins.str
         """Textproto value."""
         def __init__(self, *, edition: global___Edition.ValueType | None = ..., value: builtins.str | None = ...) -> None: ...
-        def HasField(self, field_name: typing.Literal["edition", b"edition", "value", b"value"]) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["edition", b"edition", "value", b"value"]) -> None:
-            """Clears a message field."""
-            ...
+        def HasField(self, field_name: typing.Literal["edition", b"edition", "value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["edition", b"edition", "value", b"value"]) -> None: ...
 
     @typing.final
     class FeatureSupport(google.protobuf.message.Message):
@@ -1710,9 +1636,7 @@ class FieldOptions(google.protobuf.message.Message):
                 "edition_removed",
                 b"edition_removed",
             ],
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
+        ) -> builtins.bool: ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -1725,9 +1649,7 @@ class FieldOptions(google.protobuf.message.Message):
                 "edition_removed",
                 b"edition_removed",
             ],
-        ) -> None:
-            """Clears a message field."""
-            ...
+        ) -> None: ...
 
     CTYPE_FIELD_NUMBER: builtins.int
     PACKED_FIELD_NUMBER: builtins.int
@@ -1884,9 +1806,7 @@ class FieldOptions(google.protobuf.message.Message):
             "weak",
             b"weak",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -1919,9 +1839,7 @@ class FieldOptions(google.protobuf.message.Message):
             "weak",
             b"weak",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___FieldOptions = FieldOptions
 
@@ -1951,14 +1869,10 @@ class OneofOptions(google.protobuf.message.Message):
         features: global___FeatureSet | None = ...,
         uninterpreted_option: collections.abc.Iterable[global___UninterpretedOption] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["features", b"features"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    def HasField(self, field_name: typing.Literal["features", b"features"]) -> builtins.bool: ...
     def ClearField(
         self, field_name: typing.Literal["features", b"features", "uninterpreted_option", b"uninterpreted_option"]
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___OneofOptions = OneofOptions
 
@@ -2024,9 +1938,7 @@ class EnumOptions(google.protobuf.message.Message):
             "features",
             b"features",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2041,9 +1953,7 @@ class EnumOptions(google.protobuf.message.Message):
             "uninterpreted_option",
             b"uninterpreted_option",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___EnumOptions = EnumOptions
 
@@ -2106,9 +2016,7 @@ class EnumValueOptions(google.protobuf.message.Message):
             "features",
             b"features",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2123,9 +2031,7 @@ class EnumValueOptions(google.protobuf.message.Message):
             "uninterpreted_option",
             b"uninterpreted_option",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___EnumValueOptions = EnumValueOptions
 
@@ -2168,17 +2074,13 @@ class ServiceOptions(google.protobuf.message.Message):
         deprecated: builtins.bool | None = ...,
         uninterpreted_option: collections.abc.Iterable[global___UninterpretedOption] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["deprecated", b"deprecated", "features", b"features"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    def HasField(self, field_name: typing.Literal["deprecated", b"deprecated", "features", b"features"]) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
             "deprecated", b"deprecated", "features", b"features", "uninterpreted_option", b"uninterpreted_option"
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___ServiceOptions = ServiceOptions
 
@@ -2255,9 +2157,7 @@ class MethodOptions(google.protobuf.message.Message):
         field_name: typing.Literal[
             "deprecated", b"deprecated", "features", b"features", "idempotency_level", b"idempotency_level"
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2270,9 +2170,7 @@ class MethodOptions(google.protobuf.message.Message):
             "uninterpreted_option",
             b"uninterpreted_option",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___MethodOptions = MethodOptions
 
@@ -2306,12 +2204,8 @@ class UninterpretedOption(google.protobuf.message.Message):
         def __init__(self, *, name_part: builtins.str | None = ..., is_extension: builtins.bool | None = ...) -> None: ...
         def HasField(
             self, field_name: typing.Literal["is_extension", b"is_extension", "name_part", b"name_part"]
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
-        def ClearField(self, field_name: typing.Literal["is_extension", b"is_extension", "name_part", b"name_part"]) -> None:
-            """Clears a message field."""
-            ...
+        ) -> builtins.bool: ...
+        def ClearField(self, field_name: typing.Literal["is_extension", b"is_extension", "name_part", b"name_part"]) -> None: ...
 
     NAME_FIELD_NUMBER: builtins.int
     IDENTIFIER_VALUE_FIELD_NUMBER: builtins.int
@@ -2360,9 +2254,7 @@ class UninterpretedOption(google.protobuf.message.Message):
             "string_value",
             b"string_value",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2381,9 +2273,7 @@ class UninterpretedOption(google.protobuf.message.Message):
             "string_value",
             b"string_value",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___UninterpretedOption = UninterpretedOption
 
@@ -2415,9 +2305,7 @@ class FeatureSet(google.protobuf.message.Message):
         IMPLICIT: FeatureSet._FieldPresence.ValueType  # 2
         LEGACY_REQUIRED: FeatureSet._FieldPresence.ValueType  # 3
 
-    class FieldPresence(_FieldPresence, metaclass=_FieldPresenceEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class FieldPresence(_FieldPresence, metaclass=_FieldPresenceEnumTypeWrapper): ...
     FIELD_PRESENCE_UNKNOWN: FeatureSet.FieldPresence.ValueType  # 0
     EXPLICIT: FeatureSet.FieldPresence.ValueType  # 1
     IMPLICIT: FeatureSet.FieldPresence.ValueType  # 2
@@ -2435,9 +2323,7 @@ class FeatureSet(google.protobuf.message.Message):
         OPEN: FeatureSet._EnumType.ValueType  # 1
         CLOSED: FeatureSet._EnumType.ValueType  # 2
 
-    class EnumType(_EnumType, metaclass=_EnumTypeEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class EnumType(_EnumType, metaclass=_EnumTypeEnumTypeWrapper): ...
     ENUM_TYPE_UNKNOWN: FeatureSet.EnumType.ValueType  # 0
     OPEN: FeatureSet.EnumType.ValueType  # 1
     CLOSED: FeatureSet.EnumType.ValueType  # 2
@@ -2454,9 +2340,7 @@ class FeatureSet(google.protobuf.message.Message):
         PACKED: FeatureSet._RepeatedFieldEncoding.ValueType  # 1
         EXPANDED: FeatureSet._RepeatedFieldEncoding.ValueType  # 2
 
-    class RepeatedFieldEncoding(_RepeatedFieldEncoding, metaclass=_RepeatedFieldEncodingEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class RepeatedFieldEncoding(_RepeatedFieldEncoding, metaclass=_RepeatedFieldEncodingEnumTypeWrapper): ...
     REPEATED_FIELD_ENCODING_UNKNOWN: FeatureSet.RepeatedFieldEncoding.ValueType  # 0
     PACKED: FeatureSet.RepeatedFieldEncoding.ValueType  # 1
     EXPANDED: FeatureSet.RepeatedFieldEncoding.ValueType  # 2
@@ -2473,9 +2357,7 @@ class FeatureSet(google.protobuf.message.Message):
         VERIFY: FeatureSet._Utf8Validation.ValueType  # 2
         NONE: FeatureSet._Utf8Validation.ValueType  # 3
 
-    class Utf8Validation(_Utf8Validation, metaclass=_Utf8ValidationEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class Utf8Validation(_Utf8Validation, metaclass=_Utf8ValidationEnumTypeWrapper): ...
     UTF8_VALIDATION_UNKNOWN: FeatureSet.Utf8Validation.ValueType  # 0
     VERIFY: FeatureSet.Utf8Validation.ValueType  # 2
     NONE: FeatureSet.Utf8Validation.ValueType  # 3
@@ -2492,9 +2374,7 @@ class FeatureSet(google.protobuf.message.Message):
         LENGTH_PREFIXED: FeatureSet._MessageEncoding.ValueType  # 1
         DELIMITED: FeatureSet._MessageEncoding.ValueType  # 2
 
-    class MessageEncoding(_MessageEncoding, metaclass=_MessageEncodingEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class MessageEncoding(_MessageEncoding, metaclass=_MessageEncodingEnumTypeWrapper): ...
     MESSAGE_ENCODING_UNKNOWN: FeatureSet.MessageEncoding.ValueType  # 0
     LENGTH_PREFIXED: FeatureSet.MessageEncoding.ValueType  # 1
     DELIMITED: FeatureSet.MessageEncoding.ValueType  # 2
@@ -2511,9 +2391,7 @@ class FeatureSet(google.protobuf.message.Message):
         ALLOW: FeatureSet._JsonFormat.ValueType  # 1
         LEGACY_BEST_EFFORT: FeatureSet._JsonFormat.ValueType  # 2
 
-    class JsonFormat(_JsonFormat, metaclass=_JsonFormatEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class JsonFormat(_JsonFormat, metaclass=_JsonFormatEnumTypeWrapper): ...
     JSON_FORMAT_UNKNOWN: FeatureSet.JsonFormat.ValueType  # 0
     ALLOW: FeatureSet.JsonFormat.ValueType  # 1
     LEGACY_BEST_EFFORT: FeatureSet.JsonFormat.ValueType  # 2
@@ -2530,9 +2408,7 @@ class FeatureSet(google.protobuf.message.Message):
         STYLE2024: FeatureSet._EnforceNamingStyle.ValueType  # 1
         STYLE_LEGACY: FeatureSet._EnforceNamingStyle.ValueType  # 2
 
-    class EnforceNamingStyle(_EnforceNamingStyle, metaclass=_EnforceNamingStyleEnumTypeWrapper):
-        """A utility for finding the names of enum values."""
-        ...
+    class EnforceNamingStyle(_EnforceNamingStyle, metaclass=_EnforceNamingStyleEnumTypeWrapper): ...
     ENFORCE_NAMING_STYLE_UNKNOWN: FeatureSet.EnforceNamingStyle.ValueType  # 0
     STYLE2024: FeatureSet.EnforceNamingStyle.ValueType  # 1
     STYLE_LEGACY: FeatureSet.EnforceNamingStyle.ValueType  # 2
@@ -2580,9 +2456,7 @@ class FeatureSet(google.protobuf.message.Message):
             "utf8_validation",
             b"utf8_validation",
         ],
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2601,9 +2475,7 @@ class FeatureSet(google.protobuf.message.Message):
             "utf8_validation",
             b"utf8_validation",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___FeatureSet = FeatureSet
 
@@ -2651,17 +2523,13 @@ class FeatureSetDefaults(google.protobuf.message.Message):
             field_name: typing.Literal[
                 "edition", b"edition", "fixed_features", b"fixed_features", "overridable_features", b"overridable_features"
             ],
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
+        ) -> builtins.bool: ...
         def ClearField(
             self,
             field_name: typing.Literal[
                 "edition", b"edition", "fixed_features", b"fixed_features", "overridable_features", b"overridable_features"
             ],
-        ) -> None:
-            """Clears a message field."""
-            ...
+        ) -> None: ...
 
     DEFAULTS_FIELD_NUMBER: builtins.int
     MINIMUM_EDITION_FIELD_NUMBER: builtins.int
@@ -2689,17 +2557,13 @@ class FeatureSetDefaults(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["maximum_edition", b"maximum_edition", "minimum_edition", b"minimum_edition"]
-    ) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    ) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
             "defaults", b"defaults", "maximum_edition", b"maximum_edition", "minimum_edition", b"minimum_edition"
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___FeatureSetDefaults = FeatureSetDefaults
 
@@ -2822,9 +2686,7 @@ class SourceCodeInfo(google.protobuf.message.Message):
         ) -> None: ...
         def HasField(
             self, field_name: typing.Literal["leading_comments", b"leading_comments", "trailing_comments", b"trailing_comments"]
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
+        ) -> builtins.bool: ...
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -2839,9 +2701,7 @@ class SourceCodeInfo(google.protobuf.message.Message):
                 "trailing_comments",
                 b"trailing_comments",
             ],
-        ) -> None:
-            """Clears a message field."""
-            ...
+        ) -> None: ...
 
     LOCATION_FIELD_NUMBER: builtins.int
     @property
@@ -2892,9 +2752,7 @@ class SourceCodeInfo(google.protobuf.message.Message):
         """
 
     def __init__(self, *, location: collections.abc.Iterable[global___SourceCodeInfo.Location] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["location", b"location"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(self, field_name: typing.Literal["location", b"location"]) -> None: ...
 
 global___SourceCodeInfo = SourceCodeInfo
 
@@ -2974,17 +2832,13 @@ class GeneratedCodeInfo(google.protobuf.message.Message):
         def HasField(
             self,
             field_name: typing.Literal["begin", b"begin", "end", b"end", "semantic", b"semantic", "source_file", b"source_file"],
-        ) -> builtins.bool:
-            """Checks if a message field is set."""
-            ...
+        ) -> builtins.bool: ...
         def ClearField(
             self,
             field_name: typing.Literal[
                 "begin", b"begin", "end", b"end", "path", b"path", "semantic", b"semantic", "source_file", b"source_file"
             ],
-        ) -> None:
-            """Clears a message field."""
-            ...
+        ) -> None: ...
 
     ANNOTATION_FIELD_NUMBER: builtins.int
     @property
@@ -2996,8 +2850,6 @@ class GeneratedCodeInfo(google.protobuf.message.Message):
         """
 
     def __init__(self, *, annotation: collections.abc.Iterable[global___GeneratedCodeInfo.Annotation] | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["annotation", b"annotation"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(self, field_name: typing.Literal["annotation", b"annotation"]) -> None: ...
 
 global___GeneratedCodeInfo = GeneratedCodeInfo

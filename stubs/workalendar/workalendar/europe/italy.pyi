@@ -4,7 +4,6 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class Italy(WesternCalendar):
-    """Italy"""
     include_labour_day: ClassVar[bool]
     labour_day_label: ClassVar[str]
     FIXED_HOLIDAYS: Incomplete

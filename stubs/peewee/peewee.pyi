@@ -8,18 +8,7 @@ from typing import Any, ClassVar, Literal, NamedTuple, TypeVar
 from typing_extensions import Self
 
 class NullHandler(logging.Handler):
-    """
-    This handler does nothing. It's intended to be used to avoid the
-    "No handlers could be found for logger XXX" one-off warning. This is
-    important for library code, which may contain code to log events. If a user
-    of the library does not configure logging, the one-off warning might be
-    produced; to avoid this, the library developer simply needs to instantiate
-    a NullHandler and add it to the top-level logger of the library module or
-    package.
-    """
-    def emit(self, record) -> None:
-        """Stub."""
-        ...
+    def emit(self, record) -> None: ...
 
 text_type = str
 bytes_type = bytes
@@ -49,7 +38,6 @@ class _callable_context_manager:
     def __call__(self, fn): ...
 
 class Proxy:
-    """Create a proxy or placeholder for another object."""
     def __init__(self) -> None: ...
     obj: Incomplete
     def initialize(self, obj) -> None: ...
@@ -61,7 +49,6 @@ class Proxy:
     def __setattr__(self, attr: str, value) -> None: ...
 
 class DatabaseProxy(Proxy):
-    """Proxy implementation specifically for proxying `Database` objects."""
     def connection_context(self): ...
     def atomic(self, *args, **kwargs): ...
     def manual_commit(self): ...
@@ -627,9 +614,7 @@ class Select(SelectBase):
     def join(self, dest, join_type=..., on: Incomplete | None = ...) -> Self: ...
     def left_outer_join(self, dest, on: Incomplete | None = ...): ...
     def group_by(self, *columns) -> Self: ...
-    def group_by_extend(self, *values):
-        """@Node.copy used from group_by() call"""
-        ...
+    def group_by_extend(self, *values): ...
     def having(self, *expressions) -> Self: ...
     def distinct(self, *columns) -> Self: ...
     def window(self, *windows) -> Self: ...
@@ -731,7 +716,6 @@ class ExceptionWrapper:
     ) -> None: ...
 
 class IndexMetadata(NamedTuple):
-    """IndexMetadata(name, sql, columns, unique, table)"""
     name: Incomplete
     sql: Incomplete
     columns: Incomplete
@@ -739,7 +723,6 @@ class IndexMetadata(NamedTuple):
     table: Incomplete
 
 class ColumnMetadata(NamedTuple):
-    """ColumnMetadata(name, data_type, null, primary_key, table, default)"""
     name: Incomplete
     data_type: Incomplete
     null: Incomplete
@@ -748,14 +731,12 @@ class ColumnMetadata(NamedTuple):
     default: Incomplete
 
 class ForeignKeyMetadata(NamedTuple):
-    """ForeignKeyMetadata(column, dest_table, dest_column, table)"""
     column: Incomplete
     dest_table: Incomplete
     dest_column: Incomplete
     table: Incomplete
 
 class ViewMetadata(NamedTuple):
-    """ViewMetadata(name, sql)"""
     name: Incomplete
     sql: Incomplete
 
@@ -1065,9 +1046,7 @@ class CursorWrapper:
     def initialize(self) -> None: ...
     def iterate(self, cache: bool = ...): ...
     def process_row(self, row): ...
-    def iterator(self) -> Generator[Incomplete, None, None]:
-        """Efficient one-pass iteration over the result set."""
-        ...
+    def iterator(self) -> Generator[Incomplete, None, None]: ...
     def fill_cache(self, n: int = ...) -> None: ...
 
 class DictCursorWrapper(CursorWrapper):
@@ -1115,7 +1094,6 @@ class BackrefAccessor:
     def __get__(self, instance, instance_type: Incomplete | None = ...): ...
 
 class ObjectIdAccessor:
-    """Gives direct access to the underlying id"""
     field: Incomplete
     def __init__(self, field) -> None: ...
     def __get__(self, instance, instance_type: Incomplete | None = ...): ...
@@ -1702,7 +1680,6 @@ class Model(metaclass=ModelBase):
     def add_index(cls, *fields, **kwargs) -> None: ...
 
 class ModelAlias(Node):
-    """Provide a separate reference to a model in a query."""
     def __init__(self, model, alias: Incomplete | None = ...) -> None: ...
     def __getattr__(self, attr: str): ...
     def __setattr__(self, attr: str, value) -> None: ...

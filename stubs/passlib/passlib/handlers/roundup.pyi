@@ -1,5 +1,3 @@
-"""passlib.handlers.roundup - Roundup issue tracker hashes"""
-
 from typing import Any
 
 roundup_plaintext: Any

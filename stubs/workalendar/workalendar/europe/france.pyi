@@ -4,7 +4,6 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class France(WesternCalendar):
-    """France"""
     include_easter_monday: ClassVar[bool]
     include_ascension: ClassVar[bool]
     include_whit_monday: ClassVar[bool]
@@ -14,6 +13,5 @@ class France(WesternCalendar):
     FIXED_HOLIDAYS: Incomplete
 
 class FranceAlsaceMoselle(France):
-    """France Alsace/Moselle"""
     include_good_friday: ClassVar[bool]
     include_boxing_day: ClassVar[bool]

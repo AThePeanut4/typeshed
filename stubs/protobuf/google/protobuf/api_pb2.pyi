@@ -122,9 +122,7 @@ class Api(google.protobuf.message.Message):
         mixins: collections.abc.Iterable[global___Mixin] | None = ...,
         syntax: google.protobuf.type_pb2.Syntax.ValueType | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["source_context", b"source_context"]) -> builtins.bool:
-        """Checks if a message field is set."""
-        ...
+    def HasField(self, field_name: typing.Literal["source_context", b"source_context"]) -> builtins.bool: ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -143,9 +141,7 @@ class Api(google.protobuf.message.Message):
             "version",
             b"version",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___Api = Api
 
@@ -207,9 +203,7 @@ class Method(google.protobuf.message.Message):
             "syntax",
             b"syntax",
         ],
-    ) -> None:
-        """Clears a message field."""
-        ...
+    ) -> None: ...
 
 global___Method = Method
 
@@ -306,8 +300,6 @@ class Mixin(google.protobuf.message.Message):
     are rooted.
     """
     def __init__(self, *, name: builtins.str | None = ..., root: builtins.str | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["name", b"name", "root", b"root"]) -> None:
-        """Clears a message field."""
-        ...
+    def ClearField(self, field_name: typing.Literal["name", b"name", "root", b"root"]) -> None: ...
 
 global___Mixin = Mixin

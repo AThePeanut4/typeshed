@@ -1,5 +1,3 @@
-""""""
-
 from typing import Any
 
 change_table: Any

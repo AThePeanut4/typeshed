@@ -3,7 +3,6 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class SouthAfrica(WesternCalendar):
-    """South Africa"""
     include_good_friday: ClassVar[bool]
     include_christmas: ClassVar[bool]
     def holidays(self, year=None): ...

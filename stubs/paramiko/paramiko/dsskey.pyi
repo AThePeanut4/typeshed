@@ -1,5 +1,3 @@
-"""DSS keys."""
-
 from _typeshed import FileDescriptorOrPath, ReadableBuffer
 from collections.abc import Callable
 from typing import IO
@@ -8,10 +6,6 @@ from paramiko.message import Message
 from paramiko.pkey import PKey
 
 class DSSKey(PKey):
-    """
-    Representation of a DSS key which can be used to sign an verify SSH2
-    data.
-    """
     p: int | None
     q: int | None
     g: int | None
@@ -38,13 +32,4 @@ class DSSKey(PKey):
     def write_private_key_file(self, filename: FileDescriptorOrPath, password: str | None = None) -> None: ...
     def write_private_key(self, file_obj: IO[str], password: str | None = None) -> None: ...
     @staticmethod
-    def generate(bits: int = 1024, progress_func: Callable[..., object] | None = None) -> DSSKey:
-        """
-        Generate a new private DSS key.  This factory function can be used to
-        generate a new host key or authentication key.
-
-        :param int bits: number of bits the generated key should be.
-        :param progress_func: Unused
-        :return: new `.DSSKey` private key
-        """
-        ...
+    def generate(bits: int = 1024, progress_func: Callable[..., object] | None = None) -> DSSKey: ...

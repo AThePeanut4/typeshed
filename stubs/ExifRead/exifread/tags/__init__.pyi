@@ -1,5 +1,3 @@
-"""Tag definitions"""
-
 from _typeshed import Incomplete
 
 from exifread.tags.exif import EXIF_TAGS as EXIF_TAGS

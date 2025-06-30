@@ -1,5 +1,3 @@
-"""passlib.hosts"""
-
 import sys
 
 from passlib.context import CryptContext
