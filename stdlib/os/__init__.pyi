@@ -707,7 +707,7 @@ else:
 extsep: str
 pathsep: str
 defpath: str
-linesep: str
+linesep: Literal["\n", "\r\n"]
 devnull: str
 name: str
 

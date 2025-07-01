@@ -141,6 +141,7 @@ else:
 
 def writer(
     csvfile: SupportsWrite[str],
+    /,
     dialect: _DialectLike = "excel",
     *,
     delimiter: str = ",",
@@ -169,6 +170,7 @@ def writer(
     ...
 def reader(
     csvfile: Iterable[str],
+    /,
     dialect: _DialectLike = "excel",
     *,
     delimiter: str = ",",
