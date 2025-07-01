@@ -217,45 +217,46 @@ class LuaRuntime:
     def eval(self, lua_code: str, *args: Any, name: str | None = None, mode: str | None = None) -> object:
         """
         LuaRuntime.eval(self, lua_code, *args, name=None, mode=None)
+
         Evaluate a Lua expression passed in a string.
 
-                The 'name' argument can be used to override the name printed in error messages.
+        The 'name' argument can be used to override the name printed in error messages.
 
-                The 'mode' argument specifies the input type.  By default, both source code and
-                pre-compiled byte code is allowed (mode='bt').  It can be restricted to source
-                code with mode='t' and to byte code with mode='b'.  This has no effect on Lua 5.1.
-        
+        The 'mode' argument specifies the input type.  By default, both source code and
+        pre-compiled byte code is allowed (mode='bt').  It can be restricted to source
+        code with mode='t' and to byte code with mode='b'.  This has no effect on Lua 5.1.
         """
         ...
     def execute(self, lua_code: str, *args: Any, name: str | None = None, mode: str | None = None) -> object:
         """
         LuaRuntime.execute(self, lua_code, *args, name=None, mode=None)
+
         Execute a Lua program passed in a string.
 
-                The 'name' argument can be used to override the name printed in error messages.
+        The 'name' argument can be used to override the name printed in error messages.
 
-                The 'mode' argument specifies the input type.  By default, both source code and
-                pre-compiled byte code is allowed (mode='bt').  It can be restricted to source
-                code with mode='t' and to byte code with mode='b'.  This has no effect on Lua 5.1.
-        
+        The 'mode' argument specifies the input type.  By default, both source code and
+        pre-compiled byte code is allowed (mode='bt').  It can be restricted to source
+        code with mode='t' and to byte code with mode='b'.  This has no effect on Lua 5.1.
         """
         ...
     def compile(self, lua_code: str, name: str | None = None, mode: str | None = None) -> Callable[..., object]:
         """
         LuaRuntime.compile(self, lua_code, name=None, mode=None)
+
         Compile a Lua program into a callable Lua function.
 
-                The 'name' argument can be used to override the name printed in error messages.
+        The 'name' argument can be used to override the name printed in error messages.
 
-                The 'mode' argument specifies the input type.  By default, both source code and
-                pre-compiled byte code is allowed (mode='bt').  It can be restricted to source
-                code with mode='t' and to byte code with mode='b'.  This has no effect on Lua 5.1.
-        
+        The 'mode' argument specifies the input type.  By default, both source code and
+        pre-compiled byte code is allowed (mode='bt').  It can be restricted to source
+        code with mode='t' and to byte code with mode='b'.  This has no effect on Lua 5.1.
         """
         ...
     def require(self, modulename: str) -> object:
         """
         LuaRuntime.require(self, modulename)
+
         Load a Lua library into the runtime.
         
         """
@@ -263,34 +264,34 @@ class LuaRuntime:
     def globals(self) -> _LuaTable:
         """
         LuaRuntime.globals(self)
+
         Return the globals defined in this Lua runtime as a Lua
-                table.
-        
+        table.
         """
         ...
     def table(self, *items: Any, **kwargs: Any) -> _LuaTable:
         """
         LuaRuntime.table(self, *items, **kwargs)
+
         Create a new table with the provided items.  Positional
-                arguments are placed in the table in order, keyword arguments
-                are set as key-value pairs.
-        
+        arguments are placed in the table in order, keyword arguments
+        are set as key-value pairs.
         """
         ...
     def table_from(self, *args: Any, recursive: bool = ...) -> _LuaTable:
         """
         LuaRuntime.table_from(self, *args, bool recursive=False)
+
         Create a new table from Python mapping or iterable.
 
-                table_from() accepts either a dict/mapping or an iterable with items.
-                Items from dicts are set as key-value pairs; items from iterables
-                are placed in the table in order.
+        table_from() accepts either a dict/mapping or an iterable with items.
+        Items from dicts are set as key-value pairs; items from iterables
+        are placed in the table in order.
 
-                Nested mappings / iterables are passed to Lua as userdata
-                (wrapped Python objects) by default.  If `recursive` is True,
-                they are converted to Lua tables recursively, handling loops
-                and duplicates via identity de-duplication.
-        
+        Nested mappings / iterables are passed to Lua as userdata
+        (wrapped Python objects) by default.  If `recursive` is True,
+        they are converted to Lua tables recursively, handling loops
+        and duplicates via identity de-duplication.
         """
         ...
     def nogc(self) -> _LuaNoGC:
@@ -310,20 +311,21 @@ class LuaRuntime:
     def set_max_memory(self, max_memory: int, total: bool = False) -> None:
         """
         LuaRuntime.set_max_memory(self, size_t max_memory, total=False)
+
         Set maximum allowed memory for this LuaRuntime.
 
-                If `max_memory` is 0, there will be no limit.
-                If ``total`` is True, the base memory used by the LuaRuntime itself
-                will be included in the memory limit.
+        If `max_memory` is 0, there will be no limit.
+        If ``total`` is True, the base memory used by the LuaRuntime itself
+        will be included in the memory limit.
 
-                If max_memory was set to None during creation, this will raise a
-                RuntimeError.
-        
+        If max_memory was set to None during creation, this will raise a
+        RuntimeError.
         """
         ...
     def set_overflow_handler(self, overflow_handler: Callable[..., None]) -> None:
         """
         LuaRuntime.set_overflow_handler(self, overflow_handler)
+
         Set the overflow handler function that is called on failures to pass large numbers to Lua.
         
         """
