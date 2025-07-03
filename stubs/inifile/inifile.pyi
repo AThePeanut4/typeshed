@@ -171,9 +171,19 @@ class IniData(MutableMapping[str, str]):
         ...
     def __len__(self) -> int: ...
     @overload
-    def get(self, name: str, default: None = None) -> str | None: ...
+    def get(self, name: str, default: None = None) -> str | None:
+        """
+        Return a value for a key or return a default if the key does
+        not exist.
+        """
+        ...
     @overload
-    def get(self, name: str, default: str) -> str: ...
+    def get(self, name: str, default: str) -> str:
+        """
+        Return a value for a key or return a default if the key does
+        not exist.
+        """
+        ...
     @overload
     def get(self, name: str, default: _T) -> str | _T:
         """
