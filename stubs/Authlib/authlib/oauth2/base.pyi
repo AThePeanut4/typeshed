@@ -2,7 +2,13 @@ from _typeshed import Incomplete
 
 from authlib.common.errors import AuthlibHTTPError
 
-def invalid_error_characters(text: str) -> list[str]: ...
+def invalid_error_characters(text: str) -> list[str]:
+    """
+    Check whether the string only contains characters from the restricted ASCII set defined in RFC6749 for errors.
+
+    https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1
+    """
+    ...
 
 class OAuth2Error(AuthlibHTTPError):
     state: Incomplete
