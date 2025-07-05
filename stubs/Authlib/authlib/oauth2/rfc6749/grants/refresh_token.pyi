@@ -59,14 +59,7 @@ class RefreshTokenGrant(BaseGrant, TokenEndpointMixin):
             grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
         """
         ...
-    def create_token_response(self) -> _ServerResponse:
-        """
-        If valid and authorized, the authorization server issues an access
-        token as described in Section 5.1.  If the request failed
-        verification or is invalid, the authorization server returns an error
-        response as described in Section 5.2.
-        """
-        ...
+    def create_token_response(self) -> _ServerResponse: ...
     def issue_token(self, user, refresh_token: TokenMixin) -> dict[str, str | int]: ...
     def authenticate_refresh_token(self, refresh_token: str) -> TokenMixin:
         """

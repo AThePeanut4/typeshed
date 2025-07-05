@@ -75,34 +75,7 @@ class ResourceOwnerPasswordCredentialsGrant(BaseGrant, TokenEndpointMixin):
             grant_type=password&username=johndoe&password=A3ddj3w
         """
         ...
-    def create_token_response(self):
-        """
-        If the access token request is valid and authorized, the
-        authorization server issues an access token and optional refresh
-        token as described in Section 5.1.  If the request failed client
-        authentication or is invalid, the authorization server returns an
-        error response as described in Section 5.2.
-
-        An example successful response:
-
-        .. code-block:: http
-
-            HTTP/1.1 200 OK
-            Content-Type: application/json
-            Cache-Control: no-store
-            Pragma: no-cache
-
-            {
-                "access_token":"2YotnFZFEjr1zCsicMWpAA",
-                "token_type":"example",
-                "expires_in":3600,
-                "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
-                "example_parameter":"example_value"
-            }
-
-        :returns: (status_code, body, headers)
-        """
-        ...
+    def create_token_response(self): ...
     def authenticate_user(self, username, password) -> None:
         """
         Validate the resource owner password credentials using its

@@ -120,9 +120,16 @@ class HybridIDToken(ImplicitIDToken):
         ...
 
 class UserInfo(dict[str, object]):
+    """
+    The standard claims of a UserInfo object. Defined per `Section 5.1`_.
+
+    .. _`Section 5.1`: http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+    """
     REGISTERED_CLAIMS: list[str]
     SCOPES_CLAIMS_MAPPING: dict[str, list[str]]
-    def filter(self, scope: str) -> UserInfo: ...
+    def filter(self, scope: str) -> UserInfo:
+        """Return a new UserInfo object containing only the claims matching the scope passed in parameter."""
+        ...
     def __getattr__(self, key): ...
 
 def get_claim_cls_by_response_type(response_type): ...

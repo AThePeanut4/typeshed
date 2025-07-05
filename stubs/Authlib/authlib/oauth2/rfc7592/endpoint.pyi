@@ -50,7 +50,7 @@ class ClientConfigurationEndpoint:
         Developers MUST implement this method in subclass::
 
             def authenticate_client(self, request):
-                client_id = request.data.get("client_id")
+                client_id = request.payload.data.get("client_id")
                 return Client.get(client_id=client_id)
 
         :return: client instance
@@ -68,7 +68,7 @@ class ClientConfigurationEndpoint:
         ...
     def check_permission(self, client, request) -> None:
         """
-        Checks wether the current client is allowed to be accessed, edited
+        Checks whether the current client is allowed to be accessed, edited
         or deleted. Developers MUST implement it in subclass, e.g.::
 
             def check_permission(self, client, request):

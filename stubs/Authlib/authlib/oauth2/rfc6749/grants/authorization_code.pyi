@@ -136,78 +136,8 @@ class AuthorizationCodeGrant(BaseGrant, AuthorizationEndpointMixin, TokenEndpoin
         :returns: (status_code, body, headers)
         """
         ...
-    def validate_token_request(self) -> None:
-        """
-        The client makes a request to the token endpoint by sending the
-        following parameters using the "application/x-www-form-urlencoded"
-        format per `Section 4.1.3`_:
-
-        grant_type
-             REQUIRED.  Value MUST be set to "authorization_code".
-
-        code
-             REQUIRED.  The authorization code received from the
-             authorization server.
-
-        redirect_uri
-             REQUIRED, if the "redirect_uri" parameter was included in the
-             authorization request as described in Section 4.1.1, and their
-             values MUST be identical.
-
-        client_id
-             REQUIRED, if the client is not authenticating with the
-             authorization server as described in Section 3.2.1.
-
-        If the client type is confidential or the client was issued client
-        credentials (or assigned other authentication requirements), the
-        client MUST authenticate with the authorization server as described
-        in Section 3.2.1.
-
-        For example, the client makes the following HTTP request using TLS:
-
-        .. code-block:: http
-
-            POST /token HTTP/1.1
-            Host: server.example.com
-            Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
-            Content-Type: application/x-www-form-urlencoded
-
-            grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
-            &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb
-
-        .. _`Section 4.1.3`: https://tools.ietf.org/html/rfc6749#section-4.1.3
-        """
-        ...
-    def create_token_response(self) -> _ServerResponse:
-        """
-        If the access token request is valid and authorized, the
-        authorization server issues an access token and optional refresh
-        token as described in Section 5.1.  If the request client
-        authentication failed or is invalid, the authorization server returns
-        an error response as described in Section 5.2. Per `Section 4.1.4`_.
-
-        An example successful response:
-
-        .. code-block:: http
-
-            HTTP/1.1 200 OK
-            Content-Type: application/json
-            Cache-Control: no-store
-            Pragma: no-cache
-
-            {
-                "access_token":"2YotnFZFEjr1zCsicMWpAA",
-                "token_type":"example",
-                "expires_in":3600,
-                "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
-                "example_parameter":"example_value"
-            }
-
-        :returns: (status_code, body, headers)
-
-        .. _`Section 4.1.4`: https://tools.ietf.org/html/rfc6749#section-4.1.4
-        """
-        ...
+    def validate_token_request(self) -> None: ...
+    def create_token_response(self) -> _ServerResponse: ...
     def generate_authorization_code(self) -> str:
         """
         "The method to generate "code" value for authorization code data.
@@ -227,8 +157,8 @@ class AuthorizationCodeGrant(BaseGrant, AuthorizationEndpointMixin, TokenEndpoin
                 item = AuthorizationCode(
                     code=code,
                     client_id=client.client_id,
-                    redirect_uri=request.redirect_uri,
-                    scope=request.scope,
+                    redirect_uri=request.payload.redirect_uri,
+                    scope=request.payload.scope,
                     user_id=request.user.id,
                 )
                 item.save()

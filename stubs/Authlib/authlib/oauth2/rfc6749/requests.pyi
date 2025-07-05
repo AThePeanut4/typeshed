@@ -8,12 +8,7 @@ class OAuth2Payload:
     @property
     def data(self) -> dict[str, str]: ...
     @property
-    def datalist(self) -> dict[str, list[Incomplete]]:
-        """
-        Return all the data in query parameters and the body of the request as a dictionary
-        with all the values in lists.
-        """
-        ...
+    def datalist(self) -> dict[str, list[Incomplete]]: ...
     @property
     def client_id(self) -> str:
         """

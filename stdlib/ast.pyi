@@ -2125,7 +2125,13 @@ if sys.version_info >= (3, 13):
         type_comments: bool = False,
         feature_version: None | int | tuple[int, int] = None,
         optimize: Literal[-1, 0, 1, 2] = -1,
-    ) -> mod: ...
+    ) -> mod:
+        """
+        Parse the source into an AST node.
+        Equivalent to compile(source, filename, mode, PyCF_ONLY_AST).
+        Pass type_comments=True to get back type comments where the syntax allows.
+        """
+        ...
 
 else:
     @overload
@@ -2238,7 +2244,13 @@ else:
         *,
         type_comments: bool = False,
         feature_version: None | int | tuple[int, int] = None,
-    ) -> mod: ...
+    ) -> mod:
+        """
+        Parse the source into an AST node.
+        Equivalent to compile(source, filename, mode, PyCF_ONLY_AST).
+        Pass type_comments=True to get back type comments where the syntax allows.
+        """
+        ...
 
 def literal_eval(node_or_string: str | AST) -> Any:
     """

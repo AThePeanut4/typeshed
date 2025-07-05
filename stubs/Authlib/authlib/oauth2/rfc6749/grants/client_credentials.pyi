@@ -55,30 +55,4 @@ class ClientCredentialsGrant(BaseGrant, TokenEndpointMixin):
         The authorization server MUST authenticate the client.
         """
         ...
-    def create_token_response(self):
-        """
-        If the access token request is valid and authorized, the
-        authorization server issues an access token as described in
-        Section 5.1.  A refresh token SHOULD NOT be included.  If the request
-        failed client authentication or is invalid, the authorization server
-        returns an error response as described in Section 5.2.
-
-        An example successful response:
-
-        .. code-block:: http
-
-            HTTP/1.1 200 OK
-            Content-Type: application/json
-            Cache-Control: no-store
-            Pragma: no-cache
-
-            {
-                "access_token":"2YotnFZFEjr1zCsicMWpAA",
-                "token_type":"example",
-                "expires_in":3600,
-                "example_parameter":"example_value"
-            }
-
-        :returns: (status_code, body, headers)
-        """
-        ...
+    def create_token_response(self): ...

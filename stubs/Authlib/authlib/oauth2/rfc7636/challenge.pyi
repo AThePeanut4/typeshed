@@ -33,5 +33,25 @@ class CodeChallenge:
     def __call__(self, grant) -> None: ...
     def validate_code_challenge(self, grant, redirect_uri) -> None: ...
     def validate_code_verifier(self, grant, result) -> None: ...
-    def get_authorization_code_challenge(self, authorization_code): ...
-    def get_authorization_code_challenge_method(self, authorization_code): ...
+    def get_authorization_code_challenge(self, authorization_code):
+        """
+        Get "code_challenge" associated with this authorization code.
+        Developers MAY re-implement it in subclass, the default logic::
+
+            def get_authorization_code_challenge(self, authorization_code):
+                return authorization_code.code_challenge
+
+        :param authorization_code: the instance of authorization_code
+        """
+        ...
+    def get_authorization_code_challenge_method(self, authorization_code):
+        """
+        Get "code_challenge_method" associated with this authorization code.
+        Developers MAY re-implement it in subclass, the default logic::
+
+            def get_authorization_code_challenge_method(self, authorization_code):
+                return authorization_code.code_challenge_method
+
+        :param authorization_code: the instance of authorization_code
+        """
+        ...

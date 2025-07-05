@@ -169,10 +169,78 @@ class AuthorizationCodeMixin:
         ...
 
 class TokenMixin:
-    def check_client(self, client) -> bool: ...
-    def get_scope(self) -> str: ...
-    def get_expires_in(self) -> int: ...
-    def is_expired(self) -> bool: ...
-    def is_revoked(self) -> bool: ...
-    def get_user(self): ...
-    def get_client(self) -> ClientMixin: ...
+    def check_client(self, client) -> bool:
+        """
+        A method to check if this token is issued to the given client.
+        For instance, ``client_id`` is saved on token table::
+
+            def check_client(self, client):
+                return self.client_id == client.client_id
+
+        :return: bool
+        """
+        ...
+    def get_scope(self) -> str:
+        """
+        A method to get scope of the authorization code. For instance,
+        the column is called ``scope``::
+
+            def get_scope(self):
+                return self.scope
+
+        :return: scope string
+        """
+        ...
+    def get_expires_in(self) -> int:
+        """
+        A method to get the ``expires_in`` value of the token. e.g.
+        the column is called ``expires_in``::
+
+            def get_expires_in(self):
+                return self.expires_in
+
+        :return: timestamp int
+        """
+        ...
+    def is_expired(self) -> bool:
+        """
+        A method to define if this token is expired. For instance,
+        there is a column ``expired_at`` in the table::
+
+            def is_expired(self):
+                return self.expired_at < now
+
+        :return: boolean
+        """
+        ...
+    def is_revoked(self) -> bool:
+        """
+        A method to define if this token is revoked. For instance,
+        there is a boolean column ``revoked`` in the table::
+
+            def is_revoked(self):
+                return self.revoked
+
+        :return: boolean
+        """
+        ...
+    def get_user(self):
+        """
+        A method to get the user object associated with this token:
+
+        .. code-block::
+
+            def get_user(self):
+                return User.get(self.user_id)
+        """
+        ...
+    def get_client(self) -> ClientMixin:
+        """
+        A method to get the client object associated with this token:
+
+        .. code-block::
+
+            def get_client(self):
+                return Client.get(self.client_id)
+        """
+        ...

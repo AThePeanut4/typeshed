@@ -81,13 +81,7 @@ class DeviceCodeGrant(BaseGrant, TokenEndpointMixin):
             &client_id=1406020730
         """
         ...
-    def create_token_response(self):
-        """
-        If the access token request is valid and authorized, the
-        authorization server issues an access token and optional refresh
-        token.
-        """
-        ...
+    def create_token_response(self): ...
     def validate_device_credential(self, credential): ...
     def query_device_credential(self, device_code) -> None:
         """

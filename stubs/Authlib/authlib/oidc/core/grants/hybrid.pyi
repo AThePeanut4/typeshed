@@ -26,9 +26,9 @@ class OpenIDHybridGrant(OpenIDImplicitGrant):
                 auth_code = AuthorizationCode(
                     code=code,
                     client_id=client.client_id,
-                    redirect_uri=request.redirect_uri,
-                    scope=request.scope,
-                    nonce=request.data.get("nonce"),
+                    redirect_uri=request.payload.redirect_uri,
+                    scope=request.payload.scope,
+                    nonce=request.payload.data.get("nonce"),
                     user_id=request.user.id,
                 )
                 auth_code.save()
