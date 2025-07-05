@@ -1,3 +1,4 @@
+from _typeshed import SupportsRead
 from collections.abc import Iterator
 from io import StringIO
 from typing import IO, Any, Literal, TypedDict, overload, type_check_only
@@ -190,157 +191,11 @@ class ImageCollection(Collection[Image]):
         platform: str | None = None,
         isolation: str | None = None,
         use_config_proxy: bool = True,
-    ) -> tuple[Image, Iterator[JSON]]:
-        """
-        Build an image and return it. Similar to the ``docker build``
-        command. Either ``path`` or ``fileobj`` must be set.
-
-        If you already have a tar file for the Docker build context (including
-        a Dockerfile), pass a readable file-like object to ``fileobj``
-        and also pass ``custom_context=True``. If the stream is also
-        compressed, set ``encoding`` to the correct value (e.g ``gzip``).
-
-        If you want to get the raw output of the build, use the
-        :py:meth:`~docker.api.build.BuildApiMixin.build` method in the
-        low-level API.
-
-        Args:
-            path (str): Path to the directory containing the Dockerfile
-            fileobj: A file object to use as the Dockerfile. (Or a file-like
-                object)
-            tag (str): A tag to add to the final image
-            quiet (bool): Whether to return the status
-            nocache (bool): Don't use the cache when set to ``True``
-            rm (bool): Remove intermediate containers. The ``docker build``
-                command now defaults to ``--rm=true``, but we have kept the old
-                default of `False` to preserve backward compatibility
-            timeout (int): HTTP timeout
-            custom_context (bool): Optional if using ``fileobj``
-            encoding (str): The encoding for a stream. Set to ``gzip`` for
-                compressing
-            pull (bool): Downloads any updates to the FROM image in Dockerfiles
-            forcerm (bool): Always remove intermediate containers, even after
-                unsuccessful builds
-            dockerfile (str): path within the build context to the Dockerfile
-            buildargs (dict): A dictionary of build arguments
-            container_limits (dict): A dictionary of limits applied to each
-                container created by the build process. Valid keys:
-
-                - memory (int): set memory limit for build
-                - memswap (int): Total memory (memory + swap), -1 to disable
-                    swap
-                - cpushares (int): CPU shares (relative weight)
-                - cpusetcpus (str): CPUs in which to allow execution, e.g.,
-                    ``"0-3"``, ``"0,1"``
-            shmsize (int): Size of `/dev/shm` in bytes. The size must be
-                greater than 0. If omitted the system uses 64MB
-            labels (dict): A dictionary of labels to set on the image
-            cache_from (list): A list of images used for build cache
-                resolution
-            target (str): Name of the build-stage to build in a multi-stage
-                Dockerfile
-            network_mode (str): networking mode for the run commands during
-                build
-            squash (bool): Squash the resulting images layers into a
-                single layer.
-            extra_hosts (dict): Extra hosts to add to /etc/hosts in building
-                containers, as a mapping of hostname to IP address.
-            platform (str): Platform in the format ``os[/arch[/variant]]``.
-            isolation (str): Isolation technology used during build.
-                Default: `None`.
-            use_config_proxy (bool): If ``True``, and if the docker client
-                configuration file (``~/.docker/config.json`` by default)
-                contains a proxy configuration, the corresponding environment
-                variables will be set in the container being built.
-
-        Returns:
-            (tuple): The first item is the :py:class:`Image` object for the
-                image that was built. The second item is a generator of the
-                build logs as JSON-decoded objects.
-
-        Raises:
-            :py:class:`docker.errors.BuildError`
-                If there is an error during the build.
-            :py:class:`docker.errors.APIError`
-                If the server returns any other error.
-            ``TypeError``
-                If neither ``path`` nor ``fileobj`` is specified.
-        """
-        ...
-    def get(self, name: str) -> Image:
-        """
-        Gets an image.
-
-        Args:
-            name (str): The name of the image.
-
-        Returns:
-            (:py:class:`Image`): The image.
-
-        Raises:
-            :py:class:`docker.errors.ImageNotFound`
-                If the image does not exist.
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def get_registry_data(self, name, auth_config: dict[str, Any] | None = None) -> RegistryData:
-        """
-        Gets the registry data for an image.
-
-        Args:
-            name (str): The name of the image.
-            auth_config (dict): Override the credentials that are found in the
-                config for this request.  ``auth_config`` should contain the
-                ``username`` and ``password`` keys to be valid.
-
-        Returns:
-            (:py:class:`RegistryData`): The data object.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def list(self, name: str | None = None, all: bool = False, filters: dict[str, Any] | None = None) -> _ImageList:
-        """
-        List images on the server.
-
-        Args:
-            name (str): Only show images belonging to the repository ``name``
-            all (bool): Show intermediate image layers. By default, these are
-                filtered out.
-            filters (dict): Filters to be processed on the image list.
-                Available filters:
-                - ``dangling`` (bool)
-                - `label` (str|list): format either ``"key"``, ``"key=value"``
-                    or a list of such.
-
-        Returns:
-            (list of :py:class:`Image`): The images.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def load(self, data: bytes) -> _ImageList:
-        """
-        Load an image that was previously saved using
-        :py:meth:`~docker.models.images.Image.save` (or ``docker save``).
-        Similar to ``docker load``.
-
-        Args:
-            data (binary): Image data to be loaded.
-
-        Returns:
-            (list of :py:class:`Image`): The images.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
+    ) -> tuple[Image, Iterator[JSON]]: ...
+    def get(self, name: str) -> Image: ...
+    def get_registry_data(self, name, auth_config: dict[str, Any] | None = None) -> RegistryData: ...
+    def list(self, name: str | None = None, all: bool = False, filters: dict[str, Any] | None = None) -> _ImageList: ...
+    def load(self, data: bytes | SupportsRead[bytes]) -> _ImageList: ...
     @overload
     def pull(
         self,
