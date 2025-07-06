@@ -428,16 +428,62 @@ else:
         """Clear the internal type lookup cache."""
         ...
 
-def _current_frames() -> dict[int, FrameType]: ...
-def _getframe(depth: int = 0, /) -> FrameType: ...
+def _current_frames() -> dict[int, FrameType]:
+    """
+    Return a dict mapping each thread's thread id to its current stack frame.
+
+    This function should be used for specialized purposes only.
+    """
+    ...
+def _getframe(depth: int = 0, /) -> FrameType:
+    """
+    Return a frame object from the call stack.
+
+    If optional integer depth is given, return the frame object that many
+    calls below the top of the stack.  If that is deeper than the call
+    stack, ValueError is raised.  The default for depth is zero, returning
+    the frame at the top of the call stack.
+
+    This function should be used for internal and specialized purposes
+    only.
+    """
+    ...
 
 if sys.version_info >= (3, 12):
-    def _getframemodulename(depth: int = 0) -> str | None: ...
+    def _getframemodulename(depth: int = 0) -> str | None:
+        """
+        Return the name of the module for a calling frame.
 
-def _debugmallocstats() -> None: ...
-def __displayhook__(object: object, /) -> None: ...
-def __excepthook__(exctype: type[BaseException], value: BaseException, traceback: TracebackType | None, /) -> None: ...
-def exc_info() -> OptExcInfo: ...
+        The default depth returns the module containing the call to this API.
+        A more typical use in a library will pass a depth of 1 to get the user's
+        module rather than the library module.
+
+        If no frame, module, or name can be found, returns None.
+        """
+        ...
+
+def _debugmallocstats() -> None:
+    """
+    Print summary info to stderr about the state of pymalloc's structures.
+
+    In Py_DEBUG mode, also perform some expensive internal consistency
+    checks.
+    """
+    ...
+def __displayhook__(object: object, /) -> None:
+    """Print an object to sys.stdout and also save it in builtins._"""
+    ...
+def __excepthook__(exctype: type[BaseException], value: BaseException, traceback: TracebackType | None, /) -> None:
+    """Handle an exception by displaying it with a traceback on sys.stderr."""
+    ...
+def exc_info() -> OptExcInfo:
+    """
+    Return current exception information: (type, value, traceback).
+
+    Return information about the most recent exception caught by an except
+    clause in the current stack frame or in an older stack frame.
+    """
+    ...
 
 if sys.version_info >= (3, 11):
     def exception() -> BaseException | None:
