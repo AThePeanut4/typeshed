@@ -1,14 +1,14 @@
 import io
 import json
 import os
-from _typeshed import Incomplete, SupportsRead, Unused
+from _typeshed import Incomplete, SupportsRead
 from collections.abc import Callable, Hashable
 from typing import Any, Literal, final, overload
 from typing_extensions import Self
 
 import pandas as pd
 from numpy.typing import ArrayLike
-from pandas._typing import Axes, AxisIndex, Dtype
+from pandas._typing import Axes, Dtype
 from pyproj import CRS
 from shapely.geometry.base import BaseGeometry
 
@@ -366,32 +366,9 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         """
         ...
     @property
-    def z(self) -> pd.Series[float]:
-        """
-        Return the z location of point geometries in a GeoSeries
-
-        Returns
-        -------
-        pandas.Series
-
-        Examples
-        --------
-
-        >>> from shapely.geometry import Point
-        >>> s = geopandas.GeoSeries([Point(1, 1, 1), Point(2, 2, 2), Point(3, 3, 3)])
-        >>> s.z
-        0    1.0
-        1    2.0
-        2    3.0
-        dtype: float64
-
-        See Also
-        --------
-
-        GeoSeries.x
-        GeoSeries.y
-        """
-        ...
+    def z(self) -> pd.Series[float]: ...
+    @property
+    def m(self) -> pd.Series[float]: ...
     # Keep inline with GeoDataFrame.from_file and geopandas.io.file._read_file
     @classmethod
     def from_file(
@@ -450,7 +427,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         data: ArrayLike,  # array-like of bytes handled by shapely.from_wkb(data)
         index: Axes | None = None,
         crs: _ConvertibleToCRS | None = None,
-        on_invalid: Literal["raise", "warn", "ignore"] = "raise",
+        on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise",
         *,
         dtype: Dtype | None = None,
         name: Hashable = None,
@@ -497,7 +474,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         data: ArrayLike,  # array-like of str handled by shapely.from_wkt(data)
         index: Axes | None = None,
         crs: _ConvertibleToCRS | None = None,
-        on_invalid: Literal["raise", "warn", "ignore"] = "raise",
+        on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise",
         *,
         dtype: Dtype | None = None,
         name: Hashable = None,
@@ -692,172 +669,8 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         encoding: str | None = None,
         overwrite: bool | None = ...,
         **kwargs,  # engine and driver dependent
-    ) -> None:
-        """
-        Write the ``GeoSeries`` to a file.
-
-        By default, an ESRI shapefile is written, but any OGR data source
-        supported by Pyogrio or Fiona can be written.
-
-        Parameters
-        ----------
-        filename : string
-            File path or file handle to write to. The path may specify a
-            GDAL VSI scheme.
-        driver : string, default None
-            The OGR format driver used to write the vector file.
-            If not specified, it attempts to infer it from the file extension.
-            If no extension is specified, it saves ESRI Shapefile to a folder.
-        index : bool, default None
-            If True, write index into one or more columns (for MultiIndex).
-            Default None writes the index into one or more columns only if
-            the index is named, is a MultiIndex, or has a non-integer data
-            type. If False, no index is written.
-
-            .. versionadded:: 0.7
-                Previously the index was not written.
-        mode : string, default 'w'
-            The write mode, 'w' to overwrite the existing file and 'a' to append.
-            Not all drivers support appending. The drivers that support appending
-            are listed in fiona.supported_drivers or
-            https://github.com/Toblerity/Fiona/blob/master/fiona/drvsupport.py
-        crs : pyproj.CRS, default None
-            If specified, the CRS is passed to Fiona to
-            better control how the file is written. If None, GeoPandas
-            will determine the crs based on crs df attribute.
-            The value can be anything accepted
-            by :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
-            such as an authority string (eg "EPSG:4326") or a WKT string. The keyword
-            is not supported for the "pyogrio" engine.
-        engine : str, "pyogrio" or "fiona"
-            The underlying library that is used to write the file. Currently, the
-            supported options are "pyogrio" and "fiona". Defaults to "pyogrio" if
-            installed, otherwise tries "fiona".
-        **kwargs :
-            Keyword args to be passed to the engine, and can be used to write
-            to multi-layer data, store data within archives (zip files), etc.
-            In case of the "pyogrio" engine, the keyword arguments are passed to
-            `pyogrio.write_dataframe`. In case of the "fiona" engine, the keyword
-            arguments are passed to fiona.open`. For more information on possible
-            keywords, type: ``import pyogrio; help(pyogrio.write_dataframe)``.
-
-        See Also
-        --------
-        GeoDataFrame.to_file : write GeoDataFrame to file
-        read_file : read file to GeoDataFrame
-
-        Examples
-        --------
-
-        >>> s.to_file('series.shp')  # doctest: +SKIP
-
-        >>> s.to_file('series.gpkg', driver='GPKG', layer='name1')  # doctest: +SKIP
-
-        >>> s.to_file('series.geojson', driver='GeoJSON')  # doctest: +SKIP
-        """
-        ...
-    # *** TODO: compare `__getitem__` with pandas-stubs ***
-    # def __getitem__(self, key): ...
-    # *** `sort_index` is annotated with `-> Self` in pandas-stubs; no need to override it ***
-    # def sort_index(self, *args, **kwargs): ...
-    def take(self, indices: ArrayLike, axis: AxisIndex = 0, **kwargs: Unused) -> GeoSeries:
-        r"""
-        One-dimensional ndarray with axis labels (including time series).
-
-        Labels need not be unique but must be a hashable type. The object
-        supports both integer- and label-based indexing and provides a host of
-        methods for performing operations involving the index. Statistical
-        methods from ndarray have been overridden to automatically exclude
-        missing data (currently represented as NaN).
-
-        Operations between Series (+, -, /, \*, \*\*) align values based on their
-        associated index values-- they need not be the same length. The result
-        index will be the sorted union of the two indexes.
-
-        Parameters
-        ----------
-        data : array-like, Iterable, dict, or scalar value
-            Contains data stored in Series. If data is a dict, argument order is
-            maintained.
-        index : array-like or Index (1d)
-            Values must be hashable and have the same length as `data`.
-            Non-unique index values are allowed. Will default to
-            RangeIndex (0, 1, 2, ..., n) if not provided. If data is dict-like
-            and index is None, then the keys in the data are used as the index. If the
-            index is not None, the resulting Series is reindexed with the index values.
-        dtype : str, numpy.dtype, or ExtensionDtype, optional
-            Data type for the output Series. If not specified, this will be
-            inferred from `data`.
-            See the :ref:`user guide <basics.dtypes>` for more usages.
-        name : Hashable, default None
-            The name to give to the Series.
-        copy : bool, default False
-            Copy input data. Only affects Series or 1d ndarray input. See examples.
-
-        Notes
-        -----
-        Please reference the :ref:`User Guide <basics.series>` for more information.
-
-        Examples
-        --------
-        Constructing Series from a dictionary with an Index specified
-
-        >>> d = {'a': 1, 'b': 2, 'c': 3}
-        >>> ser = pd.Series(data=d, index=['a', 'b', 'c'])
-        >>> ser
-        a   1
-        b   2
-        c   3
-        dtype: int64
-
-        The keys of the dictionary match with the Index values, hence the Index
-        values have no effect.
-
-        >>> d = {'a': 1, 'b': 2, 'c': 3}
-        >>> ser = pd.Series(data=d, index=['x', 'y', 'z'])
-        >>> ser
-        x   NaN
-        y   NaN
-        z   NaN
-        dtype: float64
-
-        Note that the Index is first build with the keys from the dictionary.
-        After this the Series is reindexed with the given Index values, hence we
-        get all NaN as a result.
-
-        Constructing Series from a list with `copy=False`.
-
-        >>> r = [1, 2]
-        >>> ser = pd.Series(r, copy=False)
-        >>> ser.iloc[0] = 999
-        >>> r
-        [1, 2]
-        >>> ser
-        0    999
-        1      2
-        dtype: int64
-
-        Due to input data type the Series has a `copy` of
-        the original data even though `copy=False`, so
-        the data is unchanged.
-
-        Constructing Series from a 1d ndarray with `copy=False`.
-
-        >>> r = np.array([1, 2])
-        >>> ser = pd.Series(r, copy=False)
-        >>> ser.iloc[0] = 999
-        >>> r
-        array([999,   2])
-        >>> ser
-        0    999
-        1      2
-        dtype: int64
-
-        Due to input data type the Series has a `view` on
-        the original data, so
-        the data is changed as well.
-        """
-        ...
+    ) -> None: ...
+    # *** `__getitem__`, `sort_index` and `take` are annotated with `-> Self` in pandas-stubs; no need to override them ***
     # *** `apply` annotation in pandas-stubs is compatible except for deprecated `convert_dtype` argument ***
     # def apply(self, func, convert_dtype: bool | None = None, args=(), **kwargs): ...
     def isna(self) -> pd.Series[bool]:

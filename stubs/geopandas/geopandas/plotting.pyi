@@ -501,7 +501,7 @@ class GeoplotAccessor(PlotAccessor):
     @overload
     def __call__(
         self,
-        column: Hashable | None = None,
+        column: Hashable | pd.Series | pd.Index | NDArray | None = None,
         cmap: str | Colormap | None = None,
         color: _ColorOrColors | None = None,
         ax: Axes | None = None,
@@ -532,7 +532,7 @@ class GeoplotAccessor(PlotAccessor):
     ) -> Axes: ...
     def geo(
         self,
-        column: Hashable | None = None,
+        column: Hashable | pd.Series | pd.Index | NDArray | None = None,
         cmap: str | Colormap | None = None,
         color: _ColorOrColors | None = None,
         ax: Axes | None = None,

@@ -1,15 +1,14 @@
-"""Definitions and behavior for vCard 3.0"""
+from typing import AnyStr
 
-from _typeshed import Incomplete
-
+from .base import ContentLine
 from .behavior import Behavior
 
 class Name:
-    family: Incomplete
-    given: Incomplete
-    additional: Incomplete
-    prefix: Incomplete
-    suffix: Incomplete
+    family: str | list[str]
+    given: str | list[str]
+    additional: str | list[str]
+    prefix: str | list[str]
+    suffix: str | list[str]
     def __init__(
         self,
         family: str | list[str] = "",
@@ -21,19 +20,17 @@ class Name:
         """Each name attribute can be a string or a list of strings."""
         ...
     @staticmethod
-    def toString(val):
-        """Turn a string or array value into a string."""
-        ...
-    def __eq__(self, other): ...
+    def toString(val: str | list[str] | tuple[str, ...]) -> str: ...
+    def __eq__(self, other: object) -> bool: ...
 
 class Address:
-    box: Incomplete
-    extended: Incomplete
-    street: Incomplete
-    city: Incomplete
-    region: Incomplete
-    code: Incomplete
-    country: Incomplete
+    box: str | list[str]
+    extended: str | list[str]
+    street: str | list[str]
+    city: str | list[str]
+    region: str | list[str]
+    code: str | list[str]
+    country: str | list[str]
     def __init__(
         self,
         street: str | list[str] = "",
@@ -47,12 +44,10 @@ class Address:
         """Each name attribute can be a string or a list of strings."""
         ...
     @staticmethod
-    def toString(val, join_char: str = "\n"):
-        """Turn a string or array value into a string."""
-        ...
-    lines: Incomplete
-    one_line: Incomplete
-    def __eq__(self, other): ...
+    def toString(val: str | list[str] | tuple[str, ...], join_char: str = "\n") -> str: ...
+    lines: tuple[str, ...]
+    one_line: tuple[str, ...]
+    def __eq__(self, other: object) -> bool: ...
 
 class VCardTextBehavior(Behavior):
     """
@@ -64,24 +59,13 @@ class VCardTextBehavior(Behavior):
     allowGroup: bool
     base64string: str
     @classmethod
-    def decode(cls, line) -> None:
-        """
-        Remove backslash escaping from line.valueDecode line, either to remove
-        backslash espacing, or to decode base64 encoding. The content line should
-        contain a ENCODING=b for base64 encoding, but Apple Addressbook seems to
-        export a singleton parameter of 'BASE64', which does not match the 3.0
-        vCard spec. If we encouter that, then we transform the parameter to
-        ENCODING=b
-        """
-        ...
+    def decode(cls, line: ContentLine) -> None: ...
     @classmethod
-    def encode(cls, line) -> None:
-        """Backslash escape line.value."""
-        ...
+    def encode(cls, line: ContentLine) -> None: ...
 
 class VCardBehavior(Behavior):
     allowGroup: bool
-    defaultBehavior: Incomplete
+    defaultBehavior: type[VCardTextBehavior]
 
 class VCard3_0(VCardBehavior):
     """vCard 3.0 behavior."""
@@ -89,7 +73,7 @@ class VCard3_0(VCardBehavior):
     description: str
     versionString: str
     isComponent: bool
-    sortFirst: Incomplete
+    sortFirst: tuple[str, ...]
     @classmethod
     def generateImplicitParameters(cls, obj) -> None:
         """
@@ -117,7 +101,7 @@ class Photo(VCardTextBehavior):
     name: str
     description: str
     @classmethod
-    def valueRepr(cls, line): ...
+    def valueRepr(cls, line: ContentLine) -> str: ...
     @classmethod
     def serialize(cls, obj, buf, lineLength, validate, *args, **kwargs) -> None:
         """
@@ -127,22 +111,13 @@ class Photo(VCardTextBehavior):
         """
         ...
 
-def toListOrString(string): ...
-def splitFields(string):
-    """Return a list of strings or lists from a Name or Address."""
-    ...
-def toList(stringOrList): ...
-def serializeFields(obj, order=None):
-    """
-    Turn an object's fields into a ';' and ',' seperated string.
+def toListOrString(string: str) -> str | list[str]: ...
+def splitFields(string: str) -> list[str | list[str]]: ...
+def toList(stringOrList: AnyStr | list[AnyStr]) -> list[AnyStr]: ...
+def serializeFields(obj, order=None): ...
 
-    If order is None, obj should be a list, backslash escape each field and
-    return a ';' separated string.
-    """
-    ...
-
-NAME_ORDER: Incomplete
-ADDRESS_ORDER: Incomplete
+NAME_ORDER: tuple[str, ...]
+ADDRESS_ORDER: tuple[str, ...]
 
 class NameBehavior(VCardBehavior):
     """A structured name."""

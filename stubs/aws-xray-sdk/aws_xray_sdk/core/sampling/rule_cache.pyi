@@ -1,6 +1,6 @@
-from typing import Any
+from typing import Final
 
-TTL: Any
+TTL: Final = 3600
 
 class RuleCache:
     """
@@ -16,6 +16,6 @@ class RuleCache:
     @rules.setter
     def rules(self, v) -> None: ...
     @property
-    def last_updated(self): ...
+    def last_updated(self) -> int | None: ...
     @last_updated.setter
-    def last_updated(self, v) -> None: ...
+    def last_updated(self, v: int | None) -> None: ...

@@ -1,3 +1,11 @@
-"""Standalone file Reader for the reStructuredText markup syntax."""
+from typing import ClassVar, Final, TypeVar
 
-def __getattr__(name: str): ...  # incomplete module
+from docutils import readers
+
+__docformat__: Final = "reStructuredText"
+
+_S = TypeVar("_S", bound=str | bytes)
+
+class Reader(readers.Reader[_S]):
+    document: None  # type: ignore[assignment]
+    config_section_dependencies: ClassVar[tuple[str, ...]]

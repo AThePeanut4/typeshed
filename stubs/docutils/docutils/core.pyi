@@ -10,49 +10,52 @@ custom component objects first, and pass *them* to
 """
 
 from _typeshed import Incomplete
+from typing import Final
+from typing_extensions import deprecated
 
 from docutils import SettingsSpec
-from docutils.writers import _WriterParts
+from docutils.frontend import OptionParser
+from docutils.io import FileInput, Input, Output, StringInput
+from docutils.parsers import Parser
+from docutils.readers import Reader
+from docutils.utils import SystemMessage
+from docutils.writers import Writer, _WriterParts
 
-__docformat__: str
+__docformat__: Final = "reStructuredText"
 
 class Publisher:
-    """A facade encapsulating the high-level logic of a Docutils system."""
-    document: Incomplete
-    reader: Incomplete
-    parser: Incomplete
-    writer: Incomplete
-    source: Incomplete
+    document: Incomplete | None
+    reader: Reader[Incomplete]
+    parser: Parser
+    writer: Writer[Incomplete]
+    source: Input[Incomplete]
     source_class: Incomplete
-    destination: Incomplete
+    destination: Output | None
     destination_class: Incomplete
-    settings: Incomplete
+    settings: dict[str, Incomplete]
     def __init__(
         self,
-        reader=None,
-        parser=None,
-        writer=None,
-        source=None,
+        reader: Reader[Incomplete] | None = None,
+        parser: Parser | None = None,
+        writer: Writer[Incomplete] | None = None,
+        source: Input[Incomplete] | None = None,
         source_class=...,
-        destination=None,
+        destination: Output | None = None,
         destination_class=...,
-        settings=None,
-    ) -> None:
-        """
-        Initial setup.  If any of `reader`, `parser`, or `writer` are not
-        specified, ``set_components()`` or the corresponding ``set_...()``
-        method should be called with component names
-        (`set_reader` sets the parser as well).
-        """
-        ...
-    def set_reader(self, reader_name, parser, parser_name) -> None:
-        """Set `self.reader` by name."""
-        ...
-    def set_writer(self, writer_name) -> None:
-        """Set `self.writer` by name."""
-        ...
-    def set_components(self, reader_name, parser_name, writer_name) -> None: ...
-    def setup_option_parser(self, usage=None, description=None, settings_spec=None, config_section=None, **defaults): ...
+        settings: dict[str, Incomplete] | None = None,
+    ) -> None: ...
+    def set_reader(self, reader_name: str, parser: Parser | None, parser_name: str | None) -> None: ...
+    def set_writer(self, writer_name: str) -> None: ...
+    def set_components(self, reader_name: str, parser_name: str, writer_name: str) -> None: ...
+    @deprecated("Publisher.setup_option_parser is deprecated, and will be removed in Docutils 0.21.")
+    def setup_option_parser(
+        self,
+        usage: str | None = None,
+        description: str | None = None,
+        settings_spec: SettingsSpec | None = None,
+        config_section: str | None = None,
+        **defaults,
+    ) -> OptionParser: ...
     def get_settings(
         self,
         usage: str | None = None,
@@ -74,29 +77,26 @@ class Publisher:
         ...
     def process_programmatic_settings(self, settings_spec, settings_overrides, config_section) -> None: ...
     def process_command_line(
-        self, argv=None, usage=None, description=None, settings_spec=None, config_section=None, **defaults
-    ) -> None:
-        """
-        Parse command line arguments and set ``self.settings``.
-
-        Pass an empty sequence to `argv` to avoid reading `sys.argv`
-        (the default behaviour).
-
-        Set components first (`self.set_reader` & `self.set_writer`).
-        """
-        ...
+        self,
+        argv: list[str] | None = None,
+        usage=None,
+        description: str | None = None,
+        settings_spec=None,
+        config_section=None,
+        **defaults,
+    ) -> None: ...
     def set_io(self, source_path=None, destination_path=None) -> None: ...
     def set_source(self, source=None, source_path=None) -> None: ...
     def set_destination(self, destination=None, destination_path=None) -> None: ...
     def apply_transforms(self) -> None: ...
     def publish(
         self,
-        argv=None,
-        usage=None,
-        description=None,
+        argv: list[str] | None = None,
+        usage: str | None = None,
+        description: str | None = None,
         settings_spec=None,
         settings_overrides=None,
-        config_section=None,
+        config_section: str | None = None,
         enable_exit_status: bool = False,
     ):
         """
@@ -106,52 +106,35 @@ class Publisher:
         """
         ...
     def debugging_dumps(self) -> None: ...
-    def prompt(self) -> None:
-        """Print info and prompt when waiting for input from a terminal."""
-        ...
-    def report_Exception(self, error) -> None: ...
-    def report_SystemMessage(self, error) -> None: ...
-    def report_UnicodeError(self, error) -> None: ...
+    def prompt(self) -> None: ...
+    def report_Exception(self, error: BaseException) -> None: ...
+    def report_SystemMessage(self, error: SystemMessage) -> None: ...
+    def report_UnicodeError(self, error: UnicodeEncodeError) -> None: ...
 
-default_usage: str
-default_description: str
+default_usage: Final[str]
+default_description: Final[str]
 
 def publish_cmdline(
-    reader=None,
+    reader: Reader[Incomplete] | None = None,
     reader_name: str = "standalone",
-    parser=None,
+    parser: Parser | None = None,
     parser_name: str = "restructuredtext",
-    writer=None,
+    writer: Writer[Incomplete] | None = None,
     writer_name: str = "pseudoxml",
     settings=None,
     settings_spec=None,
     settings_overrides=None,
-    config_section=None,
+    config_section: str | None = None,
     enable_exit_status: bool = True,
-    argv=None,
-    usage=...,
-    description=...,
-):
-    """
-    Set up & run a `Publisher` for command-line-based file I/O (input and
-    output file paths taken automatically from the command line).
-    Also return the output as `str` or `bytes` (for binary output document
-    formats).
-
-    Parameters: see `publish_programmatically()` for the remainder.
-
-    - `argv`: Command-line argument list to use instead of ``sys.argv[1:]``.
-    - `usage`: Usage string, output if there's a problem parsing the command
-      line.
-    - `description`: Program description, output for the "--help" option
-      (along with command-line option descriptions).
-    """
-    ...
+    argv: list[str] | None = None,
+    usage: str = ...,
+    description: str = ...,
+): ...
 def publish_file(
     source=None,
-    source_path=None,
+    source_path: FileInput | StringInput | None = None,
     destination=None,
-    destination_path=None,
+    destination_path: FileInput | StringInput | None = None,
     reader=None,
     reader_name: str = "standalone",
     parser=None,
@@ -161,7 +144,7 @@ def publish_file(
     settings=None,
     settings_spec=None,
     settings_overrides=None,
-    config_section=None,
+    config_section: str | None = None,
     enable_exit_status: bool = False,
 ):
     """
@@ -174,8 +157,8 @@ def publish_file(
     ...
 def publish_string(
     source,
-    source_path=None,
-    destination_path=None,
+    source_path: FileInput | StringInput | None = None,
+    destination_path: FileInput | StringInput | None = None,
     reader=None,
     reader_name: str = "standalone",
     parser=None,
@@ -185,16 +168,16 @@ def publish_string(
     settings=None,
     settings_spec=None,
     settings_overrides=None,
-    config_section=None,
+    config_section: str | None = None,
     enable_exit_status: bool = False,
 ):
     'Set up & run a `Publisher` for programmatic use with string I/O.\n\nAccepts a `bytes` or `str` instance as `source`.\n\nThe output is encoded according to the `output_encoding`_ setting;\nthe return value is a `bytes` instance (unless `output_encoding`_ is\n"unicode", cf. `docutils.io.StringOutput.write()`).\n\nParameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nno longer match.\n\n.. _output_encoding:\n    https://docutils.sourceforge.io/docs/user/config.html#output-encoding'
     ...
 def publish_parts(
     source,
-    source_path=None,
+    source_path: FileInput | StringInput | None = None,
     source_class=...,
-    destination_path=None,
+    destination_path: FileInput | StringInput | None = None,
     reader=None,
     reader_name: str = "standalone",
     parser=None,
@@ -203,8 +186,8 @@ def publish_parts(
     writer_name: str = "pseudoxml",
     settings=None,
     settings_spec=None,
-    settings_overrides=None,
-    config_section=None,
+    settings_overrides: dict[str, Incomplete] | None = None,
+    config_section: str | None = None,
     enable_exit_status: bool = False,
 ) -> _WriterParts:
     """
@@ -226,7 +209,7 @@ def publish_parts(
     ...
 def publish_doctree(
     source,
-    source_path=None,
+    source_path: FileInput | StringInput | None = None,
     source_class=...,
     reader=None,
     reader_name: str = "standalone",
@@ -235,7 +218,7 @@ def publish_doctree(
     settings=None,
     settings_spec=None,
     settings_overrides=None,
-    config_section=None,
+    config_section: str | None = None,
     enable_exit_status: bool = False,
 ):
     """
@@ -246,13 +229,13 @@ def publish_doctree(
     ...
 def publish_from_doctree(
     document,
-    destination_path=None,
+    destination_path: FileInput | StringInput | None = None,
     writer=None,
     writer_name: str = "pseudoxml",
     settings=None,
     settings_spec=None,
     settings_overrides=None,
-    config_section=None,
+    config_section: str | None = None,
     enable_exit_status: bool = False,
 ):
     'Set up & run a `Publisher` to render from an existing document tree\ndata structure. For programmatic use with string output\n(`bytes` or `str`, cf. `publish_string()`).\n\nNote that ``document.settings`` is overridden; if you want to use the\nsettings of the original `document`, pass ``settings=document.settings``.\n\nAlso, new `document.transformer` and `document.reporter` objects are\ngenerated.\n\nParameters: `document` is a `docutils.nodes.document` object, an existing\ndocument tree.\n\nOther parameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nof the `io.StringOutput` class no longer match.'
@@ -267,11 +250,11 @@ def publish_cmdline_to_binary(
     settings=None,
     settings_spec=None,
     settings_overrides=None,
-    config_section=None,
+    config_section: str | None = None,
     enable_exit_status: bool = True,
-    argv=None,
-    usage=...,
-    description=...,
+    argv: list[str] | None = None,
+    usage: str = ...,
+    description: str = ...,
     destination=None,
     destination_class=...,
 ):
@@ -293,119 +276,25 @@ def publish_cmdline_to_binary(
     """
     ...
 def publish_programmatically(
-    source_class,
+    source_class: type[FileInput],
     source,
-    source_path,
+    source_path: FileInput | StringInput,
     destination_class,
     destination,
-    destination_path,
+    destination_path: FileInput | StringInput,
     reader,
-    reader_name,
+    reader_name: str,
     parser,
-    parser_name,
+    parser_name: str,
     writer,
-    writer_name,
+    writer_name: str,
     settings,
     settings_spec,
     settings_overrides,
-    config_section,
-    enable_exit_status,
-):
-    """
-    Set up & run a `Publisher` for custom programmatic use.
-
-    Return the output (as `str` or `bytes`, depending on `destination_class`,
-    writer, and the "output_encoding" setting) and the Publisher object.
-
-    Applications should not need to call this function directly.  If it does
-    seem to be necessary to call this function directly, please write to the
-    Docutils-develop mailing list
-    <https://docutils.sourceforge.io/docs/user/mailing-lists.html#docutils-develop>.
-
-    Parameters:
-
-    * `source_class` **required**: The class for dynamically created source
-      objects.  Typically `io.FileInput` or `io.StringInput`.
-
-    * `source`: Type depends on `source_class`:
-
-      - If `source_class` is `io.FileInput`: Either a file-like object
-        (must have 'read' and 'close' methods), or ``None``
-        (`source_path` is opened).  If neither `source` nor
-        `source_path` are supplied, `sys.stdin` is used.
-
-      - If `source_class` is `io.StringInput` **required**:
-        The input as either a `bytes` object (ensure the 'input_encoding'
-        setting matches its encoding) or a `str` object.
-
-    * `source_path`: Type depends on `source_class`:
-
-      - `io.FileInput`: Path to the input file, opened if no `source`
-        supplied.
-
-      - `io.StringInput`: Optional.  Path to the file or name of the
-        object that produced `source`.  Only used for diagnostic output.
-
-    * `destination_class` **required**: The class for dynamically created
-      destination objects.  Typically `io.FileOutput` or `io.StringOutput`.
-
-    * `destination`: Type depends on `destination_class`:
-
-      - `io.FileOutput`: Either a file-like object (must have 'write' and
-        'close' methods), or ``None`` (`destination_path` is opened).  If
-        neither `destination` nor `destination_path` are supplied,
-        `sys.stdout` is used.
-
-      - `io.StringOutput`: Not used; pass ``None``.
-
-    * `destination_path`: Type depends on `destination_class`:
-
-      - `io.FileOutput`: Path to the output file.  Opened if no `destination`
-        supplied.
-
-      - `io.StringOutput`: Path to the file or object which will receive the
-        output; optional.  Used for determining relative paths (stylesheets,
-        source links, etc.).
-
-    * `reader`: A `docutils.readers.Reader` object.
-
-    * `reader_name`: Name or alias of the Reader class to be instantiated if
-      no `reader` supplied.
-
-    * `parser`: A `docutils.parsers.Parser` object.
-
-    * `parser_name`: Name or alias of the Parser class to be instantiated if
-      no `parser` supplied.
-
-    * `writer`: A `docutils.writers.Writer` object.
-
-    * `writer_name`: Name or alias of the Writer class to be instantiated if
-      no `writer` supplied.
-
-    * `settings`: A runtime settings (`docutils.frontend.Values`) object, for
-      dotted-attribute access to runtime settings.  It's the end result of the
-      `SettingsSpec`, config file, and option processing.  If `settings` is
-      passed, it's assumed to be complete and no further setting/config/option
-      processing is done.
-
-    * `settings_spec`: A `docutils.SettingsSpec` subclass or object.  Provides
-      extra application-specific settings definitions independently of
-      components.  In other words, the application becomes a component, and
-      its settings data is processed along with that of the other components.
-      Used only if no `settings` specified.
-
-    * `settings_overrides`: A dictionary containing application-specific
-      settings defaults that override the defaults of other components.
-      Used only if no `settings` specified.
-
-    * `config_section`: A string, the name of the configuration file section
-      for this application.  Overrides the ``config_section`` attribute
-      defined by `settings_spec`.  Used only if no `settings` specified.
-
-    * `enable_exit_status`: Boolean; enable exit status at end of processing?
-    """
-    ...
-def rst2something(writer, documenttype, doc_path: str = "") -> None: ...
+    config_section: str,
+    enable_exit_status: bool,
+) -> tuple[str | bytes | None, Publisher]: ...
+def rst2something(writer: str, documenttype: str, doc_path: str = "") -> None: ...
 def rst2html() -> None: ...
 def rst2html4() -> None: ...
 def rst2html5() -> None: ...

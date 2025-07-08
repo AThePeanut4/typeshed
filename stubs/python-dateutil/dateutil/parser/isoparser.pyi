@@ -14,6 +14,8 @@ from typing_extensions import TypeAlias
 _Readable: TypeAlias = SupportsRead[str | bytes]
 _TakesAscii: TypeAlias = str | bytes | _Readable
 
+__all__ = ["isoparse", "isoparser"]
+
 class isoparser:
     def __init__(self, sep: str | bytes | None = None):
         """

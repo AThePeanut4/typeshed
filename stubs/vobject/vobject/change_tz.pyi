@@ -1,23 +1,20 @@
-"""Translate an ics file's events to a different timezone."""
-
+import datetime
+import optparse
 from collections.abc import Sequence
+from typing import Final, Literal
 
-def change_tz(cal, new_timezone, default, utc_only: bool = False, utc_tz=...) -> None:
-    """
-    Change the timezone of the specified component.
+from .base import Component
 
-    Args:
-        cal (Component): the component to change
-        new_timezone (tzinfo): the timezone to change to
-        default (tzinfo): a timezone to assume if the dtstart or dtend in cal doesn't have an existing timezone
-        utc_only (bool): only convert dates that are in utc
-        utc_tz (tzinfo): the tzinfo to compare to for UTC when processing utc_only=True
-    """
-    ...
+version: Final[str]
+
+def change_tz(
+    cal: Component,
+    new_timezone: datetime._TzInfo | None,
+    default: datetime._TzInfo | None,
+    utc_only: bool = False,
+    utc_tz: datetime._TzInfo | None = ...,
+) -> None: ...
 def show_timezones() -> None: ...
 def convert_events(utc_only: bool, args: Sequence[str]) -> None: ...
 def main() -> None: ...
-
-version: str
-
-def get_options(): ...
+def get_options() -> tuple[optparse.Values, Literal[False]] | tuple[optparse.Values, list[str]]: ...

@@ -1,37 +1,34 @@
-"""Common constants, exceptions and helpe functions"""
+from typing import Final
 
-from _typeshed import Incomplete
-
-PY3: bool
+PY3: Final[bool]
 
 class DefusedXmlException(ValueError):
     """Base exception"""
     ...
 
 class DTDForbidden(DefusedXmlException):
-    """Document type definition is forbidden"""
-    name: Incomplete
-    sysid: Incomplete
-    pubid: Incomplete
-    def __init__(self, name, sysid, pubid) -> None: ...
+    name: str
+    sysid: str | None
+    pubid: str | None
+    def __init__(self, name: str, sysid: str | None, pubid: str | None) -> None: ...
 
 class EntitiesForbidden(DefusedXmlException):
-    """Entity definition is forbidden"""
-    name: Incomplete
-    value: Incomplete
-    base: Incomplete
-    sysid: Incomplete
-    pubid: Incomplete
-    notation_name: Incomplete
-    def __init__(self, name, value, base, sysid, pubid, notation_name) -> None: ...
+    name: str
+    value: str | None
+    base: str | None
+    sysid: str | None
+    pubid: str | None
+    notation_name: str | None
+    def __init__(
+        self, name: str, value: str | None, base: str | None, sysid: str | None, pubid: str | None, notation_name: str | None
+    ) -> None: ...
 
 class ExternalReferenceForbidden(DefusedXmlException):
-    """Resolving an external reference is forbidden"""
-    context: Incomplete
-    base: Incomplete
-    sysid: Incomplete
-    pubid: Incomplete
-    def __init__(self, context, base, sysid, pubid) -> None: ...
+    context: str
+    base: str | None
+    sysid: str | None
+    pubid: str | None
+    def __init__(self, context: str, base: str | None, sysid: str | None, pubid: str | None) -> None: ...
 
 class NotSupportedError(DefusedXmlException):
     """The operation is not supported"""

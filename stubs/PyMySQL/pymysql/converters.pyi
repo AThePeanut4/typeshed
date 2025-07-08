@@ -1,4 +1,5 @@
 import datetime
+import re
 import time
 from _typeshed import Unused
 from collections.abc import Callable, Mapping, Sequence
@@ -34,81 +35,19 @@ def escape_datetime(obj: datetime.datetime, mapping: _EscaperMapping = None) -> 
 def escape_date(obj: datetime.date, mapping: _EscaperMapping = None) -> str: ...
 def escape_struct_time(obj: time.struct_time, mapping: _EscaperMapping = None) -> str: ...
 def Decimal2Literal(o: Decimal, d: Unused) -> str: ...
-def convert_datetime(obj: str | bytes) -> datetime.datetime | str:
-    """
-    Returns a DATETIME or TIMESTAMP column value as a datetime object:
 
-      >>> convert_datetime('2007-02-25 23:06:20')
-      datetime.datetime(2007, 2, 25, 23, 6, 20)
-      >>> convert_datetime('2007-02-25T23:06:20')
-      datetime.datetime(2007, 2, 25, 23, 6, 20)
+DATETIME_RE: re.Pattern[str]
 
-    Illegal values are returned as str:
+def convert_datetime(obj: str | bytes) -> datetime.datetime | str: ...
 
-      >>> convert_datetime('2007-02-31T23:06:20')
-      '2007-02-31T23:06:20'
-      >>> convert_datetime('0000-00-00 00:00:00')
-      '0000-00-00 00:00:00'
-    """
-    ...
-def convert_timedelta(obj: str | bytes) -> datetime.timedelta | str:
-    """
-    Returns a TIME column as a timedelta object:
+TIMEDELTA_RE: re.Pattern[str]
 
-      >>> convert_timedelta('25:06:17')
-      datetime.timedelta(days=1, seconds=3977)
-      >>> convert_timedelta('-25:06:17')
-      datetime.timedelta(days=-2, seconds=82423)
+def convert_timedelta(obj: str | bytes) -> datetime.timedelta | str: ...
 
-    Illegal values are returned as string:
+TIME_RE: re.Pattern[str]
 
-      >>> convert_timedelta('random crap')
-      'random crap'
-
-    Note that MySQL always returns TIME columns as (+|-)HH:MM:SS, but
-    can accept values as (+|-)DD HH:MM:SS. The latter format will not
-    be parsed correctly by this function.
-    """
-    ...
-def convert_time(obj: str | bytes) -> datetime.time | str:
-    """
-    Returns a TIME column as a time object:
-
-      >>> convert_time('15:06:17')
-      datetime.time(15, 6, 17)
-
-    Illegal values are returned as str:
-
-      >>> convert_time('-25:06:17')
-      '-25:06:17'
-      >>> convert_time('random crap')
-      'random crap'
-
-    Note that MySQL always returns TIME columns as (+|-)HH:MM:SS, but
-    can accept values as (+|-)DD HH:MM:SS. The latter format will not
-    be parsed correctly by this function.
-
-    Also note that MySQL's TIME column corresponds more closely to
-    Python's timedelta and not time. However if you want TIME columns
-    to be treated as time-of-day and not a time offset, then you can
-    use set this function as the converter for FIELD_TYPE.TIME.
-    """
-    ...
-def convert_date(obj: str | bytes) -> datetime.date | str:
-    """
-    Returns a DATE column as a date object:
-
-      >>> convert_date('2007-02-26')
-      datetime.date(2007, 2, 26)
-
-    Illegal values are returned as str:
-
-      >>> convert_date('2007-02-31')
-      '2007-02-31'
-      >>> convert_date('0000-00-00')
-      '0000-00-00'
-    """
-    ...
+def convert_time(obj: str | bytes) -> datetime.time | str: ...
+def convert_date(obj: str | bytes) -> datetime.date | str: ...
 def through(x: _T) -> _T: ...
 
 convert_bit = through

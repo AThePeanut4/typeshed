@@ -1,6 +1,9 @@
 from _typeshed import Incomplete
 from collections.abc import Generator
-from typing import Any, overload
+from typing import overload
+
+k: str
+v: str | int
 
 def htmlentityreplace_errors(exc: Exception) -> tuple[str | bytes, int]: ...
 @overload
@@ -94,8 +97,8 @@ class HTMLSerializer:
     inject_meta_charset: bool
     strip_whitespace: bool
     sanitize: bool
-    options: Any
-    errors: Any
+    options: Incomplete
+    errors: Incomplete
     strict: bool
     def __init__(self, **kwargs) -> None:
         """
@@ -179,29 +182,9 @@ class HTMLSerializer:
         ...
     def encode(self, string): ...
     def encodeStrict(self, string): ...
-    encoding: Any
-    def serialize(self, treewalker, encoding=None) -> Generator[Incomplete, None, None]: ...
-    def render(self, treewalker, encoding=None):
-        """
-        Serializes the stream from the treewalker into a string
-
-        :arg treewalker: the treewalker to serialize
-
-        :arg encoding: the string encoding to use
-
-        :returns: the serialized tree
-
-        Example:
-
-        >>> from html5lib import parse, getTreeWalker
-        >>> from html5lib.serializer import HTMLSerializer
-        >>> token_stream = parse('<html><body>Hi!</body></html>')
-        >>> walker = getTreeWalker('etree')
-        >>> serializer = HTMLSerializer(omit_optional_tags=False)
-        >>> serializer.render(walker(token_stream))
-        '<html><head></head><body>Hi!</body></html>'
-        """
-        ...
+    encoding: Incomplete
+    def serialize(self, treewalker, encoding=None) -> Generator[Incomplete]: ...
+    def render(self, treewalker, encoding=None): ...
     def serializeError(self, data: str = "XXX ERROR MESSAGE NEEDED") -> None: ...
 
 class SerializeError(Exception):

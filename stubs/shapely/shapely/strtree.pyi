@@ -361,70 +361,7 @@ class STRtree:
         ...
     # nearest may return `None` if the tree is empty, use the "Any trick"
     @overload
-    def nearest(self, geometry: Geometry) -> int | Any:
-        """
-        Return the index of the nearest geometry in the tree.
-
-        This is determined for each input geometry based on distance within
-        two-dimensional Cartesian space.
-
-        This distance will be 0 when input geometries intersect tree geometries.
-
-        If there are multiple equidistant or intersected geometries in the tree,
-        only a single result is returned for each input geometry, based on the
-        order that tree geometries are visited; this order may be
-        nondeterministic.
-
-        If any input geometry is None or empty, an error is raised.  Any Z
-        values present in input geometries are ignored when finding nearest
-        tree geometries.
-
-        Parameters
-        ----------
-        geometry : Geometry or array_like
-            Input geometries to query the tree.
-
-        Returns
-        -------
-        scalar or ndarray
-            Indices of geometries in tree. Return value will have the same shape
-            as the input.
-
-            None is returned if this index is empty. This may change in
-            version 2.0.
-
-        See Also
-        --------
-        query_nearest: returns all equidistant geometries, exclusive geometries, and optional distances
-
-        Examples
-        --------
-        >>> from shapely import Point, STRtree
-        >>> tree = STRtree([Point(i, i) for i in range(10)])
-
-        Query the tree for nearest using a scalar geometry:
-
-        >>> index = tree.nearest(Point(2.2, 2.2))
-        >>> index
-        2
-        >>> tree.geometries.take(index)
-        <POINT (2 2)>
-
-        Query the tree for nearest using an array of geometries:
-
-        >>> indices = tree.nearest([Point(2.2, 2.2), Point(4.4, 4.4)])
-        >>> indices.tolist()
-        [2, 4]
-        >>> tree.geometries.take(indices).tolist()
-        [<POINT (2 2)>, <POINT (4 4)>]
-
-        Nearest only return one object if there are multiple equidistant results:
-
-        >>> tree = STRtree ([Point(0, 0), Point(0, 0)])
-        >>> tree.nearest(Point(0, 0))
-        0
-        """
-        ...
+    def nearest(self, geometry: Geometry) -> np.int64 | Any: ...
     @overload
     def nearest(self, geometry: GeoArrayLikeSeq) -> NDArray[np.int64] | Any:
         """

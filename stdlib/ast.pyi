@@ -1977,6 +1977,8 @@ if sys.version_info < (3, 14):
     class Num(Constant, metaclass=_ABC):
         """Deprecated AST node class. Use ast.Constant instead"""
         value: int | float | complex
+        # Aliases for value, for backwards compatibility
+        n: int | float | complex
 
     @deprecated("Replaced by ast.Constant; removed in Python 3.14")
     class Str(Constant, metaclass=_ABC):

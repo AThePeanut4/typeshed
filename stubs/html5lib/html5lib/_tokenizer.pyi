@@ -1,48 +1,22 @@
-from typing import Any
+from _typeshed import Incomplete
 
 from ._inputstream import _InputStream
 
-entitiesTrie: Any
+entitiesTrie: Incomplete
 attributeMap = dict
 
 class HTMLTokenizer:
-    """
-    This class takes care of tokenizing HTML.
-
-    * self.currentToken
-      Holds the token that is currently being processed.
-
-    * self.state
-      Holds a reference to the method to be invoked... XXX
-
-    * self.stream
-      Points to HTMLInputStream object.
-    """
-    stream: Any
-    parser: Any
+    stream: Incomplete
+    parser: Incomplete
     escapeFlag: bool
-    lastFourChars: Any
-    state: Any
+    lastFourChars: Incomplete
+    state: Incomplete
     escape: bool
-    currentToken: Any
+    currentToken: Incomplete
     def __init__(self, stream: _InputStream, parser=None, **kwargs) -> None: ...
-    tokenQueue: Any
-    def __iter__(self):
-        """
-        This is where the magic happens.
-
-        We do our usually processing through the states and when we have a token
-        to return we yield the token which pauses processing until the next token
-        is requested.
-        """
-        ...
-    def consumeNumberEntity(self, isHex):
-        """
-        This function returns either U+FFFD or the character based on the
-        decimal or hexadecimal representation. It also discards ";" if present.
-        If not present self.tokenQueue.append({"type": tokenTypes["ParseError"]}) is invoked.
-        """
-        ...
+    tokenQueue: Incomplete
+    def __iter__(self): ...
+    def consumeNumberEntity(self, isHex): ...
     def consumeEntity(self, allowedChar=None, fromAttribute: bool = False) -> None: ...
     def processEntityInAttribute(self, allowedChar) -> None:
         """

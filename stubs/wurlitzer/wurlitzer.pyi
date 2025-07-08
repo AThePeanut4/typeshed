@@ -11,6 +11,7 @@ import io
 import logging
 from _typeshed import SupportsWrite
 from contextlib import _GeneratorContextManager
+from threading import Thread
 from types import TracebackType
 from typing import Any, Final, Literal, Protocol, TextIO, TypeVar, overload
 from typing_extensions import Self, TypeAlias
@@ -40,6 +41,10 @@ class Wurlitzer:
     """
     flush_interval: float
     encoding: str | None
+    thread: Thread | None
+    handle: tuple[
+        _LogPipe | SupportsWrite[str] | SupportsWrite[bytes] | None, _LogPipe | SupportsWrite[str] | SupportsWrite[bytes] | None
+    ]
 
     def __init__(
         self,
@@ -47,23 +52,12 @@ class Wurlitzer:
         stderr: _STDOUT | SupportsWrite[str] | SupportsWrite[bytes] | logging.Logger | None = None,
         encoding: str | None = ...,
         bufsize: int | None = ...,
-    ) -> None:
-        """
-        Parameters
-        ----------
-        stdout: stream or None
-            The stream for forwarding stdout.
-        stderr = stream or None
-            The stream for forwarding stderr.
-        encoding: str or None
-            The encoding to use, if streams should be interpreted as text.
-        bufsize: int or None
-            Set pipe buffer size using fcntl F_SETPIPE_SZ (linux only)
-            default: use /proc/sys/fs/pipe-max-size up to a max of 1MB
-            if 0, will do nothing.
-        """
-        ...
-    def __enter__(self): ...
+    ) -> None: ...
+    def __enter__(
+        self,
+    ) -> tuple[
+        _LogPipe | SupportsWrite[str] | SupportsWrite[bytes] | None, _LogPipe | SupportsWrite[str] | SupportsWrite[bytes] | None
+    ]: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
     ) -> None: ...

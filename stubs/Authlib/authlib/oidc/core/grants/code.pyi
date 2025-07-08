@@ -1,16 +1,10 @@
-"""
-authlib.oidc.core.grants.code.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Implementation of Authentication using the Authorization Code Flow
-per `Section 3.1`_.
-
-.. _`Section 3.1`: http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth
-"""
+from logging import Logger
 
 from authlib.oauth2 import OAuth2Request
 from authlib.oauth2.rfc6749 import BaseGrant
 from authlib.oidc.core import UserInfo
+
+log: Logger
 
 class OpenIDToken:
     def get_jwt_config(self, grant: BaseGrant) -> dict[str, str | int]:

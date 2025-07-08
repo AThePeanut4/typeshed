@@ -44,19 +44,12 @@ class Node:
     parent: Element | Any
     source: str | None
     line: int | None
-    document: document | None
-    def __bool__(self) -> Literal[True]:
-        """
-        Node instances are always true, even if they're empty.  A node is more
-        than a simple container.  Its boolean "truth" does not depend on
-        having one or more subnodes in the doctree.
-
-        Use `len()` to check node length.
-        """
-        ...
-    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element:
-        """Return a DOM **fragment** representation of this Node."""
-        ...
+    @property
+    def document(self) -> document | None: ...
+    @document.setter
+    def document(self, value: document) -> None: ...
+    def __bool__(self) -> Literal[True]: ...
+    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element: ...
     # While docutils documents the Node class to be abstract it does not
     # actually use the ABCMeta metaclass. We still set @abstractmethod here
     # (although it's not used in the docutils implementation) because it
@@ -966,6 +959,7 @@ class system_message(Special, BackLinkable, PreBibliographic, Element):
     ``document.reporter.info/warning/error/severe()`` instead.
     """
     def __init__(self, message: str | None = None, *children: Node, **attributes) -> None: ...
+    def astext(self) -> str: ...
 
 class pending(Special, Invisible, Element):
     """

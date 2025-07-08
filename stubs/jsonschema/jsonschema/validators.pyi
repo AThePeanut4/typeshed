@@ -56,7 +56,7 @@ class _Validator:
     def iter_errors(self, instance, _schema: Schema | None) -> Generator[Incomplete]: ...
     def descend(
         self, instance, schema: Schema, path: Incomplete | None = ..., schema_path: Incomplete | None = ..., resolver=None
-    ) -> Generator[Incomplete, None, None]: ...
+    ) -> Generator[Incomplete]: ...
     def validate(self, *args, **kwargs) -> None: ...
     def is_type(self, instance, type) -> bool: ...
     @overload
@@ -65,26 +65,7 @@ class _Validator:
     @deprecated("Passing a schema to Validator.is_valid is deprecated and will be removed in a future release.")
     def is_valid(self, instance, _schema: Schema | None) -> bool: ...
 
-def validates(version: str) -> Callable[..., Incomplete]:
-    """
-    Register the decorated validator for a ``version`` of the specification.
-
-    Registered validators and their meta schemas will be considered when
-    parsing :kw:`$schema` keywords' URIs.
-
-    Arguments:
-
-        version (str):
-
-            An identifier to use as the version's name
-
-    Returns:
-
-        collections.abc.Callable:
-
-            a class decorator to decorate the validator with the version
-    """
-    ...
+def validates(version: str) -> Callable[[_Validator], _Validator]: ...
 def create(
     meta_schema: Schema,
     validators: Mapping[str, _ValidatorCallback] | tuple[()] = (),

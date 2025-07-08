@@ -1,4 +1,5 @@
 import time
+from _typeshed import FileDescriptorOrPath
 from collections.abc import Callable, Iterable
 from logging import Logger
 from typing import Any
@@ -17,8 +18,8 @@ log: Logger
 TRACING_NAME_KEY: str
 DAEMON_ADDR_KEY: str
 CONTEXT_MISSING_KEY: str
-XRAY_META: Any
-SERVICE_INFO: Any
+XRAY_META: dict[str, dict[str, str]]
+SERVICE_INFO: dict[str, str]
 
 class AWSXRayRecorder:
     """
@@ -36,7 +37,7 @@ class AWSXRayRecorder:
         sampling: bool | None = None,
         plugins: Iterable[str] | None = None,
         context_missing: str | None = None,
-        sampling_rules: dict[str, Any] | str | None = None,
+        sampling_rules: dict[str, Any] | FileDescriptorOrPath | None = None,
         daemon_address: str | None = None,
         service: str | None = None,
         context: Context | None = None,
@@ -123,112 +124,21 @@ class AWSXRayRecorder:
         ...
     def begin_segment(
         self, name: str | None = None, traceid: str | None = None, parent_id: str | None = None, sampling: bool | None = None
-    ) -> Segment | DummySegment:
-        """
-        Begin a segment on the current thread and return it. The recorder
-        only keeps one segment at a time. Create the second one without
-        closing existing one will overwrite it.
-
-        :param str name: the name of the segment
-        :param str traceid: trace id of the segment
-        :param int sampling: 0 means not sampled, 1 means sampled
-        """
-        ...
-    def end_segment(self, end_time: time.struct_time | None = None) -> None:
-        """
-        End the current segment and send it to X-Ray daemon
-        if it is ready to send. Ready means segment and
-        all its subsegments are closed.
-
-        :param float end_time: segment completion in unix epoch in seconds.
-        """
-        ...
-    def current_segment(self) -> Segment:
-        """
-        Return the currently active segment. In a multithreading environment,
-        this will make sure the segment returned is the one created by the
-        same thread.
-        """
-        ...
-    def begin_subsegment(self, name: str, namespace: str = "local") -> DummySubsegment | Subsegment | None:
-        """
-        Begin a new subsegment.
-        If there is open subsegment, the newly created subsegment will be the
-        child of latest opened subsegment.
-        If not, it will be the child of the current open segment.
-
-        :param str name: the name of the subsegment.
-        :param str namespace: currently can only be 'local', 'remote', 'aws'.
-        """
-        ...
-    def current_subsegment(self) -> Subsegment | DummySubsegment | None:
-        """
-        Return the latest opened subsegment. In a multithreading environment,
-        this will make sure the subsegment returned is one created
-        by the same thread.
-        """
-        ...
-    def end_subsegment(self, end_time: time.struct_time | None = None) -> None:
-        """
-        End the current active subsegment. If this is the last one open
-        under its parent segment, the entire segment will be sent.
-
-        :param float end_time: subsegment compeletion in unix epoch in seconds.
-        """
-        ...
-    def put_annotation(self, key: str, value: Any) -> None:
-        """
-        Annotate current active trace entity with a key-value pair.
-        Annotations will be indexed for later search query.
-
-        :param str key: annotation key
-        :param object value: annotation value. Any type other than
-            string/number/bool will be dropped
-        """
-        ...
-    def put_metadata(self, key: str, value: Any, namespace: str = "default") -> None:
-        """
-        Add metadata to the current active trace entity.
-        Metadata is not indexed but can be later retrieved
-        by BatchGetTraces API.
-
-        :param str namespace: optional. Default namespace is `default`.
-            It must be a string and prefix `AWS.` is reserved.
-        :param str key: metadata key under specified namespace
-        :param object value: any object that can be serialized into JSON string
-        """
-        ...
-    def is_sampled(self) -> bool:
-        """
-        Check if the current trace entity is sampled or not.
-        Return `False` if no active entity found.
-        """
-        ...
-    def get_trace_entity(self) -> Segment | Subsegment | DummySegment | DummySubsegment:
-        """A pass through method to ``context.get_trace_entity()``."""
-        ...
-    def set_trace_entity(self, trace_entity: Segment | Subsegment | DummySegment | DummySubsegment) -> None:
-        """A pass through method to ``context.set_trace_entity()``."""
-        ...
-    def clear_trace_entities(self) -> None:
-        """A pass through method to ``context.clear_trace_entities()``."""
-        ...
-    def stream_subsegments(self) -> None:
-        """
-        Stream all closed subsegments to the daemon
-        and remove reference to the parent segment.
-        No-op for a not sampled segment.
-        """
-        ...
-    def capture(self, name: str | None = None) -> SubsegmentContextManager:
-        """
-        A decorator that records enclosed function in a subsegment.
-        It only works with synchronous functions.
-
-        params str name: The name of the subsegment. If not specified
-        the function name will be used.
-        """
-        ...
+    ) -> Segment | DummySegment: ...
+    def end_segment(self, end_time: time.struct_time | None = None) -> None: ...
+    def current_segment(self) -> Segment: ...
+    def begin_subsegment(self, name: str, namespace: str = "local") -> DummySubsegment | Subsegment | None: ...
+    def begin_subsegment_without_sampling(self, name: str) -> DummySubsegment | Subsegment | None: ...
+    def current_subsegment(self) -> Subsegment | DummySubsegment | None: ...
+    def end_subsegment(self, end_time: time.struct_time | None = None) -> None: ...
+    def put_annotation(self, key: str, value: Any) -> None: ...
+    def put_metadata(self, key: str, value: Any, namespace: str = "default") -> None: ...
+    def is_sampled(self) -> bool: ...
+    def get_trace_entity(self) -> Segment | Subsegment | DummySegment | DummySubsegment: ...
+    def set_trace_entity(self, trace_entity: Segment | Subsegment | DummySegment | DummySubsegment) -> None: ...
+    def clear_trace_entities(self) -> None: ...
+    def stream_subsegments(self) -> None: ...
+    def capture(self, name: str | None = None) -> SubsegmentContextManager: ...
     def record_subsegment(
         self,
         wrapped: Callable[..., Any],
@@ -256,9 +166,9 @@ class AWSXRayRecorder:
     @service.setter
     def service(self, value: str) -> None: ...
     @property
-    def dynamic_naming(self) -> Any | DefaultDynamicNaming: ...
+    def dynamic_naming(self) -> DefaultDynamicNaming | None: ...
     @dynamic_naming.setter
-    def dynamic_naming(self, value: Any | DefaultDynamicNaming) -> None: ...
+    def dynamic_naming(self, value: DefaultDynamicNaming | str) -> None: ...
     @property
     def context(self) -> Context: ...
     @context.setter

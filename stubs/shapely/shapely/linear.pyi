@@ -207,41 +207,7 @@ def line_interpolate_point(
 @overload
 def line_locate_point(
     line: LineString | MultiLineString | GeometryCollection | None, other: Point | None, normalized: bool = False, **kwargs
-) -> float:
-    """
-    Return the distance to the line origin of given point.
-
-    If given point does not intersect with the line, the point will first be
-    projected onto the line after which the distance is taken.
-
-    Parameters
-    ----------
-    line : Geometry or array_like
-        Line or lines to calculate the distance to.
-    other : Geometry or array_like
-        Point or points to calculate the distance from.
-    normalized : bool, default False
-        If True, the distance is a fraction of the total line length instead of
-        the absolute distance.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import LineString, Point
-    >>> line = LineString([(0, 2), (0, 10)])
-    >>> point = Point(4, 4)
-    >>> shapely.line_locate_point(line, point)
-    2.0
-    >>> shapely.line_locate_point(line, point, normalized=True)
-    0.25
-    >>> shapely.line_locate_point(line, Point(0, 18))
-    8.0
-    >>> shapely.line_locate_point(LineString(), point)
-    nan
-    """
-    ...
+) -> np.float64: ...
 @overload
 def line_locate_point(
     line: LineString | MultiLineString | GeometryCollection | None, other: OptGeoArrayLikeSeq, normalized: bool = False, **kwargs

@@ -1,9 +1,10 @@
 from _typeshed import Incomplete
-from typing import Any, Literal, overload
+from typing import Literal, overload
 from xml.etree.ElementTree import Element
 
 from ._inputstream import _InputStream
 from ._tokenizer import HTMLTokenizer
+from .treebuilders.base import TreeBuilder
 
 @overload
 def parse(
@@ -79,36 +80,24 @@ class HTMLParser:
     Generates a tree structure from a stream of (possibly malformed) HTML.
     """
     strict: bool
-    tree: Any
+    tree: Incomplete
     errors: list[Incomplete]
-    phases: Any
-    def __init__(self, tree=None, strict: bool = False, namespaceHTMLElements: bool = True, debug: bool = False) -> None:
-        """
-        :arg tree: a treebuilder class controlling the type of tree that will be
-            returned. Built in treebuilders can be accessed through
-            html5lib.treebuilders.getTreeBuilder(treeType)
-
-        :arg strict: raise an exception when a parse error is encountered
-
-        :arg namespaceHTMLElements: whether or not to namespace HTML elements
-
-        :arg debug: whether or not to enable debug mode which logs things
-
-        Example:
-
-        >>> from html5lib.html5parser import HTMLParser
-        >>> parser = HTMLParser()                     # generates parser with etree builder
-        >>> parser = HTMLParser('lxml', strict=True)  # generates parser with lxml builder which is strict
-        """
-        ...
+    phases: Incomplete
+    def __init__(
+        self,
+        tree: str | type[TreeBuilder] | None = None,
+        strict: bool = False,
+        namespaceHTMLElements: bool = True,
+        debug: bool = False,
+    ) -> None: ...
     firstStartTag: bool
-    log: Any
+    log: Incomplete
     compatMode: str
     container: str
-    innerHTML: Any
-    phase: Any
-    lastPhase: Any
-    beforeRCDataPhase: Any
+    innerHTML: Incomplete
+    phase: Incomplete
+    lastPhase: Incomplete
+    beforeRCDataPhase: Incomplete
     framesetOK: bool
     tokenizer: HTMLTokenizer
     def reset(self) -> None: ...
@@ -177,7 +166,7 @@ class HTMLParser:
     def adjustForeignAttributes(self, token) -> None: ...
     def reparseTokenNormal(self, token) -> None: ...
     def resetInsertionMode(self) -> None: ...
-    originalPhase: Any
+    originalPhase: Incomplete
     def parseRCDataRawtext(self, token, contentType) -> None: ...
 
 def getPhases(debug): ...

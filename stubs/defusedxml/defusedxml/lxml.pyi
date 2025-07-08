@@ -6,13 +6,28 @@ The code has NO protection against decompression bombs.
 
 import threading
 from _typeshed import Incomplete
+from typing import Final, Literal
 
-# Not bothering with types here as lxml support is supposed to be dropped in a future version
-# of defusedxml
+# Not bothering with types here as lxml support is supposed to be dropped in a future version of defusedxml
 
-LXML3: Incomplete
-__origin__: str
-tostring: Incomplete
+LXML3: bool
+__origin__: Final = "lxml.etree"
+
+def tostring(
+    element_or_tree,
+    *,
+    encoding: str | None = None,
+    method: Literal["xml", "html", "text", "c14n", "c14n2"] = "xml",
+    xml_declaration: bool | None = None,
+    pretty_print: bool = False,
+    with_tail: bool = True,
+    standalone: bool | None = None,
+    doctype=None,
+    exclusive: bool = False,
+    inclusive_ns_prefixes=None,
+    with_comments: bool = True,
+    strip_text: bool = False,
+): ...
 
 # Should be imported from lxml.etree.ElementBase, but lxml lacks types
 class _ElementBase: ...
@@ -36,16 +51,8 @@ class GlobalParserTLS(threading.local):
     def setDefaultParser(self, parser) -> None: ...
     def getDefaultParser(self): ...
 
-getDefaultParser: Incomplete
-
-def check_docinfo(elementtree, forbid_dtd: bool = ..., forbid_entities: bool = ...) -> None:
-    """
-    Check docinfo of an element tree for DTD and entity declarations
-
-    The check for entity declarations needs lxml 3 or newer. lxml 2.x does
-    not support dtd.iterentities().
-    """
-    ...
+def getDefaultParser(): ...
+def check_docinfo(elementtree, forbid_dtd: bool = False, forbid_entities: bool = True) -> None: ...
 def parse(
     source,
     parser: Incomplete | None = ...,

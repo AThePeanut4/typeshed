@@ -71,7 +71,7 @@ def loads(content: str, uri: str | None = None, custom_tags_parser: _CustomTagsP
     ...
 def load(
     uri: str,
-    timeout=None,
+    timeout: float | None = None,
     headers: Mapping[str, Any] = {},
     custom_tags_parser: _CustomTagsParser | None = None,
     http_client: _HTTPClientProtocol = ...,

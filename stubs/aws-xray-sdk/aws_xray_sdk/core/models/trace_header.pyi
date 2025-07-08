@@ -1,12 +1,19 @@
-from typing import Any
-from typing_extensions import Self
+from _typeshed import Incomplete
+from logging import Logger
+from typing import Final, Literal
+from typing_extensions import Self, TypeAlias
 
-log: Any
-ROOT: str
-PARENT: str
-SAMPLE: str
-SELF: str
-HEADER_DELIMITER: str
+_SampledTrue: TypeAlias = Literal[True, "1", 1]
+_SampledFalse: TypeAlias = Literal[False, "0", 0]
+_SampledUnknown: TypeAlias = Literal["?"]
+_Sampled: TypeAlias = _SampledTrue | _SampledFalse | _SampledUnknown
+
+log: Logger
+ROOT: Final = "Root"
+PARENT: Final = "Parent"
+SAMPLE: Final = "Sampled"
+SELF: Final = "Self"
+HEADER_DELIMITER: Final = ";"
 
 class TraceHeader:
     """
@@ -17,44 +24,20 @@ class TraceHeader:
     `Tracing Header <http://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader>`_.
     """
     def __init__(
-        self, root: str | None = None, parent: str | None = None, sampled: bool | None = None, data: dict[str, Any] | None = None
-    ) -> None:
-        """
-        :param str root: trace id
-        :param str parent: parent id
-        :param int sampled: 0 means not sampled, 1 means sampled
-        :param dict data: arbitrary data fields
-        """
-        ...
+        self,
+        root: str | None = None,
+        parent: str | None = None,
+        sampled: _Sampled | None = None,
+        data: dict[str, Incomplete] | None = None,
+    ) -> None: ...
     @classmethod
-    def from_header_str(cls, header) -> Self:
-        """
-        Create a TraceHeader object from a tracing header string
-        extracted from a http request headers.
-        """
-        ...
-    def to_header_str(self):
-        """
-        Convert to a tracing header string that can be injected to
-        outgoing http request headers.
-        """
-        ...
+    def from_header_str(cls, header: str | None) -> Self: ...
+    def to_header_str(self) -> str: ...
     @property
-    def root(self):
-        """Return trace id of the header"""
-        ...
+    def root(self) -> str | None: ...
     @property
-    def parent(self):
-        """Return the parent segment id in the header"""
-        ...
+    def parent(self) -> str | None: ...
     @property
-    def sampled(self):
-        """
-        Return the sampling decision in the header.
-        It's 0 or 1 or '?'.
-        """
-        ...
+    def sampled(self) -> Literal[1, 0, "?"] | None: ...
     @property
-    def data(self):
-        """Return the arbitrary fields in the trace header."""
-        ...
+    def data(self) -> dict[str, Incomplete]: ...

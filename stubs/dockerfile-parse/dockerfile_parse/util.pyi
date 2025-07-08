@@ -50,15 +50,7 @@ class WordSplitter:
         """
         ...
     def dequote(self) -> str: ...
-    def split(self, maxsplit: int | None = None, dequote: bool = True) -> Generator[str | None, None, None]:
-        """
-        Generator for the words of the string
-
-        :param maxsplit: perform at most maxsplit splits;
-            if None, do not limit the number of splits
-        :param dequote: remove quotes and escape characters once consumed
-        """
-        ...
+    def split(self, maxsplit: int | None = None, dequote: bool = True) -> Generator[str | None]: ...
 
 def extract_key_values(
     env_replace: bool, args: Mapping[str, str], envs: Mapping[str, str], instruction_value: str

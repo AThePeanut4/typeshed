@@ -4,6 +4,8 @@ from typing import Any
 
 from paramiko.util import ClosingContextManager
 
+subprocess_import_error: ImportError | None
+
 class ProxyCommand(ClosingContextManager):
     """
     Wraps a subprocess running ProxyCommand-driven programs.

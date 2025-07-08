@@ -1,6 +1,6 @@
-"""Various base classes."""
-
+from asyncio.events import AbstractEventLoop
 from collections.abc import Awaitable, Callable, Generator
+from concurrent.futures import Executor
 from contextlib import AbstractAsyncContextManager
 from types import TracebackType
 from typing import Any, BinaryIO, Generic, TextIO, TypeVar
@@ -10,16 +10,14 @@ _T = TypeVar("_T")
 _V_co = TypeVar("_V_co", covariant=True)
 
 class AsyncBase(Generic[_T]):
-    def __init__(self, file: TextIO | BinaryIO | None, loop: Any, executor: Any) -> None: ...
-    def __aiter__(self) -> Self:
-        """We are our own iterator."""
-        ...
-    async def __anext__(self) -> _T:
-        """Simulate normal file iteration."""
-        ...
+    def __init__(self, file: TextIO | BinaryIO | None, loop: AbstractEventLoop | None, executor: Executor | None) -> None: ...
+    def __aiter__(self) -> Self: ...
+    async def __anext__(self) -> _T: ...
 
 class AsyncIndirectBase(AsyncBase[_T]):
-    def __init__(self, name: str, loop: Any, executor: Any, indirect: Callable[[], TextIO | BinaryIO]) -> None: ...
+    def __init__(
+        self, name: str, loop: AbstractEventLoop | None, executor: Executor | None, indirect: Callable[[], TextIO | BinaryIO]
+    ) -> None: ...
 
 class AiofilesContextManager(Awaitable[_V_co], AbstractAsyncContextManager[_V_co]):
     """An adjusted async context manager for aiofiles."""

@@ -1,28 +1,19 @@
-from typing import Any
+from _typeshed import Incomplete
 
-DOCUMENT: Any
-DOCTYPE: Any
-TEXT: Any
-ELEMENT: Any
-COMMENT: Any
-ENTITY: Any
+__all__ = ["DOCUMENT", "DOCTYPE", "TEXT", "ELEMENT", "COMMENT", "ENTITY", "UNKNOWN", "TreeWalker", "NonRecursiveTreeWalker"]
+
+DOCUMENT: int
+DOCTYPE: int
+TEXT: int
+ELEMENT: int
+COMMENT: int
+ENTITY: int
 UNKNOWN: str
+spaceCharacters: str
 
 class TreeWalker:
-    """
-    Walks a tree yielding tokens
-
-    Tokens are dicts that all have a ``type`` field specifying the type of the
-    token.
-    """
-    tree: Any
-    def __init__(self, tree) -> None:
-        """
-        Creates a TreeWalker
-
-        :arg tree: the tree to walk
-        """
-        ...
+    tree: Incomplete
+    def __init__(self, tree) -> None: ...
     def __iter__(self): ...
     def error(self, msg):
         """

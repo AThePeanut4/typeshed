@@ -1,32 +1,10 @@
-"""
-PyMySQL: A pure-Python MySQL client library.
+from _typeshed import ReadableBuffer
+from collections.abc import Iterable
+from typing import Final, SupportsBytes, SupportsIndex
 
-Copyright (c) 2010-2016 PyMySQL contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-"""
-
-from typing import Final
-
+from . import connections, constants, converters, cursors
 from .connections import Connection as Connection
 from .constants import FIELD_TYPE as FIELD_TYPE
-from .converters import escape_dict as escape_dict, escape_sequence as escape_sequence, escape_string as escape_string
 from .err import (
     DatabaseError as DatabaseError,
     DataError as DataError,
@@ -51,14 +29,19 @@ from .times import (
 
 VERSION: Final[tuple[str | int, ...]]
 VERSION_STRING: Final[str]
+version_info: tuple[int, int, int, str, int]
+__version__: str
+
+def get_client_info() -> str: ...
+def install_as_MySQLdb() -> None: ...
 
 threadsafety: int
 apilevel: str
 paramstyle: str
 
 class DBAPISet(frozenset[int]):
-    def __ne__(self, other) -> bool: ...
-    def __eq__(self, other) -> bool: ...
+    def __ne__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
 
 STRING: DBAPISet
@@ -70,23 +53,56 @@ TIMESTAMP: DBAPISet
 DATETIME: DBAPISet
 ROWID: DBAPISet
 
-def Binary(x) -> bytes:
-    """Return x as a binary type."""
-    ...
-def get_client_info() -> str: ...
+def Binary(x: Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | ReadableBuffer) -> bytes: ...
+def thread_safe() -> bool: ...
 
-__version__: str
-version_info: tuple[int, int, int, str, int]
 NULL: str
 
 # pymysql/__init__.py says "Connect = connect = Connection = connections.Connection"
 Connect = Connection
 connect = Connection
 
-def thread_safe() -> bool: ...
-def install_as_MySQLdb() -> None:
-    """
-    After this function is called, any application that imports MySQLdb
-    will unwittingly actually use pymysql.
-    """
-    ...
+__all__ = [
+    "BINARY",
+    "Binary",
+    "Connect",
+    "Connection",
+    "DATE",
+    "Date",
+    "Time",
+    "Timestamp",
+    "DateFromTicks",
+    "TimeFromTicks",
+    "TimestampFromTicks",
+    "DataError",
+    "DatabaseError",
+    "Error",
+    "FIELD_TYPE",
+    "IntegrityError",
+    "InterfaceError",
+    "InternalError",
+    "MySQLError",
+    "NULL",
+    "NUMBER",
+    "NotSupportedError",
+    "DBAPISet",
+    "OperationalError",
+    "ProgrammingError",
+    "ROWID",
+    "STRING",
+    "TIME",
+    "TIMESTAMP",
+    "Warning",
+    "apilevel",
+    "connect",
+    "connections",
+    "constants",
+    "converters",
+    "cursors",
+    "get_client_info",
+    "paramstyle",
+    "threadsafety",
+    "version_info",
+    "install_as_MySQLdb",
+    "__version__",
+]

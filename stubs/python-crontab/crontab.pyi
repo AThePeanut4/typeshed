@@ -66,19 +66,33 @@ job3.schedule().get_prev()
 
 import re
 import subprocess
-from _typeshed import Incomplete
+from _typeshed import Incomplete, StrPath
 from builtins import range as _range
 from collections import OrderedDict
 from collections.abc import Callable, Generator, Iterable, Iterator
 from datetime import datetime
 from logging import Logger
 from types import TracebackType
-from typing import Any, SupportsIndex, overload
+from typing import Any, Literal, Protocol, SupportsIndex, TypeVar, overload, type_check_only
 from typing_extensions import Self, TypeAlias
 
+from croniter.croniter import croniter
 from cronlog import CronLog
 
 _User: TypeAlias = str | bool | None
+_K = TypeVar("_K")
+_V = TypeVar("_V")
+
+# cron_descriptor.Options class
+@type_check_only
+class _Options(Protocol):
+    casing_type: Literal[1, 2, 3]
+    verbose: bool
+    day_of_week_start_index_zero: bool
+    use_24hour_time_format: bool
+    locale_location: StrPath | None
+    locale_code: str | None
+    def __init__(self) -> None: ...
 
 __pkgname__: str
 ITEMREX: re.Pattern[str]
@@ -88,7 +102,7 @@ WEEK_ENUM: list[str]
 MONTH_ENUM: list[str | None]
 SPECIALS: dict[str, str]
 SPECIAL_IGNORE: list[str]
-S_INFO: list[dict[str, Any]]
+S_INFO: list[dict[str, str | int | list[str] | list[str | None]]]
 WINOS: bool
 POSIX: bool
 SYSTEMV: bool
@@ -136,7 +150,7 @@ class CronTab:
     crons: list[CronItem] | None
     filen: str | None
     cron_command: str
-    env: OrderedVariableList | None
+    env: OrderedVariableList[Incomplete, Incomplete] | None
     root: bool
     intab: str | None
     tabfile: str | None
@@ -170,73 +184,26 @@ class CronTab:
         item: CronItem,
         line: str = ...,
         read: bool = ...,
-        before: str | re.Pattern[str] | list[CronItem] | tuple[CronItem, ...] | Generator[CronItem, Any, Any] | None = ...,
-    ) -> None:
-        """
-        Append a CronItem object to this CronTab
-
-        Keyword arguments:
-         item   - The CronItem object to append
-         line   - The textual line which this item is.
-         read   - Internal use only
-         before - Append before this CronItem, comment regex or generator
-        """
-        ...
-    def write(self, filename: str | None = ..., user: _User = ..., errors: bool = ...) -> None:
-        """Write the crontab to it's source or a given filename."""
-        ...
-    def write_to_user(self, user: bool | str = ...) -> None:
-        """Write the crontab to a user (or root) instead of a file."""
-        ...
+        before: str | re.Pattern[str] | list[CronItem] | tuple[CronItem, ...] | Generator[CronItem] | None = ...,
+    ) -> None: ...
+    def write(self, filename: str | None = ..., user: _User = ..., errors: bool = ...) -> None: ...
+    def write_to_user(self, user: bool | str = ...) -> None: ...
     # Usually `kwargs` are just `now: datetime | None`, but technically this can
     # work for `CronItem` subclasses, which might define other kwargs.
-    def run_pending(self, **kwargs: Any) -> Iterator[str]:
-        """Run all commands in this crontab if pending (generator)"""
-        ...
-    def run_scheduler(self, timeout: int = -1, cadence: int = 60, warp: bool = False) -> Iterator[str]:
-        """Run the CronTab as an internal scheduler (generator)"""
-        ...
-    def render(self, errors: bool = ..., specials: bool | None = ...) -> str:
-        """
-        Render this crontab as it would be in the crontab.
-
-        errors - Should we not comment out invalid entries and cause errors?
-        specials - Turn known times into keywords such as "@daily"
-            True - (default) force all values to be converted (unless SYSTEMV)
-            False - force all values back from being a keyword
-            None - don't change the special keyword use
-        """
-        ...
+    def run_pending(self, *, now: datetime | None = ..., **kwargs: Any) -> Iterator[str]: ...
+    def run_scheduler(self, timeout: int = -1, cadence: int = 60, warp: bool = False) -> Iterator[str]: ...
+    def render(self, errors: bool = ..., specials: bool | None = ...) -> str: ...
     def new(
         self,
         command: str = ...,
         comment: str = ...,
         user: str | None = ...,
         pre_comment: bool = ...,
-        before: str | re.Pattern[str] | list[CronItem] | tuple[CronItem, ...] | Generator[CronItem, Any, Any] | None = ...,
-    ) -> CronItem:
-        """
-        Create a new CronItem and append it to the cron.
-
-        Keyword arguments:
-         command     - The command that will be run.
-         comment     - The comment that should be associated with this command.
-         user        - For system cron tabs, the user this command should run as.
-         pre_comment - If true the comment will apear just before the command line.
-         before      - Append this command before this item instead of at the end.
-
-        Returns the new CronItem object.
-        """
-        ...
-    def find_command(self, command: str | re.Pattern[str]) -> Iterator[CronItem]:
-        """Return an iter of jobs matching any part of the command."""
-        ...
-    def find_comment(self, comment: str | re.Pattern[str]) -> Iterator[CronItem]:
-        """Return an iter of jobs that match the comment field exactly."""
-        ...
-    def find_time(self, *args: Any) -> Iterator[CronItem]:
-        """Return an iter of jobs that match this time pattern"""
-        ...
+        before: str | re.Pattern[str] | list[CronItem] | tuple[CronItem, ...] | Generator[CronItem] | None = ...,
+    ) -> CronItem: ...
+    def find_command(self, command: str | re.Pattern[str]) -> Iterator[CronItem]: ...
+    def find_comment(self, comment: str | re.Pattern[str]) -> Iterator[CronItem]: ...
+    def find_time(self, *args: Any) -> Iterator[CronItem]: ...
     @property
     def commands(self) -> Iterator[str]:
         """Return a generator of all unqiue commands used in this crontab"""
@@ -281,7 +248,7 @@ class CronItem:
     comment: str
     command: str | None
     last_run: datetime | None
-    env: OrderedVariableList
+    env: OrderedVariableList[Incomplete, Incomplete]
     pre_comment: bool
     marker: str | None
     stdin: str | None
@@ -404,30 +371,21 @@ class CronItem:
         """
         ...
     @overload
-    def frequency_at_hour(self, year: None = None, month: None = None, day: None = None, hour: None = None) -> int:
-        """
-        Returns the number of times this item will execute in a given hour
-        (defaults to this hour)
-        """
-        ...
-    def run_pending(self, now: datetime | None = ...) -> int | str:
-        """Runs the command if scheduled"""
-        ...
-    def run(self) -> str:
-        """Runs the given command as a pipe"""
-        ...
-    # TODO: use types from `croniter` module here:
-    def schedule(self, date_from: datetime | None = ...):
-        """Return a croniter schedule if available."""
-        ...
-    # TODO: use types from `cron_descriptor` here:
-    def description(self, **kw):
-        """
-        Returns a description of the crontab's schedule (if available)
-
-        **kw - Keyword arguments to pass to cron_descriptor (see docs)
-        """
-        ...
+    def frequency_at_hour(self, year: None = None, month: None = None, day: None = None, hour: None = None) -> int: ...
+    def run_pending(self, now: datetime | None = ...) -> int | str: ...
+    def run(self) -> str: ...
+    def schedule(self, date_from: datetime | None = ...) -> croniter: ...
+    def description(
+        self,
+        *,
+        options: _Options | None = None,
+        casing_type: Literal[1, 2, 3] = 2,
+        verbose: bool = False,
+        day_of_week_start_index_zero: bool = True,
+        use_24hour_time_format: bool = ...,
+        locale_location: StrPath | None = None,
+        locale_code: str | None = ...,
+    ) -> str | None: ...
     @property
     def log(self) -> CronLog:
         """Return a cron log specific for this job only"""
@@ -702,28 +660,12 @@ class CronRange:
     def __gt__(self, value: object) -> bool: ...
     def __int__(self) -> int: ...
 
-# TODO: make generic
-class OrderedVariableList(OrderedDict[Incomplete, Incomplete]):
-    """
-    An ordered dictionary with a linked list containing
-    the previous OrderedVariableList which this list depends.
-
-    Duplicates in this list are weeded out in favour of the previous
-    list in the chain.
-
-    This is all in aid of the ENV variables list which must exist one
-    per job in the chain.
-    """
-    job: Incomplete
-    def __init__(self, *args: Any, **kw: Any) -> None: ...
+class OrderedVariableList(OrderedDict[_K, _V]):
+    job: CronItem | None
+    # You cannot actually pass `*args`, it will raise an exception,
+    # also known kwargs are added:
+    def __init__(self, *, job: CronItem | None = None, **kw: _V) -> None: ...
     @property
-    def previous(self):
-        """Returns the previous env in the list of jobs in the cron"""
-        ...
-    def all(self) -> Self:
-        """
-        Returns the full dictionary, everything from this dictionary
-        plus all those in the chain above us.
-        """
-        ...
-    def __getitem__(self, key): ...
+    def previous(self) -> Self | None: ...
+    def all(self) -> Self: ...
+    def __getitem__(self, key: _K) -> _V: ...

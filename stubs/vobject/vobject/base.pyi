@@ -1,12 +1,19 @@
 """vobject module for reading vCard and vCalendar files."""
 
 import logging
-from _typeshed import Incomplete, SupportsWrite
-from collections.abc import Iterable, Iterator
-from typing import Any, Final, Literal, TypeVar, overload
+import re
+from _typeshed import Incomplete, MaybeNone, SupportsWrite
+from collections.abc import Generator, Iterator
+from typing import Any, AnyStr, Final, Literal, TypeVar, overload
+from typing_extensions import Self
 
 _V = TypeVar("_V", bound=VBase)
 _W = TypeVar("_W", bound=SupportsWrite[bytes])
+
+VERSION: Final[str]
+
+def to_unicode(value: str | bytes | bytearray) -> str: ...
+def to_basestring(s: str | bytes) -> bytes: ...
 
 logger: logging.Logger
 DEBUG: bool
@@ -16,8 +23,6 @@ CRLF: str
 SPACE: str
 TAB: str
 SPACEORTAB: str
-
-VERSION: Final[str]
 
 class VBase:
     """
@@ -99,69 +104,30 @@ class VBase:
         """
         Serialize to buf if it exists, otherwise return a string.
 
-        Use self.behavior.serialize if behavior exists.
-        """
-        ...
-    @overload
-    def serialize(self, buf: _W, lineLength: int = 75, validate: bool = True, behavior=None, *args: Any, **kwargs: Any) -> _W:
-        """
-        Serialize to buf if it exists, otherwise return a string.
-
-        Use self.behavior.serialize if behavior exists.
-        """
-        ...
-
-def toVName(name, stripNum: int = 0, upper: bool = False):
-    """
-    Turn a Python name into an iCalendar style name,
-    optionally uppercase and with characters stripped off.
-    """
-    ...
+def toVName(name: str, stripNum: int = 0, upper: bool = False) -> str: ...
 
 class ContentLine(VBase):
-    """
-    Holds one content line for formats like vCard and vCalendar.
-
-    For example::
-      <SUMMARY{u'param1' : [u'val1'], u'param2' : [u'val2']}Bastille Day Party>
-
-    @ivar name:
-        The uppercased name of the contentline.
-    @ivar params:
-        A dictionary of parameters and associated lists of values (the list may
-        be empty for empty parameters).
-    @ivar value:
-        The value of the contentline.
-    @ivar singletonparams:
-        A list of parameters for which it's unclear if the string represents the
-        parameter name or the parameter value. In vCard 2.1, "The value string
-        can be specified alone in those cases where the value is unambiguous".
-        This is crazy, but we have to deal with it.
-    @ivar encoded:
-        A boolean describing whether the data in the content line is encoded.
-        Generally, text read from a serialized vCard or vCalendar should be
-        considered encoded.  Data added programmatically should not be encoded.
-    @ivar lineNumber:
-        An optional line number associated with the contentline.
-    """
-    name: Incomplete
-    encoded: Incomplete
-    params: Incomplete
-    singletonparams: Incomplete
-    isNative: Incomplete
-    lineNumber: Incomplete
-    value: Incomplete
+    name: str
+    encoded: bool
+    params: dict[Incomplete, list[Incomplete]]
+    singletonparams: list[Incomplete]
+    isNative: bool
+    lineNumber: int | None
+    value: str
     def __init__(
-        self, name, params, value, group=None, encoded: bool = False, isNative: bool = False, lineNumber=None, *args, **kwds
-    ) -> None:
-        """
-        Take output from parseLine, convert params list to dictionary.
-
-        Group is used as a positional argument to match parseLine's return
-        """
-        ...
+        self,
+        name: str,
+        params: dict[Incomplete, list[Incomplete]],
+        value: str,
+        group=None,
+        encoded: bool = False,
+        isNative: bool = False,
+        lineNumber: int | None = None,
+        *args,
+        **kwds,
+    ) -> None: ...
     @classmethod
-    def duplicate(cls, copyit): ...
+    def duplicate(cls, copyit) -> Self: ...
     def copy(self, copyit) -> None: ...
     def __eq__(self, other): ...
     def __getattr__(self, name: str):
@@ -181,12 +147,7 @@ class ContentLine(VBase):
         """
         ...
     def __delattr__(self, name: str) -> None: ...
-    def valueRepr(self):
-        """
-        Transform the representation of the value
-        according to the behavior, if any.
-        """
-        ...
+    def valueRepr(self) -> str: ...
     def __unicode__(self) -> str: ...
     def prettyPrint(self, level: int = 0, tabwidth: int = 3) -> None: ...
 
@@ -209,40 +170,18 @@ class Component(VBase):
         be serialized.
     """
     contents: dict[str, list[VBase]]
-    name: Incomplete
+    name: str
     useBegin: bool
-    def __init__(self, name=None, *args, **kwds) -> None: ...
+    def __init__(self, name: str | None = None, *args, **kwds) -> None: ...
     @classmethod
-    def duplicate(cls, copyit): ...
+    def duplicate(cls, copyit) -> Self: ...
     def copy(self, copyit) -> None: ...
-    def setProfile(self, name) -> None:
-        """
-        Assign a PROFILE to this unnamed component.
-
-        Used by vCard, not by vCalendar.
-        """
-        ...
-    def __getattr__(self, name: str):
-        """
-        For convenience, make self.contents directly accessible.
-
-        Underscores, legal in python variable names, are converted to dashes,
-        which are legal in IANA tokens.
-        """
-        ...
-    normal_attributes: Incomplete
-    def __setattr__(self, name: str, value) -> None:
-        """
-        For convenience, make self.contents directly accessible.
-
-        Underscores, legal in python variable names, are converted to dashes,
-        which are legal in IANA tokens.
-        """
-        ...
+    def setProfile(self, name: str) -> None: ...
+    def __getattr__(self, name: str): ...
+    normal_attributes: list[str]
+    def __setattr__(self, name: str, value) -> None: ...
     def __delattr__(self, name: str) -> None: ...
-    def getChildValue(self, childName, default=None, childNumber: int = 0):
-        """Return a child's value (the first, by default), or None."""
-        ...
+    def getChildValue(self, childName: str, default=None, childNumber: int = 0): ...
     @overload
     def add(self, objOrName: _V, group: str | None = None) -> _V:
         """
@@ -279,113 +218,50 @@ class Component(VBase):
         """
         ...
     @overload
-    def add(self, objOrName: str, group: str | None = None) -> Any:
-        """
-        Add objOrName to contents, set behavior if it can be inferred.
-
-        If objOrName is a string, create an empty component or line based on
-        behavior. If no behavior is found for the object, add a ContentLine.
-
-        group is an optional prefix to the name of the object (see RFC 2425).
-        """
-        ...
-    def remove(self, obj) -> None:
-        """Remove obj from contents."""
-        ...
-    def getChildren(self) -> list[Incomplete]:
-        """Return an iterable of all children."""
-        ...
-    def components(self) -> Iterable[Component]:
-        """Return an iterable of all Component children."""
-        ...
-    def lines(self):
-        """Return an iterable of all ContentLine children."""
-        ...
-    def sortChildKeys(self): ...
-    def getSortedChildren(self): ...
-    def setBehaviorFromVersionLine(self, versionLine) -> None:
-        """Set behavior if one matches name, versionLine.value."""
-        ...
-    def transformChildrenToNative(self) -> None:
-        """
-        Recursively replace children with their native representation.
-
-        Sort to get dependency order right, like vtimezone before vevent.
-        """
-        ...
-    def transformChildrenFromNative(self, clearBehavior: bool = True) -> None:
-        """Recursively transform native children to vanilla representations."""
-        ...
+    def add(self, objOrName: str, group: str | None = None) -> Any: ...  # returns VBase sub-class
+    def remove(self, obj) -> None: ...
+    def getChildren(self) -> list[Incomplete]: ...
+    def components(self) -> Generator[Component]: ...
+    def lines(self) -> Generator[ContentLine]: ...
+    def sortChildKeys(self) -> list[Incomplete]: ...
+    def getSortedChildren(self) -> list[Incomplete]: ...
+    def setBehaviorFromVersionLine(self, versionLine) -> None: ...
+    def transformChildrenToNative(self) -> None: ...
+    def transformChildrenFromNative(self, clearBehavior: bool = True) -> None: ...
     def prettyPrint(self, level: int = 0, tabwidth: int = 3) -> None: ...
 
 class VObjectError(Exception):
-    msg: Incomplete
-    lineNumber: Incomplete
-    def __init__(self, msg, lineNumber=None) -> None: ...
+    msg: str
+    lineNumber: int
+    def __init__(self, msg: str, lineNumber: int | None = None) -> None: ...
 
 class ParseError(VObjectError): ...
 class ValidateError(VObjectError): ...
 class NativeError(VObjectError): ...
 
-patterns: Incomplete
-param_values_re: Incomplete
-params_re: Incomplete
-line_re: Incomplete
-begin_re: Incomplete
+patterns: dict[str, str]
+param_values_re: re.Pattern[str]
+params_re: re.Pattern[str]
+line_re: re.Pattern[str]
+begin_re: re.Pattern[str]
 
-def parseParams(string):
-    """Parse parameters"""
-    ...
-def parseLine(line, lineNumber=None):
-    """Parse line"""
-    ...
+def parseParams(string: str) -> list[list[Any]]: ...  # Any was taken from re module stubs
+def parseLine(
+    line: str, lineNumber: int | None = None
+) -> tuple[str, list[list[Any]], str | MaybeNone, str | MaybeNone]: ...  # Any is result of parseParams()
 
-wrap_re: Incomplete
-logical_lines_re: Incomplete
+wrap_re: re.Pattern[str]
+logical_lines_re: re.Pattern[str]
 testLines: str
 
-def getLogicalLines(fp, allowQP: bool = True) -> None:
-    """
-    Iterate through a stream, yielding one logical line at a time.
-
-    Because many applications still use vCard 2.1, we have to deal with the
-    quoted-printable encoding for long lines, as well as the vCard 3.0 and
-    vCalendar line folding technique, a whitespace character at the start
-    of the line.
-
-    Quoted-printable data will be decoded in the Behavior decoding phase.
-
-    # We're leaving this test in for awhile, because the unittest was ugly and dumb.
-    >>> from six import StringIO
-    >>> f=StringIO(testLines)
-    >>> for n, l in enumerate(getLogicalLines(f)):
-    ...     print("Line %s: %s" % (n, l[0]))
-    ...
-    Line 0: Line 0 text, Line 0 continued.
-    Line 1: Line 1;encoding=quoted-printable:this is an evil=
-     evil=
-     format.
-    Line 2: Line 2 is a new line, it does not start with whitespace.
-    """
-    ...
-def textLineToContentLine(text, n=None): ...
-def dquoteEscape(param):
-    """Return param, or "param" if ',' or ';' or ':' is in param."""
-    ...
-def foldOneLine(outbuf, input, lineLength: int = 75) -> None:
-    """
-    Folding line procedure that ensures multi-byte utf-8 sequences are not
-    broken across lines
-
-    TO-DO: This all seems odd. Is it still needed, especially in python3?
-    """
-    ...
-def defaultSerialize(obj, buf, lineLength):
-    """Encode and fold obj and its children, write to buf or return a string."""
-    ...
+def getLogicalLines(fp, allowQP: bool = True) -> Generator[tuple[str, int]]: ...
+def textLineToContentLine(text, n: int | None = None) -> ContentLine: ...
+def dquoteEscape(param: str) -> str: ...
+def foldOneLine(outbuf: SupportsWrite[AnyStr], input: AnyStr, lineLength: int = 75) -> None: ...
+def defaultSerialize(obj: Component | ContentLine, buf, lineLength: int): ...
 
 class Stack:
-    stack: Incomplete
+    stack: list[Incomplete]
     def __len__(self) -> int: ...
     def top(self): ...
     def topName(self): ...
@@ -395,28 +271,9 @@ class Stack:
 
 def readComponents(
     streamOrString, validate: bool = False, transform: bool = True, ignoreUnreadable: bool = False, allowQP: bool = False
-) -> Iterator[Component]:
-    """Generate one Component at a time from a stream."""
-    ...
-def readOne(stream, validate: bool = False, transform: bool = True, ignoreUnreadable: bool = False, allowQP: bool = False):
-    """Return the first component from stream."""
-    ...
-def registerBehavior(behavior, name=None, default: bool = False, id=None) -> None:
-    """
-    Register the given behavior.
-
-    If default is True (or if this is the first version registered with this
-    name), the version will be the default if no id is given.
-    """
-    ...
-def getBehavior(name, id=None):
-    """
-    Return a matching behavior if it exists, or None.
-
-    If id is None, return the default for name.
-    """
-    ...
-def newFromBehavior(name, id=None):
-    """Given a name, return a behaviored ContentLine or Component."""
-    ...
-def backslashEscape(s): ...
+) -> Iterator[Component]: ...
+def readOne(stream, validate: bool = False, transform: bool = True, ignoreUnreadable: bool = False, allowQP: bool = False): ...
+def registerBehavior(behavior, name: str | None = None, default: bool = False, id=None) -> None: ...
+def getBehavior(name: str, id=None): ...
+def newFromBehavior(name: str, id=None) -> Component | ContentLine: ...
+def backslashEscape(s: str) -> str: ...

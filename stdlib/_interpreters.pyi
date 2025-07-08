@@ -4,11 +4,12 @@ The 'interpreters' module provides a more convenient interface.
 """
 
 import types
-from collections.abc import Callable, Mapping
-from typing import Final, Literal, SupportsIndex
+from collections.abc import Callable
+from typing import Any, Final, Literal, SupportsIndex
 from typing_extensions import TypeAlias
 
 _Configs: TypeAlias = Literal["default", "isolated", "legacy", "empty", ""]
+_SharedDict: TypeAlias = dict[str, Any]  # many objects can be shared
 
 class InterpreterError(Exception):
     """A cross-interpreter operation failed"""
@@ -105,26 +106,12 @@ def whence(id: SupportsIndex) -> int:
     """
     ...
 def exec(
-    id: SupportsIndex, code: str | types.CodeType | Callable[[], object], shared: bool | None = None, *, restrict: bool = False
-) -> None | types.SimpleNamespace:
-    """
-    exec(id, code, shared=None, *, restrict=False)
-
-    Execute the provided code in the identified interpreter.
-    This is equivalent to running the builtin exec() under the target
-    interpreter, using the __dict__ of its __main__ module as both
-    globals and locals.
-
-    "code" may be a string containing the text of a Python script.
-
-    Functions (and code objects) are also supported, with some restrictions.
-    The code/function must not take any arguments or be a closure
-    (i.e. have cell vars).  Methods and other callables are not supported.
-
-    If a function is provided, its code object is used and all its state
-    is ignored, including its __globals__ dict.
-    """
-    ...
+    id: SupportsIndex,
+    code: str | types.CodeType | Callable[[], object],
+    shared: _SharedDict | None = None,
+    *,
+    restrict: bool = False,
+) -> None | types.SimpleNamespace: ...
 def call(
     id: SupportsIndex,
     callable: Callable[..., object],
@@ -147,36 +134,16 @@ def call(
     """
     ...
 def run_string(
-    id: SupportsIndex, script: str | types.CodeType | Callable[[], object], shared: bool | None = None, *, restrict: bool = False
-) -> None:
-    """
-    run_string(id, script, shared=None, *, restrict=False)
-
-    Execute the provided string in the identified interpreter.
-
-    (See _interpreters.exec().
-    """
-    ...
+    id: SupportsIndex,
+    script: str | types.CodeType | Callable[[], object],
+    shared: _SharedDict | None = None,
+    *,
+    restrict: bool = False,
+) -> None: ...
 def run_func(
-    id: SupportsIndex, func: types.CodeType | Callable[[], object], shared: bool | None = None, *, restrict: bool = False
-) -> None:
-    """
-    run_func(id, func, shared=None, *, restrict=False)
-
-    Execute the body of the provided function in the identified interpreter.
-    Code objects are also supported.  In both cases, closures and args
-    are not supported.  Methods and other callables are not supported either.
-
-    (See _interpreters.exec().
-    """
-    ...
-def set___main___attrs(id: SupportsIndex, updates: Mapping[str, object], *, restrict: bool = False) -> None:
-    """
-    set___main___attrs(id, ns, *, restrict=False)
-
-    Bind the given attributes in the interpreter's __main__ module.
-    """
-    ...
+    id: SupportsIndex, func: types.CodeType | Callable[[], object], shared: _SharedDict | None = None, *, restrict: bool = False
+) -> None: ...
+def set___main___attrs(id: SupportsIndex, updates: _SharedDict, *, restrict: bool = False) -> None: ...
 def incref(id: SupportsIndex, *, implieslink: bool = False, restrict: bool = False) -> None: ...
 def decref(id: SupportsIndex, *, restrict: bool = False) -> None: ...
 def is_shareable(obj: object) -> bool:

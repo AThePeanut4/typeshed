@@ -1,14 +1,14 @@
 import io
 import os
 from _typeshed import Incomplete, SupportsGetItem, SupportsLenAndGetItem, SupportsRead, SupportsWrite
-from collections.abc import Callable, Container, Hashable, Iterable, Iterator, Mapping
+from collections.abc import Callable, Container, Hashable, Iterable, Iterator, Mapping, Sequence
 from json import JSONEncoder
 from typing import Any, Literal, overload
 from typing_extensions import Self
 
 import pandas as pd
 from numpy.typing import ArrayLike
-from pandas._typing import AggFuncTypeFrame, AstypeArg, Axes, Axis, Dtype, GroupByObject, IndexLabel, Scalar
+from pandas._typing import AggFuncTypeFrame, Axes, Axis, Dtype, GroupByObject, IndexLabel, Scalar
 from pyproj import CRS
 
 from ._decorator import doc
@@ -805,37 +805,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         """
         ...
     @classmethod
-    def from_arrow(cls, table, geometry: str | None = None) -> GeoDataFrame:
-        """
-        Construct a GeoDataFrame from a Arrow table object based on GeoArrow
-        extension types.
-
-        See https://geoarrow.org/ for details on the GeoArrow specification.
-
-        This functions accepts any tabular Arrow object implementing
-        the `Arrow PyCapsule Protocol`_ (i.e. having an ``__arrow_c_array__``
-        or ``__arrow_c_stream__`` method).
-
-        .. _Arrow PyCapsule Protocol: https://arrow.apache.org/docs/format/CDataInterface/PyCapsuleInterface.html
-
-        .. versionadded:: 1.0
-
-        Parameters
-        ----------
-        table : pyarrow.Table or Arrow-compatible table
-            Any tabular object implementing the Arrow PyCapsule Protocol
-            (i.e. has an ``__arrow_c_array__`` or ``__arrow_c_stream__``
-            method). This table should have at least one column with a
-            geoarrow geometry type.
-        geometry : str, default None
-            The name of the geometry column to set as the active geometry
-            column. If None, the first geometry column found will be used.
-
-        Returns
-        -------
-        GeoDataFrame
-        """
-        ...
+    def from_arrow(
+        cls, table, geometry: str | None = None, to_pandas_kwargs: Mapping[str, Incomplete] | None = None
+    ) -> GeoDataFrame: ...  # TODO: `table: pyarrow.Table | table-like`
     def to_json(  # type: ignore[override]
         self,
         na: str = "null",
@@ -2505,188 +2477,11 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         sort: bool = True,
         observed: bool = False,
         dropna: bool = True,
-        method: Literal["coverage", "unary"] = "unary",
+        method: Literal["coverage", "unary", "disjoint_subset"] = "unary",
+        grid_size: float | None = None,
         **kwargs,
-    ) -> GeoDataFrame:
-        """
-        Dissolve geometries within `groupby` into single observation.
-        This is accomplished by applying the `union_all` method
-        to all geometries within a groupself.
-
-        Observations associated with each `groupby` group will be aggregated
-        using the `aggfunc`.
-
-        Parameters
-        ----------
-        by : str or list-like, default None
-            Column(s) whose values define the groups to be dissolved. If None,
-            the entire GeoDataFrame is considered as a single group. If a list-like
-            object is provided, the values in the list are treated as categorical
-            labels, and polygons will be combined based on the equality of
-            these categorical labels.
-        aggfunc : function or string, default "first"
-            Aggregation function for manipulation of data associated
-            with each group. Passed to pandas `groupby.agg` method.
-            Accepted combinations are:
-
-            - function
-            - string function name
-            - list of functions and/or function names, e.g. [np.sum, 'mean']
-            - dict of axis labels -> functions, function names or list of such.
-        as_index : boolean, default True
-            If true, groupby columns become index of result.
-        level : int or str or sequence of int or sequence of str, default None
-            If the axis is a MultiIndex (hierarchical), group by a
-            particular level or levels.
-        sort : bool, default True
-            Sort group keys. Get better performance by turning this off.
-            Note this does not influence the order of observations within
-            each group. Groupby preserves the order of rows within each group.
-        observed : bool, default False
-            This only applies if any of the groupers are Categoricals.
-            If True: only show observed values for categorical groupers.
-            If False: show all values for categorical groupers.
-        dropna : bool, default True
-            If True, and if group keys contain NA values, NA values
-            together with row/column will be dropped. If False, NA
-            values will also be treated as the key in groups.
-        method : str (default ``"unary"``)
-            The method to use for the union. Options are:
-
-            * ``"unary"``: use the unary union algorithm. This option is the most robust
-              but can be slow for large numbers of geometries (default).
-            * ``"coverage"``: use the coverage union algorithm. This option is optimized
-              for non-overlapping polygons and can be significantly faster than the
-              unary union algorithm. However, it can produce invalid geometries if the
-              polygons overlap.
-
-        **kwargs :
-            Keyword arguments to be passed to the pandas `DataFrameGroupby.agg` method
-            which is used by `dissolve`. In particular, `numeric_only` may be
-            supplied, which will be required in pandas 2.0 for certain aggfuncs.
-
-            .. versionadded:: 0.13.0
-        Returns
-        -------
-        GeoDataFrame
-
-        Examples
-        --------
-        >>> from shapely.geometry import Point
-        >>> d = {
-        ...     "col1": ["name1", "name2", "name1"],
-        ...     "geometry": [Point(1, 2), Point(2, 1), Point(0, 1)],
-        ... }
-        >>> gdf = geopandas.GeoDataFrame(d, crs=4326)
-        >>> gdf
-            col1     geometry
-        0  name1  POINT (1 2)
-        1  name2  POINT (2 1)
-        2  name1  POINT (0 1)
-
-        >>> dissolved = gdf.dissolve('col1')
-        >>> dissolved  # doctest: +SKIP
-                                geometry
-        col1
-        name1  MULTIPOINT ((0 1), (1 2))
-        name2                POINT (2 1)
-
-        See also
-        --------
-        GeoDataFrame.explode : explode multi-part geometries into single geometries
-        """
-        ...
-    def explode(self, column: IndexLabel | None = None, ignore_index: bool = False, index_parts: bool = False) -> Self:
-        """
-        Explode multi-part geometries into multiple single geometries.
-
-        Each row containing a multi-part geometry will be split into
-        multiple rows with single geometries, thereby increasing the vertical
-        size of the GeoDataFrame.
-
-        Parameters
-        ----------
-        column : string, default None
-            Column to explode. In the case of a geometry column, multi-part
-            geometries are converted to single-part.
-            If None, the active geometry column is used.
-        ignore_index : bool, default False
-            If True, the resulting index will be labelled 0, 1, …, n - 1,
-            ignoring `index_parts`.
-        index_parts : boolean, default False
-            If True, the resulting index will be a multi-index (original
-            index with an additional level indicating the multiple
-            geometries: a new zero-based index for each single part geometry
-            per multi-part geometry).
-
-        Returns
-        -------
-        GeoDataFrame
-            Exploded geodataframe with each single geometry
-            as a separate entry in the geodataframe.
-
-        Examples
-        --------
-
-        >>> from shapely.geometry import MultiPoint
-        >>> d = {
-        ...     "col1": ["name1", "name2"],
-        ...     "geometry": [
-        ...         MultiPoint([(1, 2), (3, 4)]),
-        ...         MultiPoint([(2, 1), (0, 0)]),
-        ...     ],
-        ... }
-        >>> gdf = geopandas.GeoDataFrame(d, crs=4326)
-        >>> gdf
-            col1               geometry
-        0  name1  MULTIPOINT ((1 2), (3 4))
-        1  name2  MULTIPOINT ((2 1), (0 0))
-
-        >>> exploded = gdf.explode(index_parts=True)
-        >>> exploded
-              col1     geometry
-        0 0  name1  POINT (1 2)
-          1  name1  POINT (3 4)
-        1 0  name2  POINT (2 1)
-          1  name2  POINT (0 0)
-
-        >>> exploded = gdf.explode(index_parts=False)
-        >>> exploded
-            col1     geometry
-        0  name1  POINT (1 2)
-        0  name1  POINT (3 4)
-        1  name2  POINT (2 1)
-        1  name2  POINT (0 0)
-
-        >>> exploded = gdf.explode(ignore_index=True)
-        >>> exploded
-            col1     geometry
-        0  name1  POINT (1 2)
-        1  name1  POINT (3 4)
-        2  name2  POINT (2 1)
-        3  name2  POINT (0 0)
-
-        See also
-        --------
-        GeoDataFrame.dissolve : dissolve geometries into a single observation.
-        """
-        ...
-    def astype(
-        self,
-        dtype: AstypeArg | Mapping[Any, Dtype] | pd.Series[Any],  # any because of mapping invariance and series typevar bounds
-        copy: bool | None = None,
-        errors: Literal["ignore", "raise"] = "raise",
-    ) -> GeoDataFrame:
-        """
-        Cast a pandas object to a specified dtype ``dtype``.
-        Returns a GeoDataFrame when the geometry column is kept as geometries,
-        otherwise returns a pandas DataFrame.
-        See the pandas.DataFrame.astype docstring for more details.
-        Returns
-        -------
-        GeoDataFrame or DataFrame
-        """
-        ...
+    ) -> GeoDataFrame: ...
+    def explode(self, column: IndexLabel | None = None, ignore_index: bool = False, index_parts: bool = False) -> Self: ...
     def to_postgis(
         self,
         name: str,
@@ -2962,98 +2757,16 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     def sjoin(
         self,
         df: GeoDataFrame,
-        # *args, **kwargs passed to geopandas.sjoin
         how: Literal["left", "right", "inner"] = "inner",
         predicate: str = "intersects",
         lsuffix: str = "left",
         rsuffix: str = "right",
+        *,
+        # **kwargs passed to geopandas.sjoin
         distance: float | ArrayLike | None = None,
-    ) -> GeoDataFrame:
-        """
-        Spatial join of two GeoDataFrames.
-
-        See the User Guide page :doc:`../../user_guide/mergingdata` for details.
-
-        Parameters
-        ----------
-        df : GeoDataFrame
-        how : string, default 'inner'
-            The type of join:
-
-            * 'left': use keys from left_df; retain only left_df geometry column
-            * 'right': use keys from right_df; retain only right_df geometry column
-            * 'inner': use intersection of keys from both dfs; retain only
-              left_df geometry column
-
-        predicate : string, default 'intersects'
-            Binary predicate. Valid values are determined by the spatial index used.
-            You can check the valid values in left_df or right_df as
-            ``left_df.sindex.valid_query_predicates`` or
-            ``right_df.sindex.valid_query_predicates``
-        lsuffix : string, default 'left'
-            Suffix to apply to overlapping column names (left GeoDataFrame).
-        rsuffix : string, default 'right'
-            Suffix to apply to overlapping column names (right GeoDataFrame).
-        distance : number or array_like, optional
-            Distance(s) around each input geometry within which to query the tree
-            for the 'dwithin' predicate. If array_like, must be
-            one-dimesional with length equal to length of left GeoDataFrame.
-            Required if ``predicate='dwithin'``.
-        on_attribute : string, list or tuple
-            Column name(s) to join on as an additional join restriction on top
-            of the spatial predicate. These must be found in both DataFrames.
-            If set, observations are joined only if the predicate applies
-            and values in specified columns match.
-
-        Examples
-        --------
-        >>> import geodatasets
-        >>> chicago = geopandas.read_file(
-        ...     geodatasets.get_path("geoda.chicago_commpop")
-        ... )
-        >>> groceries = geopandas.read_file(
-        ...     geodatasets.get_path("geoda.groceries")
-        ... ).to_crs(chicago.crs)
-
-        >>> chicago.head()  # doctest: +SKIP
-                 community  ...                                           geometry
-        0          DOUGLAS  ...  MULTIPOLYGON (((-87.60914 41.84469, -87.60915 ...
-        1          OAKLAND  ...  MULTIPOLYGON (((-87.59215 41.81693, -87.59231 ...
-        2      FULLER PARK  ...  MULTIPOLYGON (((-87.62880 41.80189, -87.62879 ...
-        3  GRAND BOULEVARD  ...  MULTIPOLYGON (((-87.60671 41.81681, -87.60670 ...
-        4          KENWOOD  ...  MULTIPOLYGON (((-87.59215 41.81693, -87.59215 ...
-
-        [5 rows x 9 columns]
-
-        >>> groceries.head()  # doctest: +SKIP
-           OBJECTID     Ycoord  ...  Category                           geometry
-        0        16  41.973266  ...       NaN  MULTIPOINT ((-87.65661 41.97321))
-        1        18  41.696367  ...       NaN  MULTIPOINT ((-87.68136 41.69713))
-        2        22  41.868634  ...       NaN  MULTIPOINT ((-87.63918 41.86847))
-        3        23  41.877590  ...       new  MULTIPOINT ((-87.65495 41.87783))
-        4        27  41.737696  ...       NaN  MULTIPOINT ((-87.62715 41.73623))
-        [5 rows x 8 columns]
-
-        >>> groceries_w_communities = groceries.sjoin(chicago)
-        >>> groceries_w_communities[["OBJECTID", "community", "geometry"]].head()
-           OBJECTID       community                           geometry
-        0        16          UPTOWN  MULTIPOINT ((-87.65661 41.97321))
-        1        18     MORGAN PARK  MULTIPOINT ((-87.68136 41.69713))
-        2        22  NEAR WEST SIDE  MULTIPOINT ((-87.63918 41.86847))
-        3        23  NEAR WEST SIDE  MULTIPOINT ((-87.65495 41.87783))
-        4        27         CHATHAM  MULTIPOINT ((-87.62715 41.73623))
-
-        Notes
-        -----
-        Every operation in GeoPandas is planar, i.e. the potential third
-        dimension is not taken into account.
-
-        See also
-        --------
-        GeoDataFrame.sjoin_nearest : nearest neighbor join
-        sjoin : equivalent top-level function
-        """
-        ...
+        on_attribute: str | Sequence[str] | None = None,
+        **kwargs,
+    ) -> GeoDataFrame: ...
     def sjoin_nearest(
         self,
         right: GeoDataFrame,

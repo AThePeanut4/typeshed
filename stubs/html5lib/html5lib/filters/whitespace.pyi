@@ -1,12 +1,12 @@
-from typing import Any
+import re
 
 from . import base
 
-SPACES_REGEX: Any
+spaceCharacters: str
+SPACES_REGEX: re.Pattern[str]
 
 class Filter(base.Filter):
-    """Collapses whitespace except in pre, textarea, and script elements"""
-    spacePreserveElements: Any
+    spacePreserveElements: frozenset[str]
     def __iter__(self): ...
 
-def collapse_spaces(text): ...
+def collapse_spaces(text: str) -> str: ...

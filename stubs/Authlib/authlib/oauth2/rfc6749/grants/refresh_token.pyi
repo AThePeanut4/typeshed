@@ -1,18 +1,11 @@
-"""
-authlib.oauth2.rfc6749.grants.refresh_token.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-A special grant endpoint for refresh_token grant_type. Refreshing an
-Access Token per `Section 6`_.
-
-.. _`Section 6`: https://tools.ietf.org/html/rfc6749#section-6
-"""
-
+from logging import Logger
 from typing_extensions import TypeAlias
 
 from authlib.oauth2.rfc6749 import BaseGrant, TokenEndpointMixin, TokenMixin
 
 _ServerResponse: TypeAlias = tuple[int, str, list[tuple[str, str]]]
+
+log: Logger
 
 class RefreshTokenGrant(BaseGrant, TokenEndpointMixin):
     """

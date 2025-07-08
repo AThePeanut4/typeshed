@@ -17,6 +17,8 @@ FR: weekday
 SA: weekday
 SU: weekday
 
+__all__ = ["relativedelta", "MO", "TU", "WE", "TH", "FR", "SA", "SU"]
+
 class relativedelta:
     """
     The relativedelta type is designed to be applied to an existing datetime and

@@ -1,9 +1,8 @@
+from _typeshed import Incomplete
 from abc import ABCMeta
 from collections.abc import Mapping
-from typing import Any
 
-class Trie(Mapping[Any, Any], metaclass=ABCMeta):
-    """Abstract base class for tries"""
+class Trie(Mapping[Incomplete, Incomplete], metaclass=ABCMeta):
     def keys(self, prefix=None): ...
     def has_keys_with_prefix(self, prefix): ...
     def longest_prefix(self, prefix): ...

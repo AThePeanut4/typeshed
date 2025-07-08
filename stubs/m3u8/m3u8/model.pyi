@@ -1,7 +1,8 @@
 import datetime as dt
-from _typeshed import Incomplete, StrOrBytesPath
-from collections.abc import Callable, Mapping
-from typing import ClassVar, Literal, Protocol, TypeVar, type_check_only
+from _typeshed import Incomplete, StrOrBytesPath, Unused
+from collections.abc import Callable, Iterable, Mapping
+from decimal import Decimal
+from typing import Any, ClassVar, Literal, Protocol, TypeVar, overload, type_check_only
 from typing_extensions import TypeAlias
 
 from m3u8.mixins import BasePathMixin, GroupedBasePathMixin
@@ -27,123 +28,7 @@ _PlaylistAnyT = TypeVar("_PlaylistAnyT", bound=_PlaylistProtocol)
 class MalformedPlaylistError(Exception): ...
 
 class M3U8:
-    """
-    Represents a single M3U8 playlist. Should be instantiated with
-    the content as string.
-
-    Parameters:
-
-     `content`
-       the m3u8 content as string
-
-     `base_path`
-       all urls (key and segments url) will be updated with this base_path,
-       ex.:
-           base_path = "http://videoserver.com/hls"
-
-            /foo/bar/key.bin           -->  http://videoserver.com/hls/key.bin
-            http://vid.com/segment1.ts -->  http://videoserver.com/hls/segment1.ts
-
-       can be passed as parameter or setted as an attribute to ``M3U8`` object.
-     `base_uri`
-      uri the playlist comes from. it is propagated to SegmentList and Key
-      ex.: http://example.com/path/to
-
-    Attributes:
-
-     `keys`
-       Returns the list of `Key` objects used to encrypt the segments from m3u8.
-       It covers the whole list of possible situations when encryption either is
-       used or not.
-
-       1. No encryption.
-       `keys` list will only contain a `None` element.
-
-       2. Encryption enabled for all segments.
-       `keys` list will contain the key used for the segments.
-
-       3. No encryption for first element(s), encryption is applied afterwards
-       `keys` list will contain `None` and the key used for the rest of segments.
-
-       4. Multiple keys used during the m3u8 manifest.
-       `keys` list will contain the key used for each set of segments.
-
-     `session_keys`
-       Returns the list of `SessionKey` objects used to encrypt multiple segments from m3u8.
-
-     `segments`
-       a `SegmentList` object, represents the list of `Segment`s from this playlist
-
-     `is_variant`
-        Returns true if this M3U8 is a variant playlist, with links to
-        other M3U8s with different bitrates.
-
-        If true, `playlists` is a list of the playlists available,
-        and `iframe_playlists` is a list of the i-frame playlists available.
-
-     `is_endlist`
-        Returns true if EXT-X-ENDLIST tag present in M3U8.
-        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.8
-
-      `playlists`
-        If this is a variant playlist (`is_variant` is True), returns a list of
-        Playlist objects
-
-      `iframe_playlists`
-        If this is a variant playlist (`is_variant` is True), returns a list of
-        IFramePlaylist objects
-
-      `playlist_type`
-        A lower-case string representing the type of the playlist, which can be
-        one of VOD (video on demand) or EVENT.
-
-      `media`
-        If this is a variant playlist (`is_variant` is True), returns a list of
-        Media objects
-
-      `target_duration`
-        Returns the EXT-X-TARGETDURATION as an integer
-        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.2
-
-      `media_sequence`
-        Returns the EXT-X-MEDIA-SEQUENCE as an integer
-        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.3
-
-      `program_date_time`
-        Returns the EXT-X-PROGRAM-DATE-TIME as a string
-        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.5
-
-      `version`
-        Return the EXT-X-VERSION as is
-
-      `allow_cache`
-        Return the EXT-X-ALLOW-CACHE as is
-
-      `files`
-        Returns an iterable with all files from playlist, in order. This includes
-        segments and key uri, if present.
-
-      `base_uri`
-        It is a property (getter and setter) used by
-        SegmentList and Key to have absolute URIs.
-
-      `is_i_frames_only`
-        Returns true if EXT-X-I-FRAMES-ONLY tag present in M3U8.
-        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.12
-
-      `is_independent_segments`
-        Returns true if EXT-X-INDEPENDENT-SEGMENTS tag present in M3U8.
-        https://tools.ietf.org/html/draft-pantos-http-live-streaming-13#section-3.4.16
-
-      `image_playlists`
-        If this is a variant playlist (`is_variant` is True), returns a list of
-        ImagePlaylist objects
-
-      `is_images_only`
-        Returns true if EXT-X-IMAGES-ONLY tag present in M3U8.
-        https://github.com/image-media-playlist/spec/blob/master/image_media_playlist_v0_4.pdf
-    """
-    simple_attributes: list[tuple[str, str]]
+    simple_attributes: tuple[tuple[str, str], ...]
     data: dict[str, Incomplete]
     keys: list[Key]
     segment_map: list[InitializationSection]
@@ -312,29 +197,29 @@ class Segment(BasePathMixin):
         uri: str | None = None,
         base_uri: str | None = None,
         program_date_time: dt.datetime | None = None,
-        current_program_date_time=None,
+        current_program_date_time: dt.datetime | None = None,
         duration: float | None = None,
         title: str | None = None,
-        bitrate=None,
-        byterange=None,
+        bitrate: int | None = None,
+        byterange: str | None = None,
         cue_out: bool = False,
         cue_out_start: bool = False,
         cue_out_explicitly_duration: bool = False,
         cue_in: bool = False,
         discontinuity: bool = False,
-        key=None,
-        scte35=None,
+        key: Unused = None,
+        scte35: str | None = None,
         oatcls_scte35: str | None = None,
-        scte35_duration=None,
+        scte35_duration: float | None = None,
         scte35_elapsedtime=None,
         asset_metadata: Mapping[str, str] | None = None,
         keyobject: Key | None = None,
-        parts: list[Mapping[str, Incomplete]] | None = None,
+        parts: Iterable[Mapping[str, Incomplete]] | None = None,
         init_section: Mapping[str, Incomplete] | None = None,
-        dateranges=None,
+        dateranges: Iterable[Mapping[str, Incomplete]] | None = None,
         gap_tag: list[Mapping[str, Incomplete]] | None = None,
         media_sequence: int | None = None,
-        custom_parser_values=None,
+        custom_parser_values: dict[str, Incomplete] | None = None,
     ) -> None: ...
     def add_part(self, part: PartialSegment) -> None: ...
     def dumps(self, last_segment: PartialSegment | None, timespec: str = "milliseconds", infspec: str = "auto") -> str: ...
@@ -408,11 +293,11 @@ class PartialSegment(BasePathMixin):
         uri: str | None,
         duration: float | None,
         program_date_time: dt.datetime | None = None,
-        current_program_date_time=None,
-        byterange=None,
+        current_program_date_time: dt.datetime | None = None,
+        byterange: str | None = None,
         independent=None,
         gap=None,
-        dateranges: list[Mapping[str, Incomplete]] | None = None,
+        dateranges: Iterable[Mapping[str, Incomplete]] | None = None,
         gap_tag=None,
     ) -> None: ...
     def dumps(self, last_segment) -> str: ...
@@ -535,7 +420,25 @@ class StreamInfo:
     pathway_id: str | None
     stable_variant_id: str | None
     req_video_layout: str | None
-    def __init__(self, **kwargs) -> None: ...
+    def __init__(
+        self,
+        *,
+        bandwidth: int | None = None,
+        closed_captions=None,
+        average_bandwidth: int | None = None,
+        program_id: int | None = None,
+        resolution: tuple[int, int] | None = None,
+        codecs: str | None = None,
+        audio: str | None = None,
+        video: str | None = None,
+        subtitles: str | None = None,
+        frame_rate: float | None = None,
+        video_range: str | None = None,
+        hdcp_level: str | None = None,
+        pathway_id: str | None = None,
+        stable_variant_id: str | None = None,
+        req_video_layout: str | None = None,
+    ) -> None: ...
 
 class Media(BasePathMixin):
     """
@@ -636,7 +539,7 @@ class ServerControl:
         part_hold_back: float | None = None,
         can_skip_dateranges: str | None = None,
     ) -> None: ...
-    def __getitem__(self, item: str): ...
+    def __getitem__(self, item: str) -> str | float | None: ...
     def dumps(self) -> str: ...
 
 class Skip:
@@ -664,7 +567,7 @@ class PreloadHint(BasePathMixin):
         byterange_start: int | None = None,
         byterange_length: int | None = None,
     ) -> None: ...
-    def __getitem__(self, item: str) -> str: ...
+    def __getitem__(self, item: str) -> str | int | None: ...
     def dumps(self) -> str: ...
 
 class SessionData:
@@ -689,7 +592,21 @@ class DateRange:
     scte35_in: str | None
     end_on_next: Incomplete
     x_client_attrs: list[tuple[str, str]]
-    def __init__(self, **kwargs) -> None: ...
+    def __init__(
+        self,
+        *,
+        id: str,
+        start_date: str | None = None,
+        class_: str | None = None,  # actually passing as `class` argument
+        end_date: str | None = None,
+        duration: float | None = None,
+        planned_duration: float | None = None,
+        scte35_cmd: str | None = None,
+        scte35_out: str | None = None,
+        scte35_in: str | None = None,
+        end_on_next=None,
+        **kwargs: str,  # for arguments with `x_` prefix
+    ) -> None: ...
     def dumps(self) -> str: ...
 
 class ContentSteering(BasePathMixin):
@@ -735,3 +652,11 @@ class Tiles(BasePathMixin):  # this is unused in runtime, so this is (temporary)
     duration: Incomplete
     def __init__(self, resolution, layout, duration) -> None: ...
     def dumps(self) -> str: ...
+
+@overload
+def find_key(keydata: None, keylist: Iterable[Key | None]) -> None: ...
+@overload
+def find_key(keydata: Mapping[str, Any], keylist: Iterable[Key | None]) -> Key: ...  # keydata can contain any values
+def denormalize_attribute(attribute: str) -> str: ...
+def quoted(string: str | None) -> str: ...
+def number_to_string(number: str | float | Decimal) -> str: ...
