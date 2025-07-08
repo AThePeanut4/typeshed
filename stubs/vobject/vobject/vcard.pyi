@@ -1,3 +1,5 @@
+"""Definitions and behavior for vCard 3.0"""
+
 from typing import AnyStr
 
 from .base import ContentLine
@@ -20,7 +22,9 @@ class Name:
         """Each name attribute can be a string or a list of strings."""
         ...
     @staticmethod
-    def toString(val: str | list[str] | tuple[str, ...]) -> str: ...
+    def toString(val: str | list[str] | tuple[str, ...]) -> str:
+        """Turn a string or array value into a string."""
+        ...
     def __eq__(self, other: object) -> bool: ...
 
 class Address:
@@ -44,7 +48,9 @@ class Address:
         """Each name attribute can be a string or a list of strings."""
         ...
     @staticmethod
-    def toString(val: str | list[str] | tuple[str, ...], join_char: str = "\n") -> str: ...
+    def toString(val: str | list[str] | tuple[str, ...], join_char: str = "\n") -> str:
+        """Turn a string or array value into a string."""
+        ...
     lines: tuple[str, ...]
     one_line: tuple[str, ...]
     def __eq__(self, other: object) -> bool: ...
@@ -59,9 +65,20 @@ class VCardTextBehavior(Behavior):
     allowGroup: bool
     base64string: str
     @classmethod
-    def decode(cls, line: ContentLine) -> None: ...
+    def decode(cls, line: ContentLine) -> None:
+        """
+        Remove backslash escaping from line.valueDecode line, either to remove
+        backslash espacing, or to decode base64 encoding. The content line should
+        contain a ENCODING=b for base64 encoding, but Apple Addressbook seems to
+        export a singleton parameter of 'BASE64', which does not match the 3.0
+        vCard spec. If we encouter that, then we transform the parameter to
+        ENCODING=b
+        """
+        ...
     @classmethod
-    def encode(cls, line: ContentLine) -> None: ...
+    def encode(cls, line: ContentLine) -> None:
+        """Backslash escape line.value."""
+        ...
 
 class VCardBehavior(Behavior):
     allowGroup: bool
@@ -112,9 +129,18 @@ class Photo(VCardTextBehavior):
         ...
 
 def toListOrString(string: str) -> str | list[str]: ...
-def splitFields(string: str) -> list[str | list[str]]: ...
+def splitFields(string: str) -> list[str | list[str]]:
+    """Return a list of strings or lists from a Name or Address."""
+    ...
 def toList(stringOrList: AnyStr | list[AnyStr]) -> list[AnyStr]: ...
-def serializeFields(obj, order=None): ...
+def serializeFields(obj, order=None):
+    """
+    Turn an object's fields into a ';' and ',' seperated string.
+
+    If order is None, obj should be a list, backslash escape each field and
+    return a ';' separated string.
+    """
+    ...
 
 NAME_ORDER: tuple[str, ...]
 ADDRESS_ORDER: tuple[str, ...]

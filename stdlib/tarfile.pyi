@@ -219,7 +219,43 @@ class TarFile:
         pax_headers: Mapping[str, str] | None = ...,
         debug: int | None = ...,
         errorlevel: int | None = ...,
-    ) -> Self: ...
+    ) -> Self:
+        """
+        Open a tar archive for reading, writing or appending. Return
+        an appropriate TarFile class.
+
+        mode:
+        'r' or 'r:*' open for reading with transparent compression
+        'r:'         open for reading exclusively uncompressed
+        'r:gz'       open for reading with gzip compression
+        'r:bz2'      open for reading with bzip2 compression
+        'r:xz'       open for reading with lzma compression
+        'a' or 'a:'  open for appending, creating the file if necessary
+        'w' or 'w:'  open for writing without compression
+        'w:gz'       open for writing with gzip compression
+        'w:bz2'      open for writing with bzip2 compression
+        'w:xz'       open for writing with lzma compression
+
+        'x' or 'x:'  create a tarfile exclusively without compression, raise
+                     an exception if the file is already created
+        'x:gz'       create a gzip compressed tarfile, raise an exception
+                     if the file is already created
+        'x:bz2'      create a bzip2 compressed tarfile, raise an exception
+                     if the file is already created
+        'x:xz'       create an lzma compressed tarfile, raise an exception
+                     if the file is already created
+
+        'r|*'        open a stream of tar blocks with transparent compression
+        'r|'         open an uncompressed stream of tar blocks for reading
+        'r|gz'       open a gzip compressed stream of tar blocks
+        'r|bz2'      open a bzip2 compressed stream of tar blocks
+        'r|xz'       open an lzma compressed stream of tar blocks
+        'w|'         open an uncompressed stream for writing
+        'w|gz'       open a gzip compressed stream for writing
+        'w|bz2'      open a bzip2 compressed stream for writing
+        'w|xz'       open an lzma compressed stream for writing
+        """
+        ...
     if sys.version_info >= (3, 14):
         @overload
         @classmethod
@@ -541,7 +577,43 @@ class TarFile:
         debug: int | None = ...,
         errorlevel: int | None = ...,
         preset: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None = ...,
-    ) -> Self: ...
+    ) -> Self:
+        """
+        Open a tar archive for reading, writing or appending. Return
+        an appropriate TarFile class.
+
+        mode:
+        'r' or 'r:*' open for reading with transparent compression
+        'r:'         open for reading exclusively uncompressed
+        'r:gz'       open for reading with gzip compression
+        'r:bz2'      open for reading with bzip2 compression
+        'r:xz'       open for reading with lzma compression
+        'a' or 'a:'  open for appending, creating the file if necessary
+        'w' or 'w:'  open for writing without compression
+        'w:gz'       open for writing with gzip compression
+        'w:bz2'      open for writing with bzip2 compression
+        'w:xz'       open for writing with lzma compression
+
+        'x' or 'x:'  create a tarfile exclusively without compression, raise
+                     an exception if the file is already created
+        'x:gz'       create a gzip compressed tarfile, raise an exception
+                     if the file is already created
+        'x:bz2'      create a bzip2 compressed tarfile, raise an exception
+                     if the file is already created
+        'x:xz'       create an lzma compressed tarfile, raise an exception
+                     if the file is already created
+
+        'r|*'        open a stream of tar blocks with transparent compression
+        'r|'         open an uncompressed stream of tar blocks for reading
+        'r|gz'       open a gzip compressed stream of tar blocks
+        'r|bz2'      open a bzip2 compressed stream of tar blocks
+        'r|xz'       open an lzma compressed stream of tar blocks
+        'w|'         open an uncompressed stream for writing
+        'w|gz'       open a gzip compressed stream for writing
+        'w|bz2'      open a bzip2 compressed stream for writing
+        'w|xz'       open an lzma compressed stream for writing
+        """
+        ...
     if sys.version_info >= (3, 14):
         @overload
         @classmethod
@@ -1048,7 +1120,12 @@ class TarFile:
         pax_headers: Mapping[str, str] | None = ...,
         debug: int | None = ...,
         errorlevel: int | None = ...,
-    ) -> Self: ...
+    ) -> Self:
+        """
+        Open lzma compressed tar archive name for reading or writing.
+        Appending is not allowed.
+        """
+        ...
     if sys.version_info >= (3, 14):
         @overload
         @classmethod
@@ -1091,11 +1168,41 @@ class TarFile:
             errorlevel: int | None = ...,
         ) -> Self: ...
 
-    def getmember(self, name: str) -> TarInfo: ...
-    def getmembers(self) -> _list[TarInfo]: ...
-    def getnames(self) -> _list[str]: ...
-    def list(self, verbose: bool = True, *, members: _list[TarInfo] | None = None) -> None: ...
-    def next(self) -> TarInfo | None: ...
+    def getmember(self, name: str) -> TarInfo:
+        """
+        Return a TarInfo object for member `name'. If `name' can not be
+        found in the archive, KeyError is raised. If a member occurs more
+        than once in the archive, its last occurrence is assumed to be the
+        most up-to-date version.
+        """
+        ...
+    def getmembers(self) -> _list[TarInfo]:
+        """
+        Return the members of the archive as a list of TarInfo objects. The
+        list has the same order as the members in the archive.
+        """
+        ...
+    def getnames(self) -> _list[str]:
+        """
+        Return the members of the archive as a list of their names. It has
+        the same order as the list returned by getmembers().
+        """
+        ...
+    def list(self, verbose: bool = True, *, members: _list[TarInfo] | None = None) -> None:
+        """
+        Print a table of contents to sys.stdout. If `verbose' is False, only
+        the names of the members are printed. If it is True, an `ls -l'-like
+        output is produced. `members' is optional and must be a subset of the
+        list returned by getmembers().
+        """
+        ...
+    def next(self) -> TarInfo | None:
+        """
+        Return the next member of the archive as a TarInfo object, when
+        TarFile is opened for reading. Return None if there is no more
+        available.
+        """
+        ...
     # Calling this method without `filter` is deprecated, but it may be set either on the class or in an
     # individual call, so we can't mark it as @deprecated here.
     def extractall(

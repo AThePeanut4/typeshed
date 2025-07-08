@@ -89,7 +89,25 @@ class HTMLParser:
         strict: bool = False,
         namespaceHTMLElements: bool = True,
         debug: bool = False,
-    ) -> None: ...
+    ) -> None:
+        """
+        :arg tree: a treebuilder class controlling the type of tree that will be
+            returned. Built in treebuilders can be accessed through
+            html5lib.treebuilders.getTreeBuilder(treeType)
+
+        :arg strict: raise an exception when a parse error is encountered
+
+        :arg namespaceHTMLElements: whether or not to namespace HTML elements
+
+        :arg debug: whether or not to enable debug mode which logs things
+
+        Example:
+
+        >>> from html5lib.html5parser import HTMLParser
+        >>> parser = HTMLParser()                     # generates parser with etree builder
+        >>> parser = HTMLParser('lxml', strict=True)  # generates parser with lxml builder which is strict
+        """
+        ...
     firstStartTag: bool
     log: Incomplete
     compatMode: str

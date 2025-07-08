@@ -60,10 +60,29 @@ class GssapiWithMicAuthHandler:
     def gss_host(self) -> str: ...
 
 class AuthOnlyHandler(AuthHandler):
+    """
+    AuthHandler, and just auth, no service requests!
+
+    .. versionadded:: 3.2
+    """
     def send_auth_request(
         self, username: str, method: str, finish_message: Callable[[Message], None] | None = None
-    ) -> list[str]: ...
+    ) -> list[str]:
+        """
+        Submit a userauth request message & wait for response.
+
+        Performs the transport message send call, sets self.auth_event, and
+        will lock-n-block as necessary to both send, and wait for response to,
+        the USERAUTH_REQUEST.
+
+        Most callers will want to supply a callback to ``finish_message``,
+        which accepts a Message ``m`` and may call mutator methods on it to add
+        more fields.
+        """
+        ...
     def auth_none(self, username: str) -> list[str]: ...  # type: ignore[override]
     def auth_publickey(self, username: str, key: PKey) -> list[str]: ...  # type: ignore[override]
     def auth_password(self, username: str, password: str) -> list[str]: ...  # type: ignore[override]
-    def auth_interactive(self, username: str, handler: _InteractiveCallback, submethods: str = "") -> list[str]: ...  # type: ignore[override]
+    def auth_interactive(self, username: str, handler: _InteractiveCallback, submethods: str = "") -> list[str]:
+        """response_list = handler(title, instructions, prompt_list)"""
+        ...

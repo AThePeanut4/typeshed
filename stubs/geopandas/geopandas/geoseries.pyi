@@ -40,7 +40,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
     Examples
     --------
-
     >>> from shapely.geometry import Point
     >>> s = geopandas.GeoSeries([Point(1, 1), Point(2, 2), Point(3, 3)])
     >>> s
@@ -314,7 +313,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @property
     def x(self) -> pd.Series[float]:
         """
-        Return the x location of point geometries in a GeoSeries
+        Return the x location of point geometries in a GeoSeries.
 
         Returns
         -------
@@ -322,7 +321,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> s = geopandas.GeoSeries([Point(1, 1), Point(2, 2), Point(3, 3)])
         >>> s.x
@@ -333,7 +331,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         See Also
         --------
-
         GeoSeries.y
         GeoSeries.z
         """
@@ -341,7 +338,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @property
     def y(self) -> pd.Series[float]:
         """
-        Return the y location of point geometries in a GeoSeries
+        Return the y location of point geometries in a GeoSeries.
 
         Returns
         -------
@@ -349,7 +346,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> s = geopandas.GeoSeries([Point(1, 1), Point(2, 2), Point(3, 3)])
         >>> s.y
@@ -360,15 +356,76 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         See Also
         --------
-
         GeoSeries.x
         GeoSeries.z
+        GeoSeries.m
         """
         ...
     @property
-    def z(self) -> pd.Series[float]: ...
+    def z(self) -> pd.Series[float]:
+        """
+        Return the z location of point geometries in a GeoSeries.
+
+        Returns
+        -------
+        pandas.Series
+
+        Examples
+        --------
+        >>> from shapely.geometry import Point
+        >>> s = geopandas.GeoSeries([Point(1, 1, 1), Point(2, 2, 2), Point(3, 3, 3)])
+        >>> s.z
+        0    1.0
+        1    2.0
+        2    3.0
+        dtype: float64
+
+        See Also
+        --------
+        GeoSeries.x
+        GeoSeries.y
+        GeoSeries.m
+        """
+        ...
     @property
-    def m(self) -> pd.Series[float]: ...
+    def m(self) -> pd.Series[float]:
+        """
+        Return the m coordinate of point geometries in a GeoSeries.
+
+        Requires Shapely >= 2.1.
+
+        .. versionadded:: 1.1.0
+
+        Returns
+        -------
+        pandas.Series
+
+        Examples
+        --------
+        >>> from shapely.geometry import Point
+        >>> s = geopandas.GeoSeries.from_wkt(
+        ...     [
+        ...         "POINT M (2 3 5)",
+        ...         "POINT M (1 2 3)",
+        ...     ]
+        ... )
+        >>> s
+        0    POINT M (2 3 5)
+        1    POINT M (1 2 3)
+        dtype: geometry
+
+        >>> s.m
+        0    5.0
+        1    3.0
+        dtype: float64
+
+        See Also
+        --------
+        GeoSeries.x
+        GeoSeries.y
+        GeoSeries.z
+        """
+        ...
     # Keep inline with GeoDataFrame.from_file and geopandas.io.file._read_file
     @classmethod
     def from_file(
@@ -434,9 +491,9 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         copy: bool | None = None,
         fastpath: bool = False,
     ) -> Self:
-        """
+        r"""
         Alternate constructor to create a ``GeoSeries``
-        from a list or array of WKB objects
+        from a list or array of WKB objects.
 
         Parameters
         ----------
@@ -454,6 +511,9 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
             - warn: a warning will be raised and invalid WKB geometries will be returned
               as None.
             - ignore: invalid WKB geometries will be returned as None without a warning.
+            - fix: an effort is made to fix invalid input geometries (e.g. close
+              unclosed rings). If this is not possible, they are returned as ``None``
+              without a warning. Requires GEOS >= 3.11 and shapely >= 2.1.
 
         kwargs
             Additional arguments passed to the Series constructor,
@@ -466,6 +526,29 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         See Also
         --------
         GeoSeries.from_wkt
+
+        Examples
+        --------
+        >>> wkbs = [
+        ... (
+        ...     b"\x01\x01\x00\x00\x00\x00\x00\x00\x00"
+        ...     b"\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?"
+        ... ),
+        ... (
+        ...     b"\x01\x01\x00\x00\x00\x00\x00\x00\x00"
+        ...     b"\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@"
+        ... ),
+        ... (
+        ...    b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00"
+        ...    b"\x00\x08@\x00\x00\x00\x00\x00\x00\x08@"
+        ... ),
+        ... ]
+        >>> s = geopandas.GeoSeries.from_wkb(wkbs)
+        >>> s
+        0    POINT (1 1)
+        1    POINT (2 2)
+        2    POINT (3 3)
+        dtype: geometry
         """
         ...
     @classmethod
@@ -483,7 +566,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     ) -> Self:
         """
         Alternate constructor to create a ``GeoSeries``
-        from a list or array of WKT objects
+        from a list or array of WKT objects.
 
         Parameters
         ----------
@@ -502,6 +585,9 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
               returned as ``None``.
             - ignore: invalid WKT geometries will be returned as ``None`` without a
               warning.
+            - fix: an effort is made to fix invalid input geometries (e.g. close
+              unclosed rings). If this is not possible, they are returned as ``None``
+              without a warning. Requires GEOS >= 3.11 and shapely >= 2.1.
 
         kwargs
             Additional arguments passed to the Series constructor,
@@ -517,7 +603,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> wkts = [
         ... 'POINT (1 1)',
         ... 'POINT (2 2)',
@@ -548,7 +633,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     ) -> Self:
         """
         Alternate constructor to create a :class:`~geopandas.GeoSeries` of Point
-        geometries from lists or arrays of x, y(, z) coordinates
+        geometries from lists or arrays of x, y(, z) coordinates.
 
         In case of geographic coordinates, it is assumed that longitude is captured
         by ``x`` coordinates and latitude by ``y``.
@@ -579,7 +664,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> x = [2.5, 5, -3.0]
         >>> y = [0.5, 1, 1.5]
         >>> s = geopandas.GeoSeries.from_xy(x, y, crs="EPSG:4326")
@@ -644,7 +728,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> s = geopandas.GeoSeries([Point(1, 1), Point(2, 2), Point(3, 3)])
         >>> s.__geo_interface__
@@ -669,7 +752,69 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         encoding: str | None = None,
         overwrite: bool | None = ...,
         **kwargs,  # engine and driver dependent
-    ) -> None: ...
+    ) -> None:
+        """
+        Write the ``GeoSeries`` to a file.
+
+        By default, an ESRI shapefile is written, but any OGR data source
+        supported by Pyogrio or Fiona can be written.
+
+        Parameters
+        ----------
+        filename : string
+            File path or file handle to write to. The path may specify a
+            GDAL VSI scheme.
+        driver : string, default None
+            The OGR format driver used to write the vector file.
+            If not specified, it attempts to infer it from the file extension.
+            If no extension is specified, it saves ESRI Shapefile to a folder.
+        index : bool, default None
+            If True, write index into one or more columns (for MultiIndex).
+            Default None writes the index into one or more columns only if
+            the index is named, is a MultiIndex, or has a non-integer data
+            type. If False, no index is written.
+
+            .. versionadded:: 0.7
+                Previously the index was not written.
+        mode : string, default 'w'
+            The write mode, 'w' to overwrite the existing file and 'a' to append.
+            Not all drivers support appending. The drivers that support appending
+            are listed in fiona.supported_drivers or
+            https://github.com/Toblerity/Fiona/blob/master/fiona/drvsupport.py
+        crs : pyproj.CRS, default None
+            If specified, the CRS is passed to Fiona to
+            better control how the file is written. If None, GeoPandas
+            will determine the crs based on crs df attribute.
+            The value can be anything accepted
+            by :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
+            such as an authority string (eg "EPSG:4326") or a WKT string. The keyword
+            is not supported for the "pyogrio" engine.
+        engine : str, "pyogrio" or "fiona"
+            The underlying library that is used to write the file. Currently, the
+            supported options are "pyogrio" and "fiona". Defaults to "pyogrio" if
+            installed, otherwise tries "fiona".
+        **kwargs :
+            Keyword args to be passed to the engine, and can be used to write
+            to multi-layer data, store data within archives (zip files), etc.
+            In case of the "pyogrio" engine, the keyword arguments are passed to
+            `pyogrio.write_dataframe`. In case of the "fiona" engine, the keyword
+            arguments are passed to fiona.open`. For more information on possible
+            keywords, type: ``import pyogrio; help(pyogrio.write_dataframe)``.
+
+        See Also
+        --------
+        GeoDataFrame.to_file : write GeoDataFrame to file
+        read_file : read file to GeoDataFrame
+
+        Examples
+        --------
+        >>> s.to_file('series.shp')  # doctest: +SKIP
+
+        >>> s.to_file('series.gpkg', driver='GPKG', layer='name1')  # doctest: +SKIP
+
+        >>> s.to_file('series.geojson', driver='GeoJSON')  # doctest: +SKIP
+        """
+        ...
     # *** `__getitem__`, `sort_index` and `take` are annotated with `-> Self` in pandas-stubs; no need to override them ***
     # *** `apply` annotation in pandas-stubs is compatible except for deprecated `convert_dtype` argument ***
     # def apply(self, func, convert_dtype: bool | None = None, args=(), **kwargs): ...
@@ -690,7 +835,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> from shapely.geometry import Polygon
         >>> s = geopandas.GeoSeries(
         ...     [Polygon([(0, 0), (1, 1), (0, 1)]), None, Polygon([])]
@@ -733,7 +877,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         Examples
         --------
-
         >>> from shapely.geometry import Polygon
         >>> s = geopandas.GeoSeries(
         ...     [Polygon([(0, 0), (1, 1), (0, 1)]), None, Polygon([])]
@@ -763,7 +906,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     # def fillna(self, value=None, method: FillnaOptions | None = None, inplace: bool = False, **kwargs): ...
     def __contains__(self, other: object) -> bool:
         """
-        Allow tests of the form "geom in s"
+        Allow tests of the form "geom in s".
 
         Tests whether a GeoSeries contains a geometry.
 
@@ -821,7 +964,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @doc(_explore_geoseries)  # pyright: ignore[reportUnknownArgumentType]
     def explore(self, *args, **kwargs):
         """
-        Interactive map based on folium/leaflet.jsInteractive map based on GeoPandas and folium/leaflet.js
+        Explore with an interactive map based on folium/leaflet.js.Interactive map based on GeoPandas and folium/leaflet.js.
 
         Generate an interactive leaflet map based on :class:`~geopandas.GeoSeries`
 
@@ -963,7 +1106,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
            2    POINT (4 4)
         dtype: geometry
 
-        See also
+        See Also
         --------
         GeoDataFrame.explode
         """
@@ -981,7 +1124,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @overload
     def to_crs(self, crs: _ConvertibleToCRS, epsg: int | None = None) -> GeoSeries:
         """
-        Returns a ``GeoSeries`` with all geometries transformed to a new
+        Return a ``GeoSeries`` with all geometries transformed to a new
         coordinate reference system.
 
         Transform all geometries in a GeoSeries to a different coordinate
@@ -1059,7 +1202,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @overload
     def to_crs(self, crs: _ConvertibleToCRS | None = None, *, epsg: int) -> GeoSeries:
         """
-        Returns a ``GeoSeries`` with all geometries transformed to a new
+        Return a ``GeoSeries`` with all geometries transformed to a new
         coordinate reference system.
 
         Transform all geometries in a GeoSeries to a different coordinate
@@ -1137,7 +1280,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @overload
     def to_crs(self, crs: _ConvertibleToCRS | None, epsg: int) -> GeoSeries:
         """
-        Returns a ``GeoSeries`` with all geometries transformed to a new
+        Return a ``GeoSeries`` with all geometries transformed to a new
         coordinate reference system.
 
         Transform all geometries in a GeoSeries to a different coordinate
@@ -1214,7 +1357,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         ...
     def estimate_utm_crs(self, datum_name: str = "WGS 84") -> CRS:
         """
-        Returns the estimated UTM CRS based on the bounds of the dataset.
+        Return the estimated UTM CRS based on the bounds of the dataset.
 
         .. versionadded:: 0.9
 
@@ -1269,7 +1412,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         **kwds,
     ) -> str:
         """
-        Returns a GeoJSON string representation of the GeoSeries.
+        Return a GeoJSON string representation of the GeoSeries.
 
         Parameters
         ----------
@@ -1313,7 +1456,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @overload
     def to_wkb(self, hex: Literal[False] = False, **kwargs) -> pd.Series[bytes]:
         """
-        Convert GeoSeries geometries to WKB
+        Convert GeoSeries geometries to WKB.
 
         Parameters
         ----------
@@ -1329,7 +1472,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         Series
             WKB representations of the geometries
 
-        See also
+        See Also
         --------
         GeoSeries.to_wkt
         """
@@ -1337,7 +1480,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @overload
     def to_wkb(self, hex: Literal[True], **kwargs) -> pd.Series[str]:
         """
-        Convert GeoSeries geometries to WKB
+        Convert GeoSeries geometries to WKB.
 
         Parameters
         ----------
@@ -1353,7 +1496,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         Series
             WKB representations of the geometries
 
-        See also
+        See Also
         --------
         GeoSeries.to_wkt
         """
@@ -1361,7 +1504,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
     @overload
     def to_wkb(self, hex: bool = False, **kwargs) -> pd.Series[str] | pd.Series[bytes]:
         """
-        Convert GeoSeries geometries to WKB
+        Convert GeoSeries geometries to WKB.
 
         Parameters
         ----------
@@ -1377,14 +1520,14 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         Series
             WKB representations of the geometries
 
-        See also
+        See Also
         --------
         GeoSeries.to_wkt
         """
         ...
     def to_wkt(self, **kwargs) -> pd.Series[str]:
         """
-        Convert GeoSeries geometries to WKT
+        Convert GeoSeries geometries to WKT.
 
         Parameters
         ----------
@@ -1412,7 +1555,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         2    POINT (3 3)
         dtype: object
 
-        See also
+        See Also
         --------
         GeoSeries.to_wkb
         """
@@ -1523,7 +1666,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
             Vector data (points, lines, polygons) from `gdf` clipped to
             polygon boundary from mask.
 
-        See also
+        See Also
         --------
         clip : top-level function for clip
 

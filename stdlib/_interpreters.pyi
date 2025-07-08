@@ -111,7 +111,25 @@ def exec(
     shared: _SharedDict | None = None,
     *,
     restrict: bool = False,
-) -> None | types.SimpleNamespace: ...
+) -> None | types.SimpleNamespace:
+    """
+    exec(id, code, shared=None, *, restrict=False)
+
+    Execute the provided code in the identified interpreter.
+    This is equivalent to running the builtin exec() under the target
+    interpreter, using the __dict__ of its __main__ module as both
+    globals and locals.
+
+    "code" may be a string containing the text of a Python script.
+
+    Functions (and code objects) are also supported, with some restrictions.
+    The code/function must not take any arguments or be a closure
+    (i.e. have cell vars).  Methods and other callables are not supported.
+
+    If a function is provided, its code object is used and all its state
+    is ignored, including its __globals__ dict.
+    """
+    ...
 def call(
     id: SupportsIndex,
     callable: Callable[..., object],
@@ -139,11 +157,35 @@ def run_string(
     shared: _SharedDict | None = None,
     *,
     restrict: bool = False,
-) -> None: ...
+) -> None:
+    """
+    run_string(id, script, shared=None, *, restrict=False)
+
+    Execute the provided string in the identified interpreter.
+
+    (See _interpreters.exec().
+    """
+    ...
 def run_func(
     id: SupportsIndex, func: types.CodeType | Callable[[], object], shared: _SharedDict | None = None, *, restrict: bool = False
-) -> None: ...
-def set___main___attrs(id: SupportsIndex, updates: _SharedDict, *, restrict: bool = False) -> None: ...
+) -> None:
+    """
+    run_func(id, func, shared=None, *, restrict=False)
+
+    Execute the body of the provided function in the identified interpreter.
+    Code objects are also supported.  In both cases, closures and args
+    are not supported.  Methods and other callables are not supported either.
+
+    (See _interpreters.exec().
+    """
+    ...
+def set___main___attrs(id: SupportsIndex, updates: _SharedDict, *, restrict: bool = False) -> None:
+    """
+    set___main___attrs(id, ns, *, restrict=False)
+
+    Bind the given attributes in the interpreter's __main__ module.
+    """
+    ...
 def incref(id: SupportsIndex, *, implieslink: bool = False, restrict: bool = False) -> None: ...
 def decref(id: SupportsIndex, *, restrict: bool = False) -> None: ...
 def is_shareable(obj: object) -> bool:

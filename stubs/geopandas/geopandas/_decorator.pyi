@@ -14,6 +14,8 @@ _Func = TypeVar("_Func", bound=_AnyCallable)
 @overload
 def doc(func: _Func, /, **params: object) -> Callable[[_AnyCallable], _Func]:
     """
+    Append docstrings to a callable.
+
     A decorator take docstring templates, concatenate them and perform string
     substitution on it.
     This decorator will add a variable "_docstring_components" to the wrapped
@@ -34,6 +36,8 @@ def doc(func: _Func, /, **params: object) -> Callable[[_AnyCallable], _Func]:
 @overload
 def doc(docstring: str, /, *docstrings: str | _AnyCallable, **params: object) -> Callable[[_Func], _Func]:
     """
+    Append docstrings to a callable.
+
     A decorator take docstring templates, concatenate them and perform string
     substitution on it.
     This decorator will add a variable "_docstring_components" to the wrapped
@@ -56,6 +60,8 @@ def doc(
     docstring1: str | _AnyCallable, docstring2: str | _AnyCallable, /, *docstrings: str | _AnyCallable, **params: object
 ) -> Callable[[_Func], _Func]:
     """
+    Append docstrings to a callable.
+
     A decorator take docstring templates, concatenate them and perform string
     substitution on it.
     This decorator will add a variable "_docstring_components" to the wrapped

@@ -12,8 +12,20 @@ UNKNOWN: str
 spaceCharacters: str
 
 class TreeWalker:
+    """
+    Walks a tree yielding tokens
+
+    Tokens are dicts that all have a ``type`` field specifying the type of the
+    token.
+    """
     tree: Incomplete
-    def __init__(self, tree) -> None: ...
+    def __init__(self, tree) -> None:
+        """
+        Creates a TreeWalker
+
+        :arg tree: the tree to walk
+        """
+        ...
     def __iter__(self): ...
     def error(self, msg):
         """

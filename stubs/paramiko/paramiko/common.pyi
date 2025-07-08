@@ -1,3 +1,5 @@
+"""Common constants and global variables."""
+
 import logging
 from typing import Final
 

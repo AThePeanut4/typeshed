@@ -6,8 +6,33 @@ ZERO: timedelta
 
 __all__ = ["tzname_in_python2", "enfold"]
 
-def tzname_in_python2(namefunc): ...
-def enfold(dt: datetime, fold: int = 1): ...
+def tzname_in_python2(namefunc):
+    """
+    Change unicode output into bytestrings in Python 2
+
+    tzname() API changed in Python 3. It used to return bytes, but was changed
+    to unicode strings
+    """
+    ...
+def enfold(dt: datetime, fold: int = 1):
+    """
+    Provides a unified interface for assigning the ``fold`` attribute to
+    datetimes both before and after the implementation of PEP-495.
+
+    :param fold:
+        The value for the ``fold`` attribute in the returned datetime. This
+        should be either 0 or 1.
+
+    :return:
+        Returns an object for which ``getattr(dt, 'fold', 0)`` returns
+        ``fold`` for all versions of Python. In versions prior to
+        Python 3.6, this is a ``_DatetimeWithFold`` object, which is a
+        subclass of :py:class:`datetime.datetime` with the ``fold``
+        attribute added, if ``fold`` is 1.
+
+    .. versionadded:: 2.6.0
+    """
+    ...
 
 class _DatetimeWithFold(datetime):
     @property

@@ -33,7 +33,22 @@ class SFTPServer(BaseSFTP, SubsystemHandler):
         sftp_si: type[SFTPServerInterface] = ...,
         *args: Any,
         **kwargs: Any,
-    ) -> None: ...
+    ) -> None:
+        """
+        The constructor for SFTPServer is meant to be called from within the
+        `.Transport` as a subsystem handler.  ``server`` and any additional
+        parameters or keyword parameters are passed from the original call to
+        `.Transport.set_subsystem_handler`.
+
+        :param .Channel channel: channel passed from the `.Transport`.
+        :param str name: name of the requested subsystem.
+        :param .ServerInterface server:
+            the server object associated with this channel and subsystem
+        :param sftp_si:
+            a subclass of `.SFTPServerInterface` to use for handling individual
+            requests.
+        """
+        ...
     def start_subsystem(self, name: str, transport: Transport, channel: Channel) -> None: ...
     def finish_subsystem(self) -> None: ...
     @staticmethod

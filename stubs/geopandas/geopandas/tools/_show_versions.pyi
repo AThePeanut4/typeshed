@@ -4,7 +4,6 @@ def show_versions() -> None:
 
     Examples
     --------
-
     ::
 
         $ python -c "import geopandas; geopandas.show_versions()"

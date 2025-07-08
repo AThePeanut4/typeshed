@@ -1,3 +1,5 @@
+"""This package contains Docutils Reader modules."""
+
 from typing import Any, ClassVar, Final, Generic, TypeVar
 
 from docutils import Component, nodes
@@ -34,7 +36,9 @@ class Reader(Component, Generic[_S]):
     parser: Parser | None
     source: Input[_S] | None
     input: str | None
-    def set_parser(self, parser_name: str) -> None: ...
+    def set_parser(self, parser_name: str) -> None:
+        """Set `self.parser` by name."""
+        ...
     settings: Values
     def read(self, source: Input[_S], parser: Parser, settings: Values) -> nodes.document: ...
     document: nodes.document

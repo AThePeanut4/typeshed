@@ -1,9 +1,4 @@
-"""
-geopandas.clip
-==============
-
-A module to clip vector data using GeoPandas.
-"""
+"""Module to clip vector data using GeoPandas."""
 
 from typing import TypeVar
 
@@ -55,7 +50,7 @@ def clip(gdf: _G, mask: _ClipMask, keep_geom_type: bool = False, sort: bool = Fa
          Vector data (points, lines, polygons) from ``gdf`` clipped to
          polygon boundary from mask.
 
-    See also
+    See Also
     --------
     GeoDataFrame.clip : equivalent GeoDataFrame method
     GeoSeries.clip : equivalent GeoSeries method

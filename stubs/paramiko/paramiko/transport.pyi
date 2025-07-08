@@ -1084,6 +1084,11 @@ class ChannelMap:
     def __len__(self) -> int: ...
 
 class ServiceRequestingTransport(Transport):
+    """
+    Transport, but also handling service requests, like it oughtta!
+
+    .. versionadded:: 3.2
+    """
     def ensure_session(self) -> None: ...
     def get_auth_handler(self) -> AuthOnlyHandler: ...
     def auth_password(self, username: str, password: str, fallback: bool = True) -> list[str]: ...  # type: ignore[override]

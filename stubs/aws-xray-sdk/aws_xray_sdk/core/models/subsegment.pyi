@@ -39,9 +39,53 @@ class Subsegment(Entity):
     type: str
     namespace: str
     sql: dict[str, Incomplete]
-    def __init__(self, name: str, namespace: str, segment: Segment) -> None: ...
-    def add_subsegment(self, subsegment: Subsegment) -> None: ...
-    def remove_subsegment(self, subsegment: Subsegment) -> None: ...
-    def close(self, end_time: float | None = None) -> None: ...
-    def set_sql(self, sql: dict[str, Incomplete]) -> None: ...
-    def to_dict(self) -> dict[str, Incomplete]: ...
+    def __init__(self, name: str, namespace: str, segment: Segment) -> None:
+        """
+        Create a new subsegment.
+
+        :param str name: Subsegment name is required.
+        :param str namespace: The namespace of the subsegment. Currently
+            support `aws`, `remote` and `local`.
+        :param Segment segment: The parent segment
+        """
+        ...
+    def add_subsegment(self, subsegment: Subsegment) -> None:
+        """
+        Add input subsegment as a child subsegment and increment
+        reference counter and total subsegments counter of the
+        parent segment.
+        """
+        ...
+    def remove_subsegment(self, subsegment: Subsegment) -> None:
+        """
+        Remove input subsegment from child subsegemnts and
+        decrement parent segment total subsegments count.
+
+        :param Subsegment: subsegment to remove.
+        """
+        ...
+    def close(self, end_time: float | None = None) -> None:
+        """
+        Close the trace entity by setting `end_time`
+        and flip the in progress flag to False. Also decrement
+        parent segment's ref counter by 1.
+
+        :param float end_time: Epoch in seconds. If not specified
+            current time will be used.
+        """
+        ...
+    def set_sql(self, sql: dict[str, Incomplete]) -> None:
+        """
+        Set sql related metadata. This function is used by patchers
+        for database connectors and is not recommended to
+        invoke manually.
+
+        :param dict sql: sql related metadata
+        """
+        ...
+    def to_dict(self) -> dict[str, Incomplete]:
+        """
+        Convert Subsegment object to dict with required properties
+        that have non-empty values. 
+        """
+        ...

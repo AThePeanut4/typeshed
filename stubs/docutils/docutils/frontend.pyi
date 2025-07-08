@@ -70,9 +70,35 @@ def read_config_file(option, opt, value, parser) -> None:
     ...
 def validate_encoding(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
 def validate_encoding_error_handler(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
-def validate_encoding_and_error_handler(setting, value, option_parser, config_parser=None, config_section=None): ...
-def validate_boolean(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> bool: ...
-def validate_ternary(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
+def validate_encoding_and_error_handler(setting, value, option_parser, config_parser=None, config_section=None):
+    """
+    Side-effect: if an error handler is included in the value, it is inserted
+    into the appropriate place as if it were a separate setting/option.
+    """
+    ...
+def validate_boolean(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> bool:
+    """
+    Check/normalize boolean settings:
+         True:  '1', 'on', 'yes', 'true'
+         False: '0', 'off', 'no','false', ''
+
+    All arguments except `value` are ignored
+    (kept for compatibility with "optparse" module).
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
+def validate_ternary(setting, value=None, option_parser=None, config_parser=None, config_section=None):
+    """
+    Check/normalize three-value settings:
+         True:  '1', 'on', 'yes', 'true'
+         False: '0', 'off', 'no','false', ''
+         any other value: returned as-is.
+
+    All arguments except `value` are ignored
+    (kept for compatibility with "optparse" module).
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
 def validate_nonnegative_int(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> int: ...
 def validate_threshold(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> int: ...
 def validate_colon_separated_string_list(
@@ -80,8 +106,26 @@ def validate_colon_separated_string_list(
 ) -> list[str]: ...
 def validate_comma_separated_list(
     setting, value=None, option_parser=None, config_parser=None, config_section=None
-) -> list[str]: ...
-def validate_math_output(setting, value=None, option_parser=None, config_parser=None, config_section=None): ...
+) -> list[str]:
+    """
+    Check/normalize list arguments (split at "," and strip whitespace).
+
+    All arguments except `value` are ignored
+    (kept for compatibility with "optparse" module).
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
+def validate_math_output(setting, value=None, option_parser=None, config_parser=None, config_section=None):
+    """
+    Check "math-output" setting, return list with "format" and "options".
+
+    See also https://docutils.sourceforge.io/docs/user/config.html#math-output
+
+    Argument list for compatibility with "optparse" module.
+    All arguments except `value` are ignored.
+    If there is only one positional argument, it is interpreted as `value`.
+    """
+    ...
 def validate_url_trailing_slash(setting, value=None, option_parser=None, config_parser=None, config_section=None) -> str: ...
 def validate_dependency_file(
     setting, value=None, option_parser=None, config_parser=None, config_section=None
@@ -123,16 +167,43 @@ def filter_settings_spec(settings_spec, *exclude, **replace) -> tuple[Any, ...]:
     ...
 
 class Values(optparse.Values):
+    """
+    Storage for option values.
+
+    Updates list attributes by extension rather than by replacement.
+    Works in conjunction with the `OptionParser.lists` instance attribute.
+
+    Deprecated. Will be removed.
+    """
     record_dependencies: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def update(self, other_dict, option_parser) -> None: ...
-    def copy(self) -> Values: ...
-    def setdefault(self, name, default): ...
+    def copy(self) -> Values:
+        """Return a shallow copy of `self`."""
+        ...
+    def setdefault(self, name, default):
+        """
+        Return ``self.name`` or ``default``.
+
+        If ``self.name`` is unset, set ``self.name = default``.
+        """
+        ...
 
 class Option(optparse.Option):
+    """
+    Add validation and override support to `optparse.Option`.
+
+    Deprecated. Will be removed.
+    """
     ATTRS: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def process(self, opt, value, values, parser): ...
+    def process(self, opt, value, values, parser):
+        """
+        Call the validator function on applicable settings and
+        evaluate the 'overrides' option.
+        Extends `optparse.Option.process`.
+        """
+        ...
 
 class OptionParser(optparse.OptionParser, SettingsSpec):
     """
@@ -169,29 +240,98 @@ class OptionParser(optparse.OptionParser, SettingsSpec):
         read_config_files: bool | None = False,
         *args,
         **kwargs,
-    ) -> None: ...
-    def populate_from_components(self, components) -> None: ...
+    ) -> None:
+        """
+        Set up OptionParser instance.
+
+        `components` is a list of Docutils components each containing a
+        ``.settings_spec`` attribute.
+        `defaults` is a mapping of setting default overrides.
+        """
+        ...
+    def populate_from_components(self, components) -> None:
+        """
+        Collect settings specification from components.
+
+        For each component, populate from the `SettingsSpec.settings_spec`
+        structure, then from the `SettingsSpec.settings_defaults` dictionary.
+        After all components have been processed, check for and populate from
+        each component's `SettingsSpec.settings_default_overrides` dictionary.
+        """
+        ...
     @classmethod
-    def get_standard_config_files(cls): ...
+    def get_standard_config_files(cls):
+        """Return list of config files, from environment or standard."""
+        ...
     def get_standard_config_settings(self): ...
-    def get_config_file_settings(self, config_file): ...
-    def check_values(self, values, args): ...
+    def get_config_file_settings(self, config_file):
+        """Returns a dictionary containing appropriate config file settings."""
+        ...
+    def check_values(self, values, args):
+        """Store positional arguments as runtime settings."""
+        ...
     def check_args(self, args): ...
     def set_defaults_from_dict(self, defaults) -> None: ...
-    def get_default_values(self): ...
-    def get_option_by_dest(self, dest): ...
+    def get_default_values(self):
+        """Needed to get custom `Values` instances."""
+        ...
+    def get_option_by_dest(self, dest):
+        """
+        Get an option by its dest.
+
+        If you're supplying a dest which is shared by several options,
+        it is undefined which option of those is returned.
+
+        A KeyError is raised if there is no option with the supplied
+        dest.
+        """
+        ...
 
 class ConfigParser(RawConfigParser):
+    """
+    Parser for Docutils configuration files.
+
+    See https://docutils.sourceforge.io/docs/user/config.html.
+
+    Option key normalization includes conversion of '-' to '_'.
+
+    Config file encoding is "utf-8". Encoding errors are reported
+    and the affected file(s) skipped.
+
+    This class is provisional and will change in future versions.
+    """
     old_settings: Incomplete
     old_warning: str
     not_utf8_error: str
     def read(self, filenames, option_parser=None): ...
     def handle_old_config(self, filename) -> None: ...
-    def validate_settings(self, filename, option_parser) -> None: ...
-    def optionxform(self, optionstr): ...
-    def get_section(self, section): ...
+    def validate_settings(self, filename, option_parser) -> None:
+        """
+        Call the validator function and implement overrides on all applicable
+        settings.
+        """
+        ...
+    def optionxform(self, optionstr):
+        """
+        Lowercase and transform '-' to '_'.
 
-class ConfigDeprecationWarning(FutureWarning): ...
+        So the cmdline form of option names can be used in config files.
+        """
+        ...
+    def get_section(self, section):
+        """
+        Return a given section as a dictionary.
+
+        Return empty dictionary if the section doesn't exist.
+
+        Deprecated. Use the configparser "Mapping Protocol Access" and
+        catch KeyError.
+        """
+        ...
+
+class ConfigDeprecationWarning(FutureWarning):
+    """Warning for deprecated configuration file features."""
+    ...
 
 def get_default_settings(*components) -> Values:
     """

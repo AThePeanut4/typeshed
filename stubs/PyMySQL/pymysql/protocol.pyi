@@ -51,8 +51,23 @@ class MysqlPacket:
     def read_uint32(self): ...
     def read_uint64(self): ...
     def read_string(self): ...
-    def read_length_encoded_integer(self) -> Incomplete | None: ...
-    def read_length_coded_string(self): ...
+    def read_length_encoded_integer(self) -> Incomplete | None:
+        """
+        Read a 'Length Coded Binary' number from the data buffer.
+
+        Length coded numbers can be anywhere from 1 to 9 bytes depending
+        on the value of the first byte.
+        """
+        ...
+    def read_length_coded_string(self):
+        """
+        Read a 'Length Coded String' from the data buffer.
+
+        A 'Length Coded String' consists first of a length coded
+        (unsigned, positive) integer represented in 1-9 bytes followed by
+        that many bytes of binary data.  (For example "cat" would be "3cat".)
+        """
+        ...
     def read_struct(self, fmt: str): ...
     def is_ok_packet(self) -> bool: ...
     def is_eof_packet(self) -> bool: ...
@@ -66,21 +81,44 @@ class MysqlPacket:
     def dump(self) -> None: ...
 
 class FieldDescriptorPacket(MysqlPacket):
+    """
+    A MysqlPacket that represents a specific column's metadata in the result.
+
+    Parsing is automatically done and the results are exported via public
+    attributes on the class such as: db, table_name, name, length, type_code.
+    """
     def __init__(self, data, encoding) -> None: ...
-    def description(self): ...
+    def description(self):
+        """Provides a 7-item tuple compatible with the Python PEP249 DB Spec."""
+        ...
     def get_column_length(self): ...
 
 class OKPacketWrapper:
+    """
+    OK Packet Wrapper. It uses an existing packet object, and wraps
+    around it, exposing useful variables while still providing access
+    to the original packet objects variables and methods.
+    """
     def __init__(self, from_packet) -> None: ...
     # TODO: add attrs from `from_packet`
     def __getattr__(self, key: str): ...
 
 class EOFPacketWrapper:
+    """
+    EOF Packet Wrapper. It uses an existing packet object, and wraps
+    around it, exposing useful variables while still providing access
+    to the original packet objects variables and methods.
+    """
     def __init__(self, from_packet) -> None: ...
     # TODO: add attrs from `from_packet`
     def __getattr__(self, key: str): ...
 
 class LoadLocalPacketWrapper:
+    """
+    Load Local Packet Wrapper. It uses an existing packet object, and wraps
+    around it, exposing useful variables while still providing access
+    to the original packet objects variables and methods.
+    """
     def __init__(self, from_packet) -> None: ...
     # TODO: add attrs from `from_packet`
     def __getattr__(self, key: str): ...

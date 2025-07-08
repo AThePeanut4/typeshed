@@ -15,11 +15,18 @@ _BytesT = TypeVar("_BytesT", bound=bytes | bytearray)
 def _unpad_openssh(data: _BytesT) -> _BytesT: ...
 
 class UnknownKeyType(Exception):
+    """An unknown public/private key algorithm was attempted to be read."""
     key_type: str | type | None
     key_bytes: bytes | None
     def __init__(self, key_type: str | type | None = None, key_bytes: bytes | None = None) -> None: ...
 
 class PKey:
+    """
+    Base class for public keys.
+
+    Also includes some "meta" level convenience constructors such as
+    `.from_type_string`.
+    """
     name: str
     HASHES: dict[str, type]
     public_blob: PublicBlob | None

@@ -1,3 +1,12 @@
+"""
+This module offers timezone implementations subclassing the abstract
+:py:class:`datetime.tzinfo` type. There are classes to handle tzfile format
+files (usually are in :file:`/etc/localtime`, :file:`/usr/share/zoneinfo`,
+etc), TZ environment string (in all known formats), given ranges (with help
+from relative deltas), local machine timezone, fixed offset timezone, and UTC
+timezone.
+"""
+
 import sys
 from datetime import datetime, timedelta, tzinfo
 from typing import ClassVar, Literal, Protocol, TypeVar
@@ -18,11 +27,61 @@ EPOCH: datetime
 EPOCHORDINAL: int
 
 class tzutc(tzinfo):
+    """
+    This is a tzinfo object that represents the UTC time zone.
+
+    **Examples:**
+
+    .. doctest::
+
+        >>> from datetime import *
+        >>> from dateutil.tz import *
+
+        >>> datetime.now()
+        datetime.datetime(2003, 9, 27, 9, 40, 1, 521290)
+
+        >>> datetime.now(tzutc())
+        datetime.datetime(2003, 9, 27, 12, 40, 12, 156379, tzinfo=tzutc())
+
+        >>> datetime.now(tzutc()).tzname()
+        'UTC'
+
+    .. versionchanged:: 2.7.0
+        ``tzutc()`` is now a singleton, so the result of ``tzutc()`` will
+        always return the same object.
+
+        .. doctest::
+
+            >>> from dateutil.tz import tzutc, UTC
+            >>> tzutc() is tzutc()
+            True
+            >>> tzutc() is UTC
+            True
+    """
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
     def tzname(self, dt: datetime | None) -> str: ...
-    def is_ambiguous(self, dt: datetime | None) -> bool: ...
-    def fromutc(self, dt: _DT) -> _DT: ...
+    def is_ambiguous(self, dt: datetime | None) -> bool:
+        """
+        Whether or not the "wall time" of a given datetime is ambiguous in this
+        zone.
+
+        :param dt:
+            A :py:class:`datetime.datetime`, naive or time zone aware.
+
+
+        :return:
+            Returns ``True`` if ambiguous, ``False`` otherwise.
+
+        .. versionadded:: 2.6.0
+        """
+        ...
+    def fromutc(self, dt: _DT) -> _DT:
+        """
+        Fast track version of fromutc() returns the original ``dt`` object for
+        any valid :py:class:`datetime.datetime` object.
+        """
+        ...
     def __eq__(self, other): ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     def __ne__(self, other): ...
@@ -31,10 +90,31 @@ class tzutc(tzinfo):
 UTC: tzutc
 
 class tzoffset(tzinfo):
+    """
+    A simple class for representing a fixed offset from UTC.
+
+    :param name:
+        The timezone name, to be returned when ``tzname()`` is called.
+    :param offset:
+        The time zone offset in seconds, or (since version 2.6.0, represented
+        as a :py:class:`datetime.timedelta` object).
+    """
     def __init__(self, name, offset) -> None: ...
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
-    def is_ambiguous(self, dt: datetime | None) -> bool: ...
+    def is_ambiguous(self, dt: datetime | None) -> bool:
+        """
+        Whether or not the "wall time" of a given datetime is ambiguous in this
+        zone.
+
+        :param dt:
+            A :py:class:`datetime.datetime`, naive or time zone aware.
+        :return:
+            Returns ``True`` if ambiguous, ``False`` otherwise.
+
+        .. versionadded:: 2.6.0
+        """
+        ...
     def tzname(self, dt: datetime | None) -> str: ...
     def fromutc(self, dt: _DT) -> _DT: ...
     def __eq__(self, other): ...
@@ -52,7 +132,21 @@ class tzlocal(_tzinfo):
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
     def tzname(self, dt: datetime | None) -> str: ...
-    def is_ambiguous(self, dt: datetime | None) -> bool: ...
+    def is_ambiguous(self, dt: datetime | None) -> bool:
+        """
+        Whether or not the "wall time" of a given datetime is ambiguous in this
+        zone.
+
+        :param dt:
+            A :py:class:`datetime.datetime`, naive or time zone aware.
+
+
+        :return:
+            Returns ``True`` if ambiguous, ``False`` otherwise.
+
+        .. versionadded:: 2.6.0
+        """
+        ...
     def __eq__(self, other): ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     def __ne__(self, other): ...
@@ -148,7 +242,21 @@ class tzfile(_tzinfo):
         1944-02-07 00:00:00-04:00
     """
     def __init__(self, fileobj: str | _TZFileReader, filename: str | None = None) -> None: ...
-    def is_ambiguous(self, dt: datetime | None, idx: int | None = None) -> bool: ...
+    def is_ambiguous(self, dt: datetime | None, idx: int | None = None) -> bool:
+        """
+        Whether or not the "wall time" of a given datetime is ambiguous in this
+        zone.
+
+        :param dt:
+            A :py:class:`datetime.datetime`, naive or time zone aware.
+
+
+        :return:
+            Returns ``True`` if ambiguous, ``False`` otherwise.
+
+        .. versionadded:: 2.6.0
+        """
+        ...
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
     def tzname(self, dt: datetime | None) -> str: ...
@@ -242,7 +350,21 @@ class tzrange(tzrangebase):
         start: relativedelta | None = None,
         end: relativedelta | None = None,
     ) -> None: ...
-    def transitions(self, year: int) -> tuple[datetime, datetime]: ...
+    def transitions(self, year: int) -> tuple[datetime, datetime]:
+        """
+        For a given year, get the DST on and off transition times, expressed
+        always on the standard time side. For zones with no transitions, this
+        function returns ``None``.
+
+        :param year:
+            The year whose transitions you would like to query.
+
+        :return:
+            Returns a :class:`tuple` of :class:`datetime.datetime` objects,
+            ``(dston, dstoff)`` for zones with an annual DST transition, or
+            ``None`` for fixed offset zones.
+        """
+        ...
     def __eq__(self, other): ...
 
 class tzstr(tzrange):
@@ -337,9 +459,84 @@ class tzical:
 TZFILES: list[str]
 TZPATHS: list[str]
 
-def datetime_exists(dt: datetime, tz: tzinfo | None = None) -> bool: ...
-def datetime_ambiguous(dt: datetime, tz: tzinfo | None = None) -> bool: ...
-def resolve_imaginary(dt: datetime) -> datetime: ...
+def datetime_exists(dt: datetime, tz: tzinfo | None = None) -> bool:
+    """
+    Given a datetime and a time zone, determine whether or not a given datetime
+    would fall in a gap.
+
+    :param dt:
+        A :class:`datetime.datetime` (whose time zone will be ignored if ``tz``
+        is provided.)
+
+    :param tz:
+        A :class:`datetime.tzinfo` with support for the ``fold`` attribute. If
+        ``None`` or not provided, the datetime's own time zone will be used.
+
+    :return:
+        Returns a boolean value whether or not the "wall time" exists in
+        ``tz``.
+
+    .. versionadded:: 2.7.0
+    """
+    ...
+def datetime_ambiguous(dt: datetime, tz: tzinfo | None = None) -> bool:
+    """
+    Given a datetime and a time zone, determine whether or not a given datetime
+    is ambiguous (i.e if there are two times differentiated only by their DST
+    status).
+
+    :param dt:
+        A :class:`datetime.datetime` (whose time zone will be ignored if ``tz``
+        is provided.)
+
+    :param tz:
+        A :class:`datetime.tzinfo` with support for the ``fold`` attribute. If
+        ``None`` or not provided, the datetime's own time zone will be used.
+
+    :return:
+        Returns a boolean value whether or not the "wall time" is ambiguous in
+        ``tz``.
+
+    .. versionadded:: 2.6.0
+    """
+    ...
+def resolve_imaginary(dt: datetime) -> datetime:
+    """
+    Given a datetime that may be imaginary, return an existing datetime.
+
+    This function assumes that an imaginary datetime represents what the
+    wall time would be in a zone had the offset transition not occurred, so
+    it will always fall forward by the transition's change in offset.
+
+    .. doctest::
+
+        >>> from dateutil import tz
+        >>> from datetime import datetime
+        >>> NYC = tz.gettz('America/New_York')
+        >>> print(tz.resolve_imaginary(datetime(2017, 3, 12, 2, 30, tzinfo=NYC)))
+        2017-03-12 03:30:00-04:00
+
+        >>> KIR = tz.gettz('Pacific/Kiritimati')
+        >>> print(tz.resolve_imaginary(datetime(1995, 1, 1, 12, 30, tzinfo=KIR)))
+        1995-01-02 12:30:00+14:00
+
+    As a note, :func:`datetime.astimezone` is guaranteed to produce a valid,
+    existing datetime, so a round-trip to and from UTC is sufficient to get
+    an extant datetime, however, this generally "falls back" to an earlier time
+    rather than falling forward to the STD side (though no guarantees are made
+    about this behavior).
+
+    :param dt:
+        A :class:`datetime.datetime` which may or may not exist.
+
+    :return:
+        Returns an existing :class:`datetime.datetime`. If ``dt`` was not
+        imaginary, the datetime returned is guaranteed to be the same object
+        passed to the function.
+
+    .. versionadded:: 2.7.0
+    """
+    ...
 
 class _GetTZ:
     def __call__(self, name: str | None = ...) -> tzinfo | None: ...

@@ -120,11 +120,11 @@ def plot_dataframe(
 
     Parameters
     ----------
-    column : str, np.array, pd.Series (default None)
-        The name of the dataframe column, np.array, or pd.Series to be plotted.
-        If np.array or pd.Series are used then it must have same length as
-        dataframe. Values are used to color the plot. Ignored if `color` is
-        also set.
+    column : str, np.array, pd.Series, pd.Index (default None)
+        The name of the dataframe column, np.array, pd.Series, or pd.Index
+        to be plotted. If np.array, pd.Series, or pd.Index are used then it
+        must have same length as dataframe. Values are used to color the plot.
+        Ignored if `color` is also set.
     kind: str
         The kind of plots to produce. The default is to create a map ("geo").
         Other supported kinds of plots from pandas:
@@ -252,11 +252,11 @@ class GeoplotAccessor(PlotAccessor):
 
     Parameters
     ----------
-    column : str, np.array, pd.Series (default None)
-        The name of the dataframe column, np.array, or pd.Series to be plotted.
-        If np.array or pd.Series are used then it must have same length as
-        dataframe. Values are used to color the plot. Ignored if `color` is
-        also set.
+    column : str, np.array, pd.Series, pd.Index (default None)
+        The name of the dataframe column, np.array, pd.Series, or pd.Index
+        to be plotted. If np.array, pd.Series, or pd.Index are used then it
+        must have same length as dataframe. Values are used to color the plot.
+        Ignored if `color` is also set.
     kind: str
         The kind of plots to produce. The default is to create a map ("geo").
         Other supported kinds of plots from pandas:

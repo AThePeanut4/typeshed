@@ -89,7 +89,7 @@ def _read_postgis(
     chunksize: int,
 ) -> Iterator[GeoDataFrame]:
     """
-    Returns a GeoDataFrame corresponding to the result of the query
+    Return a GeoDataFrame corresponding to the result of the query
     string, which must contain a geometry column in WKB representation.
 
     It is also possible to use :meth:`~GeoDataFrame.read_file` to read from a database.
@@ -149,7 +149,7 @@ def _read_postgis(
     chunksize: None = None,
 ) -> GeoDataFrame:
     """
-    Returns a GeoDataFrame corresponding to the result of the query
+    Return a GeoDataFrame corresponding to the result of the query
     string, which must contain a geometry column in WKB representation.
 
     It is also possible to use :meth:`~GeoDataFrame.read_file` to read from a database.
@@ -209,7 +209,7 @@ def _read_postgis(
     chunksize: int | None = None,
 ) -> GeoDataFrame | Iterator[GeoDataFrame]:
     """
-    Returns a GeoDataFrame corresponding to the result of the query
+    Return a GeoDataFrame corresponding to the result of the query
     string, which must contain a geometry column in WKB representation.
 
     It is also possible to use :meth:`~GeoDataFrame.read_file` to read from a database.

@@ -45,11 +45,31 @@ class Node:
     source: str | None
     line: int | None
     @property
-    def document(self) -> document | None: ...
+    def document(self) -> document | None:
+        """
+        Return the `document` root node of the tree containing this Node.
+        
+        """
+        ...
     @document.setter
-    def document(self, value: document) -> None: ...
-    def __bool__(self) -> Literal[True]: ...
-    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element: ...
+    def document(self, value: document) -> None:
+        """
+        Return the `document` root node of the tree containing this Node.
+        
+        """
+        ...
+    def __bool__(self) -> Literal[True]:
+        """
+        Node instances are always true, even if they're empty.  A node is more
+        than a simple container.  Its boolean "truth" does not depend on
+        having one or more subnodes in the doctree.
+
+        Use `len()` to check node length.
+        """
+        ...
+    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element:
+        """Return a DOM **fragment** representation of this Node."""
+        ...
     # While docutils documents the Node class to be abstract it does not
     # actually use the ABCMeta metaclass. We still set @abstractmethod here
     # (although it's not used in the docutils implementation) because it

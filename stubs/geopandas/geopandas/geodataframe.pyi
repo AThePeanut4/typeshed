@@ -34,7 +34,9 @@ crs_mismatch_error: str
 class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     """
     A GeoDataFrame object is a pandas.DataFrame that has one or more columns
-    containing geometry. In addition to the standard DataFrame constructor arguments,
+    containing geometry.
+
+    In addition to the standard DataFrame constructor arguments,
     GeoDataFrame also accepts the following keyword arguments:
 
     Parameters
@@ -85,7 +87,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     0  name1  POINT (1 2)  POINT (1 2)
     1  name2  POINT (2 1)  POINT (2 1)
 
-    See also
+    See Also
     --------
     GeoSeries : Series object designed to store shapely geometry objects
     """
@@ -200,7 +202,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         -------
         GeoDataFrame
 
-        See also
+        See Also
         --------
         GeoDataFrame.rename_geometry : rename an active geometry column
         """
@@ -271,7 +273,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         -------
         GeoDataFrame
 
-        See also
+        See Also
         --------
         GeoDataFrame.rename_geometry : rename an active geometry column
         """
@@ -342,7 +344,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         -------
         GeoDataFrame
 
-        See also
+        See Also
         --------
         GeoDataFrame.rename_geometry : rename an active geometry column
         """
@@ -350,8 +352,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     @overload
     def rename_geometry(self, col: Hashable, inplace: Literal[False] = False) -> Self:
         """
-        Renames the GeoDataFrame geometry column to
-        the specified name. By default yields a new object.
+        Rename the GeoDataFrame geometry column to the specified name.
+
+        By default yields a new object.
 
         The original geometry column is replaced with the input.
 
@@ -373,11 +376,8 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         >>> df.geometry.name
         'geom1'
 
-        Returns
-        -------
-        geodataframe : GeoDataFrame
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_geometry : set the active geometry
         """
@@ -385,8 +385,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     @overload
     def rename_geometry(self, col: Hashable, inplace: Literal[True]) -> None:
         """
-        Renames the GeoDataFrame geometry column to
-        the specified name. By default yields a new object.
+        Rename the GeoDataFrame geometry column to the specified name.
+
+        By default yields a new object.
 
         The original geometry column is replaced with the input.
 
@@ -408,11 +409,8 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         >>> df.geometry.name
         'geom1'
 
-        Returns
-        -------
-        geodataframe : GeoDataFrame
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_geometry : set the active geometry
         """
@@ -420,19 +418,23 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     @property
     def active_geometry_name(self) -> str | None:
         """
-        Return the name of the active geometry column
+        Return the name of the active geometry column.
 
-        Returns a string name if a GeoDataFrame has an active geometry column set.
-        Otherwise returns None. You can also access the active geometry column using the
+        Returns a name if a GeoDataFrame has an active geometry column set,
+        otherwise returns None. The return type is usually a string, but may be
+        an integer, tuple or other hashable, depending on the contents of the
+        dataframe columns.
+
+        You can also access the active geometry column using the
         ``.geometry`` property. You can set a GeoSeries to be an active geometry
         using the :meth:`~GeoDataFrame.set_geometry` method.
 
         Returns
         -------
-        str
+        str or other index label supported by pandas
             name of an active geometry column or None
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_geometry : set the active geometry
         """
@@ -451,7 +453,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> gdf.crs  # doctest: +SKIP
         <Geographic 2D CRS: EPSG:4326>
         Name: WGS 84
@@ -465,7 +466,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS
         GeoDataFrame.to_crs : re-project to another CRS
@@ -485,7 +486,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> gdf.crs  # doctest: +SKIP
         <Geographic 2D CRS: EPSG:4326>
         Name: WGS 84
@@ -499,7 +499,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS
         GeoDataFrame.to_crs : re-project to another CRS
@@ -516,7 +516,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     ) -> Self:
         """
         Construct GeoDataFrame from dict of array-like or dicts by
-        overriding DataFrame.from_dict method with geometry and crs
+        overriding DataFrame.from_dict method with geometry and crs.
 
         Parameters
         ----------
@@ -586,9 +586,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         >>> gdf = geopandas.read_file(path)
 
-        See also
+        See Also
         --------
-        read_file : read file to GeoDataFame
+        read_file : read file to GeoDataFrame
         GeoDataFrame.to_file : write GeoDataFrame to file
         """
         ...
@@ -728,7 +728,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         >>> df = geopandas.read_postgis(sql, con)  # doctest: +SKIP
 
-        See also
+        See Also
         --------
         geopandas.read_postgis : read PostGIS database to GeoDataFrame
         """
@@ -799,7 +799,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         >>> df = geopandas.read_postgis(sql, con)  # doctest: +SKIP
 
-        See also
+        See Also
         --------
         geopandas.read_postgis : read PostGIS database to GeoDataFrame
         """
@@ -807,7 +807,43 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     @classmethod
     def from_arrow(
         cls, table, geometry: str | None = None, to_pandas_kwargs: Mapping[str, Incomplete] | None = None
-    ) -> GeoDataFrame: ...  # TODO: `table: pyarrow.Table | table-like`
+    ) -> GeoDataFrame:
+        """
+        Construct a GeoDataFrame from a Arrow table object based on GeoArrow
+        extension types.
+
+        See https://geoarrow.org/ for details on the GeoArrow specification.
+
+        This functions accepts any tabular Arrow object implementing
+        the `Arrow PyCapsule Protocol`_ (i.e. having an ``__arrow_c_array__``
+        or ``__arrow_c_stream__`` method).
+
+        .. _Arrow PyCapsule Protocol: https://arrow.apache.org/docs/format/CDataInterface/PyCapsuleInterface.html
+
+        .. versionadded:: 1.0
+
+        Parameters
+        ----------
+        table : pyarrow.Table or Arrow-compatible table
+            Any tabular object implementing the Arrow PyCapsule Protocol
+            (i.e. has an ``__arrow_c_array__`` or ``__arrow_c_stream__``
+            method). This table should have at least one column with a
+            geoarrow geometry type.
+        geometry : str, default None
+            The name of the geometry column to set as the active geometry
+            column. If None, the first geometry column found will be used.
+        to_pandas_kwargs : dict, optional
+            Arguments passed to the `pa.Table.to_pandas` method for non-geometry
+            columns. This can be used to control the behavior of the conversion of the
+            non-geometry columns to a pandas DataFrame. For example, you can use this
+            to control the dtype conversion of the columns. By default, the `to_pandas`
+            method is called with no additional arguments.
+
+        Returns
+        -------
+        GeoDataFrame
+        """
+        ...
     def to_json(  # type: ignore[override]
         self,
         na: str = "null",
@@ -828,7 +864,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         **kwargs,
     ) -> str:
         """
-        Returns a GeoJSON representation of the ``GeoDataFrame`` as a string.
+        Return a GeoJSON representation of the ``GeoDataFrame`` as a string.
 
         Parameters
         ----------
@@ -866,7 +902,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> d = {'col1': ['name1', 'name2'], 'geometry': [Point(1, 2), Point(2, 1)]}
         >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:3857")
@@ -882,7 +917,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         >>> gdf.to_file(path, driver="GeoJSON")  # doctest: +SKIP
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_file : write GeoDataFrame to file
         """
@@ -904,7 +939,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> d = {'col1': ['name1', 'name2'], 'geometry': [Point(1, 2), Point(2, 1)]}
         >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
@@ -921,8 +955,8 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         self, na: str = "null", show_bbox: bool = False, drop_id: bool = False
     ) -> Iterator[dict[str, Incomplete]]:
         """
-        Returns an iterator that yields feature dictionaries that comply with
-        __geo_interface__
+        Return an iterator that yields feature dictionaries that comply with
+        __geo_interface__.
 
         Parameters
         ----------
@@ -943,7 +977,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> d = {'col1': ['name1', 'name2'], 'geometry': [Point(1, 2), Point(2, 1)]}
         >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
@@ -959,7 +992,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         ...
     def to_geo_dict(self, na: str = "null", show_bbox: bool = False, drop_id: bool = False) -> dict[str, Incomplete]:
         """
-        Returns a python feature collection representation of the GeoDataFrame
+        Return a python feature collection representation of the GeoDataFrame
         as a dictionary with a list of features based on the ``__geo_interface__``
         GeoJSON-like specification.
 
@@ -982,7 +1015,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> from shapely.geometry import Point
         >>> d = {'col1': ['name1', 'name2'], 'geometry': [Point(1, 2), Point(2, 1)]}
         >>> gdf = geopandas.GeoDataFrame(d)
@@ -994,7 +1026,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         >>> gdf.to_geo_dict()
         {'type': 'FeatureCollection', 'features': [{'id': '0', 'type': 'Feature', 'properties': {'col1': 'name1'}, 'geometry': {'type': 'Point', 'coordinates': (1.0, 2.0)}}, {'id': '1', 'type': 'Feature', 'properties': {'col1': 'name2'}, 'geometry': {'type': 'Point', 'coordinates': (2.0, 1.0)}}]}
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_json : return a GeoDataFrame as a GeoJSON string
         """
@@ -1065,7 +1097,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         See https://geoarrow.org/ for details on the GeoArrow specification.
 
-        This functions returns a generic Arrow data object implementing
+        This function returns a generic Arrow data object implementing
         the `Arrow PyCapsule Protocol`_ (i.e. having an ``__arrow_c_stream__``
         method). This object can then be consumed by your Arrow implementation
         of choice that supports this protocol.
@@ -1165,7 +1197,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
             If ``False``, the index(es) will not be written to the file.
             If ``None``, the index(ex) will be included as columns in the file
             output except `RangeIndex` which is stored as metadata only.
-        compression : {'snappy', 'gzip', 'brotli', None}, default 'snappy'
+        compression : {'snappy', 'gzip', 'brotli', 'lz4', 'zstd', None}, default 'snappy'
             Name of the compression to use. Use ``None`` for no compression.
         geometry_encoding : {'WKB', 'geoarrow'}, default 'WKB'
             The encoding to use for the geometry columns. Defaults to "WKB"
@@ -1191,10 +1223,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> gdf.to_parquet('data.parquet')  # doctest: +SKIP
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_feather : write GeoDataFrame to feather
         GeoDataFrame.to_file : write GeoDataFrame to file
@@ -1233,15 +1264,14 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
             GeoParquet specification version; if not provided will default to
             latest supported version.
         kwargs
-            Additional keyword arguments passed to to
+            Additional keyword arguments passed to
             :func:`pyarrow.feather.write_feather`.
 
         Examples
         --------
-
         >>> gdf.to_feather('data.feather')  # doctest: +SKIP
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_parquet : write GeoDataFrame to parquet
         GeoDataFrame.to_file : write GeoDataFrame to file
@@ -1341,7 +1371,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> gdf.to_file('dataframe.shp')  # doctest: +SKIP
 
         >>> gdf.to_file('dataframe.gpkg', driver='GPKG', layer='name')  # doctest: +SKIP
@@ -1432,7 +1461,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         Without ``allow_override=True``, ``set_crs`` returns an error if you try to
         override CRS.
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_crs : re-project to another CRS
         """
@@ -1509,7 +1538,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         Without ``allow_override=True``, ``set_crs`` returns an error if you try to
         override CRS.
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_crs : re-project to another CRS
         """
@@ -1584,7 +1613,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         Without ``allow_override=True``, ``set_crs`` returns an error if you try to
         override CRS.
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_crs : re-project to another CRS
         """
@@ -1663,7 +1692,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
@@ -1742,7 +1771,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
@@ -1821,7 +1850,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
@@ -1900,7 +1929,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
@@ -1979,7 +2008,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
@@ -2058,7 +2087,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
@@ -2137,14 +2166,14 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         - Ellipsoid: WGS 84
         - Prime Meridian: Greenwich
 
-        See also
+        See Also
         --------
         GeoDataFrame.set_crs : assign CRS without re-projection
         """
         ...
     def estimate_utm_crs(self, datum_name: str = "WGS 84") -> CRS:
         """
-        Returns the estimated UTM CRS based on the bounds of the dataset.
+        Return the estimated UTM CRS based on the bounds of the dataset.
 
         .. versionadded:: 0.9
 
@@ -2466,7 +2495,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         """
         ...
     def __finalize__(self, other, method: str | None = None, **kwargs) -> Self:
-        """propagate metadata from other to self"""
+        """Propagate metadata from other to self."""
         ...
     def dissolve(
         self,
@@ -2480,8 +2509,188 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         method: Literal["coverage", "unary", "disjoint_subset"] = "unary",
         grid_size: float | None = None,
         **kwargs,
-    ) -> GeoDataFrame: ...
-    def explode(self, column: IndexLabel | None = None, ignore_index: bool = False, index_parts: bool = False) -> Self: ...
+    ) -> GeoDataFrame:
+        """
+        Dissolve geometries within `groupby` into single observation.
+        This is accomplished by applying the `union_all` method
+        to all geometries within a groupself.
+
+        Observations associated with each `groupby` group will be aggregated
+        using the `aggfunc`.
+
+        Parameters
+        ----------
+        by : str or list-like, default None
+            Column(s) whose values define the groups to be dissolved. If None,
+            the entire GeoDataFrame is considered as a single group. If a list-like
+            object is provided, the values in the list are treated as categorical
+            labels, and polygons will be combined based on the equality of
+            these categorical labels.
+        aggfunc : function or string, default "first"
+            Aggregation function for manipulation of data associated
+            with each group. Passed to pandas `groupby.agg` method.
+            Accepted combinations are:
+
+            - function
+            - string function name
+            - list of functions and/or function names, e.g. [np.sum, 'mean']
+            - dict of axis labels -> functions, function names or list of such.
+        as_index : boolean, default True
+            If true, groupby columns become index of result.
+        level : int or str or sequence of int or sequence of str, default None
+            If the axis is a MultiIndex (hierarchical), group by a
+            particular level or levels.
+        sort : bool, default True
+            Sort group keys. Get better performance by turning this off.
+            Note this does not influence the order of observations within
+            each group. Groupby preserves the order of rows within each group.
+        observed : bool, default False
+            This only applies if any of the groupers are Categoricals.
+            If True: only show observed values for categorical groupers.
+            If False: show all values for categorical groupers.
+        dropna : bool, default True
+            If True, and if group keys contain NA values, NA values
+            together with row/column will be dropped. If False, NA
+            values will also be treated as the key in groups.
+        method : str (default ``"unary"``)
+            The method to use for the union. Options are:
+
+            * ``"unary"``: use the unary union algorithm. This option is the most robust
+              but can be slow for large numbers of geometries (default).
+            * ``"coverage"``: use the coverage union algorithm. This option is optimized
+              for non-overlapping polygons and can be significantly faster than the
+              unary union algorithm. However, it can produce invalid geometries if the
+              polygons overlap.
+            * ``"disjoint_subset:``: use the disjoint subset union algorithm. This
+              option is optimized for inputs that can be divided into subsets that do
+              not intersect. If there is only one such subset, performance can be
+              expected to be worse than ``"unary"``.  Requires Shapely >= 2.1.
+
+
+        grid_size : float, default None
+            When grid size is specified, a fixed-precision space is used to perform the
+            union operations. This can be useful when unioning geometries that are not
+            perfectly snapped or to avoid geometries not being unioned because of
+            `robustness issues <https://libgeos.org/usage/faq/#why-doesnt-a-computed-point-lie-exactly-on-a-line>`_.
+            The inputs are first snapped to a grid of the given size. When a line
+            segment of a geometry is within tolerance off a vertex of another geometry,
+            this vertex will be inserted in the line segment. Finally, the result
+            vertices are computed on the same grid. Is only supported for ``method``
+            ``"unary"``. If None, the highest precision of the inputs will be used.
+            Defaults to None.
+
+            .. versionadded:: 1.1.0
+        **kwargs :
+            Keyword arguments to be passed to the pandas `DataFrameGroupby.agg` method
+            which is used by `dissolve`. In particular, `numeric_only` may be
+            supplied, which will be required in pandas 2.0 for certain aggfuncs.
+
+            .. versionadded:: 0.13.0
+
+        Returns
+        -------
+        GeoDataFrame
+
+        Examples
+        --------
+        >>> from shapely.geometry import Point
+        >>> d = {
+        ...     "col1": ["name1", "name2", "name1"],
+        ...     "geometry": [Point(1, 2), Point(2, 1), Point(0, 1)],
+        ... }
+        >>> gdf = geopandas.GeoDataFrame(d, crs=4326)
+        >>> gdf
+            col1     geometry
+        0  name1  POINT (1 2)
+        1  name2  POINT (2 1)
+        2  name1  POINT (0 1)
+
+        >>> dissolved = gdf.dissolve('col1')
+        >>> dissolved  # doctest: +SKIP
+                                geometry
+        col1
+        name1  MULTIPOINT ((0 1), (1 2))
+        name2                POINT (2 1)
+
+        See Also
+        --------
+        GeoDataFrame.explode : explode multi-part geometries into single geometries
+        """
+        ...
+    def explode(self, column: IndexLabel | None = None, ignore_index: bool = False, index_parts: bool = False) -> Self:
+        """
+        Explode multi-part geometries into multiple single geometries.
+
+        Each row containing a multi-part geometry will be split into
+        multiple rows with single geometries, thereby increasing the vertical
+        size of the GeoDataFrame.
+
+        Parameters
+        ----------
+        column : string, default None
+            Column to explode. In the case of a geometry column, multi-part
+            geometries are converted to single-part.
+            If None, the active geometry column is used.
+        ignore_index : bool, default False
+            If True, the resulting index will be labelled 0, 1, …, n - 1,
+            ignoring `index_parts`.
+        index_parts : boolean, default False
+            If True, the resulting index will be a multi-index (original
+            index with an additional level indicating the multiple
+            geometries: a new zero-based index for each single part geometry
+            per multi-part geometry).
+
+        Returns
+        -------
+        GeoDataFrame
+            Exploded geodataframe with each single geometry
+            as a separate entry in the geodataframe.
+
+        Examples
+        --------
+        >>> from shapely.geometry import MultiPoint
+        >>> d = {
+        ...     "col1": ["name1", "name2"],
+        ...     "geometry": [
+        ...         MultiPoint([(1, 2), (3, 4)]),
+        ...         MultiPoint([(2, 1), (0, 0)]),
+        ...     ],
+        ... }
+        >>> gdf = geopandas.GeoDataFrame(d, crs=4326)
+        >>> gdf
+            col1               geometry
+        0  name1  MULTIPOINT ((1 2), (3 4))
+        1  name2  MULTIPOINT ((2 1), (0 0))
+
+        >>> exploded = gdf.explode(index_parts=True)
+        >>> exploded
+              col1     geometry
+        0 0  name1  POINT (1 2)
+          1  name1  POINT (3 4)
+        1 0  name2  POINT (2 1)
+          1  name2  POINT (0 0)
+
+        >>> exploded = gdf.explode(index_parts=False)
+        >>> exploded
+            col1     geometry
+        0  name1  POINT (1 2)
+        0  name1  POINT (3 4)
+        1  name2  POINT (2 1)
+        1  name2  POINT (0 0)
+
+        >>> exploded = gdf.explode(ignore_index=True)
+        >>> exploded
+            col1     geometry
+        0  name1  POINT (1 2)
+        1  name1  POINT (3 4)
+        2  name2  POINT (2 1)
+        3  name2  POINT (0 0)
+
+        See Also
+        --------
+        GeoDataFrame.dissolve : dissolve geometries into a single observation.
+        """
+        ...
     def to_postgis(
         self,
         name: str,
@@ -2534,12 +2743,11 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Examples
         --------
-
         >>> from sqlalchemy import create_engine
         >>> engine = create_engine("postgresql://myusername:mypassword@myhost:5432/mydatabase")  # doctest: +SKIP
         >>> gdf.to_postgis("my_table", engine)  # doctest: +SKIP
 
-        See also
+        See Also
         --------
         GeoDataFrame.to_file : write GeoDataFrame to file
         read_postgis : read PostGIS database to GeoDataFrame
@@ -2550,7 +2758,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
     @doc(_explore)  # pyright: ignore[reportUnknownArgumentType]
     def explore(self, *args, **kwargs):
         """
-        Interactive map based on GeoPandas and folium/leaflet.js
+        Explore data in interactive map based on GeoPandas and folium/leaflet.js.
 
         Generate an interactive leaflet map based on :class:`~geopandas.GeoDataFrame`
 
@@ -2689,6 +2897,13 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         highlight_kwds : dict (default {})
             Style to be passed to folium highlight_function. Uses the same keywords
             as ``style_kwds``. When empty, defaults to ``{"fillOpacity": 0.75}``.
+        missing_kwds : dict (default {})
+            Additional style for missing values:
+
+            color : str
+                Color of missing values. Defaults to ``None``, which uses Folium's default.
+            label : str (default "NaN")
+                Legend entry for missing values.
         tooltip_kwds : dict (default {})
             Additional keywords to be passed to :class:`folium.features.GeoJsonTooltip`,
             e.g. ``aliases``, ``labels``, or ``sticky``.
@@ -2766,7 +2981,92 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         distance: float | ArrayLike | None = None,
         on_attribute: str | Sequence[str] | None = None,
         **kwargs,
-    ) -> GeoDataFrame: ...
+    ) -> GeoDataFrame:
+        """
+        Spatial join of two GeoDataFrames.
+
+        See the User Guide page :doc:`../../user_guide/mergingdata` for details.
+
+        Parameters
+        ----------
+        df : GeoDataFrame
+        how : string, default 'inner'
+            The type of join:
+
+            * 'left': use keys from left_df; retain only left_df geometry column
+            * 'right': use keys from right_df; retain only right_df geometry column
+            * 'inner': use intersection of keys from both dfs; retain only
+              left_df geometry column
+
+        predicate : string, default 'intersects'
+            Binary predicate. Valid values are determined by the spatial index used.
+            You can check the valid values in left_df or right_df as
+            ``left_df.sindex.valid_query_predicates`` or
+            ``right_df.sindex.valid_query_predicates``
+        lsuffix : string, default 'left'
+            Suffix to apply to overlapping column names (left GeoDataFrame).
+        rsuffix : string, default 'right'
+            Suffix to apply to overlapping column names (right GeoDataFrame).
+        distance : number or array_like, optional
+            Distance(s) around each input geometry within which to query the tree
+            for the 'dwithin' predicate. If array_like, must be
+            one-dimesional with length equal to length of left GeoDataFrame.
+            Required if ``predicate='dwithin'``.
+        on_attribute : string, list or tuple
+            Column name(s) to join on as an additional join restriction on top
+            of the spatial predicate. These must be found in both DataFrames.
+            If set, observations are joined only if the predicate applies
+            and values in specified columns match.
+
+        Examples
+        --------
+        >>> import geodatasets
+        >>> chicago = geopandas.read_file(
+        ...     geodatasets.get_path("geoda.chicago_commpop")
+        ... )
+        >>> groceries = geopandas.read_file(
+        ...     geodatasets.get_path("geoda.groceries")
+        ... ).to_crs(chicago.crs)
+
+        >>> chicago.head()  # doctest: +SKIP
+                 community  ...                                           geometry
+        0          DOUGLAS  ...  MULTIPOLYGON (((-87.60914 41.84469, -87.60915 ...
+        1          OAKLAND  ...  MULTIPOLYGON (((-87.59215 41.81693, -87.59231 ...
+        2      FULLER PARK  ...  MULTIPOLYGON (((-87.62880 41.80189, -87.62879 ...
+        3  GRAND BOULEVARD  ...  MULTIPOLYGON (((-87.60671 41.81681, -87.60670 ...
+        4          KENWOOD  ...  MULTIPOLYGON (((-87.59215 41.81693, -87.59215 ...
+
+        [5 rows x 9 columns]
+
+        >>> groceries.head()  # doctest: +SKIP
+           OBJECTID     Ycoord  ...  Category                           geometry
+        0        16  41.973266  ...       NaN  MULTIPOINT ((-87.65661 41.97321))
+        1        18  41.696367  ...       NaN  MULTIPOINT ((-87.68136 41.69713))
+        2        22  41.868634  ...       NaN  MULTIPOINT ((-87.63918 41.86847))
+        3        23  41.877590  ...       new  MULTIPOINT ((-87.65495 41.87783))
+        4        27  41.737696  ...       NaN  MULTIPOINT ((-87.62715 41.73623))
+        [5 rows x 8 columns]
+
+        >>> groceries_w_communities = groceries.sjoin(chicago)
+        >>> groceries_w_communities[["OBJECTID", "community", "geometry"]].head()
+           OBJECTID       community                           geometry
+        0        16          UPTOWN  MULTIPOINT ((-87.65661 41.97321))
+        1        18     MORGAN PARK  MULTIPOINT ((-87.68136 41.69713))
+        2        22  NEAR WEST SIDE  MULTIPOINT ((-87.63918 41.86847))
+        3        23  NEAR WEST SIDE  MULTIPOINT ((-87.65495 41.87783))
+        4        27         CHATHAM  MULTIPOINT ((-87.62715 41.73623))
+
+        Notes
+        -----
+        Every operation in GeoPandas is planar, i.e. the potential third
+        dimension is not taken into account.
+
+        See Also
+        --------
+        GeoDataFrame.sjoin_nearest : nearest neighbor join
+        sjoin : equivalent top-level function
+        """
+        ...
     def sjoin_nearest(
         self,
         right: GeoDataFrame,
@@ -2816,7 +3116,6 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         exclusive : bool, optional, default False
             If True, the nearest geometries that are equal to the input geometry
             will not be returned, default False.
-            Requires Shapely >= 2.0
 
         Examples
         --------
@@ -2874,7 +3173,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         30          TARGET    UPTOWN
         30       Mariano's    UPTOWN
 
-        See also
+        See Also
         --------
         GeoDataFrame.sjoin : binary predicate joins
         sjoin_nearest : equivalent top-level function
@@ -2923,7 +3222,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
             Vector data (points, lines, polygons) from the GeoDataFrame clipped to
             polygon boundary from mask.
 
-        See also
+        See Also
         --------
         clip : equivalent top-level function
 
@@ -3022,13 +3321,13 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         >>> df1.overlay(df2, how='identity')
            df1_data  df2_data                                           geometry
-        0       1.0       1.0                POLYGON ((2 2, 2 1, 1 1, 1 2, 2 2))
-        1       2.0       1.0                POLYGON ((2 2, 2 3, 3 3, 3 2, 2 2))
-        2       2.0       2.0                POLYGON ((4 4, 4 3, 3 3, 3 4, 4 4))
-        3       1.0       NaN      POLYGON ((2 0, 0 0, 0 2, 1 2, 1 1, 2 1, 2 0))
-        4       2.0       NaN  MULTIPOLYGON (((3 4, 3 3, 2 3, 2 4, 3 4)), ((4...
+        0         1       1.0                POLYGON ((2 2, 2 1, 1 1, 1 2, 2 2))
+        1         2       1.0                POLYGON ((2 2, 2 3, 3 3, 3 2, 2 2))
+        2         2       2.0                POLYGON ((4 4, 4 3, 3 3, 3 4, 4 4))
+        3         1       NaN      POLYGON ((2 0, 0 0, 0 2, 1 2, 1 1, 2 1, 2 0))
+        4         2       NaN  MULTIPOLYGON (((3 4, 3 3, 2 3, 2 4, 3 4)), ((4...
 
-        See also
+        See Also
         --------
         GeoDataFrame.sjoin : spatial join
         overlay : equivalent top-level function

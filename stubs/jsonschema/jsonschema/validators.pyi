@@ -65,7 +65,26 @@ class _Validator:
     @deprecated("Passing a schema to Validator.is_valid is deprecated and will be removed in a future release.")
     def is_valid(self, instance, _schema: Schema | None) -> bool: ...
 
-def validates(version: str) -> Callable[[_Validator], _Validator]: ...
+def validates(version: str) -> Callable[[_Validator], _Validator]:
+    """
+    Register the decorated validator for a ``version`` of the specification.
+
+    Registered validators and their meta schemas will be considered when
+    parsing :kw:`$schema` keywords' URIs.
+
+    Arguments:
+
+        version (str):
+
+            An identifier to use as the version's name
+
+    Returns:
+
+        collections.abc.Callable:
+
+            a class decorator to decorate the validator with the version
+    """
+    ...
 def create(
     meta_schema: Schema,
     validators: Mapping[str, _ValidatorCallback] | tuple[()] = (),

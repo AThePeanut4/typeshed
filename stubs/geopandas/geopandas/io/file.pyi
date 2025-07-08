@@ -25,7 +25,7 @@ def _read_file(
     **kwargs,  # depend on engine
 ) -> GeoDataFrame:
     """
-    Returns a GeoDataFrame from a file or URL.
+    Return a GeoDataFrame from a file or URL.
 
     Parameters
     ----------
@@ -62,9 +62,9 @@ def _read_file(
         Keyword args to be passed to the engine, and can be used to write
         to multi-layer data, store data within archives (zip files), etc.
         In case of the "pyogrio" engine, the keyword arguments are passed to
-        `pyogrio.write_dataframe`. In case of the "fiona" engine, the keyword
+        `pyogrio.read_dataframe`. In case of the "fiona" engine, the keyword
         arguments are passed to fiona.open`. For more information on possible
-        keywords, type: ``import pyogrio; help(pyogrio.write_dataframe)``.
+        keywords, type: ``import pyogrio; help(pyogrio.read_dataframe)``.
 
 
     Examples
@@ -97,6 +97,11 @@ def _read_file(
     The format drivers will attempt to detect the encoding of your data, but
     may fail. In this case, the proper encoding can be specified explicitly
     by using the encoding keyword parameter, e.g. ``encoding='utf-8'``.
+
+    For faster data reading with the default pyogrio engine when
+    pyarrow is installed, pass ``use_arrow=True`` as an argument. See the User
+    Guide page :doc:`../../user_guide/io` for details.
+
 
     When specifying a URL, geopandas will check if the server supports reading
     partial data and in that case pass the URL as is to the underlying engine,
@@ -124,7 +129,7 @@ def _read_file(
     **kwargs,  # depend on engine
 ) -> pd.DataFrame:
     """
-    Returns a GeoDataFrame from a file or URL.
+    Return a GeoDataFrame from a file or URL.
 
     Parameters
     ----------
@@ -161,9 +166,9 @@ def _read_file(
         Keyword args to be passed to the engine, and can be used to write
         to multi-layer data, store data within archives (zip files), etc.
         In case of the "pyogrio" engine, the keyword arguments are passed to
-        `pyogrio.write_dataframe`. In case of the "fiona" engine, the keyword
+        `pyogrio.read_dataframe`. In case of the "fiona" engine, the keyword
         arguments are passed to fiona.open`. For more information on possible
-        keywords, type: ``import pyogrio; help(pyogrio.write_dataframe)``.
+        keywords, type: ``import pyogrio; help(pyogrio.read_dataframe)``.
 
 
     Examples
@@ -196,6 +201,11 @@ def _read_file(
     The format drivers will attempt to detect the encoding of your data, but
     may fail. In this case, the proper encoding can be specified explicitly
     by using the encoding keyword parameter, e.g. ``encoding='utf-8'``.
+
+    For faster data reading with the default pyogrio engine when
+    pyarrow is installed, pass ``use_arrow=True`` as an argument. See the User
+    Guide page :doc:`../../user_guide/io` for details.
+
 
     When specifying a URL, geopandas will check if the server supports reading
     partial data and in that case pass the URL as is to the underlying engine,

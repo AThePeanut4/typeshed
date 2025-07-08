@@ -65,7 +65,13 @@ class BadHostKeyException(SSHException):
     expected_key: PKey
     def __init__(self, hostname: str, got_key: PKey, expected_key: PKey) -> None: ...
 
-class IncompatiblePeer(SSHException): ...
+class IncompatiblePeer(SSHException):
+    """
+    A disagreement arose regarding an algorithm required for key exchange.
+
+    .. versionadded:: 2.9
+    """
+    ...
 
 class ProxyCommandFailure(SSHException):
     """

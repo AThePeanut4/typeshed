@@ -24,6 +24,12 @@ ascii_punctuation_re: Incomplete
 charsUntilRegEx: Incomplete
 
 class BufferedStream:
+    """
+    Buffering for streams that do not have buffering of their own
+
+    The buffer is implemented as a list of chunks on the assumption that
+    joining many strings will be slow since it is O(n**2)
+    """
     stream: Incomplete
     buffer: Incomplete
     position: Incomplete
@@ -47,11 +53,31 @@ def HTMLInputStream(
 ) -> HTMLBinaryInputStream: ...
 
 class HTMLUnicodeInputStream:
+    """
+    Provides a unicode stream of characters to the HTMLTokenizer.
+
+    This class takes care of character encoding and removing or replacing
+    incorrect byte-sequences and also provides column and line tracking.
+    """
     reportCharacterErrors: Incomplete
     newLines: Incomplete
     charEncoding: tuple[_Encoding, str]
     dataStream: Incomplete
-    def __init__(self, source: _UnicodeInputStream) -> None: ...
+    def __init__(self, source: _UnicodeInputStream) -> None:
+        """
+        Initialises the HTMLInputStream.
+
+        HTMLInputStream(source, [encoding]) -> Normalized stream from source
+        for use by html5lib.
+
+        source can be either a file-object, local filename or a string.
+
+        The optional encoding parameter must be a string that indicates
+        the encoding.  If specified, that encoding will be used,
+        regardless of any BOM or later declaration (such as in a meta
+        element)
+        """
+        ...
     chunk: str
     chunkSize: int
     chunkOffset: int
@@ -89,6 +115,12 @@ class HTMLUnicodeInputStream:
     def unget(self, char) -> None: ...
 
 class HTMLBinaryInputStream(HTMLUnicodeInputStream):
+    """
+    Provides a unicode stream of characters to the HTMLTokenizer.
+
+    This class takes care of character encoding and removing or replacing
+    incorrect byte-sequences and also provides column and line tracking.
+    """
     rawStream: Incomplete
     numBytesMeta: int
     numBytesChardet: int
@@ -107,7 +139,21 @@ class HTMLBinaryInputStream(HTMLUnicodeInputStream):
         likely_encoding: str | bytes | None = None,
         default_encoding: str = "windows-1252",
         useChardet: bool = True,
-    ) -> None: ...
+    ) -> None:
+        """
+        Initialises the HTMLInputStream.
+
+        HTMLInputStream(source, [encoding]) -> Normalized stream from source
+        for use by html5lib.
+
+        source can be either a file-object, local filename or a string.
+
+        The optional encoding parameter must be a string that indicates
+        the encoding.  If specified, that encoding will be used,
+        regardless of any BOM or later declaration (such as in a meta
+        element)
+        """
+        ...
     dataStream: Incomplete
     def reset(self) -> None: ...
     def openStream(self, source):
@@ -170,9 +216,12 @@ class EncodingBytes(bytes):
         ...
 
 class EncodingParser:
+    """Mini parser for detecting character encoding from meta elements"""
     data: Incomplete
     encoding: Incomplete
-    def __init__(self, data) -> None: ...
+    def __init__(self, data) -> None:
+        """string - the data to work on for encoding detection"""
+        ...
     def getEncoding(self): ...
     def handleComment(self):
         """Skip over comments"""

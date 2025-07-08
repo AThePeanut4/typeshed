@@ -11,7 +11,7 @@ def collect(
     x: Collection[Geometry] | GeoSeries | pd.Series[Any] | Geometry, multi: bool = False  # Cannot use pd.Series[BaseGeometry]
 ) -> BaseGeometry:
     """
-    Collect single part geometries into their Multi* counterpart
+    Collect single part geometries into their Multi* counterpart.
 
     Parameters
     ----------

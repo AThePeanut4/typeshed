@@ -46,7 +46,7 @@ def _explore(
     **kwargs,
 ) -> folium.Map:
     """
-    Interactive map based on GeoPandas and folium/leaflet.js
+    Explore data in interactive map based on GeoPandas and folium/leaflet.js.
 
     Generate an interactive leaflet map based on :class:`~geopandas.GeoDataFrame`
 
@@ -185,6 +185,13 @@ def _explore(
     highlight_kwds : dict (default {})
         Style to be passed to folium highlight_function. Uses the same keywords
         as ``style_kwds``. When empty, defaults to ``{"fillOpacity": 0.75}``.
+    missing_kwds : dict (default {})
+        Additional style for missing values:
+
+        color : str
+            Color of missing values. Defaults to ``None``, which uses Folium's default.
+        label : str (default "NaN")
+            Legend entry for missing values.
     tooltip_kwds : dict (default {})
         Additional keywords to be passed to :class:`folium.features.GeoJsonTooltip`,
         e.g. ``aliases``, ``labels``, or ``sticky``.
@@ -269,7 +276,7 @@ def _explore_geoseries(
     **kwargs,
 ) -> folium.Map:
     """
-    Interactive map based on GeoPandas and folium/leaflet.js
+    Interactive map based on GeoPandas and folium/leaflet.js.
 
     Generate an interactive leaflet map based on :class:`~geopandas.GeoSeries`
 

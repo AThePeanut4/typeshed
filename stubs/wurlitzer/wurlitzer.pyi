@@ -52,7 +52,22 @@ class Wurlitzer:
         stderr: _STDOUT | SupportsWrite[str] | SupportsWrite[bytes] | logging.Logger | None = None,
         encoding: str | None = ...,
         bufsize: int | None = ...,
-    ) -> None: ...
+    ) -> None:
+        """
+        Parameters
+        ----------
+        stdout: stream or None
+            The stream for forwarding stdout.
+        stderr = stream or None
+            The stream for forwarding stderr.
+        encoding: str or None
+            The encoding to use, if streams should be interpreted as text.
+        bufsize: int or None
+            Set pipe buffer size using fcntl F_SETPIPE_SZ (linux only)
+            default: use /proc/sys/fs/pipe-max-size up to a max of 1MB
+            if 0, will do nothing.
+        """
+        ...
     def __enter__(
         self,
     ) -> tuple[

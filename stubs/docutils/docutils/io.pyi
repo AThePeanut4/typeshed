@@ -133,6 +133,11 @@ class Output(TransformSpec):
         ...
 
 class ErrorOutput:
+    """
+    Wrapper class for file-like error streams with
+    failsafe de- and encoding of `str`, `bytes`, `unicode` and
+    `Exception` instances.
+    """
     destination: Incomplete
     encoding: Incomplete
     encoding_errors: Incomplete
@@ -174,6 +179,7 @@ class ErrorOutput:
         ...
 
 class FileInput(Input[IO[str]]):
+    """Input for single, simple file-like objects."""
     autoclose: Incomplete
     source: Incomplete
     source_path: Incomplete
@@ -208,6 +214,7 @@ class FileInput(Input[IO[str]]):
     def close(self) -> None: ...
 
 class FileOutput(Output):
+    """Output for single, simple file-like objects."""
     default_destination_path: ClassVar[str]
     mode: ClassVar[OpenTextModeWriting | OpenBinaryModeWriting]
     opened: bool
@@ -223,9 +230,41 @@ class FileOutput(Output):
         autoclose: bool = True,
         handle_io_errors=None,
         mode=None,
-    ) -> None: ...
+    ) -> None:
+        """
+        :Parameters:
+            - `destination`: either a file-like object (which is written
+              directly) or `None` (which implies `sys.stdout` if no
+              `destination_path` given).
+            - `destination_path`: a path to a file, which is opened and then
+              written.
+            - `encoding`: the text encoding of the output file.
+            - `error_handler`: the encoding error handler to use.
+            - `autoclose`: close automatically after write (except when
+              `sys.stdout` or `sys.stderr` is the destination).
+            - `handle_io_errors`: ignored, deprecated, will be removed.
+            - `mode`: how the file is to be opened (see standard function
+              `open`). The default is 'w', providing universal newline
+              support for text files.
+        """
+        ...
     def open(self) -> None: ...
-    def write(self, data): ...
+    def write(self, data):
+        """
+        Write `data` to a single file, also return it.
+
+        `data` can be a `str` or `bytes` instance.
+        If writing `bytes` fails, an attempt is made to write to
+        the low-level interface ``self.destination.buffer``.
+
+        If `data` is a `str` instance and `self.encoding` and
+        `self.destination.encoding` are  set to different values, `data`
+        is encoded to a `bytes` instance using `self.encoding`.
+
+        Provisional: future versions may raise an error if `self.encoding`
+        and `self.destination.encoding` are set to different values.
+        """
+        ...
     def close(self) -> None: ...
 
 class BinaryFileOutput(FileOutput):
@@ -235,7 +274,13 @@ class BinaryFileOutput(FileOutput):
 class StringInput(Input[str]):
     """Input from a `str` or `bytes` instance."""
     default_source_path: ClassVar[str]
-    def read(self): ...
+    def read(self):
+        """
+        Return the source as `str` instance.
+
+        Decode, if required (see `Input.decode`).
+        """
+        ...
 
 class StringOutput(Output):
     """
@@ -245,7 +290,23 @@ class StringOutput(Output):
     """
     default_destination_path: ClassVar[str]
     destination: str | bytes  # only defined after call to write()
-    def write(self, data): ...
+    def write(self, data):
+        """
+        Store `data` in `self.destination`, and return it.
+
+        If `self.encoding` is set to the pseudo encoding name "unicode",
+        `data` must be a `str` instance and is stored/returned unchanged
+        (cf. `Output.encode`).
+
+        Otherwise, `data` can be a `bytes` or `str` instance and is
+        stored/returned as a `bytes` instance
+        (`str` data is encoded with `self.encode()`).
+
+        Attention: the `output_encoding`_ setting may affect the content
+        of the output (e.g. an encoding declaration in HTML or XML or the
+        representation of characters as LaTeX macro vs. literal character).
+        """
+        ...
 
 class NullInput(Input[Any]):
     """Degenerate input: read nothing."""
@@ -268,4 +329,6 @@ class DocTreeInput(Input[nodes.document]):
     The document tree must be passed in the ``source`` parameter.
     """
     default_source_path: ClassVar[str]
-    def read(self): ...
+    def read(self):
+        """Return the document tree."""
+        ...

@@ -95,7 +95,7 @@ def assert_geodataframe_equal(
     normalize: bool = False,
 ) -> None:
     """
-    Check that two GeoDataFrames are equal/
+    Check that two GeoDataFrames are equal.
 
     Parameters
     ----------

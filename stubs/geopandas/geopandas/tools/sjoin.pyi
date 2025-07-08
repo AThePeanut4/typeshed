@@ -89,7 +89,7 @@ def sjoin(
     4        27         CHATHAM  MULTIPOINT ((-87.62715 41.73623))
     [5 rows x 95 columns]
 
-    See also
+    See Also
     --------
     overlay : overlay operation resulting in a new geometry
     GeoDataFrame.sjoin : equivalent method
@@ -207,7 +207,7 @@ def sjoin_nearest(
     30          TARGET    UPTOWN
     30       Mariano's    UPTOWN
 
-    See also
+    See Also
     --------
     sjoin : binary predicate joins
     GeoDataFrame.sjoin_nearest : equivalent method

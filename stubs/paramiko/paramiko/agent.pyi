@@ -1,3 +1,5 @@
+"""SSH Agent interface"""
+
 import sys
 from _typeshed import ReadableBuffer
 from collections.abc import Mapping
@@ -74,7 +76,13 @@ if sys.platform == "win32":
     def get_agent_connection() -> PageantConnection | OpenSSHAgentConnection | None: ...
 
 else:
-    def get_agent_connection() -> socket | None: ...
+    def get_agent_connection() -> socket | None:
+        """
+        Returns some SSH agent object, or None if none were found/supported.
+
+        .. versionadded:: 2.10
+        """
+        ...
 
 class AgentClientProxy:
     """

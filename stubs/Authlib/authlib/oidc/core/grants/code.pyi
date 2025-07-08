@@ -1,3 +1,13 @@
+"""
+authlib.oidc.core.grants.code.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Implementation of Authentication using the Authorization Code Flow
+per `Section 3.1`_.
+
+.. _`Section 3.1`: http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth
+"""
+
 from logging import Logger
 
 from authlib.oauth2 import OAuth2Request

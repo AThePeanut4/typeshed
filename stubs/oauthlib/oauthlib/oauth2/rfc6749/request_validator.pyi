@@ -549,10 +549,155 @@ class RequestValidator:
         ...
     def validate_response_type(
         self, client_id: str, response_type: str, client: Client, request: Request, *args, **kwargs
-    ) -> bool: ...
-    def validate_scopes(self, client_id: str, scopes: list[str], client: Client, request: Request, *args, **kwargs) -> bool: ...
-    def validate_user(self, username: str, password: str, client: Client, request: Request, *args, **kwargs) -> bool: ...
-    def is_pkce_required(self, client_id: str, request: Request) -> bool: ...
-    def get_code_challenge(self, code: str, request: Request) -> str: ...
-    def get_code_challenge_method(self, code: str, request: Request) -> str: ...
-    def is_origin_allowed(self, client_id: str, origin, request: Request, *args, **kwargs) -> bool: ...
+    ) -> bool:
+        """
+        Ensure client is authorized to use the response_type requested.
+
+        :param client_id: Unicode client identifier.
+        :param response_type: Unicode response type, i.e. code, token.
+        :param client: Client object set by you, see ``.authenticate_client``.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: True or False
+
+        Method is used by:
+            - Authorization Code Grant
+            - Implicit Grant
+        """
+        ...
+    def validate_scopes(self, client_id: str, scopes: list[str], client: Client, request: Request, *args, **kwargs) -> bool:
+        """
+        Ensure the client is authorized access to requested scopes.
+
+        :param client_id: Unicode client identifier.
+        :param scopes: List of scopes (defined by you).
+        :param client: Client object set by you, see ``.authenticate_client``.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: True or False
+
+        Method is used by all core grant types:
+            - Authorization Code Grant
+            - Implicit Grant
+            - Resource Owner Password Credentials Grant
+            - Client Credentials Grant
+        """
+        ...
+    def validate_user(self, username: str, password: str, client: Client, request: Request, *args, **kwargs) -> bool:
+        """
+        Ensure the username and password is valid.
+
+        OBS! The validation should also set the user attribute of the request
+        to a valid resource owner, i.e. request.user = username or similar. If
+        not set you will be unable to associate a token with a user in the
+        persistence method used (commonly, save_bearer_token).
+
+        :param username: Unicode username.
+        :param password: Unicode password.
+        :param client: Client object set by you, see ``.authenticate_client``.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: True or False
+
+        Method is used by:
+            - Resource Owner Password Credentials Grant
+        """
+        ...
+    def is_pkce_required(self, client_id: str, request: Request) -> bool:
+        """
+        Determine if current request requires PKCE. Default, False.
+        This is called for both "authorization" and "token" requests.
+
+        Override this method by ``return True`` to enable PKCE for everyone.
+        You might want to enable it only for public clients.
+        Note that PKCE can also be used in addition of a client authentication.
+
+        OAuth 2.0 public clients utilizing the Authorization Code Grant are
+        susceptible to the authorization code interception attack.  This
+        specification describes the attack as well as a technique to mitigate
+        against the threat through the use of Proof Key for Code Exchange
+        (PKCE, pronounced "pixy"). See `RFC7636`_.
+
+        :param client_id: Client identifier.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: True or False
+
+        Method is used by:
+            - Authorization Code Grant
+
+        .. _`RFC7636`: https://tools.ietf.org/html/rfc7636
+        """
+        ...
+    def get_code_challenge(self, code: str, request: Request) -> str:
+        """
+        Is called for every "token" requests.
+
+        When the server issues the authorization code in the authorization
+        response, it MUST associate the ``code_challenge`` and
+        ``code_challenge_method`` values with the authorization code so it can
+        be verified later.
+
+        Typically, the ``code_challenge`` and ``code_challenge_method`` values
+        are stored in encrypted form in the ``code`` itself but could
+        alternatively be stored on the server associated with the code.  The
+        server MUST NOT include the ``code_challenge`` value in client requests
+        in a form that other entities can extract.
+
+        Return the ``code_challenge`` associated to the code.
+        If ``None`` is returned, code is considered to not be associated to any
+        challenges.
+
+        :param code: Authorization code.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: code_challenge string
+
+        Method is used by:
+            - Authorization Code Grant - when PKCE is active
+        """
+        ...
+    def get_code_challenge_method(self, code: str, request: Request) -> str:
+        """
+        Is called during the "token" request processing, when a
+        ``code_verifier`` and a ``code_challenge`` has been provided.
+
+        See ``.get_code_challenge``.
+
+        Must return ``plain`` or ``S256``. You can return a custom value if you have
+        implemented your own ``AuthorizationCodeGrant`` class.
+
+        :param code: Authorization code.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: code_challenge_method string
+
+        Method is used by:
+            - Authorization Code Grant - when PKCE is active
+        """
+        ...
+    def is_origin_allowed(self, client_id: str, origin, request: Request, *args, **kwargs) -> bool:
+        """
+        Indicate if the given origin is allowed to access the token endpoint
+        via Cross-Origin Resource Sharing (CORS).  CORS is used by browser-based
+        clients, such as Single-Page Applications, to perform the Authorization
+        Code Grant.
+
+        (Note:  If performing Authorization Code Grant via a public client such
+        as a browser, you should use PKCE as well.)
+
+        If this method returns true, the appropriate CORS headers will be added
+        to the response.  By default this method always returns False, meaning
+        CORS is disabled.
+
+        :param client_id: Unicode client identifier.
+        :param redirect_uri: Unicode origin.
+        :param request: OAuthlib request.
+        :type request: oauthlib.common.Request
+        :rtype: bool
+
+        Method is used by:
+            - Authorization Code Grant
+            - Refresh Token Grant
+        """
+        ...

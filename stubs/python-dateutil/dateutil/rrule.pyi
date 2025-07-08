@@ -69,11 +69,53 @@ class rrulebase:
     def __iter__(self) -> Iterator[datetime.datetime]: ...
     def __getitem__(self, item): ...
     def __contains__(self, item) -> bool: ...
-    def count(self) -> int | None: ...
-    def before(self, dt, inc: bool = False): ...
-    def after(self, dt, inc: bool = False): ...
-    def xafter(self, dt, count=None, inc: bool = False) -> Generator[Incomplete]: ...
-    def between(self, after, before, inc: bool = False, count: int = 1) -> list[Incomplete]: ...
+    def count(self) -> int | None:
+        """
+        Returns the number of recurrences in this set. It will have go
+        through the whole recurrence, if this hasn't been done before. 
+        """
+        ...
+    def before(self, dt, inc: bool = False):
+        """
+        Returns the last recurrence before the given datetime instance. The
+        inc keyword defines what happens if dt is an occurrence. With
+        inc=True, if dt itself is an occurrence, it will be returned. 
+        """
+        ...
+    def after(self, dt, inc: bool = False):
+        """
+        Returns the first recurrence after the given datetime instance. The
+        inc keyword defines what happens if dt is an occurrence. With
+        inc=True, if dt itself is an occurrence, it will be returned.  
+        """
+        ...
+    def xafter(self, dt, count=None, inc: bool = False) -> Generator[Incomplete]:
+        """
+        Generator which yields up to `count` recurrences after the given
+        datetime instance, equivalent to `after`.
+
+        :param dt:
+            The datetime at which to start generating recurrences.
+
+        :param count:
+            The maximum number of recurrences to generate. If `None` (default),
+            dates are generated until the recurrence rule is exhausted.
+
+        :param inc:
+            If `dt` is an instance of the rule and `inc` is `True`, it is
+            included in the output.
+
+        :yields: Yields a sequence of `datetime` objects.
+        """
+        ...
+    def between(self, after, before, inc: bool = False, count: int = 1) -> list[Incomplete]:
+        """
+        Returns all the occurrences of the rrule between after and before.
+        The inc keyword defines what happens if after and/or before are
+        themselves occurrences. With inc=True, they will be included in the
+        list, if they are found in the recurrence set. 
+        """
+        ...
 
 class rrule(rrulebase):
     """
@@ -239,7 +281,12 @@ class rrule(rrulebase):
         byminute: int | Iterable[int] | None = None,
         bysecond: int | Iterable[int] | None = None,
         cache: bool | None = ...,
-    ) -> Self: ...
+    ) -> Self:
+        """
+        Return new rrule with same attributes except for those attributes given new
+        values by whichever keyword arguments are specified.
+        """
+        ...
 
 _RRule: TypeAlias = rrule
 
@@ -291,12 +338,78 @@ class rruleset(rrulebase):
         def __ne__(self, other) -> bool: ...
 
     def __init__(self, cache: bool | None = False) -> None: ...
-    def rrule(self, rrule: _RRule) -> None: ...
-    def rdate(self, rdate) -> None: ...
-    def exrule(self, exrule) -> None: ...
-    def exdate(self, exdate) -> None: ...
+    def rrule(self, rrule: _RRule) -> None:
+        """
+        Include the given :py:class:`rrule` instance in the recurrence set
+        generation. 
+        """
+        ...
+    def rdate(self, rdate) -> None:
+        """
+        Include the given :py:class:`datetime` instance in the recurrence
+        set generation. 
+        """
+        ...
+    def exrule(self, exrule) -> None:
+        """
+        Include the given rrule instance in the recurrence set exclusion
+        list. Dates which are part of the given recurrence rules will not
+        be generated, even if some inclusive rrule or rdate matches them.
+        """
+        ...
+    def exdate(self, exdate) -> None:
+        """
+        Include the given datetime instance in the recurrence set
+        exclusion list. Dates included that way will not be generated,
+        even if some inclusive rrule or rdate matches them. 
+        """
+        ...
 
 class _rrulestr:
+    """
+    Parses a string representation of a recurrence rule or set of
+    recurrence rules.
+
+    :param s:
+        Required, a string defining one or more recurrence rules.
+
+    :param dtstart:
+        If given, used as the default recurrence start if not specified in the
+        rule string.
+
+    :param cache:
+        If set ``True`` caching of results will be enabled, improving
+        performance of multiple queries considerably.
+
+    :param unfold:
+        If set ``True`` indicates that a rule string is split over more
+        than one line and should be joined before processing.
+
+    :param forceset:
+        If set ``True`` forces a :class:`dateutil.rrule.rruleset` to
+        be returned.
+
+    :param compatible:
+        If set ``True`` forces ``unfold`` and ``forceset`` to be ``True``.
+
+    :param ignoretz:
+        If set ``True``, time zones in parsed strings are ignored and a naive
+        :class:`datetime.datetime` object is returned.
+
+    :param tzids:
+        If given, a callable or mapping used to retrieve a
+        :class:`datetime.tzinfo` from a string representation.
+        Defaults to :func:`dateutil.tz.gettz`.
+
+    :param tzinfos:
+        Additional time zone names / aliases which may be present in a string
+        representation.  See :func:`dateutil.parser.parse` for more
+        information.
+
+    :return:
+        Returns a :class:`dateutil.rrule.rruleset` or
+        :class:`dateutil.rrule.rrule`
+    """
     def __call__(
         self,
         s: str,

@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from typing import ClassVar
 
 class JWEAlgorithmBase(metaclass=ABCMeta):
+    """Base interface for all JWE algorithms."""
     EXTRA_HEADERS: ClassVar[Iterable[str] | None]
     name: str | None
     description: str | None

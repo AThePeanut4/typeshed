@@ -28,6 +28,122 @@ _PlaylistAnyT = TypeVar("_PlaylistAnyT", bound=_PlaylistProtocol)
 class MalformedPlaylistError(Exception): ...
 
 class M3U8:
+    """
+    Represents a single M3U8 playlist. Should be instantiated with
+    the content as string.
+
+    Parameters:
+
+     `content`
+       the m3u8 content as string
+
+     `base_path`
+       all urls (key and segments url) will be updated with this base_path,
+       ex.:
+           base_path = "http://videoserver.com/hls"
+
+            /foo/bar/key.bin           -->  http://videoserver.com/hls/key.bin
+            http://vid.com/segment1.ts -->  http://videoserver.com/hls/segment1.ts
+
+       can be passed as parameter or setted as an attribute to ``M3U8`` object.
+     `base_uri`
+      uri the playlist comes from. it is propagated to SegmentList and Key
+      ex.: http://example.com/path/to
+
+    Attributes:
+
+     `keys`
+       Returns the list of `Key` objects used to encrypt the segments from m3u8.
+       It covers the whole list of possible situations when encryption either is
+       used or not.
+
+       1. No encryption.
+       `keys` list will only contain a `None` element.
+
+       2. Encryption enabled for all segments.
+       `keys` list will contain the key used for the segments.
+
+       3. No encryption for first element(s), encryption is applied afterwards
+       `keys` list will contain `None` and the key used for the rest of segments.
+
+       4. Multiple keys used during the m3u8 manifest.
+       `keys` list will contain the key used for each set of segments.
+
+     `session_keys`
+       Returns the list of `SessionKey` objects used to encrypt multiple segments from m3u8.
+
+     `segments`
+       a `SegmentList` object, represents the list of `Segment`s from this playlist
+
+     `is_variant`
+        Returns true if this M3U8 is a variant playlist, with links to
+        other M3U8s with different bitrates.
+
+        If true, `playlists` is a list of the playlists available,
+        and `iframe_playlists` is a list of the i-frame playlists available.
+
+     `is_endlist`
+        Returns true if EXT-X-ENDLIST tag present in M3U8.
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.8
+
+      `playlists`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        Playlist objects
+
+      `iframe_playlists`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        IFramePlaylist objects
+
+      `playlist_type`
+        A lower-case string representing the type of the playlist, which can be
+        one of VOD (video on demand) or EVENT.
+
+      `media`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        Media objects
+
+      `target_duration`
+        Returns the EXT-X-TARGETDURATION as an integer
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.2
+
+      `media_sequence`
+        Returns the EXT-X-MEDIA-SEQUENCE as an integer
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.3
+
+      `program_date_time`
+        Returns the EXT-X-PROGRAM-DATE-TIME as a string
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.5
+
+      `version`
+        Return the EXT-X-VERSION as is
+
+      `allow_cache`
+        Return the EXT-X-ALLOW-CACHE as is
+
+      `files`
+        Returns an iterable with all files from playlist, in order. This includes
+        segments and key uri, if present.
+
+      `base_uri`
+        It is a property (getter and setter) used by
+        SegmentList and Key to have absolute URIs.
+
+      `is_i_frames_only`
+        Returns true if EXT-X-I-FRAMES-ONLY tag present in M3U8.
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.12
+
+      `is_independent_segments`
+        Returns true if EXT-X-INDEPENDENT-SEGMENTS tag present in M3U8.
+        https://tools.ietf.org/html/draft-pantos-http-live-streaming-13#section-3.4.16
+
+      `image_playlists`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        ImagePlaylist objects
+
+      `is_images_only`
+        Returns true if EXT-X-IMAGES-ONLY tag present in M3U8.
+        https://github.com/image-media-playlist/spec/blob/master/image_media_playlist_v0_4.pdf
+    """
     simple_attributes: tuple[tuple[str, str], ...]
     data: dict[str, Incomplete]
     keys: list[Key]

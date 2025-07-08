@@ -185,14 +185,42 @@ class CronTab:
         line: str = ...,
         read: bool = ...,
         before: str | re.Pattern[str] | list[CronItem] | tuple[CronItem, ...] | Generator[CronItem] | None = ...,
-    ) -> None: ...
-    def write(self, filename: str | None = ..., user: _User = ..., errors: bool = ...) -> None: ...
-    def write_to_user(self, user: bool | str = ...) -> None: ...
+    ) -> None:
+        """
+        Append a CronItem object to this CronTab
+
+        Keyword arguments:
+         item   - The CronItem object to append
+         line   - The textual line which this item is.
+         read   - Internal use only
+         before - Append before this CronItem, comment regex or generator
+        """
+        ...
+    def write(self, filename: str | None = ..., user: _User = ..., errors: bool = ...) -> None:
+        """Write the crontab to it's source or a given filename."""
+        ...
+    def write_to_user(self, user: bool | str = ...) -> None:
+        """Write the crontab to a user (or root) instead of a file."""
+        ...
     # Usually `kwargs` are just `now: datetime | None`, but technically this can
     # work for `CronItem` subclasses, which might define other kwargs.
-    def run_pending(self, *, now: datetime | None = ..., **kwargs: Any) -> Iterator[str]: ...
-    def run_scheduler(self, timeout: int = -1, cadence: int = 60, warp: bool = False) -> Iterator[str]: ...
-    def render(self, errors: bool = ..., specials: bool | None = ...) -> str: ...
+    def run_pending(self, *, now: datetime | None = ..., **kwargs: Any) -> Iterator[str]:
+        """Run all commands in this crontab if pending (generator)"""
+        ...
+    def run_scheduler(self, timeout: int = -1, cadence: int = 60, warp: bool = False) -> Iterator[str]:
+        """Run the CronTab as an internal scheduler (generator)"""
+        ...
+    def render(self, errors: bool = ..., specials: bool | None = ...) -> str:
+        """
+        Render this crontab as it would be in the crontab.
+
+        errors - Should we not comment out invalid entries and cause errors?
+        specials - Turn known times into keywords such as "@daily"
+            True - (default) force all values to be converted (unless SYSTEMV)
+            False - force all values back from being a keyword
+            None - don't change the special keyword use
+        """
+        ...
     def new(
         self,
         command: str = ...,
@@ -200,10 +228,29 @@ class CronTab:
         user: str | None = ...,
         pre_comment: bool = ...,
         before: str | re.Pattern[str] | list[CronItem] | tuple[CronItem, ...] | Generator[CronItem] | None = ...,
-    ) -> CronItem: ...
-    def find_command(self, command: str | re.Pattern[str]) -> Iterator[CronItem]: ...
-    def find_comment(self, comment: str | re.Pattern[str]) -> Iterator[CronItem]: ...
-    def find_time(self, *args: Any) -> Iterator[CronItem]: ...
+    ) -> CronItem:
+        """
+        Create a new CronItem and append it to the cron.
+
+        Keyword arguments:
+         command     - The command that will be run.
+         comment     - The comment that should be associated with this command.
+         user        - For system cron tabs, the user this command should run as.
+         pre_comment - If true the comment will apear just before the command line.
+         before      - Append this command before this item instead of at the end.
+
+        Returns the new CronItem object.
+        """
+        ...
+    def find_command(self, command: str | re.Pattern[str]) -> Iterator[CronItem]:
+        """Return an iter of jobs matching any part of the command."""
+        ...
+    def find_comment(self, comment: str | re.Pattern[str]) -> Iterator[CronItem]:
+        """Return an iter of jobs that match the comment field exactly."""
+        ...
+    def find_time(self, *args: Any) -> Iterator[CronItem]:
+        """Return an iter of jobs that match this time pattern"""
+        ...
     @property
     def commands(self) -> Iterator[str]:
         """Return a generator of all unqiue commands used in this crontab"""
@@ -371,10 +418,21 @@ class CronItem:
         """
         ...
     @overload
-    def frequency_at_hour(self, year: None = None, month: None = None, day: None = None, hour: None = None) -> int: ...
-    def run_pending(self, now: datetime | None = ...) -> int | str: ...
-    def run(self) -> str: ...
-    def schedule(self, date_from: datetime | None = ...) -> croniter: ...
+    def frequency_at_hour(self, year: None = None, month: None = None, day: None = None, hour: None = None) -> int:
+        """
+        Returns the number of times this item will execute in a given hour
+        (defaults to this hour)
+        """
+        ...
+    def run_pending(self, now: datetime | None = ...) -> int | str:
+        """Runs the command if scheduled"""
+        ...
+    def run(self) -> str:
+        """Runs the given command as a pipe"""
+        ...
+    def schedule(self, date_from: datetime | None = ...) -> croniter:
+        """Return a croniter schedule if available."""
+        ...
     def description(
         self,
         *,
@@ -385,7 +443,13 @@ class CronItem:
         use_24hour_time_format: bool = ...,
         locale_location: StrPath | None = None,
         locale_code: str | None = ...,
-    ) -> str | None: ...
+    ) -> str | None:
+        """
+        Returns a description of the crontab's schedule (if available)
+
+        **kw - Keyword arguments to pass to cron_descriptor (see docs)
+        """
+        ...
     @property
     def log(self) -> CronLog:
         """Return a cron log specific for this job only"""
@@ -661,11 +725,28 @@ class CronRange:
     def __int__(self) -> int: ...
 
 class OrderedVariableList(OrderedDict[_K, _V]):
+    """
+    An ordered dictionary with a linked list containing
+    the previous OrderedVariableList which this list depends.
+
+    Duplicates in this list are weeded out in favour of the previous
+    list in the chain.
+
+    This is all in aid of the ENV variables list which must exist one
+    per job in the chain.
+    """
     job: CronItem | None
     # You cannot actually pass `*args`, it will raise an exception,
     # also known kwargs are added:
     def __init__(self, *, job: CronItem | None = None, **kw: _V) -> None: ...
     @property
-    def previous(self) -> Self | None: ...
-    def all(self) -> Self: ...
+    def previous(self) -> Self | None:
+        """Returns the previous env in the list of jobs in the cron"""
+        ...
+    def all(self) -> Self:
+        """
+        Returns the full dictionary, everything from this dictionary
+        plus all those in the chain above us.
+        """
+        ...
     def __getitem__(self, key: _K) -> _V: ...

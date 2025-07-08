@@ -1,3 +1,10 @@
+"""
+This extension adds Meta Data handling to markdown.
+
+See the [documentation](https://Python-Markdown.github.io/extensions/meta_data)
+for details.
+"""
+
 from logging import Logger
 from re import Pattern
 
