@@ -26,6 +26,7 @@ tqdm[slack,telegram]==4.67.*
 colorama==0.4.*
 TgCrypto==1.2.*
 libsass==0.23.*
+jsonnet==0.21.*
 croniter==6.0.0
 pexpect==4.9.*
 six==1.17.*
@@ -97,7 +98,7 @@ ldap3==2.9.*
 shapely==2.1.*
 docutils==0.21.*
 Authlib~=1.6.0
-zstd==1.5.7.0
+zstd~=1.5.7.1
 first==2.0.*
 Flask-Migrate==4.1.*
 mysqlclient==2.2.*
@@ -107,7 +108,7 @@ google-cloud-ndb==2.3.*
 gdb==15.0.*
 hvac==2.3.*
 httplib2==0.22.*
-geopandas==1.0.1
+geopandas==1.1.1
 WTForms~=3.2.1
 inifile==0.4.*
 jwcrypto==1.5.*
@@ -123,7 +124,7 @@ Pygments==2.19.*
 openpyxl==3.1.5
 ttkthemes==3.2.*
 grpcio-reflection==1.*
-flake8-simplify==0.21.*
+flake8-simplify==0.22.*
 defusedxml==0.7.*
 s2clientprotocol==5.*
 ujson==5.10.*
@@ -166,7 +167,7 @@ flake8-docstrings==1.7.*
 mock==5.2.*
 flake8-typing-imports==1.16.*
 pyfarmhash==0.4.*
-auth0-python==4.9.*
+auth0-python==4.10.*
 aiofiles==24.1.*
 PyAutoGUI==0.9.*
 ExifRead==3.0.*
