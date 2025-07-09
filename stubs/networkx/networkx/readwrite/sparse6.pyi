@@ -1,99 +1,14 @@
-"""
-Functions for reading and writing graphs in the *sparse6* format.
-
-The *sparse6* file format is a space-efficient format for large sparse
-graphs. For small graphs or large dense graphs, use the *graph6* file
-format.
-
-For more information, see the `sparse6`_ homepage.
-
-.. _sparse6: https://users.cecs.anu.edu.au/~bdm/data/formats.html
-"""
+from _typeshed import Incomplete
 
 from networkx.utils.backends import _dispatchable
+
+from ..classes.graph import Graph
 
 __all__ = ["from_sparse6_bytes", "read_sparse6", "to_sparse6_bytes", "write_sparse6"]
 
 @_dispatchable
-def from_sparse6_bytes(string):
-    """
-    Read an undirected graph in sparse6 format from string.
-
-    Parameters
-    ----------
-    string : string
-       Data in sparse6 format
-
-    Returns
-    -------
-    G : Graph
-
-    Raises
-    ------
-    NetworkXError
-        If the string is unable to be parsed in sparse6 format
-
-    Examples
-    --------
-    >>> G = nx.from_sparse6_bytes(b":A_")
-    >>> sorted(G.edges())
-    [(0, 1), (0, 1), (0, 1)]
-
-    See Also
-    --------
-    read_sparse6, write_sparse6
-
-    References
-    ----------
-    .. [1] Sparse6 specification
-           <https://users.cecs.anu.edu.au/~bdm/data/formats.html>
-    """
-    ...
-def to_sparse6_bytes(G, nodes=None, header: bool = True):
-    r"""
-    Convert an undirected graph to bytes in sparse6 format.
-
-    Parameters
-    ----------
-    G : Graph (undirected)
-
-    nodes: list or iterable
-       Nodes are labeled 0...n-1 in the order provided.  If None the ordering
-       given by ``G.nodes()`` is used.
-
-    header: bool
-       If True add '>>sparse6<<' bytes to head of data.
-
-    Raises
-    ------
-    NetworkXNotImplemented
-        If the graph is directed.
-
-    ValueError
-        If the graph has at least ``2 ** 36`` nodes; the sparse6 format
-        is only defined for graphs of order less than ``2 ** 36``.
-
-    Examples
-    --------
-    >>> nx.to_sparse6_bytes(nx.path_graph(2))
-    b'>>sparse6<<:An\n'
-
-    See Also
-    --------
-    to_sparse6_bytes, read_sparse6, write_sparse6_bytes
-
-    Notes
-    -----
-    The returned bytes end with a newline character.
-
-    The format does not support edge or node labels.
-
-    References
-    ----------
-    .. [1] Graph6 specification
-           <https://users.cecs.anu.edu.au/~bdm/data/formats.html>
-    """
-    ...
+def from_sparse6_bytes(string) -> Graph[Incomplete]: ...
+def to_sparse6_bytes(G, nodes=None, header: bool = True): ...
 @_dispatchable
 def read_sparse6(path):
     r"""

@@ -94,88 +94,12 @@ class AS_graph_generator:
         """
         ...
     def add_edge(self, i, j, kind) -> None: ...
-    def choose_peer_pref_attach(self, node_list):
-        """
-        Pick a node with a probability weighted by its peer degree.
-
-        Pick a node from node_list with preferential attachment
-        computed only on their peer degree
-        """
-        ...
-    def choose_node_pref_attach(self, node_list):
-        """
-        Pick a node with a probability weighted by its degree.
-
-        Pick a node from node_list with preferential attachment
-        computed on their degree
-        """
-        ...
-    def add_customer(self, i, j) -> None:
-        """Keep the dictionaries 'customers' and 'providers' consistent."""
-        ...
-    def add_node(self, i, kind, reg2prob, avg_deg, t_edge_prob):
-        """
-        Add a node and its customer transit edges to the graph.
-
-        Parameters
-        ----------
-        i: object
-            Identifier of the new node
-        kind: string
-            Type of the new node. Options are: 'M' for middle node, 'CP' for
-            content provider and 'C' for customer.
-        reg2prob: float
-            Probability the new node can be in two different regions.
-        avg_deg: float
-            Average number of transit nodes of which node i is customer.
-        t_edge_prob: float
-            Probability node i establish a customer transit edge with a tier
-            one (T) node
-
-        Returns
-        -------
-        i: object
-            Identifier of the new node
-        """
-        ...
-    def add_m_peering_link(self, m, to_kind):
-        """
-        Add a peering link between two middle tier (M) nodes.
-
-        Target node j is drawn considering a preferential attachment based on
-        other M node peering degree.
-
-        Parameters
-        ----------
-        m: object
-            Node identifier
-        to_kind: string
-            type for target node j (must be always M)
-
-        Returns
-        -------
-        success: boolean
-        """
-        ...
-    def add_cp_peering_link(self, cp, to_kind):
-        """
-        Add a peering link to a content provider (CP) node.
-
-        Target node j can be CP or M and it is drawn uniformly among the nodes
-        belonging to the same region as cp.
-
-        Parameters
-        ----------
-        cp: object
-            Node identifier
-        to_kind: string
-            type for target node j (must be M or CP)
-
-        Returns
-        -------
-        success: boolean
-        """
-        ...
+    def choose_peer_pref_attach(self, node_list): ...
+    def choose_node_pref_attach(self, node_list): ...
+    def add_customer(self, i, j) -> None: ...
+    def add_node(self, i, kind, reg2prob, avg_deg, t_edge_prob): ...
+    def add_m_peering_link(self, m, to_kind) -> bool: ...
+    def add_cp_peering_link(self, cp, to_kind) -> bool: ...
     regions: Incomplete
     def graph_regions(self, rn) -> None:
         """

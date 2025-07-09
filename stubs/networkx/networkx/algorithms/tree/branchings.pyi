@@ -8,9 +8,9 @@ This implementation is based on:
 """
 
 from _typeshed import Incomplete
-from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Final
+from typing_extensions import Self
 
 from networkx.classes.digraph import DiGraph
 from networkx.classes.graph import _Node
@@ -331,20 +331,5 @@ class ArborescenceIterator:
         ...
     partition_queue: Incomplete
 
-    def __iter__(self) -> Iterator[Incomplete]:
-        """
-        Returns
-        -------
-        ArborescenceIterator
-            The iterator object for this graph
-        """
-        ...
-    def __next__(self):
-        """
-        Returns
-        -------
-        (multi)Graph
-            The spanning tree of next greatest weight, which ties broken
-            arbitrarily.
-        """
-        ...
+    def __iter__(self) -> Self: ...
+    def __next__(self): ...

@@ -123,40 +123,7 @@ def move_one_node(soln: _SupportsLenAndGetItemT, seed) -> _SupportsLenAndGetItem
     """
     ...
 @_dispatchable
-def christofides(G: Graph[_Node], weight: str | None = "weight", tree: Graph[_Node] | None = None):
-    """
-    Approximate a solution of the traveling salesman problem
-
-    Compute a 3/2-approximation of the traveling salesman problem
-    in a complete undirected graph using Christofides [1]_ algorithm.
-
-    Parameters
-    ----------
-    G : Graph
-        `G` should be a complete weighted undirected graph.
-        The distance between all pairs of nodes should be included.
-
-    weight : string, optional (default="weight")
-        Edge data key corresponding to the edge weight.
-        If any edge does not have this attribute the weight is set to 1.
-
-    tree : NetworkX graph or None (default: None)
-        A minimum spanning tree of G. Or, if None, the minimum spanning
-        tree is computed using :func:`networkx.minimum_spanning_tree`
-
-    Returns
-    -------
-    list
-        List of nodes in `G` along a cycle with a 3/2-approximation of
-        the minimal Hamiltonian cycle.
-
-    References
-    ----------
-    .. [1] Christofides, Nicos. "Worst-case analysis of a new heuristic for
-       the travelling salesman problem." No. RR-388. Carnegie-Mellon Univ
-       Pittsburgh Pa Management Sciences Research Group, 1976.
-    """
-    ...
+def christofides(G: Graph[_Node], weight: str | None = "weight", tree: Graph[_Node] | None = None) -> list[Incomplete]: ...
 @_dispatchable
 def traveling_salesman_problem(
     G: Graph[_Node],

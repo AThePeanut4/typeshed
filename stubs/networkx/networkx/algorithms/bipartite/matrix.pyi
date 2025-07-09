@@ -20,69 +20,7 @@ def biadjacency_matrix(
     dtype=None,
     weight: str | None = "weight",
     format="csr",
-):
-    r"""
-    Returns the biadjacency matrix of the bipartite graph G.
-
-    Let `G = (U, V, E)` be a bipartite graph with node sets
-    `U = u_{1},...,u_{r}` and `V = v_{1},...,v_{s}`. The biadjacency
-    matrix [1]_ is the `r` x `s` matrix `B` in which `b_{i,j} = 1`
-    if, and only if, `(u_i, v_j) \in E`. If the parameter `weight` is
-    not `None` and matches the name of an edge attribute, its value is
-    used instead of 1.
-
-    Parameters
-    ----------
-    G : graph
-       A NetworkX graph
-
-    row_order : list of nodes
-       The rows of the matrix are ordered according to the list of nodes.
-
-    column_order : list, optional
-       The columns of the matrix are ordered according to the list of nodes.
-       If column_order is None, then the ordering of columns is arbitrary.
-
-    dtype : NumPy data-type, optional
-        A valid NumPy dtype used to initialize the array. If None, then the
-        NumPy default is used.
-
-    weight : string or None, optional (default='weight')
-       The edge data key used to provide each value in the matrix.
-       If None, then each edge has weight 1.
-
-    format : str in {'dense', 'bsr', 'csr', 'csc', 'coo', 'lil', 'dia', 'dok'}
-        The type of the matrix to be returned (default 'csr'). For
-        some algorithms different implementations of sparse matrices
-        can perform better.  See [2]_ for details.
-
-    Returns
-    -------
-    M : SciPy sparse array
-        Biadjacency matrix representation of the bipartite graph G.
-
-    Notes
-    -----
-    No attempt is made to check that the input graph is bipartite.
-
-    For directed bipartite graphs only successors are considered as neighbors.
-    To obtain an adjacency matrix with ones (or weight values) for both
-    predecessors and successors you have to generate two biadjacency matrices
-    where the rows of one of them are the columns of the other, and then add
-    one to the transpose of the other.
-
-    See Also
-    --------
-    adjacency_matrix
-    from_biadjacency_matrix
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Adjacency_matrix#Adjacency_matrix_of_a_bipartite_graph
-    .. [2] Scipy Dev. References, "Sparse Matrices",
-       https://docs.scipy.org/doc/scipy/reference/sparse.html
-    """
-    ...
+): ...  # Return is a complex union of scipy classes depending on the format param
 @_dispatchable
 def from_biadjacency_matrix(A, create_using: Graph[_Node] | None = None, edge_attribute: str = "weight"):
     """

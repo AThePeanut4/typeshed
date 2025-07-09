@@ -48,31 +48,7 @@ def attracting_components(G) -> Generator[Incomplete, None, None]:
     """
     ...
 @_dispatchable
-def number_attracting_components(G):
-    """
-    Returns the number of attracting components in `G`.
-
-    Parameters
-    ----------
-    G : DiGraph, MultiDiGraph
-        The graph to be analyzed.
-
-    Returns
-    -------
-    n : int
-        The number of attracting components in G.
-
-    Raises
-    ------
-    NetworkXNotImplemented
-        If the input graph is undirected.
-
-    See Also
-    --------
-    attracting_components
-    is_attracting_component
-    """
-    ...
+def number_attracting_components(G) -> int: ...
 @_dispatchable
 def is_attracting_component(G: DiGraph[_Node] | MultiDiGraph[_Node]) -> bool:
     """

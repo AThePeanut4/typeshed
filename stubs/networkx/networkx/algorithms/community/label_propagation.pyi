@@ -1,5 +1,4 @@
-"""Label propagation community detection algorithms."""
-
+from _collections_abc import dict_values
 from _typeshed import Incomplete
 from collections.abc import Generator
 
@@ -114,34 +113,4 @@ def asyn_lpa_communities(
     """
     ...
 @_dispatchable
-def label_propagation_communities(G: Graph[_Node]):
-    """
-    Generates community sets determined by label propagation
-
-    Finds communities in `G` using a semi-synchronous label propagation
-    method [1]_. This method combines the advantages of both the synchronous
-    and asynchronous models. Not implemented for directed graphs.
-
-    Parameters
-    ----------
-    G : graph
-        An undirected NetworkX graph.
-
-    Returns
-    -------
-    communities : iterable
-        A dict_values object that contains a set of nodes for each community.
-
-    Raises
-    ------
-    NetworkXNotImplemented
-       If the graph is directed
-
-    References
-    ----------
-    .. [1] Cordasco, G., & Gargano, L. (2010, December). Community detection
-       via semi-synchronous label propagation algorithms. In Business
-       Applications of Social Network Analysis (BASNA), 2010 IEEE International
-       Workshop on (pp. 1-8). IEEE.
-    """
-    ...
+def label_propagation_communities(G: Graph[_Node]) -> dict_values[Incomplete, set[Incomplete]]: ...

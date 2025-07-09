@@ -1,10 +1,11 @@
 """Algorithms for calculating min/max spanning trees/forests."""
 
 from _typeshed import Incomplete
-from collections.abc import Callable, Generator, Iterator
+from collections.abc import Callable, Generator
 from dataclasses import dataclass
 from enum import Enum
 from typing import Final, Literal
+from typing_extensions import Self
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
@@ -580,23 +581,8 @@ class SpanningTreeIterator:
         ...
     partition_queue: Incomplete
 
-    def __iter__(self) -> Iterator[Incomplete]:
-        """
-        Returns
-        -------
-        SpanningTreeIterator
-            The iterator object for this graph
-        """
-        ...
-    def __next__(self):
-        """
-        Returns
-        -------
-        (multi)Graph
-            The spanning tree of next greatest weight, which ties broken
-            arbitrarily.
-        """
-        ...
+    def __iter__(self) -> Self: ...
+    def __next__(self): ...
 
 @_dispatchable
 def number_of_spanning_trees(G, *, root=None, weight=None) -> float | Literal[0]:
