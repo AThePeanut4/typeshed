@@ -1,3 +1,25 @@
+"""
+*****
+Pydot
+*****
+
+Import and export NetworkX graphs in Graphviz dot format using pydot.
+
+Either this module or nx_agraph can be used to interface with graphviz.
+
+Examples
+--------
+>>> G = nx.complete_graph(5)
+>>> PG = nx.nx_pydot.to_pydot(G)
+>>> H = nx.nx_pydot.from_pydot(PG)
+
+See Also
+--------
+ - pydot:         https://github.com/erocarrera/pydot
+ - Graphviz:      https://www.graphviz.org
+ - DOT Language:  http://www.graphviz.org/doc/info/lang.html
+"""
+
 from _typeshed import Incomplete
 
 from networkx.utils.backends import _dispatchable
@@ -20,7 +42,31 @@ def write_dot(G, path) -> None:
     """
     ...
 @_dispatchable
-def read_dot(path) -> Graph[Incomplete]: ...
+def read_dot(path) -> Graph[Incomplete]:
+    """
+    Returns a NetworkX :class:`MultiGraph` or :class:`MultiDiGraph` from the
+    dot file with the passed path.
+
+    If this file contains multiple graphs, only the first such graph is
+    returned. All graphs _except_ the first are silently ignored.
+
+    Parameters
+    ----------
+    path : str or file
+        Filename or file handle to read.
+        Filenames ending in .gz or .bz2 will be decompressed.
+
+    Returns
+    -------
+    G : MultiGraph or MultiDiGraph
+        A :class:`MultiGraph` or :class:`MultiDiGraph`.
+
+    Notes
+    -----
+    Use `G = nx.Graph(nx.nx_pydot.read_dot(path))` to return a :class:`Graph` instead of a
+    :class:`MultiGraph`.
+    """
+    ...
 @_dispatchable
 def from_pydot(P):
     """

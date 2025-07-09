@@ -618,9 +618,101 @@ class argmap:
     networkx.algorithms.community.quality.require_partition
     """
     def __init__(self, func, *args, try_finally: bool = False) -> None: ...
-    def __call__(self, f) -> Callable[..., Incomplete]: ...
-    def compile(self, f) -> Callable[..., Incomplete]: ...
-    def assemble(self, f): ...
+    def __call__(self, f) -> Callable[..., Incomplete]:
+        """
+        Construct a lazily decorated wrapper of f.
+
+        The decorated function will be compiled when it is called for the first time,
+        and it will replace its own __code__ object so subsequent calls are fast.
+
+        Parameters
+        ----------
+        f : callable
+            A function to be decorated.
+
+        Returns
+        -------
+        func : callable
+            The decorated function.
+
+        See Also
+        --------
+        argmap._lazy_compile
+        """
+        ...
+    def compile(self, f) -> Callable[..., Incomplete]:
+        """
+        Compile the decorated function.
+
+        Called once for a given decorated function -- collects the code from all
+        argmap decorators in the stack, and compiles the decorated function.
+
+        Much of the work done here uses the `assemble` method to allow recursive
+        treatment of multiple argmap decorators on a single decorated function.
+        That flattens the argmap decorators, collects the source code to construct
+        a single decorated function, then compiles/executes/returns that function.
+
+        The source code for the decorated function is stored as an attribute
+        `_code` on the function object itself.
+
+        Note that Python's `compile` function requires a filename, but this
+        code is constructed without a file, so a fictitious filename is used
+        to describe where the function comes from. The name is something like:
+        "argmap compilation 4".
+
+        Parameters
+        ----------
+        f : callable
+            The function to be decorated
+
+        Returns
+        -------
+        func : callable
+            The decorated file
+        """
+        ...
+    def assemble(self, f):
+        """
+        Collects components of the source for the decorated function wrapping f.
+
+        If `f` has multiple argmap decorators, we recursively assemble the stack of
+        decorators into a single flattened function.
+
+        This method is part of the `compile` method's process yet separated
+        from that method to allow recursive processing. The outputs are
+        strings, dictionaries and lists that collect needed info to
+        flatten any nested argmap-decoration.
+
+        Parameters
+        ----------
+        f : callable
+            The function to be decorated.  If f is argmapped, we assemble it.
+
+        Returns
+        -------
+        sig : argmap.Signature
+            The function signature as an `argmap.Signature` object.
+        wrapped_name : str
+            The mangled name used to represent the wrapped function in the code
+            being assembled.
+        functions : dict
+            A dictionary mapping id(g) -> (mangled_name(g), g) for functions g
+            referred to in the code being assembled. These need to be present
+            in the ``globals`` scope of ``exec`` when defining the decorated
+            function.
+        mapblock : list of lists and/or strings
+            Code that implements mapping of parameters including any try blocks
+            if needed. This code will precede the decorated function call.
+        finallys : list of lists and/or strings
+            Code that implements the finally blocks to post-process the
+            arguments (usually close any files if needed) after the
+            decorated function is called.
+        mutable_args : bool
+            True if the decorator needs to modify positional arguments
+            via their indices. The compile method then turns the argument
+            tuple into a list so that the arguments can be modified.
+        """
+        ...
     @classmethod
     def signature(cls, f):
         r"""

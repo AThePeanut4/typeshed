@@ -627,7 +627,113 @@ def simrank_similarity(
     importance_factor: float = 0.9,
     max_iterations: int = 1000,
     tolerance: float = 0.0001,
-) -> float | dict[Incomplete, Incomplete]: ...
+) -> float | dict[Incomplete, Incomplete]:
+    """
+    Returns the SimRank similarity of nodes in the graph ``G``.
+
+    SimRank is a similarity metric that says "two objects are considered
+    to be similar if they are referenced by similar objects." [1]_.
+
+    The pseudo-code definition from the paper is::
+
+        def simrank(G, u, v):
+            in_neighbors_u = G.predecessors(u)
+            in_neighbors_v = G.predecessors(v)
+            scale = C / (len(in_neighbors_u) * len(in_neighbors_v))
+            return scale * sum(
+                simrank(G, w, x) for w, x in product(in_neighbors_u, in_neighbors_v)
+            )
+
+    where ``G`` is the graph, ``u`` is the source, ``v`` is the target,
+    and ``C`` is a float decay or importance factor between 0 and 1.
+
+    The SimRank algorithm for determining node similarity is defined in
+    [2]_.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+
+    source : node
+        If this is specified, the returned dictionary maps each node
+        ``v`` in the graph to the similarity between ``source`` and
+        ``v``.
+
+    target : node
+        If both ``source`` and ``target`` are specified, the similarity
+        value between ``source`` and ``target`` is returned. If
+        ``target`` is specified but ``source`` is not, this argument is
+        ignored.
+
+    importance_factor : float
+        The relative importance of indirect neighbors with respect to
+        direct neighbors.
+
+    max_iterations : integer
+        Maximum number of iterations.
+
+    tolerance : float
+        Error tolerance used to check convergence. When an iteration of
+        the algorithm finds that no similarity value changes more than
+        this amount, the algorithm halts.
+
+    Returns
+    -------
+    similarity : dictionary or float
+        If ``source`` and ``target`` are both ``None``, this returns a
+        dictionary of dictionaries, where keys are node pairs and value
+        are similarity of the pair of nodes.
+
+        If ``source`` is not ``None`` but ``target`` is, this returns a
+        dictionary mapping node to the similarity of ``source`` and that
+        node.
+
+        If neither ``source`` nor ``target`` is ``None``, this returns
+        the similarity value for the given pair of nodes.
+
+    Raises
+    ------
+    ExceededMaxIterations
+        If the algorithm does not converge within ``max_iterations``.
+
+    NodeNotFound
+        If either ``source`` or ``target`` is not in `G`.
+
+    Examples
+    --------
+    >>> G = nx.cycle_graph(2)
+    >>> nx.simrank_similarity(G)
+    {0: {0: 1.0, 1: 0.0}, 1: {0: 0.0, 1: 1.0}}
+    >>> nx.simrank_similarity(G, source=0)
+    {0: 1.0, 1: 0.0}
+    >>> nx.simrank_similarity(G, source=0, target=0)
+    1.0
+
+    The result of this function can be converted to a numpy array
+    representing the SimRank matrix by using the node order of the
+    graph to determine which row and column represent each node.
+    Other ordering of nodes is also possible.
+
+    >>> import numpy as np
+    >>> sim = nx.simrank_similarity(G)
+    >>> np.array([[sim[u][v] for v in G] for u in G])
+    array([[1., 0.],
+           [0., 1.]])
+    >>> sim_1d = nx.simrank_similarity(G, source=0)
+    >>> np.array([sim[0][v] for v in G])
+    array([1., 0.])
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/SimRank
+    .. [2] G. Jeh and J. Widom.
+           "SimRank: a measure of structural-context similarity",
+           In KDD'02: Proceedings of the Eighth ACM SIGKDD
+           International Conference on Knowledge Discovery and Data Mining,
+           pp. 538--543. ACM Press, 2002.
+    """
+    ...
 @_dispatchable
 def panther_similarity(
     G: Graph[_Node],
@@ -638,7 +744,71 @@ def panther_similarity(
     delta: float = 0.1,
     eps=None,
     weight: str | None = "weight",
-) -> dict[bytes, bytes]: ...
+) -> dict[bytes, bytes]:
+    r"""
+    Returns the Panther similarity of nodes in the graph `G` to node ``v``.
+
+    Panther is a similarity metric that says "two objects are considered
+    to be similar if they frequently appear on the same paths." [1]_.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+    source : node
+        Source node for which to find the top `k` similar other nodes
+    k : int (default = 5)
+        The number of most similar nodes to return.
+    path_length : int (default = 5)
+        How long the randomly generated paths should be (``T`` in [1]_)
+    c : float (default = 0.5)
+        A universal positive constant used to scale the number
+        of sample random paths to generate.
+    delta : float (default = 0.1)
+        The probability that the similarity $S$ is not an epsilon-approximation to (R, phi),
+        where $R$ is the number of random paths and $\phi$ is the probability
+        that an element sampled from a set $A \subseteq D$, where $D$ is the domain.
+    eps : float or None (default = None)
+        The error bound. Per [1]_, a good value is ``sqrt(1/|E|)``. Therefore,
+        if no value is provided, the recommended computed value will be used.
+    weight : string or None, optional (default="weight")
+        The name of an edge attribute that holds the numerical value
+        used as a weight. If None then each edge has weight 1.
+
+    Returns
+    -------
+    similarity : dictionary
+        Dictionary of nodes to similarity scores (as floats). Note:
+        the self-similarity (i.e., ``v``) will not be included in
+        the returned dictionary. So, for ``k = 5``, a dictionary of
+        top 4 nodes and their similarity scores will be returned.
+
+    Raises
+    ------
+    NetworkXUnfeasible
+        If `source` is an isolated node.
+
+    NodeNotFound
+        If `source` is not in `G`.
+
+    Notes
+    -----
+        The isolated nodes in `G` are ignored.
+
+    Examples
+    --------
+    >>> G = nx.star_graph(10)
+    >>> sim = nx.panther_similarity(G, 0)
+
+    References
+    ----------
+    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
+           Panther: Fast top-k similarity search on large networks.
+           In Proceedings of the ACM SIGKDD International Conference
+           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
+           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
+    """
+    ...
 @_dispatchable
 def generate_random_paths(
     G: Graph[_Node],

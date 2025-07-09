@@ -1,3 +1,5 @@
+"""Generators for random graphs."""
+
 from _typeshed import Incomplete
 
 from networkx.utils.backends import _dispatchable
@@ -381,11 +383,149 @@ def random_regular_graph(d, n, seed=None):
     """
     ...
 @_dispatchable
-def barabasi_albert_graph(n, m, seed=None, initial_graph=None) -> Graph[Incomplete]: ...
+def barabasi_albert_graph(n, m, seed=None, initial_graph=None) -> Graph[Incomplete]:
+    """
+    Returns a random graph using Barabási–Albert preferential attachment
+
+    A graph of $n$ nodes is grown by attaching new nodes each with $m$
+    edges that are preferentially attached to existing nodes with high degree.
+
+    Parameters
+    ----------
+    n : int
+        Number of nodes
+    m : int
+        Number of edges to attach from a new node to existing nodes
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+    initial_graph : Graph or None (default)
+        Initial network for Barabási–Albert algorithm.
+        It should be a connected graph for most use cases.
+        A copy of `initial_graph` is used.
+        If None, starts from a star graph on (m+1) nodes.
+    create_using : Graph constructor, optional (default=nx.Graph)
+        Graph type to create. If graph instance, then cleared before populated.
+        Multigraph and directed types are not supported and raise a ``NetworkXError``.
+
+    Returns
+    -------
+    G : Graph
+
+    Raises
+    ------
+    NetworkXError
+        If `m` does not satisfy ``1 <= m < n``, or
+        the initial graph number of nodes m0 does not satisfy ``m <= m0 <= n``.
+
+    References
+    ----------
+    .. [1] A. L. Barabási and R. Albert "Emergence of scaling in
+       random networks", Science 286, pp 509-512, 1999.
+    """
+    ...
 @_dispatchable
-def dual_barabasi_albert_graph(n, m1, m2, p, seed=None, initial_graph=None) -> Graph[Incomplete]: ...
+def dual_barabasi_albert_graph(n, m1, m2, p, seed=None, initial_graph=None) -> Graph[Incomplete]:
+    """
+    Returns a random graph using dual Barabási–Albert preferential attachment
+
+    A graph of $n$ nodes is grown by attaching new nodes each with either $m_1$
+    edges (with probability $p$) or $m_2$ edges (with probability $1-p$) that
+    are preferentially attached to existing nodes with high degree.
+
+    Parameters
+    ----------
+    n : int
+        Number of nodes
+    m1 : int
+        Number of edges to link each new node to existing nodes with probability $p$
+    m2 : int
+        Number of edges to link each new node to existing nodes with probability $1-p$
+    p : float
+        The probability of attaching $m_1$ edges (as opposed to $m_2$ edges)
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+    initial_graph : Graph or None (default)
+        Initial network for Barabási–Albert algorithm.
+        A copy of `initial_graph` is used.
+        It should be connected for most use cases.
+        If None, starts from an star graph on max(m1, m2) + 1 nodes.
+    create_using : Graph constructor, optional (default=nx.Graph)
+        Graph type to create. If graph instance, then cleared before populated.
+        Multigraph and directed types are not supported and raise a ``NetworkXError``.
+
+    Returns
+    -------
+    G : Graph
+
+    Raises
+    ------
+    NetworkXError
+        If `m1` and `m2` do not satisfy ``1 <= m1,m2 < n``, or
+        `p` does not satisfy ``0 <= p <= 1``, or
+        the initial graph number of nodes m0 does not satisfy m1, m2 <= m0 <= n.
+
+    References
+    ----------
+    .. [1] N. Moshiri "The dual-Barabasi-Albert model", arXiv:1810.10538.
+    """
+    ...
 @_dispatchable
-def extended_barabasi_albert_graph(n, m, p, q, seed=None) -> Graph[Incomplete]: ...
+def extended_barabasi_albert_graph(n, m, p, q, seed=None) -> Graph[Incomplete]:
+    """
+    Returns an extended Barabási–Albert model graph.
+
+    An extended Barabási–Albert model graph is a random graph constructed
+    using preferential attachment. The extended model allows new edges,
+    rewired edges or new nodes. Based on the probabilities $p$ and $q$
+    with $p + q < 1$, the growing behavior of the graph is determined as:
+
+    1) With $p$ probability, $m$ new edges are added to the graph,
+    starting from randomly chosen existing nodes and attached preferentially at the
+    other end.
+
+    2) With $q$ probability, $m$ existing edges are rewired
+    by randomly choosing an edge and rewiring one end to a preferentially chosen node.
+
+    3) With $(1 - p - q)$ probability, $m$ new nodes are added to the graph
+    with edges attached preferentially.
+
+    When $p = q = 0$, the model behaves just like the Barabási–Alber model.
+
+    Parameters
+    ----------
+    n : int
+        Number of nodes
+    m : int
+        Number of edges with which a new node attaches to existing nodes
+    p : float
+        Probability value for adding an edge between existing nodes. p + q < 1
+    q : float
+        Probability value of rewiring of existing edges. p + q < 1
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+    create_using : Graph constructor, optional (default=nx.Graph)
+        Graph type to create. If graph instance, then cleared before populated.
+        Multigraph and directed types are not supported and raise a ``NetworkXError``.
+
+    Returns
+    -------
+    G : Graph
+
+    Raises
+    ------
+    NetworkXError
+        If `m` does not satisfy ``1 <= m < n`` or ``1 >= p + q``
+
+    References
+    ----------
+    .. [1] Albert, R., & Barabási, A. L. (2000)
+       Topology of evolving networks: local events and universality
+       Physical review letters, 85(24), 5234.
+    """
+    ...
 @_dispatchable
 def powerlaw_cluster_graph(n, m, p, seed=None):
     """

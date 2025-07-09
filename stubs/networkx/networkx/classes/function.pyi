@@ -54,14 +54,101 @@ __all__ = [
 
 _U = TypeVar("_U")
 
-def nodes(G): ...
-def edges(G, nbunch=None): ...
-def degree(G, nbunch=None, weight=None): ...
-def neighbors(G, n): ...
-def number_of_nodes(G): ...
-def number_of_edges(G): ...
-def density(G): ...
-def degree_histogram(G) -> list[int]: ...
+def nodes(G):
+    """
+    Returns a NodeView over the graph nodes.
+
+    This function wraps the :func:`G.nodes <networkx.Graph.nodes>` property.
+    """
+    ...
+def edges(G, nbunch=None):
+    """
+    Returns an edge view of edges incident to nodes in nbunch.
+
+    Return all edges if nbunch is unspecified or nbunch=None.
+
+    For digraphs, edges=out_edges
+
+    This function wraps the :func:`G.edges <networkx.Graph.edges>` property.
+    """
+    ...
+def degree(G, nbunch=None, weight=None):
+    """
+    Returns a degree view of single node or of nbunch of nodes.
+    If nbunch is omitted, then return degrees of *all* nodes.
+
+    This function wraps the :func:`G.degree <networkx.Graph.degree>` property.
+    """
+    ...
+def neighbors(G, n):
+    """
+    Returns an iterator over all neighbors of node n.
+
+    This function wraps the :func:`G.neighbors <networkx.Graph.neighbors>` function.
+    """
+    ...
+def number_of_nodes(G):
+    """
+    Returns the number of nodes in the graph.
+
+    This function wraps the :func:`G.number_of_nodes <networkx.Graph.number_of_nodes>` function.
+    """
+    ...
+def number_of_edges(G):
+    """
+    Returns the number of edges in the graph.
+
+    This function wraps the :func:`G.number_of_edges <networkx.Graph.number_of_edges>` function.
+    """
+    ...
+def density(G):
+    r"""
+    Returns the density of a graph.
+
+    The density for undirected graphs is
+
+    .. math::
+
+       d = \frac{2m}{n(n-1)},
+
+    and for directed graphs is
+
+    .. math::
+
+       d = \frac{m}{n(n-1)},
+
+    where `n` is the number of nodes and `m`  is the number of edges in `G`.
+
+    Notes
+    -----
+    The density is 0 for a graph without edges and 1 for a complete graph.
+    The density of multigraphs can be higher than 1.
+
+    Self loops are counted in the total number of edges so graphs with self
+    loops can have density higher than 1.
+    """
+    ...
+def degree_histogram(G) -> list[int]:
+    """
+    Returns a list of the frequency of each degree value.
+
+    Parameters
+    ----------
+    G : Networkx graph
+       A graph
+
+    Returns
+    -------
+    hist : list
+       A list of frequencies of degrees.
+       The degree values are the index in the list.
+
+    Notes
+    -----
+    Note: the bins are width one, hence len(list) can be large
+    (Order(number_of_edges))
+    """
+    ...
 @overload
 def is_directed(G: PlanarEmbedding[Hashable]) -> Literal[False]:
     """Return True if graph is directed."""

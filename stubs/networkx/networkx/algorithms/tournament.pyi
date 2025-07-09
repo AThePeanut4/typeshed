@@ -1,3 +1,26 @@
+"""
+Functions concerning tournament graphs.
+
+A `tournament graph`_ is a complete oriented graph. In other words, it
+is a directed graph in which there is exactly one directed edge joining
+each pair of distinct nodes. For each function in this module that
+accepts a graph as input, you must provide a tournament graph. The
+responsibility is on the caller to ensure that the graph is a tournament
+graph:
+
+    >>> G = nx.DiGraph([(0, 1), (1, 2), (2, 0)])
+    >>> nx.is_tournament(G)
+    True
+
+To access the functions in this module, you must access them through the
+:mod:`networkx.tournament` module::
+
+    >>> nx.tournament.is_reachable(G, 0, 1)
+    True
+
+.. _tournament graph: https://en.wikipedia.org/wiki/Tournament_%28graph_theory%29
+"""
+
 from _typeshed import Incomplete
 
 from networkx.classes.digraph import DiGraph
@@ -47,9 +70,66 @@ def is_tournament(G: Graph[_Node]) -> bool:
     """
     ...
 @_dispatchable
-def hamiltonian_path(G: Graph[_Node]) -> list[Incomplete]: ...
+def hamiltonian_path(G: Graph[_Node]) -> list[Incomplete]:
+    """
+    Returns a Hamiltonian path in the given tournament graph.
+
+    Each tournament has a Hamiltonian path. If furthermore, the
+    tournament is strongly connected, then the returned Hamiltonian path
+    is a Hamiltonian cycle (by joining the endpoints of the path).
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A directed graph representing a tournament.
+
+    Returns
+    -------
+    path : list
+        A list of nodes which form a Hamiltonian path in `G`.
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)])
+    >>> nx.is_tournament(G)
+    True
+    >>> nx.tournament.hamiltonian_path(G)
+    [0, 1, 2, 3]
+
+    Notes
+    -----
+    This is a recursive implementation with an asymptotic running time
+    of $O(n^2)$, ignoring multiplicative polylogarithmic factors, where
+    $n$ is the number of nodes in the graph.
+    """
+    ...
 @_dispatchable
-def random_tournament(n: int, seed: int | RandomState | None = None) -> DiGraph[Incomplete]: ...
+def random_tournament(n: int, seed: int | RandomState | None = None) -> DiGraph[Incomplete]:
+    r"""
+    Returns a random tournament graph on `n` nodes.
+
+    Parameters
+    ----------
+    n : int
+        The number of nodes in the returned graph.
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    G : DiGraph
+        A tournament on `n` nodes, with exactly one directed edge joining
+        each pair of distinct nodes.
+
+    Notes
+    -----
+    This algorithm adds, for each pair of distinct nodes, an edge with
+    uniformly random orientation. In other words, `\binom{n}{2}` flips
+    of an unbiased coin decide the orientations of the edges in the
+    graph.
+    """
+    ...
 @_dispatchable
 def tournament_matrix(G: Graph[_Node]):
     r"""
@@ -89,7 +169,32 @@ def tournament_matrix(G: Graph[_Node]):
     """
     ...
 @_dispatchable
-def score_sequence(G: Graph[_Node]) -> list[Incomplete]: ...
+def score_sequence(G: Graph[_Node]) -> list[Incomplete]:
+    """
+    Returns the score sequence for the given tournament graph.
+
+    The score sequence is the sorted list of the out-degrees of the
+    nodes of the graph.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A directed graph representing a tournament.
+
+    Returns
+    -------
+    list
+        A sorted list of the out-degrees of the nodes of `G`.
+
+    Examples
+    --------
+    >>> G = nx.DiGraph([(1, 0), (1, 3), (0, 2), (0, 3), (2, 1), (3, 2)])
+    >>> nx.is_tournament(G)
+    True
+    >>> nx.tournament.score_sequence(G)
+    [1, 1, 2, 2]
+    """
+    ...
 @_dispatchable
 def is_reachable(G: Graph[_Node], s: _Node, t: _Node) -> bool:
     """

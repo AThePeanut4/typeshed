@@ -581,8 +581,23 @@ class SpanningTreeIterator:
         ...
     partition_queue: Incomplete
 
-    def __iter__(self) -> Self: ...
-    def __next__(self): ...
+    def __iter__(self) -> Self:
+        """
+        Returns
+        -------
+        SpanningTreeIterator
+            The iterator object for this graph
+        """
+        ...
+    def __next__(self):
+        """
+        Returns
+        -------
+        (multi)Graph
+            The spanning tree of next greatest weight, which ties broken
+            arbitrarily.
+        """
+        ...
 
 @_dispatchable
 def number_of_spanning_trees(G, *, root=None, weight=None) -> float | Literal[0]:

@@ -1,3 +1,5 @@
+"""Functions for computing large cliques and maximum independent sets."""
+
 from _typeshed import Incomplete
 
 from networkx.classes.graph import Graph, _Node
@@ -6,9 +8,110 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["clique_removal", "max_clique", "large_clique_size", "maximum_independent_set"]
 
 @_dispatchable
-def maximum_independent_set(G: Graph[_Node]) -> set[Incomplete]: ...
+def maximum_independent_set(G: Graph[_Node]) -> set[Incomplete]:
+    r"""
+    Returns an approximate maximum independent set.
+
+    Independent set or stable set is a set of vertices in a graph, no two of
+    which are adjacent. That is, it is a set I of vertices such that for every
+    two vertices in I, there is no edge connecting the two. Equivalently, each
+    edge in the graph has at most one endpoint in I. The size of an independent
+    set is the number of vertices it contains [1]_.
+
+    A maximum independent set is a largest independent set for a given graph G
+    and its size is denoted $\alpha(G)$. The problem of finding such a set is called
+    the maximum independent set problem and is an NP-hard optimization problem.
+    As such, it is unlikely that there exists an efficient algorithm for finding
+    a maximum independent set of a graph.
+
+    The Independent Set algorithm is based on [2]_.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        Undirected graph
+
+    Returns
+    -------
+    iset : Set
+        The apx-maximum independent set
+
+    Examples
+    --------
+    >>> G = nx.path_graph(10)
+    >>> nx.approximation.maximum_independent_set(G)
+    {0, 2, 4, 6, 9}
+
+    Raises
+    ------
+    NetworkXNotImplemented
+        If the graph is directed or is a multigraph.
+
+    Notes
+    -----
+    Finds the $O(|V|/(log|V|)^2)$ apx of independent set in the worst case.
+
+    References
+    ----------
+    .. [1] `Wikipedia: Independent set
+        <https://en.wikipedia.org/wiki/Independent_set_(graph_theory)>`_
+    .. [2] Boppana, R., & Halldórsson, M. M. (1992).
+       Approximating maximum independent sets by excluding subgraphs.
+       BIT Numerical Mathematics, 32(2), 180–196. Springer.
+    """
+    ...
 @_dispatchable
-def max_clique(G: Graph[_Node]) -> set[Incomplete]: ...
+def max_clique(G: Graph[_Node]) -> set[Incomplete]:
+    r"""
+    Find the Maximum Clique
+
+    Finds the $O(|V|/(log|V|)^2)$ apx of maximum clique/independent set
+    in the worst case.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        Undirected graph
+
+    Returns
+    -------
+    clique : set
+        The apx-maximum clique of the graph
+
+    Examples
+    --------
+    >>> G = nx.path_graph(10)
+    >>> nx.approximation.max_clique(G)
+    {8, 9}
+
+    Raises
+    ------
+    NetworkXNotImplemented
+        If the graph is directed or is a multigraph.
+
+    Notes
+    -----
+    A clique in an undirected graph G = (V, E) is a subset of the vertex set
+    `C \subseteq V` such that for every two vertices in C there exists an edge
+    connecting the two. This is equivalent to saying that the subgraph
+    induced by C is complete (in some cases, the term clique may also refer
+    to the subgraph).
+
+    A maximum clique is a clique of the largest possible size in a given graph.
+    The clique number `\omega(G)` of a graph G is the number of
+    vertices in a maximum clique in G. The intersection number of
+    G is the smallest number of cliques that together cover all edges of G.
+
+    https://en.wikipedia.org/wiki/Maximum_clique
+
+    References
+    ----------
+    .. [1] Boppana, R., & Halldórsson, M. M. (1992).
+        Approximating maximum independent sets by excluding subgraphs.
+        BIT Numerical Mathematics, 32(2), 180–196. Springer.
+        doi:10.1007/BF01994876
+    """
+    ...
 @_dispatchable
 def clique_removal(G: Graph[_Node]):
     r"""

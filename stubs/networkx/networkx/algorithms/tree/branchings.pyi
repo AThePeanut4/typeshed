@@ -331,5 +331,20 @@ class ArborescenceIterator:
         ...
     partition_queue: Incomplete
 
-    def __iter__(self) -> Self: ...
-    def __next__(self): ...
+    def __iter__(self) -> Self:
+        """
+        Returns
+        -------
+        ArborescenceIterator
+            The iterator object for this graph
+        """
+        ...
+    def __next__(self):
+        """
+        Returns
+        -------
+        (multi)Graph
+            The spanning tree of next greatest weight, which ties broken
+            arbitrarily.
+        """
+        ...
