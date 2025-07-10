@@ -5075,137 +5075,23 @@ def voronoi_polygons(
     only_edges: bool = False,
     ordered: bool = False,
     **kwargs,
-) -> GeometryCollection[Polygon] | LineString | MultiLineString | None:
-    """
-    Compute a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries for which to compute the Voronoi diagram.
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    ordered : bool or array_like, default False
-        If set to True, polygons within the GeometryCollection will be ordered
-        according to the order of the input vertices. Note that this may slow
-        down the computation. Requires GEOS >= 3.12.0.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Notes
-    -----
-
-    .. deprecated:: 2.1.0
-        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
-        ``ordered`` are specified as positional arguments. In a future
-        release, these will need to be specified as keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import LineString, MultiPoint, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> shapely.voronoi_polygons(points).normalize()
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> shapely.voronoi_polygons(points, only_edges=True)
-    <MULTILINESTRING ((3 4, 3 0))>
-    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <MULTILINESTRING ((3 4.2, 3 -0.2))>
-    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <MULTILINESTRING ((3 10, 3 0))>
-    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <MULTILINESTRING ((3 4, 3 0))>
-    >>> shapely.voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    >>> shapely.voronoi_polygons(points, ordered=True)
-    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
-    """
-    ...
-@overload
+) -> GeometryCollection[Polygon] | LineString | MultiLineString | None: ...
+@overload  # `geometry` as sequence-like
 def voronoi_polygons(
     geometry: OptGeoArrayLikeSeq,
     tolerance: ArrayLike[float] = 0.0,
     extend_to: OptGeoArrayLike = None,
     only_edges: ArrayLike[bool] = False,
-    ordered: bool = False,
+    ordered: ArrayLike[bool] = False,
     **kwargs,
-) -> GeoArray:
-    """
-    Compute a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries for which to compute the Voronoi diagram.
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    ordered : bool or array_like, default False
-        If set to True, polygons within the GeometryCollection will be ordered
-        according to the order of the input vertices. Note that this may slow
-        down the computation. Requires GEOS >= 3.12.0.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Notes
-    -----
-
-    .. deprecated:: 2.1.0
-        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
-        ``ordered`` are specified as positional arguments. In a future
-        release, these will need to be specified as keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import LineString, MultiPoint, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> shapely.voronoi_polygons(points).normalize()
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> shapely.voronoi_polygons(points, only_edges=True)
-    <MULTILINESTRING ((3 4, 3 0))>
-    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <MULTILINESTRING ((3 4.2, 3 -0.2))>
-    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <MULTILINESTRING ((3 10, 3 0))>
-    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <MULTILINESTRING ((3 4, 3 0))>
-    >>> shapely.voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    >>> shapely.voronoi_polygons(points, ordered=True)
-    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
-    """
-    ...
-@overload
+) -> GeoArray: ...
+@overload  # `tolerance` as sequence-like
 def voronoi_polygons(
     geometry: OptGeoArrayLike,
     tolerance: ArrayLikeSeq[float],
     extend_to: OptGeoArrayLike = None,
     only_edges: ArrayLike[bool] = False,
-    ordered: bool = False,
+    ordered: ArrayLike[bool] = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -5266,79 +5152,22 @@ def voronoi_polygons(
     """
     ...
 @overload
-def voronoi_polygons(
+def voronoi_polygons(  # `extend_to` as positional sequence-like
     geometry: OptGeoArrayLike,
     tolerance: ArrayLike[float],
     extend_to: OptGeoArrayLikeSeq,
     only_edges: ArrayLike[bool] = False,
-    ordered: bool = False,
+    ordered: ArrayLike[bool] = False,
     **kwargs,
-) -> GeoArray:
-    """
-    Compute a Voronoi diagram from the vertices of an input geometry.
-
-    The output is a geometrycollection containing polygons (default)
-    or linestrings (see only_edges). Returns empty if an input geometry
-    contains less than 2 vertices or if the provided extent has zero area.
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries for which to compute the Voronoi diagram.
-    tolerance : float or array_like, default 0.0
-        Snap input vertices together if their distance is less than this value.
-    extend_to : Geometry or array_like, optional
-        If provided, the diagram will be extended to cover the envelope of this
-        geometry (unless this envelope is smaller than the input geometry).
-    only_edges : bool or array_like, default False
-        If set to True, the triangulation will return a collection of
-        linestrings instead of polygons.
-    ordered : bool or array_like, default False
-        If set to True, polygons within the GeometryCollection will be ordered
-        according to the order of the input vertices. Note that this may slow
-        down the computation. Requires GEOS >= 3.12.0.
-
-        .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Notes
-    -----
-
-    .. deprecated:: 2.1.0
-        A deprecation warning is shown if ``extend_to``, ``only_edges`` or
-        ``ordered`` are specified as positional arguments. In a future
-        release, these will need to be specified as keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import LineString, MultiPoint, Point
-    >>> points = MultiPoint([(2, 2), (4, 2)])
-    >>> shapely.voronoi_polygons(points).normalize()
-    <GEOMETRYCOLLECTION (POLYGON ((3 0, 3 4, 6 4, 6 0, 3 0)), POLYGON ((0 0, 0 4...>
-    >>> shapely.voronoi_polygons(points, only_edges=True)
-    <MULTILINESTRING ((3 4, 3 0))>
-    >>> shapely.voronoi_polygons(MultiPoint([(2, 2), (4, 2), (4.2, 2)]), 0.5, only_edges=True)
-    <MULTILINESTRING ((3 4.2, 3 -0.2))>
-    >>> shapely.voronoi_polygons(points, extend_to=LineString([(0, 0), (10, 10)]), only_edges=True)
-    <MULTILINESTRING ((3 10, 3 0))>
-    >>> shapely.voronoi_polygons(LineString([(2, 2), (4, 2)]), only_edges=True)
-    <MULTILINESTRING ((3 4, 3 0))>
-    >>> shapely.voronoi_polygons(Point(2, 2))
-    <GEOMETRYCOLLECTION EMPTY>
-    >>> shapely.voronoi_polygons(points, ordered=True)
-    <GEOMETRYCOLLECTION (POLYGON ((0 0, 0 4, 3 4, 3 0, 0 0)), POLYGON ((6 4, 6 0...>
-    """
-    ...
-@overload
+) -> GeoArray: ...
+@overload  # `extend_to` as keyword sequence-like
 def voronoi_polygons(
     geometry: OptGeoArrayLike,
     tolerance: ArrayLike[float] = 0.0,
     *,
     extend_to: OptGeoArrayLikeSeq,
     only_edges: ArrayLike[bool] = False,
-    ordered: bool = False,
+    ordered: ArrayLike[bool] = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -5399,12 +5228,12 @@ def voronoi_polygons(
     """
     ...
 @overload
-def voronoi_polygons(
+def voronoi_polygons(  # `only_edges` as positional sequence-like
     geometry: OptGeoArrayLike,
     tolerance: ArrayLike[float],
     extend_to: OptGeoArrayLike,
     only_edges: ArrayLikeSeq[bool],
-    ordered: bool = False,
+    ordered: ArrayLike[bool] = False,
     **kwargs,
 ) -> GeoArray:
     """
@@ -5465,13 +5294,32 @@ def voronoi_polygons(
     """
     ...
 @overload
-def voronoi_polygons(
+def voronoi_polygons(  # `only_edges` as keyword sequence-like
     geometry: OptGeoArrayLike,
     tolerance: ArrayLike[float] = 0.0,
     extend_to: OptGeoArrayLike = None,
     *,
     only_edges: ArrayLikeSeq[bool],
-    ordered: bool = False,
+    ordered: ArrayLike[bool] = False,
+    **kwargs,
+) -> GeoArray: ...
+@overload  # `ordered` as positional sequence-like
+def voronoi_polygons(
+    geometry: OptGeoArrayLike,
+    tolerance: ArrayLike[float],
+    extend_to: OptGeoArrayLike,
+    only_edges: ArrayLike[bool],
+    ordered: ArrayLikeSeq[bool],
+    **kwargs,
+) -> GeoArray: ...
+@overload  # `ordered` as keyword sequence-like
+def voronoi_polygons(
+    geometry: OptGeoArrayLike,
+    tolerance: ArrayLike[float] = 0.0,
+    extend_to: OptGeoArrayLike = None,
+    *,
+    only_edges: ArrayLike[bool] = False,
+    ordered: ArrayLikeSeq[bool],
     **kwargs,
 ) -> GeoArray:
     """
@@ -5959,145 +5807,7 @@ def minimum_bounding_circle(geometry: OptGeoArrayLikeSeq, **kwargs) -> GeoArray:
     """
     ...
 @overload
-def maximum_inscribed_circle(geometry: Point, tolerance: float | None = None, **kwargs) -> Point:
-    """
-    Find the largest circle that is fully contained within the input geometry.
-
-    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
-    up to a specified tolerance. The MIC is determined by a point in the
-    interior of the area which has the farthest distance from the area
-    boundary, along with a boundary point at that distance. In the context of
-    geography the center of the MIC is known as the "pole of inaccessibility".
-    A cartographic use case is to determine a suitable point to place a map
-    label within a polygon.
-    The radius length of the MIC is a  measure of how "narrow" a polygon is.
-    It is the distance at which the negative buffer becomes empty.
-
-    The function supports polygons with holes and multipolygons.
-
-    Returns a two-point linestring, with the first point at the center of the
-    inscribed circle and the second on the boundary of the inscribed circle.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, optional
-        Stop the algorithm when the search area is smaller than this tolerance.
-        When not specified, uses `max(width, height) / 1000` per geometry as
-        the default.
-    **kwargs
-        For other keyword-only arguments, see the
-        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> shapely.maximum_inscribed_circle(poly)
-    <LINESTRING (5 5, 0 5)>
-
-    See Also
-    --------
-    minimum_bounding_circle
-    """
-    ...
-@overload
-def maximum_inscribed_circle(
-    geometry: LineString | Polygon | BaseMultipartGeometry, tolerance: float | None = None, **kwargs
-):
-    """
-    Find the largest circle that is fully contained within the input geometry.
-
-    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
-    up to a specified tolerance. The MIC is determined by a point in the
-    interior of the area which has the farthest distance from the area
-    boundary, along with a boundary point at that distance. In the context of
-    geography the center of the MIC is known as the "pole of inaccessibility".
-    A cartographic use case is to determine a suitable point to place a map
-    label within a polygon.
-    The radius length of the MIC is a  measure of how "narrow" a polygon is.
-    It is the distance at which the negative buffer becomes empty.
-
-    The function supports polygons with holes and multipolygons.
-
-    Returns a two-point linestring, with the first point at the center of the
-    inscribed circle and the second on the boundary of the inscribed circle.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, optional
-        Stop the algorithm when the search area is smaller than this tolerance.
-        When not specified, uses `max(width, height) / 1000` per geometry as
-        the default.
-    **kwargs
-        For other keyword-only arguments, see the
-        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> shapely.maximum_inscribed_circle(poly)
-    <LINESTRING (5 5, 0 5)>
-
-    See Also
-    --------
-    minimum_bounding_circle
-    """
-    ...
-@overload
-def maximum_inscribed_circle(geometry: Geometry, tolerance: float | None = None, **kwargs) -> Polygon | Point:
-    """
-    Find the largest circle that is fully contained within the input geometry.
-
-    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
-    up to a specified tolerance. The MIC is determined by a point in the
-    interior of the area which has the farthest distance from the area
-    boundary, along with a boundary point at that distance. In the context of
-    geography the center of the MIC is known as the "pole of inaccessibility".
-    A cartographic use case is to determine a suitable point to place a map
-    label within a polygon.
-    The radius length of the MIC is a  measure of how "narrow" a polygon is.
-    It is the distance at which the negative buffer becomes empty.
-
-    The function supports polygons with holes and multipolygons.
-
-    Returns a two-point linestring, with the first point at the center of the
-    inscribed circle and the second on the boundary of the inscribed circle.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, optional
-        Stop the algorithm when the search area is smaller than this tolerance.
-        When not specified, uses `max(width, height) / 1000` per geometry as
-        the default.
-    **kwargs
-        For other keyword-only arguments, see the
-        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> shapely.maximum_inscribed_circle(poly)
-    <LINESTRING (5 5, 0 5)>
-
-    See Also
-    --------
-    minimum_bounding_circle
-    """
-    ...
+def maximum_inscribed_circle(geometry: Polygon | MultiPolygon, tolerance: float | None = None, **kwargs) -> LineString: ...
 @overload
 def maximum_inscribed_circle(geometry: None, tolerance: float | None = None, **kwargs) -> None:
     """
@@ -6145,51 +5855,9 @@ def maximum_inscribed_circle(geometry: None, tolerance: float | None = None, **k
     """
     ...
 @overload
-def maximum_inscribed_circle(geometry: Geometry | None, tolerance: float | None = None, **kwargs) -> Polygon | Point | None:
-    """
-    Find the largest circle that is fully contained within the input geometry.
-
-    Constructs the "maximum inscribed circle" (MIC) for a polygonal geometry,
-    up to a specified tolerance. The MIC is determined by a point in the
-    interior of the area which has the farthest distance from the area
-    boundary, along with a boundary point at that distance. In the context of
-    geography the center of the MIC is known as the "pole of inaccessibility".
-    A cartographic use case is to determine a suitable point to place a map
-    label within a polygon.
-    The radius length of the MIC is a  measure of how "narrow" a polygon is.
-    It is the distance at which the negative buffer becomes empty.
-
-    The function supports polygons with holes and multipolygons.
-
-    Returns a two-point linestring, with the first point at the center of the
-    inscribed circle and the second on the boundary of the inscribed circle.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-    tolerance : float or array_like, optional
-        Stop the algorithm when the search area is smaller than this tolerance.
-        When not specified, uses `max(width, height) / 1000` per geometry as
-        the default.
-    **kwargs
-        For other keyword-only arguments, see the
-        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> poly = Polygon([(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)])
-    >>> shapely.maximum_inscribed_circle(poly)
-    <LINESTRING (5 5, 0 5)>
-
-    See Also
-    --------
-    minimum_bounding_circle
-    """
-    ...
+def maximum_inscribed_circle(
+    geometry: Polygon | MultiPolygon | None, tolerance: float | None = None, **kwargs
+) -> LineString | None: ...
 @overload
 def maximum_inscribed_circle(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[float] | None = None, **kwargs) -> GeoArray:
     """
@@ -6237,197 +5905,9 @@ def maximum_inscribed_circle(geometry: OptGeoArrayLikeSeq, tolerance: ArrayLike[
     """
     ...
 @overload
-def orient_polygons(geometry: Point, *, exterior_cw: bool = False, **kwargs) -> Point:
-    """
-    Enforce a ring orientation on all polygonal elements in the input geometry.
-
-    Forces (Multi)Polygons to use a counter-clockwise orientation for their
-    exterior ring, and a clockwise orientation for their interior rings (or
-    the oppposite if ``exterior_cw=True``).
-
-    Also processes geometries inside a GeometryCollection in the same way.
-    Other geometries are returned unchanged.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to orient consistently.
-    exterior_cw : bool, default False
-        If True, exterior rings will be clockwise and interior rings
-        will be counter-clockwise.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    A polygon with both shell and hole having clockwise orientation:
-
-    >>> from shapely import Polygon, orient_polygons
-    >>> polygon = Polygon(
-    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
-    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
-    ... )
-    >>> polygon
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    By default, the exterior ring is oriented counter-clockwise and
-    the holes clockwise:
-
-    >>> orient_polygons(polygon)
-    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    Asking for the opposite orientation:
-
-    >>> orient_polygons(polygon, exterior_cw=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
-    """
-    ...
+def maximum_inscribed_circle(geometry: OptGeoArrayLike, tolerance: ArrayLikeSeq[float], **kwargs) -> GeoArray: ...
 @overload
-def orient_polygons(geometry: Geometry, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry:
-    """
-    Enforce a ring orientation on all polygonal elements in the input geometry.
-
-    Forces (Multi)Polygons to use a counter-clockwise orientation for their
-    exterior ring, and a clockwise orientation for their interior rings (or
-    the oppposite if ``exterior_cw=True``).
-
-    Also processes geometries inside a GeometryCollection in the same way.
-    Other geometries are returned unchanged.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to orient consistently.
-    exterior_cw : bool, default False
-        If True, exterior rings will be clockwise and interior rings
-        will be counter-clockwise.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    A polygon with both shell and hole having clockwise orientation:
-
-    >>> from shapely import Polygon, orient_polygons
-    >>> polygon = Polygon(
-    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
-    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
-    ... )
-    >>> polygon
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    By default, the exterior ring is oriented counter-clockwise and
-    the holes clockwise:
-
-    >>> orient_polygons(polygon)
-    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    Asking for the opposite orientation:
-
-    >>> orient_polygons(polygon, exterior_cw=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
-    """
-    ...
-@overload
-def orient_polygons(geometry: None, *, exterior_cw: bool = False, **kwargs) -> None:
-    """
-    Enforce a ring orientation on all polygonal elements in the input geometry.
-
-    Forces (Multi)Polygons to use a counter-clockwise orientation for their
-    exterior ring, and a clockwise orientation for their interior rings (or
-    the oppposite if ``exterior_cw=True``).
-
-    Also processes geometries inside a GeometryCollection in the same way.
-    Other geometries are returned unchanged.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to orient consistently.
-    exterior_cw : bool, default False
-        If True, exterior rings will be clockwise and interior rings
-        will be counter-clockwise.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    A polygon with both shell and hole having clockwise orientation:
-
-    >>> from shapely import Polygon, orient_polygons
-    >>> polygon = Polygon(
-    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
-    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
-    ... )
-    >>> polygon
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    By default, the exterior ring is oriented counter-clockwise and
-    the holes clockwise:
-
-    >>> orient_polygons(polygon)
-    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    Asking for the opposite orientation:
-
-    >>> orient_polygons(polygon, exterior_cw=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
-    """
-    ...
-@overload
-def orient_polygons(geometry: Geometry | None, *, exterior_cw: bool = False, **kwargs) -> BaseGeometry | None:
-    """
-    Enforce a ring orientation on all polygonal elements in the input geometry.
-
-    Forces (Multi)Polygons to use a counter-clockwise orientation for their
-    exterior ring, and a clockwise orientation for their interior rings (or
-    the oppposite if ``exterior_cw=True``).
-
-    Also processes geometries inside a GeometryCollection in the same way.
-    Other geometries are returned unchanged.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    geometry : Geometry or array_like
-        Geometry or geometries to orient consistently.
-    exterior_cw : bool, default False
-        If True, exterior rings will be clockwise and interior rings
-        will be counter-clockwise.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    A polygon with both shell and hole having clockwise orientation:
-
-    >>> from shapely import Polygon, orient_polygons
-    >>> polygon = Polygon(
-    ...     [(0, 0), (0, 10), (10, 10), (10, 0), (0, 0)],
-    ...     holes=[[(2, 2), (2, 4), (4, 4), (4, 2), (2, 2)]],
-    ... )
-    >>> polygon
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    By default, the exterior ring is oriented counter-clockwise and
-    the holes clockwise:
-
-    >>> orient_polygons(polygon)
-    <POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))>
-
-    Asking for the opposite orientation:
-
-    >>> orient_polygons(polygon, exterior_cw=True)
-    <POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 4 2, 4 4, 2 4, 2 2))>
-    """
-    ...
+def orient_polygons(geometry: OptGeoT, *, exterior_cw: bool = False, **kwargs) -> OptGeoT: ...
 @overload
 def orient_polygons(geometry: OptGeoArrayLikeSeq, *, exterior_cw: bool = False, **kwargs) -> GeoArray:
     """

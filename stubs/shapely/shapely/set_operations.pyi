@@ -1,6 +1,7 @@
 """Set-theoretic operations on geometry objects."""
 
 from typing import overload
+from typing_extensions import deprecated
 
 from ._typing import GeoArray, OptGeoArrayLike, OptGeoArrayLikeSeq
 from .geometry.base import BaseGeometry
@@ -891,115 +892,11 @@ def symmetric_difference(a: OptGeoArrayLike, b: OptGeoArrayLikeSeq, grid_size: f
     """
     ...
 @overload
-def symmetric_difference_all(geometries: OptGeoArrayLike, axis: None = None, **kwargs) -> BaseGeometry:
-    """
-    Return the symmetric difference of multiple geometries.
-
-    This function ignores None values when other Geometry elements are present.
-    If all elements of the given axis are None an empty GeometryCollection is
-    returned.
-
-    .. deprecated:: 2.1.0
-
-        This function behaves incorrectly and will be removed in a future
-        version. See https://github.com/shapely/shapely/issues/2027 for more
-        details.
-
-    Parameters
-    ----------
-    geometries : array_like
-        Geometries to calculate the combined symmetric difference of.
-    axis : int, optional
-        Axis along which the operation is performed. The default (None)
-        performs the operation over all axes, returning a scalar value.
-        Axis may be negative, in which case it counts from the last to the
-        first axis.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Notes
-    -----
-
-    .. deprecated:: 2.1.0
-        A deprecation warning is shown if ``axis`` is specified as a
-        positional argument. This will need to be specified as a keyword
-        argument in a future release.
-
-    See Also
-    --------
-    symmetric_difference
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import LineString
-    >>> line1 = LineString([(0, 0), (2, 2)])
-    >>> line2 = LineString([(1, 1), (3, 3)])
-    >>> shapely.symmetric_difference_all([line1, line2])
-    <MULTILINESTRING ((0 0, 1 1), (2 2, 3 3))>
-    >>> shapely.symmetric_difference_all([[line1, line2, None]], axis=1).tolist()
-    [<MULTILINESTRING ((0 0, 1 1), (2 2, 3 3))>]
-    >>> shapely.symmetric_difference_all([line1, None])
-    <LINESTRING (0 0, 2 2)>
-    >>> shapely.symmetric_difference_all([None, None])
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+@deprecated("symmetric_difference_all behaves incorrectly and will be removed in a future version.")
+def symmetric_difference_all(geometries: OptGeoArrayLike, axis: None = None, **kwargs) -> BaseGeometry: ...
 @overload
-def symmetric_difference_all(geometries: OptGeoArrayLikeSeq, axis: int, **kwargs) -> BaseGeometry | GeoArray:
-    """
-    Return the symmetric difference of multiple geometries.
-
-    This function ignores None values when other Geometry elements are present.
-    If all elements of the given axis are None an empty GeometryCollection is
-    returned.
-
-    .. deprecated:: 2.1.0
-
-        This function behaves incorrectly and will be removed in a future
-        version. See https://github.com/shapely/shapely/issues/2027 for more
-        details.
-
-    Parameters
-    ----------
-    geometries : array_like
-        Geometries to calculate the combined symmetric difference of.
-    axis : int, optional
-        Axis along which the operation is performed. The default (None)
-        performs the operation over all axes, returning a scalar value.
-        Axis may be negative, in which case it counts from the last to the
-        first axis.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Notes
-    -----
-
-    .. deprecated:: 2.1.0
-        A deprecation warning is shown if ``axis`` is specified as a
-        positional argument. This will need to be specified as a keyword
-        argument in a future release.
-
-    See Also
-    --------
-    symmetric_difference
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import LineString
-    >>> line1 = LineString([(0, 0), (2, 2)])
-    >>> line2 = LineString([(1, 1), (3, 3)])
-    >>> shapely.symmetric_difference_all([line1, line2])
-    <MULTILINESTRING ((0 0, 1 1), (2 2, 3 3))>
-    >>> shapely.symmetric_difference_all([[line1, line2, None]], axis=1).tolist()
-    [<MULTILINESTRING ((0 0, 1 1), (2 2, 3 3))>]
-    >>> shapely.symmetric_difference_all([line1, None])
-    <LINESTRING (0 0, 2 2)>
-    >>> shapely.symmetric_difference_all([None, None])
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
+@deprecated("symmetric_difference_all behaves incorrectly and will be removed in a future version.")
+def symmetric_difference_all(geometries: OptGeoArrayLikeSeq, axis: int, **kwargs) -> BaseGeometry | GeoArray: ...
 @overload
 def union(a: Geometry, b: Geometry, grid_size: float | None = None, **kwargs) -> BaseGeometry:
     """
@@ -1594,139 +1491,8 @@ def coverage_union_all(geometries: OptGeoArrayLike, axis: None = None, **kwargs)
     """
     ...
 @overload
-def coverage_union_all(geometries: OptGeoArrayLikeSeq, axis: int, **kwargs) -> BaseGeometry | GeoArray:
-    """
-    Return the union of multiple polygons of a geometry collection.
-
-    This is an optimized version of union which assumes the polygons
-    to be non-overlapping.
-
-    This function ignores None values when other Geometry elements are present.
-    If all elements of the given axis are None, an empty GeometryCollection is
-    returned (before GEOS 3.12 this was an empty MultiPolygon).
-
-    Parameters
-    ----------
-    geometries : array_like
-        Geometries to merge/union.
-    axis : int, optional
-        Axis along which the operation is performed. The default (None)
-        performs the operation over all axes, returning a scalar value.
-        Axis may be negative, in which case it counts from the last to the
-        first axis.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Notes
-    -----
-
-    .. deprecated:: 2.1.0
-        A deprecation warning is shown if ``axis`` is specified as a
-        positional argument. This will need to be specified as a keyword
-        argument in a future release.
-
-    See Also
-    --------
-    coverage_union
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon_1 = Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)])
-    >>> polygon_2 = Polygon([(1, 0), (1, 1), (2, 1), (2, 0), (1, 0)])
-    >>> shapely.coverage_union_all([polygon_1, polygon_2]).normalize()
-    <POLYGON ((0 0, 0 1, 1 1, 2 1, 2 0, 1 0, 0 0))>
-    >>> shapely.coverage_union_all([polygon_1, None]).normalize()
-    <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
-    >>> shapely.coverage_union_all([None, None]).normalize()
-    <GEOMETRYCOLLECTION EMPTY>
-    """
-    ...
-@overload
-def disjoint_subset_union(a: OptGeoArrayLike, b: OptGeoArrayLike, *, axis: None = None, **kwargs) -> BaseGeometry:
-    """
-    Merge multiple polygons into one using algorithm optimised for subsets.
-
-    This is an optimized version of union which assumes inputs can be
-    divided into subsets that do not intersect.
-
-    If there is only one such subset, performance can be expected to be worse than
-    :func:`union`. As such, it is recommeded to use ``disjoint_subset_union`` with
-    GeometryCollections rather than individual geometries.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    a, b : Geometry or array_like
-        Geometry or geometries to merge (union).
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    See Also
-    --------
-    union
-    coverage_union
-    disjoint_subset_union_all
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon_1 = Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)])
-    >>> polygon_2 = Polygon([(1, 0), (1, 1), (2, 1), (2, 0), (1, 0)])
-    >>> shapely.disjoint_subset_union(polygon_1, polygon_2).normalize()
-    <POLYGON ((0 0, 0 1, 1 1, 2 1, 2 0, 1 0, 0 0))>
-
-    Union with None returns same polygon:
-
-    >>> shapely.disjoint_subset_union(polygon_1, None).normalize()
-    <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
-    """
-    ...
-@overload
-def disjoint_subset_union(a: OptGeoArrayLike, b: OptGeoArrayLike, *, axis: int, **kwargs) -> BaseGeometry | GeoArray:
-    """
-    Merge multiple polygons into one using algorithm optimised for subsets.
-
-    This is an optimized version of union which assumes inputs can be
-    divided into subsets that do not intersect.
-
-    If there is only one such subset, performance can be expected to be worse than
-    :func:`union`. As such, it is recommeded to use ``disjoint_subset_union`` with
-    GeometryCollections rather than individual geometries.
-
-    .. versionadded:: 2.1.0
-
-    Parameters
-    ----------
-    a, b : Geometry or array_like
-        Geometry or geometries to merge (union).
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    See Also
-    --------
-    union
-    coverage_union
-    disjoint_subset_union_all
-
-    Examples
-    --------
-    >>> import shapely
-    >>> from shapely import Polygon
-    >>> polygon_1 = Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)])
-    >>> polygon_2 = Polygon([(1, 0), (1, 1), (2, 1), (2, 0), (1, 0)])
-    >>> shapely.disjoint_subset_union(polygon_1, polygon_2).normalize()
-    <POLYGON ((0 0, 0 1, 1 1, 2 1, 2 0, 1 0, 0 0))>
-
-    Union with None returns same polygon:
-
-    >>> shapely.disjoint_subset_union(polygon_1, None).normalize()
-    <POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>
-    """
-    ...
+def coverage_union_all(geometries: OptGeoArrayLikeSeq, axis: int, **kwargs) -> BaseGeometry | GeoArray: ...
+def disjoint_subset_union(a: OptGeoArrayLike, b: OptGeoArrayLike, **kwargs) -> BaseGeometry | GeoArray: ...
 @overload
 def disjoint_subset_union_all(geometries: OptGeoArrayLike, *, axis: None = None, **kwargs) -> BaseGeometry:
     """

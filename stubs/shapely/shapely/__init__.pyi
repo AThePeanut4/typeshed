@@ -3,6 +3,7 @@
 from typing import Final
 
 from . import affinity as affinity
+from ._coverage import *
 from ._geometry import *
 from .constructive import *
 from .coordinates import *

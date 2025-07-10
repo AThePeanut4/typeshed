@@ -19,7 +19,7 @@ _OutputDimension: TypeAlias = Literal[2, 3, 4]
 
 # Mypy and stubtest aren't happy with the following definition and
 # raise is a reserved keyword, so we cannot use the class syntax of enums
-# DecodingErrorOptions = ParamEnum("DecodingErrorOptions", {"ignore": 0, "warn": 1, "raise": 2})
+# DecodingErrorOptions = ParamEnum("DecodingErrorOptions", {"ignore": 0, "warn": 1, "raise": 2, "fix": 3})
 DecodingErrorOptions: Incomplete
 
 class WKBFlavorOptions(ParamEnum):
@@ -786,356 +786,30 @@ def to_geojson(geometry: OptGeoArrayLikeSeq, indent: int | None = None, **kwargs
     """
     ...
 @overload
-def from_wkt(geometry: None, on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs) -> None:
-    """
-    Create geometries from the Well-Known Text (WKT) representation.
-
-    The Well-known Text format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    Parameters
-    ----------
-    geometry : str or array_like
-        The WKT string(s) to convert.
-    on_invalid : {"raise", "warn", "ignore", "fix"}, default "raise"
-        Indicates what to do when an invalid WKT string is encountered. Note
-        that the validations involved are very basic, e.g. the minimum number of
-        points for the geometry type. For a thorough check, use
-        :func:`is_valid` after conversion to geometries. Valid options are:
-
-        - raise: an exception will be raised if any input geometry is invalid.
-        - warn: a warning will be raised and invalid WKT geometries will be
-          returned as ``None``.
-        - ignore: invalid geometries will be returned as ``None`` without a
-          warning.
-        - fix: an effort is made to fix invalid input geometries (currently just
-          unclosed rings). If this is not possible, they are returned as
-          ``None`` without a warning. Requires GEOS >= 3.11.
-
-          .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_wkt('POINT (0 0)')
-    <POINT (0 0)>
-    """
-    ...
+def from_wkt(geometry: None, on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs) -> None: ...
 @overload
-def from_wkt(geometry: str, on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs) -> BaseGeometry:
-    """
-    Create geometries from the Well-Known Text (WKT) representation.
-
-    The Well-known Text format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    Parameters
-    ----------
-    geometry : str or array_like
-        The WKT string(s) to convert.
-    on_invalid : {"raise", "warn", "ignore", "fix"}, default "raise"
-        Indicates what to do when an invalid WKT string is encountered. Note
-        that the validations involved are very basic, e.g. the minimum number of
-        points for the geometry type. For a thorough check, use
-        :func:`is_valid` after conversion to geometries. Valid options are:
-
-        - raise: an exception will be raised if any input geometry is invalid.
-        - warn: a warning will be raised and invalid WKT geometries will be
-          returned as ``None``.
-        - ignore: invalid geometries will be returned as ``None`` without a
-          warning.
-        - fix: an effort is made to fix invalid input geometries (currently just
-          unclosed rings). If this is not possible, they are returned as
-          ``None`` without a warning. Requires GEOS >= 3.11.
-
-          .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_wkt('POINT (0 0)')
-    <POINT (0 0)>
-    """
-    ...
+def from_wkt(geometry: str, on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs) -> BaseGeometry: ...  # type: ignore[overload-overlap]
 @overload
 def from_wkt(
-    geometry: ArrayLikeSeq[str | None], on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs
-) -> GeoArray:
-    """
-    Create geometries from the Well-Known Text (WKT) representation.
-
-    The Well-known Text format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    Parameters
-    ----------
-    geometry : str or array_like
-        The WKT string(s) to convert.
-    on_invalid : {"raise", "warn", "ignore", "fix"}, default "raise"
-        Indicates what to do when an invalid WKT string is encountered. Note
-        that the validations involved are very basic, e.g. the minimum number of
-        points for the geometry type. For a thorough check, use
-        :func:`is_valid` after conversion to geometries. Valid options are:
-
-        - raise: an exception will be raised if any input geometry is invalid.
-        - warn: a warning will be raised and invalid WKT geometries will be
-          returned as ``None``.
-        - ignore: invalid geometries will be returned as ``None`` without a
-          warning.
-        - fix: an effort is made to fix invalid input geometries (currently just
-          unclosed rings). If this is not possible, they are returned as
-          ``None`` without a warning. Requires GEOS >= 3.11.
-
-          .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_wkt('POINT (0 0)')
-    <POINT (0 0)>
-    """
-    ...
+    geometry: ArrayLikeSeq[str | None], on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs
+) -> GeoArray: ...
 @overload
-def from_wkb(geometry: None, on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs) -> None:
-    r"""
-    Create geometries from the Well-Known Binary (WKB) representation.
-
-    The Well-Known Binary format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    Parameters
-    ----------
-    geometry : str or array_like
-        The WKB byte object(s) to convert.
-    on_invalid : {"raise", "warn", "ignore", "fix"}, default "raise"
-        Indicates what to do when an invalid WKB is encountered. Note that the
-        validations involved are very basic, e.g. the minimum number of points
-        for the geometry type. For a thorough check, use :func:`is_valid` after
-        conversion to geometries. Valid options are:
-
-        - raise: an exception will be raised if any input geometry is invalid.
-        - warn: a warning will be raised and invalid WKT geometries will be
-          returned as ``None``.
-        - ignore: invalid geometries will be returned as ``None`` without a
-          warning.
-        - fix: an effort is made to fix invalid input geometries (currently just
-          unclosed rings). If this is not possible, they are returned as
-          ``None`` without a warning. Requires GEOS >= 3.11.
-
-          .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_wkb(b'\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?')
-    <POINT (1 1)>
-    """
-    ...
-@overload
-def from_wkb(geometry: str | bytes, on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs) -> BaseGeometry:
-    r"""
-    Create geometries from the Well-Known Binary (WKB) representation.
-
-    The Well-Known Binary format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    Parameters
-    ----------
-    geometry : str or array_like
-        The WKB byte object(s) to convert.
-    on_invalid : {"raise", "warn", "ignore", "fix"}, default "raise"
-        Indicates what to do when an invalid WKB is encountered. Note that the
-        validations involved are very basic, e.g. the minimum number of points
-        for the geometry type. For a thorough check, use :func:`is_valid` after
-        conversion to geometries. Valid options are:
-
-        - raise: an exception will be raised if any input geometry is invalid.
-        - warn: a warning will be raised and invalid WKT geometries will be
-          returned as ``None``.
-        - ignore: invalid geometries will be returned as ``None`` without a
-          warning.
-        - fix: an effort is made to fix invalid input geometries (currently just
-          unclosed rings). If this is not possible, they are returned as
-          ``None`` without a warning. Requires GEOS >= 3.11.
-
-          .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_wkb(b'\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?')
-    <POINT (1 1)>
-    """
-    ...
+def from_wkb(geometry: None, on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs) -> None: ...
 @overload
 def from_wkb(
-    geometry: ArrayLikeSeq[str | bytes | None], on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs
-) -> GeoArray:
-    r"""
-    Create geometries from the Well-Known Binary (WKB) representation.
-
-    The Well-Known Binary format is defined in the `OGC Simple Features
-    Specification for SQL <https://www.opengeospatial.org/standards/sfs>`__.
-
-    Parameters
-    ----------
-    geometry : str or array_like
-        The WKB byte object(s) to convert.
-    on_invalid : {"raise", "warn", "ignore", "fix"}, default "raise"
-        Indicates what to do when an invalid WKB is encountered. Note that the
-        validations involved are very basic, e.g. the minimum number of points
-        for the geometry type. For a thorough check, use :func:`is_valid` after
-        conversion to geometries. Valid options are:
-
-        - raise: an exception will be raised if any input geometry is invalid.
-        - warn: a warning will be raised and invalid WKT geometries will be
-          returned as ``None``.
-        - ignore: invalid geometries will be returned as ``None`` without a
-          warning.
-        - fix: an effort is made to fix invalid input geometries (currently just
-          unclosed rings). If this is not possible, they are returned as
-          ``None`` without a warning. Requires GEOS >= 3.11.
-
-          .. versionadded:: 2.1.0
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_wkb(b'\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?')
-    <POINT (1 1)>
-    """
-    ...
+    geometry: str | bytes, on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs
+) -> BaseGeometry: ...  # type: ignore[overload-overlap]
 @overload
-def from_geojson(geometry: None, on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs) -> None:
-    """
-    Create geometries from GeoJSON representations (strings).
-
-    If a GeoJSON is a FeatureCollection, it is read as a single geometry
-    (with type GEOMETRYCOLLECTION). This may be unpacked using
-    :meth:`shapely.get_parts`. Properties are not read.
-
-    The GeoJSON format is defined in `RFC 7946 <https://geojson.org/>`__.
-
-    The following are currently unsupported:
-
-    - Three-dimensional geometries: the third dimension is ignored.
-    - Geometries having 'null' in the coordinates.
-
-    Parameters
-    ----------
-    geometry : str, bytes or array_like
-        The GeoJSON string or byte object(s) to convert.
-    on_invalid : {"raise", "warn", "ignore"}, default "raise"
-        - raise: an exception will be raised if an input GeoJSON is invalid.
-        - warn: a warning will be raised and invalid input geometries will be
-          returned as ``None``.
-        - ignore: invalid input geometries will be returned as ``None`` without
-          a warning.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    See Also
-    --------
-    get_parts
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_geojson('{"type": "Point","coordinates": [1, 2]}')
-    <POINT (1 2)>
-    """
-    ...
+def from_wkb(
+    geometry: ArrayLikeSeq[str | bytes | None], on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs
+) -> GeoArray: ...
 @overload
-def from_geojson(geometry: str | bytes, on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs) -> BaseGeometry:
-    """
-    Create geometries from GeoJSON representations (strings).
-
-    If a GeoJSON is a FeatureCollection, it is read as a single geometry
-    (with type GEOMETRYCOLLECTION). This may be unpacked using
-    :meth:`shapely.get_parts`. Properties are not read.
-
-    The GeoJSON format is defined in `RFC 7946 <https://geojson.org/>`__.
-
-    The following are currently unsupported:
-
-    - Three-dimensional geometries: the third dimension is ignored.
-    - Geometries having 'null' in the coordinates.
-
-    Parameters
-    ----------
-    geometry : str, bytes or array_like
-        The GeoJSON string or byte object(s) to convert.
-    on_invalid : {"raise", "warn", "ignore"}, default "raise"
-        - raise: an exception will be raised if an input GeoJSON is invalid.
-        - warn: a warning will be raised and invalid input geometries will be
-          returned as ``None``.
-        - ignore: invalid input geometries will be returned as ``None`` without
-          a warning.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    See Also
-    --------
-    get_parts
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_geojson('{"type": "Point","coordinates": [1, 2]}')
-    <POINT (1 2)>
-    """
-    ...
+def from_geojson(geometry: None, on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs) -> None: ...
 @overload
 def from_geojson(
-    geometry: ArrayLikeSeq[str | bytes | None], on_invalid: Literal["raise", "warn", "ignore"] = "raise", **kwargs
-) -> GeoArray:
-    """
-    Create geometries from GeoJSON representations (strings).
-
-    If a GeoJSON is a FeatureCollection, it is read as a single geometry
-    (with type GEOMETRYCOLLECTION). This may be unpacked using
-    :meth:`shapely.get_parts`. Properties are not read.
-
-    The GeoJSON format is defined in `RFC 7946 <https://geojson.org/>`__.
-
-    The following are currently unsupported:
-
-    - Three-dimensional geometries: the third dimension is ignored.
-    - Geometries having 'null' in the coordinates.
-
-    Parameters
-    ----------
-    geometry : str, bytes or array_like
-        The GeoJSON string or byte object(s) to convert.
-    on_invalid : {"raise", "warn", "ignore"}, default "raise"
-        - raise: an exception will be raised if an input GeoJSON is invalid.
-        - warn: a warning will be raised and invalid input geometries will be
-          returned as ``None``.
-        - ignore: invalid input geometries will be returned as ``None`` without
-          a warning.
-    **kwargs
-        See :ref:`NumPy ufunc docs <ufuncs.kwargs>` for other keyword arguments.
-
-    See Also
-    --------
-    get_parts
-
-    Examples
-    --------
-    >>> import shapely
-    >>> shapely.from_geojson('{"type": "Point","coordinates": [1, 2]}')
-    <POINT (1 2)>
-    """
-    ...
+    geometry: str | bytes, on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs
+) -> BaseGeometry: ...  # type: ignore[overload-overlap]
+@overload
+def from_geojson(
+    geometry: ArrayLikeSeq[str | bytes | None], on_invalid: Literal["raise", "warn", "ignore", "fix"] = "raise", **kwargs
+) -> GeoArray: ...
