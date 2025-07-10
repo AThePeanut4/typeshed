@@ -315,9 +315,127 @@ class BaseGeometry(Geometry):
         *,
         quadsegs: int | None = None,  # deprecated
         resolution: int | None = None,  # deprecated
-    ) -> Polygon: ...
-    def simplify(self, tolerance: float, preserve_topology: bool = True) -> BaseGeometry: ...
-    def normalize(self) -> BaseGeometry: ...
+    ) -> Polygon:
+        """
+        Get a geometry that represents all points within a distance of this geometry.
+
+        A positive distance produces a dilation, a negative distance an
+        erosion. A very small or zero distance may sometimes be used to
+        "tidy" a polygon.
+
+        Parameters
+        ----------
+        distance : float
+            The distance to buffer around the object.
+        quad_segs : int, optional
+            Sets the number of line segments used to approximate an
+            angle fillet.
+        cap_style : shapely.BufferCapStyle or {'round', 'square', 'flat'}, default 'round'
+            Specifies the shape of buffered line endings. BufferCapStyle.round
+            ('round') results in circular line endings (see ``quad_segs``). Both
+            BufferCapStyle.square ('square') and BufferCapStyle.flat ('flat')
+            result in rectangular line endings, only BufferCapStyle.flat
+            ('flat') will end at the original vertex, while
+            BufferCapStyle.square ('square') involves adding the buffer width.
+        join_style : shapely.BufferJoinStyle or {'round', 'mitre', 'bevel'}, default 'round'
+            Specifies the shape of buffered line midpoints.
+            BufferJoinStyle.ROUND ('round') results in rounded shapes.
+            BufferJoinStyle.bevel ('bevel') results in a beveled edge that
+            touches the original vertex. BufferJoinStyle.mitre ('mitre') results
+            in a single vertex that is beveled depending on the ``mitre_limit``
+            parameter.
+        mitre_limit : float, optional
+            The mitre limit ratio is used for very sharp corners. The
+            mitre ratio is the ratio of the distance from the corner to
+            the end of the mitred offset corner. When two line segments
+            meet at a sharp angle, a miter join will extend the original
+            geometry. To prevent unreasonable geometry, the mitre limit
+            allows controlling the maximum length of the join corner.
+            Corners with a ratio which exceed the limit will be beveled.
+        single_sided : bool, optional
+            The side used is determined by the sign of the buffer
+            distance:
+
+                a positive distance indicates the left-hand side
+                a negative distance indicates the right-hand side
+
+            The single-sided buffer of point geometries is the same as
+            the regular buffer.  The End Cap Style for single-sided
+            buffers is always ignored, and forced to the equivalent of
+            CAP_FLAT.
+        quadsegs, resolution : int, optional
+            Deprecated aliases for `quad_segs`.
+        **kwargs : dict, optional
+            For backwards compatibility of renamed parameters. If an unsupported
+            kwarg is passed, a `ValueError` will be raised.
+
+        Returns
+        -------
+        Geometry
+
+        Notes
+        -----
+        The return value is a strictly two-dimensional geometry. All
+        Z coordinates of the original geometry will be ignored.
+
+        .. deprecated:: 2.1.0
+            A deprecation warning is shown if ``quad_segs``,  ``cap_style``,
+            ``join_style``, ``mitre_limit`` or ``single_sided`` are
+            specified as positional arguments. In a future release, these will
+            need to be specified as keyword arguments.
+
+        Examples
+        --------
+        >>> from shapely import BufferCapStyle
+        >>> from shapely.wkt import loads
+        >>> g = loads('POINT (0.0 0.0)')
+
+        16-gon approx of a unit radius circle:
+
+        >>> g.buffer(1.0).area
+        3.1365484905459398
+
+        128-gon approximation:
+
+        >>> g.buffer(1.0, 128).area
+        3.1415138011443013
+
+        triangle approximation:
+
+        >>> g.buffer(1.0, 3).area
+        3.0
+        >>> list(g.buffer(1.0, cap_style=BufferCapStyle.square).exterior.coords)
+        [(1.0, 1.0), (1.0, -1.0), (-1.0, -1.0), (-1.0, 1.0), (1.0, 1.0)]
+        >>> g.buffer(1.0, cap_style=BufferCapStyle.square).area
+        4.0
+        """
+        ...
+    def simplify(self, tolerance: float, preserve_topology: bool = True) -> BaseGeometry:
+        """
+        Return a simplified geometry produced by the Douglas-Peucker algorithm.
+
+        Coordinates of the simplified geometry will be no more than the
+        tolerance distance from the original. Unless the topology preserving
+        option is used, the algorithm may produce self-intersecting or
+        otherwise invalid geometries.
+        """
+        ...
+    def normalize(self) -> BaseGeometry:
+        """
+        Convert geometry to normal form (or canonical form).
+
+        This method orders the coordinates, rings of a polygon and parts of
+        multi geometries consistently. Typically useful for testing purposes
+        (for example in combination with `equals_exact`).
+
+        Examples
+        --------
+        >>> from shapely import MultiLineString
+        >>> line = MultiLineString([[(0, 0), (1, 1)], [(3, 3), (2, 2)]])
+        >>> line.normalize()
+        <MULTILINESTRING ((2 2, 3 3), (0 0, 1 1))>
+        """
+        ...
     @overload
     def difference(self, other: Geometry, grid_size: float | None = None) -> BaseGeometry:
         """
@@ -631,7 +749,40 @@ class BaseGeometry(Geometry):
         """
         ...
     @overload
-    def equals_exact(self, other: Geometry | None, tolerance: float = 0.0, *, normalize: bool = False) -> bool: ...
+    def equals_exact(self, other: Geometry | None, tolerance: float = 0.0, *, normalize: bool = False) -> bool:
+        """
+        Return True if the geometries are equivalent within the tolerance.
+
+        Refer to :func:`~shapely.equals_exact` for full documentation.
+
+        Parameters
+        ----------
+        other : BaseGeometry
+            The other geometry object in this comparison.
+        tolerance : float, optional (default: 0.)
+            Absolute tolerance in the same units as coordinates.
+        normalize : bool, optional (default: False)
+            If True, normalize the two geometries so that the coordinates are
+            in the same order.
+
+            .. versionadded:: 2.1.0
+
+        Examples
+        --------
+        >>> from shapely import LineString
+        >>> LineString(
+        ...     [(0, 0), (2, 2)]
+        ... ).equals_exact(
+        ...     LineString([(0, 0), (1, 1), (2, 2)]),
+        ...     1e-6
+        ... )
+        False
+
+        Returns
+        -------
+        bool
+        """
+        ...
     @overload
     def equals_exact(
         self, other: OptGeoArrayLikeSeq, tolerance: float = 0.0, *, normalize: bool = False

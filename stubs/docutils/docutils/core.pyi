@@ -1,3 +1,14 @@
+"""
+Calling the ``publish_*`` convenience functions (or instantiating a
+`Publisher` object) with component names will result in default
+behavior.  For custom behavior (setting component options), create
+custom component objects first, and pass *them* to
+``publish_*``/`Publisher`.  See `The Docutils Publisher`_.
+
+.. _The Docutils Publisher:
+    https://docutils.sourceforge.io/docs/api/publisher.html
+"""
+
 from _typeshed import Incomplete, StrPath
 from typing import Final
 from typing_extensions import deprecated
@@ -85,7 +96,16 @@ class Publisher:
         settings_spec=None,
         config_section=None,
         **defaults,
-    ) -> None: ...
+    ) -> None:
+        """
+        Parse command line arguments and set ``self.settings``.
+
+        Pass an empty sequence to `argv` to avoid reading `sys.argv`
+        (the default behaviour).
+
+        Set components first (`self.set_reader` & `self.set_writer`).
+        """
+        ...
     def set_io(self, source_path: StrPath | None = None, destination_path: StrPath | None = None) -> None: ...
     def set_source(self, source=None, source_path: StrPath | None = None) -> None: ...
     def set_destination(self, destination=None, destination_path: StrPath | None = None) -> None: ...
