@@ -43,7 +43,7 @@ pycurl==7.45.6
 cachetools==6.0.*
 pysftp==0.2.*
 pika==1.3.*
-peewee==3.18.1
+peewee==3.18.2
 pyxdg==0.28.*
 icalendar==6.3.1
 RPi.GPIO==0.7.*
