@@ -20,9 +20,7 @@ class make_encoder:
         """key_separator"""
         ...
     @property
-    def indent(self) -> int | None:
-        """indent"""
-        ...
+    def indent(self) -> str | None: ...
     @property
     def markers(self) -> dict[int, Any] | None:
         """markers"""
@@ -44,7 +42,7 @@ class make_encoder:
         markers: dict[int, Any] | None,
         default: Callable[[Any], Any],
         encoder: Callable[[str], str],
-        indent: int | None,
+        indent: str | None,
         key_separator: str,
         item_separator: str,
         sort_keys: bool,
