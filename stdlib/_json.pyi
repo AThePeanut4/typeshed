@@ -20,7 +20,9 @@ class make_encoder:
         """key_separator"""
         ...
     @property
-    def indent(self) -> str | None: ...
+    def indent(self) -> str | None:
+        """indent"""
+        ...
     @property
     def markers(self) -> dict[int, Any] | None:
         """markers"""
