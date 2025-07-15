@@ -76,8 +76,8 @@ channels==4.2.*
 antlr4-python3-runtime==4.13.*
 ujson==5.10.*
 dirhash==0.5.*
-hdbcli==2.24.*
-python-crontab==3.2.*
+hdbcli==2.25.*
+python-crontab==3.3.*
 hvac==2.3.*
 boltons==25.0.*
 pyfarmhash==0.4.*
