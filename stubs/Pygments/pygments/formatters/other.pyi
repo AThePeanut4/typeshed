@@ -21,25 +21,7 @@ class NullFormatter(Formatter[_T]):
     filenames: Any
     def format(self, tokensource, outfile) -> None: ...
 
-class RawTokenFormatter(Formatter[_T]):
-    r"""
-    Format tokens as a raw representation for storing token streams.
-
-    The format is ``tokentype<TAB>repr(tokenstring)\n``. The output can later
-    be converted to a token stream with the `RawTokenLexer`, described in the
-    :doc:`lexer list <lexers>`.
-
-    Only two options are accepted:
-
-    `compress`
-        If set to ``'gz'`` or ``'bz2'``, compress the output with the given
-        compression algorithm after encoding (default: ``''``).
-    `error_color`
-        If set to a color name, highlight error tokens using that color.  If
-        set but with no value, defaults to ``'red'``.
-
-        .. versionadded:: 0.11
-    """
+class RawTokenFormatter(Formatter[bytes]):
     name: str
     aliases: Any
     filenames: Any

@@ -3,6 +3,7 @@
 from _typeshed import StrOrBytesPath
 from codecs import StreamReaderWriter
 from collections.abc import Generator, Iterator
+from datetime import datetime
 from types import TracebackType
 from typing_extensions import Self
 
@@ -24,6 +25,8 @@ class LogReader:
     def readlines(self, until: int = ...) -> Generator[tuple[int, str], None, None]:
         """Iterator for reading lines from a file backwards"""
         ...
+
+def cron_date_to_datetime(cron_str: str) -> datetime: ...
 
 class CronLog(LogReader):
     """Use the LogReader to make a Cron specific log reader"""
