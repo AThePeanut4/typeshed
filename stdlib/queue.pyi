@@ -171,6 +171,11 @@ class Queue(Generic[_T]):
         ...
 
 class PriorityQueue(Queue[SupportsRichComparisonT]):
+    """
+    Variant of Queue that retrieves open entries in priority order (lowest first).
+
+    Entries are typically tuples of the form:  (priority number, data).
+    """
     queue: list[SupportsRichComparisonT]
 
 class LifoQueue(Queue[_T]):
