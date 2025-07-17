@@ -2,6 +2,7 @@
 
 import sys
 from _queue import Empty as Empty, SimpleQueue as SimpleQueue
+from _typeshed import SupportsRichComparisonT
 from threading import Condition, Lock
 from types import GenericAlias
 from typing import Any, Generic, TypeVar
@@ -169,13 +170,8 @@ class Queue(Generic[_T]):
         """
         ...
 
-class PriorityQueue(Queue[_T]):
-    """
-    Variant of Queue that retrieves open entries in priority order (lowest first).
-
-    Entries are typically tuples of the form:  (priority number, data).
-    """
-    queue: list[_T]
+class PriorityQueue(Queue[SupportsRichComparisonT]):
+    queue: list[SupportsRichComparisonT]
 
 class LifoQueue(Queue[_T]):
     """Variant of Queue that retrieves most recently added entries first."""
