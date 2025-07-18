@@ -22,6 +22,7 @@ from psycopg2._psycopg import (
     ReplicationConnection as _replicationConnection,
     ReplicationCursor as _replicationCursor,
     ReplicationMessage as ReplicationMessage,
+    _Vars,
     connection as _connection,
     cursor as _cursor,
     quote_ident as quote_ident,
@@ -36,6 +37,7 @@ from psycopg2._range import (
     RangeCaster as RangeCaster,
     register_range as register_range,
 )
+from psycopg2.sql import Composable
 
 _T_cur = TypeVar("_T_cur", bound=_cursor)
 
@@ -132,7 +134,7 @@ class RealDictCursor(DictCursorBase):
     """
     def __init__(self, *args, **kwargs) -> None: ...
     column_mapping: Any
-    def execute(self, query, vars=None): ...
+    def execute(self, query: str | bytes | Composable, vars: _Vars = None) -> None: ...
     def callproc(self, procname, vars=None): ...
     def fetchone(self) -> RealDictRow | None: ...  # type: ignore[override]
     def fetchmany(self, size: int | None = None) -> list[RealDictRow]: ...  # type: ignore[override]
