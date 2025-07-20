@@ -137,7 +137,7 @@ Jetson.GPIO==2.1.*
 mysqlclient==2.2.*
 waitress~=3.0.1
 zxcvbn==4.5.*
-jsonschema[format]==4.24.*
+jsonschema[format]==4.25.*
 pynput~=1.8.1
 xlrd==2.0.*
 Flask-Migrate==4.1.*
