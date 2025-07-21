@@ -17,9 +17,23 @@ if sys.version_info >= (3, 11):
             """
             ...
         @abstractmethod
-        def resource_path(self, resource: str) -> str: ...
+        def resource_path(self, resource: str) -> str:
+            """
+            Return the file system path to the specified resource.
+
+            The 'resource' argument is expected to represent only a file name.
+            If the resource does not exist on the file system, raise
+            FileNotFoundError.
+            """
+            ...
         @abstractmethod
-        def is_resource(self, path: str) -> bool: ...
+        def is_resource(self, path: str) -> bool:
+            """
+            Return True if the named 'path' is a resource.
+
+            Files are resources, directories are not.
+            """
+            ...
         @abstractmethod
         def contents(self) -> Iterator[str]:
             """Return an iterable of entries in `package`."""
@@ -43,9 +57,19 @@ if sys.version_info >= (3, 11):
             """Return True if self is a file"""
             ...
         @abstractmethod
-        def iterdir(self) -> Iterator[Traversable]: ...
+        def iterdir(self) -> Iterator[Traversable]:
+            """Yield Traversable objects in self"""
+            ...
         @abstractmethod
-        def joinpath(self, *descendants: str) -> Traversable: ...
+        def joinpath(self, *descendants: str) -> Traversable:
+            """
+            Return Traversable resolved with any descendants applied.
+
+            Each descendant should be a path segment relative to self
+            and each may contain multiple levels separated by
+            ``posixpath.sep`` (``/``).
+            """
+            ...
 
         # The documentation and runtime protocol allows *args, **kwargs arguments,
         # but this would mean that all implementers would have to support them,
@@ -74,8 +98,12 @@ if sys.version_info >= (3, 11):
             ...
         @property
         @abstractmethod
-        def name(self) -> str: ...
-        def __truediv__(self, child: str, /) -> Traversable: ...
+        def name(self) -> str:
+            """The base name of this object without any parent references."""
+            ...
+        def __truediv__(self, child: str, /) -> Traversable:
+            """Return Traversable child in self"""
+            ...
         @abstractmethod
         def read_bytes(self) -> bytes:
             """Read contents of self as bytes"""
