@@ -17,28 +17,9 @@ if sys.version_info >= (3, 11):
             """
             ...
         @abstractmethod
-        def resource_path(self, resource: str) -> str:
-            """
-            Return the file system path to the specified resource.
-
-            The 'resource' argument is expected to represent only a file name.
-            If the resource does not exist on the file system, raise
-            FileNotFoundError.
-            """
-            ...
-        if sys.version_info >= (3, 10):
-            @abstractmethod
-            def is_resource(self, path: str) -> bool:
-                """
-                Return True if the named 'path' is a resource.
-
-                Files are resources, directories are not.
-                """
-                ...
-        else:
-            @abstractmethod
-            def is_resource(self, name: str) -> bool: ...
-
+        def resource_path(self, resource: str) -> str: ...
+        @abstractmethod
+        def is_resource(self, path: str) -> bool: ...
         @abstractmethod
         def contents(self) -> Iterator[str]:
             """Return an iterable of entries in `package`."""
@@ -62,23 +43,9 @@ if sys.version_info >= (3, 11):
             """Return True if self is a file"""
             ...
         @abstractmethod
-        def iterdir(self) -> Iterator[Traversable]:
-            """Yield Traversable objects in self"""
-            ...
-        if sys.version_info >= (3, 11):
-            @abstractmethod
-            def joinpath(self, *descendants: str) -> Traversable:
-                """
-                Return Traversable resolved with any descendants applied.
-
-                Each descendant should be a path segment relative to self
-                and each may contain multiple levels separated by
-                ``posixpath.sep`` (``/``).
-                """
-                ...
-        else:
-            @abstractmethod
-            def joinpath(self, child: str, /) -> Traversable: ...
+        def iterdir(self) -> Iterator[Traversable]: ...
+        @abstractmethod
+        def joinpath(self, *descendants: str) -> Traversable: ...
 
         # The documentation and runtime protocol allows *args, **kwargs arguments,
         # but this would mean that all implementers would have to support them,
@@ -107,17 +74,8 @@ if sys.version_info >= (3, 11):
             ...
         @property
         @abstractmethod
-        def name(self) -> str:
-            """The base name of this object without any parent references."""
-            ...
-        if sys.version_info >= (3, 10):
-            def __truediv__(self, child: str, /) -> Traversable:
-                """Return Traversable child in self"""
-                ...
-        else:
-            @abstractmethod
-            def __truediv__(self, child: str, /) -> Traversable: ...
-
+        def name(self) -> str: ...
+        def __truediv__(self, child: str, /) -> Traversable: ...
         @abstractmethod
         def read_bytes(self) -> bytes:
             """Read contents of self as bytes"""
