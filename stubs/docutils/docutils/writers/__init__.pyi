@@ -1,3 +1,5 @@
+"""This package contains Docutils Writer modules."""
+
 from typing import Any, Final, Generic, TypedDict, TypeVar, type_check_only
 from typing_extensions import Required
 
@@ -82,11 +84,15 @@ class Writer(Component, Generic[_S]):
     destination: Output | None = None
     output: _S | None = None
     def __init__(self) -> None: ...
-    def write(self, document: nodes.document, destination: Output) -> str | bytes | None: ...
-    def translate(self) -> None: ...
-    def assemble_parts(self) -> None: ...
+    def write(self, document: nodes.document, destination: Output) -> str | bytes | None:
+        """
+        Process a document into its final form.
 
-        See <https://docutils.sourceforge.io/docs/api/publisher.html>.
+        Translate `document` (a Docutils document tree) into the Writer's
+        native format, and write it out to its `destination` (a
+        `docutils.io.Output` subclass object).
+
+        Normally not overridden or extended in subclasses.
         """
         ...
     def translate(self) -> None:
@@ -102,15 +108,11 @@ class Writer(Component, Generic[_S]):
         used by the current Reader as well.
         """
         ...
-    def write(self, document: nodes.document, destination: Output) -> str | bytes | None:
+    def assemble_parts(self) -> None:
         """
-        Process a document into its final form.
+        Assemble the `self.parts` dictionary.  Extend in subclasses.
 
-        Translate `document` (a Docutils document tree) into the Writer's
-        native format, and write it out to its `destination` (a
-        `docutils.io.Output` subclass object).
-
-        Normally not overridden or extended in subclasses.
+        See <https://docutils.sourceforge.io/docs/api/publisher.html>.
         """
         ...
 

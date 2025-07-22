@@ -26,15 +26,87 @@ class CrossInterpreterBufferView:
         """Return a buffer object that exposes the underlying memory of the object."""
         ...
 
-def new_config(name: _Configs = "isolated", /, **overides: object) -> types.SimpleNamespace: ...
-def create(config: types.SimpleNamespace | _Configs | None = "isolated", *, reqrefs: bool = False) -> int: ...
-def destroy(id: SupportsIndex, *, restrict: bool = False) -> None: ...
-def list_all(*, require_ready: bool) -> list[tuple[int, int]]: ...
-def get_current() -> tuple[int, int]: ...
-def get_main() -> tuple[int, int]: ...
-def is_running(id: SupportsIndex, *, restrict: bool = False) -> bool: ...
-def get_config(id: SupportsIndex, *, restrict: bool = False) -> types.SimpleNamespace: ...
-def whence(id: SupportsIndex) -> _Whence: ...
+def new_config(name: _Configs = "isolated", /, **overides: object) -> types.SimpleNamespace:
+    """
+    new_config(name='isolated', /, **overrides) -> type.SimpleNamespace
+
+    Return a representation of a new PyInterpreterConfig.
+
+    The name determines the initial values of the config.  Supported named
+    configs are: default, isolated, legacy, and empty.
+
+    Any keyword arguments are set on the corresponding config fields,
+    overriding the initial values.
+    """
+    ...
+def create(config: types.SimpleNamespace | _Configs | None = "isolated", *, reqrefs: bool = False) -> int:
+    """
+    create([config], *, reqrefs=False) -> ID
+
+    Create a new interpreter and return a unique generated ID.
+
+    The caller is responsible for destroying the interpreter before exiting,
+    typically by using _interpreters.destroy().  This can be managed 
+    automatically by passing "reqrefs=True" and then using _incref() and
+    _decref()` appropriately.
+
+    "config" must be a valid interpreter config or the name of a
+    predefined config ("isolated" or "legacy").  The default
+    is "isolated".
+    """
+    ...
+def destroy(id: SupportsIndex, *, restrict: bool = False) -> None:
+    """
+    destroy(id, *, restrict=False)
+
+    Destroy the identified interpreter.
+
+    Attempting to destroy the current interpreter raises InterpreterError.
+    So does an unrecognized ID.
+    """
+    ...
+def list_all(*, require_ready: bool) -> list[tuple[int, int]]:
+    """
+    list_all() -> [(ID, whence)]
+
+    Return a list containing the ID of every existing interpreter.
+    """
+    ...
+def get_current() -> tuple[int, int]:
+    """
+    get_current() -> (ID, whence)
+
+    Return the ID of current interpreter.
+    """
+    ...
+def get_main() -> tuple[int, int]:
+    """
+    get_main() -> (ID, whence)
+
+    Return the ID of main interpreter.
+    """
+    ...
+def is_running(id: SupportsIndex, *, restrict: bool = False) -> bool:
+    """
+    is_running(id, *, restrict=False) -> bool
+
+    Return whether or not the identified interpreter is running.
+    """
+    ...
+def get_config(id: SupportsIndex, *, restrict: bool = False) -> types.SimpleNamespace:
+    """
+    get_config(id, *, restrict=False) -> types.SimpleNamespace
+
+    Return a representation of the config used to initialize the interpreter.
+    """
+    ...
+def whence(id: SupportsIndex) -> _Whence:
+    """
+    whence(id) -> int
+
+    Return an identifier for where the interpreter was created.
+    """
+    ...
 def exec(
     id: SupportsIndex,
     code: str | types.CodeType | Callable[[], object],
@@ -67,7 +139,20 @@ def call(
     kwargs: dict[str, object] | None = None,
     *,
     restrict: bool = False,
-) -> tuple[_R, types.SimpleNamespace]: ...
+) -> tuple[_R, types.SimpleNamespace]:
+    """
+    call(id, callable, args=None, kwargs=None, *, restrict=False)
+
+    Call the provided object in the identified interpreter.
+    Pass the given args and kwargs, if possible.
+
+    "callable" may be a plain function with no free vars that takes
+    no arguments.
+
+    The function's code object is used and all its state
+    is ignored, including its __globals__ dict.
+    """
+    ...
 def run_string(
     id: SupportsIndex,
     script: str | types.CodeType | Callable[[], object],

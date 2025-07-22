@@ -575,9 +575,43 @@ _ResourceT = TypeVar("_ResourceT", bound=Resource[Any])
 # HK Type Vars could help type the first overload:
 @overload
 def modelresource_factory(model: Model, resource_class: type[_ResourceT]) -> _ResourceT:
-    """Factory for creating ``ModelResource`` class for given Django model."""
+    """
+    Factory for creating ``ModelResource`` class for given Django model.
+    This factory function creates a ``ModelResource`` class dynamically, with support
+    for custom fields, methods.
+
+    :param model: Django model class
+
+    :param resource_class: Base resource class (default: ModelResource)
+
+    :param meta_options: Meta options dictionary
+
+    :param custom_fields: Dictionary mapping field names to Field object
+
+    :param dehydrate_methods: Dictionary mapping field names
+                              to dehydrate method (Callable)
+
+    :returns: ModelResource class
+    """
     ...
 @overload
 def modelresource_factory(model: _ModelT) -> ModelResource[_ModelT]:
-    """Factory for creating ``ModelResource`` class for given Django model."""
+    """
+    Factory for creating ``ModelResource`` class for given Django model.
+    This factory function creates a ``ModelResource`` class dynamically, with support
+    for custom fields, methods.
+
+    :param model: Django model class
+
+    :param resource_class: Base resource class (default: ModelResource)
+
+    :param meta_options: Meta options dictionary
+
+    :param custom_fields: Dictionary mapping field names to Field object
+
+    :param dehydrate_methods: Dictionary mapping field names
+                              to dehydrate method (Callable)
+
+    :returns: ModelResource class
+    """
     ...
