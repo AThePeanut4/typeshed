@@ -854,10 +854,45 @@ def mkdtemp(suffix: str | None = None, prefix: str | None = None, dir: StrPath |
     """
     ...
 @overload
-def mkdtemp(suffix: bytes | None = None, prefix: bytes | None = None, dir: BytesPath | None = None) -> bytes: ...
+def mkdtemp(suffix: bytes | None = None, prefix: bytes | None = None, dir: BytesPath | None = None) -> bytes:
+    """
+    User-callable function to create and return a unique temporary
+    directory.  The return value is the pathname of the directory.
+
+    Arguments are as for mkstemp, except that the 'text' argument is
+    not accepted.
+
+    The directory is readable, writable, and searchable only by the
+    creating user.
+
+    Caller is responsible for deleting the directory when done with it.
+    """
+    ...
 @deprecated("Deprecated since Python 2.3. Use `mkstemp()` or `NamedTemporaryFile(delete=False)` instead.")
-def mktemp(suffix: str = "", prefix: str = "tmp", dir: StrPath | None = None) -> str: ...
-def gettempdirb() -> bytes: ...
-def gettempprefixb() -> bytes: ...
-def gettempdir() -> str: ...
-def gettempprefix() -> str: ...
+def mktemp(suffix: str = "", prefix: str = "tmp", dir: StrPath | None = None) -> str:
+    """
+    User-callable function to return a unique temporary file name.  The
+    file is not created.
+
+    Arguments are similar to mkstemp, except that the 'text' argument is
+    not accepted, and suffix=None, prefix=None and bytes file names are not
+    supported.
+
+    THIS FUNCTION IS UNSAFE AND SHOULD NOT BE USED.  The file name may
+    refer to a file that did not exist at some point, but by the time
+    you get around to creating it, someone else may have beaten you to
+    the punch.
+    """
+    ...
+def gettempdirb() -> bytes:
+    """Returns tempfile.tempdir as bytes."""
+    ...
+def gettempprefixb() -> bytes:
+    """The default prefix for temporary directories as bytes."""
+    ...
+def gettempdir() -> str:
+    """Returns tempfile.tempdir as str."""
+    ...
+def gettempprefix() -> str:
+    """The default prefix for temporary directories as string."""
+    ...

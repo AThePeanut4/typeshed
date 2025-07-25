@@ -302,10 +302,47 @@ else:
             """
             Like sigwaitinfo(), but with a timeout.
 
-def strsignal(signalnum: _SIGNUM, /) -> str | None: ...
-def valid_signals() -> set[Signals]: ...
-def raise_signal(signalnum: _SIGNUM, /) -> None: ...
-def set_wakeup_fd(fd: int, /, *, warn_on_full_buffer: bool = True) -> int: ...
+            The timeout is specified in seconds, with floating-point numbers allowed.
+            """
+            ...
+        def sigwaitinfo(sigset: Iterable[int], /) -> struct_siginfo:
+            """
+            Wait synchronously until one of the signals in *sigset* is delivered.
+
+            Returns a struct_siginfo containing information about the signal.
+            """
+            ...
+
+def strsignal(signalnum: _SIGNUM, /) -> str | None:
+    """
+    Return the system description of the given signal.
+
+    Returns the description of signal *signalnum*, such as "Interrupt"
+    for :const:`SIGINT`. Returns :const:`None` if *signalnum* has no
+    description. Raises :exc:`ValueError` if *signalnum* is invalid.
+    """
+    ...
+def valid_signals() -> set[Signals]:
+    """
+    Return a set of valid signal numbers on this platform.
+
+    The signal numbers returned by this function can be safely passed to
+    functions like `pthread_sigmask`.
+    """
+    ...
+def raise_signal(signalnum: _SIGNUM, /) -> None:
+    """Send a signal to the executing process."""
+    ...
+def set_wakeup_fd(fd: int, /, *, warn_on_full_buffer: bool = True) -> int:
+    """
+    Sets the fd to be written to (with the signal number) when a signal comes in.
+
+    A library can use this to wakeup select or poll.
+    The previous fd or -1 is returned.
+
+    The fd must be non-blocking.
+    """
+    ...
 
 if sys.platform == "linux":
     def pidfd_send_signal(pidfd: int, sig: int, siginfo: None = None, flags: int = 0, /) -> None: ...
