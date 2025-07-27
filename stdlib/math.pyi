@@ -141,9 +141,23 @@ if sys.version_info >= (3, 11):
         """Return 2 raised to the power of x."""
         ...
 
-def expm1(x: _SupportsFloatOrIndex, /) -> float: ...
-def fabs(x: _SupportsFloatOrIndex, /) -> float: ...
-def factorial(x: SupportsIndex, /) -> int: ...
+def expm1(x: _SupportsFloatOrIndex, /) -> float:
+    """
+    Return exp(x)-1.
+
+    This function avoids the loss of precision involved in the direct evaluation of exp(x)-1 for small x.
+    """
+    ...
+def fabs(x: _SupportsFloatOrIndex, /) -> float:
+    """Return the absolute value of the float x."""
+    ...
+def factorial(x: SupportsIndex, /) -> int:
+    """
+    Find n!.
+
+    Raise a ValueError if x is negative or non-integral.
+    """
+    ...
 @type_check_only
 class _SupportsFloor(Protocol[_T_co]):
     def __floor__(self) -> _T_co: ...

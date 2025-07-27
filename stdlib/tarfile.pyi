@@ -1172,11 +1172,41 @@ class TarFile:
             errorlevel: int | None = ...,
         ) -> Self: ...
 
-    def getmember(self, name: str) -> TarInfo: ...
-    def getmembers(self) -> _list[TarInfo]: ...
-    def getnames(self) -> _list[str]: ...
-    def list(self, verbose: bool = True, *, members: Iterable[TarInfo] | None = None) -> None: ...
-    def next(self) -> TarInfo | None: ...
+    def getmember(self, name: str) -> TarInfo:
+        """
+        Return a TarInfo object for member `name'. If `name' can not be
+        found in the archive, KeyError is raised. If a member occurs more
+        than once in the archive, its last occurrence is assumed to be the
+        most up-to-date version.
+        """
+        ...
+    def getmembers(self) -> _list[TarInfo]:
+        """
+        Return the members of the archive as a list of TarInfo objects. The
+        list has the same order as the members in the archive.
+        """
+        ...
+    def getnames(self) -> _list[str]:
+        """
+        Return the members of the archive as a list of their names. It has
+        the same order as the list returned by getmembers().
+        """
+        ...
+    def list(self, verbose: bool = True, *, members: Iterable[TarInfo] | None = None) -> None:
+        """
+        Print a table of contents to sys.stdout. If `verbose' is False, only
+        the names of the members are printed. If it is True, an `ls -l'-like
+        output is produced. `members' is optional and must be a subset of the
+        list returned by getmembers().
+        """
+        ...
+    def next(self) -> TarInfo | None:
+        """
+        Return the next member of the archive as a TarInfo object, when
+        TarFile is opened for reading. Return None if there is no more
+        available.
+        """
+        ...
     # Calling this method without `filter` is deprecated, but it may be set either on the class or in an
     # individual call, so we can't mark it as @deprecated here.
     def extractall(
@@ -1489,9 +1519,24 @@ class TarInfo:
         uname: str = ...,
         gname: str = ...,
         deep: bool = True,
-    ) -> Self: ...
-    def get_info(self) -> Mapping[str, str | int | bytes | Mapping[str, str]]: ...
-    def tobuf(self, format: _TarFormat | None = 2, encoding: str | None = "utf-8", errors: str = "surrogateescape") -> bytes: ...
+    ) -> Self:
+        """
+        Return a deep copy of self with the given attributes replaced.
+        
+        """
+        ...
+    def get_info(self) -> Mapping[str, str | int | bytes | Mapping[str, str]]:
+        """
+        Return the TarInfo's attributes as a dictionary.
+        
+        """
+        ...
+    def tobuf(self, format: _TarFormat | None = 2, encoding: str | None = "utf-8", errors: str = "surrogateescape") -> bytes:
+        """
+        Return a tar header as a string of 512 byte blocks.
+        
+        """
+        ...
     def create_ustar_header(
         self, info: Mapping[str, str | int | bytes | Mapping[str, str]], encoding: str, errors: str
     ) -> bytes:

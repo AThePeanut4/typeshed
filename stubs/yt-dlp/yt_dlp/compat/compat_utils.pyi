@@ -3,6 +3,7 @@ from collections.abc import Callable, Collection
 from typing import Any, NamedTuple
 
 class _Package(NamedTuple):
+    """Package(name, version)"""
     name: str
     version: str
 
@@ -18,4 +19,6 @@ def passthrough_module(
     allowed_attributes: Collection[str] = ...,
     *,
     callback: Callable[[str], object] = ...,
-) -> types.ModuleType: ...
+) -> types.ModuleType:
+    """Passthrough parent module into a child module, creating the parent if necessary"""
+    ...

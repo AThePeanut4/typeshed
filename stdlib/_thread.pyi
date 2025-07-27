@@ -282,7 +282,16 @@ def start_new(function: Callable[..., object], args: tuple[Any, ...], kwargs: di
     ...
 
 if sys.version_info >= (3, 10):
-    def interrupt_main(signum: signal.Signals = signal.SIGINT, /) -> None: ...
+    def interrupt_main(signum: signal.Signals = signal.SIGINT, /) -> None:
+        """
+        Simulate the arrival of the given signal in the main thread,
+        where the corresponding signal handler will be executed.
+        If *signum* is omitted, SIGINT is assumed.
+        A subthread can use this function to interrupt the main thread.
+
+        Note: the default signal handler for SIGINT raises ``KeyboardInterrupt``.
+        """
+        ...
 
 else:
     def interrupt_main() -> None:

@@ -63,7 +63,88 @@ def heatmap(
     shading: Literal["flat", "nearest", "gouraud", "auto"] | None = None,
     antialiased: bool = False,
     **kwargs,
-) -> Axes: ...
+) -> Axes:
+    """
+    Plot rectangular data as a color-encoded matrix.
+
+    This is an Axes-level function and will draw the heatmap into the
+    currently-active Axes if none is provided to the ``ax`` argument.  Part of
+    this Axes space will be taken and used to plot a colormap, unless ``cbar``
+    is False or a separate Axes is provided to ``cbar_ax``.
+
+    Parameters
+    ----------
+    data : rectangular dataset
+        2D dataset that can be coerced into an ndarray. If a Pandas DataFrame
+        is provided, the index/column information will be used to label the
+        columns and rows.
+    vmin, vmax : floats, optional
+        Values to anchor the colormap, otherwise they are inferred from the
+        data and other keyword arguments.
+    cmap : matplotlib colormap name or object, or list of colors, optional
+        The mapping from data values to color space. If not provided, the
+        default will depend on whether ``center`` is set.
+    center : float, optional
+        The value at which to center the colormap when plotting divergent data.
+        Using this parameter will change the default ``cmap`` if none is
+        specified.
+    robust : bool, optional
+        If True and ``vmin`` or ``vmax`` are absent, the colormap range is
+        computed with robust quantiles instead of the extreme values.
+    annot : bool or rectangular dataset, optional
+        If True, write the data value in each cell. If an array-like with the
+        same shape as ``data``, then use this to annotate the heatmap instead
+        of the data. Note that DataFrames will match on position, not index.
+    fmt : str, optional
+        String formatting code to use when adding annotations.
+    annot_kws : dict of key, value mappings, optional
+        Keyword arguments for :meth:`matplotlib.axes.Axes.text` when ``annot``
+        is True.
+    linewidths : float, optional
+        Width of the lines that will divide each cell.
+    linecolor : color, optional
+        Color of the lines that will divide each cell.
+    cbar : bool, optional
+        Whether to draw a colorbar.
+    cbar_kws : dict of key, value mappings, optional
+        Keyword arguments for :meth:`matplotlib.figure.Figure.colorbar`.
+    cbar_ax : matplotlib Axes, optional
+        Axes in which to draw the colorbar, otherwise take space from the
+        main Axes.
+    square : bool, optional
+        If True, set the Axes aspect to "equal" so each cell will be
+        square-shaped.
+    xticklabels, yticklabels : "auto", bool, list-like, or int, optional
+        If True, plot the column names of the dataframe. If False, don't plot
+        the column names. If list-like, plot these alternate labels as the
+        xticklabels. If an integer, use the column names but plot only every
+        n label. If "auto", try to densely plot non-overlapping labels.
+    mask : bool array or DataFrame, optional
+        If passed, data will not be shown in cells where ``mask`` is True.
+        Cells with missing values are automatically masked.
+    ax : matplotlib Axes, optional
+        Axes in which to draw the plot, otherwise use the currently-active
+        Axes.
+    kwargs : other keyword arguments
+        All other keyword arguments are passed to
+        :meth:`matplotlib.axes.Axes.pcolormesh`.
+
+    Returns
+    -------
+    ax : matplotlib Axes
+        Axes object with the heatmap.
+
+    See Also
+    --------
+    clustermap : Plot a matrix using hierarchical clustering to arrange the
+                 rows and columns.
+
+    Examples
+    --------
+
+    .. include:: ../docstrings/heatmap.rst
+    """
+    ...
 @type_check_only
 class _Dendogram(TypedDict):
     icoord: list[list[float]]
@@ -102,10 +183,33 @@ class _DendrogramPlotter:
         axis: int,
         label: bool,
         rotate: bool,
-    ) -> None: ...
+    ) -> None:
+        """
+        Plot a dendrogram of the relationships between the columns of data
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Rectangular data
+        """
+        ...
     @property
     def calculated_linkage(self) -> NDArray[np.float64]: ...
-    def calculate_dendrogram(self) -> _Dendogram: ...
+    def calculate_dendrogram(self) -> _Dendogram:
+        """
+        Calculates a dendrogram based on the linkage matrix
+
+        Made a separate function, not a property because don't want to
+        recalculate the dendrogram every time it is accessed.
+
+        Returns
+        -------
+        dendrogram : dict
+            Dendrogram dictionary as returned by scipy.cluster.hierarchy
+            .dendrogram. The important key-value pairing is
+            "reordered_ind" which indicates the re-ordering of the matrix
+        """
+        ...
     @property
     def reordered_ind(self) -> list[int]:
         """Indices of the matrix, reordered by the dendrogram"""
@@ -213,16 +317,79 @@ class ClusterGrid(Grid):
         pivot_kws: Mapping[str, Incomplete] | None,
         z_score: int | None = None,
         standard_scale: int | None = None,
-    ) -> pd.DataFrame: ...
+    ) -> pd.DataFrame:
+        """Extract variables from data or use directly."""
+        ...
     @staticmethod
-    def z_score(data2d: pd.DataFrame, axis: int = 1) -> pd.DataFrame: ...
+    def z_score(data2d: pd.DataFrame, axis: int = 1) -> pd.DataFrame:
+        """
+        Standarize the mean and variance of the data axis
+
+        Parameters
+        ----------
+        data2d : pandas.DataFrame
+            Data to normalize
+        axis : int
+            Which axis to normalize across. If 0, normalize across rows, if 1,
+            normalize across columns.
+
+        Returns
+        -------
+        normalized : pandas.DataFrame
+            Noramlized data with a mean of 0 and variance of 1 across the
+            specified axis.
+        """
+        ...
     @staticmethod
-    def standard_scale(data2d: pd.DataFrame, axis: int = 1) -> pd.DataFrame: ...
-    def dim_ratios(self, colors: ArrayLike | None, dendrogram_ratio: float, colors_ratio: float) -> list[float]: ...
+    def standard_scale(data2d: pd.DataFrame, axis: int = 1) -> pd.DataFrame:
+        """
+        Divide the data by the difference between the max and min
+
+        Parameters
+        ----------
+        data2d : pandas.DataFrame
+            Data to normalize
+        axis : int
+            Which axis to normalize across. If 0, normalize across rows, if 1,
+            normalize across columns.
+
+        Returns
+        -------
+        standardized : pandas.DataFrame
+            Noramlized data with a mean of 0 and variance of 1 across the
+            specified axis.
+        """
+        ...
+    def dim_ratios(self, colors: ArrayLike | None, dendrogram_ratio: float, colors_ratio: float) -> list[float]:
+        """Get the proportions of the figure taken up by each axes."""
+        ...
     @staticmethod
     def color_list_to_matrix_and_cmap(
         colors: _FlatOrNestedSequenceOfColors, ind: _ArrayLikeInt_co, axis: int = 0
-    ) -> tuple[NDArray[np.int_], ListedColormap]: ...
+    ) -> tuple[NDArray[np.int_], ListedColormap]:
+        """
+        Turns a list of colors into a numpy matrix and matplotlib colormap
+
+        These arguments can now be plotted using heatmap(matrix, cmap)
+        and the provided colors will be plotted.
+
+        Parameters
+        ----------
+        colors : list of matplotlib colors
+            Colors to label the rows or columns of a dataframe.
+        ind : list of ints
+            Ordering of the rows or columns, to reorder the original colors
+            by the clustered dendrogram order
+        axis : int
+            Which axis this is labeling
+
+        Returns
+        -------
+        matrix : numpy.array
+            A numpy array of integer values, where each indexes into the cmap
+        cmap : matplotlib.colors.ListedColormap
+        """
+        ...
     def plot_dendrograms(
         self,
         row_cluster: bool,

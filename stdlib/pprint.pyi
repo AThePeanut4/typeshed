@@ -67,7 +67,9 @@ if sys.version_info >= (3, 10):
         compact: bool = False,
         sort_dicts: bool = False,
         underscore_numbers: bool = False,
-    ) -> None: ...
+    ) -> None:
+        """Pretty-print a Python object"""
+        ...
 
 else:
     def pp(
