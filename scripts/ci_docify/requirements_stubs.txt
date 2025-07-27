@@ -48,6 +48,7 @@ jsonnet==0.21.*
 watchpoints==0.2.5
 tabulate==0.9.*
 python-xlib==0.33.*
+yt-dlp==2025.07.21
 opentracing==2.4.*
 bleach[css]==6.2.*
 Flask-Cors==6.0.*
