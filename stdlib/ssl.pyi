@@ -189,6 +189,7 @@ class SSLCertVerificationError(SSLError, ValueError):
 CertificateError = SSLCertVerificationError
 
 if sys.version_info < (3, 12):
+    @deprecated("Deprecated since Python 3.7. Removed in Python 3.12. Use `SSLContext.wrap_socket()` instead.")
     def wrap_socket(
         sock: socket.socket,
         keyfile: StrOrBytesPath | None = None,
@@ -267,11 +268,8 @@ else:
 _create_default_https_context: Callable[..., SSLContext]
 
 if sys.version_info < (3, 12):
-    def match_hostname(cert: _PeerCertRetDictType, hostname: str) -> None:
-        """
-        Verify that *cert* (in decoded format as returned by
-        SSLSocket.getpeercert()) matches the *hostname*.  RFC 2818 and RFC 6125
-        rules are followed.
+    @deprecated("Deprecated since Python 3.7. Removed in Python 3.12.")
+    def match_hostname(cert: _PeerCertRetDictType, hostname: str) -> None: ...
 
         The function matches IP addresses rather than dNSNames if hostname is a
         valid ipaddress string. IPv4 addresses are supported on all platforms.
@@ -755,9 +753,11 @@ class SSLContext(_SSLContext):
     if sys.version_info >= (3, 10):
         security_level: int
     if sys.version_info >= (3, 10):
-        # Using the default (None) for the `protocol` parameter is deprecated,
-        # but there isn't a good way of marking that in the stub unless/until PEP 702 is accepted
-        def __new__(cls, protocol: int | None = None, *args: Any, **kwargs: Any) -> Self: ...
+        @overload
+        def __new__(cls, protocol: int, *args: Any, **kwargs: Any) -> Self: ...
+        @overload
+        @deprecated("Deprecated since Python 3.10. Use a specific version of the SSL protocol.")
+        def __new__(cls, protocol: None = None, *args: Any, **kwargs: Any) -> Self: ...
     else:
         def __new__(cls, protocol: int = ..., *args: Any, **kwargs: Any) -> Self: ...
 

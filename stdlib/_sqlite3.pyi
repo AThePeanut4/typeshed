@@ -16,8 +16,9 @@ from sqlite3 import (
     ProgrammingError as ProgrammingError,
     Row as Row,
     Warning as Warning,
+    _IsolationLevel,
 )
-from typing import Any, Final, Literal, TypeVar, overload
+from typing import Any, Final, TypeVar, overload
 from typing_extensions import TypeAlias
 
 if sys.version_info >= (3, 11):
@@ -231,7 +232,7 @@ if sys.version_info >= (3, 12):
         database: StrOrBytesPath,
         timeout: float = 5.0,
         detect_types: int = 0,
-        isolation_level: Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None = "DEFERRED",
+        isolation_level: _IsolationLevel = "DEFERRED",
         check_same_thread: bool = True,
         cached_statements: int = 128,
         uri: bool = False,
@@ -255,7 +256,7 @@ if sys.version_info >= (3, 12):
         database: StrOrBytesPath,
         timeout: float,
         detect_types: int,
-        isolation_level: Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None,
+        isolation_level: _IsolationLevel,
         check_same_thread: bool,
         factory: type[_ConnectionT],
         cached_statements: int = 128,
@@ -280,7 +281,7 @@ if sys.version_info >= (3, 12):
         database: StrOrBytesPath,
         timeout: float = 5.0,
         detect_types: int = 0,
-        isolation_level: Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None = "DEFERRED",
+        isolation_level: _IsolationLevel = "DEFERRED",
         check_same_thread: bool = True,
         *,
         factory: type[_ConnectionT],
@@ -307,7 +308,7 @@ else:
         database: StrOrBytesPath,
         timeout: float = 5.0,
         detect_types: int = 0,
-        isolation_level: Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None = "DEFERRED",
+        isolation_level: _IsolationLevel = "DEFERRED",
         check_same_thread: bool = True,
         cached_statements: int = 128,
         uri: bool = False,
@@ -324,7 +325,7 @@ else:
         database: StrOrBytesPath,
         timeout: float,
         detect_types: int,
-        isolation_level: Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None,
+        isolation_level: _IsolationLevel,
         check_same_thread: bool,
         factory: type[_ConnectionT],
         cached_statements: int = 128,
@@ -342,7 +343,7 @@ else:
         database: StrOrBytesPath,
         timeout: float = 5.0,
         detect_types: int = 0,
-        isolation_level: Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None = "DEFERRED",
+        isolation_level: _IsolationLevel = "DEFERRED",
         check_same_thread: bool = True,
         *,
         factory: type[_ConnectionT],

@@ -5,7 +5,7 @@ from builtins import list as _list, type as _type
 from collections.abc import Iterable, Iterator, Mapping
 from email.message import Message
 from types import TracebackType
-from typing import IO, Any, Protocol
+from typing import IO, Any, Protocol, type_check_only
 from typing_extensions import Self
 
 __all__ = [
@@ -56,22 +56,8 @@ def parse(
     ...
 def parse_multipart(
     fp: IO[Any], pdict: SupportsGetItem[str, bytes], encoding: str = "utf-8", errors: str = "replace", separator: str = "&"
-) -> dict[str, list[Any]]:
-    """
-    Parse multipart input.
-
-    Arguments:
-    fp   : input file
-    pdict: dictionary containing other parameters of content-type header
-    encoding, errors: request encoding and error handler, passed to
-        FieldStorage
-
-    Returns a dictionary just like parse_qs(): keys are the field names, each
-    value is a list of values for that field. For non-file fields, the value
-    is a list of strings.
-    """
-    ...
-
+) -> dict[str, list[Any]]: ...
+@type_check_only
 class _Environ(Protocol):
     def __getitem__(self, k: str, /) -> str: ...
     def keys(self) -> Iterable[str]: ...
