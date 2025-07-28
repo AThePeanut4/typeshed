@@ -1,3 +1,5 @@
+"""Esperanto-language mappings for language-dependent features of Docutils."""
+
 from typing import Final, Literal
 
 __docformat__: Final = "reStructuredText"

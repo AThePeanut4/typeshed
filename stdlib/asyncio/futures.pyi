@@ -18,4 +18,6 @@ else:
 
 _T = TypeVar("_T")
 
-def wrap_future(future: _ConcurrentFuture[_T] | Future[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]: ...
+def wrap_future(future: _ConcurrentFuture[_T] | Future[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]:
+    """Wrap concurrent.futures.Future object."""
+    ...

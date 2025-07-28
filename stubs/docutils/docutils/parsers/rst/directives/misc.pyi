@@ -1,3 +1,5 @@
+"""Miscellaneous directives."""
+
 from _typeshed import StrPath
 from pathlib import Path
 from re import Match, Pattern

@@ -601,7 +601,13 @@ class SSLSocket(socket.socket):
         ...
     if sys.version_info >= (3, 10):
         @deprecated("Deprecated since Python 3.10. Use ALPN instead.")
-        def selected_npn_protocol(self) -> str | None: ...
+        def selected_npn_protocol(self) -> str | None:
+            """
+            Return the currently selected NPN protocol as a string, or ``None``
+            if a next protocol was not negotiated or if NPN is not supported by one
+            of the peers.
+            """
+            ...
     else:
         def selected_npn_protocol(self) -> str | None:
             """
@@ -773,7 +779,15 @@ def create_default_context(
     cafile: StrOrBytesPath | None = None,
     capath: StrOrBytesPath | None = None,
     cadata: str | ReadableBuffer | None = None,
-) -> SSLContext: ...
+) -> SSLContext:
+    """
+    Create a SSLContext object with default settings.
+
+    NOTE: The protocol and settings may change anytime without prior
+          deprecation. The values represent a fair balance between maximum
+          compatibility and security.
+    """
+    ...
 
 if sys.version_info >= (3, 10):
     def _create_unverified_context(
@@ -787,7 +801,16 @@ if sys.version_info >= (3, 10):
         cafile: StrOrBytesPath | None = None,
         capath: StrOrBytesPath | None = None,
         cadata: str | ReadableBuffer | None = None,
-    ) -> SSLContext: ...
+    ) -> SSLContext:
+        """
+        Create a SSLContext object for Python stdlib modules
+
+        All Python stdlib modules shall use this function to create SSLContext
+        objects in order to keep common settings in one place. The configuration
+        is less restrict than create_default_context()'s to increase backward
+        compatibility.
+        """
+        ...
 
 else:
     def _create_unverified_context(
@@ -801,7 +824,16 @@ else:
         cafile: StrOrBytesPath | None = None,
         capath: StrOrBytesPath | None = None,
         cadata: str | ReadableBuffer | None = None,
-    ) -> SSLContext: ...
+    ) -> SSLContext:
+        """
+        Create a SSLContext object for Python stdlib modules
+
+        All Python stdlib modules shall use this function to create SSLContext
+        objects in order to keep common settings in one place. The configuration
+        is less restrict than create_default_context()'s to increase backward
+        compatibility.
+        """
+        ...
 
 _create_default_https_context = create_default_context
 
@@ -894,7 +926,13 @@ class SSLObject:
         ...
     if sys.version_info >= (3, 10):
         @deprecated("Deprecated since Python 3.10. Use ALPN instead.")
-        def selected_npn_protocol(self) -> str | None: ...
+        def selected_npn_protocol(self) -> str | None:
+            """
+            Return the currently selected NPN protocol as a string, or ``None``
+            if a next protocol was not negotiated or if NPN is not supported by one
+            of the peers.
+            """
+            ...
     else:
         def selected_npn_protocol(self) -> str | None:
             """
