@@ -2924,47 +2924,10 @@ def write_docstringdict(filename: str = "turtle_docstringdict") -> None:
     """
     ...
 
-# Note: it's somewhat unfortunate that we have to copy the function signatures.
-# It would be nice if we could partially reduce the redundancy by doing something
-# like the following:
-#
-#     _screen: Screen
-#     clear = _screen.clear
-#
-# However, it seems pytype does not support this type of syntax in pyi files.
-
 # Functions copied from TurtleScreenBase:
 
-# Note: mainloop() was always present in the global scope, but was added to
-# TurtleScreenBase in Python 3.0
-def mainloop() -> None:
-    """
-    Starts event loop - calling Tkinter's mainloop function.
-
-    No argument.
-
-    Must be last statement in a turtle graphics program.
-    Must NOT be used if a script is run from within IDLE in -n mode
-    (No subprocess) - for interactive use of turtle graphics.
-
-    Example:
-    >>> mainloop()
-    """
-    ...
-def textinput(title: str, prompt: str) -> str | None:
-    """
-    Pop up a dialog window for input of a string.
-
-    Arguments: title is the title of the dialog window,
-    prompt is a text mostly describing what information to input.
-
-    Return the string input
-    If the dialog is canceled, return None.
-
-    Example:
-    >>> textinput("NIM", "Name of first player:")
-    """
-    ...
+def mainloop() -> None: ...
+def textinput(title: str, prompt: str) -> str | None: ...
 def numinput(
     title: str, prompt: str, default: float | None = None, minval: float | None = None, maxval: float | None = None
 ) -> float | None:

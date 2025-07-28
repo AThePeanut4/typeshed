@@ -3,6 +3,7 @@
 import re
 from _typeshed import Incomplete, StrPath, Unused
 from collections.abc import Callable, Iterable
+from io import TextIOWrapper
 from pathlib import Path
 from typing import ClassVar, Final, Literal, NoReturn, TypeVar
 from typing_extensions import deprecated
@@ -15,6 +16,8 @@ from docutils.writers import Writer as _Writer
 
 _K = TypeVar("_K")
 _V = TypeVar("_V")
+
+__docformat__: Final = "reStructuredText"
 
 LATEX_WRITER_DIR: Final[Path]
 
@@ -80,6 +83,33 @@ class PreambleCmds:
     title_legacy: ClassVar[str]
     toc_list: ClassVar[str]
     ttem: ClassVar[str]
+    duclass: ClassVar[str]
+    providelength: ClassVar[str]
+    abstract: ClassVar[str]
+    dedication: ClassVar[str]
+    docinfo: ClassVar[str]
+    error: ClassVar[str]
+    highlight_rules: ClassVar[str]
+    admonition: ClassVar[str]
+    fieldlist: ClassVar[str]
+    footnotes: ClassVar[str]
+    inline: ClassVar[str]
+    legend: ClassVar[str]
+    lineblock: ClassVar[str]
+    optionlist: ClassVar[str]
+    rubric: ClassVar[str]
+    sidebar: ClassVar[str]
+    title: ClassVar[str]
+    subtitle: ClassVar[str]
+    documentsubtitle: ClassVar[str]
+    titlereference: ClassVar[str]
+    transition: ClassVar[str]
+    secnumdepth: ClassVar[str]
+
+fp: TextIOWrapper
+line: str
+block_name: str
+definitions: str
 
 class CharMaps:
     """LaTeX representations for active and Unicode characters."""
@@ -250,28 +280,14 @@ class LaTeXTranslator(nodes.NodeVisitor):
         """
         ...
     def language_label(self, docutil_label: str) -> str: ...
-    def encode(self, text: str) -> str:
-        r"""
-        Return text with 'problematic' characters escaped.
-
-        * Escape the special printing characters ``# $ % & ~ _ ^ \ { }``,
-          square brackets ``[ ]``, double quotes and (in OT1) ``< | >``.
-        * Translate non-supported Unicode characters.
-        * Separate ``-`` (and more in literal text) to prevent input ligatures.
-        """
-        ...
-    def attval(self, text: str, whitespace: re.Pattern[str] = ...) -> str:
-        """Cleanse, encode, and return attribute value text."""
-        ...
-    def is_inline(self, node: nodes.Node) -> bool:
-        """Check whether a node represents an inline or block-level element"""
-        ...
-    def append_hypertargets(self, node: nodes.Element) -> None:
-        """Append hypertargets for all ids of `node`"""
-        ...
-    def set_align_from_classes(self, node) -> None:
-        """Convert ``align-*`` class arguments into alignment args."""
-        ...
+    def encode(self, text: str) -> str: ...
+    def attval(self, text: str, whitespace: re.Pattern[str] = ...) -> str: ...
+    def is_inline(self, node: nodes.Node) -> bool: ...
+    def ids_to_labels(
+        self, node: nodes.Element, set_anchor: bool = True, protect: bool = False, newline: bool = False
+    ) -> list[Incomplete]: ...
+    def append_hypertargets(self, node: nodes.Element) -> None: ...
+    def set_align_from_classes(self, node) -> None: ...
     def insert_align_declaration(self, node: nodes.Element, default: str | None = None) -> None: ...
     def duclass_open(self, node) -> None:
         """Open a group and insert declarations for class values."""

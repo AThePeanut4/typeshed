@@ -104,6 +104,7 @@ from typing import Any, ClassVar, Final, NoReturn
 from typing_extensions import TypeAlias
 
 from docutils import ApplicationError, DataError, nodes
+from docutils.nodes import Node, system_message
 from docutils.parsers.rst.languages import _RstLanguageModule
 from docutils.statemachine import StateMachine, StateMachineWS, StateWS, StringList
 from docutils.utils import Reporter
@@ -251,15 +252,9 @@ class RSTState(StateWS[list[str]]):
         """
         ...
     def title_inconsistent(self, sourcetext: str, lineno: int): ...
-    def new_subsection(self, title: str, lineno: int, messages) -> None:
-        """Append new subsection to document tree. On return, check level."""
-        ...
-    def paragraph(self, lines: Iterable[str], lineno: int):
-        """Return a list (paragraph & messages) & a boolean: literal_block next?"""
-        ...
-    def inline_text(self, text: str, lineno: int):
-        """Return 2 lists: nodes (text and inline elements), and system_messages."""
-        ...
+    def new_subsection(self, title: str, lineno: int, messages) -> None: ...
+    def paragraph(self, lines: Iterable[str], lineno: int): ...
+    def inline_text(self, text: str, lineno: int) -> tuple[list[Node], list[system_message]]: ...
     def unindent_warning(self, node_name: str): ...
 
 def build_regexp(definition, compile: bool = True):
@@ -403,9 +398,9 @@ class Body(RSTState):
     pats: Incomplete
     patterns: ClassVar[dict[str, str | Pattern[str]]]
     initial_transitions: ClassVar[tuple[str, ...]]
-    def indent(self, match, context, next_state):
-        """Block quote."""
-        ...
+    sequence: str
+    format: str
+    def indent(self, match, context, next_state): ...
     def block_quote(self, indented, line_offset): ...
     attribution_pattern: Incomplete
     def split_attribution(self, indented, line_offset):

@@ -181,9 +181,6 @@ class TFRecordWriter:
         """__exit__(self: tensorflow.python.lib.io._pywrap_record_io.RecordWriter, *args) -> None"""
         ...
 
-# Also defaults are missing here because pytype crashes when a default is present reported
-# in this [issue](https://github.com/google/pytype/issues/1410#issue-1669793588). After
-# next release the defaults can be added back.
 class FixedLenFeature(NamedTuple):
     """
     Configuration for parsing a fixed-length input feature.
@@ -199,7 +196,7 @@ class FixedLenFeature(NamedTuple):
     """
     shape: ShapeLike
     dtype: DTypeLike
-    default_value: TensorCompatible | None = ...
+    default_value: TensorCompatible | None = None
 
 class FixedLenSequenceFeature(NamedTuple):
     """
@@ -229,8 +226,8 @@ class FixedLenSequenceFeature(NamedTuple):
     """
     shape: ShapeLike
     dtype: DTypeLike
-    allow_missing: bool = ...
-    default_value: TensorCompatible | None = ...
+    allow_missing: bool = False
+    default_value: TensorCompatible | None = None
 
 class VarLenFeature(NamedTuple):
     """
@@ -311,7 +308,7 @@ class SparseFeature(NamedTuple):
     value_key: str
     dtype: DTypeLike
     size: int | list[int]
-    already_sorted: bool = ...
+    already_sorted: bool = False
 
 class RaggedFeature(NamedTuple):
     """
@@ -459,12 +456,12 @@ class RaggedFeature(NamedTuple):
         length: int
 
     dtype: DTypeLike
-    value_key: str | None = ...
+    value_key: str | None = None
     partitions: tuple[  # type: ignore[name-defined]
         RowSplits | RowLengths | RowStarts | RowLimits | ValueRowIds | UniformRowLength, ...
-    ] = ...
+    ] = ()
     row_splits_dtype: DTypeLike = ...
-    validate: bool = ...
+    validate: bool = False
 
 def parse_example(
     serialized: TensorCompatible, features: _FeatureSpecs, example_names: Iterable[str] | None = None, name: str | None = None
