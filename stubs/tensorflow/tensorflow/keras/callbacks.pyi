@@ -531,8 +531,8 @@ class LambdaCallback(Callback):
           `epoch`, `logs`
         - `on_train_begin` and `on_train_end` expect one positional argument:
           `logs`
-        - `on_train_batch_begin` and `on_train_batch_end` expect two positional
-          arguments: `batch`, `logs`
+        - `on_train_batch_begin` and `on_train_batch_end` expect a positional
+          argument `batch` and a keyword argument `logs`
         - See `Callback` class definition for the full list of functions and their
           expected arguments.
 
@@ -726,9 +726,8 @@ class ModelCheckpoint(Callback):
             decision to overwrite the current save file is made based on either
             the maximization or the minimization of the monitored quantity.
             For `val_acc`, this should be `"max"`, for `val_loss` this should be
-            `"min"`, etc. In `"auto"` mode, the mode is set to `"max"` if the
-            quantities monitored are `"acc"` or start with `"fmeasure"` and are
-            set to `"min"` for the rest of the quantities.
+            `"min"`, etc. In `"auto"` mode, the direction is automatically
+            inferred from the name of the monitored quantity.
         save_weights_only: if `True`, then only the model's weights will be
             saved (`model.save_weights(filepath)`), else the full model is
             saved (`model.save(filepath)`).

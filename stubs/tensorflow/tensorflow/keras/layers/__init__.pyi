@@ -1763,12 +1763,6 @@ class LayerNormalization(Layer[tf.Tensor, tf.Tensor]):
             When the next layer is linear (also e.g. `nn.relu`), this can be
             disabled since the scaling will be done by the next layer.
             Defaults to `True`.
-        rms_scaling: If True, `center` and `scale` are ignored, and the
-            inputs are scaled by `gamma` and the inverse square root
-            of the square of all inputs. This is an approximate and faster
-            approach that avoids ever computing the mean of the input. Note that
-            this *isn't* equivalent to the computation that the
-            `keras.layers.RMSNormalization` layer performs.
         beta_initializer: Initializer for the beta weight. Defaults to zeros.
         gamma_initializer: Initializer for the gamma weight. Defaults to ones.
         beta_regularizer: Optional regularizer for the beta weight.
