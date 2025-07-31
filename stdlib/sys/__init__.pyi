@@ -743,7 +743,14 @@ def set_asyncgen_hooks(firstiter: _AsyncgenHook = ..., finalizer: _AsyncgenHook 
     ...
 
 if sys.platform == "win32":
-    def _enablelegacywindowsfsencoding() -> None: ...
+    if sys.version_info >= (3, 13):
+        @deprecated(
+            "Deprecated since Python 3.13; will be removed in Python 3.16. "
+            "Use the `PYTHONLEGACYWINDOWSFSENCODING` environment variable instead."
+        )
+        def _enablelegacywindowsfsencoding() -> None: ...
+    else:
+        def _enablelegacywindowsfsencoding() -> None: ...
 
 def get_coroutine_origin_tracking_depth() -> int:
     """Check status of origin tracking for coroutine objects in this thread."""
