@@ -17,7 +17,7 @@ from ssl import (
     SSLWantWriteError as SSLWantWriteError,
     SSLZeroReturnError as SSLZeroReturnError,
 )
-from typing import Any, ClassVar, Literal, TypedDict, final, overload
+from typing import Any, ClassVar, Literal, TypedDict, final, overload, type_check_only
 from typing_extensions import NotRequired, Self, TypeAlias
 
 _PasswordType: TypeAlias = Callable[[], str | bytes | bytearray] | str | bytes | bytearray
@@ -25,6 +25,7 @@ _PCTRTT: TypeAlias = tuple[tuple[str, str], ...]
 _PCTRTTT: TypeAlias = tuple[_PCTRTT, ...]
 _PeerCertRetDictType: TypeAlias = dict[str, str | _PCTRTTT | _PCTRTT]
 
+@type_check_only
 class _Cipher(TypedDict):
     aead: bool
     alg_bits: int
@@ -38,6 +39,7 @@ class _Cipher(TypedDict):
     strength_bits: int
     symmetric: str
 
+@type_check_only
 class _CertInfo(TypedDict):
     subject: tuple[tuple[tuple[str, str], ...], ...]
     issuer: tuple[tuple[tuple[str, str], ...], ...]

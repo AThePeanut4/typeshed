@@ -40,7 +40,7 @@ from re import Pattern
 from socket import socket
 from ssl import SSLContext
 from types import TracebackType
-from typing import Any, Protocol, overload
+from typing import Any, Protocol, overload, type_check_only
 from typing_extensions import Self, TypeAlias
 
 __all__ = [
@@ -142,27 +142,9 @@ class SMTPAuthenticationError(SMTPResponseException):
     """
     Authentication error.
 
-    Most probably the server didn't accept the username/password
-    combination provided.
-    """
-    ...
-
-def quoteaddr(addrstring: str) -> str:
-    """
-    Quote a subset of the email addresses defined by RFC 821.
-
-    Should be able to handle anything email.utils.parseaddr can handle.
-    """
-    ...
-def quotedata(data: str) -> str:
-    r"""
-    Quote data for email.
-
-    Double leading '.', and change Unix newline '\n', or Mac '\r' into
-    internet CRLF end-of-line.
-    """
-    ...
-
+def quoteaddr(addrstring: str) -> str: ...
+def quotedata(data: str) -> str: ...
+@type_check_only
 class _AuthObject(Protocol):
     @overload
     def __call__(self, challenge: None = None, /) -> str | None: ...

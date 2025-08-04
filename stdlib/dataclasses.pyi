@@ -331,6 +331,7 @@ else:
         ...
 
 # See https://github.com/python/mypy/issues/10750
+@type_check_only
 class _DefaultFactory(Protocol[_T_co]):
     def __call__(self) -> _T_co: ...
 

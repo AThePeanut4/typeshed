@@ -4039,6 +4039,9 @@ class property:
         """Delete an attribute of instance."""
         ...
 
+# This class does not exist at runtime, but stubtest complains if it's marked as
+# @type_check_only because it has an alias that does exist at runtime. See mypy#19568.
+# @type_check_only
 @final
 class _NotImplementedType(Any):
     __call__: None
@@ -4497,34 +4500,10 @@ def hash(obj: object, /) -> int:
 
 help: _sitebuiltins._Helper
 
-def hex(number: int | SupportsIndex, /) -> str:
-    """
-    Return the hexadecimal representation of an integer.
-
-    >>> hex(12648430)
-    '0xc0ffee'
-    """
-    ...
-def id(obj: object, /) -> int:
-    """
-    Return the identity of an object.
-
-    This is guaranteed to be unique among simultaneously existing objects.
-    (CPython uses the object's memory address.)
-    """
-    ...
-def input(prompt: object = "", /) -> str:
-    """
-    Read a string from standard input.  The trailing newline is stripped.
-
-    The prompt string, if given, is printed to standard output without a
-    trailing newline before reading input.
-
-    If the user hits EOF (*nix: Ctrl-D, Windows: Ctrl-Z+Return), raise EOFError.
-    On *nix systems, readline is used if available.
-    """
-    ...
-
+def hex(number: int | SupportsIndex, /) -> str: ...
+def id(obj: object, /) -> int: ...
+def input(prompt: object = "", /) -> str: ...
+@type_check_only
 class _GetItemIterable(Protocol[_T_co]):
     def __getitem__(self, i: int, /) -> _T_co: ...
 
@@ -5684,127 +5663,9 @@ def open(
     newline: str | None = None,
     closefd: bool = True,
     opener: _Opener | None = None,
-) -> IO[Any]:
-    r"""
-    Open file and return a stream.  Raise OSError upon failure.
-
-    file is either a text or byte string giving the name (and the path
-    if the file isn't in the current working directory) of the file to
-    be opened or an integer file descriptor of the file to be
-    wrapped. (If a file descriptor is given, it is closed when the
-    returned I/O object is closed, unless closefd is set to False.)
-
-    mode is an optional string that specifies the mode in which the file
-    is opened. It defaults to 'r' which means open for reading in text
-    mode.  Other common values are 'w' for writing (truncating the file if
-    it already exists), 'x' for creating and writing to a new file, and
-    'a' for appending (which on some Unix systems, means that all writes
-    append to the end of the file regardless of the current seek position).
-    In text mode, if encoding is not specified the encoding used is platform
-    dependent: locale.getencoding() is called to get the current locale encoding.
-    (For reading and writing raw bytes use binary mode and leave encoding
-    unspecified.) The available modes are:
-
-    ========= ===============================================================
-    Character Meaning
-    --------- ---------------------------------------------------------------
-    'r'       open for reading (default)
-    'w'       open for writing, truncating the file first
-    'x'       create a new file and open it for writing
-    'a'       open for writing, appending to the end of the file if it exists
-    'b'       binary mode
-    't'       text mode (default)
-    '+'       open a disk file for updating (reading and writing)
-    ========= ===============================================================
-
-    The default mode is 'rt' (open for reading text). For binary random
-    access, the mode 'w+b' opens and truncates the file to 0 bytes, while
-    'r+b' opens the file without truncation. The 'x' mode implies 'w' and
-    raises an `FileExistsError` if the file already exists.
-
-    Python distinguishes between files opened in binary and text modes,
-    even when the underlying operating system doesn't. Files opened in
-    binary mode (appending 'b' to the mode argument) return contents as
-    bytes objects without any decoding. In text mode (the default, or when
-    't' is appended to the mode argument), the contents of the file are
-    returned as strings, the bytes having been first decoded using a
-    platform-dependent encoding or using the specified encoding if given.
-
-    buffering is an optional integer used to set the buffering policy.
-    Pass 0 to switch buffering off (only allowed in binary mode), 1 to select
-    line buffering (only usable in text mode), and an integer > 1 to indicate
-    the size of a fixed-size chunk buffer.  When no buffering argument is
-    given, the default buffering policy works as follows:
-
-    * Binary files are buffered in fixed-size chunks; the size of the buffer
-      is chosen using a heuristic trying to determine the underlying device's
-      "block size" and falling back on `io.DEFAULT_BUFFER_SIZE`.
-      On many systems, the buffer will typically be 4096 or 8192 bytes long.
-
-    * "Interactive" text files (files for which isatty() returns True)
-      use line buffering.  Other text files use the policy described above
-      for binary files.
-
-    encoding is the name of the encoding used to decode or encode the
-    file. This should only be used in text mode. The default encoding is
-    platform dependent, but any encoding supported by Python can be
-    passed.  See the codecs module for the list of supported encodings.
-
-    errors is an optional string that specifies how encoding errors are to
-    be handled---this argument should not be used in binary mode. Pass
-    'strict' to raise a ValueError exception if there is an encoding error
-    (the default of None has the same effect), or pass 'ignore' to ignore
-    errors. (Note that ignoring encoding errors can lead to data loss.)
-    See the documentation for codecs.register or run 'help(codecs.Codec)'
-    for a list of the permitted encoding error strings.
-
-    newline controls how universal newlines works (it only applies to text
-    mode). It can be None, '', '\n', '\r', and '\r\n'.  It works as
-    follows:
-
-    * On input, if newline is None, universal newlines mode is
-      enabled. Lines in the input can end in '\n', '\r', or '\r\n', and
-      these are translated into '\n' before being returned to the
-      caller. If it is '', universal newline mode is enabled, but line
-      endings are returned to the caller untranslated. If it has any of
-      the other legal values, input lines are only terminated by the given
-      string, and the line ending is returned to the caller untranslated.
-
-    * On output, if newline is None, any '\n' characters written are
-      translated to the system default line separator, os.linesep. If
-      newline is '' or '\n', no translation takes place. If newline is any
-      of the other legal values, any '\n' characters written are translated
-      to the given string.
-
-    If closefd is False, the underlying file descriptor will be kept open
-    when the file is closed. This does not work when a file name is given
-    and must be True in that case.
-
-    A custom opener can be used by passing a callable as *opener*. The
-    underlying file descriptor for the file object is then obtained by
-    calling *opener* with (*file*, *flags*). *opener* must return an open
-    file descriptor (passing os.open as *opener* results in functionality
-    similar to passing None).
-
-    open() returns a file object whose type depends on the mode, and
-    through which the standard file operations such as reading and writing
-    are performed. When open() is used to open a file in a text mode ('w',
-    'r', 'wt', 'rt', etc.), it returns a TextIOWrapper. When used to open
-    a file in a binary mode, the returned class varies: in read binary
-    mode, it returns a BufferedReader; in write binary and append binary
-    modes, it returns a BufferedWriter, and in read/write mode, it returns
-    a BufferedRandom.
-
-    It is also possible to use a string or bytearray as a file for both
-    reading and writing. For strings StringIO can be used like a file
-    opened in a text mode, and for bytes a BytesIO can be used like a file
-    opened in a binary mode.
-    """
-    ...
-def ord(c: str | bytes | bytearray, /) -> int:
-    """Return the Unicode code point for a one-character string."""
-    ...
-
+) -> IO[Any]: ...
+def ord(c: str | bytes | bytearray, /) -> int: ...
+@type_check_only
 class _SupportsWriteAndFlush(SupportsWrite[_T_contra], SupportsFlush, Protocol[_T_contra]): ...
 
 @overload
@@ -5849,12 +5710,15 @@ def print(
 _E_contra = TypeVar("_E_contra", contravariant=True)
 _M_contra = TypeVar("_M_contra", contravariant=True)
 
+@type_check_only
 class _SupportsPow2(Protocol[_E_contra, _T_co]):
     def __pow__(self, other: _E_contra, /) -> _T_co: ...
 
+@type_check_only
 class _SupportsPow3NoneOnly(Protocol[_E_contra, _T_co]):
     def __pow__(self, other: _E_contra, modulo: None = None, /) -> _T_co: ...
 
+@type_check_only
 class _SupportsPow3(Protocol[_E_contra, _M_contra, _T_co]):
     def __pow__(self, other: _E_contra, modulo: _M_contra, /) -> _T_co: ...
 
@@ -6037,9 +5901,11 @@ def repr(obj: object, /) -> str:
 # and https://github.com/python/typeshed/pull/9151
 # on why we don't use `SupportsRound` from `typing.pyi`
 
+@type_check_only
 class _SupportsRound1(Protocol[_T_co]):
     def __round__(self) -> _T_co: ...
 
+@type_check_only
 class _SupportsRound2(Protocol[_T_co]):
     def __round__(self, ndigits: int, /) -> _T_co: ...
 
@@ -6095,6 +5961,7 @@ def sorted(iterable: Iterable[_T], /, *, key: Callable[[_T], SupportsRichCompari
 _AddableT1 = TypeVar("_AddableT1", bound=SupportsAdd[Any, Any])
 _AddableT2 = TypeVar("_AddableT2", bound=SupportsAdd[Any, Any])
 
+@type_check_only
 class _SupportsSumWithNoDefaultGiven(SupportsAdd[Any, Any], SupportsRAdd[int, Any], Protocol): ...
 
 _SupportsSumNoDefaultT = TypeVar("_SupportsSumNoDefaultT", bound=_SupportsSumWithNoDefaultGiven)

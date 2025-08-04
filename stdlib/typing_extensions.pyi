@@ -942,6 +942,7 @@ else:
         """
         ...
     @final
+    @type_check_only
     class _NoDefaultType: ...
 
     NoDefault: _NoDefaultType
@@ -1190,6 +1191,7 @@ class Doc:
     def __eq__(self, other: object) -> bool: ...
 
 # PEP 728
+@type_check_only
 class _NoExtraItemsType: ...
 
 NoExtraItems: _NoExtraItemsType

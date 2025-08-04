@@ -756,6 +756,7 @@ def type_check_only(func_or_cls: _FT) -> _FT: ...
 
 # Type aliases and type constructors
 
+@type_check_only
 class _Alias:
     # Class for defining generic aliases for library types.
     def __getitem__(self, typeargs: Any) -> Any: ...
@@ -2152,6 +2153,7 @@ if sys.version_info >= (3, 13):
         """
         ...
     @final
+    @type_check_only
     class _NoDefaultType: ...
 
     NoDefault: _NoDefaultType

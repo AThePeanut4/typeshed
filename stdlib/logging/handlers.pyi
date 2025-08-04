@@ -18,7 +18,7 @@ from re import Pattern
 from socket import SocketKind, socket
 from threading import Thread
 from types import TracebackType
-from typing import Any, ClassVar, Final, Protocol, TypeVar
+from typing import Any, ClassVar, Final, Protocol, TypeVar, type_check_only
 from typing_extensions import Self
 
 _T = TypeVar("_T")
@@ -573,6 +573,7 @@ class HTTPHandler(Handler):
         """
         ...
 
+@type_check_only
 class _QueueLike(Protocol[_T]):
     def get(self) -> _T: ...
     def put_nowait(self, item: _T, /) -> None: ...
