@@ -259,6 +259,8 @@ class Jenkins:
 
         :param name: Job name, ``str``
         :param number: Build number, ``str`` (also accepts ``int``)
+        :param depth: depth parameter for the api/json call, default 0
+        :param tree: tree parameter for the api/json call used to limit returned fields
         :returns: dictionary of test report results, ``dict`` or None if there is no Test Report
         """
         ...
@@ -313,7 +315,7 @@ class Jenkins:
         Get information on this Master or item on Master.
 
         This information includes job list and view information and can be
-        used to retreive information on items such as job folders.
+        used to retrieve information on items such as job folders.
 
         :param item: item to get information about on this Master
         :param query: xpath to extract information about on this Master
@@ -1159,25 +1161,25 @@ class Jenkins:
         :param exception_message: Message to use for the exception.
                                   Formatted with ``name``, ``domain_name``,
                                   and ``folder_name``
-        :throws: :class:`JenkinsException` whenever the credentail
+        :throws: :class:`JenkinsException` whenever the credential
             does not exist in domain of folder
         """
         ...
     def credential_exists(self, name: str, folder_name: str, domain_name: str = "_") -> bool:
         """
-        Check whether a credentail exists in domain of folder
+        Check whether a credential exists in domain of folder
 
-        :param name: Name of credentail, ``str``
+        :param name: Name of credential, ``str``
         :param folder_name: Folder name, ``str``
         :param domain_name: Domain name, default is '_', ``str``
-        :returns: ``True`` if credentail exists, ``False`` otherwise
+        :returns: ``True`` if credential exists, ``False`` otherwise
         """
         ...
     def get_credential_info(self, name: str, folder_name: str, domain_name: str = "_") -> _JSON:
         """
         Get credential information dictionary in domain of folder
 
-        :param name: Name of credentail, ``str``
+        :param name: Name of credential, ``str``
         :param folder_name: folder_name, ``str``
         :param domain_name: Domain name, default is '_', ``str``
         :returns: Dictionary of credential info, ``dict``
@@ -1187,7 +1189,7 @@ class Jenkins:
         """
         Get configuration of credential in domain of folder.
 
-        :param name: Name of credentail, ``str``
+        :param name: Name of credential, ``str``
         :param folder_name: Folder name, ``str``
         :param domain_name: Domain name, default is '_', ``str``
         :returns: Credential configuration (XML format)
@@ -1195,7 +1197,7 @@ class Jenkins:
         ...
     def create_credential(self, folder_name: str, config_xml: str, domain_name: str = "_") -> None:
         """
-        Create credentail in domain of folder
+        Create credential in domain of folder
 
         :param folder_name: Folder name, ``str``
         :param config_xml: New XML configuration, ``str``
@@ -1206,7 +1208,7 @@ class Jenkins:
         """
         Delete credential from domain of folder
 
-        :param name: Name of credentail, ``str``
+        :param name: Name of credential, ``str``
         :param folder_name: Folder name, ``str``
         :param domain_name: Domain name, default is '_', ``str``
         """

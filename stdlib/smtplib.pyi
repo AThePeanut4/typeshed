@@ -142,8 +142,26 @@ class SMTPAuthenticationError(SMTPResponseException):
     """
     Authentication error.
 
-def quoteaddr(addrstring: str) -> str: ...
-def quotedata(data: str) -> str: ...
+    Most probably the server didn't accept the username/password
+    combination provided.
+    """
+    ...
+
+def quoteaddr(addrstring: str) -> str:
+    """
+    Quote a subset of the email addresses defined by RFC 821.
+
+    Should be able to handle anything email.utils.parseaddr can handle.
+    """
+    ...
+def quotedata(data: str) -> str:
+    r"""
+    Quote data for email.
+
+    Double leading '.', and change Unix newline '\n', or Mac '\r' into
+    internet CRLF end-of-line.
+    """
+    ...
 @type_check_only
 class _AuthObject(Protocol):
     @overload
