@@ -123,7 +123,18 @@ class Jenkins:
     timeout: int
     def __init__(
         self, url: str, username: str | None = None, password: str | None = None, timeout: int = ..., retries: int = 0
-    ) -> None: ...
+    ) -> None:
+        """
+        Create handle to Jenkins instance.
+
+        All methods will raise :class:`JenkinsException` on failure.
+
+        :param url: URL of Jenkins server, ``str``
+        :param username: Server username, ``str``
+        :param password: Server password, ``str``
+        :param timeout: Server connection timeout in secs (default: not set), ``int``
+        """
+        ...
     def maybe_add_crumb(self, req: Request) -> None: ...
     def get_job_info(self, name: str, depth: int = 0, fetch_all_builds: bool = False) -> _JSON:
         """
@@ -187,23 +198,258 @@ class Jenkins:
         ...
     def jenkins_request(
         self, req: Request, add_crumb: bool = True, resolve_auth: bool = True, stream: bool | None = None
-    ) -> Response: ...
-    def get_queue_item(self, number: int, depth: int = 0) -> _JSON: ...
-    def get_build_info(self, name: str, number: int, depth: int = 0) -> _JSON: ...
-    def get_build_env_vars(self, name: str, number: int, depth: int = 0) -> _JSON | None: ...
-    def get_build_test_report(self, name: str, number: int, depth: int = 0, tree: str | None = None) -> _JSON | None: ...
-    def get_build_artifact(self, name: str, number: int, artifact: str) -> _JSON: ...
-    def get_build_artifact_as_bytes(self, name: str, number: int, artifact: str) -> bytes: ...
-    def get_build_stages(self, name: str, number: int) -> _JSON: ...
-    def get_queue_info(self) -> _JSON: ...
-    def cancel_queue(self, id: int) -> None: ...
-    def get_info(self, item: str = "", query: str | None = None) -> _JSON: ...
-    def get_whoami(self, depth: int = 0) -> _JSON: ...
-    def get_version(self) -> str: ...
+    ) -> Response:
+        """
+        Utility routine for opening an HTTP request to a Jenkins server.
+
+        :param req: A ``requests.Request`` to submit.
+        :param add_crumb: If True, try to add a crumb header to this ``req``
+                          before submitting. Defaults to ``True``.
+        :param resolve_auth: If True, maybe add authentication. Defaults to
+                             ``True``.
+        :param stream: If True, return a stream
+        :returns: A ``requests.Response`` object.
+        """
+        ...
+    def get_queue_item(self, number: int, depth: int = 0) -> _JSON:
+        """
+        Get information about a queued item (to-be-created job).
+
+        The returned dict will have a "why" key if the queued item is still
+        waiting for an executor.
+
+        The returned dict will have an "executable" key if the queued item is
+        running on an executor, or has completed running. Use this to
+        determine the job number / URL.
+
+        :param name: queue number, ``int``
+        :returns: dictionary of queued information, ``dict``
+        """
+        ...
+    def get_build_info(self, name: str, number: int, depth: int = 0) -> _JSON:
+        """
+        Get build information dictionary.
+
+        :param name: Job name, ``str``
+        :param number: Build number, ``str`` (also accepts ``int``)
+        :param depth: JSON depth, ``int``
+        :returns: dictionary of build information, ``dict``
+
+        Example::
+
+            >>> next_build_number = server.get_job_info('build_name')['nextBuildNumber']
+            >>> output = server.build_job('build_name')
+            >>> from time import sleep; sleep(10)
+            >>> build_info = server.get_build_info('build_name', next_build_number)
+            >>> print(build_info)
+            {u'building': False, u'changeSet': {u'items': [{u'date': u'2011-12-19T18:01:52.540557Z', u'msg': u'test', u'revision': 66, u'user': u'unknown', u'paths': [{u'editType': u'edit', u'file': u'/branches/demo/index.html'}]}], u'kind': u'svn', u'revisions': [{u'module': u'http://eaas-svn01.i3.level3.com/eaas', u'revision': 66}]}, u'builtOn': u'', u'description': None, u'artifacts': [{u'relativePath': u'dist/eaas-87-2011-12-19_18-01-57.war', u'displayPath': u'eaas-87-2011-12-19_18-01-57.war', u'fileName': u'eaas-87-2011-12-19_18-01-57.war'}, {u'relativePath': u'dist/eaas-87-2011-12-19_18-01-57.war.zip', u'displayPath': u'eaas-87-2011-12-19_18-01-57.war.zip', u'fileName': u'eaas-87-2011-12-19_18-01-57.war.zip'}], u'timestamp': 1324317717000, u'number': 87, u'actions': [{u'parameters': [{u'name': u'SERVICE_NAME', u'value': u'eaas'}, {u'name': u'PROJECT_NAME', u'value': u'demo'}]}, {u'causes': [{u'userName': u'anonymous', u'shortDescription': u'Started by user anonymous'}]}, {}, {}, {}], u'id': u'2011-12-19_18-01-57', u'keepLog': False, u'url': u'http://eaas-jenkins01.i3.level3.com:9080/job/build_war/87/', u'culprits': [{u'absoluteUrl': u'http://eaas-jenkins01.i3.level3.com:9080/user/unknown', u'fullName': u'unknown'}], u'result': u'SUCCESS', u'duration': 8826, u'fullDisplayName': u'build_war #87'}
+        """
+        ...
+    def get_build_env_vars(self, name: str, number: int, depth: int = 0) -> _JSON | None:
+        """
+        Get build environment variables.
+
+        :param name: Job name, ``str``
+        :param number: Build number, ``str`` (also accepts ``int``)
+        :param depth: JSON depth, ``int``
+        :returns: dictionary of build env vars, ``dict`` or None for workflow jobs,
+            or if InjectEnvVars plugin not installed
+        """
+        ...
+    def get_build_test_report(self, name: str, number: int, depth: int = 0, tree: str | None = None) -> _JSON | None:
+        """
+        Get test results report.
+
+        :param name: Job name, ``str``
+        :param number: Build number, ``str`` (also accepts ``int``)
+        :param depth: depth parameter for the api/json call, default 0
+        :param tree: tree parameter for the api/json call used to limit returned fields
+        :returns: dictionary of test report results, ``dict`` or None if there is no Test Report
+        """
+        ...
+    def get_build_artifact(self, name: str, number: int, artifact: str) -> _JSON:
+        """
+        Get artifacts from job
+
+        :param name: Job name, ``str``
+        :param number: Build number, ``str`` (also accepts ``int``)
+        :param artifact: Artifact relative path, ``str``
+        :returns: artifact to download, ``dict``
+        """
+        ...
+    def get_build_artifact_as_bytes(self, name: str, number: int, artifact: str) -> bytes:
+        """
+        Get artifacts from job
+
+        :param name: Job name, ``str``
+        :param number: Build number, ``str`` (also accepts ``int``)
+        :param artifact: Artifact relative path, ``str``
+        :returns: artifact to download, ``bytes``
+        """
+        ...
+    def get_build_stages(self, name: str, number: int) -> _JSON:
+        """
+        Get stages info from job
+
+        :param name: Job name, ``str``
+        :param number: Build number, ``str`` (also accepts ``int``)
+        :returns: dictionary of stages in the job, ``dict``
+        """
+        ...
+    def get_queue_info(self) -> _JSON:
+        """
+        :returns: list of job dictionaries, ``[dict]``
+
+        Example::
+            >>> queue_info = server.get_queue_info()
+            >>> print(queue_info[0])
+            {u'task': {u'url': u'http://your_url/job/my_job/', u'color': u'aborted_anime', u'name': u'my_job'}, u'stuck': False, u'actions': [{u'causes': [{u'shortDescription': u'Started by timer'}]}], u'buildable': False, u'params': u'', u'buildableStartMilliseconds': 1315087293316, u'why': u'Build #2,532 is already in progress (ETA:10 min)', u'blocked': True}
+        """
+        ...
+    def cancel_queue(self, id: int) -> None:
+        """
+        Cancel a queued build.
+
+        :param id: Jenkins job id number for the build, ``int``
+        """
+        ...
+    def get_info(self, item: str = "", query: str | None = None) -> _JSON:
+        """
+        Get information on this Master or item on Master.
+
+        This information includes job list and view information and can be
+        used to retrieve information on items such as job folders.
+
+        :param item: item to get information about on this Master
+        :param query: xpath to extract information about on this Master
+        :returns: dictionary of information about Master or item, ``dict``
+
+        Example::
+
+            >>> info = server.get_info()
+            >>> jobs = info['jobs']
+            >>> print(jobs[0])
+            {u'url': u'http://your_url_here/job/my_job/', u'color': u'blue',
+            u'name': u'my_job'}
+        """
+        ...
+    def get_whoami(self, depth: int = 0) -> _JSON:
+        """
+        Get information about the user account that authenticated to
+        Jenkins. This is a simple way to verify that your credentials are
+        correct.
+
+        :returns: Information about the current user ``dict``
+
+        Example::
+
+            >>> me = server.get_whoami()
+            >>> print me['fullName']
+            >>> 'John'
+        """
+        ...
+    def get_version(self) -> str:
+        """
+        Get the version of this Master.
+
+        :returns: This master's version number ``str``
+
+        Example::
+
+            >>> info = server.get_version()
+            >>> print info
+            >>> 1.541
+        """
+        ...
     @deprecated("Deprecated since 0.4.9. Use `get_plugins` instead.")
-    def get_plugins_info(self, depth: int = 2) -> _JSON: ...
-    def get_plugin_info(self, name: str, depth: int = 2) -> _JSON: ...
-    def get_plugins(self, depth: int = 2) -> _JSON: ...
+    def get_plugins_info(self, depth: int = 2) -> _JSON:
+        """
+        Get all installed plugins information on this Master.
+
+        This method retrieves information about each plugin that is installed
+        on master returning the raw plugin data in a JSON format.
+
+        .. deprecated:: 0.4.9
+           Use :func:`get_plugins` instead.
+
+        :param depth: JSON depth, ``int``
+        :returns: info on all plugins ``[dict]``
+
+        Example::
+
+            >>> info = server.get_plugins_info()
+            >>> print(info)
+            [{u'backupVersion': None, u'version': u'0.0.4', u'deleted': False,
+            u'supportsDynamicLoad': u'MAYBE', u'hasUpdate': True,
+            u'enabled': True, u'pinned': False, u'downgradable': False,
+            u'dependencies': [], u'url':
+            u'http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin',
+            u'longName': u'Gearman Plugin', u'active': True, u'shortName':
+            u'gearman-plugin', u'bundled': False}, ..]
+        """
+        ...
+    def get_plugin_info(self, name: str, depth: int = 2) -> _JSON:
+        """
+        Get an installed plugin information on this Master.
+
+        This method retrieves information about a specific plugin and returns
+        the raw plugin data in a JSON format.
+        The passed in plugin name (short or long) must be an exact match.
+
+        .. note:: Calling this method will query Jenkins fresh for the
+            information for all plugins on each call. If you need to retrieve
+            information for multiple plugins it's recommended to use
+            :func:`get_plugins` instead, which will return a multi key
+            dictionary that can be accessed via either the short or long name
+            of the plugin.
+
+        :param name: Name (short or long) of plugin, ``str``
+        :param depth: JSON depth, ``int``
+        :returns: a specific plugin ``dict``
+
+        Example::
+
+            >>> info = server.get_plugin_info("Gearman Plugin")
+            >>> print(info)
+            {u'backupVersion': None, u'version': u'0.0.4', u'deleted': False,
+            u'supportsDynamicLoad': u'MAYBE', u'hasUpdate': True,
+            u'enabled': True, u'pinned': False, u'downgradable': False,
+            u'dependencies': [], u'url':
+            u'http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin',
+            u'longName': u'Gearman Plugin', u'active': True, u'shortName':
+            u'gearman-plugin', u'bundled': False}
+        """
+        ...
+    def get_plugins(self, depth: int = 2) -> _JSON:
+        """
+        Return plugins info using helper class for version comparison
+
+        This method retrieves information about all the installed plugins and
+        uses a Plugin helper class to simplify version comparison. Also uses
+        a multi key dict to allow retrieval via either short or long names.
+
+        When printing/dumping the data, the version will transparently return
+        a unicode string, which is exactly what was previously returned by the
+        API.
+
+        :param depth: JSON depth, ``int``
+        :returns: info on all plugins ``[dict]``
+
+        Example::
+
+            >>> j = Jenkins()
+            >>> info = j.get_plugins()
+            >>> print(info)
+            {('gearman-plugin', 'Gearman Plugin'):
+              {u'backupVersion': None, u'version': u'0.0.4',
+               u'deleted': False, u'supportsDynamicLoad': u'MAYBE',
+               u'hasUpdate': True, u'enabled': True, u'pinned': False,
+               u'downgradable': False, u'dependencies': [], u'url':
+               u'http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin',
+               u'longName': u'Gearman Plugin', u'active': True, u'shortName':
+               u'gearman-plugin', u'bundled': False}, ...}
+        """
+        ...
     def get_jobs(
         self, folder_depth: int = 0, folder_depth_per_request: int = 10, view_name: str | None = None
     ) -> list[dict[str, str]]:
@@ -526,21 +772,162 @@ class Jenkins:
     @overload
     def build_job(
         self, name: str, parameters: dict[str, Incomplete] | list[tuple[str, Incomplete]] | None = None, *, token: str
-    ) -> int: ...
-    def run_script(self, script: str, node: str | None = None) -> str: ...
-    def install_plugin(self, name: str, include_dependencies: bool = True) -> bool: ...
-    def stop_build(self, name: str, number: int) -> None: ...
-    def delete_build(self, name: str, number: int) -> None: ...
-    def wipeout_job_workspace(self, name: str) -> None: ...
-    def get_running_builds(self) -> list[_JSON]: ...
-    def get_nodes_with_info(self, depth: int = 0) -> list[_JSON]: ...
-    def get_nodes(self, depth: int = 0) -> list[_JSON]: ...
-    def get_node_info(self, name: str, depth: int = 0) -> _JSON: ...
-    def node_exists(self, name: str) -> bool: ...
-    def assert_node_exists(self, name: str, exception_message: str = "node[%s] does not exist") -> None: ...
-    def delete_node(self, name: str) -> None: ...
-    def disable_node(self, name: str, msg: str = "") -> None: ...
-    def enable_node(self, name: str) -> None: ...
+    ) -> int:
+        """
+        Trigger build job.
+
+        This method returns a queue item number that you can pass to
+        :meth:`Jenkins.get_queue_item`. Note that this queue number is only
+        valid for about five minutes after the job completes, so you should
+        get/poll the queue information as soon as possible to determine the
+        job's URL.
+
+        :param name: name of job
+        :param parameters: parameters for job, or ``None``, ``dict``
+        :param token: Jenkins API token
+        :returns: ``int`` queue item
+        """
+        ...
+    def run_script(self, script: str, node: str | None = None) -> str:
+        """
+        Execute a groovy script on the jenkins master or on a node if
+        specified..
+
+        :param script: The groovy script, ``string``
+        :param node: Node to run the script on, defaults to None (master).
+        :returns: The result of the script run.
+
+        Example::
+            >>> info = server.run_script("println(Jenkins.instance.pluginManager.plugins)")
+            >>> print(info)
+            u'[Plugin:windows-slaves, Plugin:ssh-slaves, Plugin:translation,
+            Plugin:cvs, Plugin:nodelabelparameter, Plugin:external-monitor-job,
+            Plugin:mailer, Plugin:jquery, Plugin:antisamy-markup-formatter,
+            Plugin:maven-plugin, Plugin:pam-auth]'
+        """
+        ...
+    def install_plugin(self, name: str, include_dependencies: bool = True) -> bool:
+        """
+        Install a plugin and its dependencies from the Jenkins public
+        repository at http://repo.jenkins-ci.org/repo/org/jenkins-ci/plugins
+
+        :param name: The plugin short name, ``string``
+        :param include_dependencies: Install the plugin's dependencies, ``bool``
+        :returns: Whether a Jenkins restart is required, ``bool``
+
+        Example::
+            >>> info = server.install_plugin("jabber")
+            >>> print(info)
+            True
+        """
+        ...
+    def stop_build(self, name: str, number: int) -> None:
+        """
+        Stop a running Jenkins build.
+
+        :param name: Name of Jenkins job, ``str``
+        :param number: Jenkins build number for the job, ``int``
+        """
+        ...
+    def delete_build(self, name: str, number: int) -> None:
+        """
+        Delete a Jenkins build.
+
+        :param name: Name of Jenkins job, ``str``
+        :param number: Jenkins build number for the job, ``int``
+        """
+        ...
+    def wipeout_job_workspace(self, name: str) -> None:
+        """
+        Wipe out workspace for given Jenkins job.
+
+        :param name: Name of Jenkins job, ``str``
+        """
+        ...
+    def get_running_builds(self) -> list[_JSON]:
+        """
+        Return list of running builds.
+
+        Each build is a dict with keys 'name', 'number', 'url', 'node',
+        and 'executor'.
+
+        :returns: List of builds,
+          ``[ { str: str, str: int, str:str, str: str, str: int} ]``
+
+        Example::
+            >>> builds = server.get_running_builds()
+            >>> print(builds)
+            [{'node': 'foo-slave', 'url': 'https://localhost/job/test/15/',
+              'executor': 0, 'name': 'test', 'number': 15}]
+        """
+        ...
+    def get_nodes_with_info(self, depth: int = 0) -> list[_JSON]:
+        """
+        Get a list of nodes connected to the Master
+
+        Each node is a dictionary of node info
+
+        :returns: List of nodes
+        """
+        ...
+    def get_nodes(self, depth: int = 0) -> list[_JSON]:
+        """
+        Get a list of nodes connected to the Master
+
+        Each node is a dict with keys 'name' and 'offline'
+
+        :returns: List of nodes, ``[ { str: str, str: bool} ]``
+        """
+        ...
+    def get_node_info(self, name: str, depth: int = 0) -> _JSON:
+        """
+        Get node information dictionary
+
+        :param name: Node name, ``str``
+        :param depth: JSON depth, ``int``
+        :returns: Dictionary of node info, ``dict``
+        """
+        ...
+    def node_exists(self, name: str) -> bool:
+        """
+        Check whether a node exists
+
+        :param name: Name of Jenkins node, ``str``
+        :returns: ``True`` if Jenkins node exists
+        """
+        ...
+    def assert_node_exists(self, name: str, exception_message: str = "node[%s] does not exist") -> None:
+        """
+        Raise an exception if a node does not exist
+
+        :param name: Name of Jenkins node, ``str``
+        :param exception_message: Message to use for the exception. Formatted
+                                  with ``name``
+        :throws: :class:`JenkinsException` whenever the node does not exist
+        """
+        ...
+    def delete_node(self, name: str) -> None:
+        """
+        Delete Jenkins node permanently.
+
+        :param name: Name of Jenkins node, ``str``
+        """
+        ...
+    def disable_node(self, name: str, msg: str = "") -> None:
+        """
+        Disable a node
+
+        :param name: Jenkins node name, ``str``
+        :param msg: Offline message, ``str``
+        """
+        ...
+    def enable_node(self, name: str) -> None:
+        """
+        Enable a node
+
+        :param name: Jenkins node name, ``str``
+        """
+        ...
     def create_node(
         self,
         name: str,
