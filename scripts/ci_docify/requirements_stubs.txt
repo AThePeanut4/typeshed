@@ -36,7 +36,7 @@ setuptools==80.9.*
 vobject~=0.9.9
 PyScreeze==1.0.1
 RPi.GPIO==0.7.*
-python-jenkins==1.8.*
+python-jenkins~=1.8.3
 PyAutoGUI==0.9.*
 requests-oauthlib==2.0.*
 reportlab[pycairo]~=4.4.1
@@ -159,7 +159,7 @@ psutil==7.0.*
 click-spinner==0.1.*
 requests[socks]~=2.32.4
 six==1.17.*
-pyinstaller==6.14.*
+pyinstaller==6.15.*
 hnswlib==0.8.*
 usersettings==1.1.*
 grpcio-status==1.*
