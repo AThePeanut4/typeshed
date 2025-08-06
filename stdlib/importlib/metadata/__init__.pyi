@@ -137,31 +137,9 @@ class EntryPoint(_EntryPointBase):
             """
             EntryPoint matches the given parameters.
 
-            >>> ep = EntryPoint(group='foo', name='bar', value='bing:bong [extra1, extra2]')
-            >>> ep.matches(group='foo')
-            True
-            >>> ep.matches(name='bar', value='bing:bong [extra1, extra2]')
-            True
-            >>> ep.matches(group='foo', name='other')
-            False
-            >>> ep.matches()
-            True
-            >>> ep.matches(extras=['extra1', 'extra2'])
-            True
-            >>> ep.matches(module='bing')
-            True
-            >>> ep.matches(attr='bong')
-            True
-            """
-            ...
-
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
-    def __eq__(self, other: object) -> bool:
-        """Return self==value."""
-        ...
+    def __hash__(self) -> int: ...
     if sys.version_info >= (3, 11):
+        def __eq__(self, other: object) -> bool: ...
         def __lt__(self, other: object) -> bool: ...
     if sys.version_info < (3, 12):
         def __iter__(self) -> Iterator[Any]:

@@ -180,8 +180,6 @@ class _SSH_GSSAPI_OLD(_SSH_GSSAuth):
         """
         ...
 
-_SSH_GSSAPI = _SSH_GSSAPI_OLD
-
 class _SSH_GSSAPI_NEW(_SSH_GSSAuth):
     """
     Implementation of the GSS-API MIT Kerberos Authentication for SSH2,
