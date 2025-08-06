@@ -203,7 +203,7 @@ class PKey:
         key is encrypted and ``password`` is not ``None``, the given password
         will be used to decrypt the key (otherwise `.PasswordRequiredException`
         is thrown).  Through the magic of Python, this factory method will
-        exist in all subclasses of PKey (such as `.RSAKey` or `.DSSKey`), but
+        exist in all subclasses of PKey (such as `.RSAKey`), but
         is useless on the abstract PKey class.
 
         :param str filename: name of the file to read

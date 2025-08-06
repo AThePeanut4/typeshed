@@ -326,11 +326,10 @@ class Transport(Thread, ClosingContextManager):
         as a server, the host key is used to sign certain packets during the
         SSH2 negotiation, so that the client can trust that we are who we say
         we are.  Because this is used for signing, the key must contain private
-        key info, not just the public half.  Only one key of each type (RSA or
-        DSS) is kept.
+        key info, not just the public half.  Only one key of each type is kept.
 
         :param .PKey key:
-            the host key to add, usually an `.RSAKey` or `.DSSKey`.
+            the host key (instance of some subclass) to add
         """
         ...
     def get_server_key(self) -> PKey | None:
@@ -339,10 +338,10 @@ class Transport(Thread, ClosingContextManager):
         client, this method will return the negotiated host key.  If only one
         type of host key was set with `add_server_key`, that's the only key
         that will ever be returned.  But in cases where you have set more than
-        one type of host key (for example, an RSA key and a DSS key), the key
-        type will be negotiated by the client, and this method will return the
-        key of the type agreed on.  If the host key has not been negotiated
-        yet, ``None`` is returned.  In client mode, the behavior is undefined.
+        one type of host key, the key type will be negotiated by the client,
+        and this method will return the key of the type agreed on.  If the host
+        key has not been negotiated yet, ``None`` is returned.  In client mode,
+        the behavior is undefined.
 
         :return:
             host key (`.PKey`) of the type negotiated by the client, or

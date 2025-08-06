@@ -174,8 +174,7 @@ class SSHClient(ClosingContextManager):
                 this to occur - *just* the certificate.)
 
             - Any key we can find through an SSH agent
-            - Any "id_rsa", "id_dsa" or "id_ecdsa" key discoverable in
-              ``~/.ssh/``
+            - Any ``id_*`` keys discoverable in ``~/.ssh/``
 
               - When OpenSSH-style public certificates exist that match an
                 existing such private key (so e.g. one has ``id_rsa`` and
