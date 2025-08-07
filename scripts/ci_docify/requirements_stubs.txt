@@ -152,7 +152,7 @@ qrbill==1.1.*
 python-nmap==0.7.*
 m3u8==6.0.*
 pexpect==4.9.*
-braintree==4.37.*
+braintree==4.38.*
 regex==2024.11.6
 decorator==5.2.*
 psutil==7.0.*
