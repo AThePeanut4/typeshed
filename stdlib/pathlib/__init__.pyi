@@ -563,9 +563,13 @@ class Path(PurePath):
         """
         ...
 
-    # These methods do "exist" on Windows on <3.13, but they always raise NotImplementedError.
+    # These methods do "exist" on Windows, but they always raise NotImplementedError.
     if sys.platform == "win32":
-        if sys.version_info < (3, 13):
+        if sys.version_info >= (3, 13):
+            # raises UnsupportedOperation:
+            def owner(self: Never, *, follow_symlinks: bool = True) -> str: ...  # type: ignore[misc]
+            def group(self: Never, *, follow_symlinks: bool = True) -> str: ...  # type: ignore[misc]
+        else:
             def owner(self: Never) -> str: ...  # type: ignore[misc]
             def group(self: Never) -> str: ...  # type: ignore[misc]
     else:
