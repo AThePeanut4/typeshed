@@ -1,3 +1,11 @@
+"""
+A simple wrapper around enum types to expose utility functions.
+
+Instances are created as properties with the same name as the enum they wrap
+on proto classes.  For usage, see:
+  reflection_test.py
+"""
+
 from typing import Generic, TypeVar, type_check_only
 
 from google.protobuf.descriptor import EnumDescriptor

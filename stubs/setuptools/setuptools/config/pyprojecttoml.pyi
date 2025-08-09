@@ -103,4 +103,9 @@ class _EnsurePackagesDiscovered(expand.EnsurePackagesDiscovered):
         ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
-    ) -> None: ...
+    ) -> None:
+        """
+        When exiting the context, if values of ``packages``, ``py_modules`` and
+        ``package_dir`` are missing in ``setuptools_cfg``, copy from ``dist``.
+        """
+        ...

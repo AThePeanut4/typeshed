@@ -1,3 +1,5 @@
+"""Module containing bug report helper(s)."""
+
 from typing import TypedDict, type_check_only
 
 @type_check_only

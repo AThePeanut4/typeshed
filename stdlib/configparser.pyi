@@ -506,7 +506,9 @@ class RawConfigParser(_Parser):
         ...
     if sys.version_info < (3, 12):
         @deprecated("Deprecated since Python 3.2; removed in Python 3.12. Use `parser.read_file()` instead.")
-        def readfp(self, fp: Iterable[str], filename: str | None = None) -> None: ...
+        def readfp(self, fp: Iterable[str], filename: str | None = None) -> None:
+            """Deprecated, use read_file instead."""
+            ...
     # These get* methods are partially applied (with the same names) in
     # SectionProxy; the stubs should be kept updated together
     @overload
@@ -672,7 +674,9 @@ class ConfigParser(RawConfigParser):
 
 if sys.version_info < (3, 12):
     @deprecated("Deprecated since Python 3.2; removed in Python 3.12. Use `ConfigParser` instead.")
-    class SafeConfigParser(ConfigParser): ...
+    class SafeConfigParser(ConfigParser):
+        """ConfigParser alias for backwards compatibility purposes."""
+        ...
 
 class SectionProxy(MutableMapping[str, str]):
     """A proxy for a single section from a parser."""
@@ -846,10 +850,14 @@ class ParsingError(Error):
     if sys.version_info < (3, 12):
         @property
         @deprecated("Deprecated since Python 3.2; removed in Python 3.12. Use `source` instead.")
-        def filename(self) -> str: ...
+        def filename(self) -> str:
+            """Deprecated, use `source'."""
+            ...
         @filename.setter
         @deprecated("Deprecated since Python 3.2; removed in Python 3.12. Use `source` instead.")
-        def filename(self, value: str) -> None: ...
+        def filename(self, value: str) -> None:
+            """Deprecated, use `source'."""
+            ...
 
 class MissingSectionHeaderError(ParsingError):
     """Raised when a key-value pair is found before any section header."""

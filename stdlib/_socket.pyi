@@ -914,19 +914,140 @@ class socket:
     if sys.platform == "win32":
         def ioctl(self, control: int, option: int | tuple[int, int, int] | bool, /) -> None: ...
 
-    def listen(self, backlog: int = ..., /) -> None: ...
-    def recv(self, bufsize: int, flags: int = 0, /) -> bytes: ...
-    def recvfrom(self, bufsize: int, flags: int = 0, /) -> tuple[bytes, _RetAddress]: ...
+    def listen(self, backlog: int = ..., /) -> None:
+        """
+        listen([backlog])
+
+        Enable a server to accept connections.  If backlog is specified, it must be
+        at least 0 (if it is lower, it is set to 0); it specifies the number of
+        unaccepted connections that the system will allow before refusing new
+        connections. If not specified, a default reasonable value is chosen.
+        """
+        ...
+    def recv(self, bufsize: int, flags: int = 0, /) -> bytes:
+        """
+        recv(buffersize[, flags]) -> data
+
+        Receive up to buffersize bytes from the socket.  For the optional flags
+        argument, see the Unix manual.  When no data is available, block until
+        at least one byte is available or until the remote end is closed.  When
+        the remote end is closed and all data is read, return the empty string.
+        """
+        ...
+    def recvfrom(self, bufsize: int, flags: int = 0, /) -> tuple[bytes, _RetAddress]:
+        """
+        recvfrom(buffersize[, flags]) -> (data, address info)
+
+        Like recv(buffersize, flags) but also return the sender's address info.
+        """
+        ...
     if sys.platform != "win32":
-        def recvmsg(self, bufsize: int, ancbufsize: int = 0, flags: int = 0, /) -> tuple[bytes, list[_CMSG], int, Any]: ...
+        def recvmsg(self, bufsize: int, ancbufsize: int = 0, flags: int = 0, /) -> tuple[bytes, list[_CMSG], int, Any]:
+            """
+            recvmsg(bufsize[, ancbufsize[, flags]]) -> (data, ancdata, msg_flags, address)
+
+            Receive normal data (up to bufsize bytes) and ancillary data from the
+            socket.  The ancbufsize argument sets the size in bytes of the
+            internal buffer used to receive the ancillary data; it defaults to 0,
+            meaning that no ancillary data will be received.  Appropriate buffer
+            sizes for ancillary data can be calculated using CMSG_SPACE() or
+            CMSG_LEN(), and items which do not fit into the buffer might be
+            truncated or discarded.  The flags argument defaults to 0 and has the
+            same meaning as for recv().
+
+            The return value is a 4-tuple: (data, ancdata, msg_flags, address).
+            The data item is a bytes object holding the non-ancillary data
+            received.  The ancdata item is a list of zero or more tuples
+            (cmsg_level, cmsg_type, cmsg_data) representing the ancillary data
+            (control messages) received: cmsg_level and cmsg_type are integers
+            specifying the protocol level and protocol-specific type respectively,
+            and cmsg_data is a bytes object holding the associated data.  The
+            msg_flags item is the bitwise OR of various flags indicating
+            conditions on the received message; see your system documentation for
+            details.  If the receiving socket is unconnected, address is the
+            address of the sending socket, if available; otherwise, its value is
+            unspecified.
+
+            If recvmsg() raises an exception after the system call returns, it
+            will first attempt to close any file descriptors received via the
+            SCM_RIGHTS mechanism.
+            """
+            ...
         def recvmsg_into(
             self, buffers: Iterable[WriteableBuffer], ancbufsize: int = 0, flags: int = 0, /
-        ) -> tuple[int, list[_CMSG], int, Any]: ...
+        ) -> tuple[int, list[_CMSG], int, Any]:
+            """
+            recvmsg_into(buffers[, ancbufsize[, flags]]) -> (nbytes, ancdata, msg_flags, address)
 
-    def recvfrom_into(self, buffer: WriteableBuffer, nbytes: int = 0, flags: int = 0) -> tuple[int, _RetAddress]: ...
-    def recv_into(self, buffer: WriteableBuffer, nbytes: int = 0, flags: int = 0) -> int: ...
-    def send(self, data: ReadableBuffer, flags: int = 0, /) -> int: ...
-    def sendall(self, data: ReadableBuffer, flags: int = 0, /) -> None: ...
+            Receive normal data and ancillary data from the socket, scattering the
+            non-ancillary data into a series of buffers.  The buffers argument
+            must be an iterable of objects that export writable buffers
+            (e.g. bytearray objects); these will be filled with successive chunks
+            of the non-ancillary data until it has all been written or there are
+            no more buffers.  The ancbufsize argument sets the size in bytes of
+            the internal buffer used to receive the ancillary data; it defaults to
+            0, meaning that no ancillary data will be received.  Appropriate
+            buffer sizes for ancillary data can be calculated using CMSG_SPACE()
+            or CMSG_LEN(), and items which do not fit into the buffer might be
+            truncated or discarded.  The flags argument defaults to 0 and has the
+            same meaning as for recv().
+
+            The return value is a 4-tuple: (nbytes, ancdata, msg_flags, address).
+            The nbytes item is the total number of bytes of non-ancillary data
+            written into the buffers.  The ancdata item is a list of zero or more
+            tuples (cmsg_level, cmsg_type, cmsg_data) representing the ancillary
+            data (control messages) received: cmsg_level and cmsg_type are
+            integers specifying the protocol level and protocol-specific type
+            respectively, and cmsg_data is a bytes object holding the associated
+            data.  The msg_flags item is the bitwise OR of various flags
+            indicating conditions on the received message; see your system
+            documentation for details.  If the receiving socket is unconnected,
+            address is the address of the sending socket, if available; otherwise,
+            its value is unspecified.
+
+            If recvmsg_into() raises an exception after the system call returns,
+            it will first attempt to close any file descriptors received via the
+            SCM_RIGHTS mechanism.
+            """
+            ...
+
+    def recvfrom_into(self, buffer: WriteableBuffer, nbytes: int = 0, flags: int = 0) -> tuple[int, _RetAddress]:
+        """
+        recvfrom_into(buffer[, nbytes[, flags]]) -> (nbytes, address info)
+
+        Like recv_into(buffer[, nbytes[, flags]]) but also return the sender's address info.
+        """
+        ...
+    def recv_into(self, buffer: WriteableBuffer, nbytes: int = 0, flags: int = 0) -> int:
+        """
+        recv_into(buffer, [nbytes[, flags]]) -> nbytes_read
+
+        A version of recv() that stores its data into a buffer rather than creating
+        a new string.  Receive up to buffersize bytes from the socket.  If buffersize
+        is not specified (or 0), receive up to the size available in the given buffer.
+
+        See recv() for documentation about the flags.
+        """
+        ...
+    def send(self, data: ReadableBuffer, flags: int = 0, /) -> int:
+        """
+        send(data[, flags]) -> count
+
+        Send a data string to the socket.  For the optional flags
+        argument, see the Unix manual.  Return the number of bytes
+        sent; this may be less than len(data) if the network is busy.
+        """
+        ...
+    def sendall(self, data: ReadableBuffer, flags: int = 0, /) -> None:
+        """
+        sendall(data[, flags])
+
+        Send a data string to the socket.  For the optional flags
+        argument, see the Unix manual.  This calls send() repeatedly
+        until all data is sent.  If an error occurs, it's impossible
+        to tell how much data has been sent.
+        """
+        ...
     @overload
     def sendto(self, data: ReadableBuffer, address: _Address, /) -> int:
         """
@@ -1056,24 +1177,126 @@ def dup(fd: SupportsIndex, /) -> int:
 # the 5th tuple item is an address
 def getaddrinfo(
     host: bytes | str | None, port: bytes | str | int | None, family: int = ..., type: int = 0, proto: int = 0, flags: int = 0
-) -> list[tuple[int, int, int, str, tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes]]]: ...
-def gethostbyname(hostname: str, /) -> str: ...
-def gethostbyname_ex(hostname: str, /) -> tuple[str, list[str], list[str]]: ...
-def gethostname() -> str: ...
-def gethostbyaddr(ip_address: str, /) -> tuple[str, list[str], list[str]]: ...
-def getnameinfo(sockaddr: tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes], flags: int, /) -> tuple[str, str]: ...
-def getprotobyname(protocolname: str, /) -> int: ...
-def getservbyname(servicename: str, protocolname: str = ..., /) -> int: ...
-def getservbyport(port: int, protocolname: str = ..., /) -> str: ...
-def ntohl(x: int, /) -> int: ...  # param & ret val are 32-bit ints
-def ntohs(x: int, /) -> int: ...  # param & ret val are 16-bit ints
-def htonl(x: int, /) -> int: ...  # param & ret val are 32-bit ints
-def htons(x: int, /) -> int: ...  # param & ret val are 16-bit ints
-def inet_aton(ip_addr: str, /) -> bytes: ...  # ret val 4 bytes in length
-def inet_ntoa(packed_ip: ReadableBuffer, /) -> str: ...
-def inet_pton(address_family: int, ip_string: str, /) -> bytes: ...
-def inet_ntop(address_family: int, packed_ip: ReadableBuffer, /) -> str: ...
-def getdefaulttimeout() -> float | None: ...
+) -> list[tuple[int, int, int, str, tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes]]]:
+    """
+    getaddrinfo(host, port [, family, type, proto, flags])
+        -> list of (family, type, proto, canonname, sockaddr)
+
+    Resolve host and port into addrinfo struct.
+    """
+    ...
+def gethostbyname(hostname: str, /) -> str:
+    """
+    gethostbyname(host) -> address
+
+    Return the IP address (a string of the form '255.255.255.255') for a host.
+    """
+    ...
+def gethostbyname_ex(hostname: str, /) -> tuple[str, list[str], list[str]]:
+    """
+    gethostbyname_ex(host) -> (name, aliaslist, addresslist)
+
+    Return the true host name, a list of aliases, and a list of IP addresses,
+    for a host.  The host argument is a string giving a host name or IP number.
+    """
+    ...
+def gethostname() -> str:
+    """
+    gethostname() -> string
+
+    Return the current host name.
+    """
+    ...
+def gethostbyaddr(ip_address: str, /) -> tuple[str, list[str], list[str]]:
+    """
+    gethostbyaddr(host) -> (name, aliaslist, addresslist)
+
+    Return the true host name, a list of aliases, and a list of IP addresses,
+    for a host.  The host argument is a string giving a host name or IP number.
+    """
+    ...
+def getnameinfo(sockaddr: tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes], flags: int, /) -> tuple[str, str]:
+    """
+    getnameinfo(sockaddr, flags) --> (host, port)
+
+    Get host and port for a sockaddr.
+    """
+    ...
+def getprotobyname(protocolname: str, /) -> int:
+    """
+    getprotobyname(name) -> integer
+
+    Return the protocol number for the named protocol.  (Rarely used.)
+    """
+    ...
+def getservbyname(servicename: str, protocolname: str = ..., /) -> int:
+    """
+    getservbyname(servicename[, protocolname]) -> integer
+
+    Return a port number from a service name and protocol name.
+    The optional protocol name, if given, should be 'tcp' or 'udp',
+    otherwise any protocol will match.
+    """
+    ...
+def getservbyport(port: int, protocolname: str = ..., /) -> str:
+    """
+    getservbyport(port[, protocolname]) -> string
+
+    Return the service name from a port number and protocol name.
+    The optional protocol name, if given, should be 'tcp' or 'udp',
+    otherwise any protocol will match.
+    """
+    ...
+def ntohl(x: int, /) -> int:
+    """
+    ntohl(integer) -> integer
+
+    Convert a 32-bit integer from network to host byte order.
+    """
+    ...
+def ntohs(x: int, /) -> int:
+    """Convert a 16-bit unsigned integer from network to host byte order."""
+    ...
+def htonl(x: int, /) -> int:
+    """
+    htonl(integer) -> integer
+
+    Convert a 32-bit integer from host to network byte order.
+    """
+    ...
+def htons(x: int, /) -> int:
+    """Convert a 16-bit unsigned integer from host to network byte order."""
+    ...
+def inet_aton(ip_addr: str, /) -> bytes:
+    """Convert an IP address in string format (123.45.67.89) to the 32-bit packed binary format used in low-level network functions."""
+    ...
+def inet_ntoa(packed_ip: ReadableBuffer, /) -> str:
+    """Convert an IP address from 32-bit packed binary format to string format."""
+    ...
+def inet_pton(address_family: int, ip_string: str, /) -> bytes:
+    """
+    inet_pton(af, ip) -> packed IP address string
+
+    Convert an IP address from string format to a packed string suitable
+    for use with low-level network functions.
+    """
+    ...
+def inet_ntop(address_family: int, packed_ip: ReadableBuffer, /) -> str:
+    """
+    inet_ntop(af, packed_ip) -> string formatted IP address
+
+    Convert a packed IP address of the given family to string format.
+    """
+    ...
+def getdefaulttimeout() -> float | None:
+    """
+    getdefaulttimeout() -> timeout
+
+    Returns the default timeout in seconds (float) for new socket objects.
+    A value of None indicates that new socket objects have no timeout.
+    When the socket module is first imported, the default is None.
+    """
+    ...
 
 # F811: "Redefinition of unused `timeout`"
 def setdefaulttimeout(timeout: float | None, /) -> None:
@@ -1087,10 +1310,9 @@ def setdefaulttimeout(timeout: float | None, /) -> None:
     ...
 
 if sys.platform != "win32":
-    def sethostname(name: str, /) -> None: ...
-    def CMSG_LEN(length: int, /) -> int: ...
-    def CMSG_SPACE(length: int, /) -> int: ...
-    def socketpair(family: int = ..., type: int = ..., proto: int = 0, /) -> tuple[socket, socket]: ...
+    def sethostname(name: str, /) -> None:
+        """
+        sethostname(name)
 
         Sets the hostname to name.
         """
@@ -1120,7 +1342,7 @@ if sys.platform != "win32":
         range of values.
         """
         ...
-    def socketpair(family: int = ..., type: int = ..., proto: int = ..., /) -> tuple[socket, socket]:
+    def socketpair(family: int = ..., type: int = ..., proto: int = 0, /) -> tuple[socket, socket]:
         """
         socketpair([family[, type [, proto]]]) -> (socket object, socket object)
 

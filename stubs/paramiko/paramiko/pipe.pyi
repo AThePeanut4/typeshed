@@ -1,3 +1,12 @@
+"""
+Abstraction of a one-way pipe where the read end can be used in
+`select.select`. Normally this is trivial, but Windows makes it nearly
+impossible.
+
+The pipe acts like an Event, which can be set or cleared. When set, the pipe
+will trigger as readable in `select <select.select>`.
+"""
+
 from typing import Protocol, type_check_only
 
 @type_check_only

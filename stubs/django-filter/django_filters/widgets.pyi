@@ -29,6 +29,12 @@ class LinkWidget(forms.Widget):
     def option_string(self) -> str: ...
 
 class SuffixedMultiWidget(forms.MultiWidget):
+    """
+    A MultiWidget that allows users to provide custom suffixes instead of indexes.
+
+    - Suffixes must be unique.
+    - There must be the same number of suffixes as fields.
+    """
     suffixes: list[str]
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...  # Args/kwargs can be any widget params for MultiWidget
     def suffixed(self, name: str, suffix: str) -> str: ...
@@ -59,6 +65,11 @@ class LookupChoiceWidget(SuffixedMultiWidget):
     def decompress(self, value: Any) -> list[Any] | None: ...
 
 class BooleanWidget(forms.Select):
+    """
+    Convert true/false values into the internal Python True/False.
+    This can be used for AJAX queries that pass true/false from JavaScript's
+    internal types through.
+    """
     # Accepts any widget attribute types
     def __init__(self, attrs: dict[str, Any] | None = None) -> None: ...
     # Widget value and renderer can be any type
@@ -82,5 +93,14 @@ class CSVWidget(BaseCSVWidget, forms.TextInput):
     def __init__(self, *args: Any, attrs: dict[str, Any] | None = None, **kwargs: Any) -> None: ...
 
 class QueryArrayWidget(BaseCSVWidget, forms.TextInput):
+    """
+    Enables request query array notation that might be consumed by MultipleChoiceFilter
+
+    1. Values can be provided as csv string:  ?foo=bar,baz
+    2. Values can be provided as query array: ?foo[]=bar&foo[]=baz
+    3. Values can be provided as query array: ?foo=bar&foo=baz
+
+    Note: Duplicate and empty values are skipped from results
+    """
     # Query array widget data can contain any types
     def value_from_datadict(self, data: Mapping[str, Any], files: Mapping[str, Any], name: str) -> list[str]: ...
