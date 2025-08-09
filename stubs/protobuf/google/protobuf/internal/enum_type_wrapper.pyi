@@ -1,12 +1,4 @@
-"""
-A simple wrapper around enum types to expose utility functions.
-
-Instances are created as properties with the same name as the enum they wrap
-on proto classes.  For usage, see:
-  reflection_test.py
-"""
-
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, type_check_only
 
 from google.protobuf.descriptor import EnumDescriptor
 
@@ -17,6 +9,7 @@ _V = TypeVar("_V", bound=int)
 # NOTE: this doesn't actually inherit from type,
 # but mypy doesn't support metaclasses that don't inherit from type,
 # so we pretend it does in the stubs...
+@type_check_only
 class _EnumTypeWrapper(type, Generic[_V]):
     DESCRIPTOR: EnumDescriptor
     def __init__(self, enum_type: EnumDescriptor) -> None: ...

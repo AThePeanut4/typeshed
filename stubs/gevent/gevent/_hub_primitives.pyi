@@ -6,7 +6,7 @@ compilation with Cython because of their frequency of use.
 from _typeshed import FileDescriptor
 from collections.abc import Callable, Collection, Iterable
 from types import TracebackType
-from typing import Any, Generic, Protocol, TypeVar, overload
+from typing import Any, Generic, Protocol, TypeVar, overload, type_check_only
 from typing_extensions import Self, TypeVarTuple, Unpack
 
 from gevent._greenlet_primitives import SwitchOutGreenletWithLoop
@@ -20,6 +20,7 @@ _T = TypeVar("_T")
 _Ts = TypeVarTuple("_Ts")
 _WaitableT = TypeVar("_WaitableT", bound=_Waitable)
 
+@type_check_only
 class _Waitable(Protocol):
     def rawlink(self, callback: Callable[[Any], object], /) -> object: ...
     def unlink(self, callback: Callable[[Any], object], /) -> object: ...

@@ -8,7 +8,7 @@ of the BSD license. See the LICENSE file for details.
 
 import logging
 from collections.abc import Mapping, Sequence
-from typing import IO, ClassVar, TypedDict
+from typing import IO, ClassVar, TypedDict, type_check_only
 
 from .util import Context
 
@@ -51,6 +51,7 @@ class Args(KeyValues):
     """
     ...
 
+@type_check_only
 class _InstructionDict(TypedDict):
     instruction: str
     startline: int

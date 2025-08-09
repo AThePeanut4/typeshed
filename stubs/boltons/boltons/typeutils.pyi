@@ -1,13 +1,7 @@
-"""
-Python's built-in :mod:`functools` module builds several useful
-utilities on top of Python's first-class function support.
-``typeutils`` attempts to do the same for metaprogramming with types
-and instances.
-"""
-
-from typing import Any, Literal, Protocol
+from typing import Any, Literal, Protocol, type_check_only
 from typing_extensions import Self
 
+@type_check_only
 class _Sentinel(Protocol):
     def __bool__(self) -> Literal[False]: ...
     def __copy__(self) -> Self: ...

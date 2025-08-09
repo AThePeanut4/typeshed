@@ -6,7 +6,7 @@ The code has NO protection against decompression bombs.
 
 import threading
 from _typeshed import Incomplete
-from typing import Final, Literal
+from typing import Final, Literal, type_check_only
 
 # Not bothering with types here as lxml support is supposed to be dropped in a future version of defusedxml
 
@@ -80,6 +80,7 @@ def tostring(
     ...
 
 # Should be imported from lxml.etree.ElementBase, but lxml lacks types
+@type_check_only
 class _ElementBase: ...
 
 class RestrictedElement(_ElementBase):

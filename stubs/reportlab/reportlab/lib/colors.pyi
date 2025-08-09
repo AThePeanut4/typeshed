@@ -38,7 +38,7 @@ ValueError: css color 'pcmyka(100,0,0,0)' has wrong number of components
 """
 
 from collections.abc import Iterable, Iterator
-from typing import Final, Literal, TypeVar, overload
+from typing import Final, Literal, TypeVar, overload, type_check_only
 from typing_extensions import Self, TypeAlias
 
 _ColorT = TypeVar("_ColorT", bound=Color)
@@ -478,7 +478,7 @@ def describe(aColor: Color, mode: Literal[2]) -> tuple[str, float]:
     ...
 def hue2rgb(m1: float, m2: float, h: float) -> float: ...
 def hsl2rgb(h: float, s: float, l: float) -> tuple[float, float, float]: ...
-
+@type_check_only
 class _cssParse:
     def pcVal(self, v: str) -> float: ...
     def rgbPcVal(self, v: str) -> float: ...
@@ -490,6 +490,7 @@ class _cssParse:
 
 cssParse: _cssParse
 
+@type_check_only
 class _toColor:
     extraColorsNS: dict[str, Color]
     def __init__(self) -> None: ...

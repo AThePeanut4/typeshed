@@ -6,7 +6,7 @@ html5lib library without having to change a lot of code.
 import re
 from codecs import CodecInfo
 from collections.abc import Generator, Iterable, Iterator
-from typing import Any, Final, Protocol
+from typing import Any, Final, Protocol, type_check_only
 
 # We don't re-export any `html5lib` types / values here, because they are not
 # really public and may change at any time. This is just a helper module,
@@ -19,6 +19,7 @@ from html5lib.serializer import HTMLSerializer
 from html5lib.treewalkers.base import TreeWalker
 
 # Is actually webencodings.Encoding
+@type_check_only
 class _Encoding(Protocol):
     name: str
     codec_info: CodecInfo

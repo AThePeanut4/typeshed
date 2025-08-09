@@ -6,7 +6,7 @@ throughout the code base.
 import sys
 from collections.abc import Iterator
 from re import Pattern
-from typing import Final, Generic, TypedDict, TypeVar, overload
+from typing import Final, Generic, TypedDict, TypeVar, overload, type_check_only
 
 from markdown.core import Markdown
 
@@ -90,6 +90,7 @@ class Processor:
     md: Markdown
     def __init__(self, md: Markdown | None = None) -> None: ...
 
+@type_check_only
 class _TagData(TypedDict):
     tag: str
     attrs: dict[str, str]

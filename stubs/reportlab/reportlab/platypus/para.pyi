@@ -61,7 +61,7 @@ ALSO the following additional internal paragraph markup tags are supported
 
 from _typeshed import Incomplete, Unused
 from collections.abc import Callable, Mapping
-from typing import Any, Final, Literal, Protocol, TypedDict, TypeVar, overload
+from typing import Any, Final, Literal, Protocol, TypedDict, TypeVar, overload, type_check_only
 from typing_extensions import TypeAlias, Unpack
 
 from reportlab.lib.colors import Color
@@ -76,14 +76,17 @@ _Op: TypeAlias = _SupportsWidthAndExecute | str | float | tuple[str, Unpack[tupl
 # NOTE: Output from pyRXP xml parser
 _ParsedText: TypeAlias = tuple[str, dict[str, Any], list[_ParsedText], Any] | list[_ParsedText] | str
 
+@type_check_only
 class _LineOpHandler(Protocol):
     def start_at(self, x: float, y: float, para: paragraphEngine, canvas: Canvas, textobject: PDFTextObject) -> None: ...
     def end_at(self, x: float, y: float, para: paragraphEngine, canvas: Canvas, textobject: PDFTextObject) -> None: ...
 
+@type_check_only
 class _SupportsWidthAndExecute(Protocol):
     def width(self, engine) -> float: ...
     def execute(self, engine, textobject: PDFTextObject, canvas: Canvas) -> object: ...
 
+@type_check_only
 class _SimpleStyleKwargs(TypedDict, total=False):
     fontName: str
     fontSize: float

@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 from types import TracebackType
-from typing import Any, Generic, Protocol, TextIO, TypeVar, overload
+from typing import Any, Generic, Protocol, TextIO, TypeVar, overload, type_check_only
 from typing_extensions import ParamSpec
 
 import gevent._hub_local
@@ -25,6 +25,7 @@ getcurrent = greenlet.getcurrent
 get_hub = gevent._hub_local.get_hub
 Waiter = gevent._waiter.Waiter
 
+@type_check_only
 class _DefaultReturnProperty(Protocol[_T]):
     @overload
     def __get__(self, obj: None, owner: type[object] | None = None) -> property: ...

@@ -18,10 +18,11 @@ the required behavior.
 """
 
 from logging import Logger
-from typing import ClassVar, Protocol
+from typing import ClassVar, Protocol, type_check_only
 
 from .spec import Connection
 
+@type_check_only
 class _Credentials(Protocol):
     TYPE: ClassVar[str]
     erase_on_connect: bool

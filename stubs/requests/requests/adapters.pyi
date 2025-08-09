@@ -9,7 +9,7 @@ and maintain connections.
 from _typeshed import Incomplete
 from collections.abc import Mapping
 from ssl import SSLContext
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, type_check_only
 from typing_extensions import NotRequired, deprecated
 
 import urllib3
@@ -46,11 +46,13 @@ from .utils import (
 )
 
 # Arguments to urllib3 connection_from_host() functions (except pool_kwargs).
+@type_check_only
 class _HostParams(TypedDict):
     host: str
     scheme: str
     port: int
 
+@type_check_only
 class _PoolKwargs(TypedDict):
     ssl_context: NotRequired[SSLContext]
     ca_certs: NotRequired[str]

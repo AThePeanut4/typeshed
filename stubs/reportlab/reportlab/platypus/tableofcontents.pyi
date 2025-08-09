@@ -42,7 +42,7 @@ epsilon.
 
 from _typeshed import Unused
 from collections.abc import Callable, Iterable, Sequence
-from typing import Any, Final, Literal, TypedDict, TypeVar, overload
+from typing import Any, Final, Literal, TypedDict, TypeVar, overload, type_check_only
 from typing_extensions import TypeAlias, Unpack
 
 from reportlab.lib.styles import ParagraphStyle, PropertySet
@@ -54,6 +54,7 @@ _T = TypeVar("_T")
 _Entry: TypeAlias = tuple[int, str, int] | tuple[int, str, int, str | None] | Sequence[int | str | None]
 _SequencerFormat: TypeAlias = Literal["I", "i", "123", "ABC", "abc"]
 
+@type_check_only
 class _TableOfContentsKwargs(TypedDict, total=False):
     rightColumnWidth: float
     levelStyles: list[PropertySet]  # should be ParagraphStyle
@@ -61,6 +62,7 @@ class _TableOfContentsKwargs(TypedDict, total=False):
     dotsMinLevel: int
     formatter: Callable[[int], str] | None
 
+@type_check_only
 class _SimpleIndexKwargs(TypedDict, total=False):
     style: Iterable[PropertySet] | PropertySet | None  # should be ParagraphStyle
     dot: str | None

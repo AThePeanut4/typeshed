@@ -10,11 +10,12 @@ characteristics of Python's built-in set implementation.
 
 from collections.abc import Collection, Container, Generator, Iterable, Iterator, MutableSet
 from itertools import islice
-from typing import Any, Literal, Protocol, SupportsIndex, TypeVar, overload
+from typing import Any, Literal, Protocol, SupportsIndex, TypeVar, overload, type_check_only
 from typing_extensions import Self
 
 _T_co = TypeVar("_T_co", covariant=True)
 
+@type_check_only
 class _RSub(Iterable[_T_co], Protocol):
     def __new__(cls: type[_RSub[_T_co]], param: list[_T_co], /) -> _RSub[_T_co]: ...
 

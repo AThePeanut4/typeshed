@@ -5,12 +5,13 @@ oauthlib.oauth2.rfc6749.request_validator
 
 from collections.abc import Mapping
 from logging import Logger
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, type_check_only
 from typing_extensions import NotRequired
 
 from oauthlib.common import Request
 from oauthlib.oauth2.rfc6749.clients import Client
 
+@type_check_only
 class _BearerToken(TypedDict):
     token_type: Literal["Bearer"]
     access_token: str
@@ -19,6 +20,7 @@ class _BearerToken(TypedDict):
     refresh_token: NotRequired[str]
     state: NotRequired[str]
 
+@type_check_only
 class _AuthorizationCode(TypedDict):
     code: str
     state: NotRequired[str]

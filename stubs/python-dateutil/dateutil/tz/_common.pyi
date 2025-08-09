@@ -34,10 +34,6 @@ def enfold(dt: datetime, fold: int = 1):
     """
     ...
 
-class _DatetimeWithFold(datetime):
-    @property
-    def fold(self): ...
-
 # Doesn't actually have ABCMeta as the metaclass at runtime,
 # but mypy complains if we don't have it in the stub.
 # See discussion in #8908

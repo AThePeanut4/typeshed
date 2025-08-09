@@ -55,10 +55,12 @@ PROLOGUES ARE NOT UNDERSTOOD.  OTHER STUFF IS PROBABLY MISSING.
 """
 
 from _typeshed import Incomplete
+from typing import type_check_only
 
 RequirePyRXP: int
 simpleparse: int
 
+@type_check_only
 class _smartDecode:
     @staticmethod
     def __call__(s): ...

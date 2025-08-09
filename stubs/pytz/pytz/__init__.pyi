@@ -11,7 +11,7 @@ on how to use these modules.
 import datetime
 from _typeshed import Unused
 from collections.abc import Mapping
-from typing import ClassVar
+from typing import ClassVar, type_check_only
 
 from .exceptions import (
     AmbiguousTimeError as AmbiguousTimeError,
@@ -22,6 +22,7 @@ from .exceptions import (
 from .tzinfo import BaseTzInfo as BaseTzInfo, DstTzInfo, StaticTzInfo
 
 # Actually named UTC and then masked with a singleton with the same name
+@type_check_only
 class _UTCclass(BaseTzInfo):
     def localize(self, dt: datetime.datetime, is_dst: bool | None = False) -> datetime.datetime: ...
     def normalize(self, dt: datetime.datetime, is_dst: bool | None = False) -> datetime.datetime: ...

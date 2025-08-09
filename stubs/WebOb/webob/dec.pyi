@@ -8,7 +8,7 @@ instantiated request).
 
 from _typeshed.wsgi import StartResponse, WSGIApplication, WSGIEnvironment
 from collections.abc import Callable, Iterable, Mapping
-from typing import Any, Generic, overload
+from typing import Any, Generic, overload, type_check_only
 from typing_extensions import Concatenate, Never, ParamSpec, Self, TypeAlias, TypeVar
 
 from webob.request import BaseRequest, Request
@@ -532,6 +532,7 @@ class wsgify(Generic[_P, _RequestT_contra]):
         """
         ...
 
+@type_check_only
 class _unbound_wsgify(wsgify[_P, _RequestT_contra], Generic[_P, _S, _RequestT_contra]):
     @overload  # type: ignore[override]
     def __call__(self, __self: _S, env: WSGIEnvironment, /, start_response: StartResponse) -> Iterable[bytes]: ...

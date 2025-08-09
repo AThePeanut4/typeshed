@@ -2,9 +2,10 @@
 
 import csv
 from _typeshed import Incomplete
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from typing import ClassVar, Final
 
+from docutils import nodes
 from docutils.parsers.rst import Directive
 
 __docformat__: Final = "reStructuredText"
@@ -23,12 +24,7 @@ class Table(Directive):
     def extend_short_rows_with_empty_cells(self, columns, parts) -> None: ...
 
 class RSTTable(Table):
-    """
-    Class for the `"table" directive`__ for formal tables using rST syntax.
-
-    __ https://docutils.sourceforge.io/docs/ref/rst/directives.html
-    """
-    def run(self): ...
+    def run(self) -> Sequence[nodes.table | nodes.system_message]: ...
 
 class CSVTable(Table):
     class DocutilsDialect(csv.Dialect):
@@ -62,13 +58,8 @@ class CSVTable(Table):
     @staticmethod
     def check_requirements() -> None: ...
     def process_header_option(self): ...
-    def run(self): ...
-    def get_csv_data(self):
-        """
-        Get CSV data from the directive content, from an external
-        file, or from a URL reference.
-        """
-        ...
+    def run(self) -> Sequence[nodes.table | nodes.system_message]: ...
+    def get_csv_data(self): ...
     @staticmethod
     def decode_from_csv(s): ...
     @staticmethod
@@ -76,11 +67,6 @@ class CSVTable(Table):
     def parse_csv_data_into_rows(self, csv_data, dialect, source): ...
 
 class ListTable(Table):
-    """
-    Implement tables whose data is encoded as a uniform two-level bullet list.
-    For further ideas, see
-    https://docutils.sourceforge.io/docs/dev/rst/alternatives.html#list-driven-tables
-    """
-    def run(self): ...
+    def run(self) -> Sequence[nodes.table | nodes.system_message]: ...
     def check_list_content(self, node): ...
-    def build_table_from_list(self, table_data, col_widths, header_rows, stub_columns): ...
+    def build_table_from_list(self, table_data, col_widths, header_rows, stub_columns) -> nodes.table: ...
