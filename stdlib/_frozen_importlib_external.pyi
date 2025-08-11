@@ -97,13 +97,8 @@ class WindowsRegistryFinder(importlib.abc.MetaPathFinder):
     """Meta path finder for modules declared in the Windows registry."""
     if sys.version_info < (3, 12):
         @classmethod
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None:
-            """
-            Find module named in the registry.
-
-            This method is deprecated.  Use find_spec() instead.
-            """
-            ...
+        @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `find_spec()` instead.")
+        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
 
     @classmethod
     def find_spec(
@@ -165,14 +160,8 @@ class PathFinder(importlib.abc.MetaPathFinder):
         ...
     if sys.version_info < (3, 12):
         @classmethod
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None:
-            """
-            find the module on sys.path or 'path' based on sys.path_hooks and
-            sys.path_importer_cache.
-
-            This method is deprecated.  Use find_spec() instead.
-            """
-            ...
+        @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `find_spec()` instead.")
+        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
 
 SOURCE_SUFFIXES: list[str]
 DEBUG_BYTECODE_SUFFIXES: list[str]
@@ -393,14 +382,11 @@ if sys.version_info >= (3, 11):
         def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         if sys.version_info < (3, 12):
             @staticmethod
-            @deprecated("module_repr() is deprecated, and has been removed in Python 3.12")
-            def module_repr(module: types.ModuleType) -> str:
-                """
-                Return repr for the module.
-
-                The method is deprecated.  The import machinery does the job itself.
-                """
-                ...
+            @deprecated(
+                "Deprecated since Python 3.4; removed in Python 3.12. "
+                "The module spec is now used by the import machinery to generate a module repr."
+            )
+            def module_repr(module: types.ModuleType) -> str: ...
 
     _NamespaceLoader = NamespaceLoader
 else:
@@ -425,25 +411,19 @@ else:
             ...
         if sys.version_info >= (3, 10):
             @staticmethod
-            @deprecated("module_repr() is deprecated, and has been removed in Python 3.12")
-            def module_repr(module: types.ModuleType) -> str:
-                """
-                Return repr for the module.
-
-                The method is deprecated.  The import machinery does the job itself.
-                """
-                ...
+            @deprecated(
+                "Deprecated since Python 3.4; removed in Python 3.12. "
+                "The module spec is now used by the import machinery to generate a module repr."
+            )
+            def module_repr(module: types.ModuleType) -> str: ...
             def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         else:
             @classmethod
-            @deprecated("module_repr() is deprecated, and has been removed in Python 3.12")
-            def module_repr(cls, module: types.ModuleType) -> str:
-                """
-                Return repr for the module.
-
-                The method is deprecated.  The import machinery does the job itself.
-                """
-                ...
+            @deprecated(
+                "Deprecated since Python 3.4; removed in Python 3.12. "
+                "The module spec is now used by the import machinery to generate a module repr."
+            )
+            def module_repr(cls, module: types.ModuleType) -> str: ...
 
 if sys.version_info >= (3, 13):
     class AppleFrameworkLoader(ExtensionFileLoader, importlib.abc.ExecutionLoader):

@@ -66,6 +66,7 @@ def extend_path(path: _PathT, name: str) -> _PathT:
     ...
 
 if sys.version_info < (3, 12):
+    @deprecated("Deprecated since Python 3.3; removed in Python 3.12. Use the `importlib` module instead.")
     class ImpImporter:
         """
         PEP 302 Finder that wraps Python's "classic" import algorithm
@@ -79,6 +80,7 @@ if sys.version_info < (3, 12):
         """
         def __init__(self, path: StrOrBytesPath | None = None) -> None: ...
 
+    @deprecated("Deprecated since Python 3.3; removed in Python 3.12. Use the `importlib` module instead.")
     class ImpLoader:
         """
         PEP 302 Loader that wraps Python's "classic" import algorithm
@@ -87,10 +89,14 @@ if sys.version_info < (3, 12):
         def __init__(self, fullname: str, file: IO[str], filename: StrOrBytesPath, etc: tuple[str, str, int]) -> None: ...
 
 if sys.version_info < (3, 14):
-    @deprecated("Use importlib.util.find_spec() instead. Will be removed in Python 3.14.")
-    def find_loader(fullname: str) -> LoaderProtocol | None:
-        """
-        Find a "loader" object for fullname
+    if sys.version_info >= (3, 12):
+        @deprecated("Deprecated since Python 3.12; removed in Python 3.14. Use `importlib.util.find_spec()` instead.")
+        def find_loader(fullname: str) -> LoaderProtocol | None: ...
+        @deprecated("Deprecated since Python 3.12; removed in Python 3.14. Use `importlib.util.find_spec()` instead.")
+        def get_loader(module_or_name: str) -> LoaderProtocol | None: ...
+    else:
+        def find_loader(fullname: str) -> LoaderProtocol | None: ...
+        def get_loader(module_or_name: str) -> LoaderProtocol | None: ...
 
         This is a backwards compatibility wrapper around
         importlib.util.find_spec that converts most failures to ImportError

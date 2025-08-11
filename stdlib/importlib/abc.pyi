@@ -70,18 +70,8 @@ else:
         def exec_module(self, module: types.ModuleType) -> None: ...
 
 if sys.version_info < (3, 12):
-    class Finder(metaclass=ABCMeta):
-        """
-        Legacy abstract base class for import finders.
-
-        It may be subclassed for compatibility with legacy third party
-        reimplementations of the import system.  Otherwise, finder
-        implementations should derive from the more specific MetaPathFinder
-        or PathEntryFinder ABCs.
-
-        Deprecated since Python 3.3
-        """
-        ...
+    @deprecated("Deprecated since Python 3.3; removed in Python 3.12. Use `MetaPathFinder` or `PathEntryFinder` instead.")
+    class Finder(metaclass=ABCMeta): ...
 
 @deprecated("Deprecated as of Python 3.7: Use importlib.resources.abc.TraversableResources instead.")
 class ResourceLoader(Loader):
@@ -214,9 +204,8 @@ if sys.version_info >= (3, 10):
     class MetaPathFinder(metaclass=ABCMeta):
         """Abstract base class for import finders on sys.meta_path."""
         if sys.version_info < (3, 12):
-            def find_module(self, fullname: str, path: Sequence[str] | None) -> Loader | None:
-                """
-                Return a loader for the module.
+            @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `MetaPathFinder.find_spec()` instead.")
+            def find_module(self, fullname: str, path: Sequence[str] | None) -> Loader | None: ...
 
                 If no module is found, return None.  The fullname is a str and
                 the path is a list of strings or None.
@@ -241,10 +230,10 @@ if sys.version_info >= (3, 10):
     class PathEntryFinder(metaclass=ABCMeta):
         """Abstract base class for path entry finders used by PathFinder."""
         if sys.version_info < (3, 12):
-            def find_module(self, fullname: str) -> Loader | None:
-                """
-                Try to find a loader for the specified module by delegating to
-                self.find_loader().
+            @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `PathEntryFinder.find_spec()` instead.")
+            def find_module(self, fullname: str) -> Loader | None: ...
+            @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `find_spec()` instead.")
+            def find_loader(self, fullname: str) -> tuple[Loader | None, Sequence[str]]: ...
 
                 This method is deprecated in favor of finder.find_spec().
                 """

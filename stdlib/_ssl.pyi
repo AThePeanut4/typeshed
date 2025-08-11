@@ -18,7 +18,7 @@ from ssl import (
     SSLZeroReturnError as SSLZeroReturnError,
 )
 from typing import Any, ClassVar, Final, Literal, TypedDict, final, overload, type_check_only
-from typing_extensions import NotRequired, Self, TypeAlias
+from typing_extensions import NotRequired, Self, TypeAlias, deprecated
 
 _PasswordType: TypeAlias = Callable[[], str | bytes | bytearray] | str | bytes | bytearray
 _PCTRTT: TypeAlias = tuple[tuple[str, str], ...]
@@ -65,14 +65,8 @@ def RAND_bytes(n: int, /) -> bytes:
     ...
 
 if sys.version_info < (3, 12):
-    def RAND_pseudo_bytes(n: int, /) -> tuple[bytes, bool]:
-        """
-        Generate n pseudo-random bytes.
-
-        Return a pair (bytes, is_cryptographic).  is_cryptographic is True
-        if the bytes generated are cryptographically strong.
-        """
-        ...
+    @deprecated("Deprecated since Python 3.6; removed in Python 3.12. Use `ssl.RAND_bytes()` instead.")
+    def RAND_pseudo_bytes(n: int, /) -> tuple[bytes, bool]: ...
 
 if sys.version_info < (3, 10):
     def RAND_egd(path: str) -> None: ...

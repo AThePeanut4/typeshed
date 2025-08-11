@@ -305,6 +305,9 @@ class ExtendedInterpolation(Interpolation):
     ...
 
 if sys.version_info < (3, 13):
+    @deprecated(
+        "Deprecated since Python 3.2; removed in Python 3.13. Use `BasicInterpolation` or `ExtendedInterpolation` instead."
+    )
     class LegacyInterpolation(Interpolation):
         """
         Deprecated interpolation used in old versions of ConfigParser.

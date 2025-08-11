@@ -81,7 +81,7 @@ from collections.abc import Callable, Generator, Sequence
 from contextlib import contextmanager
 from tkinter import Canvas, Frame, Misc, PhotoImage, Scrollbar
 from typing import Any, ClassVar, Literal, TypedDict, overload, type_check_only
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, deprecated
 
 __all__ = [
     "ScrolledCanvas",
@@ -2417,29 +2417,8 @@ class RawTurtle(TPen, TNavigator):  # type: ignore[misc]  # Conflicting methods 
         ...
 
     if sys.version_info < (3, 13):
-        def settiltangle(self, angle: float) -> None:
-            """
-            Rotate the turtleshape to point in the specified direction
-
-            Argument: angle -- number
-
-            Rotate the turtleshape to point in the direction specified by angle,
-            regardless of its current tilt-angle. DO NOT change the turtle's
-            heading (direction of movement).
-
-            Deprecated since Python 3.1
-
-            Examples (for a Turtle instance named turtle):
-            >>> turtle.shape("circle")
-            >>> turtle.shapesize(5,2)
-            >>> turtle.settiltangle(45)
-            >>> turtle.stamp()
-            >>> turtle.fd(50)
-            >>> turtle.settiltangle(-45)
-            >>> turtle.stamp()
-            >>> turtle.fd(50)
-            """
-            ...
+        @deprecated("Deprecated since Python 3.1; removed in Python 3.13. Use `tiltangle()` instead.")
+        def settiltangle(self, angle: float) -> None: ...
 
     @overload
     def tiltangle(self, angle: None = None) -> float:
@@ -5024,29 +5003,8 @@ def get_shapepoly() -> _PolygonCoords | None:
     ...
 
 if sys.version_info < (3, 13):
-    def settiltangle(angle: float) -> None:
-        """
-        Rotate the turtleshape to point in the specified direction
-
-        Argument: angle -- number
-
-        Rotate the turtleshape to point in the direction specified by angle,
-        regardless of its current tilt-angle. DO NOT change the turtle's
-        heading (direction of movement).
-
-        Deprecated since Python 3.1
-
-        Examples:
-        >>> shape("circle")
-        >>> shapesize(5,2)
-        >>> settiltangle(45)
-        >>> stamp()
-        >>> fd(50)
-        >>> settiltangle(-45)
-        >>> stamp()
-        >>> fd(50)
-        """
-        ...
+    @deprecated("Deprecated since Python 3.1; removed in Python 3.13. Use `tiltangle()` instead.")
+    def settiltangle(angle: float) -> None: ...
 
 @overload
 def tiltangle(angle: None = None) -> float:

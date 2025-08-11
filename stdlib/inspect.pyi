@@ -57,7 +57,7 @@ from types import (
     WrapperDescriptorType,
 )
 from typing import Any, ClassVar, Final, Literal, NamedTuple, Protocol, TypeVar, overload, type_check_only
-from typing_extensions import ParamSpec, Self, TypeAlias, TypeGuard, TypeIs
+from typing_extensions import ParamSpec, Self, TypeAlias, TypeGuard, TypeIs, deprecated
 
 if sys.version_info >= (3, 14):
     from annotationlib import Format
@@ -1058,6 +1058,7 @@ def getargs(co: CodeType) -> Arguments:
     ...
 
 if sys.version_info < (3, 11):
+    @deprecated("Deprecated since Python 3.0; removed in Python 3.11.")
     class ArgSpec(NamedTuple):
         """ArgSpec(args, varargs, keywords, defaults)"""
         args: list[str]
@@ -1065,28 +1066,8 @@ if sys.version_info < (3, 11):
         keywords: str | None
         defaults: tuple[Any, ...]
 
-    def getargspec(func: object) -> ArgSpec:
-        """
-        Get the names and default values of a function's parameters.
-
-        A tuple of four things is returned: (args, varargs, keywords, defaults).
-        'args' is a list of the argument names, including keyword-only argument names.
-        'varargs' and 'keywords' are the names of the * and ** parameters or None.
-        'defaults' is an n-tuple of the default values of the last n parameters.
-
-        This function is deprecated, as it does not support annotations or
-        keyword-only parameters and will raise ValueError if either is present
-        on the supplied callable.
-
-        For a more structured introspection API, use inspect.signature() instead.
-
-        Alternatively, use getfullargspec() for an API with a similar namedtuple
-        based interface, but full support for annotations and keyword-only
-        parameters.
-
-        Deprecated since Python 3.5, use `inspect.getfullargspec()`.
-        """
-        ...
+    @deprecated("Deprecated since Python 3.0; removed in Python 3.11. Use `inspect.signature()` instead.")
+    def getargspec(func: object) -> ArgSpec: ...
 
 class FullArgSpec(NamedTuple):
     """FullArgSpec(args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations)"""
@@ -1144,6 +1125,9 @@ else:
 def formatannotationrelativeto(object: object) -> Callable[[object], str]: ...
 
 if sys.version_info < (3, 11):
+    @deprecated(
+        "Deprecated since Python 3.5; removed in Python 3.11. Use `inspect.signature()` and the `Signature` class instead."
+    )
     def formatargspec(
         args: list[str],
         varargs: str | None = None,

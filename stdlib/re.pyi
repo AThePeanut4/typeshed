@@ -114,7 +114,7 @@ from _typeshed import MaybeNone, ReadableBuffer
 from collections.abc import Callable, Iterator, Mapping
 from types import GenericAlias
 from typing import Any, AnyStr, Final, Generic, Literal, TypeVar, final, overload
-from typing_extensions import TypeAlias
+from typing_extensions import TypeAlias, deprecated
 
 __all__ = [
     "match",
@@ -726,6 +726,8 @@ def purge() -> None:
     ...
 
 if sys.version_info < (3, 13):
-    def template(pattern: AnyStr | Pattern[AnyStr], flags: _FlagsType = 0) -> Pattern[AnyStr]:
-        """Compile a template pattern, returning a Pattern object, deprecated"""
-        ...
+    if sys.version_info >= (3, 11):
+        @deprecated("Deprecated since Python 3.11; removed in Python 3.13. Use `re.compile()` instead.")
+        def template(pattern: AnyStr | Pattern[AnyStr], flags: _FlagsType = 0) -> Pattern[AnyStr]: ...  # undocumented
+    else:
+        def template(pattern: AnyStr | Pattern[AnyStr], flags: _FlagsType = 0) -> Pattern[AnyStr]: ...  # undocumented

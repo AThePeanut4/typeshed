@@ -597,7 +597,7 @@ def urlcleanup() -> None:
     ...
 
 if sys.version_info < (3, 14):
-    @deprecated("Deprecated since Python 3.3; Removed in 3.14; Use newer urlopen functions and methods.")
+    @deprecated("Deprecated since Python 3.3; removed in Python 3.14. Use newer `urlopen` functions and methods.")
     class URLopener:
         """
         Class to open URLs.
@@ -673,7 +673,7 @@ if sys.version_info < (3, 14):
             ...
         def __del__(self) -> None: ...
 
-    @deprecated("Deprecated since Python 3.3; Removed in 3.14; Use newer urlopen functions and methods.")
+    @deprecated("Deprecated since Python 3.3; removed in Python 3.14. Use newer `urlopen` functions and methods.")
     class FancyURLopener(URLopener):
         """Derived class with handlers for errors we can handle (perhaps)."""
         def prompt_user_passwd(self, host: str, realm: str) -> tuple[str, str]:
