@@ -21,7 +21,9 @@ def import_module(name: str, package: str | None = None) -> ModuleType:
 
 if sys.version_info < (3, 12):
     @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `importlib.util.find_spec()` instead.")
-    def find_loader(name: str, path: str | None = None) -> Loader | None: ...
+    def find_loader(name: str, path: str | None = None) -> Loader | None:
+        """
+        Return the loader for the specified module.
 
         This is a backward-compatible wrapper around find_spec().
 

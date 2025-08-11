@@ -66,7 +66,14 @@ def RAND_bytes(n: int, /) -> bytes:
 
 if sys.version_info < (3, 12):
     @deprecated("Deprecated since Python 3.6; removed in Python 3.12. Use `ssl.RAND_bytes()` instead.")
-    def RAND_pseudo_bytes(n: int, /) -> tuple[bytes, bool]: ...
+    def RAND_pseudo_bytes(n: int, /) -> tuple[bytes, bool]:
+        """
+        Generate n pseudo-random bytes.
+
+        Return a pair (bytes, is_cryptographic).  is_cryptographic is True
+        if the bytes generated are cryptographically strong.
+        """
+        ...
 
 if sys.version_info < (3, 10):
     def RAND_egd(path: str) -> None: ...

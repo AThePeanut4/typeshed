@@ -727,7 +727,19 @@ class Path(PurePath):
     if sys.version_info < (3, 12):
         if sys.version_info >= (3, 10):
             @deprecated("Deprecated since Python 3.10; removed in Python 3.12. Use `hardlink_to()` instead.")
-            def link_to(self, target: StrOrBytesPath) -> None: ...
+            def link_to(self, target: StrOrBytesPath) -> None:
+                """
+                Make the target path a hard link pointing to this path.
+
+                Note this function does not make this path a hard link to *target*,
+                despite the implication of the function and argument names. The order
+                of arguments (target, link) is the reverse of Path.symlink_to, but
+                matches that of os.link.
+
+                Deprecated since Python 3.10 and scheduled for removal in Python 3.12.
+                Use `hardlink_to()` instead.
+                """
+                ...
         else:
             def link_to(self, target: StrOrBytesPath) -> None:
                 """

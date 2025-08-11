@@ -1067,7 +1067,28 @@ if sys.version_info < (3, 11):
         defaults: tuple[Any, ...]
 
     @deprecated("Deprecated since Python 3.0; removed in Python 3.11. Use `inspect.signature()` instead.")
-    def getargspec(func: object) -> ArgSpec: ...
+    def getargspec(func: object) -> ArgSpec:
+        """
+        Get the names and default values of a function's parameters.
+
+        A tuple of four things is returned: (args, varargs, keywords, defaults).
+        'args' is a list of the argument names, including keyword-only argument names.
+        'varargs' and 'keywords' are the names of the * and ** parameters or None.
+        'defaults' is an n-tuple of the default values of the last n parameters.
+
+        This function is deprecated, as it does not support annotations or
+        keyword-only parameters and will raise ValueError if either is present
+        on the supplied callable.
+
+        For a more structured introspection API, use inspect.signature() instead.
+
+        Alternatively, use getfullargspec() for an API with a similar namedtuple
+        based interface, but full support for annotations and keyword-only
+        parameters.
+
+        Deprecated since Python 3.5, use `inspect.getfullargspec()`.
+        """
+        ...
 
 class FullArgSpec(NamedTuple):
     """FullArgSpec(args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations)"""

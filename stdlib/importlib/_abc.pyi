@@ -8,13 +8,10 @@ from typing_extensions import deprecated
 
 if sys.version_info >= (3, 10):
     class Loader(metaclass=ABCMeta):
-        def load_module(self, fullname: str) -> types.ModuleType: ...
-        if sys.version_info < (3, 12):
-            @deprecated(
-                "Deprecated since Python 3.4; removed in Python 3.12. "
-                "The module spec is now used by the import machinery to generate a module repr."
-            )
-            def module_repr(self, module: types.ModuleType) -> str: ...
+        """Abstract base class for import loaders."""
+        def load_module(self, fullname: str) -> types.ModuleType:
+            """
+            Return the loaded module.
 
             The module must be added to sys.modules and have import-related
             attributes set properly.  The fullname is a str.
@@ -27,6 +24,10 @@ if sys.version_info >= (3, 10):
             """
             ...
         if sys.version_info < (3, 12):
+            @deprecated(
+                "Deprecated since Python 3.4; removed in Python 3.12. "
+                "The module spec is now used by the import machinery to generate a module repr."
+            )
             def module_repr(self, module: types.ModuleType) -> str:
                 """
                 Return a module's repr.

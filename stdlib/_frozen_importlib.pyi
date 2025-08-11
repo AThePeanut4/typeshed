@@ -118,7 +118,15 @@ class BuiltinImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader)
     if sys.version_info < (3, 12):
         @classmethod
         @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `find_spec()` instead.")
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
+        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None:
+            """
+            Find the built-in module.
+
+            If 'path' is ever specified then the search is considered a failure.
+
+            This method is deprecated.  Use find_spec() instead.
+            """
+            ...
 
     @classmethod
     def find_spec(
@@ -152,7 +160,13 @@ class BuiltinImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader)
             "Deprecated since Python 3.4; removed in Python 3.12. "
             "The module spec is now used by the import machinery to generate a module repr."
         )
-        def module_repr(module: types.ModuleType) -> str: ...
+        def module_repr(module: types.ModuleType) -> str:
+            """
+            Return repr for the module.
+
+            The method is deprecated.  The import machinery does the job itself.
+            """
+            ...
     if sys.version_info >= (3, 10):
         @staticmethod
         def create_module(spec: ModuleSpec) -> types.ModuleType | None:
@@ -183,7 +197,13 @@ class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
     if sys.version_info < (3, 12):
         @classmethod
         @deprecated("Deprecated since Python 3.4; removed in Python 3.12. Use `find_spec()` instead.")
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
+        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None:
+            """
+            Find a frozen module.
+
+            This method is deprecated.  Use find_spec() instead.
+            """
+            ...
 
     @classmethod
     def find_spec(
@@ -217,7 +237,13 @@ class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
             "Deprecated since Python 3.4; removed in Python 3.12. "
             "The module spec is now used by the import machinery to generate a module repr."
         )
-        def module_repr(m: types.ModuleType) -> str: ...
+        def module_repr(m: types.ModuleType) -> str:
+            """
+            Return repr for the module.
+
+            The method is deprecated.  The import machinery does the job itself.
+            """
+            ...
     if sys.version_info >= (3, 10):
         @staticmethod
         def create_module(spec: ModuleSpec) -> types.ModuleType | None:
