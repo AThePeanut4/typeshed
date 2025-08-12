@@ -1,3 +1,14 @@
+"""
+Base class for undirected graphs.
+
+The Graph class allows any hashable object as a node
+and can associate key/value attribute pairs with each undirected edge.
+
+Self-loops are allowed but multiple edges are not (see MultiGraph).
+
+For directed graphs see DiGraph and MultiDiGraph.
+"""
+
 from collections.abc import Callable, Collection, Hashable, Iterable, Iterator, MutableMapping
 from functools import cached_property
 from typing import Any, ClassVar, TypeVar, overload
@@ -328,7 +339,24 @@ class Graph(Collection[_Node]):
         """
         ...
     @cached_property
-    def adj(self) -> AdjacencyView[_Node, _Node, dict[str, Any]]: ...
+    def adj(self) -> AdjacencyView[_Node, _Node, dict[str, Any]]:
+        """
+        Graph adjacency object holding the neighbors of each node.
+
+        This object is a read-only dict-like structure with node keys
+        and neighbor-dict values.  The neighbor-dict is keyed by neighbor
+        to the edge-data-dict.  So `G.adj[3][2]['color'] = 'blue'` sets
+        the color of the edge `(3, 2)` to `"blue"`.
+
+        Iterating over G.adj behaves like a dict. Useful idioms include
+        `for nbr, datadict in G.adj[n].items():`.
+
+        The neighbor information is also provided by subscripting the graph.
+        So `for nbr, foovalue in G[node].data('foo', default=1):` works.
+
+        For directed graphs, `G.adj` holds outgoing (successor) info.
+        """
+        ...
     # This object is a read-only dict-like structure
     @property
     def name(self) -> str:
@@ -1257,10 +1285,125 @@ class Graph(Collection[_Node]):
         """
         ...
     @cached_property
-    def edges(self) -> EdgeView[_Node]: ...
-    def get_edge_data(self, u: _Node, v: _Node, default: Any = None) -> dict[str, Any]: ...
+    def edges(self) -> EdgeView[_Node]:
+        """
+        An EdgeView of the Graph as G.edges or G.edges().
+
+        edges(self, nbunch=None, data=False, default=None)
+
+        The EdgeView provides set-like operations on the edge-tuples
+        as well as edge attribute lookup. When called, it also provides
+        an EdgeDataView object which allows control of access to edge
+        attributes (but does not provide set-like operations).
+        Hence, `G.edges[u, v]['color']` provides the value of the color
+        attribute for edge `(u, v)` while
+        `for (u, v, c) in G.edges.data('color', default='red'):`
+        iterates through all the edges yielding the color attribute
+        with default `'red'` if no color attribute exists.
+
+        Parameters
+        ----------
+        nbunch : single node, container, or all nodes (default= all nodes)
+            The view will only report edges from these nodes.
+        data : string or bool, optional (default=False)
+            The edge attribute returned in 3-tuple (u, v, ddict[data]).
+            If True, return edge attribute dict in 3-tuple (u, v, ddict).
+            If False, return 2-tuple (u, v).
+        default : value, optional (default=None)
+            Value used for edges that don't have the requested attribute.
+            Only relevant if data is not True or False.
+
+        Returns
+        -------
+        edges : EdgeView
+            A view of edge attributes, usually it iterates over (u, v)
+            or (u, v, d) tuples of edges, but can also be used for
+            attribute lookup as `edges[u, v]['foo']`.
+
+        Notes
+        -----
+        Nodes in nbunch that are not in the graph will be (quietly) ignored.
+        For directed graphs this returns the out-edges.
+
+        Examples
+        --------
+        >>> G = nx.path_graph(3)  # or MultiGraph, etc
+        >>> G.add_edge(2, 3, weight=5)
+        >>> [e for e in G.edges]
+        [(0, 1), (1, 2), (2, 3)]
+        >>> G.edges.data()  # default data is {} (empty dict)
+        EdgeDataView([(0, 1, {}), (1, 2, {}), (2, 3, {'weight': 5})])
+        >>> G.edges.data("weight", default=1)
+        EdgeDataView([(0, 1, 1), (1, 2, 1), (2, 3, 5)])
+        >>> G.edges([0, 3])  # only edges from these nodes
+        EdgeDataView([(0, 1), (3, 2)])
+        >>> G.edges(0)  # only edges from node 0
+        EdgeDataView([(0, 1)])
+        """
+        ...
+    def get_edge_data(self, u: _Node, v: _Node, default: Any = None) -> dict[str, Any]:
+        """
+        Returns the attribute dictionary associated with edge (u, v).
+
+        This is identical to `G[u][v]` except the default is returned
+        instead of an exception if the edge doesn't exist.
+
+        Parameters
+        ----------
+        u, v : nodes
+        default:  any Python object (default=None)
+            Value to return if the edge (u, v) is not found.
+
+        Returns
+        -------
+        edge_dict : dictionary
+            The edge attribute dictionary.
+
+        Examples
+        --------
+        >>> G = nx.path_graph(4)  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> G[0][1]
+        {}
+
+        Warning: Assigning to `G[u][v]` is not permitted.
+        But it is safe to assign attributes `G[u][v]['foo']`
+
+        >>> G[0][1]["weight"] = 7
+        >>> G[0][1]["weight"]
+        7
+        >>> G[1][0]["weight"]
+        7
+
+        >>> G = nx.path_graph(4)  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> G.get_edge_data(0, 1)  # default edge data is {}
+        {}
+        >>> e = (0, 1)
+        >>> G.get_edge_data(*e)  # tuple form
+        {}
+        >>> G.get_edge_data("a", "b", default=0)  # edge not in graph, return 0
+        0
+        """
+        ...
     # default:  any Python object
-    def adjacency(self) -> Iterator[tuple[_Node, dict[_Node, dict[str, Any]]]]: ...
+    def adjacency(self) -> Iterator[tuple[_Node, dict[_Node, dict[str, Any]]]]:
+        """
+        Returns an iterator over (node, adjacency dict) tuples for all nodes.
+
+        For directed graphs, only outgoing neighbors/adjacencies are included.
+
+        Returns
+        -------
+        adj_iter : iterator
+           An iterator over (node, adjacency dictionary) for all nodes in
+           the graph.
+
+        Examples
+        --------
+        >>> G = nx.path_graph(4)  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> [(n, nbrdict) for n, nbrdict in G.adjacency()]
+        [(0, {1: {}}), (1, {0: {}, 2: {}}), (2, {1: {}, 3: {}}), (3, {2: {}})]
+        """
+        ...
     @cached_property
     def degree(self) -> int | DegreeView[_Node]:
         """

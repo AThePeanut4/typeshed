@@ -1483,7 +1483,9 @@ class Port:
         """
         ...
     @property
-    def uuid(self) -> int: ...
+    def uuid(self) -> int:
+        """The UUID of the JACK port."""
+        ...
     @property
     def is_audio(self) -> bool:
         """This is always ``True``."""
@@ -2151,17 +2153,160 @@ class CallbackExit(Exception):
     """
     To be raised in a callback function to signal failure.
 
-def get_property(subject: int | str, key: str) -> tuple[bytes, str] | None: ...
-def get_properties(subject: int | str) -> dict[str, tuple[bytes, str]]: ...
-def get_all_properties() -> dict[int, dict[str, tuple[bytes, str]]]: ...
-def position2dict(pos: _JackPositionT) -> dict[str, Any]: ...  # Anyof[int, float, _CDataBase]
-def version() -> tuple[int, int, int, int]: ...
-def version_string() -> str: ...
-def client_name_size() -> int: ...
-def port_name_size() -> int: ...
-def set_error_function(callback: Callable[[str], object] | None = None) -> None: ...
-def set_info_function(callback: Callable[[str], object] | None = None) -> None: ...
-def client_pid(name: str) -> int: ...
+    See Also
+    --------
+    :meth:`Client.set_process_callback`
+    :meth:`Client.set_blocksize_callback`
+    :meth:`Client.set_samplerate_callback`
+    :meth:`Client.set_port_rename_callback`
+    :meth:`Client.set_graph_order_callback`
+    :meth:`Client.set_xrun_callback`
+    """
+    ...
+
+def get_property(subject: int | str, key: str) -> tuple[bytes, str] | None:
+    """
+    Get a metadata property on *subject*.
+
+    Parameters
+    ----------
+    subject : int or str
+        The subject (UUID) to get the property from.
+        UUIDs can be obtained with `Client.uuid`, `Port.uuid` and
+        `Client.get_uuid_for_client_name()`.
+    key : str
+        The key of the property.
+
+    Returns
+    -------
+    (bytes, str) or None
+        A tuple containing the value of the property and the type of the
+        property.  If *subject* doesn't have the property *key*,
+        ``None`` is returned.
+
+    See Also
+    --------
+    Client.set_property
+    get_properties
+    get_all_properties
+    Client.remove_property
+    Client.remove_properties
+    Client.remove_all_properties
+    Client.set_property_change_callback
+    """
+    ...
+def get_properties(subject: int | str) -> dict[str, tuple[bytes, str]]:
+    """
+    Get all metadata properties of *subject*.
+
+    Parameters
+    ----------
+    subject : int or str
+        The subject (UUID) to get all properties of.
+        UUIDs can be obtained with `Client.uuid`, `Port.uuid` and
+        `Client.get_uuid_for_client_name()`.
+
+    Returns
+    -------
+    dict
+        A dictionary mapping property names to ``(value, type)`` tuples.
+
+    See Also
+    --------
+    Client.set_property
+    get_property
+    get_all_properties
+    Client.remove_property
+    Client.remove_properties
+    Client.remove_all_properties
+    Client.set_property_change_callback
+    """
+    ...
+def get_all_properties() -> dict[int, dict[str, tuple[bytes, str]]]:
+    """
+    Get all properties for all subjects with metadata.
+
+    Returns
+    -------
+    dict
+        A dictionary mapping UUIDs to nested dictionaries as returned by
+        `get_properties()`.
+
+    See Also
+    --------
+    Client.set_property
+    get_property
+    get_properties
+    Client.remove_property
+    Client.remove_properties
+    Client.remove_all_properties
+    Client.set_property_change_callback
+    """
+    ...
+def position2dict(pos: _JackPositionT) -> dict[str, Any]:
+    """Convert CFFI position struct to a dict."""
+    ...
+def version() -> tuple[int, int, int, int]:
+    """Get tuple of major/minor/micro/protocol version."""
+    ...
+def version_string() -> str:
+    """Get human-readable JACK version."""
+    ...
+def client_name_size() -> int:
+    """
+    Return the maximum number of characters in a JACK client name.
+
+    This includes the final NULL character.  This value is a constant.
+    """
+    ...
+def port_name_size() -> int:
+    """
+    Maximum length of port names.
+
+    The maximum number of characters in a full JACK port name including
+    the final NULL character.  This value is a constant.
+
+    A port's full name contains the owning client name concatenated with
+    a colon (:) followed by its short name and a NULL character.
+    """
+    ...
+def set_error_function(callback: Callable[[str], object] | None = None) -> None:
+    """
+    Set the callback for error message display.
+
+    Set it to ``None`` to restore the default error callback function
+    (which prints the error message plus a newline to stderr).
+    The *callback* function must have this signature::
+
+        callback(message: str) -> None
+    """
+    ...
+def set_info_function(callback: Callable[[str], object] | None = None) -> None:
+    """
+    Set the callback for info message display.
+
+    Set it to ``None`` to restore default info callback function
+    (which prints the info message plus a newline to stderr).
+    The *callback* function must have this signature::
+
+        callback(message: str) -> None
+    """
+    ...
+def client_pid(name: str) -> int:
+    """
+    Return PID of a JACK client.
+
+    Parameters
+    ----------
+    name : str
+        Name of the JACK client whose PID shall be returned.
+
+    Returns
+    -------
+    int
+        PID of *name*.  If not available, 0 will be returned.
+    """
+    ...
 
 # Some METADATA_ constants are not available on all systems.
 METADATA_CONNECTED: Final[str]
