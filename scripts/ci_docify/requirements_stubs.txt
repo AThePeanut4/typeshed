@@ -150,7 +150,7 @@ whatthepatch==1.0.*
 Deprecated~=1.2.15
 objgraph==3.6.*
 pywin32==311.*
-fpdf2==2.8.3
+fpdf2==2.8.4
 pyserial[cp2110]==3.5.*
 tabulate==0.9.*
 untangle==1.2.*
@@ -162,7 +162,7 @@ qrbill==1.1.*
 editdistance==0.8.*
 flake8-simplify==0.22.*
 openpyxl==3.1.5
-yt-dlp==2025.07.21
+yt-dlp==2025.8.11
 python-jose==3.5.*
 passlib==1.7.*
 netifaces==0.11.*
