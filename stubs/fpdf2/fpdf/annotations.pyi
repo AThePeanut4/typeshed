@@ -1,3 +1,5 @@
+"""Usage documentation at: <https://py-pdf.github.io/fpdf2/Annotations.html>"""
+
 from _typeshed import Incomplete
 from datetime import datetime
 from typing import NamedTuple

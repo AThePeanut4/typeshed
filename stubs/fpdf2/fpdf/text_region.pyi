@@ -1,3 +1,5 @@
+"""Usage documentation at: <https://py-pdf.github.io/fpdf2/TextRegion.html>"""
+
 from _typeshed import Incomplete
 from collections.abc import Sequence
 from typing import NamedTuple

@@ -136,7 +136,7 @@ class PDFXObject(PDFContentStream):
 
 class PDFICCProfile(PDFContentStream):
     """
-    holds values for ICC Profile Stream
+    Holds values for ICC Profile Stream
     Args:
         contents (str): stream content
         n (int): [1|3|4], # the numbers for colors 1=Gray, 3=RGB, 4=CMYK
@@ -147,6 +147,7 @@ class PDFICCProfile(PDFContentStream):
     def __init__(self, contents: bytes, n, alternate: str) -> None: ...
 
 class PDFPageLabel:
+    """This will be displayed by some PDF readers to identify pages."""
     st: int
     def __init__(self, label_style: PageLabelStyle, label_prefix: str, label_start: int) -> None: ...
     @property

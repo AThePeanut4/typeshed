@@ -5,6 +5,8 @@ Includes the definition of the character widths of all PDF standard fonts.
 The contents of this module are internal to fpdf2, and not part of the public API.
 They may change at any time without prior warning or any deprecation period,
 in non-backward-compatible ways.
+
+Usage documentation at: <https://py-pdf.github.io/fpdf2/Unicode.html>
 """
 
 import dataclasses
@@ -149,7 +151,14 @@ class TTFFont:
     subset: SubsetMap
     hbfont: HarfBuzzFont | None  # Not always defined.
     def __init__(self, fpdf, font_file_path, fontkey: str, style: int) -> None: ...
-    def __deepcopy__(self, memo) -> Self: ...
+    def __deepcopy__(self, memo) -> Self:
+        """
+        The aim here is that FPDFRecorder.__init__() does NOT deepcopy all fonts attributes
+        but instead share references to immutable objects
+        between the original FPDF instance and the FPDFRecorder instances
+        to avoid performances issues as spotted in issue #1444.
+        """
+        ...
     def close(self) -> None: ...
     def get_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
     def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_params):

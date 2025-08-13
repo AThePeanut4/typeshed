@@ -1,4 +1,8 @@
-"""Handles the creation of patterns and gradients"""
+"""
+Handles the creation of patterns and gradients
+
+Usage documentation at: <https://py-pdf.github.io/fpdf2/Patterns.html>
+"""
 
 from _typeshed import Incomplete
 from abc import ABC

@@ -1,3 +1,5 @@
+"""Usage documentation at: <https://py-pdf.github.io/fpdf2/Tables.html>"""
+
 from _typeshed import Incomplete, SupportsItems
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -26,7 +28,7 @@ DEFAULT_HEADINGS_STYLE: FontFace
 
 class Table:
     """
-    Object that `fpdf.FPDF.table()` yields, used to build a table in the document.
+    Object that `fpdf.fpdf.FPDF.table()` yields, used to build a table in the document.
     Detailed usage documentation: https://py-pdf.github.io/fpdf2/Tables.html
     """
     rows: list[Row]
@@ -97,8 +99,12 @@ class Table:
         ...
     def row(
         self, cells: Iterable[str] = (), style: FontFace | None = None, v_align: VAlign | str | None = None, min_height=None
-    ) -> Row: ...
-    def render(self) -> None: ...
+    ) -> Row:
+        """Adds a row to the table. Returns a `Row` object."""
+        ...
+    def render(self) -> None:
+        """This is an internal method called by `fpdf.FPDF.table()` once the table is finished"""
+        ...
 
 class Row:
     """Object that `Table.row()` yields, used to build a row in a table"""

@@ -4,6 +4,8 @@ HTML renderer
 The contents of this module are internal to fpdf2, and not part of the public API.
 They may change at any time without prior warning or any deprecation period,
 in non-backward-compatible ways.
+
+Usage documentation at: <https://py-pdf.github.io/fpdf2/HTML.html>
 """
 
 from _typeshed import Incomplete, SupportsKeysAndGetItem
@@ -101,7 +103,7 @@ class HTML2FPDF(HTMLParser):
     ) -> None:
         """
         Args:
-            pdf (FPDF): an instance of `fpdf.FPDF`
+            pdf (fpdf.fpdf.FPDF): an instance of `FPDF`
             image_map (function): an optional one-argument function that map `<img>` "src" to new image URLs
             li_tag_indent (int): [**DEPRECATED since v2.7.9**]
                 numeric indentation of `<li>` elements - Set `tag_styles` instead
@@ -109,6 +111,7 @@ class HTML2FPDF(HTMLParser):
                 numeric indentation of `<dd>` elements - Set `tag_styles` instead
             table_line_separators (bool): enable horizontal line separators in `<table>`. Defaults to `False`.
             ul_bullet_char (str): bullet character preceding `<li>` items in `<ul>` lists.
+                You can also specify special bullet names like `"circle"` or `"disc"` (the default).
                 Can also be configured using the HTML `type` attribute of `<ul>` tags.
             li_prefix_color (tuple, str, fpdf.drawing.DeviceCMYK, fpdf.drawing.DeviceGray, fpdf.drawing.DeviceRGB): color for bullets
                 or numbers preceding `<li>` tags. This applies to both `<ul>` & `<ol>` lists.

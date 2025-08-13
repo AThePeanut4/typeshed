@@ -187,6 +187,13 @@ class CellBordersLayout(CoerciveIntFlag):
 
 @dataclass
 class TableBorderStyle:
+    """
+    A helper class for drawing one border of a table
+
+    Attributes:
+        thickness: The thickness of the border. If None use default. If <= 0 don't draw the border.
+        color: The color of the border. If None use default.
+    """
     thickness: float | None = None
     color: int | tuple[int, int, int] | None = None
     dash: float | None = None
@@ -194,32 +201,92 @@ class TableBorderStyle:
     phase: float = 0.0
 
     @staticmethod
-    def from_bool(should_draw: TableBorderStyle | bool | None) -> TableBorderStyle: ...
+    def from_bool(should_draw: TableBorderStyle | bool | None) -> TableBorderStyle:
+        """From boolean or TableBorderStyle input, convert to definite TableBorderStyle class object"""
+        ...
     @property
-    def dash_dict(self) -> dict[str, float | None]: ...
-    def changes_stroke(self, pdf) -> bool: ...
-    def should_render(self) -> bool: ...
-    def get_change_stroke_commands(self, scale: float) -> list[str]: ...
+    def dash_dict(self) -> dict[str, float | None]:
+        """Return dict object specifying dash in the same format as the pdf object"""
+        ...
+    def changes_stroke(self, pdf) -> bool:
+        """Return True if this style changes the any aspect of the draw command, False otherwise"""
+        ...
+    def should_render(self) -> bool:
+        """Return True if this style produces a visible stroke, False otherwise"""
+        ...
+    def get_change_stroke_commands(self, scale: float) -> list[str]:
+        """Return list of strings for the draw command to change stroke (empty if no change)"""
+        ...
     @staticmethod
-    def get_line_command(x1: float, y1: float, x2: float, y2: float) -> list[str]: ...
-    def get_draw_commands(self, pdf, x1: float, y1: float, x2: float, y2: float) -> list[str]: ...
+    def get_line_command(x1: float, y1: float, x2: float, y2: float) -> list[str]:
+        """Return list with string for the command to draw a line at the specified endpoints"""
+        ...
+    def get_draw_commands(self, pdf, x1: float, y1: float, x2: float, y2: float) -> list[str]:
+        """
+        Get draw commands for this section of a cell border. x and y are presumed to be already
+        shifted and scaled.
+        """
+        ...
 
 @dataclass
 class TableCellStyle:
+    """
+    A helper class for drawing all the borders of one cell in a table
+
+    Attributes:
+        left: bool or TableBorderStyle specifying the style of the cell's left border
+        bottom: bool or TableBorderStyle specifying the style of the cell's bottom border
+        right: bool or TableBorderStyle specifying the style of the cell's right border
+        top: bool or TableBorderStyle specifying the style of the cell's top border
+    """
     left: bool | TableBorderStyle = False
     bottom: bool | TableBorderStyle = False
     right: bool | TableBorderStyle = False
     top: bool | TableBorderStyle = False
 
     @staticmethod
-    def get_change_fill_color_command(color: _Color | None) -> list[str]: ...
+    def get_change_fill_color_command(color: _Color | None) -> list[str]:
+        """Return list with string for command to change device color (empty list if no color)"""
+        ...
     def get_draw_commands(
         self, pdf, x1: float, y1: float, x2: float, y2: float, fill_color: _Color | None = None
-    ) -> list[str]: ...
-    def override_cell_border(self, cell_border: CellBordersLayout) -> Self: ...
-    def draw_cell_border(self, pdf, x1: float, y1: float, x2: float, y2: float, fill_color: _Color | None = None) -> None: ...
+    ) -> list[str]:
+        """
+        Get list of primitive commands to draw the cell border for this cell, and fill it with the
+        given fill color.
+        """
+        ...
+    def override_cell_border(self, cell_border: CellBordersLayout) -> Self:
+        """Allow override by CellBordersLayout mechanism"""
+        ...
+    def draw_cell_border(self, pdf, x1: float, y1: float, x2: float, y2: float, fill_color: _Color | None = None) -> None:
+        """Draw the cell border for this cell, and fill it with the given fill color."""
+        ...
 
 class TableBordersLayout(ABC):
+    """
+    Customizable class for setting the drawing style of cell borders for the whole table.
+    cell_style_getter is an abstract method that derived classes must implement. All current classes
+    do not use self, but it is available in case a very complicated derived class needs to refer to
+    stored internal data.
+
+    Standard TableBordersLayouts are available as static members of this class
+
+    Attributes:
+        cell_style_getter: a callable that takes row_num, column_num,
+            num_heading_rows, num_rows, num_columns; and returns the drawing style of
+            the cell border (as a TableCellStyle object)
+        ALL: static TableBordersLayout that draws all table cells borders
+        NONE: static TableBordersLayout that draws no table cells borders
+        INTERNAL: static TableBordersLayout that draws only internal horizontal & vertical borders
+        MINIMAL: static TableBordersLayout that draws only the top horizontal border, below the
+            headings, and internal vertical borders
+        HORIZONTAL_LINES: static TableBordersLayout that draws only horizontal lines
+        NO_HORIZONTAL_LINES: static TableBordersLayout that draws all cells border except interior
+            horizontal lines after the headings
+        SINGLE_TOP_LINE: static TableBordersLayout that draws only the top horizontal border, below
+            the headings
+    """
     ALL: Final[TableBordersLayoutAll]
     NONE: Final[TableBordersLayoutNone]
     INTERNAL: Final[TableBordersLayoutInternal]
@@ -230,41 +297,88 @@ class TableBordersLayout(ABC):
     @abstractmethod
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
-    ) -> TableCellStyle: ...
+    ) -> TableCellStyle:
+        """
+        Specify the desired TableCellStyle for the given position in the table
+
+        Args:
+            row_idx: the 0-based index of the row in the table
+            col_idx: the 0-based logical index of the cell in the row. If colspan > 1, this indexes
+                into non-null cells. e.g. if there are two cells with colspan = 3, then col_idx will
+                be 0 or 1
+            col_pos: the 0-based physical position of the cell in the row. If colspan > 1, this
+                indexes into all cells including null ones. e.g. e.g. if there are two cells with
+                colspan = 3, then col_pos will be 0 or 3
+            num_heading_rows: the number of rows in the table heading
+            num_rows: the total number of rows in the table
+            num_col_idx: the number of non-null cells. e.g. if there are two cells with colspan = 3,
+                then num_col_idx = 2
+            num_col_pos: the full width of the table in physical cells. e.g. if there are two cells
+                with colspan = 3, then num_col_pos = 6
+        Returns:
+            TableCellStyle for the given position in the table
+        """
+        ...
     @classmethod
-    def coerce(cls, value: Self | str) -> Self: ...
+    def coerce(cls, value: Self | str) -> Self:
+        """
+        Attempt to coerce `value` into a member of this class.
+
+        If value is already a member of this enumeration it is returned unchanged.
+        Otherwise, if it is a string, attempt to convert it as an enumeration value. If
+        that fails, attempt to convert it (case insensitively, by upcasing) as an
+        enumeration name.
+
+        If all different conversion attempts fail, an exception is raised.
+
+        Args:
+            value (Enum, str): the value to be coerced.
+
+        Raises:
+            ValueError: if `value` is a string but neither a member by name nor value.
+            TypeError: if `value`'s type is neither a member of the enumeration nor a
+                string.
+        """
+        ...
 
 class TableBordersLayoutAll(TableBordersLayout):
+    """Class for drawing all cell borders"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...
 
 class TableBordersLayoutNone(TableBordersLayout):
+    """Class for drawing zero cell borders"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...
 
 class TableBordersLayoutInternal(TableBordersLayout):
+    """Class to draw only internal horizontal & vertical borders"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...
 
 class TableBordersLayoutMinimal(TableBordersLayout):
+    """Class to draw only the top horizontal border, below the headings, and internal vertical borders"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...
 
 class TableBordersLayoutHorizontalLines(TableBordersLayout):
+    """Class to draw only horizontal lines"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...
 
 class TableBordersLayoutNoHorizontalLines(TableBordersLayout):
+    """Class to draw all cells border except interior horizontal lines after the headings"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...
 
 class TableBordersLayoutSingleTopLine(TableBordersLayout):
+    """Class to draw a single top line"""
     def cell_style_getter(
         self, row_idx: int, col_idx: int, col_pos: int, num_heading_rows: int, num_rows: int, num_col_idx: int, num_col_pos: int
     ) -> TableCellStyle: ...

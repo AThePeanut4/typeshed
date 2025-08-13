@@ -38,7 +38,7 @@ def preload_image(
     Read an image and load it into memory.
 
     For raster images: following this call, the image is inserted in `image_cache.images`,
-    and following calls to `FPDF.image()` will re-use the same cached values, without re-reading the image.
+    and following calls to `fpdf.fpdf.FPDF.image()` will re-use the same cached values, without re-reading the image.
 
     For vector images: the data is loaded and the metadata extracted.
 
@@ -56,7 +56,7 @@ def preload_image(
 def load_image(filename):
     """
     This method is used to load external resources, such as images.
-    It is automatically called when resource added to document by `fpdf.FPDF.image()`.
+    It is automatically called when resource added to document by `fpdf.fpdf.FPDF.image()`.
     It always return a BytesIO buffer.
     """
     ...

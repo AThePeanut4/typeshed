@@ -1,3 +1,5 @@
+"""Usage documentation at: <https://py-pdf.github.io/fpdf2/Presentations.html#transitions>"""
+
 from abc import ABC, abstractmethod
 from typing import Literal
 

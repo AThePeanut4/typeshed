@@ -98,7 +98,12 @@ def iobj_ref(n):
     """format an indirect PDF Object reference from its id number"""
     ...
 def create_stream(stream: str | bytes | bytearray, encryption_handler: StandardSecurityHandler | None = None, obj_id=None): ...
-def wrap_in_local_context(draw_commands: list[str]) -> list[str]: ...
+def wrap_in_local_context(draw_commands: list[str]) -> list[str]:
+    """
+    Wrap a series of draw commands (list of strings) in a local context marker, so that changes to
+    draw style only apply to these commands.
+    """
+    ...
 
 class Raw(str):
     """str subclass signifying raw data to be directly emitted to PDF without transformation."""

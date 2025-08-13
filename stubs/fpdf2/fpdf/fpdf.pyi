@@ -280,7 +280,7 @@ class FPDF(GraphicsStateMixin):
             warn_on_tags_not_matching (bool): control warnings production for unmatched HTML tags. Defaults to `True`.
             tag_indents (dict): [**DEPRECATED since v2.8.0**]
                 mapping of HTML tag names to numeric values representing their horizontal left indentation. - Set `tag_styles` instead
-            tag_styles (dict[str, fpdf.fonts.TextStyle]): mapping of HTML tag names to `fpdf.TextStyle` or `fpdf.FontFace` instances
+            tag_styles (dict[str, fpdf.fonts.TextStyle]): mapping of HTML tag names to `fpdf.fonts.TextStyle` or `fpdf.fonts.FontFace` instances
         """
         ...
     @property
@@ -332,7 +332,13 @@ class FPDF(GraphicsStateMixin):
         ...
     @property
     def pages_count(self) -> int:
-        """Returns the total pages of the document."""
+        """
+        Returns the total pages of the document, at the time it is called.
+
+        Do not use this in `fpdf.fpdf.FPDF.header()` or `fpdf.fpdf.FPDF.footer()`,
+        as its value will not be the total page count.
+        Uses `{nb}` instead, _cf._ `fpdf.fpdf.FPDF.alias_nb_pages()`.
+        """
         ...
     def set_margin(self, margin: float) -> None:
         """
@@ -385,8 +391,10 @@ class FPDF(GraphicsStateMixin):
     page_break_trigger: float
     def set_auto_page_break(self, auto: bool, margin: float = 0) -> None:
         """
-        Set auto page break mode and triggering bottom margin.
+        Set auto page break mode, and optionally the bottom margin that triggers it.
         By default, the mode is on and the bottom margin is 2 cm.
+
+        Detailed documentation on page breaks: https://py-pdf.github.io/fpdf2/PageBreaks.html
 
         Args:
             auto (bool): enable or disable this mode
@@ -551,7 +559,11 @@ class FPDF(GraphicsStateMixin):
                 meaning to use the best image filter given the images provided.
                 Allowed values: `FlateDecode` (lossless zlib/deflate compression),
                 `DCTDecode` (lossy compression with JPEG)
+                `LZWDecode` (Lempel-Ziv-Welch aka LZW compression)
                 and `JPXDecode` (lossy compression with JPEG2000).
+
+        [**NEW in 2.8.4**] Note that, when using `LZWDecode`, having NumPy installed
+        will improve performances, reducing execution time.
         """
         ...
     def alias_nb_pages(self, alias: str = "{nb}") -> None:
@@ -565,7 +577,7 @@ class FPDF(GraphicsStateMixin):
         This substitution can be disabled for performances reasons, by calling `alias_nb_pages(None)`.
 
         Args:
-            alias (str): the alias. Defaults to "{nb}".
+            alias (str): the alias. Defaults to `"{nb}"`.
 
         Notes
         -----
@@ -579,7 +591,12 @@ class FPDF(GraphicsStateMixin):
         ...
     def set_page_label(
         self, label_style: PageLabelStyle | str | None = None, label_prefix: str | None = None, label_start: int | None = None
-    ) -> None: ...
+    ) -> None:
+        """
+        Enable `fpdf.output.PDFPageLabel` to be inserted on every page.
+        This will be displayed by some PDF readers to identify pages.
+        """
+        ...
     def add_page(
         self,
         orientation: _Orientation = "",
@@ -650,7 +667,13 @@ class FPDF(GraphicsStateMixin):
     def page_no(self) -> int:
         """Get the current page number"""
         ...
-    def get_page_label(self) -> str: ...
+    def get_page_label(self) -> str:
+        """
+        Return the current page `fpdf.output.PDFPageLabel`.
+        This will be displayed by some PDF readers to identify pages.
+        `FPDF.set_page_label()` needs to be called first for those to be inserted.
+        """
+        ...
     def set_draw_color(self, r: int, g: int = -1, b: int = -1) -> None:
         """
         Defines the color used for all stroking operations (lines, rectangles and cell borders).
@@ -997,14 +1020,16 @@ class FPDF(GraphicsStateMixin):
         It can be drawn (border only), filled (with no border) or both.
 
         Args:
-            a (float): Semi-major axis diameter.
-            b (float): Semi-minor axis diameter, if None, equals to a (default: None).
+            x (float): Abscissa of upper-left corner of the bounding box of the full ellipse.
+            y (float): Ordinate of upper-left corner of the bounding box of the full ellipse.
+            a (float): Major axis diameter (width of bounding box).
+            b (float): Minor axis diameter (height of bounding box), if None, equals to a (default: None).
             start_angle (float): Start angle of the arc (in degrees).
             end_angle (float): End angle of the arc (in degrees).
             inclination (float): Inclination of the arc in respect of the x-axis (default: 0).
             clockwise (bool): Way of drawing the arc (True: clockwise, False: counterclockwise) (default: False).
-            start_from_center (bool): Start drawing from the center of the circle (default: False).
-            end_at_center (bool): End drawing at the center of the circle (default: False).
+            start_from_center (bool): Start drawing from the center of the ellipse (default: False).
+            end_at_center (bool): End drawing at the center of the ellipse (default: False).
             style (fpdf.enums.RenderStyle, str): Optional style of rendering. Allowed values are:
 
             * `D` or None: draw border. This is the default value.
@@ -1621,11 +1646,15 @@ class FPDF(GraphicsStateMixin):
     @property
     def accept_page_break(self) -> bool:
         """
-        Whenever a page break condition is met, this method is called,
+        Whenever a page break condition is met, this `@property` method is called,
         and the break is issued or not depending on the returned value.
 
-        The default implementation returns a value according to the mode selected by `FPDF.set_auto_page_break()`.
+        The default implementation returns `self.auto_page_break`,
+        a value according to the mode selected by `FPDF.set_auto_page_break()`.
+
         This method is called automatically and should not be called directly by the application.
+
+        Detailed documentation on page breaks: https://py-pdf.github.io/fpdf2/PageBreaks.html
         """
         ...
     def cell(
@@ -1695,6 +1724,8 @@ class FPDF(GraphicsStateMixin):
         """
         Let you know if adding an element will trigger a page break,
         based on its height and the current ordinate (`y` position).
+
+        Detailed documentation on page breaks: https://py-pdf.github.io/fpdf2/PageBreaks.html
 
         Args:
             height (float): height of the section that would be added, e.g. a cell
@@ -2078,6 +2109,8 @@ class FPDF(GraphicsStateMixin):
         """
         Ensures that all rendering performed in this context appear on a single page
         by performing page break beforehand if need be.
+
+        Detailed documentation on page breaks: https://py-pdf.github.io/fpdf2/PageBreaks.html
 
         Notes
         -----
