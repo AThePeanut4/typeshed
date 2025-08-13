@@ -97,20 +97,8 @@ class Table:
         ...
     def row(
         self, cells: Iterable[str] = (), style: FontFace | None = None, v_align: VAlign | str | None = None, min_height=None
-    ) -> Row:
-        """Adds a row to the table. Returns a `Row` object."""
-        ...
-    def render(self) -> None:
-        """This is an internal method called by `fpdf.FPDF.table()` once the table is finished"""
-        ...
-    def get_cell_border(self, i: int, j: int, cell: Cell) -> str | Literal[0, 1]:
-        """
-        Defines which cell borders should be drawn.
-        Returns a string containing some or all of the letters L/R/T/B,
-        to be passed to `fpdf.FPDF.multi_cell()`.
-        Can be overridden to customize this logic
-        """
-        ...
+    ) -> Row: ...
+    def render(self) -> None: ...
 
 class Row:
     """Object that `Table.row()` yields, used to build a row in a table"""

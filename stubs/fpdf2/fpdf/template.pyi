@@ -75,35 +75,8 @@ class FlexTemplate:
     set: Any
     def __contains__(self, name): ...
     def __getitem__(self, name): ...
-    def split_multicell(self, text, element_name):
-        r"""
-        Split a string between words, for the parts to fit into a given element
-        width. Additional splits will be made replacing any '\n' characters.
-
-        Arguments:
-
-            text (string): The input text string.
-
-            element_name (string): The name of the template element to fit the text inside.
-
-        Returns:
-            A list of substrings, each of which will fit into the element width
-            when rendered in the element font style and size.
-        """
-        ...
-    def render(self, offsetx: float = 0.0, offsety: float = 0.0, rotate: float = 0.0, scale: float = 1.0):
-        """
-        Add the contents of the template to the PDF document.
-
-        Arguments:
-
-            offsetx, offsety (float): Place the template to move its origin to the given coordinates.
-
-            rotate (float): Rotate the inserted template around its (offset) origin.
-
-            scale (float): Scale the inserted template by this factor.
-        """
-        ...
+    def split_multicell(self, text: str, element_name: str) -> list[str]: ...
+    def render(self, offsetx: float = 0.0, offsety: float = 0.0, rotate: float = 0.0, scale: float = 1.0): ...
 
 class Template(FlexTemplate):
     """

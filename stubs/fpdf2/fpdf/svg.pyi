@@ -10,7 +10,7 @@ from _typeshed import Incomplete, Unused
 from collections.abc import Callable
 from logging import Logger
 from re import Pattern
-from typing import Literal, NamedTuple, overload
+from typing import Final, Literal, NamedTuple, Protocol, TypeVar, overload, type_check_only
 
 from ._fonttools_shims import BasePen, _TTGlyphSet
 from .drawing import ClippingPath, PaintedPath
@@ -18,15 +18,18 @@ from .fpdf import FPDF
 from .image_datastructures import ImageCache
 
 LOGGER: Logger
-
 __pdoc__: dict[str, bool]
 
-def force_nodocument(item):
-    """A decorator that forces pdoc not to document the decorated item (class or method)"""
-    ...
+@type_check_only
+class _HasQualname(Protocol):
+    __qualname__: str
 
-NUMBER_SPLIT: Pattern[str]
-TRANSFORM_GETTER: Pattern[str]
+_T = TypeVar("_T", bound=_HasQualname)
+
+def force_nodocument(item: _T) -> _T: ...
+
+NUMBER_SPLIT: Final[Pattern[str]]
+TRANSFORM_GETTER: Final[Pattern[str]]
 
 class Percent(float):
     """class to represent percentage values"""
