@@ -1,6 +1,7 @@
 """This package contains modules for language-dependent features of Docutils."""
 
 from typing import ClassVar, Final, Protocol, type_check_only
+from typing_extensions import Self
 
 from docutils.utils import Reporter
 
@@ -34,5 +35,6 @@ class LanguageImporter:
         """Check if we got a Docutils language module."""
         ...
     def __call__(self, language_code: str, reporter: Reporter | None = None) -> _LanguageModule: ...
+    def __class_getitem__(cls, name) -> type[Self]: ...
 
 get_language: LanguageImporter

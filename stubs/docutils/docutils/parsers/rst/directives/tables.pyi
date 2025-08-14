@@ -4,6 +4,7 @@ import csv
 from _typeshed import Incomplete
 from collections.abc import Callable, Sequence
 from typing import ClassVar, Final
+from typing_extensions import deprecated
 
 from docutils import nodes
 from docutils.parsers.rst import Directive
@@ -44,6 +45,7 @@ class CSVTable(Table):
         escapechar: Incomplete
         def __init__(self, options) -> None: ...
 
+    @deprecated("Deprecated and will be removed in Docutils 1.0.")
     class HeaderDialect(csv.Dialect):
         """
         CSV dialect used for the "header" option data.
@@ -61,19 +63,11 @@ class CSVTable(Table):
         def __init__(self) -> None: ...
 
     @staticmethod
+    @deprecated("Deprecated and not required with Python 3; will be removed in Docutils 0.22.")
     def check_requirements() -> None: ...
     def process_header_option(self): ...
     def run(self) -> Sequence[nodes.table | nodes.system_message]: ...
-    def get_csv_data(self):
-        """
-        Get CSV data from the directive content, from an external
-        file, or from a URL reference.
-        """
-        ...
-    @staticmethod
-    def decode_from_csv(s): ...
-    @staticmethod
-    def encode_for_csv(s): ...
+    def get_csv_data(self): ...
     def parse_csv_data_into_rows(self, csv_data, dialect, source): ...
 
 class ListTable(Table):

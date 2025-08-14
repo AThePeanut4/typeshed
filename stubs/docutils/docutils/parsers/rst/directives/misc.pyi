@@ -5,12 +5,13 @@ from pathlib import Path
 from re import Match, Pattern
 from typing import ClassVar, Final
 
+from docutils import nodes
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst.states import SpecializedBody
 
 __docformat__: Final = "reStructuredText"
 
-def adapt_path(path: str, source: StrPath = "", root_prefix: StrPath = "/") -> str: ...
+def adapt_path(path: str, source: StrPath = "", root_prefix: StrPath = "") -> str: ...
 
 class Include(Directive):
     """
@@ -25,6 +26,11 @@ class Include(Directive):
     https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment
     """
     standard_include_path: Path
+    def read_file(self, path: StrPath) -> str: ...
+    def as_literal_block(self, text: str) -> list[nodes.literal_block]: ...
+    def as_code_block(self, text: str) -> list[nodes.literal_block]: ...
+    def custom_parse(self, text: str) -> list[nodes.Node]: ...
+    def insert_into_input_lines(self, text: str) -> None: ...
 
 class Raw(Directive):
     """

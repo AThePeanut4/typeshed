@@ -1,13 +1,14 @@
 """Lexical analysis of formal languages (i.e. code) using Pygments."""
 
 from collections.abc import Generator, Iterable
-from typing import Literal
+from typing import Final, Literal
 from typing_extensions import TypeAlias
 
 from docutils import ApplicationError
 
 _TokenNames: TypeAlias = Literal["long", "short", "none"]
 
+__docformat__: Final = "reStructuredText"
 with_pygments: bool
 unstyled_tokens: list[str]
 

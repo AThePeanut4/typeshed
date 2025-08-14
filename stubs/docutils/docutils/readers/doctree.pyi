@@ -1,10 +1,10 @@
-"""Reader for existing document trees."""
-
-from typing import ClassVar, TypeVar
+from typing import ClassVar, Final, TypeVar
 
 from docutils import readers
 
 _S = TypeVar("_S", bound=str | bytes)
+
+__docformat__: Final = "reStructuredText"
 
 class Reader(readers.ReReader[_S]):
     """

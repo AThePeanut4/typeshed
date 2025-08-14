@@ -1,8 +1,8 @@
-"""A do-nothing parser."""
-
-from typing import ClassVar
+from typing import ClassVar, Final
 
 from docutils import parsers
+
+__docformat__: Final = "reStructuredText"
 
 class Parser(parsers.Parser):
     """A do-nothing parser."""

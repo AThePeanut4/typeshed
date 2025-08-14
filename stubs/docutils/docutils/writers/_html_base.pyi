@@ -3,11 +3,13 @@
 from _typeshed import Incomplete, StrPath
 from collections.abc import Callable
 from re import Pattern
-from typing import ClassVar, NoReturn
+from typing import ClassVar, Final, NoReturn
 
 from docutils import nodes, writers
 from docutils.frontend import Values
 from docutils.languages import _LanguageModule
+
+__docformat__: Final = "reStructuredText"
 
 class Writer(writers.Writer[str]):
     settings_defaults: ClassVar[dict[str, str]]
@@ -148,44 +150,13 @@ class HTMLTranslator(nodes.NodeVisitor):
         """Encode special characters in `text` & return."""
         ...
     def image_size(self, node: nodes.image) -> str: ...
-    def prepare_svg(self, node: nodes.image, imagedata: bytes | bytearray, size_declaration: str | None) -> str: ...
-    def stylesheet_call(self, path: StrPath, adjust_path: bool | None = None) -> str:
-        """Return code to reference or embed stylesheet file `path`"""
-        ...
-    def starttag(self, node: nodes.Element, tagname: str, suffix: str = "\n", empty: bool = False, **attributes) -> str:
-        """
-        Construct and return a start tag given a node (id & class attributes
-        are extracted), tag name, and optional attributes.
-        """
-        ...
-    def emptytag(self, node: nodes.Element, tagname: str, suffix: str = "\n", **attributes) -> str:
-        """Construct and return an XML-compatible empty tag."""
-        ...
+    def read_size_with_PIL(self, node) -> tuple[int, int] | None: ...
+    def prepare_svg(self, code: str | bytes, node: nodes.Element, atts: dict[str, Incomplete]) -> str: ...
+    def stylesheet_call(self, path: StrPath, adjust_path: bool | None = None) -> str: ...
+    def starttag(self, node: nodes.Element, tagname: str, suffix: str = "\n", empty: bool = False, **attributes) -> str: ...
+    def emptytag(self, node: nodes.Element, tagname: str, suffix: str = "\n", **attributes) -> str: ...
     def report_messages(self, node: nodes.Node) -> None: ...
-    def set_class_on_child(self, node, class_, index: int = 0) -> None:
-        """
-        Set class `class_` on the visible child no. index of `node`.
-        Do nothing if node has fewer children than `index`.
-        """
-        ...
-    def uri2imagepath(self, uri: str) -> str:
-        """
-        Get filesystem path corresponding to an URI.
-
-        The image directive expects an image URI. Some writers require the
-        corresponding image path to read the image size from the file or to
-        embed the image in the output.
-
-        Absolute URIs consider the "root_prefix" setting.
-
-        In order to work in the output document, relative image URIs relate
-        to the output directory. For access by the writer, the corresponding
-        image path must be relative to the current working directory.
-
-        Provisional: the function's location, interface and behaviour
-        may change without advance warning.
-        """
-        ...
+    def set_class_on_child(self, node, class_, index: int = 0) -> None: ...
     def visit_Text(self, node: nodes.Text) -> None: ...
     def depart_Text(self, node: nodes.Text) -> None: ...
     def visit_abbreviation(self, node: nodes.abbreviation) -> None: ...

@@ -2,7 +2,7 @@
 
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any, Final
-from typing_extensions import TypeAlias
+from typing_extensions import TypeAlias, deprecated
 
 import docutils.parsers.rst.states
 from docutils import nodes
@@ -170,14 +170,8 @@ def unimplemented_role(
     options: Mapping[str, Any] | None = None,
     content: Sequence[str] | None = None,
 ) -> tuple[list[Node], list[system_message]]: ...
-def set_classes(options: dict[str, str]) -> None:
-    """Deprecated. Obsoleted by ``normalized_role_options()``."""
-    ...
-def normalized_role_options(options: Mapping[str, Any] | None) -> dict[str, Any]:
-    """
-    Return normalized dictionary of role options.
-
-    * ``None`` is replaced by an empty dictionary.
-    * The key 'class' is renamed to 'classes'.
-    """
-    ...
+@deprecated("Deprecated and will be removed in Docutils 2.0, Use `roles.normalize_options()` instead.")
+def set_classes(options: dict[str, str]) -> None: ...
+@deprecated("Deprecated and will be removed in Docutils 2.0, Use `roles.normalize_options()` instead.")
+def normalized_role_options(options: Mapping[str, Any] | None) -> dict[str, Any]: ...
+def normalize_options(options: Mapping[str, Any] | None) -> dict[str, Any]: ...

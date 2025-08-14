@@ -4,6 +4,7 @@ from typing import ClassVar, Final, TextIO, TypeVar
 
 _T = TypeVar("_T")
 
+__docformat__: Final = "reStructuredText"
 __version__: Final[str]
 
 class Trace:
@@ -135,15 +136,9 @@ class ContainerExtractor:
     allowed: Incomplete
     extracted: Incomplete
     def __init__(self, config) -> None: ...
-    def extract(self, container):
-        """Extract a group of selected containers from a container."""
-        ...
-    def process(self, container, list) -> None:
-        """Add allowed containers."""
-        ...
-    def safeclone(self, container):
-        """Return a new container with contents only in a safe list, recursively."""
-        ...
+    def extract(self, container): ...
+    def process(self, container, lst) -> None: ...
+    def safeclone(self, container): ...
 
 class Parser:
     """A generic parser"""

@@ -14,7 +14,6 @@ from typing import Final
 from typing_extensions import deprecated
 
 from docutils import SettingsSpec
-from docutils.frontend import OptionParser
 from docutils.io import FileInput, Input, Output
 from docutils.parsers import Parser
 from docutils.readers import Reader
@@ -44,30 +43,11 @@ class Publisher:
         destination: Output | None = None,
         destination_class=...,
         settings: dict[str, Incomplete] | None = None,
-    ) -> None:
-        """
-        Initial setup.  If any of `reader`, `parser`, or `writer` are not
-        specified, ``set_components()`` or the corresponding ``set_...()``
-        method should be called with component names
-        (`set_reader` sets the parser as well).
-        """
-        ...
-    def set_reader(self, reader_name: str, parser: Parser | None, parser_name: str | None) -> None:
-        """Set `self.reader` by name."""
-        ...
-    def set_writer(self, writer_name: str) -> None:
-        """Set `self.writer` by name."""
-        ...
+    ) -> None: ...
+    def set_reader(self, reader: str, parser: Parser | None = None, parser_name: str | None = None) -> None: ...
+    def set_writer(self, writer_name: str) -> None: ...
+    @deprecated("The `Publisher.set_components()` will be removed in Docutils 2.0.")
     def set_components(self, reader_name: str, parser_name: str, writer_name: str) -> None: ...
-    @deprecated("Publisher.setup_option_parser is deprecated, and will be removed in Docutils 0.21.")
-    def setup_option_parser(
-        self,
-        usage: str | None = None,
-        description: str | None = None,
-        settings_spec: SettingsSpec | None = None,
-        config_section: str | None = None,
-        **defaults,
-    ) -> OptionParser: ...
     def get_settings(
         self,
         usage: str | None = None,
@@ -107,7 +87,7 @@ class Publisher:
         """
         ...
     def set_io(self, source_path: StrPath | None = None, destination_path: StrPath | None = None) -> None: ...
-    def set_source(self, source=None, source_path: StrPath | None = None) -> None: ...
+    def set_source(self, source: str | None = None, source_path: StrPath | None = None) -> None: ...
     def set_destination(self, destination=None, destination_path: StrPath | None = None) -> None: ...
     def apply_transforms(self) -> None: ...
     def publish(
@@ -139,11 +119,11 @@ default_description: Final[str]
 
 def publish_cmdline(
     reader: Reader[Incomplete] | None = None,
-    reader_name: str = "standalone",
+    reader_name: str | None = None,
     parser: Parser | None = None,
-    parser_name: str = "restructuredtext",
+    parser_name: str | None = None,
     writer: Writer[Incomplete] | None = None,
-    writer_name: str = "pseudoxml",
+    writer_name: str | None = None,
     settings=None,
     settings_spec=None,
     settings_overrides=None,
@@ -174,11 +154,11 @@ def publish_file(
     destination=None,
     destination_path: StrPath | None = None,
     reader=None,
-    reader_name: str = "standalone",
+    reader_name: str | None = None,
     parser=None,
-    parser_name: str = "restructuredtext",
+    parser_name: str | None = None,
     writer=None,
-    writer_name: str = "pseudoxml",
+    writer_name: str | None = None,
     settings=None,
     settings_spec=None,
     settings_overrides=None,
@@ -198,11 +178,11 @@ def publish_string(
     source_path: StrPath | None = None,
     destination_path: StrPath | None = None,
     reader=None,
-    reader_name: str = "standalone",
+    reader_name: str | None = None,
     parser=None,
-    parser_name: str = "restructuredtext",
+    parser_name: str | None = None,
     writer=None,
-    writer_name: str = "pseudoxml",
+    writer_name: str | None = None,
     settings=None,
     settings_spec=None,
     settings_overrides=None,
@@ -217,11 +197,11 @@ def publish_parts(
     source_class=...,
     destination_path: StrPath | None = None,
     reader=None,
-    reader_name: str = "standalone",
+    reader_name: str | None = None,
     parser=None,
-    parser_name: str = "restructuredtext",
+    parser_name: str | None = None,
     writer=None,
-    writer_name: str = "pseudoxml",
+    writer_name: str | None = None,
     settings=None,
     settings_spec=None,
     settings_overrides: dict[str, Incomplete] | None = None,
@@ -250,9 +230,9 @@ def publish_doctree(
     source_path: StrPath | None = None,
     source_class=...,
     reader=None,
-    reader_name: str = "standalone",
+    reader_name: str | None = None,
     parser=None,
-    parser_name: str = "restructuredtext",
+    parser_name: str | None = None,
     settings=None,
     settings_spec=None,
     settings_overrides=None,
@@ -269,15 +249,14 @@ def publish_from_doctree(
     document,
     destination_path: StrPath | None = None,
     writer=None,
-    writer_name: str = "pseudoxml",
+    writer_name: str | None = None,
     settings=None,
     settings_spec=None,
     settings_overrides=None,
     config_section: str | None = None,
     enable_exit_status: bool = False,
-):
-    'Set up & run a `Publisher` to render from an existing document tree\ndata structure. For programmatic use with string output\n(`bytes` or `str`, cf. `publish_string()`).\n\nNote that ``document.settings`` is overridden; if you want to use the\nsettings of the original `document`, pass ``settings=document.settings``.\n\nAlso, new `document.transformer` and `document.reporter` objects are\ngenerated.\n\nParameters: `document` is a `docutils.nodes.document` object, an existing\ndocument tree.\n\nOther parameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nof the `io.StringOutput` class no longer match.'
-    ...
+): ...
+@deprecated("The `publish_cmdline_to_binary()` is deprecated  by `publish_cmdline()` and will be removed in Docutils 0.24.")
 def publish_cmdline_to_binary(
     reader=None,
     reader_name: str = "standalone",

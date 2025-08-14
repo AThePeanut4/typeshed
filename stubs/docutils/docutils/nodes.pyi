@@ -17,17 +17,22 @@ hierarchy.
 
 import sys
 import xml.dom.minidom
+from _typeshed import Incomplete
 from abc import abstractmethod
 from collections import Counter
 from collections.abc import Callable, Generator, Iterable, Iterator, Mapping, Sequence
 from typing import Any, ClassVar, Final, Literal, Protocol, SupportsIndex, TypeVar, overload, type_check_only
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, deprecated
 
 from docutils.frontend import Values
 from docutils.transforms import Transform, Transformer
 from docutils.utils import Reporter
 
 _N = TypeVar("_N", bound=Node)
+_ContentModelCategory: TypeAlias = type[Element] | tuple[type[Element], ...]
+_ContentModelQuantifier: TypeAlias = Literal[".", "?", "+", "*"]
+_ContentModelItem: TypeAlias = tuple[_ContentModelCategory, _ContentModelQuantifier]
+_ContentModelTuple: TypeAlias = tuple[_ContentModelItem, ...]
 
 @type_check_only
 class _DomModule(Protocol):
@@ -55,24 +60,11 @@ class Node:
         """
         ...
     @document.setter
-    def document(self, value: document) -> None:
-        """
-        Return the `document` root node of the tree containing this Node.
-        
-        """
-        ...
-    def __bool__(self) -> Literal[True]:
-        """
-        Node instances are always true, even if they're empty.  A node is more
-        than a simple container.  Its boolean "truth" does not depend on
-        having one or more subnodes in the doctree.
-
-        Use `len()` to check node length.
-        """
-        ...
-    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element:
-        """Return a DOM **fragment** representation of this Node."""
-        ...
+    def document(self, value: document) -> None: ...
+    def __bool__(self) -> Literal[True]: ...
+    def asdom(
+        self, dom: _DomModule | None = None
+    ) -> xml.dom.minidom.Document | xml.dom.minidom.Element | xml.dom.minidom.Text: ...
     # While docutils documents the Node class to be abstract it does not
     # actually use the ABCMeta metaclass. We still set @abstractmethod here
     # (although it's not used in the docutils implementation) because it
@@ -138,46 +130,7 @@ class Node:
     @overload
     def findall(
         self, condition: type[_N], include_self: bool = True, descend: bool = True, siblings: bool = False, ascend: bool = False
-    ) -> Generator[_N, None, None]:
-        """
-        Return an iterator yielding nodes following `self`:
-
-        * self (if `include_self` is true)
-        * all descendants in tree traversal order (if `descend` is true)
-        * the following siblings (if `siblings` is true) and their
-          descendants (if also `descend` is true)
-        * the following siblings of the parent (if `ascend` is true) and
-          their descendants (if also `descend` is true), and so on.
-
-        If `condition` is not None, the iterator yields only nodes
-        for which ``condition(node)`` is true.  If `condition` is a
-        node class ``cls``, it is equivalent to a function consisting
-        of ``return isinstance(node, cls)``.
-
-        If `ascend` is true, assume `siblings` to be true as well.
-
-        If the tree structure is modified during iteration, the result
-        is undefined.
-
-        For example, given the following tree::
-
-            <paragraph>
-                <emphasis>      <--- emphasis.traverse() and
-                    <strong>    <--- strong.traverse() are called.
-                        Foo
-                    Bar
-                <reference name="Baz" refid="baz">
-                    Baz
-
-        Then tuple(emphasis.traverse()) equals ::
-
-            (<emphasis>, <strong>, <#text: Foo>, <#text: Bar>)
-
-        and list(strong.traverse(ascend=True) equals ::
-
-            [<strong>, <#text: Foo>, <#text: Bar>, <reference>, <#text: Baz>]
-        """
-        ...
+    ) -> Generator[_N]: ...
     @overload
     def findall(
         self,
@@ -186,47 +139,9 @@ class Node:
         descend: bool = True,
         siblings: bool = False,
         ascend: bool = False,
-    ) -> Generator[Node, None, None]:
-        """
-        Return an iterator yielding nodes following `self`:
-
-        * self (if `include_self` is true)
-        * all descendants in tree traversal order (if `descend` is true)
-        * the following siblings (if `siblings` is true) and their
-          descendants (if also `descend` is true)
-        * the following siblings of the parent (if `ascend` is true) and
-          their descendants (if also `descend` is true), and so on.
-
-        If `condition` is not None, the iterator yields only nodes
-        for which ``condition(node)`` is true.  If `condition` is a
-        node class ``cls``, it is equivalent to a function consisting
-        of ``return isinstance(node, cls)``.
-
-        If `ascend` is true, assume `siblings` to be true as well.
-
-        If the tree structure is modified during iteration, the result
-        is undefined.
-
-        For example, given the following tree::
-
-            <paragraph>
-                <emphasis>      <--- emphasis.traverse() and
-                    <strong>    <--- strong.traverse() are called.
-                        Foo
-                    Bar
-                <reference name="Baz" refid="baz">
-                    Baz
-
-        Then tuple(emphasis.traverse()) equals ::
-
-            (<emphasis>, <strong>, <#text: Foo>, <#text: Bar>)
-
-        and list(strong.traverse(ascend=True) equals ::
-
-            [<strong>, <#text: Foo>, <#text: Bar>, <reference>, <#text: Baz>]
-        """
-        ...
+    ) -> Generator[Node]: ...
     @overload
+    @deprecated("The `nodes.Node.traverse()` is deprecated. Use `Node.findall()` instead.")
     def traverse(
         self, condition: type[_N], include_self: bool = True, descend: bool = True, siblings: bool = False, ascend: bool = False
     ) -> list[_N]:
@@ -237,6 +152,7 @@ class Node:
         """
         ...
     @overload
+    @deprecated("The `nodes.Node.traverse()` is deprecated. Use `Node.findall()` instead.")
     def traverse(
         self,
         condition: Callable[[Node], bool] | None = None,
@@ -271,15 +187,9 @@ class Node:
         descend: bool = True,
         siblings: bool = False,
         ascend: bool = False,
-    ) -> Node:
-        """
-        Return the first node in the iterator returned by findall(),
-        or None if the iterable is empty.
-
-        Parameter list is the same as of `findall()`.  Note that `include_self`
-        defaults to False, though.
-        """
-        ...
+    ) -> Node: ...
+    def validate(self, recursive: bool = True) -> None: ...
+    def validate_position(self) -> None: ...
 
 # Left out
 # - def ensure_str (deprecated)
@@ -368,9 +278,12 @@ class Element(Node):
     This is equivalent to ``element.extend([node1, node2])``.
     """
     local_attributes: ClassVar[Sequence[str]]
+    valid_attributes: ClassVar[Sequence[str]]
+    common_attributes: ClassVar[Sequence[str]]
     basic_attributes: ClassVar[Sequence[str]]
     list_attributes: ClassVar[Sequence[str]]
     known_attributes: ClassVar[Sequence[str]]
+    content_model: ClassVar[_ContentModelTuple]
     tagname: str
     child_text_separator: ClassVar[str]
     attributes: dict[str, Any]
@@ -430,9 +343,8 @@ class Element(Node):
     def pop(self, i: int = -1) -> Node: ...
     def remove(self, item: Node) -> None: ...
     def index(self, item: Node, start: int = 0, stop: int = sys.maxsize) -> int: ...
-    def previous_sibling(self) -> Node | None:
-        """Return preceding sibling node or ``None``."""
-        ...
+    def previous_sibling(self) -> Node | None: ...
+    def section_hierarchy(self) -> list[section]: ...
     def is_not_default(self, key: str) -> bool: ...
     def update_basic_atts(self, dict_: Mapping[str, Any] | Node) -> None:
         """
@@ -652,15 +564,7 @@ class Element(Node):
     def pformat(self, indent: str = "    ", level: int = 0) -> str: ...
     def copy(self) -> Self: ...
     def deepcopy(self) -> Self: ...
-    def set_class(self, name: str) -> None:
-        """Add a new class to the "classes" attribute."""
-        ...
-    def note_referenced_by(self, name: str | None = None, id: str | None = None) -> None:
-        """
-        Note that this Element has been referenced by its name
-        `name` or id `id`.
-        """
-        ...
+    def note_referenced_by(self, name: str | None = None, id: str | None = None) -> None: ...
     @classmethod
     def is_not_list_attribute(cls, attr: str) -> bool:
         """
@@ -669,12 +573,11 @@ class Element(Node):
         """
         ...
     @classmethod
-    def is_not_known_attribute(cls, attr: str) -> bool:
-        """
-        Returns True if and only if the given attribute is NOT recognized by
-        this class.
-        """
-        ...
+    def is_not_known_attribute(cls, attr: str) -> bool: ...
+    def validate_attributes(self) -> None: ...
+    def validate_content(
+        self, model: _ContentModelTuple | None = None, elements: Sequence[Incomplete] | None = None
+    ) -> list[Incomplete]: ...
 
     # '__iter__' is added as workaround, since mypy doesn't support classes that are iterable via '__getitem__'
     # see https://github.com/python/typeshed/pull/10099#issuecomment-1528789395
@@ -695,9 +598,8 @@ class TextElement(Element):
     """
     def __init__(self, rawsource: str = "", text: str = "", *children: Node, **attributes) -> None: ...
 
-class FixedTextElement(TextElement):
-    """An element which directly contains preformatted text."""
-    ...
+class FixedTextElement(TextElement): ...
+class PureTextElement(TextElement): ...
 
 # Mixins
 
@@ -705,6 +607,8 @@ class Resolvable:
     resolved: int
 
 class BackLinkable:
+    list_attributes: ClassVar[Sequence[str]]
+    valid_attributes: ClassVar[Sequence[str]]
     def add_backref(self, refid: str) -> None: ...
 
 # Element Categories
@@ -715,20 +619,21 @@ class PreBibliographic:
     """Category of Node which may occur before Bibliographic Nodes."""
     ...
 class Bibliographic: ...
-class Decorative(PreBibliographic): ...
+
+class Decorative(PreBibliographic):
+    content_model: ClassVar[_ContentModelTuple]
+
 class Structural: ...
+class SubStructural: ...
 class Body: ...
 class General(Body): ...
-class Sequential(Body):
-    """List-like elements."""
-    ...
-class Admonition(Body): ...
-class Special(Body):
-    """Special internal body elements."""
-    ...
-class Invisible(PreBibliographic):
-    """Internal elements that don't appear in output."""
-    ...
+class Sequential(Body): ...
+
+class Admonition(Body):
+    content_model: ClassVar[_ContentModelTuple]
+
+class Special(Body): ...
+class Invisible(PreBibliographic): ...
 class Part: ...
 class Inline: ...
 class Referential(Resolvable): ...
@@ -786,40 +691,7 @@ class document(Root, Structural, Element):
         """Return a DOM representation of this document."""
         ...
     def set_id(self, node: Element, msgnode: Element | None = None, suggested_prefix: str = "") -> str: ...
-    def set_name_id_map(self, node: Element, id: str, msgnode: Element | None = None, explicit: bool | None = None) -> None:
-        """
-        `self.nameids` maps names to IDs, while `self.nametypes` maps names to
-        booleans representing hyperlink type (True==explicit,
-        False==implicit).  This method updates the mappings.
-
-        The following state transition table shows how `self.nameids` items
-        ("id") and `self.nametypes` items ("type") change with new input
-        (a call to this method), and what actions are performed
-        ("implicit"-type system messages are INFO/1, and
-        "explicit"-type system messages are ERROR/3):
-
-        ====  =====  ========  ========  =======  ====  =====  =====
-         Old State    Input          Action        New State   Notes
-        -----------  --------  -----------------  -----------  -----
-        id    type   new type  sys.msg.  dupname  id    type
-        ====  =====  ========  ========  =======  ====  =====  =====
-        -     -      explicit  -         -        new   True
-        -     -      implicit  -         -        new   False
-        -     False  explicit  -         -        new   True
-        old   False  explicit  implicit  old      new   True
-        -     True   explicit  explicit  new      -     True
-        old   True   explicit  explicit  new,old  -     True   [#]_
-        -     False  implicit  implicit  new      -     False
-        old   False  implicit  implicit  new,old  -     False
-        -     True   implicit  implicit  new      -     True
-        old   True   implicit  implicit  new      old   True
-        ====  =====  ========  ========  =======  ====  =====  =====
-
-        .. [#] Do not clear the name-to-id map or invalidate the old target if
-           both old and new targets are external and refer to identical URIs.
-           The new target is invalidated regardless.
-        """
-        ...
+    def set_name_id_map(self, node: Element, id: str, msgnode: Element | None = None, explicit: bool = False) -> None: ...
     def set_duplicate_name_id(self, node: Element, id: str, name: str, msgnode: Element, explicit: bool) -> None: ...
     def has_name(self, name: str) -> bool: ...
     def note_implicit_target(self, target: Element, msgnode: Element | None = None) -> None: ...
@@ -968,7 +840,10 @@ class caption(Part, TextElement): ...
 class legend(Part, Element): ...
 class table(General, Element): ...
 class tgroup(Part, Element): ...
-class colspec(Part, Element): ...
+
+class colspec(Part, Element):
+    def propwidth(self) -> float: ...
+
 class thead(Part, Element): ...
 class tbody(Part, Element): ...
 class row(Part, Element): ...
@@ -1349,9 +1224,16 @@ class TreeCopyVisitor(GenericNodeVisitor):
     parent: list[Node]
     def get_tree_copy(self) -> Node: ...
 
-class TreePruningException(Exception):
-    """
-    Base class for `NodeVisitor`-related tree pruning exceptions.
+class ValidationError(ValueError):
+    def __init__(self, msg: str, problematic_element: Element | None = None) -> None: ...
+
+class TreePruningException(Exception): ...
+class SkipChildren(TreePruningException): ...
+class SkipSiblings(TreePruningException): ...
+class SkipNode(TreePruningException): ...
+class SkipDeparture(TreePruningException): ...
+class NodeFound(TreePruningException): ...
+class StopTraversal(TreePruningException): ...
 
     Raise subclasses from within ``visit_...`` or ``depart_...`` methods
     called from `Node.walk()` and `Node.walkabout()` tree traversals to prune
@@ -1436,15 +1318,20 @@ def make_id(string: str) -> str:
     """
     ...
 def dupname(node: Node, name: str) -> None: ...
-def fully_normalize_name(name: str) -> str:
-    """Return a case- and whitespace-normalized name."""
-    ...
-def whitespace_normalize_name(name: str) -> str:
-    """Return a whitespace-normalized name."""
-    ...
-def serial_escape(value: str) -> str:
-    """Escape string values that are elements of a list, for serialization."""
-    ...
-def pseudo_quoteattr(value: str) -> str:
-    """Quote attributes for pseudo-xml"""
-    ...
+def fully_normalize_name(name: str) -> str: ...
+def whitespace_normalize_name(name: str) -> str: ...
+def serial_escape(value: str) -> str: ...
+def split_name_list(s: str) -> list[str]: ...
+def pseudo_quoteattr(value: str) -> str: ...
+def parse_measure(measure: str, unit_pattern: str = "[a-zA-Zµ]*|%?") -> tuple[float, str]: ...
+def create_keyword_validator(*keywords: str) -> Callable[[str], str]: ...
+def validate_identifier(value: str) -> str: ...
+def validate_identifier_list(value: str | list[str]) -> list[str]: ...
+def validate_measure(measure: str) -> str: ...
+def validate_colwidth(measure: str | float) -> float: ...
+def validate_NMTOKEN(value: str) -> str: ...
+def validate_NMTOKENS(value: str | list[str]) -> list[str]: ...
+def validate_refname_list(value: str | list[str]) -> list[str]: ...
+def validate_yesorno(value: str | int | bool) -> bool: ...
+
+ATTRIBUTE_VALIDATORS: dict[str, Callable[[str], Any]]

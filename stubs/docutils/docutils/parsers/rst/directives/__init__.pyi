@@ -79,6 +79,7 @@ def percentage(argument: str) -> int:
     """
     ...
 
+CSS3_LENGTH_UNITS: Final[tuple[str, ...]]
 length_units: Final[list[str]]
 
 def get_measure(argument: str, units: Iterable[str]) -> str:

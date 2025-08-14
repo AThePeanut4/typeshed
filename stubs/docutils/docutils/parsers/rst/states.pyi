@@ -99,7 +99,7 @@ Parsing proceeds as follows:
 from _typeshed import Incomplete
 from collections.abc import Callable, Iterable, Sequence
 from re import Match, Pattern
-from types import ModuleType
+from types import ModuleType, SimpleNamespace as Struct
 from typing import Any, ClassVar, Final, NoReturn
 from typing_extensions import TypeAlias
 
@@ -116,10 +116,6 @@ class UnknownInterpretedRoleError(DataError): ...
 class InterpretedRoleNotImplementedError(DataError): ...
 class ParserError(ApplicationError): ...
 class MarkupMismatch(Exception): ...
-
-class Struct:
-    """Stores data attributes for dotted-attribute access."""
-    def __init__(self, **keywordargs) -> None: ...
 
 class RSTStateMachine(StateMachineWS[list[str]]):
     """
@@ -263,15 +259,7 @@ class RSTState(StateWS[list[str]]):
         ...
     def unindent_warning(self, node_name: str): ...
 
-def build_regexp(definition, compile: bool = True):
-    """
-    Build, compile and return a regular expression based on `definition`.
-
-    :Parameter: `definition`: a 4-tuple (group name, prefix, suffix, parts),
-        where "parts" is a list of regular expressions and/or regular
-        expression definitions to be joined into an or-group.
-    """
-    ...
+def build_regexp(definition, compile_patterns: bool | None = True): ...
 
 _BasicDefinition: TypeAlias = tuple[str, str, str, list[Pattern[str]]]
 _DefinitionParts: TypeAlias = tuple[str, str, str, list[Pattern[str] | _BasicDefinition]]

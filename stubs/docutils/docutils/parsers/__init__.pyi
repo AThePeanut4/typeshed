@@ -22,7 +22,7 @@ class Parser(Component):
         """Finalize parse details.  Call at end of `self.parse()`."""
         ...
 
-_parser_aliases: dict[str, str]
+PARSER_ALIASES: Final[dict[str, str]]
 
 def get_parser_class(parser_name: str) -> type[Parser]:
     """Return the Parser class from the `parser_name` module."""

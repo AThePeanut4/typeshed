@@ -1,9 +1,10 @@
-"""This package contains Docutils Writer modules."""
-
+from _typeshed import StrPath
+from pathlib import Path
 from typing import Any, Final, Generic, TypedDict, TypeVar, type_check_only
 from typing_extensions import Required
 
 from docutils import Component, nodes
+from docutils.frontend import Values
 from docutils.io import Output
 from docutils.languages import LanguageImporter
 
@@ -92,40 +93,11 @@ class Writer(Component, Generic[_S]):
         native format, and write it out to its `destination` (a
         `docutils.io.Output` subclass object).
 
-        Normally not overridden or extended in subclasses.
-        """
-        ...
-    def translate(self) -> None:
-        """
-        Do final translation of `self.document` into `self.output`.  Called
-        from `write`.  Override in subclasses.
+class DoctreeTranslator(nodes.NodeVisitor):
+    settings: Values
+    def __init__(self, document: nodes.document) -> None: ...
+    def uri2path(self, uri: str, output_path: StrPath | None = None) -> Path: ...
 
-        Usually done with a `docutils.nodes.NodeVisitor` subclass, in
-        combination with a call to `docutils.nodes.Node.walk()` or
-        `docutils.nodes.Node.walkabout()`.  The ``NodeVisitor`` subclass must
-        support all standard elements (listed in
-        `docutils.nodes.node_class_names`) and possibly non-standard elements
-        used by the current Reader as well.
-        """
-        ...
-    def assemble_parts(self) -> None:
-        """
-        Assemble the `self.parts` dictionary.  Extend in subclasses.
+WRITER_ALIASES: Final[dict[str, str]]
 
-        See <https://docutils.sourceforge.io/docs/api/publisher.html>.
-        """
-        ...
-
-class UnfilteredWriter(Writer[_S]):
-    """
-    A writer that passes the document tree on unchanged (e.g. a
-    serializer.)
-
-    Documents written by UnfilteredWriters are typically reused at a
-    later date using a subclass of `readers.ReReader`.
-    """
-    ...
-
-def get_writer_class(writer_name: str) -> type[Writer[Any]]:
-    """Return the Writer class from the `writer_name` module."""
-    ...
+def get_writer_class(writer_name: str) -> type[Writer[Any]]: ...

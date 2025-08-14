@@ -1,13 +1,8 @@
-"""
-A do-nothing Writer.
-
-`self.output` will change from ``None`` to the empty string
-in Docutils 0.22.
-"""
-
-from typing import ClassVar
+from typing import ClassVar, Final
 
 from docutils import writers
+
+__docformat__: Final = "reStructuredText"
 
 class Writer(writers.UnfilteredWriter[str]):
     supported: ClassVar[tuple[str, ...]]

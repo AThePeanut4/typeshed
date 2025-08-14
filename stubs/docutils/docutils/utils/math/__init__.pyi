@@ -1,20 +1,8 @@
-"""
-This is the Docutils (Python Documentation Utilities) "math" sub-package.
-
-It contains various modules for conversion between different math formats
-(LaTeX, MathML, HTML).
-
-:math2html:    LaTeX math -> HTML conversion from eLyXer
-:latex2mathml: LaTeX math -> presentational MathML
-:unichar2tex:  Unicode character to LaTeX math translation table
-:tex2unichar:  LaTeX math to Unicode character translation dictionaries
-:mathalphabet2unichar:  LaTeX math alphabets to Unicode character translation
-:tex2mathml_extern: Wrapper for 3rd party TeX -> MathML converters
-"""
-
-from typing import Literal
+from typing import Final, Literal
 
 from docutils.nodes import Node
+
+__docformat__: Final = "reStructuredText"
 
 class MathError(ValueError):
     """

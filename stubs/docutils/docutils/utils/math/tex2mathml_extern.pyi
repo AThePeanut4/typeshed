@@ -7,6 +7,7 @@ the API is not settled and may change with any minor Docutils version.
 
 from typing import Final
 
+__docformat__: Final = "reStructuredText"
 document_template: Final[str]
 
 def blahtexml(math_code: str, as_block: bool = False) -> str:
