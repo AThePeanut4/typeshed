@@ -115,7 +115,7 @@ docker==7.1.*
 regex==2025.7.34
 pynput~=1.8.1
 watchpoints==0.2.5
-docutils==0.21.*
+docutils==0.22.*
 lzstring==1.0.*
 Flask-SocketIO==5.5.*
 pyflakes==3.4.*
