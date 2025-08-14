@@ -23,8 +23,24 @@ __docformat__: Final = "reStructuredText"
 class InputError(OSError): ...
 class OutputError(OSError): ...
 
-def check_encoding(stream: TextIO, encoding: str) -> bool | None: ...
-def error_string(err: BaseException) -> str: ...
+def check_encoding(stream: TextIO, encoding: str) -> bool | None:
+    """
+    Test, whether the encoding of `stream` matches `encoding`.
+
+    Returns
+
+    :None:  if `encoding` or `stream.encoding` are not a valid encoding
+            argument (e.g. ``None``) or `stream.encoding is missing.
+    :True:  if the encoding argument resolves to the same value as `encoding`,
+    :False: if the encodings differ.
+    """
+    ...
+def error_string(err: BaseException) -> str:
+    """
+    Return string representation of Exception `err`.
+    
+    """
+    ...
 
 _S = TypeVar("_S")
 
@@ -35,9 +51,9 @@ class Input(TransformSpec, Generic[_S]):
     Docutils input objects must provide a `read()` method that
     returns the source, typically as `str` instance.
 
-    Inheriting `TransformSpec` allows input objects to add
-    "transforms" and "unknown_reference_resolvers" to the "Transformer".
-    (Optional for custom input objects since Docutils 0.19.)
+    Inheriting `TransformSpec` allows input objects to add "transforms" to
+    the "Transformer".  (Since Docutils 0.19, input objects are no longer
+    required to be `TransformSpec` instances.)
     """
     component_type: ClassVar[str]
     default_source_path: ClassVar[str | None]
@@ -77,8 +93,17 @@ class Input(TransformSpec, Generic[_S]):
     coding_slug: ClassVar[Pattern[bytes]]
     byte_order_marks: ClassVar[tuple[tuple[bytes, str], ...]]
     @deprecated("Deprecated and will be removed in Docutils 1.0.")
-    def determine_encoding_from_data(self, data: str | bytes | bytearray) -> str | None: ...
-    def isatty(self) -> bool: ...
+    def determine_encoding_from_data(self, data: str | bytes | bytearray) -> str | None:
+        """
+        Try to determine the encoding of `data` by looking *in* `data`.
+        Check for a byte order mark (BOM) or an encoding declaration.
+
+        Deprecated. Will be removed in Docutils 1.0.
+        """
+        ...
+    def isatty(self) -> bool:
+        """Return True, if the input source is connected to a TTY device."""
+        ...
 
 class Output(TransformSpec):
     """
@@ -87,9 +112,9 @@ class Output(TransformSpec):
     Docutils output objects must provide a `write()` method that
     expects and handles one argument (the output).
 
-    Inheriting `TransformSpec` allows output objects to add
-    "transforms" and "unknown_reference_resolvers" to the "Transformer".
-    (Optional for custom output objects since Docutils 0.19.)
+    Inheriting `TransformSpec` allows output objects to add "transforms" to
+    the "Transformer".  (Since Docutils 0.19, output objects are no longer
+    required to be `TransformSpec` instances.)
     """
     component_type: ClassVar[str]
     default_destination_path: ClassVar[str | None]
@@ -118,8 +143,7 @@ class Output(TransformSpec):
 class ErrorOutput:
     """
     Wrapper class for file-like error streams with
-    failsafe de- and encoding of `str`, `bytes`, `unicode` and
-    `Exception` instances.
+    failsafe de- and encoding of `str`, `bytes`, and `Exception` instances.
     """
     destination: Incomplete
     encoding: Incomplete
@@ -162,6 +186,7 @@ class ErrorOutput:
         ...
 
 class FileInput(Input[IO[str]]):
+    """Input for single, simple file-like objects."""
     autoclose: bool
     def __init__(
         self,
@@ -248,7 +273,9 @@ class FileOutput(Output):
     def close(self) -> None: ...
 
 @deprecated("The `BinaryFileOutput` is deprecated by `FileOutput` and will be removed in Docutils 0.24.")
-class BinaryFileOutput(FileOutput): ...
+class BinaryFileOutput(FileOutput):
+    'A version of docutils.io.FileOutput which writes to a binary file.\n\nDeprecated. Use `FileOutput` (works with `bytes` since Docutils\xa00.20).\nWill be removed in Docutils 0.24.'
+    ...
 
 class StringInput(Input[str]):
     """Input from a `str` or `bytes` instance."""

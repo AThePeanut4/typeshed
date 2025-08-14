@@ -37,7 +37,8 @@ def flag(argument: str | None) -> None:
 def unchanged_required(argument: str) -> str:
     """
     Return the argument text, unchanged.
-    (Directive option conversion function.)
+
+    Directive option conversion function for options that require a value.
 
     Raise ``ValueError`` if no argument is found.
     """
@@ -84,10 +85,10 @@ length_units: Final[list[str]]
 
 def get_measure(argument: str, units: Iterable[str]) -> str:
     """
-    Check for a positive argument of one of the units and return a
-    normalized string of the form "<value><unit>" (without space in
-    between).
-    (Directive option conversion function.)
+    Check for a positive argument of one of the `units`.
+
+    Return a normalized string of the form "<value><unit>"
+    (without space inbetween).
 
     To be called from directive option conversion functions.
     """
@@ -178,7 +179,7 @@ def choice(argument: str, values: Sequence[str]) -> str:
 
         from docutils.parsers.rst import directives
 
-        def yesno(argument):
+        def yesno(argument: str):
             return directives.choice(argument, ('yes', 'no'))
 
     Raise ``ValueError`` if no argument is found or if the argument's value is

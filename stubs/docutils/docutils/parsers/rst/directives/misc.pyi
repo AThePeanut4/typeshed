@@ -23,14 +23,50 @@ class Include(Directive):
     start and end line or text to match before and/or after the text
     to be used.
 
-    https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment
+    https://docutils.sourceforge.io/docs/ref/rst/directives.html#include
     """
     standard_include_path: Path
-    def read_file(self, path: StrPath) -> str: ...
-    def as_literal_block(self, text: str) -> list[nodes.literal_block]: ...
-    def as_code_block(self, text: str) -> list[nodes.literal_block]: ...
-    def custom_parse(self, text: str) -> list[nodes.Node]: ...
-    def insert_into_input_lines(self, text: str) -> None: ...
+    def read_file(self, path: StrPath) -> str:
+        """
+        Read text file at `path`. Clip and return content.
+
+        Provisional.
+        """
+        ...
+    def as_literal_block(self, text: str) -> list[nodes.literal_block]:
+        """
+        Return list with literal_block containing `text`.
+
+        Provisional
+        """
+        ...
+    def as_code_block(self, text: str) -> list[nodes.literal_block]:
+        """
+        Pass `text` to the `CodeBlock` directive class.
+
+        Provisional.
+        """
+        ...
+    def custom_parse(self, text: str) -> list[nodes.Node]:
+        """
+        Parse with custom parser.
+
+        Parse with ``self.options['parser']`` into a new (dummy) document,
+        apply the parser's default transforms,
+        return child elements.
+
+        Provisional.
+        """
+        ...
+    def insert_into_input_lines(self, text: str) -> None:
+        """
+        Insert file content into the rST input of the calling parser.
+
+        Returns an empty list to comply with the API of `Directive.run()`.
+
+        Provisional.
+        """
+        ...
 
 class Raw(Directive):
     """

@@ -1,15 +1,4 @@
-"""
-A parser for CommonMark Markdown text using `recommonmark`__.
-
-__ https://pypi.org/project/recommonmark/
-
-.. important:: This module is provisional
-
-   * The "recommonmark" package is unmaintained and deprecated.
-     This wrapper module will be removed in a future Docutils version.
-
-   * The API is not settled and may change with any minor Docutils version.
-"""
+'A parser for CommonMark Markdown text using `recommonmark`__.\n\n__ https://pypi.org/project/recommonmark/\n\n.. important:: This module is deprecated.\n\n   * The "recommonmark" package is unmaintained and deprecated.\n     This wrapper module will be removed in Docutils\xa01.0.\n\n   * The API is not settled and may change with any minor Docutils version.'
 
 from types import ModuleType
 from typing import ClassVar
@@ -70,8 +59,9 @@ class Parser(_CommonMarkParser):
     def get_transforms(self) -> list[type[Transform]]: ...
     def parse(self, inputstring: str, document: nodes.document) -> None:
         """
-        Use the upstream parser and clean up afterwards.
-        
+        Wrapper of upstream method.
+
+        Ensure "line-length-limt". Report errors with `document.reporter`.
         """
         ...
     def visit_document(self, node) -> None:

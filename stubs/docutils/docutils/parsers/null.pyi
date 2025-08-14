@@ -1,3 +1,5 @@
+"""A do-nothing parser."""
+
 from typing import ClassVar, Final
 
 from docutils import parsers

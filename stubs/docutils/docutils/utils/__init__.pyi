@@ -41,10 +41,10 @@ class DependencyList:
         Set the output file and clear the list of already added
         dependencies.
 
-        `output_file` must be a string.  The specified file is
-        immediately overwritten.
+        The specified file is immediately overwritten.
 
-        If output_file is '-', the output will be written to stdout.
+        If `output_file` is '-', the output will be written to stdout.
+        The empty string or None stop output.
         """
         ...
     def add(self, *paths: str) -> None:
@@ -62,6 +62,34 @@ class DependencyList:
 class SystemMessagePropagation(ApplicationError): ...
 
 class Reporter:
+    """
+    Info/warning/error reporter and ``system_message`` element generator.
+
+    Five levels of system messages are defined, along with corresponding
+    methods: `debug()`, `info()`, `warning()`, `error()`, and `severe()`.
+
+    There is typically one Reporter object per process.  A Reporter object is
+    instantiated with thresholds for reporting (generating warnings) and
+    halting processing (raising exceptions), a switch to turn debug output on
+    or off, and an I/O stream for warnings.  These are stored as instance
+    attributes.
+
+    When a system message is generated, its level is compared to the stored
+    thresholds, and a warning or error is generated as appropriate.  Debug
+    messages are produced if the stored debug switch is on, independently of
+    other thresholds.  Message output is sent to the stored warning stream if
+    not set to ''.
+
+    The Reporter class also employs a modified form of the "Observer" pattern
+    [GoF95]_ to track system messages generated.  The `attach_observer` method
+    should be called before parsing, with a bound method or function which
+    accepts system messages.  The observer can be removed with
+    `detach_observer`, and another added in its place.
+
+    .. [GoF95] Gamma, Helm, Johnson, Vlissides. *Design Patterns: Elements of
+       Reusable Object-Oriented Software*. Addison-Wesley, Reading, MA, USA,
+       1995.
+    """
     get_source_and_line: Callable[[int | None], tuple[StrPath | None, int | None]]
     levels: Final[Sequence[str]]
 
@@ -86,6 +114,8 @@ class Reporter:
         error_handler: str = "backslashreplace",
     ) -> None:
         """
+        Low level instantiating. See also `new_reporter().`.
+
         :Parameters:
             - `source`: The path to or description of the source data.
             - `report_level`: The level at or above which warning output will
@@ -107,7 +137,12 @@ class Reporter:
     debug_flag: bool
     report_level: _SystemMessageLevel
     halt_level: int
-    def attach_observer(self, observer: _Observer) -> None: ...
+    def attach_observer(self, observer: _Observer) -> None:
+        """
+        The `observer` parameter is a function or bound method which takes one
+        argument, a `nodes.system_message` instance.
+        """
+        ...
     def detach_observer(self, observer: _Observer) -> None: ...
     def notify_observers(self, message: nodes.system_message) -> None: ...
     def system_message(
@@ -129,42 +164,48 @@ class Reporter:
         self, message: str | Exception, *children: nodes.Node, base_node: nodes.Node = ..., source: str = ..., **kwargs
     ) -> nodes.system_message:
         """
-        Level-0, "DEBUG": an internal reporting issue. Typically, there is no
-        effect on the processing. Level-0 system messages are handled
-        separately from the others.
+        Level-0, "DEBUG": an internal reporting issue.
+
+        Typically, there is no effect on the processing. Level-0 system
+        messages are handled separately from the others.
         """
         ...
     def info(
         self, message: str | Exception, *children: nodes.Node, base_node: nodes.Node = ..., source: str = ..., **kwargs
     ) -> nodes.system_message:
         """
-        Level-1, "INFO": a minor issue that can be ignored. Typically there is
-        no effect on processing, and level-1 system messages are not reported.
+        Level-1, "INFO": a minor issue that can be ignored.
+
+        Typically, there is no effect on processing and level-1 system
+        messages are not reported.
         """
         ...
     def warning(
         self, message: str | Exception, *children: nodes.Node, base_node: nodes.Node = ..., source: str = ..., **kwargs
     ) -> nodes.system_message:
         """
-        Level-2, "WARNING": an issue that should be addressed. If ignored,
-        there may be unpredictable problems with the output.
+        Level-2, "WARNING": an issue that should be addressed.
+
+        If ignored, there may be unpredictable problems with the output.
         """
         ...
     def error(
         self, message: str | Exception, *children: nodes.Node, base_node: nodes.Node = ..., source: str = ..., **kwargs
     ) -> nodes.system_message:
         """
-        Level-3, "ERROR": an error that should be addressed. If ignored, the
-        output will contain errors.
+        Level-3, "ERROR": an error that should be addressed.
+
+        If ignored, the output will contain errors.
         """
         ...
     def severe(
         self, message: str | Exception, *children: nodes.Node, base_node: nodes.Node = ..., source: str = ..., **kwargs
     ) -> nodes.system_message:
         """
-        Level-4, "SEVERE": a severe error that must be addressed. If ignored,
-        the output will contain severe errors. Typically level-4 system
-        messages are turned into exceptions which halt processing.
+        Level-4, "SEVERE": a severe error that must be addressed.
+
+        If ignored, the output will contain severe errors. Typically level-4
+        system messages are turned into exceptions which halt processing.
         """
         ...
 
@@ -188,7 +229,7 @@ def new_document(source_path: str, settings: optparse.Values | None = None) -> d
     Return a new empty document object.
 
     :Parameters:
-        `source_path` : string
+        `source_path` : str or pathlib.Path
             The path to or description of the source text of the document.
         `settings` : optparse.Values object
             Runtime settings.  If none are provided, a default core set will
@@ -278,18 +319,100 @@ def assemble_option_dict(
 class NameValueError(DataError): ...
 
 @deprecated("Deprecated and will be removed in Docutils 1.0.")
-def decode_path(path: str) -> str: ...
-def extract_name_value(line: str) -> list[tuple[str, str]]: ...
+def decode_path(path: str) -> str:
+    """
+    Ensure `path` is Unicode. Return `str` instance.
+
+    Decode file/path string in a failsafe manner if not already done.
+
+    Deprecated. Will be removed in Docutils 1.0.
+    """
+    ...
+def extract_name_value(line: str) -> list[tuple[str, str]]:
+    """
+    Return a list of (name, value) from a line of the form "name=value ...".
+
+    :Exception:
+        `NameValueError` for invalid input (missing name, missing data, bad
+        quotes, etc.).
+    """
+    ...
 def clean_rcs_keywords(paragraph: nodes.paragraph, keyword_substitutions: Iterable[tuple[Pattern[str], str]]) -> None: ...
-def relative_path(source: StrPath | None, target: StrPath) -> str: ...
+def relative_path(source: StrPath | None, target: StrPath) -> str:
+    """
+    Build and return a path to `target`, relative to `source` (both files).
+
+    The return value is a `str` suitable to be included in `source`
+    as a reference to `target`.
+
+    :Parameters:
+        `source` : path-like object or None
+            Path of a file in the start directory for the relative path
+            (the file does not need to exist).
+            The value ``None`` is replaced with "<cwd>/dummy_file".
+        `target` : path-like object
+            End point of the returned relative path.
+
+    Differences to `os.path.relpath()`:
+
+    * Inverse argument order.
+    * `source` is assumed to be a FILE in the start directory (add a "dummy"
+      file name to obtain the path relative from a directory)
+      while `os.path.relpath()` expects a DIRECTORY as `start` argument.
+    * Always use Posix path separator ("/") for the output.
+    * Use `os.sep` for parsing the input
+      (changing the value of `os.sep` is ignored by `os.relpath()`).
+    * If there is no common prefix, return the absolute path to `target`.
+
+    Differences to `pathlib.PurePath.relative_to(other)`:
+
+    * pathlib offers an object oriented interface.
+    * `source` expects path to a FILE while `other` expects a DIRECTORY.
+    * `target` defaults to the cwd, no default value for `other`.
+    * `relative_path()` always returns a path (relative or absolute),
+      while `PurePath.relative_to()` raises a ValueError
+      if `target` is not a subpath of `other` (no ".." inserted).
+    """
+    ...
 @deprecated("Deprecated and will be removed in Docutils 1.0. Use `get_stylesheet_list()` instead.")
-def get_stylesheet_reference(settings: Values, relative_to: StrPath | None = None) -> str: ...
-def get_stylesheet_list(settings: Values) -> list[str]: ...
-def find_file_in_dirs(path: StrPath, dirs: Iterable[StrPath]) -> str: ...
-def get_trim_footnote_ref_space(settings: Values) -> bool: ...
-def get_source_line(node: nodes.Node) -> tuple[str, int]: ...
-def escape2null(text: str) -> str: ...
-def split_escaped_whitespace(text: str) -> list[str]: ...
+def get_stylesheet_reference(settings: Values, relative_to: StrPath | None = None) -> str:
+    'Retrieve a stylesheet reference from the settings object.\n\nDeprecated. Will be removed in Docutils\xa01.0.\nUse get_stylesheet_list() instead to enable specification of multiple\nstylesheets as a comma-separated list.'
+    ...
+def get_stylesheet_list(settings: Values) -> list[str]:
+    """Retrieve list of stylesheet references from the settings object."""
+    ...
+def find_file_in_dirs(path: StrPath, dirs: Iterable[StrPath]) -> str:
+    """
+    Search for `path` in the list of directories `dirs`.
+
+    Return the first expansion that matches an existing file.
+    """
+    ...
+def get_trim_footnote_ref_space(settings: Values) -> bool:
+    """
+    Return whether or not to trim footnote space.
+
+    If trim_footnote_reference_space is not None, return it.
+
+    If trim_footnote_reference_space is None, return False unless the
+    footnote reference style is 'superscript'.
+    """
+    ...
+def get_source_line(node: nodes.Node) -> tuple[str, int]:
+    """
+    Return the "source" and "line" attributes from the `node` given or from
+    its closest ancestor.
+    """
+    ...
+def escape2null(text: str) -> str:
+    """Return a string with escape-backslashes converted to nulls."""
+    ...
+def split_escaped_whitespace(text: str) -> list[str]:
+    """
+    Split `text` on escaped whitespace (null+space or null+newline).
+    Return a list of strings.
+    """
+    ...
 def strip_combining_chars(text: str) -> str: ...
 def find_combining_chars(text: str) -> list[int]:
     """
@@ -320,5 +443,24 @@ def column_width(text: str) -> int:
     """
     ...
 def uniq(L: list[_T]) -> list[_T]: ...
-def normalize_language_tag(tag: str) -> list[str]: ...
-def xml_declaration(encoding: str | None = None) -> str: ...
+def normalize_language_tag(tag: str) -> list[str]:
+    """
+    Return a list of normalized combinations for a `BCP 47` language tag.
+
+    Example:
+
+    >>> from docutils.utils import normalize_language_tag
+    >>> normalize_language_tag('de_AT-1901')
+    ['de-at-1901', 'de-at', 'de-1901', 'de']
+    >>> normalize_language_tag('de-CH-x_altquot')
+    ['de-ch-x-altquot', 'de-ch', 'de-x-altquot', 'de']
+    """
+    ...
+def xml_declaration(encoding: str | None = None) -> str:
+    """
+    Return an XML text declaration.
+
+    Include an encoding declaration, if `encoding`
+    is not 'unicode', '', or None.
+    """
+    ...

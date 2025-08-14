@@ -13,26 +13,26 @@ systems. The pages are grouped in numbered sections:
  7 miscellaneous
  8 system administration
 
-Man pages are written *troff*, a text file formatting system.
+Man pages are written in the *roff* markup language.
 
 See https://www.tldp.org/HOWTO/Man-Page for a start.
 
 Man pages have no subsection only parts.
 Standard parts
 
-  NAME ,
-  SYNOPSIS ,
-  DESCRIPTION ,
-  OPTIONS ,
-  FILES ,
-  SEE ALSO ,
-  BUGS ,
+  Name ,
+  Synopsis ,
+  Description ,
+  Options ,
+  Files ,
+  See also ,
+  Bugs ,
 
 and
 
-  AUTHOR .
+  AUthor .
 
-A unix-like system keeps an index of the DESCRIPTIONs, which is accessible
+A unix-like system keeps an index of the Descriptions, which is accessible
 by the command whatis or apropos.
 """
 
@@ -64,9 +64,11 @@ NONBREAKING_INSERT_RE2: Final[re.Pattern[str]]
 def insert_URI_breakpoints(s: str) -> str: ...
 
 class Writer(writers.Writer[str]):
+    """manpage writer class"""
     translator_class: type[Translator]
 
 class Table:
+    """man package table handling."""
     def __init__(self) -> None: ...
     def new_row(self) -> None: ...
     def append_separator(self, separator) -> None:
@@ -78,6 +80,12 @@ class Table:
     def as_list(self) -> list[str]: ...
 
 class Translator(nodes.NodeVisitor):
+    """
+    Docutils to man page translator.
+
+    Generate unix-like manual pages using the "man macro package"
+    from a Docutils document tree.
+    """
     words_and_spaces: ClassVar[re.Pattern[str]]
     possibly_a_roff_command: ClassVar[re.Pattern[str]]
     document_start: ClassVar[str]
@@ -95,11 +103,24 @@ class Translator(nodes.NodeVisitor):
     header_written: int
     authors: list[Incomplete]
     defs: dict[str, tuple[str, ...]]
-    def comment_begin(self, text: str) -> str: ...
-    def comment(self, text: str) -> str: ...
-    def ensure_eol(self) -> None: ...
-    def ensure_c_eol(self) -> None: ...
-    def astext(self) -> str: ...
+    def comment_begin(self, text: str) -> str:
+        """
+        Return commented version of the passed text WITHOUT end of
+        line/comment.
+        """
+        ...
+    def comment(self, text: str) -> str:
+        """Return commented version of the passed text."""
+        ...
+    def ensure_eol(self) -> None:
+        """Ensure the last line in body is terminated by new line."""
+        ...
+    def ensure_c_eol(self) -> None:
+        """Ensure the last line in body is terminated by new line."""
+        ...
+    def astext(self) -> str:
+        """Return the final formatted document as a string."""
+        ...
     def deunicode(self, text: str) -> str: ...
     def encode_special_chars(self, text: str) -> str: ...
     def visit_Text(self, node: nodes.Text) -> None: ...
@@ -108,7 +129,7 @@ class Translator(nodes.NodeVisitor):
     def list_end(self) -> None: ...
     def header(self) -> str: ...
     def append_header(self) -> None:
-        """append header with .TH and .SH NAME"""
+        """append header with .TH and .SH Name"""
         ...
     def visit_address(self, node: nodes.address) -> None: ...
     def depart_address(self, node: nodes.address) -> None: ...

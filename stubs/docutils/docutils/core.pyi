@@ -43,9 +43,25 @@ class Publisher:
         destination: Output | None = None,
         destination_class=...,
         settings: dict[str, Incomplete] | None = None,
-    ) -> None: ...
-    def set_reader(self, reader: str, parser: Parser | None = None, parser_name: str | None = None) -> None: ...
-    def set_writer(self, writer_name: str) -> None: ...
+    ) -> None:
+        """
+        Initial setup.
+
+        The components `reader`, `parser`, or `writer` should all be
+        specified, either as instances or via their names.
+        """
+        ...
+    def set_reader(self, reader: str, parser: Parser | None = None, parser_name: str | None = None) -> None:
+        """
+        Set `self.reader` by name.
+
+        The "paser_name" argument is deprecated,
+        use "parser" with parser name or instance.
+        """
+        ...
+    def set_writer(self, writer_name: str) -> None:
+        """Set `self.writer` by name."""
+        ...
     @deprecated("The `Publisher.set_components()` will be removed in Docutils 2.0.")
     def set_components(self, reader_name: str, parser_name: str, writer_name: str) -> None: ...
     def get_settings(
@@ -189,7 +205,7 @@ def publish_string(
     config_section: str | None = None,
     enable_exit_status: bool = False,
 ):
-    'Set up & run a `Publisher` for programmatic use with string I/O.\n\nAccepts a `bytes` or `str` instance as `source`.\n\nThe output is encoded according to the `output_encoding`_ setting;\nthe return value is a `bytes` instance (unless `output_encoding`_ is\n"unicode", cf. `docutils.io.StringOutput.write()`).\n\nParameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nno longer match.\n\n.. _output_encoding:\n    https://docutils.sourceforge.io/docs/user/config.html#output-encoding'
+    'Set up & run a `Publisher` for programmatic use with string I/O.\n\nAccepts a `bytes` or `str` instance as `source`.\n\nThe output is encoded according to the `output_encoding`_ setting;\nthe return value is a `bytes` instance (unless `output_encoding`_ is\n"unicode", cf. `docutils.io.StringOutput.write()`).\n\nParameters: see `publish_programmatically()` or\nhttps://docutils.sourceforge.io/docs/api/publisher.html#publish-string\n\nThis function is provisional because in Python\xa03 name and behaviour\nno longer match.\n\n.. _output_encoding:\n    https://docutils.sourceforge.io/docs/user/config.html#output-encoding'
     ...
 def publish_parts(
     source,
@@ -255,7 +271,9 @@ def publish_from_doctree(
     settings_overrides=None,
     config_section: str | None = None,
     enable_exit_status: bool = False,
-): ...
+):
+    'Set up & run a `Publisher` to render from an existing document tree\ndata structure. For programmatic use with string output\n(`bytes` or `str`, cf. `publish_string()`).\n\nNote that ``document.settings`` is overridden; if you want to use the\nsettings of the original `document`, pass ``settings=document.settings``.\n\nAlso, new `document.transformer` and `document.reporter` objects are\ngenerated.\n\nParameters: `document` is a `docutils.nodes.document` object, an existing\ndocument tree.\n\nOther parameters: see `publish_programmatically()`.\n\nThis function is provisional because in Python\xa03 name and behaviour\nof the `io.StringOutput` class no longer match.'
+    ...
 @deprecated("The `publish_cmdline_to_binary()` is deprecated  by `publish_cmdline()` and will be removed in Docutils 0.24.")
 def publish_cmdline_to_binary(
     reader=None,
@@ -275,22 +293,7 @@ def publish_cmdline_to_binary(
     destination=None,
     destination_class=...,
 ):
-    """
-    Set up & run a `Publisher` for command-line-based file I/O (input and
-    output file paths taken automatically from the command line).
-    Also return the output as `bytes`.
-
-    This is just like publish_cmdline, except that it uses
-    io.BinaryFileOutput instead of io.FileOutput.
-
-    Parameters: see `publish_programmatically()` for the remainder.
-
-    - `argv`: Command-line argument list to use instead of ``sys.argv[1:]``.
-    - `usage`: Usage string, output if there's a problem parsing the command
-      line.
-    - `description`: Program description, output for the "--help" option
-      (along with command-line option descriptions).
-    """
+    'Set up & run a `Publisher` for command-line-based file I/O (input and\noutput file paths taken automatically from the command line).\nAlso return the output as `bytes`.\n\nThis is just like publish_cmdline, except that it uses\nio.BinaryFileOutput instead of io.FileOutput.\n\nParameters: see `publish_programmatically()` for the remainder.\n\n- `argv`: Command-line argument list to use instead of ``sys.argv[1:]``.\n- `usage`: Usage string, output if there\'s a problem parsing the command\n  line.\n- `description`: Program description, output for the "--help" option\n  (along with command-line option descriptions).\n\nDeprecated. Use `publish_cmdline()` (works with `bytes` since\nDocutils\xa00.20). Will be removed in Docutils 0.24.'
     ...
 def publish_programmatically(
     source_class: type[FileInput],
@@ -317,7 +320,8 @@ def publish_programmatically(
     Return the output (as `str` or `bytes`, depending on `destination_class`,
     writer, and the "output_encoding" setting) and the Publisher object.
 
-    Applications should not need to call this function directly.  If it does
+    Internal:
+    Applications should not call this function directly.  If it does
     seem to be necessary to call this function directly, please write to the
     Docutils-develop mailing list
     <https://docutils.sourceforge.io/docs/user/mailing-lists.html#docutils-develop>.
@@ -367,20 +371,20 @@ def publish_programmatically(
         output; optional.  Used for determining relative paths (stylesheets,
         source links, etc.).
 
-    * `reader`: A `docutils.readers.Reader` object.
+    * `reader`: A `docutils.readers.Reader` instance, name, or alias.
+      Default: "standalone".
 
-    * `reader_name`: Name or alias of the Reader class to be instantiated if
-      no `reader` supplied.
+    * `reader_name`: Deprecated. Use `reader`.
 
-    * `parser`: A `docutils.parsers.Parser` object.
+    * `parser`: A `docutils.parsers.Parser` instance, name, or alias.
+      Default: "restructuredtext".
 
-    * `parser_name`: Name or alias of the Parser class to be instantiated if
-      no `parser` supplied.
+    * `parser_name`: Deprecated. Use `parser`.
 
-    * `writer`: A `docutils.writers.Writer` object.
+    * `writer`: A `docutils.writers.Writer` instance, name, or alias.
+      Default: "pseudoxml".
 
-    * `writer_name`: Name or alias of the Writer class to be instantiated if
-      no `writer` supplied.
+    * `writer_name`: Deprecated. Use `writer`.
 
     * `settings`: A runtime settings (`docutils.frontend.Values`) object, for
       dotted-attribute access to runtime settings.  It's the end result of the

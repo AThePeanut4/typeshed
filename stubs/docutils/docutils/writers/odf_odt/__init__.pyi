@@ -95,8 +95,15 @@ class Writer(writers.Writer[bytes]):
     translator_class: type[ODFTranslator]
     settings: Values
     visitor: ODFTranslator
-    def assemble_my_parts(self) -> None: ...
-    def update_stylesheet(self, stylesheet_root, language_code: str | None, region_code: str | None): ...
+    def assemble_my_parts(self) -> None:
+        """
+        Assemble the `self.parts` dictionary.  Extend in subclasses.
+        
+        """
+        ...
+    def update_stylesheet(self, stylesheet_root, language_code: str | None, region_code: str | None):
+        """Update xml style sheet element with language and region/country."""
+        ...
     def write_zip_str(
         self, zfile: zipfile.ZipFile, name: str, bytes_: str | SizedBuffer, compress_type: int = zipfile.ZIP_DEFLATED
     ) -> None: ...
@@ -179,8 +186,9 @@ class ODFTranslator(nodes.GenericNodeVisitor):
     dom_stylesheetcontent: ElementTree.Element
     def retrieve_styles(self, extension: str) -> None:
         """
-        Retrieve the stylesheet from either a .xml file or from
-        a .odt (zip) file.  Return the content as a string.
+        Retrieve the stylesheet from a .xml or .odt (zip) file.
+
+        Store in `self.*_styles*` attributes.
         """
         ...
     def extract_table_styles(self, styles_str: str | ReadableBuffer) -> dict[str, TableStyle]: ...

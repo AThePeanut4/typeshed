@@ -29,6 +29,12 @@ class Sidebar(BasePseudoSection):
     def run(self): ...
 
 class LineBlock(Directive):
+    """
+    Legacy directive for line blocks.
+
+    Use is deprecated in favour of the line block syntax,
+    cf. `parsers.rst.states.Body.line_block()`.
+    """
     option_spec: ClassVar[dict[str, _DirectiveFn]]
     def run(self): ...
 

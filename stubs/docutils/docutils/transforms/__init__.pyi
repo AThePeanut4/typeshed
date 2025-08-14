@@ -46,8 +46,8 @@ class Transformer(TransformSpec):
     """
     Store "transforms" and apply them to the document tree.
 
-    Collect lists of `Transform` instances and "unknown_reference_resolvers"
-    from Docutils components (`TransformSpec` instances).
+    Collect lists of `Transform` instances from Docutils
+    components (`TransformSpec` instances).
     Apply collected "transforms" to the document tree.
 
     Also keeps track of components by component type name.
@@ -84,7 +84,7 @@ class Transformer(TransformSpec):
         ...
     def populate_from_components(self, components: Iterable[TransformSpec]) -> None:
         """
-        Store each component's default transforms and reference resolvers
+        Store each component's default transforms and reference resolvers.
 
         Transforms are stored with default priorities for later sorting.
         "Unknown reference resolvers" are sorted and stored.

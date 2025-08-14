@@ -29,6 +29,9 @@ class Reader(Component, Generic[_S]):
         """
         Initialize the Reader instance.
 
+        :parser: A parser instance or name (an instance will be created).
+        :parser_name: deprecated, use "parser".
+
         Several instance attributes are defined with dummy initial values.
         Subclasses may use these attributes as they wish.
         """

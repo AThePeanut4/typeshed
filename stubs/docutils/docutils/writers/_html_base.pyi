@@ -1,4 +1,4 @@
-"""common definitions for Docutils HTML writers"""
+"""Common definitions for Docutils HTML writers."""
 
 from _typeshed import Incomplete, StrPath
 from collections.abc import Callable
@@ -28,7 +28,7 @@ class HTMLTranslator(nodes.NodeVisitor):
         Generic Docutils to HTML translator.
 
         See the `html4css1` and `html5_polyglot` writers for full featured
-        HTML writers.
+        HTML translators.
 
         .. IMPORTANT::
           The `visit_*` and `depart_*` methods use a
@@ -149,14 +149,38 @@ class HTMLTranslator(nodes.NodeVisitor):
     def encode(self, text: object) -> str:
         """Encode special characters in `text` & return."""
         ...
-    def image_size(self, node: nodes.image) -> str: ...
+    def image_size(self, node: nodes.image) -> str:
+        """
+        Determine the image size from node arguments or the image file.
+
+        Return as dictionary of <img> attributes,
+        e.g., ``{height': '32', 'style': 'width: 4 em;'}``.
+
+        Auxiliary method called from `self.visit_image()`.
+        Provisional.
+        """
+        ...
     def read_size_with_PIL(self, node) -> tuple[int, int] | None: ...
     def prepare_svg(self, code: str | bytes, node: nodes.Element, atts: dict[str, Incomplete]) -> str: ...
-    def stylesheet_call(self, path: StrPath, adjust_path: bool | None = None) -> str: ...
-    def starttag(self, node: nodes.Element, tagname: str, suffix: str = "\n", empty: bool = False, **attributes) -> str: ...
-    def emptytag(self, node: nodes.Element, tagname: str, suffix: str = "\n", **attributes) -> str: ...
+    def stylesheet_call(self, path: StrPath, adjust_path: bool | None = None) -> str:
+        """Return code to reference or embed stylesheet file `path`"""
+        ...
+    def starttag(self, node: nodes.Element, tagname: str, suffix: str = "\n", empty: bool = False, **attributes) -> str:
+        """
+        Construct and return a start tag given a node (id & class attributes
+        are extracted), tag name, and optional attributes.
+        """
+        ...
+    def emptytag(self, node: nodes.Element, tagname: str, suffix: str = "\n", **attributes) -> str:
+        """Construct and return an XML-compatible empty tag."""
+        ...
     def report_messages(self, node: nodes.Node) -> None: ...
-    def set_class_on_child(self, node, class_, index: int = 0) -> None: ...
+    def set_class_on_child(self, node, class_, index: int = 0) -> None:
+        """
+        Set class `class_` on the visible child no. index of `node`.
+        Do nothing if node has fewer children than `index`.
+        """
+        ...
     def visit_Text(self, node: nodes.Text) -> None: ...
     def depart_Text(self, node: nodes.Text) -> None: ...
     def visit_abbreviation(self, node: nodes.abbreviation) -> None: ...

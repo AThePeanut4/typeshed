@@ -22,7 +22,7 @@ the reStructuredText parser.  It defines the following:
     - `SpecializedText`: Superclass for continuation lines of Text-variants.
     - `Definition`: Second line of potential definition_list_item.
     - `Line`: Second line of overlined section title or transition marker.
-    - `Struct`: An auxiliary collection class.
+    - `Struct`: obsolete, use `types.SimpleNamespace`.
 
 :Exception classes:
     - `MarkupError`
@@ -232,24 +232,16 @@ class RSTState(StateWS[list[str]]):
         ...
     def check_subsection(self, source, style, lineno: int):
         """
-        Check for a valid subsection header.  Return True or False.
+        Check for a valid subsection header.  Update section data in `memo`.
 
         When a new section is reached that isn't a subsection of the current
-        section, back up the line count (use ``previous_line(-x)``), then
-        ``raise EOFError``.  The current StateMachine will finish, then the
-        calling StateMachine can re-examine the title.  This will work its way
-        back up the calling chain until the correct section level isreached.
-
-        @@@ Alternative: Evaluate the title, store the title info & level, and
-        back up the chain until that level is reached.  Store in memo? Or
-        return in results?
-
-        :Exception: `EOFError` when a sibling or supersection encountered.
+        section, set `self.parent` to the new section's parent section
+        (or the document if the new section is a top-level section).
         """
         ...
     def title_inconsistent(self, sourcetext: str, lineno: int): ...
     def new_subsection(self, title: str, lineno: int, messages) -> None:
-        """Append new subsection to document tree. On return, check level."""
+        """Append new subsection to document tree."""
         ...
     def paragraph(self, lines: Iterable[str], lineno: int):
         """Return a list (paragraph & messages) & a boolean: literal_block next?"""
@@ -259,7 +251,15 @@ class RSTState(StateWS[list[str]]):
         ...
     def unindent_warning(self, node_name: str): ...
 
-def build_regexp(definition, compile_patterns: bool | None = True): ...
+def build_regexp(definition, compile_patterns: bool | None = True):
+    """
+    Build, compile and return a regular expression based on `definition`.
+
+    :Parameter: `definition`: a 4-tuple (group name, prefix, suffix, parts),
+        where "parts" is a list of regular expressions and/or regular
+        expression definitions to be joined into an or-group.
+    """
+    ...
 
 _BasicDefinition: TypeAlias = tuple[str, str, str, list[Pattern[str]]]
 _DefinitionParts: TypeAlias = tuple[str, str, str, list[Pattern[str] | _BasicDefinition]]
@@ -295,7 +295,7 @@ class Inliner:
         URIs) is found last.
 
         :text: source string
-        :lineno: absolute line number (cf. statemachine.get_source_and_line())
+        :lineno: absolute line number, cf. `statemachine.get_source_and_line()`
         """
         ...
     non_whitespace_before: str

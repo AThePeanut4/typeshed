@@ -23,7 +23,7 @@ class CallBack(Transform):
 class ClassAttribute(Transform):
     """
     Move the "class" attribute specified in the "pending" node into the
-    immediately following non-comment element.
+    next visible element.
     """
     default_priority: ClassVar[int]
     def apply(self) -> None: ...
@@ -31,8 +31,8 @@ class ClassAttribute(Transform):
 class Transitions(Transform):
     """
     Move transitions at the end of sections up the tree.  Complain
-    on transitions after a title, at the beginning or end of the
-    document, and after another transition.
+    on transitions after a title, subtitle, meta, or decoration element,
+    at the beginning or end of the document, and after another transition.
 
     For example, transform this::
 

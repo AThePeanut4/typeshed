@@ -47,4 +47,12 @@ class XeLaTeXTranslator(latex2e.LaTeXTranslator):
     """
     is_xetex: bool  # type: ignore[misc]
     def __init__(self, document: nodes.document) -> None: ...
-    def to_latex_length(self, length_str: str, node: nodes.Node | None = None) -> str: ...
+    def to_latex_length(self, length_str: str, node: nodes.Node | None = None) -> str:
+        r"""
+        Convert "measure" `length_str` to LaTeX length specification.
+
+        XeTeX does not know the length unit px.
+        Use ``\pdfpxdimen``, the macro holding the value of 1 px in pdfTeX.
+        This way, configuring works the same for pdftex and xetex.
+        """
+        ...

@@ -1,3 +1,5 @@
+"""Reader for existing document trees."""
+
 from typing import ClassVar, Final, TypeVar
 
 from docutils import readers
