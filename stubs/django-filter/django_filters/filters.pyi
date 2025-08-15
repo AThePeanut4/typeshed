@@ -156,7 +156,12 @@ class MultipleChoiceFilter(Filter):
         exclude: bool = False,
         **kwargs: Any,  # Field kwargs stored as extra (required, help_text, etc.)
     ) -> None: ...
-    def is_noop(self, qs: QuerySet[Any], value: Any) -> bool: ...  # Value can be any filter input
+    def is_noop(self, qs: QuerySet[Any], value: Any) -> bool:
+        """
+        Return `True` to short-circuit unnecessary and potentially slow
+        filtering.
+        """
+        ...
     def filter(self, qs: QuerySet[Any], value: Any) -> QuerySet[Any]: ...
     def get_filter_predicate(self, v: Any) -> Q: ...  # Predicate value can be any filter input type
 
@@ -365,8 +370,31 @@ class LookupChoiceFilter(Filter):
         **kwargs: Any,  # Field kwargs stored as extra (required, help_text, etc.)
     ) -> None: ...
     @classmethod
-    def normalize_lookup(cls, lookup: str | tuple[str, StrOrPromise]) -> tuple[str, StrOrPromise]: ...
-    def get_lookup_choices(self) -> list[tuple[str, StrOrPromise]]: ...
+    def normalize_lookup(cls, lookup: str | tuple[str, StrOrPromise]) -> tuple[str, StrOrPromise]:
+        """
+        Normalize the lookup into a tuple of ``(lookup expression, display value)``
+
+        If the ``lookup`` is already a tuple, the tuple is not altered.
+        If the ``lookup`` is a string, a tuple is returned with the lookup
+        expression used as the basis for the display value.
+
+        ex::
+
+            >>> LookupChoiceFilter.normalize_lookup(('exact', 'Equals'))
+            ('exact', 'Equals')
+
+            >>> LookupChoiceFilter.normalize_lookup('has_key')
+            ('has_key', 'Has key')
+        """
+        ...
+    def get_lookup_choices(self) -> list[tuple[str, StrOrPromise]]:
+        """
+        Get the lookup choices in a format suitable for ``django.forms.ChoiceField``.
+        If the filter is initialized with ``lookup_choices``, this value is normalized
+        and passed to the underlying ``LookupChoiceField``. If no choices are provided,
+        they are generated from the corresponding model field's registered lookups.
+        """
+        ...
     @property
     def field(self) -> Field: ...
     lookup_expr: str
@@ -415,11 +443,18 @@ class OrderingFilter(BaseCSVFilter, ChoiceFilter):
         distinct: bool = False,
         exclude: bool = False,
         **kwargs: Any,  # Field kwargs stored as extra (required, help_text, etc.)
-    ) -> None: ...
+    ) -> None:
+        """
+        ``fields`` may be either a mapping or an iterable.
+        ``field_labels`` must be a map of field names to display labels
+        """
+        ...
     def get_ordering_value(self, param: str) -> str: ...
     def filter(self, qs: QuerySet[Any], value: Any) -> QuerySet[Any]: ...
     @classmethod
-    def normalize_fields(cls, fields: Any) -> list[str]: ...
+    def normalize_fields(cls, fields: Any) -> list[str]:
+        """Normalize the fields into an ordered map of {field name: param name}"""
+        ...
     def build_choices(self, fields: Any, labels: dict[str, StrOrPromise] | None) -> list[tuple[str, str]]: ...
 
 class FilterMethod:
