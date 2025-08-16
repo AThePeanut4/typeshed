@@ -1,3 +1,5 @@
+"""Base class for MultiDiGraph."""
+
 from functools import cached_property
 from typing import Any
 
@@ -289,9 +291,38 @@ class MultiDiGraph(MultiGraph[_Node], DiGraph[_Node]):
     True
     """
     @cached_property
-    def succ(self) -> MultiAdjacencyView[_Node, _Node, dict[str, Any]]: ...
+    def succ(self) -> MultiAdjacencyView[_Node, _Node, dict[str, Any]]:
+        """
+        Graph adjacency object holding the successors of each node.
+
+        This object is a read-only dict-like structure with node keys
+        and neighbor-dict values.  The neighbor-dict is keyed by neighbor
+        to the edgekey-dict.  So `G.adj[3][2][0]['color'] = 'blue'` sets
+        the color of the edge `(3, 2, 0)` to `"blue"`.
+
+        Iterating over G.adj behaves like a dict. Useful idioms include
+        `for nbr, datadict in G.adj[n].items():`.
+
+        The neighbor information is also provided by subscripting the graph.
+        So `for nbr, foovalue in G[node].data('foo', default=1):` works.
+
+        For directed graphs, `G.succ` is identical to `G.adj`.
+        """
+        ...
     @cached_property
-    def pred(self) -> MultiAdjacencyView[_Node, _Node, dict[str, Any]]: ...
+    def pred(self) -> MultiAdjacencyView[_Node, _Node, dict[str, Any]]:
+        """
+        Graph adjacency object holding the predecessors of each node.
+
+        This object is a read-only dict-like structure with node keys
+        and neighbor-dict values.  The neighbor-dict is keyed by neighbor
+        to the edgekey-dict.  So `G.adj[3][2][0]['color'] = 'blue'` sets
+        the color of the edge `(3, 2, 0)` to `"blue"`.
+
+        Iterating over G.adj behaves like a dict. Useful idioms include
+        `for nbr, datadict in G.adj[n].items():`.
+        """
+        ...
     @cached_property
     def edges(self) -> OutMultiEdgeView[_Node]:
         """
@@ -456,7 +487,39 @@ class MultiDiGraph(MultiGraph[_Node], DiGraph[_Node]):
         """
         ...
     @cached_property
-    def in_edges(self) -> InMultiEdgeView[_Node] | InMultiEdgeDataView[_Node, _EdgeWithData[_Node]]: ...  # type: ignore[override]
+    def in_edges(self) -> InMultiEdgeView[_Node] | InMultiEdgeDataView[_Node, _EdgeWithData[_Node]]:
+        """
+        A view of the in edges of the graph as G.in_edges or G.in_edges().
+
+        in_edges(self, nbunch=None, data=False, keys=False, default=None)
+
+        Parameters
+        ----------
+        nbunch : single node, container, or all nodes (default= all nodes)
+            The view will only report edges incident to these nodes.
+        data : string or bool, optional (default=False)
+            The edge attribute returned in 3-tuple (u, v, ddict[data]).
+            If True, return edge attribute dict in 3-tuple (u, v, ddict).
+            If False, return 2-tuple (u, v).
+        keys : bool, optional (default=False)
+            If True, return edge keys with each edge, creating 3-tuples
+            (u, v, k) or with data, 4-tuples (u, v, k, d).
+        default : value, optional (default=None)
+            Value used for edges that don't have the requested attribute.
+            Only relevant if data is not True or False.
+
+        Returns
+        -------
+        in_edges : InMultiEdgeView or InMultiEdgeDataView
+            A view of edge attributes, usually it iterates over (u, v)
+            or (u, v, k) or (u, v, k, d) tuples of edges, but can also be
+            used for attribute lookup as `edges[u, v, k]['foo']`.
+
+        See Also
+        --------
+        edges
+        """
+        ...
     # Returns : InMultiEdgeView or InMultiEdgeDataView
     @cached_property
     def in_degree(self) -> InMultiDegreeView[_Node]:
