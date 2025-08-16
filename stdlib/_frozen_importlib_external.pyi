@@ -18,7 +18,7 @@ from _typeshed.importlib import LoaderProtocol
 from collections.abc import Callable, Iterable, Iterator, Mapping, MutableSequence, Sequence
 from importlib.machinery import ModuleSpec
 from importlib.metadata import DistributionFinder, PathDistribution
-from typing import Any, Literal
+from typing import Any, Final, Literal
 from typing_extensions import Self, deprecated
 
 if sys.version_info >= (3, 10):
@@ -33,7 +33,7 @@ else:
     path_sep: Literal["/"]
     path_sep_tuple: tuple[Literal["/"]]
 
-MAGIC_NUMBER: bytes
+MAGIC_NUMBER: Final[bytes]
 
 def cache_from_source(path: StrPath, debug_override: bool | None = None, *, optimization: Any | None = None) -> str:
     """
@@ -176,11 +176,11 @@ class PathFinder(importlib.abc.MetaPathFinder):
             """
             ...
 
-SOURCE_SUFFIXES: list[str]
-DEBUG_BYTECODE_SUFFIXES: list[str]
-OPTIMIZED_BYTECODE_SUFFIXES: list[str]
-BYTECODE_SUFFIXES: list[str]
-EXTENSION_SUFFIXES: list[str]
+SOURCE_SUFFIXES: Final[list[str]]
+DEBUG_BYTECODE_SUFFIXES: Final = [".pyc"]
+OPTIMIZED_BYTECODE_SUFFIXES: Final = [".pyc"]
+BYTECODE_SUFFIXES: Final = [".pyc"]
+EXTENSION_SUFFIXES: Final[list[str]]
 
 class FileFinder(importlib.abc.PathEntryFinder):
     """

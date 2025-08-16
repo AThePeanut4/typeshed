@@ -1511,4 +1511,4 @@ class StringTemplateStyle(PercentStyle):  # undocumented
 
 _STYLES: Final[dict[str, tuple[PercentStyle, str]]]
 
-BASIC_FORMAT: Final[str]
+BASIC_FORMAT: Final = "%(levelname)s:%(name)s:%(message)s"

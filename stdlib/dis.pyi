@@ -4,7 +4,7 @@ import sys
 import types
 from collections.abc import Callable, Iterator
 from opcode import *  # `dis` re-exports it as a part of public API
-from typing import IO, Any, NamedTuple
+from typing import IO, Any, Final, NamedTuple
 from typing_extensions import Self, TypeAlias
 
 __all__ = [
@@ -254,7 +254,7 @@ class Bytecode:
         """Return a formatted view of the bytecode operations."""
         ...
 
-COMPILER_FLAG_NAMES: dict[int, str]
+COMPILER_FLAG_NAMES: Final[dict[int, str]]
 
 def findlabels(code: _HaveCodeType) -> list[int]:
     """

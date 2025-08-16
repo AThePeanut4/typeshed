@@ -353,7 +353,7 @@ def stack_size(size: int = 0, /) -> int:
     """
     ...
 
-TIMEOUT_MAX: float
+TIMEOUT_MAX: Final[float]
 
 def get_native_id() -> int:
     """
