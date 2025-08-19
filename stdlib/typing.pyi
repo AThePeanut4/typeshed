@@ -26,7 +26,7 @@ import collections  # noqa: F401  # pyright: ignore[reportUnusedImport]
 import sys
 import typing_extensions
 from _collections_abc import dict_items, dict_keys, dict_values
-from _typeshed import IdentityFunction, ReadableBuffer, SupportsKeysAndGetItem
+from _typeshed import IdentityFunction, ReadableBuffer, SupportsGetItemViewable, SupportsKeysAndGetItem, Viewable
 from abc import ABCMeta, abstractmethod
 from re import Match as Match, Pattern as Pattern
 from types import (
@@ -1223,13 +1223,11 @@ class MutableSet(AbstractSet[_T]):
     def __isub__(self, it: AbstractSet[Any]) -> typing_extensions.Self: ...
 
 class MappingView(Sized):
-    """A generic version of collections.abc.MappingView."""
-    def __init__(self, mapping: Mapping[Any, Any]) -> None: ...  # undocumented
+    def __init__(self, mapping: Sized) -> None: ...  # undocumented
     def __len__(self) -> int: ...
 
 class ItemsView(MappingView, AbstractSet[tuple[_KT_co, _VT_co]], Generic[_KT_co, _VT_co]):
-    """A generic version of collections.abc.ItemsView."""
-    def __init__(self, mapping: Mapping[_KT_co, _VT_co]) -> None: ...  # undocumented
+    def __init__(self, mapping: SupportsGetItemViewable[_KT_co, _VT_co]) -> None: ...  # undocumented
     def __and__(self, other: Iterable[Any]) -> set[tuple[_KT_co, _VT_co]]: ...
     def __rand__(self, other: Iterable[_T]) -> set[_T]: ...
     def __contains__(self, item: tuple[object, object]) -> bool: ...  # type: ignore[override]
@@ -1242,8 +1240,7 @@ class ItemsView(MappingView, AbstractSet[tuple[_KT_co, _VT_co]], Generic[_KT_co,
     def __rxor__(self, other: Iterable[_T]) -> set[tuple[_KT_co, _VT_co] | _T]: ...
 
 class KeysView(MappingView, AbstractSet[_KT_co]):
-    """A generic version of collections.abc.KeysView."""
-    def __init__(self, mapping: Mapping[_KT_co, Any]) -> None: ...  # undocumented
+    def __init__(self, mapping: Viewable[_KT_co]) -> None: ...  # undocumented
     def __and__(self, other: Iterable[Any]) -> set[_KT_co]: ...
     def __rand__(self, other: Iterable[_T]) -> set[_T]: ...
     def __contains__(self, key: object) -> bool: ...
@@ -1256,8 +1253,7 @@ class KeysView(MappingView, AbstractSet[_KT_co]):
     def __rxor__(self, other: Iterable[_T]) -> set[_KT_co | _T]: ...
 
 class ValuesView(MappingView, Collection[_VT_co]):
-    """A generic version of collections.abc.ValuesView."""
-    def __init__(self, mapping: Mapping[Any, _VT_co]) -> None: ...  # undocumented
+    def __init__(self, mapping: SupportsGetItemViewable[Any, _VT_co]) -> None: ...  # undocumented
     def __contains__(self, value: object) -> bool: ...
     def __iter__(self) -> Iterator[_VT_co]: ...
 
