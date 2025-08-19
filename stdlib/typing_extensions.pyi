@@ -240,7 +240,34 @@ def runtime_checkable(cls: _TC) -> _TC:
 runtime = runtime_checkable
 Final: _SpecialForm
 
-def final(f: _F) -> _F: ...
+def final(f: _F) -> _F:
+    """
+    Decorator to indicate final methods and final classes.
+
+    Use this decorator to indicate to type checkers that the decorated
+    method cannot be overridden, and decorated class cannot be subclassed.
+
+    For example::
+
+        class Base:
+            @final
+            def done(self) -> None:
+                ...
+        class Sub(Base):
+            def done(self) -> None:  # Error reported by type checker
+                ...
+
+        @final
+        class Leaf:
+            ...
+        class Other(Leaf):  # Error reported by type checker
+            ...
+
+    There is no runtime checking of these properties. The decorator
+    attempts to set the ``__final__`` attribute to ``True`` on the decorated
+    object to allow runtime introspection.
+    """
+    ...
 def disjoint_base(cls: _TC) -> _TC: ...
 
 Literal: _SpecialForm
