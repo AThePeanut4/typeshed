@@ -161,8 +161,7 @@ class ConvertingTuple(tuple[Any, ...], ConvertingMixin):  # undocumented
     @overload
     def __getitem__(self, key: slice) -> Any: ...
 
-class BaseConfigurator:  # undocumented
-    """The configurator base class which defines some useful defaults."""
+class BaseConfigurator:
     CONVERT_PATTERN: Pattern[str]
     WORD_PATTERN: Pattern[str]
     DOT_PATTERN: Pattern[str]
@@ -170,6 +169,8 @@ class BaseConfigurator:  # undocumented
     DIGIT_PATTERN: Pattern[str]
     value_converters: dict[str, str]
     importer: Callable[..., Any]
+
+    config: dict[str, Any]  # undocumented
 
     def __init__(self, config: _DictConfigArgs | dict[str, Any]) -> None: ...
     def resolve(self, s: str) -> Any:

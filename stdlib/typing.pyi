@@ -26,7 +26,7 @@ import collections  # noqa: F401  # pyright: ignore[reportUnusedImport]
 import sys
 import typing_extensions
 from _collections_abc import dict_items, dict_keys, dict_values
-from _typeshed import IdentityFunction, ReadableBuffer, SupportsGetItemViewable, SupportsKeysAndGetItem, Viewable
+from _typeshed import IdentityFunction, ReadableBuffer, SupportsGetItem, SupportsGetItemViewable, SupportsKeysAndGetItem, Viewable
 from abc import ABCMeta, abstractmethod
 from re import Match as Match, Pattern as Pattern
 from types import (
@@ -1374,14 +1374,7 @@ class MutableMapping(Mapping[_KT, _VT]):
         """
         ...
     @overload
-    def update(self: Mapping[str, _VT], m: SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> None:
-        """
-        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
-        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
-        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
-        In either case, this is followed by: for k, v in F.items(): D[k] = v
-        """
-        ...
+    def update(self: SupportsGetItem[str, _VT], m: SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> None: ...
     @overload
     def update(self, m: Iterable[tuple[_KT, _VT]], /) -> None:
         """
@@ -1392,23 +1385,9 @@ class MutableMapping(Mapping[_KT, _VT]):
         """
         ...
     @overload
-    def update(self: Mapping[str, _VT], m: Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> None:
-        """
-        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
-        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
-        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
-        In either case, this is followed by: for k, v in F.items(): D[k] = v
-        """
-        ...
+    def update(self: SupportsGetItem[str, _VT], m: Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> None: ...
     @overload
-    def update(self: Mapping[str, _VT], **kwargs: _VT) -> None:
-        """
-        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
-        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
-        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
-        In either case, this is followed by: for k, v in F.items(): D[k] = v
-        """
-        ...
+    def update(self: SupportsGetItem[str, _VT], **kwargs: _VT) -> None: ...
 
 Text = str
 
