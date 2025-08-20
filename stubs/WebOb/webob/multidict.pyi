@@ -1,3 +1,5 @@
+"""Gives a multi-value dictionary object (MultiDict) plus several wrappers"""
+
 from _typeshed import SupportsGetItem, SupportsKeysAndGetItem
 from _typeshed.wsgi import WSGIEnvironment
 from collections.abc import Collection, Iterable, Iterator, MutableMapping

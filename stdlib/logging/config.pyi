@@ -162,6 +162,7 @@ class ConvertingTuple(tuple[Any, ...], ConvertingMixin):  # undocumented
     def __getitem__(self, key: slice) -> Any: ...
 
 class BaseConfigurator:
+    """The configurator base class which defines some useful defaults."""
     CONVERT_PATTERN: Pattern[str]
     WORD_PATTERN: Pattern[str]
     DOT_PATTERN: Pattern[str]
