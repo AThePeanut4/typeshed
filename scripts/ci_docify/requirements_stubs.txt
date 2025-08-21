@@ -65,6 +65,7 @@ pysftp==0.2.*
 TgCrypto==1.2.*
 qrcode[pil]==8.2.*
 decorator==5.2.*
+click-shell==2.1
 dateparser[fasttext,langdetect]~=1.2.2
 rfc3339-validator==0.1.*
 braintree==4.38.*
@@ -91,7 +92,7 @@ python-crontab==3.3.*
 django-import-export==4.3.*
 html5lib[all]==1.1.*
 chevron==0.14.*
-jsonschema[format]==4.25.*
+jsonschema[format]~=4.25.1
 pycurl==7.45.6
 first==2.0.*
 ttkthemes==3.2.*
