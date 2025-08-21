@@ -43,7 +43,7 @@ for examples.
 
 from _typeshed import Incomplete
 from collections.abc import Generator
-from typing import Final
+from typing import Final, Literal
 
 from networkx.utils.backends import _dispatchable
 
@@ -316,14 +316,8 @@ class GraphML:
     xml_type: Incomplete
     python_type: Incomplete
     def construct_types(self) -> None: ...
-    convert_bool: Incomplete
-    def get_xml_type(self, key):
-        """
-        Wrapper around the xml_type dict that raises a more informative
-        exception message when a user attempts to use data of a type not
-        supported by GraphML.
-        """
-        ...
+    convert_bool: Final[dict[Literal["true", "false", "0", 0, "1", 1], bool]]
+    def get_xml_type(self, key): ...
 
 class GraphMLWriter(GraphML):
     myElement: Incomplete

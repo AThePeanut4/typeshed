@@ -20,6 +20,7 @@ specification and http://gexf.net/basic.html for examples.
 
 from _typeshed import Incomplete
 from collections.abc import Generator
+from typing import Final, Literal
 
 from networkx.utils.backends import _dispatchable
 
@@ -165,7 +166,7 @@ class GEXF:
     xml_type: Incomplete
     python_type: Incomplete
     def construct_types(self) -> None: ...
-    convert_bool: Incomplete
+    convert_bool: Final[dict[Literal["true", "false", "True", "False", "0", 0, "1", 1], bool]]
     NS_GEXF: Incomplete
     NS_VIZ: Incomplete
     NS_XSI: Incomplete

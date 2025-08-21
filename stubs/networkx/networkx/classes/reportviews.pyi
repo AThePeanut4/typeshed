@@ -179,74 +179,10 @@ class NodeView(Mapping[_Node, dict[str, Any]], AbstractSet[_Node]):
     def __getitem__(self, n: _Node) -> dict[str, Any]: ...
     def __contains__(self, n: object) -> bool: ...
     @overload
-    def __call__(self, data: Literal[False] = False, default=None) -> Iterator[_Node]: ...
+    def __call__(self, data: Literal[False] = False, default=None) -> Self: ...
     @overload
-    def __call__(self, data: Literal[True] | str, default=None) -> Iterator[tuple[_Node, dict[str, Any]]]: ...
-    def data(self, data: bool | str = True, default=None) -> NodeDataView[_Node]:
-        """
-        Return a read-only view of node data.
-
-        Parameters
-        ----------
-        data : bool or node data key, default=True
-            If ``data=True`` (the default), return a `NodeDataView` object that
-            maps each node to *all* of its attributes. `data` may also be an
-            arbitrary key, in which case the `NodeDataView` maps each node to
-            the value for the keyed attribute. In this case, if a node does
-            not have the `data` attribute, the `default` value is used.
-        default : object, default=None
-            The value used when a node does not have a specific attribute.
-
-        Returns
-        -------
-        NodeDataView
-            The layout of the returned NodeDataView depends on the value of the
-            `data` parameter.
-
-        Notes
-        -----
-        If ``data=False``, returns a `NodeView` object without data.
-
-        See Also
-        --------
-        NodeDataView
-
-        Examples
-        --------
-        >>> G = nx.Graph()
-        >>> G.add_nodes_from(
-        ...     [
-        ...         (0, {"color": "red", "weight": 10}),
-        ...         (1, {"color": "blue"}),
-        ...         (2, {"color": "yellow", "weight": 2}),
-        ...     ]
-        ... )
-
-        Accessing node data with ``data=True`` (the default) returns a
-        NodeDataView mapping each node to all of its attributes:
-
-        >>> G.nodes.data()
-        NodeDataView({0: {'color': 'red', 'weight': 10}, 1: {'color': 'blue'}, 2: {'color': 'yellow', 'weight': 2}})
-
-        If `data` represents  a key in the node attribute dict, a NodeDataView mapping
-        the nodes to the value for that specific key is returned:
-
-        >>> G.nodes.data("color")
-        NodeDataView({0: 'red', 1: 'blue', 2: 'yellow'}, data='color')
-
-        If a specific key is not found in an attribute dict, the value specified
-        by `default` is returned:
-
-        >>> G.nodes.data("weight", default=-999)
-        NodeDataView({0: 10, 1: -999, 2: 2}, data='weight')
-
-        Note that there is no check that the `data` key is in any of the
-        node attribute dictionaries:
-
-        >>> G.nodes.data("height")
-        NodeDataView({0: None, 1: None, 2: None}, data='height')
-        """
-        ...
+    def __call__(self, data: Literal[True] | str, default=None) -> Self: ...
+    def data(self, data: bool | str = True, default=None) -> Self: ...
 
 class NodeDataView(AbstractSet[_Node]):
     """
@@ -311,7 +247,10 @@ class DiDegreeView(Generic[_Node]):
     >>> assert len(list(DVnbunch)) == 2  # iteration over nbunch only
     """
     def __init__(self, G: Graph[_Node], nbunch: _NBunch[_Node] = None, weight: None | bool | str = None) -> None: ...
-    def __call__(self, nbunch: _NBunch[_Node] = None, weight: None | bool | str = None) -> int | DiDegreeView[_Node]: ...
+    @overload
+    def __call__(self, nbunch: None = None, weight: None | bool | str = None) -> int: ...  # type: ignore[overload-overlap]
+    @overload
+    def __call__(self, nbunch: None | Iterable[_Node], weight: None | bool | str = None) -> Self: ...
     def __getitem__(self, n: _Node) -> float: ...
     def __iter__(self) -> Iterator[tuple[_Node, float]]: ...
     def __len__(self) -> int: ...
