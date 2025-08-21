@@ -317,7 +317,13 @@ class GraphML:
     python_type: Incomplete
     def construct_types(self) -> None: ...
     convert_bool: Final[dict[Literal["true", "false", "0", 0, "1", 1], bool]]
-    def get_xml_type(self, key): ...
+    def get_xml_type(self, key):
+        """
+        Wrapper around the xml_type dict that raises a more informative
+        exception message when a user attempts to use data of a type not
+        supported by GraphML.
+        """
+        ...
 
 class GraphMLWriter(GraphML):
     myElement: Incomplete

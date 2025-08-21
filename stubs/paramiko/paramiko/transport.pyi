@@ -517,14 +517,128 @@ class Transport(Thread, ClosingContextManager):
         ...
     def request_port_forward(
         self, address: str, port: int, handler: Callable[[Channel, _Addr, _Addr], object] | None = None
-    ) -> int: ...
-    def cancel_port_forward(self, address: str, port: int) -> None: ...
-    def open_sftp_client(self) -> SFTPClient | None: ...
-    def send_ignore(self, byte_count: int | None = None) -> None: ...
-    def renegotiate_keys(self) -> None: ...
-    def set_keepalive(self, interval: float) -> None: ...
-    def global_request(self, kind: str, data: Iterable[Any] | None = None, wait: bool = True) -> Message | None: ...
-    def accept(self, timeout: float | None = None) -> Channel | None: ...
+    ) -> int:
+        """
+        Ask the server to forward TCP connections from a listening port on
+        the server, across this SSH session.
+
+        If a handler is given, that handler is called from a different thread
+        whenever a forwarded connection arrives.  The handler parameters are::
+
+            handler(
+                channel,
+                (origin_addr, origin_port),
+                (server_addr, server_port),
+            )
+
+        where ``server_addr`` and ``server_port`` are the address and port that
+        the server was listening on.
+
+        If no handler is set, the default behavior is to send new incoming
+        forwarded connections into the accept queue, to be picked up via
+        `accept`.
+
+        :param str address: the address to bind when forwarding
+        :param int port:
+            the port to forward, or 0 to ask the server to allocate any port
+        :param callable handler:
+            optional handler for incoming forwarded connections, of the form
+            ``func(Channel, (str, int), (str, int))``.
+
+        :return: the port number (`int`) allocated by the server
+
+        :raises:
+            `.SSHException` -- if the server refused the TCP forward request
+        """
+        ...
+    def cancel_port_forward(self, address: str, port: int) -> None:
+        """
+        Ask the server to cancel a previous port-forwarding request.  No more
+        connections to the given address & port will be forwarded across this
+        ssh connection.
+
+        :param str address: the address to stop forwarding
+        :param int port: the port to stop forwarding
+        """
+        ...
+    def open_sftp_client(self) -> SFTPClient | None:
+        """
+        Create an SFTP client channel from an open transport.  On success, an
+        SFTP session will be opened with the remote host, and a new
+        `.SFTPClient` object will be returned.
+
+        :return:
+            a new `.SFTPClient` referring to an sftp session (channel) across
+            this transport
+        """
+        ...
+    def send_ignore(self, byte_count: int | None = None) -> None:
+        """
+        Send a junk packet across the encrypted link.  This is sometimes used
+        to add "noise" to a connection to confuse would-be attackers.  It can
+        also be used as a keep-alive for long lived connections traversing
+        firewalls.
+
+        :param int byte_count:
+            the number of random bytes to send in the payload of the ignored
+            packet -- defaults to a random number from 10 to 41.
+        """
+        ...
+    def renegotiate_keys(self) -> None:
+        """
+        Force this session to switch to new keys.  Normally this is done
+        automatically after the session hits a certain number of packets or
+        bytes sent or received, but this method gives you the option of forcing
+        new keys whenever you want.  Negotiating new keys causes a pause in
+        traffic both ways as the two sides swap keys and do computations.  This
+        method returns when the session has switched to new keys.
+
+        :raises:
+            `.SSHException` -- if the key renegotiation failed (which causes
+            the session to end)
+        """
+        ...
+    def set_keepalive(self, interval: float) -> None:
+        """
+        Turn on/off keepalive packets (default is off).  If this is set, after
+        ``interval`` seconds without sending any data over the connection, a
+        "keepalive" packet will be sent (and ignored by the remote host).  This
+        can be useful to keep connections alive over a NAT, for example.
+
+        :param int interval:
+            seconds to wait before sending a keepalive packet (or
+            0 to disable keepalives).
+        """
+        ...
+    def global_request(self, kind: str, data: Iterable[Any] | None = None, wait: bool = True) -> Message | None:
+        """
+        Make a global request to the remote host.  These are normally
+        extensions to the SSH2 protocol.
+
+        :param str kind: name of the request.
+        :param tuple data:
+            an optional tuple containing additional data to attach to the
+            request.
+        :param bool wait:
+            ``True`` if this method should not return until a response is
+            received; ``False`` otherwise.
+        :return:
+            a `.Message` containing possible additional data if the request was
+            successful (or an empty `.Message` if ``wait`` was ``False``);
+            ``None`` if the request was denied.
+        """
+        ...
+    def accept(self, timeout: float | None = None) -> Channel | None:
+        """
+        Return the next channel opened by the client over this transport, in
+        server mode.  If no channel is opened before the given timeout,
+        ``None`` is returned.
+
+        :param int timeout:
+            seconds to wait for a channel, or ``None`` to wait forever
+        :return: a new `.Channel` opened by the client
+        """
+        ...
     def connect(
         self,
         hostkey: PKey | None = None,
