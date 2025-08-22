@@ -52,7 +52,7 @@ else:
         "seal",
     )
 
-FILTER_DIR: Any
+FILTER_DIR: bool  # controls the way mock objects respond to `dir` function
 
 class _SentinelObject:
     """A unique, named, sentinel object."""
@@ -63,7 +63,7 @@ class _Sentinel:
     """Access attributes to return a named object, usable as a sentinel."""
     def __getattr__(self, name: str) -> Any: ...
 
-sentinel: Any
+sentinel: _Sentinel
 DEFAULT: Any
 
 _ArgsKwargs: TypeAlias = tuple[tuple[Any, ...], Mapping[str, Any]]
@@ -580,7 +580,7 @@ class _patcher:
         create: bool = ...,
         spec_set: Any | None = ...,
         autospec: Any | None = ...,
-        new_callable: None = ...,
+        new_callable: None = None,
         **kwargs: Any,
     ) -> _patch_pass_arg[MagicMock | AsyncMock]: ...
     @overload
@@ -619,7 +619,7 @@ class _patcher:
         create: bool = ...,
         spec_set: Any | None = ...,
         autospec: Any | None = ...,
-        new_callable: None = ...,
+        new_callable: None = None,
         **kwargs: Any,
     ) -> _patch_pass_arg[MagicMock | AsyncMock]: ...
     @staticmethod
@@ -764,7 +764,7 @@ class _ANY:
     def __ne__(self, other: object) -> Literal[False]: ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
-ANY: Any
+ANY: _ANY
 
 if sys.version_info >= (3, 10):
     def create_autospec(

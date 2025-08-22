@@ -1215,22 +1215,8 @@ class TarFile:
         members: Iterable[TarInfo] | None = None,
         *,
         numeric_owner: bool = False,
-        filter: _TarfileFilter | None = ...,
-    ) -> None:
-        """
-        Extract all members from the archive to the current working
-        directory and set owner, modification time and permissions on
-        directories afterwards. `path' specifies a different directory
-        to extract to. `members' is optional and must be a subset of the
-        list returned by getmembers(). If `numeric_owner` is True, only
-        the numbers for user/group names are used and not the names.
-
-        The `filter` function will be called on each member just
-        before extraction.
-        It can return a changed TarInfo or None to skip the member.
-        String names of common filters are accepted.
-        """
-        ...
+        filter: _TarfileFilter | None = None,
+    ) -> None: ...
     # Same situation as for `extractall`.
     def extract(
         self,
@@ -1239,22 +1225,8 @@ class TarFile:
         set_attrs: bool = True,
         *,
         numeric_owner: bool = False,
-        filter: _TarfileFilter | None = ...,
-    ) -> None:
-        """
-        Extract a member from the archive to the current working directory,
-        using its full name. Its file information is extracted as accurately
-        as possible. `member' may be a filename or a TarInfo object. You can
-        specify a different directory using `path'. File attributes (owner,
-        mtime, mode) are set unless `set_attrs' is False. If `numeric_owner`
-        is True, only the numbers for user/group names are used and not
-        the names.
-
-        The `filter` function will be called before extraction.
-        It can return a changed TarInfo or None to skip the member.
-        String names of common filters are accepted.
-        """
-        ...
+        filter: _TarfileFilter | None = None,
+    ) -> None: ...
     def _extract_member(
         self,
         tarinfo: TarInfo,
@@ -1477,10 +1449,10 @@ class TarInfo:
         ...
     if sys.version_info >= (3, 13):
         @property
-        @deprecated("Deprecated in Python 3.13; removal scheduled for Python 3.16")
+        @deprecated("Deprecated since Python 3.13; will be removed in Python 3.16.")
         def tarfile(self) -> TarFile | None: ...
         @tarfile.setter
-        @deprecated("Deprecated in Python 3.13; removal scheduled for Python 3.16")
+        @deprecated("Deprecated since Python 3.13; will be removed in Python 3.16.")
         def tarfile(self, tarfile: TarFile | None) -> None: ...
     else:
         tarfile: TarFile | None

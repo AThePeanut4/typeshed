@@ -50,30 +50,8 @@ class ABCMeta(type):
         """
         Register a virtual subclass of an ABC.
 
-        Returns the subclass, to allow usage as a class decorator.
-        """
-        ...
-
-def abstractmethod(funcobj: _FuncT) -> _FuncT:
-    """
-    A decorator indicating abstract methods.
-
-    Requires that the metaclass is ABCMeta or derived from it.  A
-    class that has a metaclass derived from ABCMeta cannot be
-    instantiated unless all of its abstract methods are overridden.
-    The abstract methods can be called using any of the normal
-    'super' call mechanisms.  abstractmethod() may be used to declare
-    abstract methods for properties and descriptors.
-
-    Usage:
-
-        class C(metaclass=ABCMeta):
-            @abstractmethod
-            def my_abstract_method(self, arg1, arg2, argN):
-                ...
-    """
-    ...
-@deprecated("Use 'classmethod' with 'abstractmethod' instead")
+def abstractmethod(funcobj: _FuncT) -> _FuncT: ...
+@deprecated("Deprecated since Python 3.3. Use `@classmethod` stacked on top of `@abstractmethod` instead.")
 class abstractclassmethod(classmethod[_T, _P, _R_co]):
     """
     A decorator indicating abstract classmethods.
@@ -89,7 +67,7 @@ class abstractclassmethod(classmethod[_T, _P, _R_co]):
     __isabstractmethod__: Literal[True]
     def __init__(self, callable: Callable[Concatenate[type[_T], _P], _R_co]) -> None: ...
 
-@deprecated("Use 'staticmethod' with 'abstractmethod' instead")
+@deprecated("Deprecated since Python 3.3. Use `@staticmethod` stacked on top of `@abstractmethod` instead.")
 class abstractstaticmethod(staticmethod[_P, _R_co]):
     """
     A decorator indicating abstract staticmethods.
@@ -105,7 +83,7 @@ class abstractstaticmethod(staticmethod[_P, _R_co]):
     __isabstractmethod__: Literal[True]
     def __init__(self, callable: Callable[_P, _R_co]) -> None: ...
 
-@deprecated("Use 'property' with 'abstractmethod' instead")
+@deprecated("Deprecated since Python 3.3. Use `@property` stacked on top of `@abstractmethod` instead.")
 class abstractproperty(property):
     """
     A decorator indicating abstract properties.

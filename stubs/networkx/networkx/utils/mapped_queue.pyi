@@ -6,28 +6,7 @@ from collections.abc import Iterator
 __all__ = ["MappedQueue"]
 
 class _HeapElement:
-    """
-    This proxy class separates the heap element from its priority.
-
-    The idea is that using a 2-tuple (priority, element) works
-    for sorting, but not for dict lookup because priorities are
-    often floating point values so round-off can mess up equality.
-
-    So, we need inequalities to look at the priority (for sorting)
-    and equality (and hash) to look at the element to enable
-    updates to the priority.
-
-    Unfortunately, this class can be tricky to work with if you forget that
-    `__lt__` compares the priority while `__eq__` compares the element.
-    In `greedy_modularity_communities()` the following code is
-    used to check that two _HeapElements differ in either element or priority:
-
-        if d_oldmax != row_max or d_oldmax.priority != row_max.priority:
-
-    If the priorities are the same, this implementation uses the element
-    as a tiebreaker. This provides compatibility with older systems that
-    use tuples to combine priority and elements.
-    """
+    __slots__ = ["priority", "element", "_hash"]
     priority: Incomplete
     element: Incomplete
     def __init__(self, priority, element) -> None: ...

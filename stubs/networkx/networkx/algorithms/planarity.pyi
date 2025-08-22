@@ -169,7 +169,26 @@ class ConflictPair:
         ...
 
 class LRPlanarity:
-    """A class to maintain the state during planarity check."""
+    __slots__ = [
+        "G",
+        "roots",
+        "height",
+        "lowpt",
+        "lowpt2",
+        "nesting_depth",
+        "parent_edge",
+        "DG",
+        "adjs",
+        "ordered_adjs",
+        "ref",
+        "side",
+        "S",
+        "stack_bottom",
+        "lowpt_edge",
+        "left_ref",
+        "right_ref",
+        "embedding",
+    ]
     G: Incomplete
     roots: Incomplete
     height: Incomplete

@@ -19,11 +19,24 @@ PRODUCT: str
 LOGGER: Logger
 
 class Parameters:
-    """
-    Base connection parameters class definition
-
-    
-    """
+    __slots__ = (
+        "_blocked_connection_timeout",
+        "_channel_max",
+        "_client_properties",
+        "_connection_attempts",
+        "_credentials",
+        "_frame_max",
+        "_heartbeat",
+        "_host",
+        "_locale",
+        "_port",
+        "_retry_delay",
+        "_socket_timeout",
+        "_stack_timeout",
+        "_ssl_options",
+        "_virtual_host",
+        "_tcp_options",
+    )
     DEFAULT_USERNAME: str
     DEFAULT_PASSWORD: str
     DEFAULT_BLOCKED_CONNECTION_TIMEOUT: None
@@ -305,10 +318,7 @@ class Parameters:
         ...
 
 class ConnectionParameters(Parameters):
-    """
-    Connection parameters object that is passed into the connection adapter
-    upon construction.
-    """
+    __slots__ = ()
     def __init__(
         self,
         host: str = ...,
@@ -371,70 +381,11 @@ class ConnectionParameters(Parameters):
         ...
 
 class URLParameters(Parameters):
-    """
-    Connect to RabbitMQ via an AMQP URL in the format::
-
-         amqp://username:password@host:port/<virtual_host>[?query-string]
-
-    Ensure that the virtual host is URI encoded when specified. For example if
-    you are using the default "/" virtual host, the value should be `%2f`.
-
-    See `Parameters` for default values.
-
-    Valid query string values are:
-
-        - channel_max:
-            Override the default maximum channel count value
-        - client_properties:
-            dict of client properties used to override the fields in the default
-            client properties reported to RabbitMQ via `Connection.StartOk`
-            method
-        - connection_attempts:
-            Specify how many times pika should try and reconnect before it gives up
-        - frame_max:
-            Override the default maximum frame size for communication
-        - heartbeat:
-            Desired connection heartbeat timeout for negotiation. If not present
-            the broker's value is accepted. 0 turns heartbeat off.
-        - locale:
-            Override the default `en_US` locale value
-        - ssl_options:
-            None for plaintext; for SSL: dict of public ssl context-related
-            arguments that may be passed to :meth:`ssl.SSLSocket` as kwargs,
-            except `sock`, `server_side`,`do_handshake_on_connect`, `family`,
-            `type`, `proto`, `fileno`.
-        - retry_delay:
-            The number of seconds to sleep before attempting to connect on
-            connection failure.
-        - socket_timeout:
-            Socket connect timeout value in seconds (float or int)
-        - stack_timeout:
-            Positive full protocol stack (TCP/[SSL]/AMQP) bring-up timeout in
-            seconds. It's recommended to set this value higher than
-            `socket_timeout`.
-        - blocked_connection_timeout:
-            Set the timeout, in seconds, that the connection may remain blocked
-            (triggered by Connection.Blocked from broker); if the timeout
-            expires before connection becomes unblocked, the connection will be
-            torn down, triggering the connection's on_close_callback
-        - tcp_options:
-            Set the tcp options for the underlying socket.
-
-    :param str url: The AMQP URL to connect to
-    """
-    def __init__(self, url: str) -> None:
-        """
-        Create a new URLParameters instance.
-
-        :param str url: The URL value
-        """
-        ...
+    __slots__ = ("_all_url_query_values",)
+    def __init__(self, url: str) -> None: ...
 
 class SSLOptions:
-    """
-    Class used to provide parameters for optional fine grained control of SSL
-    socket wrapping.
-    """
+    __slots__ = ("context", "server_hostname")
     context: ssl.SSLContext
     server_hostname: str | None
     def __init__(self, context: ssl.SSLContext, server_hostname: str | None = None) -> None:

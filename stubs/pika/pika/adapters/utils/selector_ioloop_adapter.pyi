@@ -242,7 +242,7 @@ class SelectorIOServicesAdapter(
         ...
 
 class _FileDescriptorCallbacks:
-    """Holds reader and writer callbacks for a file descriptor"""
+    __slots__ = ("reader", "writer")
     reader: Incomplete
     writer: Incomplete
     def __init__(self, reader=None, writer=None) -> None: ...

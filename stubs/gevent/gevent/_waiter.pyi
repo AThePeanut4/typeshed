@@ -23,50 +23,7 @@ _ThrowArgs: TypeAlias = (
 )
 
 class Waiter(Generic[_T]):
-    """
-    Waiter(hub=None)
-
-    A low level communication utility for greenlets.
-
-    Waiter is a wrapper around greenlet's ``switch()`` and ``throw()`` calls that makes them somewhat safer:
-
-    * switching will occur only if the waiting greenlet is executing :meth:`get` method currently;
-    * any error raised in the greenlet is handled inside :meth:`switch` and :meth:`throw`
-    * if :meth:`switch`/:meth:`throw` is called before the receiver calls :meth:`get`, then :class:`Waiter`
-      will store the value/exception. The following :meth:`get` will return the value/raise the exception.
-
-    The :meth:`switch` and :meth:`throw` methods must only be called from the :class:`Hub` greenlet.
-    The :meth:`get` method must be called from a greenlet other than :class:`Hub`.
-
-        >>> from gevent.hub import Waiter
-        >>> from gevent import get_hub
-        >>> result = Waiter()
-        >>> timer = get_hub().loop.timer(0.1)
-        >>> timer.start(result.switch, 'hello from Waiter')
-        >>> result.get() # blocks for 0.1 seconds
-        'hello from Waiter'
-        >>> timer.close()
-
-    If switch is called before the greenlet gets a chance to call :meth:`get` then
-    :class:`Waiter` stores the value.
-
-        >>> from gevent.time import sleep
-        >>> result = Waiter()
-        >>> timer = get_hub().loop.timer(0.1)
-        >>> timer.start(result.switch, 'hi from Waiter')
-        >>> sleep(0.2)
-        >>> result.get() # returns immediately without blocking
-        'hi from Waiter'
-        >>> timer.close()
-
-    .. warning::
-
-        This is a limited and dangerous way to communicate between
-        greenlets. It can easily leave a greenlet unscheduled forever
-        if used incorrectly. Consider using safer classes such as
-        :class:`gevent.event.Event`, :class:`gevent.event.AsyncResult`,
-        or :class:`gevent.queue.Queue`.
-    """
+    __slots__ = ["hub", "greenlet", "value", "_exception"]
     @property
     def hub(self) -> Hub: ...  # readonly in Cython
     @property
@@ -130,14 +87,4 @@ class Waiter(Generic[_T]):
 
 @final
 class MultipleWaiter(Waiter[_T]):
-    """
-    MultipleWaiter(hub=None)
-
-    An internal extension of Waiter that can be used if multiple objects
-    must be waited on, and there is a chance that in between waits greenlets
-    might be switched out. All greenlets that switch to this waiter
-    will have their value returned.
-
-    This does not handle exceptions or throw methods.
-    """
-    ...
+    __slots__ = ["_values"]

@@ -73,15 +73,15 @@ if sys.version_info < (3, 11):
     MAX_CACHE_SIZE: Final[int]
 
 class _ResultMixinStr:
-    """Standard approach to encoding parsed results from str to bytes"""
+    __slots__ = ()
     def encode(self, encoding: str = "ascii", errors: str = "strict") -> _ResultMixinBytes: ...
 
 class _ResultMixinBytes:
-    """Standard approach to decoding parsed results from bytes to str"""
+    __slots__ = ()
     def decode(self, encoding: str = "ascii", errors: str = "strict") -> _ResultMixinStr: ...
 
 class _NetlocResultMixinBase(Generic[AnyStr]):
-    """Shared methods for the parsed result objects containing a netloc element"""
+    __slots__ = ()
     @property
     def username(self) -> AnyStr | None: ...
     @property
@@ -98,8 +98,11 @@ class _NetlocResultMixinBase(Generic[AnyStr]):
         """
         ...
 
-class _NetlocResultMixinStr(_NetlocResultMixinBase[str], _ResultMixinStr): ...
-class _NetlocResultMixinBytes(_NetlocResultMixinBase[bytes], _ResultMixinBytes): ...
+class _NetlocResultMixinStr(_NetlocResultMixinBase[str], _ResultMixinStr):
+    __slots__ = ()
+
+class _NetlocResultMixinBytes(_NetlocResultMixinBase[bytes], _ResultMixinBytes):
+    __slots__ = ()
 
 class _DefragResultBase(NamedTuple, Generic[AnyStr]):
     """

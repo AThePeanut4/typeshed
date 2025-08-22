@@ -51,6 +51,16 @@ class _LogOutputStream(SupportsWrite[str], Protocol):
     def flush(self) -> None: ...
 
 class Input:
+    __slots__ = (
+        "rfile",
+        "content_length",
+        "socket",
+        "position",
+        "chunked_input",
+        "chunk_length",
+        "_chunked_input_error",
+        "send_100_continue_enabled",
+    )
     rfile: BufferedReader
     content_length: int | None
     socket: _GeventSocket | None
@@ -256,35 +266,8 @@ class WSGIHandler:
         ...
 
 class LoggingLogAdapter:
-    """
-    An adapter for :class:`logging.Logger` instances
-    to let them be used with :class:`WSGIServer`.
-
-    .. warning:: Unless the entire process is monkey-patched at a very
-        early part of the lifecycle (before logging is configured),
-        loggers are likely to not be gevent-cooperative. For example,
-        the socket and syslog handlers use the socket module in a way
-        that can block, and most handlers acquire threading locks.
-
-    .. warning:: It *may* be possible for the logging functions to be
-       called in the :class:`gevent.Hub` greenlet. Code running in the
-       hub greenlet cannot use any gevent blocking functions without triggering
-       a ``LoopExit``.
-
-    .. versionadded:: 1.1a3
-
-    .. versionchanged:: 1.1b6
-       Attributes not present on this object are proxied to the underlying
-       logger instance. This permits using custom :class:`~logging.Logger`
-       subclasses (or indeed, even duck-typed objects).
-
-    .. versionchanged:: 1.1
-       Strip trailing newline characters on the message passed to :meth:`write`
-       because log handlers will usually add one themselves.
-    """
-    def __init__(self, logger: Logger, level: int = 20) -> None:
-        """Write information to the *logger* at the given *level* (default to INFO)."""
-        ...
+    __slots__ = ("_logger", "_level")
+    def __init__(self, logger: Logger, level: int = 20) -> None: ...
     def write(self, msg: str) -> None: ...
     def flush(self) -> None:
         """No-op; required to be a file-like object"""
@@ -295,74 +278,10 @@ class LoggingLogAdapter:
     def __delattr__(self, name: str) -> None: ...
 
 class Environ(WSGIEnvironment):
-    """
-    A base class that can be used for WSGI environment objects.
-
-    Provisional API.
-
-    .. versionadded:: 1.2a1
-    """
-    ...
+    __slots__ = ()
 
 class SecureEnviron(Environ):
-    """
-    An environment that does not print its keys and values
-    by default.
-
-    Provisional API.
-
-    This is intended to keep potentially sensitive information like
-    HTTP authorization and cookies from being inadvertently printed
-    or logged.
-
-    For debugging, each instance can have its *secure_repr* attribute
-    set to ``False``, which will cause it to print like a normal dict.
-
-    When *secure_repr* is ``True`` (the default), then the value of
-    the *whitelist_keys* attribute is consulted; if this value is
-    true-ish, it should be a container (something that responds to
-    ``in``) of key names (typically a list or set). Keys and values in
-    this dictionary that are in *whitelist_keys* will then be printed,
-    while all other values will be masked. These values may be
-    customized on the class by setting the *default_secure_repr* and
-    *default_whitelist_keys*, respectively::
-
-        >>> environ = SecureEnviron(key='value')
-        >>> environ # doctest: +ELLIPSIS
-        <pywsgi.SecureEnviron dict (keys: 1) at ...
-
-    If we whitelist the key, it gets printed::
-
-        >>> environ.whitelist_keys = {'key'}
-        >>> environ
-        {'key': 'value'}
-
-    A non-whitelisted key (*only*, to avoid doctest issues) is masked::
-
-        >>> environ['secure'] = 'secret'; del environ['key']
-        >>> environ
-        {'secure': '<MASKED>'}
-
-    We can turn it off entirely for the instance::
-
-        >>> environ.secure_repr = False
-        >>> environ
-        {'secure': 'secret'}
-
-    We can also customize it at the class level (here we use a new
-    class to be explicit and to avoid polluting the true default
-    values; we would set this class to be the ``environ_class`` of the
-    server)::
-
-        >>> class MyEnviron(SecureEnviron):
-        ...    default_whitelist_keys = ('key',)
-        ...
-        >>> environ = MyEnviron({'key': 'value'})
-        >>> environ
-        {'key': 'value'}
-
-    .. versionadded:: 1.2a1
-    """
+    __slots__ = ("secure_repr", "whitelist_keys", "print_masked_keys")
     default_secure_repr: ClassVar[bool]
     default_whitelist_keys: ClassVar[Container[str]]
     default_print_masked_keys: ClassVar[bool]

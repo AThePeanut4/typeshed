@@ -42,7 +42,7 @@ class Filter(BaseFilter):
     ) -> None: ...
 
 class Statistic:
-    """Statistic difference on memory allocations between two Snapshot instance."""
+    __slots__ = ("traceback", "size", "count")
     count: int
     size: int
     traceback: Traceback
@@ -51,10 +51,7 @@ class Statistic:
     def __hash__(self) -> int: ...
 
 class StatisticDiff:
-    """
-    Statistic difference on memory allocations between an old and a new
-    Snapshot instance.
-    """
+    __slots__ = ("traceback", "size", "size_diff", "count", "count_diff")
     count: int
     count_diff: int
     size: int
@@ -67,7 +64,7 @@ class StatisticDiff:
 _FrameTuple: TypeAlias = tuple[str, int]
 
 class Frame:
-    """Frame of a traceback."""
+    __slots__ = ("_frame",)
     @property
     def filename(self) -> str: ...
     @property
@@ -100,7 +97,7 @@ class Frame:
 _TraceTuple: TypeAlias = tuple[int, int, Sequence[_FrameTuple], int | None] | tuple[int, int, Sequence[_FrameTuple]]
 
 class Trace:
-    """Trace of a memory block."""
+    __slots__ = ("_trace",)
     @property
     def domain(self) -> int: ...
     @property
@@ -112,10 +109,7 @@ class Trace:
     def __hash__(self) -> int: ...
 
 class Traceback(Sequence[Frame]):
-    """
-    Sequence of Frame instances sorted from the oldest frame
-    to the most recent frame.
-    """
+    __slots__ = ("_frames", "_total_nframe")
     @property
     def total_nframe(self) -> int | None: ...
     def __init__(self, frames: Sequence[_FrameTuple], total_nframe: int | None = None) -> None: ...

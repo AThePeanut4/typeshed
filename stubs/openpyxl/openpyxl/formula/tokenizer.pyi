@@ -72,16 +72,7 @@ class Tokenizer:
         ...
 
 class Token:
-    """
-    A token in an Excel formula.
-
-    Tokens have three attributes:
-
-    * `value`: The string value parsed that led to this token
-    * `type`: A string identifying the type of token
-    * `subtype`: A string identifying subtype of the token (optional, and
-                 defaults to "")
-    """
+    __slots__ = ["value", "type", "subtype"]
     LITERAL: Final = "LITERAL"
     OPERAND: Final = "OPERAND"
     FUNC: Final = "FUNC"

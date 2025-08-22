@@ -16,25 +16,7 @@ class _ConvertibleToIntegerRatio(Protocol):
     def as_integer_ratio(self) -> tuple[int | Rational, int | Rational]: ...
 
 class Fraction(Rational):
-    """
-    This class implements rational numbers.
-
-    In the two-argument form of the constructor, Fraction(8, 6) will
-    produce a rational number equivalent to 4/3. Both arguments must
-    be Rational. The numerator defaults to 0 and the denominator
-    defaults to 1 so that Fraction(3) == 3 and Fraction() == 0.
-
-    Fractions can also be constructed from:
-
-      - numeric strings similar to those accepted by the
-        float constructor (for example, '-2.3' or '1e10')
-
-      - strings of the form '123/456'
-
-      - float and Decimal instances
-
-      - other Rational instances (including integers)
-    """
+    __slots__ = ("_numerator", "_denominator")
     @overload
     def __new__(cls, numerator: int | Rational = 0, denominator: int | Rational | None = None) -> Self:
         """

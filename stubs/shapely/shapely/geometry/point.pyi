@@ -13,44 +13,7 @@ __all__ = ["Point"]
 _PointLike: TypeAlias = Point | Iterable[float] | ArrayLikeSeq[float]
 
 class Point(BaseGeometry):
-    """
-    A geometry type that represents a single coordinate.
-
-    Each coordinate has x, y and possibly z and/or m values.
-
-    A point is a zero-dimensional feature and has zero length and zero area.
-
-    Parameters
-    ----------
-    args : float, or sequence of floats
-        The coordinates can either be passed as a single parameter, or as
-        individual float values using multiple parameters:
-
-        1) 1 parameter: a sequence or array-like of with 2 or 3 values.
-        2) 2 or 3 parameters (float): x, y, and possibly z.
-
-    Attributes
-    ----------
-    x, y, z, m : float
-        Coordinate values
-
-    Examples
-    --------
-    Constructing the Point using separate parameters for x and y:
-
-    >>> from shapely import Point
-    >>> p = Point(1.0, -1.0)
-
-    Constructing the Point using a list of x, y coordinates:
-
-    >>> p = Point([1.0, -1.0])
-    >>> print(p)
-    POINT (1 -1)
-    >>> p.y
-    -1.0
-    >>> p.x
-    1.0
-    """
+    __slots__: list[str] = []
     @overload  # no args: empty point
     def __new__(self) -> Self:
         """Create a new Point geometry."""

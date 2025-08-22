@@ -21,6 +21,7 @@ class MonitorWarning(RuntimeWarning):
     ...
 
 class _MonitorEntry:
+    __slots__ = ("function", "period", "last_run_time")
     function: Callable[[Hub], object]
     period: float
     last_run_time: float

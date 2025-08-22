@@ -85,10 +85,7 @@ ref = ReferenceType
 # everything below here is implemented in weakref.py
 
 class WeakMethod(ref[_CallableT]):
-    """
-    A custom `weakref.ref` subclass which simulates a weak reference to
-    a bound method, working around the lifetime problem of bound methods.
-    """
+    __slots__ = ("_func_ref", "_meth_type", "_alive", "__weakref__")
     def __new__(cls, meth: _CallableT, callback: Callable[[Self], Any] | None = None) -> Self: ...
     def __call__(self) -> _CallableT | None: ...
     def __eq__(self, other: object) -> bool: ...
@@ -182,14 +179,7 @@ class WeakValueDictionary(MutableMapping[_KT, _VT]):
     def __ior__(self, other: Iterable[tuple[_KT, _VT]]) -> Self: ...
 
 class KeyedRef(ref[_T], Generic[_KT, _T]):
-    """
-    Specialized reference that includes a key corresponding to the value.
-
-    This is used in the WeakValueDictionary to avoid having to create
-    a function object for each key stored in the mapping.  A shared
-    callback object can use the 'key' attribute of a KeyedRef instead
-    of getting a reference to the key from an enclosing scope.
-    """
+    __slots__ = ("key",)
     key: _KT
     def __new__(type, ob: _T, callback: Callable[[Self], Any], key: _KT) -> Self: ...
     def __init__(self, ob: _T, callback: Callable[[Self], Any], key: _KT) -> None: ...
@@ -265,19 +255,7 @@ class WeakKeyDictionary(MutableMapping[_KT, _VT]):
     def __ior__(self, other: Iterable[tuple[_KT, _VT]]) -> Self: ...
 
 class finalize(Generic[_P, _T]):
-    """
-    Class for finalization of weakrefable objects
-
-    finalize(obj, func, *args, **kwargs) returns a callable finalizer
-    object which will be called when obj is garbage collected. The
-    first time the finalizer is called it evaluates func(*arg, **kwargs)
-    and returns the result. After this the finalizer is dead, and
-    calling it just returns None.
-
-    When the program exits any remaining finalizers for which the
-    atexit attribute is true will be run in reverse order of creation.
-    By default atexit is true.
-    """
+    __slots__ = ()
     def __init__(self, obj: _T, func: Callable[_P, Any], /, *args: _P.args, **kwargs: _P.kwargs) -> None: ...
     def __call__(self, _: Any = None) -> Any | None:
         """

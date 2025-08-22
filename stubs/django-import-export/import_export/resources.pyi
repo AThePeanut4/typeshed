@@ -397,31 +397,8 @@ class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
     @overload
     def handle_import_error(self, result: Result, error: Exception, raise_errors: Literal[True]) -> NoReturn: ...
     @overload
-    def handle_import_error(self, result: Result, error: Exception, raise_errors: Literal[False] = ...) -> None: ...
-    def import_row(self, row: dict[str, Any], instance_loader: BaseInstanceLoader, **kwargs: Any) -> RowResult:
-        r"""
-        Imports data from ``tablib.Dataset``. Refer to :doc:`import_workflow`
-        for a more complete description of the whole import process.
-
-        :param row: A ``dict`` of the 'row' to import.
-          A row is a dict of data fields so can be a csv line, a JSON object,
-          a YAML object etc.
-
-        :param instance_loader: The instance loader to be used to load the model
-          instance associated with the row (if there is one).
-
-        :param \**kwargs:
-            See below.
-
-        :Keyword Arguments:
-            * dry_run (``boolean``) --
-              A True value means that no data should be persisted.
-            * use_transactions (``boolean``) --
-              A True value means that transactions will be rolled back.
-            * row_number  (``int``) --
-              The index of the row being imported.
-        """
-        ...
+    def handle_import_error(self, result: Result, error: Exception, raise_errors: Literal[False] = False) -> None: ...
+    def import_row(self, row: dict[str, Any], instance_loader: BaseInstanceLoader, **kwargs: Any) -> RowResult: ...
     def import_data(
         self,
         dataset: Dataset,

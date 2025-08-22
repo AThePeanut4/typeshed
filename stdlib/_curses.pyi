@@ -1037,55 +1037,12 @@ class window:  # undocumented
         """
         ...
     @overload
-    def addstr(self, y: int, x: int, str: str, attr: int = ...) -> None:
-        """
-        addstr([y, x,] str, [attr])
-        Paint the string.
-
-          y
-            Y-coordinate.
-          x
-            X-coordinate.
-          str
-            String to add.
-          attr
-            Attributes for characters.
-
-        Paint the string str at (y, x) with attributes attr,
-        overwriting anything previously on the display.
-        By default, the character position and attributes are the
-        current settings for the window object.
-        """
-        ...
-    def attroff(self, attr: int, /) -> None:
-        """Remove attribute attr from the "background" set."""
-        ...
-    def attron(self, attr: int, /) -> None:
-        """Add attribute attr from the "background" set."""
-        ...
-    def attrset(self, attr: int, /) -> None:
-        """Set the "background" set of attributes."""
-        ...
-    def bkgd(self, ch: _ChType, attr: int = ..., /) -> None:
-        """
-        Set the background property of the window.
-
-        ch
-          Background character.
-        attr
-          Background attributes.
-        """
-        ...
-    def bkgdset(self, ch: _ChType, attr: int = ..., /) -> None:
-        """
-        Set the window's background.
-
-        ch
-          Background character.
-        attr
-          Background attributes.
-        """
-        ...
+    def addstr(self, y: int, x: int, str: str, attr: int = ...) -> None: ...
+    def attroff(self, attr: int, /) -> None: ...
+    def attron(self, attr: int, /) -> None: ...
+    def attrset(self, attr: int, /) -> None: ...
+    def bkgd(self, ch: _ChType, attr: int = 0, /) -> None: ...
+    def bkgdset(self, ch: _ChType, attr: int = 0, /) -> None: ...
     def border(
         self,
         ls: _ChType = ...,
@@ -1212,45 +1169,9 @@ class window:  # undocumented
         """
         ...
     @overload
-    def derwin(self, nlines: int, ncols: int, begin_y: int, begin_x: int) -> window:
-        """
-        derwin([nlines=0, ncols=0,] begin_y, begin_x)
-        Create a sub-window (window-relative coordinates).
-
-          nlines
-            Height.
-          ncols
-            Width.
-          begin_y
-            Top side y-coordinate.
-          begin_x
-            Left side x-coordinate.
-
-        derwin() is the same as calling subwin(), except that begin_y and begin_x
-        are relative to the origin of the window, rather than relative to the entire
-        screen.
-        """
-        ...
-    def echochar(self, ch: _ChType, attr: int = ..., /) -> None:
-        """
-        Add character ch with attribute attr, and refresh.
-
-        ch
-          Character to add.
-        attr
-          Attributes for the character.
-        """
-        ...
-    def enclose(self, y: int, x: int, /) -> bool:
-        """
-        Return True if the screen-relative coordinates are enclosed by the window.
-
-        y
-          Y-coordinate.
-        x
-          X-coordinate.
-        """
-        ...
+    def derwin(self, nlines: int, ncols: int, begin_y: int, begin_x: int) -> window: ...
+    def echochar(self, ch: _ChType, attr: int = 0, /) -> None: ...
+    def enclose(self, y: int, x: int, /) -> bool: ...
     def erase(self) -> None: ...
     def getbegyx(self) -> tuple[int, int]: ...
     def getbkgd(self) -> tuple[int, int]:

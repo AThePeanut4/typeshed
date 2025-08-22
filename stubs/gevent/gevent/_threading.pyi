@@ -17,11 +17,7 @@ class EmptyTimeout(Exception):
     ...
 
 class Queue(Generic[_T]):
-    """
-    Create a queue object.
-
-    The queue is always infinite size.
-    """
+    __slots__ = ("_queue", "_mutex", "_not_empty", "unfinished_tasks")
     unfinished_tasks: int
     def __init__(self) -> None: ...
     def task_done(self) -> None:

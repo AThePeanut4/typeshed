@@ -221,12 +221,23 @@ def extend(validator, validators=(), version=None, type_checker=None, format_che
     ...
 
 # At runtime these are fields that are assigned the return values of create() calls.
-class Draft3Validator(_Validator): ...
-class Draft4Validator(_Validator): ...
-class Draft6Validator(_Validator): ...
-class Draft7Validator(_Validator): ...
-class Draft201909Validator(_Validator): ...
-class Draft202012Validator(_Validator): ...
+class Draft3Validator(_Validator):
+    __slots__ = ("_validators", "schema", "_ref_resolver", "format_checker", "_registry", "_resolver", "__weakref__")
+
+class Draft4Validator(_Validator):
+    __slots__ = ("_validators", "schema", "_ref_resolver", "format_checker", "_registry", "_resolver", "__weakref__")
+
+class Draft6Validator(_Validator):
+    __slots__ = ("_validators", "schema", "_ref_resolver", "format_checker", "_registry", "_resolver", "__weakref__")
+
+class Draft7Validator(_Validator):
+    __slots__ = ("_validators", "schema", "_ref_resolver", "format_checker", "_registry", "_resolver", "__weakref__")
+
+class Draft201909Validator(_Validator):
+    __slots__ = ("_validators", "schema", "_ref_resolver", "format_checker", "_registry", "_resolver", "__weakref__")
+
+class Draft202012Validator(_Validator):
+    __slots__ = ("_validators", "schema", "_ref_resolver", "format_checker", "_registry", "_resolver", "__weakref__")
 
 _Handler: TypeAlias = Callable[[str], Incomplete]
 

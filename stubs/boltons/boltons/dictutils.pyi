@@ -264,14 +264,7 @@ class OrderedMultiDict(dict[_KT, _VT]):
         """
         ...
     @overload  # type: ignore[override]
-    def setdefault(self, k: _KT, default: None = ...) -> _VT | None:
-        """
-        If key *k* is in the dictionary, return its value. If not, insert
-        *k* with a value of *default* and return *default*. *default*
-        defaults to ``None``. See :meth:`dict.setdefault` for more
-        information.
-        """
-        ...
+    def setdefault(self, k: _KT, default: None = None) -> _VT | None: ...
     @overload
     def setdefault(self, k: _KT, default: _VT) -> _VT:
         """
@@ -392,34 +385,7 @@ class FastIterOrderedMultiDict(OrderedMultiDict[_KT, _VT]):  # undocumented
     def iterkeys(self, multi: bool = False) -> Generator[_KT, None, None]: ...
 
 class OneToOne(dict[_KT, _VT]):
-    """
-    Implements a one-to-one mapping dictionary. In addition to
-    inheriting from and behaving exactly like the builtin
-    :class:`dict`, all values are automatically added as keys on a
-    reverse mapping, available as the `inv` attribute. This
-    arrangement keeps key and value namespaces distinct.
-
-    Basic operations are intuitive:
-
-    >>> oto = OneToOne({'a': 1, 'b': 2})
-    >>> print(oto['a'])
-    1
-    >>> print(oto.inv[1])
-    a
-    >>> len(oto)
-    2
-
-    Overwrites happens in both directions:
-
-    >>> oto.inv[1] = 'c'
-    >>> print(oto.get('a'))
-    None
-    >>> len(oto)
-    2
-
-    For a very similar project, with even more one-to-one
-    functionality, check out `bidict <https://github.com/jab/bidict>`_.
-    """
+    __slots__ = ("inv",)
     inv: OneToOne[_VT, _KT]
     def clear(self) -> None: ...
     def copy(self) -> Self: ...
@@ -509,18 +475,7 @@ def subdict(d: dict[_KT, _VT], keep: Iterable[_KT] | None = None, drop: Iterable
 class FrozenHashError(TypeError): ...  # undocumented
 
 class FrozenDict(dict[_KT, _VT]):
-    """
-    An immutable dict subtype that is hashable and can itself be used
-    as a :class:`dict` key or :class:`set` entry. What
-    :class:`frozenset` is to :class:`set`, FrozenDict is to
-    :class:`dict`.
-
-    There was once an attempt to introduce such a type to the standard
-    library, but it was rejected: `PEP 416 <https://www.python.org/dev/peps/pep-0416/>`_.
-
-    Because FrozenDict is a :class:`dict` subtype, it automatically
-    works everywhere a dict would, including JSON serialization.
-    """
+    __slots__ = ("_hash",)
     def __copy__(self) -> Self: ...
     @classmethod
     def fromkeys(cls, keys: Iterable[_KT], value: _VT | None = None) -> Self: ...  # type: ignore[override]

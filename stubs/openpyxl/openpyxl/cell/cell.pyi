@@ -44,11 +44,7 @@ def get_type(t: type, value: object) -> Literal["n", "s", "d", "f"] | None: ...
 def get_time_format(t: _TimeTypes) -> str: ...
 
 class Cell(StyleableObject):
-    """
-    Describes cell associated properties.
-
-    Properties of interest include style, type, value, and address.
-    """
+    __slots__ = ("row", "column", "_value", "data_type", "parent", "_hyperlink", "_comment")
     row: int
     column: int
     data_type: str
@@ -155,12 +151,7 @@ class Cell(StyleableObject):
         ...
 
 class MergedCell(StyleableObject):
-    """
-    Describes the properties of a cell in a merged cell and helps to
-    display the borders of the merged cell.
-
-    The value of a MergedCell is always None.
-    """
+    __slots__ = ("row", "column")
     data_type: str
     comment: Comment | None
     hyperlink: Hyperlink | None

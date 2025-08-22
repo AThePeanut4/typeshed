@@ -57,55 +57,7 @@ class _Pluralizer(Protocol):
     ) -> str: ...
 
 class TranslationString(str):
-    """
-    The constructor for a :term:`translation string`.  A translation
-    string is a Unicode-like object that has some extra metadata.
-
-    This constructor accepts one required argument named ``msgid``.
-    ``msgid`` must be the :term:`message identifier` for the
-    translation string.  It must be a ``unicode`` object or a ``str``
-    object encoded in the default system encoding.
-
-    Optional keyword arguments to this object's constructor include
-    ``domain``, ``default``, and ``mapping``.
-
-    ``domain`` represents the :term:`translation domain`.  By default,
-    the translation domain is ``None``, indicating that this
-    translation string is associated with the default translation
-    domain (usually ``messages``).
-
-    ``default`` represents an explicit *default text* for this
-    translation string.  Default text appears when the translation
-    string cannot be translated.  Usually, the ``msgid`` of a
-    translation string serves double duty as its default text.
-    However, using this option you can provide a different default
-    text for this translation string.  This feature is useful when the
-    default of a translation string is too complicated or too long to
-    be used as a message identifier. If ``default`` is provided, it
-    must be a ``unicode`` object or a ``str`` object encoded in the
-    default system encoding (usually means ASCII).  If ``default`` is
-    ``None`` (its default value), the ``msgid`` value used by this
-    translation string will be assumed to be the value of ``default``.
-
-    ``mapping``, if supplied, must be a dictionary-like object which
-    represents the replacement values for any :term:`translation
-    string` *replacement marker* instances found within the ``msgid``
-    (or ``default``) value of this translation string.
-
-    ``context`` represents the :term:`translation context`.  By default,
-    the translation context is ``None``.
-
-    After a translation string is constructed, it behaves like most
-    other ``unicode`` objects; its ``msgid`` value will be displayed
-    when it is treated like a ``unicode`` object.  Only when its
-    ``ugettext`` method is called will it be translated.
-
-    Its default value is available as the ``default`` attribute of the
-    object, its :term:`translation domain` is available as the
-    ``domain`` attribute, and the ``mapping`` is available as the
-    ``mapping`` attribute.  The object otherwise behaves much like a
-    Unicode string.
-    """
+    __slots__ = ("domain", "context", "default", "mapping")
     domain: str | None
     context: str | None
     default: str

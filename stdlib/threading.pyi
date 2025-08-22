@@ -47,82 +47,17 @@ if sys.version_info >= (3, 12):
 
 _profile_hook: ProfileFunction | None
 
-def active_count() -> int:
-    """
-    Return the number of Thread objects currently alive.
-
-    The returned count is equal to the length of the list returned by
-    enumerate().
-    """
-    ...
-@deprecated("Use active_count() instead")
-def activeCount() -> int:
-    """
-    Return the number of Thread objects currently alive.
-
-    This function is deprecated, use active_count() instead.
-    """
-    ...
-def current_thread() -> Thread:
-    """
-    Return the current Thread object, corresponding to the caller's thread of control.
-
-    If the caller's thread of control was not created through the threading
-    module, a dummy thread object with limited functionality is returned.
-    """
-    ...
-@deprecated("Use current_thread() instead")
-def currentThread() -> Thread:
-    """
-    Return the current Thread object, corresponding to the caller's thread of control.
-
-    This function is deprecated, use current_thread() instead.
-    """
-    ...
-def get_ident() -> int:
-    """
-    Return a non-zero integer that uniquely identifies the current thread
-    amongst other threads that exist simultaneously.
-    This may be used to identify per-thread resources.
-    Even though on some platforms threads identities may appear to be
-    allocated consecutive numbers starting at 1, this behavior should not
-    be relied upon, and the number should be seen purely as a magic cookie.
-    A thread's identity may be reused for another thread after it exits.
-    """
-    ...
-def enumerate() -> list[Thread]:
-    """
-    Return a list of all Thread objects currently alive.
-
-    The list includes daemonic threads, dummy thread objects created by
-    current_thread(), and the main thread. It excludes terminated threads and
-    threads that have not yet been started.
-    """
-    ...
-def main_thread() -> Thread:
-    """
-    Return the main thread object.
-
-    In normal conditions, the main thread is the thread from which the
-    Python interpreter was started.
-    """
-    ...
-def settrace(func: TraceFunction) -> None:
-    """
-    Set a trace function for all threads started from the threading module.
-
-    The func will be passed to sys.settrace() for each thread, before its run()
-    method is called.
-    """
-    ...
-def setprofile(func: ProfileFunction | None) -> None:
-    """
-    Set a profile function for all threads started from the threading module.
-
-    The func will be passed to sys.setprofile() for each thread, before its
-    run() method is called.
-    """
-    ...
+def active_count() -> int: ...
+@deprecated("Deprecated since Python 3.10. Use `active_count()` instead.")
+def activeCount() -> int: ...
+def current_thread() -> Thread: ...
+@deprecated("Deprecated since Python 3.10. Use `current_thread()` instead.")
+def currentThread() -> Thread: ...
+def get_ident() -> int: ...
+def enumerate() -> list[Thread]: ...
+def main_thread() -> Thread: ...
+def settrace(func: TraceFunction) -> None: ...
+def setprofile(func: ProfileFunction | None) -> None: ...
 
 if sys.version_info >= (3, 12):
     def setprofile_all_threads(func: ProfileFunction | None) -> None:
@@ -291,55 +226,16 @@ class Thread:
         """
         ...
     @property
-    def native_id(self) -> int | None:
-        """
-        Native integral thread ID of this thread, or None if it has not been started.
-
-        This is a non-negative integer. See the get_native_id() function.
-        This represents the Thread ID as reported by the kernel.
-        """
-        ...
-    def is_alive(self) -> bool:
-        """
-        Return whether the thread is alive.
-
-        This method returns True just before the run() method starts until just
-        after the run() method terminates. See also the module function
-        enumerate().
-        """
-        ...
-    @deprecated("Get the daemon attribute instead")
-    def isDaemon(self) -> bool:
-        """
-        Return whether this thread is a daemon.
-
-        This method is deprecated, use the daemon attribute instead.
-        """
-        ...
-    @deprecated("Set the daemon attribute instead")
-    def setDaemon(self, daemonic: bool) -> None:
-        """
-        Set whether this thread is a daemon.
-
-        This method is deprecated, use the .daemon property instead.
-        """
-        ...
-    @deprecated("Use the name attribute instead")
-    def getName(self) -> str:
-        """
-        Return a string used for identification purposes only.
-
-        This method is deprecated, use the name attribute instead.
-        """
-        ...
-    @deprecated("Use the name attribute instead")
-    def setName(self, name: str) -> None:
-        """
-        Set the name string for this thread.
-
-        This method is deprecated, use the name attribute instead.
-        """
-        ...
+    def native_id(self) -> int | None: ...  # only available on some platforms
+    def is_alive(self) -> bool: ...
+    @deprecated("Deprecated since Python 3.10. Read the `daemon` attribute instead.")
+    def isDaemon(self) -> bool: ...
+    @deprecated("Deprecated since Python 3.10. Set the `daemon` attribute instead.")
+    def setDaemon(self, daemonic: bool) -> None: ...
+    @deprecated("Deprecated since Python 3.10. Read the `name` attribute instead.")
+    def getName(self) -> str: ...
+    @deprecated("Deprecated since Python 3.10. Set the `name` attribute instead.")
+    def setName(self, name: str) -> None: ...
 
 class _DummyThread(Thread):
     def __init__(self) -> None: ...
@@ -429,66 +325,12 @@ class Condition:
     ) -> None: ...
     def acquire(self, blocking: bool = True, timeout: float = -1) -> bool: ...
     def release(self) -> None: ...
-    def wait(self, timeout: float | None = None) -> bool:
-        """
-        Wait until notified or until a timeout occurs.
-
-        If the calling thread has not acquired the lock when this method is
-        called, a RuntimeError is raised.
-
-        This method releases the underlying lock, and then blocks until it is
-        awakened by a notify() or notify_all() call for the same condition
-        variable in another thread, or until the optional timeout occurs. Once
-        awakened or timed out, it re-acquires the lock and returns.
-
-        When the timeout argument is present and not None, it should be a
-        floating-point number specifying a timeout for the operation in seconds
-        (or fractions thereof).
-
-        When the underlying lock is an RLock, it is not released using its
-        release() method, since this may not actually unlock the lock when it
-        was acquired multiple times recursively. Instead, an internal interface
-        of the RLock class is used, which really unlocks it even when it has
-        been recursively acquired several times. Another internal interface is
-        then used to restore the recursion level when the lock is reacquired.
-        """
-        ...
-    def wait_for(self, predicate: Callable[[], _T], timeout: float | None = None) -> _T:
-        """
-        Wait until a condition evaluates to True.
-
-        predicate should be a callable which result will be interpreted as a
-        boolean value.  A timeout may be provided giving the maximum time to
-        wait.
-        """
-        ...
-    def notify(self, n: int = 1) -> None:
-        """
-        Wake up one or more threads waiting on this condition, if any.
-
-        If the calling thread has not acquired the lock when this method is
-        called, a RuntimeError is raised.
-
-        This method wakes up at most n of the threads waiting for the condition
-        variable; it is a no-op if no threads are waiting.
-        """
-        ...
-    def notify_all(self) -> None:
-        """
-        Wake up all threads waiting on this condition.
-
-        If the calling thread has not acquired the lock when this method
-        is called, a RuntimeError is raised.
-        """
-        ...
-    @deprecated("Use notify_all() instead")
-    def notifyAll(self) -> None:
-        """
-        Wake up all threads waiting on this condition.
-
-        This method is deprecated, use notify_all() instead.
-        """
-        ...
+    def wait(self, timeout: float | None = None) -> bool: ...
+    def wait_for(self, predicate: Callable[[], _T], timeout: float | None = None) -> _T: ...
+    def notify(self, n: int = 1) -> None: ...
+    def notify_all(self) -> None: ...
+    @deprecated("Deprecated since Python 3.10. Use `notify_all()` instead.")
+    def notifyAll(self) -> None: ...
 
 class Semaphore:
     """
@@ -580,56 +422,12 @@ class BoundedSemaphore(Semaphore):
     ...
 
 class Event:
-    """
-    Class implementing event objects.
-
-    Events manage a flag that can be set to true with the set() method and reset
-    to false with the clear() method. The wait() method blocks until the flag is
-    true.  The flag is initially false.
-    """
-    def is_set(self) -> bool:
-        """Return true if and only if the internal flag is true."""
-        ...
-    @deprecated("Use is_set() instead")
-    def isSet(self) -> bool:
-        """
-        Return true if and only if the internal flag is true.
-
-        This method is deprecated, use is_set() instead.
-        """
-        ...
-    def set(self) -> None:
-        """
-        Set the internal flag to true.
-
-        All threads waiting for it to become true are awakened. Threads
-        that call wait() once the flag is true will not block at all.
-        """
-        ...
-    def clear(self) -> None:
-        """
-        Reset the internal flag to false.
-
-        Subsequently, threads calling wait() will block until set() is called to
-        set the internal flag to true again.
-        """
-        ...
-    def wait(self, timeout: float | None = None) -> bool:
-        """
-        Block until the internal flag is true.
-
-        If the internal flag is true on entry, return immediately. Otherwise,
-        block until another thread calls set() to set the flag to true, or until
-        the optional timeout occurs.
-
-        When the timeout argument is present and not None, it should be a
-        floating-point number specifying a timeout for the operation in seconds
-        (or fractions thereof).
-
-        This method returns the internal flag on exit, so it will always return
-        True except if a timeout is given and the operation times out.
-        """
-        ...
+    def is_set(self) -> bool: ...
+    @deprecated("Deprecated since Python 3.10. Use `is_set()` instead.")
+    def isSet(self) -> bool: ...
+    def set(self) -> None: ...
+    def clear(self) -> None: ...
+    def wait(self, timeout: float | None = None) -> bool: ...
 
 excepthook = _excepthook
 ExceptHookArgs = _ExceptHookArgs

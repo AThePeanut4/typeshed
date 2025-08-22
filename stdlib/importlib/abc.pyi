@@ -84,7 +84,7 @@ if sys.version_info < (3, 12):
         """
         ...
 
-@deprecated("Deprecated as of Python 3.7: Use importlib.resources.abc.TraversableResources instead.")
+@deprecated("Deprecated since Python 3.7. Use `importlib.resources.abc.TraversableResources` instead.")
 class ResourceLoader(Loader):
     """
     Abstract base class for loaders which can return data from their
@@ -167,47 +167,11 @@ class ExecutionLoader(InspectLoader):
         ...
 
 class SourceLoader(_bootstrap_external.SourceLoader, ResourceLoader, ExecutionLoader, metaclass=ABCMeta):  # type: ignore[misc]  # incompatible definitions of source_to_code in the base classes
-    """
-    Abstract base class for loading source code (and optionally any
-    corresponding bytecode).
-
-    To support loading from source code, the abstractmethods inherited from
-    ResourceLoader and ExecutionLoader need to be implemented. To also support
-    loading from bytecode, the optional methods specified directly by this ABC
-    is required.
-
-    Inherited abstractmethods not implemented in this ABC:
-
-        * ResourceLoader.get_data
-        * ExecutionLoader.get_filename
-    """
-    @deprecated("Deprecated as of Python 3.3: Use importlib.resources.abc.SourceLoader.path_stats instead.")
-    def path_mtime(self, path: str) -> float:
-        """Return the (int) modification time for the path (str)."""
-        ...
-    def set_data(self, path: str, data: bytes) -> None:
-        """
-        Write the bytes to the path (if possible).
-
-        Accepts a str path and data as bytes.
-
-        Any needed intermediary directories are to be created. If for some
-        reason the file cannot be written because of permissions, fail
-        silently.
-        """
-        ...
-    def get_source(self, fullname: str) -> str | None:
-        """Concrete implementation of InspectLoader.get_source."""
-        ...
-    def path_stats(self, path: str) -> Mapping[str, Any]:
-        """
-        Return a metadata dict for the source pointed to by the path (str).
-        Possible keys:
-        - 'mtime' (mandatory) is the numeric timestamp of last source
-          code modification;
-        - 'size' (optional) is the size in bytes of the source code.
-        """
-        ...
+    @deprecated("Deprecated since Python 3.3. Use `importlib.resources.abc.SourceLoader.path_stats` instead.")
+    def path_mtime(self, path: str) -> float: ...
+    def set_data(self, path: str, data: bytes) -> None: ...
+    def get_source(self, fullname: str) -> str | None: ...
+    def path_stats(self, path: str) -> Mapping[str, Any]: ...
 
 # The base classes differ starting in 3.10:
 if sys.version_info >= (3, 10):

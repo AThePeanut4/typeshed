@@ -26,20 +26,7 @@ from typing import Any, Generic, Literal, TypeVar
 from typing_extensions import Self
 
 class Callpoint:
-    """
-    The Callpoint is a lightweight object used to represent a single
-    entry in the code of a call stack. It stores the code-related
-    metadata of a given frame. Available attributes are the same as
-    the parameters below.
-
-    Args:
-        func_name (str): the function name
-        lineno (int): the line number
-        module_name (str): the module name
-        module_path (str): the filesystem path of the module
-        lasti (int): the index of bytecode execution
-        line (str): the single-line code content (if available)
-    """
+    __slots__ = ("func_name", "lineno", "module_name", "module_path", "lasti", "line")
     func_name: str
     lineno: int
     module_name: str

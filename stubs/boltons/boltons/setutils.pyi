@@ -240,7 +240,7 @@ def complement(wrapped: Iterable[Any]) -> _ComplementSet:
     ...
 
 class _ComplementSet:
-    """helper class for complement() that implements the set methods"""
+    __slots__ = ("_included", "_excluded")
     def __init__(
         self, included: set[Any] | frozenset[Any] | None = None, excluded: set[Any] | frozenset[Any] | None = None
     ) -> None: ...

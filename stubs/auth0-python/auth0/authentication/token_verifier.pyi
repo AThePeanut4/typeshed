@@ -46,32 +46,11 @@ class JwksFetcher:
         cache_ttl (str, optional): The lifetime of the JWK set cache in seconds. Defaults to 600 seconds.
     """
     CACHE_TTL: ClassVar[int]
-    def __init__(self, jwks_url: str, cache_ttl: int = ...) -> None: ...
-    def get_key(self, key_id: str):
-        """
-        Obtains the JWK associated with the given key id.
-
-        Args:
-            key_id (str): The id of the key to fetch.
-
-        Returns:
-            the JWK associated with the given key id.
-
-        Raises:
-            TokenValidationError: when a key with that id cannot be found
-        """
-        ...
+    def __init__(self, jwks_url: str, cache_ttl: int = 600) -> None: ...
+    def get_key(self, key_id: str): ...
 
 class AsymmetricSignatureVerifier(SignatureVerifier):
-    """
-    Verifier for RSA signatures, which rely on public key certificates.
-
-    Args:
-        jwks_url (str): The url where the JWK set is located.
-        algorithm (str, optional): The expected signing algorithm. Defaults to "RS256".
-        cache_ttl (int, optional): The lifetime of the JWK set cache in seconds. Defaults to 600 seconds.
-    """
-    def __init__(self, jwks_url: str, algorithm: str = "RS256", cache_ttl: int = ...) -> None: ...
+    def __init__(self, jwks_url: str, algorithm: str = "RS256", cache_ttl: int = 600) -> None: ...
 
 class TokenVerifier:
     """

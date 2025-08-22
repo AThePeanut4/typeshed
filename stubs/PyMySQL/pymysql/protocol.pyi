@@ -11,11 +11,7 @@ UNSIGNED_INT64_COLUMN: Final[int]
 def dump_packet(data) -> None: ...
 
 class MysqlPacket:
-    """
-    Representation of a MySQL response packet.
-
-    Provides an interface for reading/parsing the packet results.
-    """
+    __slots__ = ("_position", "_data")
     def __init__(self, data, encoding) -> None: ...
     def get_all_data(self): ...
     def read(self, size):

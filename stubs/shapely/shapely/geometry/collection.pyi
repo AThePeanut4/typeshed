@@ -32,6 +32,7 @@ class GeometryCollection(BaseMultipartGeometry[_GeoT_co]):
     >>> gc = GeometryCollection([p, l])
     """
     # Overloads of __new__ are used because mypy is unable to narrow the typevar otherwise
+    __slots__: list[str] = []
     @overload
     def __new__(
         self, geoms: BaseMultipartGeometry[_GeoT_co] | GeometrySequence[BaseMultipartGeometry[_GeoT_co]] | Collection[_GeoT_co]

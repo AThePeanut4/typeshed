@@ -142,7 +142,7 @@ class Contentline(str):
     parts.
     """
     strict: bool
-    def __new__(cls, value: str | bytes, strict: bool = False, encoding: str = ...) -> Self: ...
+    def __new__(cls, value: str | bytes, strict: bool = False, encoding: str = "utf-8") -> Self: ...
     @classmethod
     def from_parts(cls, name: ICAL_TYPE, params: Parameters, values, sorted: bool = True) -> Self:
         """Turn a parts into a content line."""

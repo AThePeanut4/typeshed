@@ -42,24 +42,9 @@ class MultiPoint(BaseMultipartGeometry[Point]):
     # * `Sequence` is more correct but it will lead to False positives with common types
     #   like np.ndarray, pd.Index, pd.Series, ...
     # I went with Collection as false negatives seem better to me than false positives in this case
-    def __new__(self, points: MultiPoint | Collection[_PointLike] | None = None) -> Self:
-        """Create a new MultiPoint geometry."""
-        ...
-    def svg(self, scale_factor: float = 1.0, fill_color: str | None = None, opacity: float | None = None) -> str:
-        """
-        Return a group of SVG circle elements for the MultiPoint geometry.
-
-        Parameters
-        ----------
-        scale_factor : float
-            Multiplication factor for the SVG circle diameters.  Default is 1.
-        fill_color : str, optional
-            Hex string for fill color. Default is to use "#66cc99" if
-            geometry is valid, and "#ff3333" if invalid.
-        opacity : float
-            Float number between 0 and 1 for color opacity. Default value is 0.6
-        """
-        ...
+    __slots__: list[str] = []
+    def __new__(self, points: MultiPoint | Collection[_PointLike] | None = None) -> Self: ...
+    def svg(self, scale_factor: float = 1.0, fill_color: str | None = None, opacity: float | None = None) -> str: ...  # type: ignore[override]
     # more precise base overrides
     @property
     def boundary(self) -> GeometryCollection:

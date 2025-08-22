@@ -33,17 +33,8 @@ _S = TypeVar("_S")
 _P = ParamSpec("_P")
 
 class GroupMappingMixin:
-    def spawn(self, func: Callable[_P, _T], *args: _P.args, **kwargs: _P.kwargs) -> Greenlet[_P, _T]:
-        """
-        A function that runs *func* with *args* and *kwargs*, potentially
-        asynchronously. Return a value with a ``get`` method that blocks
-        until the results of func are available, and a ``rawlink`` method
-        that calls a callback when the results are available.
-
-        If this object has an upper bound on how many asyncronously executing
-        tasks can exist, this method may block until a slot becomes available.
-        """
-        ...
+    __slots__ = ()
+    def spawn(self, func: Callable[_P, _T], *args: _P.args, **kwargs: _P.kwargs) -> Greenlet[_P, _T]: ...
     # we would like to use ParamSpec for these, but since args and kwds are passed in as is
     # pyright will complain if we use _P.args/_P.kwargs, it appears to work on mypy though
     # we can probably get away with Sequence and Mapping instead of tuple and dict, but for

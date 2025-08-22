@@ -62,15 +62,7 @@ class FFI:
     if sys.platform == "win32":
         def dlopen(self, name: str, flags: int = ...) -> _cffi_backend.Lib: ...
     else:
-        def dlopen(self, name: str | None, flags: int = ...) -> _cffi_backend.Lib:
-            """
-            Load and return a dynamic library identified by 'name'.
-            The standard C library can be loaded by passing None.
-            Note that functions and types declared by 'ffi.cdef()' are not
-            linked to a particular library, just like C headers; in the
-            library we only look for the actual (untyped) symbols.
-            """
-            ...
+        def dlopen(self, name: str | None, flags: int = 0) -> _cffi_backend.Lib: ...
 
     def dlclose(self, lib: _cffi_backend.Lib) -> None:
         """

@@ -90,7 +90,7 @@ def spec_from_file_location(
     """
     ...
 @deprecated(
-    "Deprecated as of Python 3.6: Use site configuration instead. "
+    "Deprecated since Python 3.6. Use site configuration instead. "
     "Future versions of Python may not enable this finder by default."
 )
 class WindowsRegistryFinder(importlib.abc.MetaPathFinder):
@@ -384,14 +384,8 @@ if sys.version_info >= (3, 11):
             """Use default semantics for module creation."""
             ...
         def exec_module(self, module: types.ModuleType) -> None: ...
-        @deprecated("load_module() is deprecated; use exec_module() instead")
-        def load_module(self, fullname: str) -> types.ModuleType:
-            """
-            Load a namespace module.
-
-            This method is deprecated.  Use exec_module() instead.
-            """
-            ...
+        @deprecated("Deprecated since Python 3.10; will be removed in Python 3.15. Use `exec_module()` instead.")
+        def load_module(self, fullname: str) -> types.ModuleType: ...
         def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         if sys.version_info < (3, 12):
             @staticmethod
@@ -420,15 +414,9 @@ else:
             """Use default semantics for module creation."""
             ...
         def exec_module(self, module: types.ModuleType) -> None: ...
-        @deprecated("load_module() is deprecated; use exec_module() instead")
-        def load_module(self, fullname: str) -> types.ModuleType:
-            """
-            Load a namespace module.
-
-            This method is deprecated.  Use exec_module() instead.
-            """
-            ...
         if sys.version_info >= (3, 10):
+            @deprecated("Deprecated since Python 3.10; will be removed in Python 3.15. Use `exec_module()` instead.")
+            def load_module(self, fullname: str) -> types.ModuleType: ...
             @staticmethod
             @deprecated(
                 "Deprecated since Python 3.4; removed in Python 3.12. "
@@ -443,6 +431,7 @@ else:
                 ...
             def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         else:
+            def load_module(self, fullname: str) -> types.ModuleType: ...
             @classmethod
             @deprecated(
                 "Deprecated since Python 3.4; removed in Python 3.12. "

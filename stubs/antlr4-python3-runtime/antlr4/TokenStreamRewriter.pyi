@@ -4,6 +4,7 @@ from antlr4.CommonTokenStream import CommonTokenStream as CommonTokenStream
 from antlr4.Token import Token as Token
 
 class TokenStreamRewriter:
+    __slots__ = ("tokens", "programs", "lastRewriteTokenIndexes")
     DEFAULT_PROGRAM_NAME: str
     PROGRAM_INIT_SIZE: int
     MIN_TOKEN_INDEX: int
@@ -42,6 +43,7 @@ class TokenStreamRewriter:
         ...
 
     class RewriteOperation:
+        __slots__ = ("tokens", "index", "text", "instructionIndex")
         tokens: Incomplete
         index: Incomplete
         text: Incomplete
@@ -70,6 +72,7 @@ class TokenStreamRewriter:
     class InsertAfterOp(InsertBeforeOp): ...
 
     class ReplaceOp(RewriteOperation):
+        __slots__ = "last_index"
         last_index: Incomplete
         def __init__(self, from_idx, to_idx, tokens, text) -> None: ...
         def execute(self, buf): ...

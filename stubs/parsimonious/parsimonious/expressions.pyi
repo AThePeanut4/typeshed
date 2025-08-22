@@ -65,7 +65,7 @@ def expression(callable: _CALLABLE_TYPE, rule_name: str, grammar: Grammar) -> Ex
 IN_PROGRESS: object
 
 class Expression(StrAndRepr):
-    """A thing that can be matched against a piece of text"""
+    __slots__ = ["name", "identity_tuple"]
     name: str
     identity_tuple: tuple[str]
     def __init__(self, name: str = "") -> None: ...
@@ -117,11 +117,7 @@ class Expression(StrAndRepr):
         ...
 
 class Literal(Expression):
-    """
-    A string literal
-
-    Use these if you can; they're the fastest.
-    """
+    __slots__ = ["literal"]
     literal: str
     identity_tuple: tuple[str, str]  # type: ignore[assignment]
     def __init__(self, literal: str, name: str = "") -> None: ...
@@ -135,12 +131,7 @@ class TokenMatcher(Literal):
     ...
 
 class Regex(Expression):
-    """
-    An expression that matches what a regex does.
-
-    Use these as much as you can and jam as much into each one as you can;
-    they're fast.
-    """
+    __slots__ = ["re"]
     re: Pattern[str]
     identity_tuple: tuple[str, Pattern[str]]  # type: ignore[assignment]
     def __init__(
@@ -157,7 +148,7 @@ class Regex(Expression):
     ) -> None: ...
 
 class Compound(Expression):
-    """An abstract expression which contains other expressions"""
+    __slots__ = ["members"]
     members: collections.abc.Sequence[Expression]
     def __init__(self, *members: Expression, **kwargs: Any) -> None:
         """``members`` is a sequence of expressions."""
@@ -182,17 +173,14 @@ class OneOf(Compound):
     ...
 
 class Lookahead(Compound):
-    """
-    An expression which consumes nothing, even if its contained expression
-    succeeds
-    """
+    __slots__ = ["negativity"]
     negativity: bool
     def __init__(self, member: Expression, *, negative: bool = False, **kwargs: Any) -> None: ...
 
 def Not(term: Expression) -> Lookahead: ...
 
 class Quantifier(Compound):
-    """An expression wrapper like the */+/?/{n,m} quantifier in regexes."""
+    __slots__ = ["min", "max"]
     min: int
     max: float
     def __init__(self, member: Expression, *, min: int = 0, max: float = ..., name: str = "", **kwargs: Any) -> None: ...

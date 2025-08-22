@@ -534,10 +534,8 @@ def variance(data: Iterable[_NumberT], xbar: _NumberT | None = None) -> _NumberT
     ...
 
 class NormalDist:
-    """Normal distribution of a random variable"""
-    def __init__(self, mu: float = 0.0, sigma: float = 1.0) -> None:
-        """NormalDist where mu is the mean and sigma is the standard deviation."""
-        ...
+    __slots__ = {"_mu": "Arithmetic mean of a normal distribution", "_sigma": "Standard deviation of a normal distribution"}
+    def __init__(self, mu: float = 0.0, sigma: float = 1.0) -> None: ...
     @property
     def mean(self) -> float:
         """Arithmetic mean of the normal distribution."""

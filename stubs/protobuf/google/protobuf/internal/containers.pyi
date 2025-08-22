@@ -31,21 +31,10 @@ class _ValueChecker(Protocol[_T]):
     def DefaultValue(self) -> _T: ...
 
 class BaseContainer(Sequence[_T]):
-    """Base container class."""
-    def __init__(self, message_listener: MessageListener) -> None:
-        """
-        Args:
-          message_listener: A MessageListener implementation.
-            The RepeatedScalarFieldContainer will call this object's
-            Modified() method when it is modified.
-        """
-        ...
-    def __len__(self) -> int:
-        """Returns the number of elements in the container."""
-        ...
-    def __ne__(self, other: object) -> bool:
-        """Checks if another instance isn't equal to this one."""
-        ...
+    __slots__ = ["_message_listener", "_values"]
+    def __init__(self, message_listener: MessageListener) -> None: ...
+    def __len__(self) -> int: ...
+    def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     # Same as list.sort, the extra sort_function kwarg errors in Python 3
     def sort(self, *, key: Callable[[_T], Any] | None = None, reverse: bool = False) -> None: ...
@@ -59,39 +48,14 @@ class BaseContainer(Sequence[_T]):
         ...
 
 class RepeatedScalarFieldContainer(BaseContainer[_ScalarV]):
-    """Simple, type-checked, list-like container for holding repeated scalars."""
-    def __init__(self, message_listener: MessageListener, type_checker: _ValueChecker[_ScalarV]) -> None:
-        """
-        Args:
-
-        message_listener: A MessageListener implementation. The
-        RepeatedScalarFieldContainer will call this object's Modified() method
-        when it is modified.
-        type_checker: A type_checkers.ValueChecker instance to run on elements
-        inserted into this container.
-        """
-        ...
-    def append(self, value: _ScalarV) -> None:
-        """Appends an item to the list. Similar to list.append()."""
-        ...
-    def insert(self, key: int, value: _ScalarV) -> None:
-        """Inserts the item at the specified position. Similar to list.insert()."""
-        ...
-    def extend(self, elem_seq: Iterable[_ScalarV] | None) -> None:
-        """Extends by appending the given iterable. Similar to list.extend()."""
-        ...
-    def MergeFrom(self, other: Self | Iterable[_ScalarV]) -> None:
-        """
-        Appends the contents of another repeated field of the same type to this
-        one. We do not check the types of the individual fields.
-        """
-        ...
-    def remove(self, elem: _ScalarV) -> None:
-        """Removes an item from the list. Similar to list.remove()."""
-        ...
-    def pop(self, key: int = -1) -> _ScalarV:
-        """Removes and returns an item at a given index. Similar to list.pop()."""
-        ...
+    __slots__ = ["_type_checker"]
+    def __init__(self, message_listener: MessageListener, type_checker: _ValueChecker[_ScalarV]) -> None: ...
+    def append(self, value: _ScalarV) -> None: ...
+    def insert(self, key: int, value: _ScalarV) -> None: ...
+    def extend(self, elem_seq: Iterable[_ScalarV] | None) -> None: ...
+    def MergeFrom(self, other: Self | Iterable[_ScalarV]) -> None: ...
+    def remove(self, elem: _ScalarV) -> None: ...
+    def pop(self, key: int = -1) -> _ScalarV: ...
     @overload
     def __setitem__(self, key: int, value: _ScalarV) -> None:
         """Sets the item on the specified position."""
@@ -108,63 +72,20 @@ class RepeatedScalarFieldContainer(BaseContainer[_ScalarV]):
         ...
 
 class RepeatedCompositeFieldContainer(BaseContainer[_MessageV]):
-    """Simple, list-like container for holding repeated composite fields."""
-    def __init__(self, message_listener: MessageListener, message_descriptor: Descriptor) -> None:
-        """
-        Note that we pass in a descriptor instead of the generated directly,
-        since at the time we construct a _RepeatedCompositeFieldContainer we
-        haven't yet necessarily initialized the type that will be contained in the
-        container.
-
-        Args:
-          message_listener: A MessageListener implementation.
-            The RepeatedCompositeFieldContainer will call this object's
-            Modified() method when it is modified.
-          message_descriptor: A Descriptor instance describing the protocol type
-            that should be present in this container.  We'll use the
-            _concrete_class field of this descriptor when the client calls add().
-        """
-        ...
-    def add(self, **kwargs: Any) -> _MessageV:
-        """
-        Adds a new element at the end of the list and returns it. Keyword
-        arguments may be used to initialize the element.
-        """
-        ...
-    def append(self, value: _MessageV) -> None:
-        """Appends one element by copying the message."""
-        ...
-    def insert(self, key: int, value: _MessageV) -> None:
-        """Inserts the item at the specified position by copying."""
-        ...
-    def extend(self, elem_seq: Iterable[_MessageV]) -> None:
-        """
-        Extends by appending the given sequence of elements of the same type
-
-        as this one, copying each individual message.
-        """
-        ...
-    def MergeFrom(self, other: Self | Iterable[_MessageV]) -> None:
-        """
-        Appends the contents of another repeated field of the same type to this
-        one, copying each individual message.
-        """
-        ...
-    def remove(self, elem: _MessageV) -> None:
-        """Removes an item from the list. Similar to list.remove()."""
-        ...
-    def pop(self, key: int = -1) -> _MessageV:
-        """Removes and returns an item at a given index. Similar to list.pop()."""
-        ...
-    def __delitem__(self, key: int | slice) -> None:
-        """Deletes the item at the specified position."""
-        ...
-    def __eq__(self, other: object) -> bool:
-        """Compares the current instance with another one."""
-        ...
+    __slots__ = ["_message_descriptor"]
+    def __init__(self, message_listener: MessageListener, message_descriptor: Descriptor) -> None: ...
+    def add(self, **kwargs: Any) -> _MessageV: ...
+    def append(self, value: _MessageV) -> None: ...
+    def insert(self, key: int, value: _MessageV) -> None: ...
+    def extend(self, elem_seq: Iterable[_MessageV]) -> None: ...
+    def MergeFrom(self, other: Self | Iterable[_MessageV]) -> None: ...
+    def remove(self, elem: _MessageV) -> None: ...
+    def pop(self, key: int = -1) -> _MessageV: ...
+    def __delitem__(self, key: int | slice) -> None: ...
+    def __eq__(self, other: object) -> bool: ...
 
 class ScalarMap(MutableMapping[_K, _ScalarV]):
-    """Simple, type-checked, dict-like container for holding repeated scalars."""
+    __slots__ = ["_key_checker", "_value_checker", "_values", "_message_listener", "_entry_descriptor"]
     def __init__(
         self,
         message_listener: MessageListener,
@@ -202,7 +123,7 @@ class ScalarMap(MutableMapping[_K, _ScalarV]):
     def GetEntryClass(self) -> GeneratedProtocolMessageType: ...
 
 class MessageMap(MutableMapping[_K, _MessageV]):
-    """Simple, type-checked, dict-like container for with submessage values."""
+    __slots__ = ["_key_checker", "_values", "_message_listener", "_message_descriptor", "_entry_descriptor"]
     def __init__(
         self,
         message_listener: MessageListener,

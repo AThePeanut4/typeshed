@@ -16,21 +16,7 @@ from parsimonious.expressions import Expression
 from parsimonious.grammar import Grammar
 
 class Node:
-    """
-    A parse tree node
-
-    Consider these immutable once constructed. As a side effect of a
-    memory-saving strategy in the cache, multiple references to a single
-    ``Node`` might be returned in a single parse tree. So, if you start
-    messing with one, you'll see surprising parallel changes pop up elsewhere.
-
-    My philosophy is that parse trees (and their nodes) should be
-    representation-agnostic. That is, they shouldn't get all mixed up with what
-    the final rendered form of a wiki page (or the intermediate representation
-    of a programming language, or whatever) is going to be: you should be able
-    to parse once and render several representations from the tree, one after
-    another.
-    """
+    __slots__ = ["expr", "full_text", "start", "end", "children"]
     expr: Expression
     full_text: str
     start: int
@@ -68,12 +54,7 @@ class Node:
         ...
 
 class RegexNode(Node):
-    """
-    Node returned from a ``Regex`` expression
-
-    Grants access to the ``re.Match`` object, in case you want to access
-    capturing groups, etc.
-    """
+    __slots__ = ["match"]
     match: Match[str]
 
 class RuleDecoratorMeta(type): ...

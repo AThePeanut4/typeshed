@@ -55,70 +55,7 @@ cellty_from_fmtty: Final[dict[int, int]]
 ctype_text: Final[dict[int, str]]
 
 class Cell(BaseObject):
-    """
-    Contains the data for one cell.
-
-    .. warning::
-      You don't call this class yourself. You access :class:`Cell` objects
-      via methods of the :class:`Sheet` object(s) that you found in the
-      :class:`~xlrd.book.Book` object that was returned when you called
-      :func:`~xlrd.open_workbook`
-
-    Cell objects have three attributes: ``ctype`` is an int, ``value``
-    (which depends on ``ctype``) and ``xf_index``.
-    If ``formatting_info`` is not enabled when the workbook is opened,
-    ``xf_index`` will be ``None``.
-
-    The following table describes the types of cells and how their values
-    are represented in Python.
-
-    .. raw:: html
-
-        <table border="1" cellpadding="7">
-        <tr>
-        <th>Type symbol</th>
-        <th>Type number</th>
-        <th>Python value</th>
-        </tr>
-        <tr>
-        <td>XL_CELL_EMPTY</td>
-        <td align="center">0</td>
-        <td>empty string ''</td>
-        </tr>
-        <tr>
-        <td>XL_CELL_TEXT</td>
-        <td align="center">1</td>
-        <td>a Unicode string</td>
-        </tr>
-        <tr>
-        <td>XL_CELL_NUMBER</td>
-        <td align="center">2</td>
-        <td>float</td>
-        </tr>
-        <tr>
-        <td>XL_CELL_DATE</td>
-        <td align="center">3</td>
-        <td>float</td>
-        </tr>
-        <tr>
-        <td>XL_CELL_BOOLEAN</td>
-        <td align="center">4</td>
-        <td>int; 1 means TRUE, 0 means FALSE</td>
-        </tr>
-        <tr>
-        <td>XL_CELL_ERROR</td>
-        <td align="center">5</td>
-        <td>int representing internal Excel codes; for a text representation,
-        refer to the supplied dictionary error_text_from_code</td>
-        </tr>
-        <tr>
-        <td>XL_CELL_BLANK</td>
-        <td align="center">6</td>
-        <td>empty string ''. Note: this type will appear only when
-        open_workbook(..., formatting_info=True) is used.</td>
-        </tr>
-        </table>
-    """
+    __slots__ = ["ctype", "value", "xf_index"]
     ctype: int
     value: str
     xf_index: int | None
@@ -171,12 +108,18 @@ class Colinfo(BaseObject):
     collapsed: int
 
 class Rowinfo(BaseObject):
-    """
-    Height and default formatting information that applies to a row in a sheet.
-    Derived from ``ROW`` records.
-
-    .. versionadded:: 0.6.1
-    """
+    __slots__ = (
+        "height",
+        "has_default_height",
+        "outline_level",
+        "outline_group_starts_ends",
+        "hidden",
+        "height_mismatch",
+        "has_default_xf_index",
+        "xf_index",
+        "additional_space_above",
+        "additional_space_below",
+    )
     height: int | None
     has_default_height: int | None
     outline_level: int | None

@@ -59,35 +59,7 @@ else:
 _T = TypeVar("_T")
 
 class SimpleQueue(Generic[_T]):
-    """
-    SimpleQueue(maxsize=None, items=(), _warn_depth=2)
-
-    Create a queue object with a given maximum size.
-
-    If *maxsize* is less than or equal to zero or ``None``, the queue
-    size is infinite.
-
-    Queues have a ``len`` equal to the number of items in them (the :meth:`qsize`),
-    but in a boolean context they are always True.
-
-    .. versionchanged:: 1.1b3
-       Queues now support :func:`len`; it behaves the same as :meth:`qsize`.
-    .. versionchanged:: 1.1b3
-       Multiple greenlets that block on a call to :meth:`put` for a full queue
-       will now be awakened to put their items into the queue in the order in which
-       they arrived. Likewise, multiple greenlets that block on a call to :meth:`get` for
-       an empty queue will now receive items in the order in which they blocked. An
-       implementation quirk under CPython *usually* ensured this was roughly the case
-       previously anyway, but that wasn't the case for PyPy.
-    .. versionchanged:: 24.10.1
-       Implement the ``shutdown`` methods from Python 3.13.
-    .. versionchanged:: 25.4.1
-       Renamed from ``Queue`` to ``SimpleQueue`` to better match the standard library.
-       While this class no longer has a ``shutdown`` method, the new ``Queue`` class
-       (previously ``JoinableQueue``) continues to have it.
-    .. versionchanged:: 25.4.2
-       Make this class subscriptable.
-    """
+    __slots__ = ("_maxsize", "getters", "putters", "hub", "_event_unlock", "queue", "__weakref__", "is_shutdown")
     @property
     def hub(self) -> Hub: ...  # readonly in Cython
     @property
@@ -229,16 +201,7 @@ class SimpleQueue(Generic[_T]):
     next = __next__
 
 class Queue(SimpleQueue[_T]):
-    """
-    Queue(maxsize=None, items=(), unfinished_tasks=None)
-
-    A subclass of :class:`SimpleQueue` that additionally has
-    :meth:`task_done` and :meth:`join` methods.
-
-    .. versionchanged:: 25.4.1
-       Renamed from ``JoinablQueue`` to simply ``Queue`` to better
-       match the capability of the standard library :class:`queue.Queue`.
-    """
+    __slots__ = ("_cond", "unfinished_tasks")
     @property
     def unfinished_tasks(self) -> int: ...  # readonly in Cython
     @overload
@@ -322,7 +285,7 @@ JoinableQueue = Queue
 
 @final
 class UnboundQueue(Queue[_T]):
-    """UnboundQueue(maxsize=None, items=())"""
+    __slots__ = ()
     @overload
     def __init__(self, maxsize: None = None) -> None: ...
     @overload
@@ -331,39 +294,13 @@ class UnboundQueue(Queue[_T]):
     def __init__(self, maxsize: None = None, *, items: Iterable[_T]) -> None: ...
 
 class PriorityQueue(Queue[_T]):
-    """
-    A subclass of :class:`Queue` that retrieves entries in priority order (lowest first).
+    __slots__ = ()
 
-    Entries are typically tuples of the form: ``(priority number, data)``.
-
-    .. versionchanged:: 1.2a1
-       Any *items* given to the constructor will now be passed through
-       :func:`heapq.heapify` to ensure the invariants of this class hold.
-       Previously it was just assumed that they were already a heap.
-    """
-    ...
 class LifoQueue(Queue[_T]):
-    """
-    A subclass of :class:`JoinableQueue` that retrieves most recently added entries first.
-
-    .. versionchanged:: 24.10.1
-       Now extends :class:`JoinableQueue` instead of just :class:`Queue`.
-    """
-    ...
+    __slots__ = ()
 
 class Channel(Generic[_T]):
-    """
-    Channel(maxsize=1)
-
-    A queue-like object that can only hold one item at a
-    time.
-
-    This is commonly used as a synchronization primitive,
-    and is implemented efficiently for this use-case.
-
-    .. versionchanged:: 25.4.2
-       Make this class subscriptable.
-    """
+    __slots__ = ("getters", "putters", "hub", "_event_unlock", "__weakref__")
     @property
     def getters(self) -> deque[Waiter[Any]]: ...  # readonly in Cython
     @property

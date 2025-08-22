@@ -138,17 +138,8 @@ async def remove(
     """
     ...
 async def unlink(
-    path: StrOrBytesPath, *, dir_fd: int | None = ..., loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
-) -> None:
-    """
-    Remove a file (same as remove()).
-
-    If dir_fd is not None, it should be a file descriptor open to a directory,
-      and path should be relative; path will then be relative to that directory.
-    dir_fd may not be implemented on your platform.
-      If it is unavailable, using it will raise a NotImplementedError.
-    """
-    ...
+    path: StrOrBytesPath, *, dir_fd: int | None = None, loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
+) -> None: ...
 async def mkdir(
     path: StrOrBytesPath,
     mode: int = 511,
@@ -191,9 +182,9 @@ async def link(
     src: StrOrBytesPath,
     dst: StrOrBytesPath,
     *,
-    src_dir_fd: int | None = ...,
-    dst_dir_fd: int | None = ...,
-    follow_symlinks: bool = ...,
+    src_dir_fd: int | None = None,
+    dst_dir_fd: int | None = None,
+    follow_symlinks: bool = True,
     loop: AbstractEventLoop | None = ...,
     executor: Executor | None = ...,
 ) -> None:
@@ -214,9 +205,9 @@ async def link(
 async def symlink(
     src: StrOrBytesPath,
     dst: StrOrBytesPath,
-    target_is_directory: bool = ...,
+    target_is_directory: bool = False,
     *,
-    dir_fd: int | None = ...,
+    dir_fd: int | None = None,
     loop: AbstractEventLoop | None = ...,
     executor: Executor | None = ...,
 ) -> None:
@@ -235,18 +226,8 @@ async def symlink(
     """
     ...
 async def readlink(
-    path: AnyStr, *, dir_fd: int | None = ..., loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
-) -> AnyStr:
-    """
-    Return a string representing the path to which the symbolic link points.
-
-    If dir_fd is not None, it should be a file descriptor open to a directory,
-    and path should be relative; path will then be relative to that directory.
-
-    dir_fd may not be implemented on your platform.  If it is unavailable,
-    using it will raise a NotImplementedError.
-    """
-    ...
+    path: AnyStr, *, dir_fd: int | None = None, loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
+) -> AnyStr: ...
 async def rmdir(
     path: StrOrBytesPath, *, dir_fd: int | None = None, loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
 ) -> None:
@@ -423,9 +404,9 @@ if sys.platform != "win32":
         in_fd: int,
         offset: int,
         count: int,
-        headers: Sequence[ReadableBuffer] = ...,
-        trailers: Sequence[ReadableBuffer] = ...,
-        flags: int = ...,
+        headers: Sequence[ReadableBuffer] = (),
+        trailers: Sequence[ReadableBuffer] = (),
+        flags: int = 0,
         *,
         loop: AbstractEventLoop | None = ...,
         executor: Executor | None = ...,

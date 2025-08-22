@@ -31,10 +31,7 @@ class HarfBuzzFont(Incomplete):  # derives from uharfbuzz.Font
 
 @dataclass
 class FontFace:
-    """
-    Represent basic font styling properties.
-    This is a subset of `fpdf.graphics_state.GraphicsStateMixin` properties.
-    """
+    __slots__ = ("family", "emphasis", "size_pt", "color", "fill_color")
     family: str | None
     emphasis: TextEmphasis | None
     size_pt: int | None
@@ -116,6 +113,7 @@ class TitleStyle(TextStyle): ...
 __pdoc__: Final[dict[str, bool]]
 
 class CoreFont:
+    __slots__ = ("i", "type", "name", "sp", "ss", "up", "ut", "cw", "fontkey", "emphasis")
     i: int
     type: str
     name: str
@@ -131,6 +129,27 @@ class CoreFont:
     def encode_text(self, text: str) -> str: ...
 
 class TTFFont:
+    __slots__ = (
+        "i",
+        "type",
+        "name",
+        "desc",
+        "glyph_ids",
+        "hbfont",
+        "sp",
+        "ss",
+        "up",
+        "ut",
+        "cw",
+        "ttffile",
+        "fontkey",
+        "emphasis",
+        "scale",
+        "subset",
+        "cmap",
+        "ttfont",
+        "missing_glyphs",
+    )
     i: int
     type: str
     ttffile: Incomplete
@@ -194,11 +213,7 @@ class PDFFontDescriptor(PDFObject):
 
 @dataclass(order=True)
 class Glyph:
-    """
-    This represents one glyph on the font
-    Unicode is a tuple because ligatures or character substitution
-    can map a sequence of unicode characters to a single glyph
-    """
+    __slots__ = ("glyph_id", "unicode", "glyph_name", "glyph_width")
     glyph_id: int
     unicode: tuple[Incomplete, ...]
     glyph_name: str

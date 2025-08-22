@@ -13,7 +13,7 @@ class MinHeap:
     value in an existing pair and deleting the minimum pair.
     """
     class _Item:
-        """Used by subclassess to represent a key-value pair."""
+        __slots__ = ("key", "value")
         key: Incomplete
         value: Incomplete
         def __init__(self, key, value) -> None: ...
@@ -116,12 +116,7 @@ class MinHeap:
 class PairingHeap(MinHeap):
     """A pairing heap."""
     class _Node(MinHeap._Item):
-        """
-        A node in a pairing heap.
-
-        A tree in a pairing heap is stored using the left-child, right-sibling
-        representation.
-        """
+        __slots__ = ("left", "next", "prev", "parent")
         left: Incomplete
         next: Incomplete
         prev: Incomplete
