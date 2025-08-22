@@ -10,8 +10,14 @@ from netaddr.core import DictDotLookup
 from netaddr.strategy.ipv6 import ipv6_verbose
 
 class BaseIP:
+    """
+    An abstract base class for common operations shared between various IP
+    related subclasses.
+    """
     __slots__ = ("_value", "_module", "__weakref__")
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """Constructor."""
+        ...
     @property
     def value(self) -> int | None:
         """a positive integer representing the value of IP address/subnet."""
@@ -141,14 +147,107 @@ _IPAddressAddr: TypeAlias = BaseIP | int | str
 _IPNetworkAddr: TypeAlias = IPNetwork | IPAddress | tuple[int, int] | str
 
 class IPAddress(BaseIP):
+    """
+    An individual IPv4 or IPv6 address without a net mask or subnet prefix.
+
+    To support these and other network based operations, see `IPNetwork`.
+    """
     __slots__ = ()
-    def __init__(self, addr: _IPAddressAddr, version: Literal[4, 6] | None = None, flags: int = 0) -> None: ...
-    def netmask_bits(self) -> int: ...
-    def is_hostmask(self) -> bool: ...
-    def is_netmask(self) -> bool: ...
-    def __iadd__(self, num: int) -> Self: ...
-    def __isub__(self, num: int) -> Self: ...
-    def __add__(self, num: int) -> Self: ...
+    def __init__(self, addr: _IPAddressAddr, version: Literal[4, 6] | None = None, flags: int = 0) -> None:
+        """
+        Constructor.
+
+        :param addr: an IPv4 or IPv6 address which may be represented in an
+            accepted string format, as an unsigned integer or as another
+            IPAddress object (copy construction).
+
+        :param version: (optional) optimizes version detection if specified
+            and distinguishes between IPv4 and IPv6 for addresses with an
+            equivalent integer value.
+
+        :param flags: (optional) decides which rules are applied to the
+            interpretation of the addr value if passed as a string.
+
+            Matters only in IPv4 context.
+
+            Allowed flag values:
+
+            * :data:`INET_ATON`. Follows `inet_aton semantics
+              <https://www.netmeister.org/blog/inet_aton.html>`_ and allows all kinds of
+              weird-looking addresses to be parsed. For example:
+
+              >>> IPAddress('1', flags=INET_ATON)
+              IPAddress('0.0.0.1')
+              >>> IPAddress('1.0xf', flags=INET_ATON)
+              IPAddress('1.0.0.15')
+              >>> IPAddress('010.020.030.040', flags=INET_ATON)
+              IPAddress('8.16.24.32')
+
+            * ``INET_ATON | ZEROFILL`` or :data:`ZEROFILL` – like ``INET_ATON``, except leading zeros are discarded:
+
+              >>> IPAddress('010', flags=INET_ATON | ZEROFILL)
+              IPAddress('0.0.0.10')
+
+            * The default (``0``) or :data:`INET_PTON` – requires four decimal octets:
+
+              >>> IPAddress('10.0.0.1', flags=INET_PTON)
+              IPAddress('10.0.0.1')
+
+              Leading zeros may be ignored or rejected, depending on the platform.
+
+            * ``INET_PTON | ZEROFILL`` – like the default :data:`INET_PTON`, except leading
+              zeros are discarded:
+
+              >>> IPAddress('010.020.030.040', flags=INET_PTON | ZEROFILL)
+              IPAddress('10.20.30.40')
+
+        .. versionchanged:: 1.0.0
+            Changed the default IPv4 parsing mode from :data:`INET_ATON` to :data:`INET_PTON`.
+        """
+        ...
+    def netmask_bits(self) -> int:
+        """
+        @return: If this IP is a valid netmask, the number of non-zero
+            bits are returned, otherwise it returns the width in bits for
+            the IP address version.
+        """
+        ...
+    def is_hostmask(self) -> bool:
+        """:return: ``True`` if this IP address host mask, ``False`` otherwise."""
+        ...
+    def is_netmask(self) -> bool:
+        """:return: ``True`` if this IP address network mask, ``False`` otherwise."""
+        ...
+    def __iadd__(self, num: int) -> Self:
+        """
+        Increases the numerical value of this IPAddress by num.
+
+        An IndexError is raised if result exceeds maximum IP address value or
+        is less than zero.
+
+        :param num: size of IP address increment.
+        """
+        ...
+    def __isub__(self, num: int) -> Self:
+        """
+        Decreases the numerical value of this IPAddress by num.
+
+        An IndexError is raised if result is less than zero or exceeds maximum
+        IP address value.
+
+        :param num: size of IP address decrement.
+        """
+        ...
+    def __add__(self, num: int) -> Self:
+        """
+        Add the numerical value of this IP address to num and provide the
+        result as a new IPAddress object.
+
+        :param num: size of IP address increase.
+
+        :return: a new IPAddress object with its numerical value increased by num.
+        """
+        ...
     __radd__ = __add__
     def __sub__(self, num: int) -> Self:
         """
@@ -366,8 +465,17 @@ class IPAddress(BaseIP):
         ...
 
 class IPListMixin:
+    """
+    A mixin class providing shared list-like functionality to classes
+    representing groups of IP addresses.
+    """
     __slots__ = ()
-    def __iter__(self) -> Iterator[IPAddress]: ...
+    def __iter__(self) -> Iterator[IPAddress]:
+        """
+        :return: An iterator providing access to all `IPAddress` objects
+            within range represented by this ranged IP object.
+        """
+        ...
     @property
     def size(self) -> int:
         """The total number of IP addresses within this ranged IP object."""
@@ -421,6 +529,40 @@ class IPListMixin:
 def parse_ip_network(module, addr: tuple[int, int] | str, flags: int = 0, *, expand_partial: bool = False) -> tuple[int, int]: ...
 
 class IPNetwork(BaseIP, IPListMixin):
+    """
+    An IPv4 or IPv6 network or subnet.
+
+    A combination of an IP address and a network mask.
+
+    Accepts CIDR and several related variants :
+
+    a) Standard CIDR::
+
+        x.x.x.x/y -> 192.0.2.0/24
+        x::/y -> fe80::/10
+
+    b) Hybrid CIDR format (netmask address instead of prefix), where 'y'        address represent a valid netmask::
+
+        x.x.x.x/y.y.y.y -> 192.0.2.0/255.255.255.0
+        x::/y:: -> fe80::/ffc0::
+
+    c) ACL hybrid CIDR format (hostmask address instead of prefix like        Cisco's ACL bitmasks), where 'y' address represent a valid netmask::
+
+        x.x.x.x/y.y.y.y -> 192.0.2.0/0.0.0.255
+        x::/y:: -> fe80::/3f:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+
+    .. versionchanged:: 1.0.0
+        Removed the ``implicit_prefix`` switch that used to enable the abbreviated CIDR
+        format support, use :func:`cidr_abbrev_to_verbose` if you need this behavior.
+
+    .. versionchanged:: 1.1.0
+        Removed partial IPv4 address support accidentally left when making 1.0.0 release.
+        Use :func:`expand_partial_ipv4_address` if you need this behavior.
+
+    .. versionchanged:: 1.3.0
+        Added the expand_partial flag, which restores the previous behavior to expand
+        partial IPv4 address
+    """
     __slots__ = ("_prefixlen",)
     def __init__(
         self, addr: _IPNetworkAddr, version: Literal[4, 6] | None = None, flags: int = 0, *, expand_partial: bool = False
@@ -616,8 +758,29 @@ class IPNetwork(BaseIP, IPListMixin):
         ...
 
 class IPRange(BaseIP, IPListMixin):
+    """
+    An arbitrary IPv4 or IPv6 address range.
+
+    Formed from a lower and upper bound IP address. The upper bound IP cannot
+    be numerically smaller than the lower bound and the IP version of both
+    must match.
+    """
     __slots__ = ("_start", "_end")
-    def __init__(self, start: _IPAddressAddr, end: _IPAddressAddr, flags: int = 0) -> None: ...
+    def __init__(self, start: _IPAddressAddr, end: _IPAddressAddr, flags: int = 0) -> None:
+        """
+        Constructor.
+
+        :param start: an IPv4 or IPv6 address that forms the lower
+            boundary of this IP range.
+
+        :param end: an IPv4 or IPv6 address that forms the upper
+            boundary of this IP range.
+
+        :param flags: (optional) decides which rules are applied to the
+            interpretation of the start and end values. Refer to the :meth:`IPAddress.__init__`
+            documentation for details.
+        """
+        ...
     def __contains__(self, other: BaseIP | _IPAddressAddr) -> bool: ...
     @property
     def first(self) -> int:

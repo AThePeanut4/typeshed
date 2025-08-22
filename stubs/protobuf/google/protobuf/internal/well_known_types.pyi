@@ -18,6 +18,7 @@ from typing_extensions import TypeAlias
 from google.protobuf import struct_pb2
 
 class Any:
+    """Class for Any Message type."""
     __slots__ = ()
     type_url: str
     value: Incomplete
@@ -35,8 +36,18 @@ class Any:
         ...
 
 class Timestamp:
+    """Class for Timestamp message type."""
     __slots__ = ()
-    def ToJsonString(self) -> str: ...
+    def ToJsonString(self) -> str:
+        """
+        Converts Timestamp to RFC 3339 date string format.
+
+        Returns:
+          A string converted from timestamp. The string is always Z-normalized
+          and uses 3, 6 or 9 fractional digits as required to represent the
+          exact time. Example of the return format: '1972-01-01T10:00:20.021Z'
+        """
+        ...
     seconds: int
     nanos: int
     def FromJsonString(self, value: str) -> None:
@@ -103,8 +114,19 @@ class Timestamp:
         ...
 
 class Duration:
+    """Class for Duration message type."""
     __slots__ = ()
-    def ToJsonString(self) -> str: ...
+    def ToJsonString(self) -> str:
+        """
+        Converts Duration to string format.
+
+        Returns:
+          A string converted from self. The string format will contains
+          3, 6, or 9 fractional digits depending on the precision required to
+          represent the exact Duration value. For example: "1s", "1.010s",
+          "1.000000100s", "-3.100s"
+        """
+        ...
     seconds: int
     nanos: int
     def FromJsonString(self, value: tAny) -> None:
@@ -152,14 +174,38 @@ class Duration:
         ...
 
 class FieldMask:
+    """Class for FieldMask message type."""
     __slots__ = ()
-    def ToJsonString(self) -> str: ...
-    def FromJsonString(self, value: tAny) -> None: ...
-    def IsValidForDescriptor(self, message_descriptor: tAny): ...
-    def AllFieldsFromDescriptor(self, message_descriptor: tAny) -> None: ...
-    def CanonicalFormFromMask(self, mask: tAny) -> None: ...
-    def Union(self, mask1: tAny, mask2: tAny) -> None: ...
-    def Intersect(self, mask1: tAny, mask2: tAny) -> None: ...
+    def ToJsonString(self) -> str:
+        """Converts FieldMask to string according to proto3 JSON spec."""
+        ...
+    def FromJsonString(self, value: tAny) -> None:
+        """Converts string to FieldMask according to proto3 JSON spec."""
+        ...
+    def IsValidForDescriptor(self, message_descriptor: tAny):
+        """Checks whether the FieldMask is valid for Message Descriptor."""
+        ...
+    def AllFieldsFromDescriptor(self, message_descriptor: tAny) -> None:
+        """Gets all direct fields of Message Descriptor to FieldMask."""
+        ...
+    def CanonicalFormFromMask(self, mask: tAny) -> None:
+        """
+        Converts a FieldMask to the canonical form.
+
+        Removes paths that are covered by another path. For example,
+        "foo.bar" is covered by "foo" and will be removed if "foo"
+        is also in the FieldMask. Then sorts all paths in alphabetical order.
+
+        Args:
+          mask: The original FieldMask to be converted.
+        """
+        ...
+    def Union(self, mask1: tAny, mask2: tAny) -> None:
+        """Merges mask1 and mask2 into this FieldMask."""
+        ...
+    def Intersect(self, mask1: tAny, mask2: tAny) -> None:
+        """Intersects mask1 and mask2 into this FieldMask."""
+        ...
     def MergeMessage(
         self, source: tAny, destination: tAny, replace_message_field: bool = False, replace_repeated_field: bool = False
     ) -> None:
@@ -180,6 +226,7 @@ _StructValue: TypeAlias = struct_pb2.Struct | struct_pb2.ListValue | str | float
 _StructValueArg: TypeAlias = _StructValue | Mapping[str, _StructValueArg] | Sequence[_StructValueArg]
 
 class Struct:
+    """Class for Struct message type."""
     __slots__: tuple[()] = ()
     def __getitem__(self, key: str) -> _StructValue: ...
     def __setitem__(self, key: str, value: _StructValueArg) -> None: ...
@@ -198,6 +245,7 @@ class Struct:
     def update(self, dictionary: SupportsItems[str, _StructValueArg]) -> None: ...
 
 class ListValue:
+    """Class for ListValue message type."""
     __slots__: tuple[()] = ()
     def __len__(self) -> int: ...
     def append(self, value: _StructValue) -> None: ...

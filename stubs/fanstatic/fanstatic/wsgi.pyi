@@ -9,7 +9,21 @@ from webob.dec import wsgify
 
 def Fanstatic(
     app: WSGIApplication, publisher_signature: str = "fanstatic", injector: InjectorPlugin | None = None, **config: Any
-) -> Delegator: ...
+) -> Delegator:
+    """
+    Fanstatic WSGI framework component.
+
+    :param app: The WSGI app to wrap with Fanstatic.
+
+    :param publisher_signature: Optional argument to define the
+      signature of the publisher in a URL. The default is ``fanstatic``.
+
+    :param injector: A injector callable.
+
+    :param ``**config``: Optional keyword arguments. These are
+      passed to :py:class:`NeededInclusions` when it is constructed.
+    """
+    ...
 def make_fanstatic(app: WSGIApplication, global_config: Any, **local_config: Any) -> Delegator: ...
 
 class Serf:

@@ -7,12 +7,17 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["CurrentEdge", "Level", "GlobalRelabelThreshold", "build_residual_network", "detect_unboundedness", "build_flow_dict"]
 
 class CurrentEdge:
+    """
+    Mechanism for iterating over out-edges incident to a node in a circular
+    manner. StopIteration exception is raised when wraparound occurs.
+    """
     __slots__ = ("_edges", "_it", "_curr")
     def __init__(self, edges) -> None: ...
     def get(self): ...
     def move_to_next(self) -> None: ...
 
 class Level:
+    """Active and inactive nodes in a level."""
     __slots__ = ("active", "inactive")
     active: Incomplete
     inactive: Incomplete

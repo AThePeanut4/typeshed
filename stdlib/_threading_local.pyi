@@ -138,6 +138,7 @@ __all__ = ["local"]
 _LocalDict: TypeAlias = dict[Any, Any]
 
 class _localimpl:
+    """A class managing thread-local dicts"""
     __slots__ = ("key", "dicts", "localargs", "locallock", "__weakref__")
     key: str
     dicts: dict[int, tuple[ReferenceType[Any], _LocalDict]]

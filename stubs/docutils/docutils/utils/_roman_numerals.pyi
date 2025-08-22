@@ -20,6 +20,16 @@ class InvalidRomanNumeralError(ValueError):
 
 @final
 class RomanNumeral:
+    """
+    A Roman numeral.
+
+    Only values between 1 and 4,999 are valid.
+    Stores the value internally as an ``int``.
+
+    >>> answer = RomanNumeral(42)
+    >>> print(answer.to_uppercase())
+    XLII
+    """
     __slots__ = ("_value",)
     def __init__(self, value: int, /) -> None: ...
     def __int__(self) -> int:

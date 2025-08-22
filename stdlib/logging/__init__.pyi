@@ -292,7 +292,16 @@ class Logger(Filterer):
         stack_info: bool = False,
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
-    ) -> None: ...
+    ) -> None:
+        """
+        Log 'msg % args' with severity 'WARNING'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.warning("Houston, we have a %s", "bit of a problem", exc_info=True)
+        """
+        ...
     @deprecated("Deprecated since Python 3.3. Use `Logger.warning()` instead.")
     def warn(
         self,
@@ -956,7 +965,9 @@ class LoggerAdapter(Generic[_L]):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
         **kwargs: object,
-    ) -> None: ...
+    ) -> None:
+        """Delegate a warning call to the underlying logger."""
+        ...
     @deprecated("Deprecated since Python 3.3. Use `LoggerAdapter.warning()` instead.")
     def warn(
         self,
@@ -1117,7 +1128,13 @@ def warning(
     stack_info: bool = False,
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None,
-) -> None: ...
+) -> None:
+    """
+    Log a message with severity 'WARNING' on the root logger. If the logger has
+    no handlers, call basicConfig() to add a console handler with a pre-defined
+    format.
+    """
+    ...
 @deprecated("Deprecated since Python 3.3. Use `warning()` instead.")
 def warn(
     msg: object,

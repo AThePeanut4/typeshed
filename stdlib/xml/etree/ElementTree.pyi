@@ -215,8 +215,27 @@ class Element(Generic[_Tag]):
         ...
 
 def SubElement(parent: Element, tag: str, attrib: dict[str, str] = ..., **extra: str) -> Element: ...
-def Comment(text: str | None = None) -> Element[_ElementCallable]: ...
-def ProcessingInstruction(target: str, text: str | None = None) -> Element[_ElementCallable]: ...
+def Comment(text: str | None = None) -> Element[_ElementCallable]:
+    """
+    Comment element factory.
+
+    This function creates a special element which the standard serializer
+    serializes as an XML comment.
+
+    *text* is a string containing the comment string.
+    """
+    ...
+def ProcessingInstruction(target: str, text: str | None = None) -> Element[_ElementCallable]:
+    """
+    Processing Instruction element factory.
+
+    This function creates a special element which the standard serializer
+    serializes as an XML comment.
+
+    *target* is a string containing the processing instruction, *text* is a
+    string containing the processing instruction contents, if any.
+    """
+    ...
 
 PI = ProcessingInstruction
 

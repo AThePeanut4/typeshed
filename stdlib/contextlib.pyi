@@ -49,8 +49,11 @@ _CM_EF = TypeVar("_CM_EF", bound=AbstractContextManager[Any, Any] | _ExitFunc)
 # allowlist for use as a Protocol.
 @runtime_checkable
 class AbstractContextManager(ABC, Protocol[_T_co, _ExitT_co]):  # type: ignore[misc]  # pyright: ignore[reportGeneralTypeIssues]
+    """An abstract base class for context managers."""
     __slots__ = ()
-    def __enter__(self) -> _T_co: ...
+    def __enter__(self) -> _T_co:
+        """Return `self` upon entering the runtime context."""
+        ...
     @abstractmethod
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None, /
@@ -63,8 +66,11 @@ class AbstractContextManager(ABC, Protocol[_T_co, _ExitT_co]):  # type: ignore[m
 # allowlist for use as a Protocol.
 @runtime_checkable
 class AbstractAsyncContextManager(ABC, Protocol[_T_co, _ExitT_co]):  # type: ignore[misc]  # pyright: ignore[reportGeneralTypeIssues]
+    """An abstract base class for asynchronous context managers."""
     __slots__ = ()
-    async def __aenter__(self) -> _T_co: ...
+    async def __aenter__(self) -> _T_co:
+        """Return `self` upon entering the runtime context."""
+        ...
     @abstractmethod
     async def __aexit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None, /

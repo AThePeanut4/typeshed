@@ -16,6 +16,62 @@ _TaskItem: TypeAlias = tuple[Callable[..., Any], tuple[Any, ...], dict[str, Any]
 _Receiver: TypeAlias = Callable[[_ValueSource[_T]], object]
 
 class ThreadPool(GroupMappingMixin):
+    """
+    A pool of native worker threads.
+
+    This can be useful for CPU intensive functions, or those that
+    otherwise will not cooperate with gevent. The best functions to execute
+    in a thread pool are small functions with a single purpose; ideally they release
+    the CPython GIL. Such functions are extension functions implemented in C.
+
+    It implements the same operations as a :class:`gevent.pool.Pool`,
+    but using threads instead of greenlets.
+
+    .. note:: The method :meth:`apply_async` will always return a new
+       greenlet, bypassing the threadpool entirely.
+
+    Most users will not need to create instances of this class. Instead,
+    use the threadpool already associated with gevent's hub::
+
+        pool = gevent.get_hub().threadpool
+        result = pool.spawn(lambda: "Some func").get()
+
+    .. important:: It is only possible to use instances of this class from
+       the thread running their hub. Typically that means from the thread that
+       created them. Using the pattern shown above takes care of this.
+
+       There is no gevent-provided way to have a single process-wide limit on the
+       number of threads in various pools when doing that, however. The suggested
+       way to use gevent and threadpools is to have a single gevent hub
+       and its one threadpool (which is the default without doing any extra work).
+       Only dispatch minimal blocking functions to the threadpool, functions that
+       do not use the gevent hub.
+
+    The `len` of instances of this class is the number of enqueued
+    (unfinished) tasks.
+
+    Just before a task starts running in a worker thread,
+    the values of :func:`threading.setprofile` and :func:`threading.settrace`
+    are consulted. Any values there are installed in that thread for the duration
+    of the task (using :func:`sys.setprofile` and :func:`sys.settrace`, respectively).
+    (Because worker threads are long-lived and outlast any given task, this arrangement
+    lets the hook functions change between tasks, but does not let them see the
+    bookkeeping done by the worker thread itself.)
+
+    .. caution:: Instances of this class are only true if they have
+       unfinished tasks.
+
+    .. versionchanged:: 1.5a3
+       The undocumented ``apply_e`` function, deprecated since 1.1,
+       was removed.
+    .. versionchanged:: 20.12.0
+       Install the profile and trace functions in the worker thread while
+       the worker thread is running the supplied task.
+    .. versionchanged:: 22.08.0
+       Add the option to let idle threads expire and be removed
+       from the pool after *idle_task_timeout* seconds (-1 for no
+       timeout)
+    """
     __slots__ = (
         "hub",
         "_maxsize",
@@ -111,6 +167,13 @@ class ThreadPool(GroupMappingMixin):
         ...
 
 class ThreadResult(Generic[_T]):
+    """
+    A one-time event for cross-thread communication.
+
+    Uses a hub's "async" watcher capability; it must be constructed and
+    destroyed in the thread running the hub (because creating, starting, and
+    destroying async watchers isn't guaranteed to be thread safe).
+    """
     __slots__ = ("exc_info", "async_watcher", "_call_when_ready", "value", "context", "hub", "receiver")
     receiver: _Receiver[_T]
     hub: Hub

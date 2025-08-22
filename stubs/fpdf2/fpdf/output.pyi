@@ -150,12 +150,20 @@ class PDFXObject(PDFContentStream):
     ) -> None: ...
 
 class PDFICCProfile(PDFContentStream):
+    """
+    Holds values for ICC Profile Stream
+    Args:
+        contents (str): stream content
+        n (int): [1|3|4], # the numbers for colors 1=Gray, 3=RGB, 4=CMYK
+        alternate (str): ['DeviceGray'|'DeviceRGB'|'DeviceCMYK']
+    """
     __slots__ = ("_id", "_contents", "filter", "length", "n", "alternate")
     n: Incomplete
     alternate: Name
     def __init__(self, contents: bytes, n, alternate: str) -> None: ...
 
 class PDFPageLabel:
+    """This will be displayed by some PDF readers to identify pages."""
     __slots__ = ("_style", "_prefix", "st")
     st: int
     def __init__(self, label_style: PageLabelStyle, label_prefix: str, label_start: int) -> None: ...
@@ -233,6 +241,26 @@ class PDFXrefAndTrailer(ContentWithoutID):
     def serialize(self, _security_handler: StandardSecurityHandler | None = None) -> str: ...
 
 class OutputIntentDictionary:
+    """
+    The optional OutputIntents (PDF 1.4) entry in the document
+    catalog dictionary holds an array of output intent dictionaries,
+    each describing the colour reproduction characteristics of a possible
+    output device.
+
+    Args:
+        subtype (OutputIntentSubType, required): PDFA, PDFX or ISOPDF
+        output_condition_identifier (str, required): see the Name in
+            https://www.color.org/registry.xalter
+        output_condition (str, optional): see the Definition in
+            https://www.color.org/registry.xalter
+        registry_name (str, optional): "https://www.color.org"
+        dest_output_profile (PDFICCProfile, required/optional):
+            PDFICCProfile | None # (required if
+            output_condition_identifier does not specify a standard
+            production condition; optional otherwise)
+        info (str, required/optional see dest_output_profile): human
+            readable description of profile
+    """
     __slots__ = ("type", "s", "output_condition_identifier", "output_condition", "registry_name", "dest_output_profile", "info")
     type: Name
     s: Name

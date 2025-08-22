@@ -17,6 +17,10 @@ class UpdateDict(dict[str, Any]):
     updated_args: tuple[Any, ...] | None
 
 class exists_property(Generic[_ScopeT]):
+    """
+    Represents a property that either is listed in the Cache-Control
+    header, or is not listed (has no value)
+    """
     @overload
     def __init__(self: exists_property[None], prop: str) -> None: ...
     @overload
@@ -37,6 +41,11 @@ class exists_property(Generic[_ScopeT]):
     def __delete__(self, obj: CacheControl[_ScopeT]) -> None: ...
 
 class value_property(Generic[_T, _DefaultT, _NoneLiteral, _ScopeT]):
+    """
+    Represents a property that has a value in the Cache-Control header.
+
+    When no value is actually given, the value of self.none is returned.
+    """
     def __init__(self, prop: str, default: _DefaultT = None, none: _NoneLiteral = None, type: _ScopeT = None) -> None: ...  # type: ignore[assignment]
     @overload
     def __get__(self, obj: None, type: type[CacheControl[Any]] | None = None) -> Self: ...

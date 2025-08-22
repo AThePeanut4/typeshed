@@ -75,6 +75,7 @@ class _TaskFactory(Protocol):
     def __call__(self, loop: AbstractEventLoop, factory: _CoroutineLike[_T], /) -> Future[_T]: ...
 
 class Handle:
+    """Object returned by callback registration methods."""
     __slots__ = ("_callback", "_args", "_cancelled", "_loop", "_source_traceback", "_repr", "__weakref__", "_context")
     _cancelled: bool
     _args: Sequence[Any]
@@ -88,6 +89,7 @@ class Handle:
         def get_context(self) -> Context: ...
 
 class TimerHandle(Handle):
+    """Object returned by timed callback registration methods."""
     __slots__ = ["_scheduled", "_when"]
     def __init__(
         self,
@@ -1211,9 +1213,16 @@ def new_event_loop() -> AbstractEventLoop:
 if sys.version_info < (3, 14):
     if sys.version_info >= (3, 12):
         @deprecated("Deprecated since Python 3.12; removed in Python 3.14.")
-        def get_child_watcher() -> AbstractChildWatcher: ...
+        def get_child_watcher() -> AbstractChildWatcher:
+            """Equivalent to calling get_event_loop_policy().get_child_watcher()."""
+            ...
         @deprecated("Deprecated since Python 3.12; removed in Python 3.14.")
-        def set_child_watcher(watcher: AbstractChildWatcher) -> None: ...
+        def set_child_watcher(watcher: AbstractChildWatcher) -> None:
+            """
+            Equivalent to calling
+            get_event_loop_policy().set_child_watcher(watcher).
+            """
+            ...
 
     else:
         def get_child_watcher() -> AbstractChildWatcher:

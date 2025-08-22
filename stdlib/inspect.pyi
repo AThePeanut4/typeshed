@@ -723,6 +723,28 @@ class _empty:
     ...
 
 class Signature:
+    """
+    A Signature object represents the overall signature of a function.
+    It stores a Parameter object for each parameter accepted by the
+    function, as well as information specific to the function itself.
+
+    A Signature object has the following public attributes and methods:
+
+    * parameters : OrderedDict
+        An ordered mapping of parameters' names to the corresponding
+        Parameter objects (keyword-only arguments are in the same order
+        as listed in `code.co_varnames`).
+    * return_annotation : object
+        The annotation for the return type of the function if specified.
+        If the function has no annotation for its return type, this
+        attribute is set to `Signature.empty`.
+    * bind(*args, **kwargs) -> BoundArguments
+        Creates a mapping from positional and keyword arguments to
+        parameters.
+    * bind_partial(*args, **kwargs) -> BoundArguments
+        Creates a partial mapping from positional and keyword arguments
+        to parameters (simulating 'functools.partial' behavior.)
+    """
     __slots__ = ("_return_annotation", "_parameters")
     def __init__(
         self, parameters: Sequence[Parameter] | None = None, *, return_annotation: Any = ..., __validate_parameters__: bool = True
@@ -905,6 +927,27 @@ if sys.version_info >= (3, 12):
         ...
 
 class Parameter:
+    """
+    Represents a parameter in a function signature.
+
+    Has the following public attributes:
+
+    * name : str
+        The name of the parameter as a string.
+    * default : object
+        The default value for the parameter if specified.  If the
+        parameter has no default value, this attribute is set to
+        `Parameter.empty`.
+    * annotation
+        The annotation for the parameter if specified.  If the
+        parameter has no annotation, this attribute is set to
+        `Parameter.empty`.
+    * kind : str
+        Describes how argument values are bound to the parameter.
+        Possible values: `Parameter.POSITIONAL_ONLY`,
+        `Parameter.POSITIONAL_OR_KEYWORD`, `Parameter.VAR_POSITIONAL`,
+        `Parameter.KEYWORD_ONLY`, `Parameter.VAR_KEYWORD`.
+    """
     __slots__ = ("_name", "_kind", "_default", "_annotation")
     def __init__(self, name: str, kind: _ParameterKind, *, default: Any = ..., annotation: Any = ...) -> None: ...
     empty = _empty
@@ -939,6 +982,22 @@ class Parameter:
     def __hash__(self) -> int: ...
 
 class BoundArguments:
+    """
+    Result of `Signature.bind` call.  Holds the mapping of arguments
+    to the function's parameters.
+
+    Has the following public attributes:
+
+    * arguments : dict
+        An ordered mutable mapping of parameters' names to arguments' values.
+        Does not contain arguments' default values.
+    * signature : Signature
+        The Signature object that created this instance.
+    * args : tuple
+        Tuple of positional arguments values.
+    * kwargs : dict
+        Dict of keyword arguments values.
+    """
     __slots__ = ("arguments", "_signature", "__weakref__")
     arguments: OrderedDict[str, Any]
     @property

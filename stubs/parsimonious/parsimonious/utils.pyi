@@ -21,6 +21,14 @@ def evaluate_string(string: str | ast.AST) -> Any:
     ...
 
 class Token(StrAndRepr):
+    """
+    A class to represent tokens, for use with TokenGrammars
+
+    You will likely want to subclass this to hold additional information, like
+    the characters that you lexed to create this token. Alternately, feel free
+    to create your own class from scratch. The only contract is that tokens
+    must have a ``type`` attr.
+    """
     __slots__ = ["type"]
     type: str
     def __init__(self, type: str) -> None: ...

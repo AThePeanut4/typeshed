@@ -95,10 +95,14 @@ def classify_class_attrs(object: object) -> list[tuple[str, str, type, str]]:
 
 if sys.version_info >= (3, 13):
     @deprecated("Deprecated since Python 3.13.")
-    def ispackage(path: str) -> bool: ...  # undocumented
+    def ispackage(path: str) -> bool:
+        """Guess whether a path refers to a package directory."""
+        ...
 
 else:
-    def ispackage(path: str) -> bool: ...  # undocumented
+    def ispackage(path: str) -> bool:
+        """Guess whether a path refers to a package directory."""
+        ...
 
 def source_synopsis(file: IO[AnyStr]) -> AnyStr | None: ...
 def synopsis(filename: str, cache: MutableMapping[str, tuple[int, str]] = {}) -> str | None:

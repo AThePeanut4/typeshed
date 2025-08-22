@@ -934,6 +934,7 @@ In the future, this property will contain the last metadata change time."""
 # on the allowlist for use as a Protocol starting in 3.14.
 @runtime_checkable
 class PathLike(ABC, Protocol[AnyStr_co]):  # type: ignore[misc]  # pyright: ignore[reportGeneralTypeIssues]
+    """Abstract base class for implementing the file system path protocol."""
     __slots__ = ()
     @abstractmethod
     def __fspath__(self) -> AnyStr_co:
@@ -1837,9 +1838,45 @@ if sys.platform != "win32":
         """
         Change to the directory of the given file descriptor.
 
-def getcwd() -> str: ...
-def getcwdb() -> bytes: ...
-def chmod(path: FileDescriptorOrPath, mode: int, *, dir_fd: int | None = None, follow_symlinks: bool = True) -> None: ...
+        fd must be opened on a directory, not a file.
+        Equivalent to os.chdir(fd).
+        """
+        ...
+
+def getcwd() -> str:
+    """Return a unicode string representing the current working directory."""
+    ...
+def getcwdb() -> bytes:
+    """Return a bytes string representing the current working directory."""
+    ...
+def chmod(path: FileDescriptorOrPath, mode: int, *, dir_fd: int | None = None, follow_symlinks: bool = True) -> None:
+    """
+    Change the access permissions of a file.
+
+      path
+        Path to be modified.  May always be specified as a str, bytes, or a path-like object.
+        On some platforms, path may also be specified as an open file descriptor.
+        If this functionality is unavailable, using it raises an exception.
+      mode
+        Operating-system mode bitfield.
+        Be careful when using number literals for *mode*. The conventional UNIX notation for
+        numeric modes uses an octal base, which needs to be indicated with a ``0o`` prefix in
+        Python.
+      dir_fd
+        If not None, it should be a file descriptor open to a directory,
+        and path should be relative; path will then be relative to that
+        directory.
+      follow_symlinks
+        If False, and the last element of the path is a symbolic link,
+        chmod will modify the symbolic link itself instead of the file
+        the link points to.
+
+    It is an error to use dir_fd or follow_symlinks when specifying path as
+      an open file descriptor.
+    dir_fd and follow_symlinks may not be implemented on your platform.
+      If they are unavailable, using them will raise a NotImplementedError.
+    """
+    ...
 
 if sys.platform != "win32" and sys.platform != "linux":
     def chflags(path: StrOrBytesPath, flags: int, follow_symlinks: bool = True) -> None:

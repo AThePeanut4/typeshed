@@ -29,6 +29,7 @@ class BidiCharacter:
 
 @dataclass
 class DirectionalStatus:
+    """DirectionalStatus(embedding_level: int, directional_override_status: str, directional_isolate_status: bool)"""
     __slots__ = ["embedding_level", "directional_override_status", "directional_isolate_status"]
     embedding_level: int  # between 0 and MAX_DEPTH
     directional_override_status: Literal["N", "L", "R"]

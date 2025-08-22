@@ -19,6 +19,7 @@ class ArrayDescriptor(Generic[_T]):
     def __set__(self, instance: MutableSequence[_T], value: _T) -> None: ...
 
 class StyleArray(array[int]):
+    """Simplified named tuple with an array"""
     __slots__ = ()
     tagname: ClassVar[str]
     fontId: ArrayDescriptor[int]

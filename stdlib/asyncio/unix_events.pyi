@@ -358,9 +358,17 @@ if sys.platform != "win32":
             """UNIX event loop policy with a watcher for child processes."""
             if sys.version_info >= (3, 12):
                 @deprecated("Deprecated since Python 3.12; removed in Python 3.14.")
-                def get_child_watcher(self) -> AbstractChildWatcher: ...
+                def get_child_watcher(self) -> AbstractChildWatcher:
+                    """
+                    Get the watcher for child processes.
+
+                    If not yet set, a ThreadedChildWatcher object is automatically created.
+                    """
+                    ...
                 @deprecated("Deprecated since Python 3.12; removed in Python 3.14.")
-                def set_child_watcher(self, watcher: AbstractChildWatcher | None) -> None: ...
+                def set_child_watcher(self, watcher: AbstractChildWatcher | None) -> None:
+                    """Set the watcher for child processes."""
+                    ...
             else:
                 def get_child_watcher(self) -> AbstractChildWatcher:
                     """

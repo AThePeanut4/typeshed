@@ -763,7 +763,16 @@ def cpu_count(logical: bool = True) -> int | None:
     """
     ...
 @overload
-def cpu_freq(percpu: Literal[False] = False) -> scpufreq: ...
+def cpu_freq(percpu: Literal[False] = False) -> scpufreq:
+    """
+    Return CPU frequency as a namedtuple including current,
+    min and max frequency expressed in Mhz.
+
+    If *percpu* is True and the system supports per-cpu frequency
+    retrieval (Linux only) a list of frequencies is returned for
+    each CPU. If not a list with one element is returned.
+    """
+    ...
 @overload
 def cpu_freq(percpu: Literal[True]) -> list[scpufreq]:
     """
@@ -776,7 +785,30 @@ def cpu_freq(percpu: Literal[True]) -> list[scpufreq]:
     """
     ...
 @overload
-def cpu_times(percpu: Literal[False] = False) -> scputimes: ...
+def cpu_times(percpu: Literal[False] = False) -> scputimes:
+    """
+    Return system-wide CPU times as a namedtuple.
+    Every CPU time represents the seconds the CPU has spent in the
+    given mode. The namedtuple's fields availability varies depending on the
+    platform:
+
+     - user
+     - system
+     - idle
+     - nice (UNIX)
+     - iowait (Linux)
+     - irq (Linux, FreeBSD)
+     - softirq (Linux)
+     - steal (Linux >= 2.6.11)
+     - guest (Linux >= 2.6.24)
+     - guest_nice (Linux >= 3.2.0)
+
+    When *percpu* is True return a list of namedtuples for each CPU.
+    First element of the list refers to first CPU, second element
+    to second CPU and so on.
+    The order of the list is consistent across calls.
+    """
+    ...
 @overload
 def cpu_times(percpu: Literal[True]) -> list[scputimes]:
     """

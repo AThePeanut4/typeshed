@@ -66,6 +66,10 @@ class DOMInputSource:
     baseURI: str | None
 
 class DOMBuilderFilter:
+    """
+    Element filter which can be used to tailor construction of
+    a DOM instance.
+    """
     FILTER_ACCEPT: Final = 1
     FILTER_REJECT: Final = 2
     FILTER_SKIP: Final = 3

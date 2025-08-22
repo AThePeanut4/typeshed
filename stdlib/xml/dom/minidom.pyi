@@ -276,6 +276,14 @@ class Attr(Node):
 # In the DOM, this interface isn't specific to Attr, but our implementation is
 # because that's the only place we use it.
 class NamedNodeMap:
+    """
+    The attribute list is a transient interface to the underlying
+    dictionaries.  Mutations here will change the underlying element's
+    dictionary.
+
+    Ordering is imposed artificially and does not reflect the order of
+    attributes as found in an input document.
+    """
     __slots__ = ("_attrs", "_attrsNS", "_ownerElement")
     def __init__(self, attrs: dict[str, Attr], attrsNS: dict[_NSName, Attr], ownerElement: Element) -> None: ...
     @property
@@ -433,6 +441,10 @@ class Element(Node):
     def removeChild(self, oldChild: _ElementChildrenVar) -> _ElementChildrenVar: ...  # type: ignore[override]
 
 class Childless:
+    """
+    Mixin that makes childless-ness easy to implement and avoids
+    the complexity of the Node methods that deal with children.
+    """
     __slots__ = ()
     attributes: None
     childNodes: EmptyNodeList
@@ -598,6 +610,7 @@ class ReadOnlySequentialNamedNodeMap(Generic[_N]):
         ...
 
 class Identified:
+    """Mix-in class that supports the publicId and systemId attributes."""
     __slots__ = ("publicId", "systemId")
     publicId: str | None
     systemId: str | None
@@ -700,6 +713,13 @@ class DOMImplementation(DOMImplementationLS):
     def getInterface(self, feature: str) -> Self | None: ...
 
 class ElementInfo:
+    """
+    Object that represents content-model information for an element.
+
+    This implementation is not expected to be used in practice; DOM
+    builders should provide implementations which do the right thing
+    using information available to it.
+    """
     __slots__ = ("tagName",)
     tagName: str
     def __init__(self, name: str) -> None: ...

@@ -169,6 +169,7 @@ class ConflictPair:
         ...
 
 class LRPlanarity:
+    """A class to maintain the state during planarity check."""
     __slots__ = [
         "G",
         "roots",

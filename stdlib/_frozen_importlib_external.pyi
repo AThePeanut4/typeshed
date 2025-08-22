@@ -385,7 +385,13 @@ if sys.version_info >= (3, 11):
             ...
         def exec_module(self, module: types.ModuleType) -> None: ...
         @deprecated("Deprecated since Python 3.10; will be removed in Python 3.15. Use `exec_module()` instead.")
-        def load_module(self, fullname: str) -> types.ModuleType: ...
+        def load_module(self, fullname: str) -> types.ModuleType:
+            """
+            Load a namespace module.
+
+            This method is deprecated.  Use exec_module() instead.
+            """
+            ...
         def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         if sys.version_info < (3, 12):
             @staticmethod
@@ -416,7 +422,13 @@ else:
         def exec_module(self, module: types.ModuleType) -> None: ...
         if sys.version_info >= (3, 10):
             @deprecated("Deprecated since Python 3.10; will be removed in Python 3.15. Use `exec_module()` instead.")
-            def load_module(self, fullname: str) -> types.ModuleType: ...
+            def load_module(self, fullname: str) -> types.ModuleType:
+                """
+                Load a namespace module.
+
+                This method is deprecated.  Use exec_module() instead.
+                """
+                ...
             @staticmethod
             @deprecated(
                 "Deprecated since Python 3.4; removed in Python 3.12. "
@@ -431,7 +443,13 @@ else:
                 ...
             def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         else:
-            def load_module(self, fullname: str) -> types.ModuleType: ...
+            def load_module(self, fullname: str) -> types.ModuleType:
+                """
+                Load a namespace module.
+
+                This method is deprecated.  Use exec_module() instead.
+                """
+                ...
             @classmethod
             @deprecated(
                 "Deprecated since Python 3.4; removed in Python 3.12. "

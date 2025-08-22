@@ -62,7 +62,9 @@ def GetConsoleTitle():
     """Returns the title of console to which calling process is attached"""
     ...
 @overload
-def GenerateConsoleCtrlEvent(CtrlEvent: Literal[1], ProcessGroupId: Literal[0] = 0) -> NoReturn: ...
+def GenerateConsoleCtrlEvent(CtrlEvent: Literal[1], ProcessGroupId: Literal[0] = 0) -> NoReturn:
+    """Sends a control signal to a group of processes attached to a common console"""
+    ...
 @overload
 def GenerateConsoleCtrlEvent(CtrlEvent: Literal[0, 1], ProcessGroupId: int) -> None:
     """Sends a control signal to a group of processes attached to a common console"""

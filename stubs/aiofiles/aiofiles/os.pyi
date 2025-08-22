@@ -139,7 +139,16 @@ async def remove(
     ...
 async def unlink(
     path: StrOrBytesPath, *, dir_fd: int | None = None, loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
-) -> None: ...
+) -> None:
+    """
+    Remove a file (same as remove()).
+
+    If dir_fd is not None, it should be a file descriptor open to a directory,
+      and path should be relative; path will then be relative to that directory.
+    dir_fd may not be implemented on your platform.
+      If it is unavailable, using it will raise a NotImplementedError.
+    """
+    ...
 async def mkdir(
     path: StrOrBytesPath,
     mode: int = 511,
@@ -227,7 +236,17 @@ async def symlink(
     ...
 async def readlink(
     path: AnyStr, *, dir_fd: int | None = None, loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
-) -> AnyStr: ...
+) -> AnyStr:
+    """
+    Return a string representing the path to which the symbolic link points.
+
+    If dir_fd is not None, it should be a file descriptor open to a directory,
+    and path should be relative; path will then be relative to that directory.
+
+    dir_fd may not be implemented on your platform.  If it is unavailable,
+    using it will raise a NotImplementedError.
+    """
+    ...
 async def rmdir(
     path: StrOrBytesPath, *, dir_fd: int | None = None, loop: AbstractEventLoop | None = ..., executor: Executor | None = ...
 ) -> None:

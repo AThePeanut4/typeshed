@@ -196,6 +196,7 @@ class InfoExtractor:
                                 * a string in the format of CLIENT[:OS]
                                 * a list or a tuple of CLIENT[:OS] strings or ImpersonateTarget instances
                                 * a boolean value; True means any impersonate target is sufficient
+                    * available_at  Unix timestamp of when a format will be available to download
                     * downloader_options  A dictionary of downloader options
                                  (For internal use only)
                                  * http_chunk_size Chunk size for HTTP downloads
@@ -754,7 +755,14 @@ class InfoExtractor:
         ...
     # Calls _get_subtitles which only raises NotImplementedError here.
     def extract_subtitles(self, *args: Any, **kwargs: Any) -> list[dict[str, Any]]: ...
-    def _configuration_arg(self, key: str, default: Any = ..., *, ie_key: str | None = None, casesense: bool = False) -> Any: ...
+    def _configuration_arg(self, key: str, default: Any = ..., *, ie_key: str | None = None, casesense: bool = False) -> Any:
+        """
+        @returns            A list of values for the extractor argument given by "key"
+                            or "default" if no such key is present
+        @param default      The default value to return when the key is not present (default: [])
+        @param casesense    When false, the values are converted to lower case
+        """
+        ...
     # These are dynamically created.
     def _download_xml_handle(
         self,
@@ -771,7 +779,14 @@ class InfoExtractor:
         expected_status: int | None = None,
         impersonate: str | None = None,
         require_impersonation: bool = False,
-    ) -> tuple[ET.ElementTree, Response]: ...
+    ) -> tuple[ET.ElementTree, Response]:
+        """
+        @param transform_source     Apply this transformation before parsing
+        @returns                    (xml as an xml.etree.ElementTree.Element, URL handle)
+
+        See _download_webpage_handle docstring for other arguments specification
+        """
+        ...
     def _download_xml(
         self,
         url_or_request: str | Request,
@@ -787,7 +802,14 @@ class InfoExtractor:
         expected_status: int | None = None,
         impersonate: str | None = None,
         require_impersonation: bool = False,
-    ) -> ET.ElementTree: ...
+    ) -> ET.ElementTree:
+        """
+        @param transform_source     Apply this transformation before parsing
+        @returns                    xml as an xml.etree.ElementTree.Element
+
+        See _download_webpage_handle docstring for other arguments specification
+        """
+        ...
     def _download_socket_json_handle(
         self,
         url_or_request: str | Request,
@@ -803,7 +825,14 @@ class InfoExtractor:
         expected_status: int | None = None,
         impersonate: str | None = None,
         require_impersonation: bool = False,
-    ) -> tuple[dict[str, Any], Response]: ...
+    ) -> tuple[dict[str, Any], Response]:
+        """
+        @param transform_source     Apply this transformation before parsing
+        @returns                    (JSON object as a dict, URL handle)
+
+        See _download_webpage_handle docstring for other arguments specification
+        """
+        ...
     def _download_socket_json(
         self,
         url_or_request: str | Request,
@@ -819,7 +848,14 @@ class InfoExtractor:
         expected_status: int | None = None,
         impersonate: str | None = None,
         require_impersonation: bool = False,
-    ) -> dict[str, Any]: ...
+    ) -> dict[str, Any]:
+        """
+        @param transform_source     Apply this transformation before parsing
+        @returns                    JSON object as a dict
+
+        See _download_webpage_handle docstring for other arguments specification
+        """
+        ...
     def _download_json_handle(
         self,
         url_or_request: str | Request,
@@ -835,7 +871,14 @@ class InfoExtractor:
         expected_status: int | None = None,
         impersonate: str | None = None,
         require_impersonation: bool = False,
-    ) -> tuple[dict[str, Any], Response]: ...
+    ) -> tuple[dict[str, Any], Response]:
+        """
+        @param transform_source     Apply this transformation before parsing
+        @returns                    (JSON object as a dict, URL handle)
+
+        See _download_webpage_handle docstring for other arguments specification
+        """
+        ...
     def _download_json(
         self,
         url_or_request: str | Request,
@@ -851,7 +894,14 @@ class InfoExtractor:
         expected_status: int | None = None,
         impersonate: str | None = None,
         require_impersonation: bool = False,
-    ) -> dict[str, Any]: ...
+    ) -> dict[str, Any]:
+        """
+        @param transform_source     Apply this transformation before parsing
+        @returns                    JSON object as a dict
+
+        See _download_webpage_handle docstring for other arguments specification
+        """
+        ...
     def _download_webpage(
         self,
         url_or_request: str | Request,
@@ -911,7 +961,13 @@ class InfoExtractor:
         headers: Mapping[str, str] | None = None,
         query: Mapping[str, str] | None = None,
         expected_status: int | None = None,
-    ) -> Response | Literal[False]: ...
+    ) -> Response | Literal[False]:
+        """
+        Return the response handle.
+
+        See _download_webpage docstring for arguments specification.
+        """
+        ...
     @classmethod
     def _match_id(cls, url: str) -> str: ...
     def _search_regex(

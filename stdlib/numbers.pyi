@@ -68,6 +68,12 @@ class _IntegralLike(_RealLike, Protocol):
 #################
 
 class Number(metaclass=ABCMeta):
+    """
+    All numbers inherit from this class.
+
+    If you just want to check if an argument x is a number, without
+    caring what kind, use isinstance(x, Number).
+    """
     __slots__ = ()
     @abstractmethod
     def __hash__(self) -> int: ...
@@ -75,6 +81,16 @@ class Number(metaclass=ABCMeta):
 # See comment at the top of the file
 # for why some of these return types are purposefully vague
 class Complex(Number, _ComplexLike):
+    """
+    Complex defines the operations that work on the builtin complex type.
+
+    In short, those are: a conversion to complex, .real, .imag, +, -,
+    *, /, **, abs(), .conjugate, ==, and !=.
+
+    If it is given heterogeneous arguments, and doesn't have special
+    knowledge about them, it should fall back to the builtin complex
+    type as described below.
+    """
     __slots__ = ()
     @abstractmethod
     def __complex__(self) -> complex:
@@ -164,6 +180,14 @@ class Complex(Number, _ComplexLike):
 # See comment at the top of the file
 # for why some of these return types are purposefully vague
 class Real(Complex, _RealLike):
+    """
+    To Complex, Real adds the operations that work on real numbers.
+
+    In short, those are: a conversion to float, trunc(), divmod,
+    %, <, <=, >, and >=.
+
+    Real also provides defaults for the derived operations.
+    """
     __slots__ = ()
     @abstractmethod
     def __float__(self) -> float:
@@ -286,6 +310,7 @@ class Real(Complex, _RealLike):
 # See comment at the top of the file
 # for why some of these return types are purposefully vague
 class Rational(Real):
+    """.numerator and .denominator should be in lowest terms."""
     __slots__ = ()
     @property
     @abstractmethod
@@ -306,6 +331,12 @@ class Rational(Real):
 # See comment at the top of the file
 # for why some of these return types are purposefully vague
 class Integral(Rational, _IntegralLike):
+    """
+    Integral adds methods that work on integral numbers.
+
+    In short, these are conversion to int, pow with modulus, and the
+    bit-string operations.
+    """
     __slots__ = ()
     @abstractmethod
     def __int__(self) -> int:

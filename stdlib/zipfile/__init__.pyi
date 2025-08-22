@@ -459,6 +459,7 @@ class PyZipFile(ZipFile):
         ...
 
 class ZipInfo:
+    """Class with attributes describing each file in the ZIP archive."""
     __slots__ = (
         "orig_filename",
         "filename",

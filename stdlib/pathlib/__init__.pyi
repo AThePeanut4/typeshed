@@ -285,12 +285,33 @@ class PurePath(PathLike[str]):
             ...
 
 class PurePosixPath(PurePath):
+    """
+    PurePath subclass for non-Windows systems.
+
+    On a POSIX system, instantiating a PurePath should return this object.
+    However, you can also instantiate it directly on any system.
+    """
     __slots__ = ()
 
 class PureWindowsPath(PurePath):
+    """
+    PurePath subclass for Windows systems.
+
+    On a Windows system, instantiating a PurePath should return this object.
+    However, you can also instantiate it directly on any system.
+    """
     __slots__ = ()
 
 class Path(PurePath):
+    """
+    PurePath subclass that can make system calls.
+
+    Path represents a filesystem path but unlike PurePath, also offers
+    methods to do system calls on path objects. Depending on your system,
+    instantiating a Path will return either a PosixPath or a WindowsPath
+    object. You can also instantiate a PosixPath or WindowsPath directly,
+    but cannot instantiate a WindowsPath on a POSIX system or vice versa.
+    """
     if sys.version_info >= (3, 14):
         __slots__ = ("_info",)
     elif sys.version_info >= (3, 10):
@@ -765,12 +786,24 @@ class Path(PurePath):
     if sys.version_info >= (3, 12):
         def walk(
             self, top_down: bool = True, on_error: Callable[[OSError], object] | None = None, follow_symlinks: bool = False
-        ) -> Iterator[tuple[Self, list[str], list[str]]]: ...
+        ) -> Iterator[tuple[Self, list[str], list[str]]]:
+            """Walk the directory tree from this directory, similar to os.walk()."""
+            ...
 
 class PosixPath(Path, PurePosixPath):
+    """
+    Path subclass for non-Windows systems.
+
+    On a POSIX system, instantiating a Path should return this object.
+    """
     __slots__ = ()
 
 class WindowsPath(Path, PureWindowsPath):
+    """
+    Path subclass for Windows systems.
+
+    On a Windows system, instantiating a Path should return this object.
+    """
     __slots__ = ()
 
 if sys.version_info >= (3, 13):

@@ -31,6 +31,10 @@ class HarfBuzzFont(Incomplete):  # derives from uharfbuzz.Font
 
 @dataclass
 class FontFace:
+    """
+    Represent basic font styling properties.
+    This is a subset of `fpdf.graphics_state.GraphicsStateMixin` properties.
+    """
     __slots__ = ("family", "emphasis", "size_pt", "color", "fill_color")
     family: str | None
     emphasis: TextEmphasis | None
@@ -213,6 +217,11 @@ class PDFFontDescriptor(PDFObject):
 
 @dataclass(order=True)
 class Glyph:
+    """
+    This represents one glyph on the font
+    Unicode is a tuple because ligatures or character substitution
+    can map a sequence of unicode characters to a single glyph
+    """
     __slots__ = ("glyph_id", "unicode", "glyph_name", "glyph_width")
     glyph_id: int
     unicode: tuple[Incomplete, ...]

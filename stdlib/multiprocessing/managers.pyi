@@ -40,6 +40,7 @@ class Namespace:
 _Namespace: TypeAlias = Namespace
 
 class Token:
+    """Type to uniquely identify a shared object"""
     __slots__ = ("typeid", "address", "id")
     typeid: str | bytes | None
     address: _Address | None

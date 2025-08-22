@@ -26,10 +26,29 @@ from ..spec import BasicProperties
 LOGGER: Logger
 
 class _CallbackResult:
+    """
+    CallbackResult is a non-thread-safe implementation for receiving
+    callback results; INTERNAL USE ONLY!
+    """
     __slots__ = ("_value_class", "_ready", "_values")
-    def __init__(self, value_class=None) -> None: ...
-    def reset(self) -> None: ...
-    def __bool__(self) -> bool: ...
+    def __init__(self, value_class=None) -> None:
+        """
+        :param callable value_class: only needed if the CallbackResult
+                                     instance will be used with
+                                     `set_value_once` and `append_element`.
+                                     *args and **kwargs of the value setter
+                                     methods will be passed to this class.
+        """
+        ...
+    def reset(self) -> None:
+        """Reset value, but not _value_class"""
+        ...
+    def __bool__(self) -> bool:
+        """
+        Called by python runtime to implement truth value testing and the
+        built-in operation bool(); NOTE: python 3.x
+        """
+        ...
     __nonzero__: Incomplete
     def __enter__(self):
         """
@@ -114,6 +133,7 @@ class _IoloopTimerContext:
         ...
 
 class _TimerEvt:
+    """Represents a timer created via `BlockingConnection.call_later`"""
     __slots__ = ("timer_id", "_callback")
     timer_id: Incomplete
     def __init__(self, callback) -> None:
@@ -124,9 +144,20 @@ class _TimerEvt:
         ...
 
 class _ConnectionBlockedUnblockedEvtBase:
+    """Base class for `_ConnectionBlockedEvt` and `_ConnectionUnblockedEvt`"""
     __slots__ = ("_callback", "_method_frame")
-    def __init__(self, callback, method_frame) -> None: ...
-    def dispatch(self) -> None: ...
+    def __init__(self, callback, method_frame) -> None:
+        """
+        :param callback: see callback parameter in
+          `BlockingConnection.add_on_connection_blocked_callback` and
+          `BlockingConnection.add_on_connection_unblocked_callback`
+        :param pika.frame.Method method_frame: with method_frame.method of type
+          `pika.spec.Connection.Blocked` or `pika.spec.Connection.Unblocked`
+        """
+        ...
+    def dispatch(self) -> None:
+        """Dispatch the user's callback method"""
+        ...
 
 class _ConnectionBlockedEvt(_ConnectionBlockedUnblockedEvtBase):
     """Represents a Connection.Blocked notification from RabbitMQ broker`"""
@@ -423,6 +454,10 @@ class _ChannelPendingEvt:
     ...
 
 class _ConsumerDeliveryEvt(_ChannelPendingEvt):
+    """
+    This event represents consumer message delivery `Basic.Deliver`; it
+    contains method, properties, and body of the delivered message.
+    """
     __slots__ = ("method", "properties", "body")
     method: Incomplete
     properties: Incomplete
@@ -437,6 +472,12 @@ class _ConsumerDeliveryEvt(_ChannelPendingEvt):
         ...
 
 class _ConsumerCancellationEvt(_ChannelPendingEvt):
+    """
+    This event represents server-initiated consumer cancellation delivered to
+    client via Basic.Cancel. After receiving Basic.Cancel, there will be no
+    further deliveries for the consumer identified by `consumer_tag` in
+    `Basic.Cancel`
+    """
     __slots__ = ("method_frame",)
     method_frame: Incomplete
     def __init__(self, method_frame) -> None:
@@ -451,6 +492,7 @@ class _ConsumerCancellationEvt(_ChannelPendingEvt):
         ...
 
 class _ReturnedMessageEvt(_ChannelPendingEvt):
+    """This event represents a message returned by broker via `Basic.Return`"""
     __slots__ = ("callback", "channel", "method", "properties", "body")
     callback: Incomplete
     channel: Incomplete
@@ -476,6 +518,10 @@ class _ReturnedMessageEvt(_ChannelPendingEvt):
         ...
 
 class ReturnedMessage:
+    """
+    Represents a message returned via Basic.Return in publish-acknowledgments
+    mode
+    """
     __slots__ = ("method", "properties", "body")
     method: Incomplete
     properties: Incomplete
@@ -489,6 +535,7 @@ class ReturnedMessage:
         ...
 
 class _ConsumerInfo:
+    """Information about an active consumer"""
     __slots__ = ("consumer_tag", "auto_ack", "on_message_callback", "alternate_event_sink", "state")
     SETTING_UP: int
     ACTIVE: int
@@ -537,6 +584,7 @@ class _ConsumerInfo:
         ...
 
 class _QueueConsumerGeneratorInfo:
+    """Container for information about the active queue consumer generator """
     __slots__ = ("params", "consumer_tag", "pending_events")
     params: Incomplete
     consumer_tag: Incomplete

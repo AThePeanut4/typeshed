@@ -17,9 +17,48 @@ __all__ = ["LineString"]
 _ConvertibleToLineString: TypeAlias = LineString | ArrayLikeSeq[float] | Iterable[Point | Iterable[SupportsFloat]]
 
 class LineString(BaseGeometry):
+    """
+    A geometry type composed of one or more line segments.
+
+    A LineString is a one-dimensional feature and has a non-zero length but
+    zero area. It may approximate a curve and need not be straight. A LineString may
+    be closed.
+
+    Parameters
+    ----------
+    coordinates : sequence
+        A sequence of (x, y, [,z]) numeric coordinate pairs or triples, or
+        an array-like with shape (N, 2) or (N, 3).
+        Also can be a sequence of Point objects, or combination of both.
+
+    Examples
+    --------
+    Create a LineString with two segments
+
+    >>> from shapely import LineString
+    >>> a = LineString([[0, 0], [1, 0], [1, 1]])
+    >>> a.length
+    2.0
+    """
     __slots__: list[str] = []
-    def __new__(self, coordinates: _ConvertibleToLineString | None = None) -> Self: ...
-    def svg(self, scale_factor: float = 1.0, stroke_color: str | None = None, opacity: float | None = None) -> str: ...  # type: ignore[override]
+    def __new__(self, coordinates: _ConvertibleToLineString | None = None) -> Self:
+        """Create a new LineString geometry."""
+        ...
+    def svg(self, scale_factor: float = 1.0, stroke_color: str | None = None, opacity: float | None = None) -> str:
+        """
+        Return SVG polyline element for the LineString geometry.
+
+        Parameters
+        ----------
+        scale_factor : float
+            Multiplication factor for the SVG stroke-width.  Default is 1.
+        stroke_color : str, optional
+            Hex string for stroke color. Default is to use "#66cc99" if
+            geometry is valid, and "#ff3333" if invalid.
+        opacity : float
+            Float number between 0 and 1 for color opacity. Default value is 0.8
+        """
+        ...
     def offset_curve(
         self,
         distance: float,

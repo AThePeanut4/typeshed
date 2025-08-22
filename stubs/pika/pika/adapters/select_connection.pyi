@@ -59,6 +59,7 @@ class SelectConnection(BaseConnection):
         ...
 
 class _Timeout:
+    """Represents a timeout"""
     __slots__ = ("deadline", "callback")
     deadline: Incomplete
     callback: Incomplete

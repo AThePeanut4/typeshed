@@ -13,6 +13,7 @@ from netaddr.strategy.eui48 import mac_eui48
 from netaddr.strategy.eui64 import eui64_base
 
 class BaseIdentifier:
+    """Base class for all IEEE identifiers."""
     __slots__ = ("_value", "__weakref__")
     def __init__(self) -> None: ...
     def __int__(self) -> int:
@@ -23,6 +24,11 @@ class BaseIdentifier:
         ...
 
 class OUI(BaseIdentifier):
+    """
+    An individual IEEE OUI (Organisationally Unique Identifier).
+
+    For online details see - http://standards.ieee.org/regauth/oui/
+    """
     __slots__ = ("records",)
     records: list[dict[str, object]]
     def __init__(self, oui: str | int) -> None:
@@ -80,6 +86,14 @@ class IAB(BaseIdentifier):
         ...
 
 class EUI(BaseIdentifier):
+    """
+    An IEEE EUI (Extended Unique Identifier).
+
+    Both EUI-48 (used for layer 2 MAC addresses) and EUI-64 are supported.
+
+    Input parsing for EUI-48 addresses is flexible, supporting many MAC
+    variants.
+    """
     __slots__ = ("_module", "_dialect")
     def __init__(
         self, addr: EUI | int | str, version: int | None = None, dialect: type[mac_eui48 | eui64_base] | None = None

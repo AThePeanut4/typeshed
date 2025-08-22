@@ -1022,6 +1022,17 @@ class Transport(Thread, ClosingContextManager):
     def run(self) -> None: ...
 
 class SecurityOptions:
+    """
+    Simple object containing the security preferences of an ssh transport.
+    These are tuples of acceptable ciphers, digests, key types, and key
+    exchange algorithms, listed in order of preference.
+
+    Changing the contents and/or order of these fields affects the underlying
+    `.Transport` (but only if you change them before starting the session).
+    If you try to add an algorithm that paramiko doesn't recognize,
+    ``ValueError`` will be raised.  If you try to assign something besides a
+    tuple to one of the fields, ``TypeError`` will be raised.
+    """
     __slots__ = "_transport"
     def __init__(self, transport: Transport) -> None: ...
     @property

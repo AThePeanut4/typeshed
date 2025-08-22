@@ -1,6 +1,7 @@
 from typing_extensions import deprecated
 
 class StyleProxy:
+    """Proxy formatting objects so that they cannot be altered"""
     __slots__ = "__target"
     def __init__(self, target) -> None: ...
     def __getattr__(self, attr: str): ...

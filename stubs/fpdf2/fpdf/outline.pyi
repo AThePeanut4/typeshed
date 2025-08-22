@@ -21,6 +21,7 @@ from .syntax import Destination, PDFObject, PDFString
 
 @dataclass
 class OutlineSection:
+    """OutlineSection(name, level, page_number, dest, struct_elem=None)"""
     __slots__ = ("name", "level", "page_number", "dest", "struct_elem")
     name: str
     level: int

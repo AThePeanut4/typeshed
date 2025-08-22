@@ -15,7 +15,17 @@ def update_wrapper(
     wrapped: object,
     assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
     updated: Sequence[str] = ("__dict__",),
-) -> _T: ...
+) -> _T:
+    """
+    Based on code from the standard library ``functools``, but
+    doesn't perform any of the troublesome imports.
+
+    functools imports RLock from _thread for purposes of the
+    ``lru_cache``, making it problematic to use from gevent.
+
+    The other imports are somewhat heavy: abc, collections, types.
+    """
+    ...
 def copy_globals(
     source: ModuleType,
     globs: MutableMapping[str, Any],

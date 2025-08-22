@@ -93,6 +93,10 @@ class ExpatBuilder:
     def xml_decl_handler(self, version: str, encoding: str | None, standalone: int) -> None: ...
 
 class FilterVisibilityController:
+    """
+    Wrapper around a DOMBuilderFilter which implements the checks
+    to make the whatToShow filter attribute work.
+    """
     __slots__ = ("filter",)
     filter: DOMBuilderFilter
     def __init__(self, filter: DOMBuilderFilter) -> None: ...

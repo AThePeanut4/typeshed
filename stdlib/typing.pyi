@@ -166,10 +166,9 @@ if sys.version_info >= (3, 13):
 # due to an import cycle. Below instead we use Any with a comment.
 # from _typeshed import AnnotationForm
 
-class Any: ...
-
-class _Final:
-    __slots__ = ("__weakref__",)
+class Any:
+    """
+    Special type indicating an unconstrained type.
 
     - Any is compatible with every type.
     - Any assumed to have all methods.
@@ -180,9 +179,10 @@ class _Final:
     checks.
     """
     ...
+
 class _Final:
     """Mixin to prohibit subclassing."""
-    ...
+    __slots__ = ("__weakref__",)
 
 def final(f: _T) -> _T:
     """
@@ -821,42 +821,49 @@ def runtime_checkable(cls: _TC) -> _TC:
     ...
 @runtime_checkable
 class SupportsInt(Protocol, metaclass=ABCMeta):
+    """An ABC with one abstract method __int__."""
     __slots__ = ()
     @abstractmethod
     def __int__(self) -> int: ...
 
 @runtime_checkable
 class SupportsFloat(Protocol, metaclass=ABCMeta):
+    """An ABC with one abstract method __float__."""
     __slots__ = ()
     @abstractmethod
     def __float__(self) -> float: ...
 
 @runtime_checkable
 class SupportsComplex(Protocol, metaclass=ABCMeta):
+    """An ABC with one abstract method __complex__."""
     __slots__ = ()
     @abstractmethod
     def __complex__(self) -> complex: ...
 
 @runtime_checkable
 class SupportsBytes(Protocol, metaclass=ABCMeta):
+    """An ABC with one abstract method __bytes__."""
     __slots__ = ()
     @abstractmethod
     def __bytes__(self) -> bytes: ...
 
 @runtime_checkable
 class SupportsIndex(Protocol, metaclass=ABCMeta):
+    """An ABC with one abstract method __index__."""
     __slots__ = ()
     @abstractmethod
     def __index__(self) -> int: ...
 
 @runtime_checkable
 class SupportsAbs(Protocol[_T_co]):
+    """An ABC with one abstract method __abs__ that is covariant in its return type."""
     __slots__ = ()
     @abstractmethod
     def __abs__(self) -> _T_co: ...
 
 @runtime_checkable
 class SupportsRound(Protocol[_T_co]):
+    """An ABC with one abstract method __round__ that is covariant in its return type."""
     __slots__ = ()
     @overload
     @abstractmethod
@@ -1507,6 +1514,7 @@ class IO(Generic[AnyStr]):
     ) -> None: ...
 
 class BinaryIO(IO[bytes]):
+    """Typed version of the return of open() in binary mode."""
     __slots__ = ()
     @abstractmethod
     def __enter__(self) -> BinaryIO: ...
@@ -1977,6 +1985,7 @@ if sys.version_info >= (3, 14):
 else:
     @final
     class ForwardRef(_Final):
+        """Internal wrapper to hold a forward reference."""
         __slots__ = (
             "__forward_arg__",
             "__forward_code__",

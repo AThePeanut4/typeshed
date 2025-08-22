@@ -22,6 +22,59 @@ class _ValueSource(Protocol[_T_co]):
     def exception(self) -> BaseException | None: ...
 
 class Event(AbstractLinkable):
+    """
+    Event()
+
+    A synchronization primitive that allows one greenlet to wake up
+    one or more others. It has the same interface as
+    :class:`threading.Event` but works across greenlets.
+
+    .. important::
+       This object is for communicating among greenlets within the
+       same thread *only*! Do not try to use it to communicate across threads.
+
+    An event object manages an internal flag that can be set to true
+    with the :meth:`set` method and reset to false with the
+    :meth:`clear` method. The :meth:`wait` method blocks until the
+    flag is true; as soon as the flag is set to true, all greenlets
+    that are currently blocked in a call to :meth:`wait` will be scheduled
+    to awaken.
+
+    Note that the flag may be cleared and set many times before
+    any individual greenlet runs; all the greenlet can know for sure is that the
+    flag was set *at least once* while it was waiting.
+    If the greenlet cares whether the flag is still
+    set, it must check with :meth:`ready` and possibly call back into
+    :meth:`wait` again.
+
+    .. note::
+
+        The exact order and timing in which waiting greenlets are awakened is not determined.
+
+        Once the event is set, other greenlets may run before any waiting greenlets
+        are awakened.
+
+        While the code here will awaken greenlets in the order in which they
+        waited, each such greenlet that runs may in turn cause other greenlets
+        to run.
+
+        These details may change in the future.
+
+    .. versionchanged:: 1.5a3
+
+        Waiting greenlets are now awakened in
+        the order in which they waited.
+
+    .. versionchanged:: 1.5a3
+
+        The low-level ``rawlink`` method (most users won't use this) now
+        automatically unlinks waiters before calling them.
+
+    .. versionchanged:: 20.5.1
+
+        Callers to ``wait`` that find the event already set will now run
+        after any other waiters that had to block. See :issue:`1520`.
+    """
     __slots__ = ("_flag",)
     def __init__(self) -> None: ...
     def is_set(self) -> bool:
@@ -118,6 +171,81 @@ class Event(AbstractLinkable):
         ...
 
 class AsyncResult(AbstractLinkable, Generic[_T]):
+    """
+    AsyncResult()
+
+    A one-time event that stores a value or an exception.
+
+    Like :class:`Event` it wakes up all the waiters when :meth:`set`
+    or :meth:`set_exception` is called. Waiters may receive the passed
+    value or exception by calling :meth:`get` instead of :meth:`wait`.
+    An :class:`AsyncResult` instance cannot be reset.
+
+    .. important::
+       This object is for communicating among greenlets within the
+       same thread *only*! Do not try to use it to communicate across threads.
+
+    To pass a value call :meth:`set`. Calls to :meth:`get` (those that
+    are currently blocking as well as those made in the future) will
+    return the value::
+
+        >>> from gevent.event import AsyncResult
+        >>> result = AsyncResult()
+        >>> result.set(100)
+        >>> result.get()
+        100
+
+    To pass an exception call :meth:`set_exception`. This will cause
+    :meth:`get` to raise that exception::
+
+        >>> result = AsyncResult()
+        >>> result.set_exception(RuntimeError('failure'))
+        >>> result.get()
+        Traceback (most recent call last):
+         ...
+        RuntimeError: failure
+
+    :class:`AsyncResult` implements :meth:`__call__` and thus can be
+    used as :meth:`link` target::
+
+        >>> import gevent
+        >>> result = AsyncResult()
+        >>> gevent.spawn(lambda : 1/0).link(result)
+        >>> try:
+        ...     result.get()
+        ... except ZeroDivisionError:
+        ...     print('ZeroDivisionError')
+        ZeroDivisionError
+
+    .. note::
+
+        The order and timing in which waiting greenlets are awakened is not determined.
+        As an implementation note, in gevent 1.1 and 1.0, waiting greenlets are awakened in a
+        undetermined order sometime *after* the current greenlet yields to the event loop. Other greenlets
+        (those not waiting to be awakened) may run between the current greenlet yielding and
+        the waiting greenlets being awakened. These details may change in the future.
+
+    .. versionchanged:: 1.1
+
+       The exact order in which waiting greenlets
+       are awakened is not the same as in 1.0.
+
+    .. versionchanged:: 1.1
+
+       Callbacks :meth:`linked <rawlink>` to this object are required to
+       be hashable, and duplicates are merged.
+
+    .. versionchanged:: 1.5a3
+
+       Waiting greenlets are now awakened in the order in which they
+       waited.
+
+    .. versionchanged:: 1.5a3
+
+       The low-level ``rawlink`` method
+       (most users won't use this) now automatically unlinks waiters
+       before calling them.
+    """
     __slots__ = ("_value", "_exc_info", "_imap_task_index")
     def __init__(self) -> None: ...
     @property

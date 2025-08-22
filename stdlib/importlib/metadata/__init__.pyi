@@ -168,8 +168,11 @@ class EntryPoint(_EntryPointBase):
 
 if sys.version_info >= (3, 12):
     class EntryPoints(tuple[EntryPoint, ...]):
+        """An immutable collection of selectable EntryPoint objects."""
         __slots__ = ()
-        def __getitem__(self, name: str) -> EntryPoint: ...  # type: ignore[override]
+        def __getitem__(self, name: str) -> EntryPoint:
+            """Get the EntryPoint in self matching name."""
+            ...
         def select(
             self,
             *,

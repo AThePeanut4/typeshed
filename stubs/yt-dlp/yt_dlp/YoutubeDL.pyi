@@ -424,7 +424,13 @@ class YoutubeDL:
     cache: Cache
     format_selector: _FormatSelector
     archive: set[str]
-    def __init__(self, params: _Params | None = None, auto_init: bool = True) -> None: ...
+    def __init__(self, params: _Params | None = None, auto_init: bool = True) -> None:
+        """
+        Create a FileDownloader object with the given options.
+        @param auto_init    Whether to load the default extractors and print header (if verbose).
+                            Set to 'no_verbose_header' to not print the header
+        """
+        ...
     def warn_if_short_id(self, argv: list[str]) -> None: ...
     def add_info_extractor(self, ie: InfoExtractor) -> None:
         """Add an InfoExtractor object to the end of the list."""

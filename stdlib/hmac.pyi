@@ -62,6 +62,11 @@ def new(key: bytes | bytearray, *, digestmod: _DigestMod) -> HMAC:
     ...
 
 class HMAC:
+    """
+    RFC 2104 HMAC class.  Also complies with RFC 4231.
+
+    This supports the API for Cryptographic Hash Functions (PEP 247).
+    """
     __slots__ = ("_hmac", "_inner", "_outer", "block_size", "digest_size")
     digest_size: int
     block_size: int

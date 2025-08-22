@@ -23,6 +23,19 @@ from .encryption import StandardSecurityHandler
 from .syntax import PDFArray, PDFObject, PDFString
 
 class NumberTree(PDFObject):
+    """
+    A number tree is similar to a name tree, except that its keys are integers
+    instead of strings and are sorted in ascending numerical order.
+
+    A name tree serves a similar purpose to a dictionary—associating keys and
+    values—but by different means.
+
+    The values associated with the keys may be objects of any type. Stream objects
+    are required to be specified by indirect object references. It is recommended,
+    though not required, that dictionary, array, and string objects be specified by
+    indirect object references, and other PDF objects (nulls, numbers, booleans,
+    and names) be specified as direct objects
+    """
     __slots__ = ("_id", "nums")
     nums: defaultdict[Incomplete, list[Incomplete]]
     def __init__(self) -> None: ...

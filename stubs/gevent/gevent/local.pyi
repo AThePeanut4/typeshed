@@ -156,6 +156,7 @@ from typing import Any
 from typing_extensions import Self
 
 class local:
+    """An object whose attributes are greenlet-local."""
     __slots__ = (
         "_local__impl",
         "_local_type_set_descriptors",

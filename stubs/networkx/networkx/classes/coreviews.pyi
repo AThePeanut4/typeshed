@@ -27,6 +27,18 @@ __all__ = [
 ]
 
 class AtlasView(Mapping[_T, dict[_U, _V]]):
+    """
+    An AtlasView is a Read-only Mapping of Mappings.
+
+    It is a View into a dict-of-dict data structure.
+    The inner level of dict is read-write. But the
+    outer level is read-only.
+
+    See Also
+    ========
+    AdjacencyView: View into dict-of-dict-of-dict
+    MultiAdjacencyView: View into dict-of-dict-of-dict-of-dict
+    """
     __slots__ = ("_atlas",)
     def __getstate__(self) -> dict[str, Mapping[_T, dict[_U, _V]]]: ...
     def __setstate__(self, state: dict[str, Mapping[_T, dict[_U, _V]]]) -> None: ...
@@ -37,12 +49,49 @@ class AtlasView(Mapping[_T, dict[_U, _V]]):
     def copy(self) -> dict[_T, dict[_U, _V]]: ...
 
 class AdjacencyView(AtlasView[_T, _U, _V]):
+    """
+    An AdjacencyView is a Read-only Map of Maps of Maps.
+
+    It is a View into a dict-of-dict-of-dict data structure.
+    The inner level of dict is read-write. But the
+    outer levels are read-only.
+
+    See Also
+    ========
+    AtlasView: View into dict-of-dict
+    MultiAdjacencyView: View into dict-of-dict-of-dict-of-dict
+    """
     __slots__ = ()
 
 class MultiAdjacencyView(AdjacencyView[_T, _U, _V]):
+    """
+    An MultiAdjacencyView is a Read-only Map of Maps of Maps of Maps.
+
+    It is a View into a dict-of-dict-of-dict-of-dict data structure.
+    The inner level of dict is read-write. But the
+    outer levels are read-only.
+
+    See Also
+    ========
+    AtlasView: View into dict-of-dict
+    AdjacencyView: View into dict-of-dict-of-dict
+    """
     __slots__ = ()
 
 class UnionAtlas(Mapping[_T, dict[_U, _V]]):
+    """
+    A read-only union of two atlases (dict-of-dict).
+
+    The two dict-of-dicts represent the inner dict of
+    an Adjacency:  `G.succ[node]` and `G.pred[node]`.
+    The inner level of dict of both hold attribute key:value
+    pairs and is read-write. But the outer level is read-only.
+
+    See Also
+    ========
+    UnionAdjacency: View into dict-of-dict-of-dict
+    UnionMultiAdjacency: View into dict-of-dict-of-dict-of-dict
+    """
     __slots__ = ("_succ", "_pred")
     def __init__(self, succ: AtlasView[_T, _U, _V], pred: AtlasView[_T, _U, _V]) -> None: ...
     def __len__(self) -> int: ...
@@ -51,6 +100,23 @@ class UnionAtlas(Mapping[_T, dict[_U, _V]]):
     def copy(self) -> Self: ...
 
 class UnionAdjacency(Mapping[_T, dict[_U, _V]]):
+    """
+    A read-only union of dict Adjacencies as a Map of Maps of Maps.
+
+    The two input dict-of-dict-of-dicts represent the union of
+    `G.succ` and `G.pred`. Return values are UnionAtlas
+    The inner level of dict is read-write. But the
+    middle and outer levels are read-only.
+
+    succ : a dict-of-dict-of-dict {node: nbrdict}
+    pred : a dict-of-dict-of-dict {node: nbrdict}
+    The keys for the two dicts should be the same
+
+    See Also
+    ========
+    UnionAtlas: View into dict-of-dict
+    UnionMultiAdjacency: View into dict-of-dict-of-dict-of-dict
+    """
     __slots__ = ("_succ", "_pred")
     def __init__(self, succ: AdjacencyView[_T, _U, _V], pred: AdjacencyView[_T, _U, _V]) -> None: ...
     def __len__(self) -> int: ...
@@ -59,9 +125,35 @@ class UnionAdjacency(Mapping[_T, dict[_U, _V]]):
     def copy(self) -> Self: ...
 
 class UnionMultiInner(UnionAtlas[_T, _U, _V]):
+    """
+    A read-only union of two inner dicts of MultiAdjacencies.
+
+    The two input dict-of-dict-of-dicts represent the union of
+    `G.succ[node]` and `G.pred[node]` for MultiDiGraphs.
+    Return values are UnionAtlas.
+    The inner level of dict is read-write. But the outer levels are read-only.
+
+    See Also
+    ========
+    UnionAtlas: View into dict-of-dict
+    UnionAdjacency:  View into dict-of-dict-of-dict
+    UnionMultiAdjacency:  View into dict-of-dict-of-dict-of-dict
+    """
     __slots__ = ()
 
 class UnionMultiAdjacency(UnionAdjacency[_T, _U, _V]):
+    """
+    A read-only union of two dict MultiAdjacencies.
+
+    The two input dict-of-dict-of-dict-of-dicts represent the union of
+    `G.succ` and `G.pred` for MultiDiGraphs. Return values are UnionAdjacency.
+    The inner level of dict is read-write. But the outer levels are read-only.
+
+    See Also
+    ========
+    UnionAtlas:  View into dict-of-dict
+    UnionMultiInner:  View into dict-of-dict-of-dict
+    """
     __slots__ = ()
 
 class FilterAtlas(Mapping[_T, _U]):

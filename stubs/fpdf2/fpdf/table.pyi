@@ -193,6 +193,7 @@ class Row:
 
 @dataclass
 class Cell:
+    """Internal representation of a table cell"""
     __slots__ = ("text", "align", "v_align", "style", "img", "img_fill_width", "colspan", "rowspan", "padding", "link", "border")
     text: str
     align: str | Align | None

@@ -574,6 +574,19 @@ class TracebackException:
             ...
 
 class FrameSummary:
+    """
+    Information about a single frame from a traceback.
+
+    - :attr:`filename` The filename for the frame.
+    - :attr:`lineno` The line within filename for the frame that was
+      active when the frame was captured.
+    - :attr:`name` The name of the function or method that was executing
+      when the frame was captured.
+    - :attr:`line` The text from the linecache module for the
+      of code that was running when the frame was captured.
+    - :attr:`locals` Either None if locals were not supplied, or a dict
+      mapping the name to the repr() of the variable.
+    """
     if sys.version_info >= (3, 13):
         __slots__ = (
             "filename",

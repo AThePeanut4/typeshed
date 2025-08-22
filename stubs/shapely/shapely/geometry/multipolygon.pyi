@@ -10,6 +10,40 @@ from .polygon import Polygon, _PolygonHolesLike, _PolygonShellLike
 __all__ = ["MultiPolygon"]
 
 class MultiPolygon(BaseMultipartGeometry[Polygon]):
+    """
+    A collection of one or more Polygons.
+
+    If component polygons overlap the collection is invalid and some
+    operations on it may fail.
+
+    Parameters
+    ----------
+    polygons : sequence
+        A sequence of Polygons, or a sequence of (shell, holes) tuples
+        where shell is the sequence representation of a linear ring
+        (see LinearRing) and holes is a sequence of such linear rings.
+
+    Attributes
+    ----------
+    geoms : sequence
+        A sequence of `Polygon` instances
+
+    Examples
+    --------
+    Construct a MultiPolygon from a sequence of coordinate tuples
+
+    >>> from shapely import MultiPolygon, Polygon
+    >>> ob = MultiPolygon([
+    ...     (
+    ...     ((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0)),
+    ...     [((0.1,0.1), (0.1,0.2), (0.2,0.2), (0.2,0.1))]
+    ...     )
+    ... ])
+    >>> len(ob.geoms)
+    1
+    >>> type(ob.geoms[0]) == Polygon
+    True
+    """
     __slots__: list[str] = []
     def __new__(
         self,

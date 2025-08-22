@@ -33,7 +33,14 @@ class WriteallMixin:
         Similar to :meth:`socket.socket.sendall`, ensures that all the contents of
         *value* have been written (though not necessarily flushed) before returning.
 
+        Returns the length of *value*.
+
+        .. versionadded:: 20.12.0
+        """
+        ...
+
 class FileIO(io.FileIO):
+    """A subclass that we can dynamically assign __class__ for."""
     __slots__ = ()
 
 class WriteIsWriteallMixin(WriteallMixin):

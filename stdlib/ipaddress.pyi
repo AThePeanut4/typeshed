@@ -82,6 +82,7 @@ def ip_interface(
     ...
 
 class _IPAddressBase:
+    """The mother class."""
     __slots__ = ()
     @property
     def compressed(self) -> str:
@@ -106,6 +107,12 @@ class _IPAddressBase:
         def version(self) -> int: ...
 
 class _BaseAddress(_IPAddressBase):
+    """
+    A generic IP object.
+
+    This IP class contains the version independent methods which are
+    used by single IP addresses.
+    """
     __slots__ = ()
     def __add__(self, other: int) -> Self: ...
     def __hash__(self) -> int: ...
@@ -407,6 +414,12 @@ class _BaseNetwork(_IPAddressBase, Generic[_A]):
     def hostmask(self) -> _A: ...
 
 class _BaseV4:
+    """
+    Base IPv4 object.
+
+    The following methods are used by IPv4 objects in both single IP
+    addresses and networks.
+    """
     __slots__ = ()
     if sys.version_info >= (3, 14):
         version: Final = 4
@@ -418,8 +431,23 @@ class _BaseV4:
         def max_prefixlen(self) -> Literal[32]: ...
 
 class IPv4Address(_BaseV4, _BaseAddress):
+    """Represent and manipulate single IPv4 Addresses."""
     __slots__ = ("_ip", "__weakref__")
-    def __init__(self, address: object) -> None: ...
+    def __init__(self, address: object) -> None:
+        """
+        Args:
+            address: A string or integer representing the IP
+
+              Additionally, an integer can be passed, so
+              IPv4Address('192.0.2.1') == IPv4Address(3221225985).
+              or, more generally
+              IPv4Address(int(IPv4Address('192.0.2.1'))) ==
+                IPv4Address('192.0.2.1')
+
+        Raises:
+            AddressValueError: If ipaddress isn't a valid IPv4 address.
+        """
+        ...
     @property
     def is_global(self) -> bool:
         """
@@ -584,6 +612,12 @@ class IPv4Interface(IPv4Address):
     def with_prefixlen(self) -> str: ...
 
 class _BaseV6:
+    """
+    Base IPv6 object.
+
+    The following methods are used by IPv6 objects in both single IP
+    addresses and networks.
+    """
     __slots__ = ()
     if sys.version_info >= (3, 14):
         version: Final = 6
@@ -595,8 +629,26 @@ class _BaseV6:
         def max_prefixlen(self) -> Literal[128]: ...
 
 class IPv6Address(_BaseV6, _BaseAddress):
+    """Represent and manipulate single IPv6 Addresses."""
     __slots__ = ("_ip", "_scope_id", "__weakref__")
-    def __init__(self, address: object) -> None: ...
+    def __init__(self, address: object) -> None:
+        """
+        Instantiate a new IPv6 address object.
+
+        Args:
+            address: A string or integer representing the IP
+
+              Additionally, an integer can be passed, so
+              IPv6Address('2001:db8::') ==
+                IPv6Address(42540766411282592856903984951653826560)
+              or, more generally
+              IPv6Address(int(IPv6Address('2001:db8::'))) ==
+                IPv6Address('2001:db8::')
+
+        Raises:
+            AddressValueError: If address isn't a valid IPv6 address.
+        """
+        ...
     @property
     def is_global(self) -> bool:
         """
