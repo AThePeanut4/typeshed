@@ -115,13 +115,50 @@ class Random(_random.Random):
         # this is a workaround for pyright correctly flagging an inconsistent inherited constructor, see #14624
         def __new__(cls, x: int | float | str | bytes | bytearray | None = None) -> Self: ...  # noqa: Y041
 
-    def seed(self, a: int | float | str | bytes | bytearray | None = None, version: int = 2) -> None: ...  # type: ignore[override]  # noqa: Y041
-    def getstate(self) -> tuple[Any, ...]: ...
-    def setstate(self, state: tuple[Any, ...]) -> None: ...
-    def randrange(self, start: int, stop: int | None = None, step: int = 1) -> int: ...
-    def randint(self, a: int, b: int) -> int: ...
-    def randbytes(self, n: int) -> bytes: ...
-    def choice(self, seq: SupportsLenAndGetItem[_T]) -> _T: ...
+    def seed(self, a: int | float | str | bytes | bytearray | None = None, version: int = 2) -> None:
+        """
+        Initialize internal state from a seed.
+
+        The only supported seed types are None, int, float,
+        str, bytes, and bytearray.
+
+        None or no argument seeds from current time or from an operating
+        system specific randomness source if available.
+
+        If *a* is an int, all bits are used.
+
+        For version 2 (the default), all of the bits are used if *a* is a str,
+        bytes, or bytearray.  For version 1 (provided for reproducing random
+        sequences from older versions of Python), the algorithm for str and
+        bytes generates a narrower range of seeds.
+        """
+        ...
+    def getstate(self) -> tuple[Any, ...]:
+        """Return internal state; can be passed to setstate() later."""
+        ...
+    def setstate(self, state: tuple[Any, ...]) -> None:
+        """Restore internal state from object returned by getstate()."""
+        ...
+    def randrange(self, start: int, stop: int | None = None, step: int = 1) -> int:
+        """
+        Choose a random item from range(stop) or range(start, stop[, step]).
+
+        Roughly equivalent to ``choice(range(start, stop, step))`` but
+        supports arbitrarily large ranges and is optimized for common cases.
+        """
+        ...
+    def randint(self, a: int, b: int) -> int:
+        """
+        Return random integer in range [a, b], including both end points.
+        
+        """
+        ...
+    def randbytes(self, n: int) -> bytes:
+        """Generate n random bytes."""
+        ...
+    def choice(self, seq: SupportsLenAndGetItem[_T]) -> _T:
+        """Choose a random element from a non-empty sequence."""
+        ...
     def choices(
         self,
         population: SupportsLenAndGetItem[_T],

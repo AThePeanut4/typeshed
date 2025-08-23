@@ -184,7 +184,9 @@ class PythonRandomViaNumpyBits(random.Random):
         # this is a workaround for pyright correctly flagging an inconsistent inherited constructor, see #14624
         def __new__(cls, rng: numpy.random.Generator | None = None) -> Self: ...
 
-    def getrandbits(self, k: int) -> int: ...
+    def getrandbits(self, k: int) -> int:
+        """getrandbits(k) -> x.  Generates an int with k random bits."""
+        ...
 
 class PythonRandomInterface:
     """
