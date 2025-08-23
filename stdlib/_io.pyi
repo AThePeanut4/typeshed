@@ -47,7 +47,10 @@ from typing_extensions import Self
 
 _T = TypeVar("_T")
 
-DEFAULT_BUFFER_SIZE: Final = 8192
+if sys.version_info >= (3, 14):
+    DEFAULT_BUFFER_SIZE: Final = 131072
+else:
+    DEFAULT_BUFFER_SIZE: Final = 8192
 
 open = builtins.open
 
@@ -422,7 +425,11 @@ _BufferedReaderStreamT = TypeVar("_BufferedReaderStreamT", bound=_BufferedReader
 class BufferedReader(BufferedIOBase, _BufferedIOBase, BinaryIO, Generic[_BufferedReaderStreamT]):  # type: ignore[misc]  # incompatible definitions of methods in the base classes
     """Create a new buffered reader using the given readable raw IO object."""
     raw: _BufferedReaderStreamT
-    def __init__(self, raw: _BufferedReaderStreamT, buffer_size: int = 8192) -> None: ...
+    if sys.version_info >= (3, 14):
+        def __init__(self, raw: _BufferedReaderStreamT, buffer_size: int = 131072) -> None: ...
+    else:
+        def __init__(self, raw: _BufferedReaderStreamT, buffer_size: int = 8192) -> None: ...
+
     def peek(self, size: int = 0, /) -> bytes: ...
     def seek(self, target: int, whence: int = 0, /) -> int: ...
     def truncate(self, pos: int | None = None, /) -> int: ...
@@ -436,7 +443,11 @@ class BufferedWriter(BufferedIOBase, _BufferedIOBase, BinaryIO):  # type: ignore
     DEFAULT_BUFFER_SIZE.
     """
     raw: RawIOBase
-    def __init__(self, raw: RawIOBase, buffer_size: int = 8192) -> None: ...
+    if sys.version_info >= (3, 14):
+        def __init__(self, raw: RawIOBase, buffer_size: int = 131072) -> None: ...
+    else:
+        def __init__(self, raw: RawIOBase, buffer_size: int = 8192) -> None: ...
+
     def write(self, buffer: ReadableBuffer, /) -> int: ...
     def seek(self, target: int, whence: int = 0, /) -> int: ...
     def truncate(self, pos: int | None = None, /) -> int: ...
@@ -452,24 +463,21 @@ class BufferedRandom(BufferedIOBase, _BufferedIOBase, BinaryIO):  # type: ignore
     mode: str
     name: Any
     raw: RawIOBase
-    def __init__(self, raw: RawIOBase, buffer_size: int = 8192) -> None: ...
+    if sys.version_info >= (3, 14):
+        def __init__(self, raw: RawIOBase, buffer_size: int = 131072) -> None: ...
+    else:
+        def __init__(self, raw: RawIOBase, buffer_size: int = 8192) -> None: ...
+
     def seek(self, target: int, whence: int = 0, /) -> int: ...  # stubtest needs this
     def peek(self, size: int = 0, /) -> bytes: ...
     def truncate(self, pos: int | None = None, /) -> int: ...
 
 class BufferedRWPair(BufferedIOBase, _BufferedIOBase, Generic[_BufferedReaderStreamT]):
-    """
-    A buffered reader and writer object together.
+    if sys.version_info >= (3, 14):
+        def __init__(self, reader: _BufferedReaderStreamT, writer: RawIOBase, buffer_size: int = 131072, /) -> None: ...
+    else:
+        def __init__(self, reader: _BufferedReaderStreamT, writer: RawIOBase, buffer_size: int = 8192, /) -> None: ...
 
-    A buffered reader object and buffered writer object put together to
-    form a sequential IO object that can read and write. This is typically
-    used with a socket or two-way pipe.
-
-    reader and writer are RawIOBase objects that are readable and
-    writeable respectively. If the buffer_size is omitted it defaults to
-    DEFAULT_BUFFER_SIZE.
-    """
-    def __init__(self, reader: _BufferedReaderStreamT, writer: RawIOBase, buffer_size: int = 8192, /) -> None: ...
     def peek(self, size: int = 0, /) -> bytes: ...
 
 class _TextIOBase(_IOBase):

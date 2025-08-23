@@ -37,60 +37,9 @@ class _SupportsOpen(Protocol[_ModeT_contra, _FileT_co]):
 
 @_dispatchable
 def from_agraph(
-    A: AGraph, create_using: Graph[_Node] | type[Graph[_Node]] | None = None
-) -> Graph[_Node]:
-    """
-    Returns a NetworkX Graph or DiGraph from a PyGraphviz graph.
-
-    Parameters
-    ----------
-    A : PyGraphviz AGraph
-      A graph created with PyGraphviz
-
-    create_using : NetworkX graph constructor, optional (default=None)
-       Graph type to create. If graph instance, then cleared before populated.
-       If `None`, then the appropriate Graph type is inferred from `A`.
-
-    Examples
-    --------
-    >>> K5 = nx.complete_graph(5)
-    >>> A = nx.nx_agraph.to_agraph(K5)
-    >>> G = nx.nx_agraph.from_agraph(A)
-
-    Notes
-    -----
-    The Graph G will have a dictionary G.graph_attr containing
-    the default graphviz attributes for graphs, nodes and edges.
-
-    Default node attributes will be in the dictionary G.node_attr
-    which is keyed by node.
-
-    Edge attributes will be returned as edge data in G.  With
-    edge_attr=False the edge data will be the Graphviz edge weight
-    attribute or the value 1 if no edge weight attribute is found.
-    """
-    ...
-def to_agraph(N: Graph[_Node]) -> AGraph:
-    """
-    Returns a pygraphviz graph from a NetworkX graph N.
-
-    Parameters
-    ----------
-    N : NetworkX graph
-      A graph created with NetworkX
-
-    Examples
-    --------
-    >>> K5 = nx.complete_graph(5)
-    >>> A = nx.nx_agraph.to_agraph(K5)
-
-    Notes
-    -----
-    If N has an dict N.graph_attr an attempt will be made first
-    to copy properties attached to the graph (see from_agraph)
-    and then updated with the calling arguments if any.
-    """
-    ...
+    A: AGraph, create_using: Graph[str] | type[Graph[str]] | None = None  # TODO: add overloads on `create_using`
+) -> Graph[str]: ...
+def to_agraph(N: Graph[_Node]) -> AGraph: ...
 def write_dot(
     G: Graph[_Node], path: str | IO[str] | IO[bytes] | _SupportsOpen[OpenTextModeWriting, IO[str] | IO[bytes]]
 ) -> None:
@@ -112,18 +61,7 @@ def write_dot(
     """
     ...
 @_dispatchable
-def read_dot(
-    path: str | IO[str] | IO[bytes] | _SupportsOpen[OpenTextModeReading, IO[str] | IO[bytes]],
-) -> Graph[Any]:
-    """
-    Returns a NetworkX graph from a dot file on path.
-
-    Parameters
-    ----------
-    path : file or string
-       File name or file handle to read.
-    """
-    ...
+def read_dot(path: str | IO[str] | IO[bytes] | _SupportsOpen[OpenTextModeReading, IO[str] | IO[bytes]]) -> Graph[str]: ...
 def graphviz_layout(
     G: Graph[_Node], prog: str = "neato", root: str | None = None, args: str = ""
 ) -> dict[_Node, tuple[float, float]]:

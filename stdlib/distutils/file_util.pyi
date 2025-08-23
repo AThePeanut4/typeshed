@@ -87,33 +87,10 @@ def copy_file(
     ...
 @overload
 def move_file(
-    src: StrPath, dst: _StrPathT, verbose: bool | Literal[0, 1] = 0, dry_run: bool | Literal[0, 1] = 0
-) -> _StrPathT | str:
-    """
-    Move a file 'src' to 'dst'.  If 'dst' is a directory, the file will
-    be moved into it with the same name; otherwise, 'src' is just renamed
-    to 'dst'.  Return the new full name of the file.
-
-    Handles cross-device moves on Unix using 'copy_file()'.  What about
-    other systems???
-    """
-    ...
+    src: StrPath, dst: _StrPathT, verbose: bool | Literal[0, 1] = 1, dry_run: bool | Literal[0, 1] = 0
+) -> _StrPathT | str: ...
 @overload
 def move_file(
-    src: BytesPath, dst: _BytesPathT, verbose: bool | Literal[0, 1] = 0, dry_run: bool | Literal[0, 1] = 0
-) -> _BytesPathT | bytes:
-    """
-    Move a file 'src' to 'dst'.  If 'dst' is a directory, the file will
-    be moved into it with the same name; otherwise, 'src' is just renamed
-    to 'dst'.  Return the new full name of the file.
-
-    Handles cross-device moves on Unix using 'copy_file()'.  What about
-    other systems???
-    """
-    ...
-def write_file(filename: StrOrBytesPath, contents: Iterable[str]) -> None:
-    """
-    Create a file with the specified name and write 'contents' (a
-    sequence of strings without line terminators) to it.
-    """
-    ...
+    src: BytesPath, dst: _BytesPathT, verbose: bool | Literal[0, 1] = 1, dry_run: bool | Literal[0, 1] = 0
+) -> _BytesPathT | bytes: ...
+def write_file(filename: StrOrBytesPath, contents: Iterable[str]) -> None: ...
