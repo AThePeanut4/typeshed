@@ -106,7 +106,8 @@ class OAuth2Client:
                        be added as needed.
         :param headers: Dict to default request headers with.
         :param auth: An auth tuple or method as accepted by requests.
-        :param grant_type: Use specified grant_type to fetch token
+        :param grant_type: Use specified grant_type to fetch token.
+        :param state: Optional "state" value to fetch token.
         :return: A :class:`OAuth2Token` object (a dict too).
         """
         ...
