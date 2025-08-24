@@ -56,7 +56,7 @@ class mmap:
     To map anonymous memory, pass -1 as the fileno (both versions).
     """
     if sys.platform == "win32":
-        def __init__(self, fileno: int, length: int, tagname: str | None = None, access: int = 0, offset: int = 0) -> None: ...
+        def __new__(self, fileno: int, length: int, tagname: str | None = None, access: int = 0, offset: int = 0) -> Self: ...
     else:
         if sys.version_info >= (3, 13):
             def __new__(
