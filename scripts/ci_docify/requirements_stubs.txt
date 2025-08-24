@@ -163,7 +163,7 @@ qrbill==1.1.*
 editdistance==0.8.*
 flake8-simplify==0.22.*
 openpyxl==3.1.5
-yt-dlp==2025.8.20
+yt-dlp==2025.8.22
 python-jose==3.5.*
 passlib==1.7.*
 netifaces==0.11.*
