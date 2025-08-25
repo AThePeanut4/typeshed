@@ -13,10 +13,20 @@ if sys.platform != "win32":
         total_size: int
 
     if sys.version_info >= (3, 12):
-        class _Method(_MethodBase): ...
+        class _Method(_MethodBase):
+            """
+            Class representing a salt method per the Modular Crypt Format or the
+            legacy 2-character crypt method.
+            """
+            ...
     else:
         @disjoint_base
-        class _Method(_MethodBase): ...
+        class _Method(_MethodBase):
+            """
+            Class representing a salt method per the Modular Crypt Format or the
+            legacy 2-character crypt method.
+            """
+            ...
 
     METHOD_CRYPT: Final[_Method]
     METHOD_MD5: Final[_Method]

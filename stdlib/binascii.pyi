@@ -65,12 +65,63 @@ if sys.version_info < (3, 11):
         """Encode .hqx data."""
         ...
 
-def crc_hqx(data: ReadableBuffer, crc: int, /) -> int: ...
-def crc32(data: ReadableBuffer, crc: int = 0, /) -> int: ...
-def b2a_hex(data: ReadableBuffer, sep: str | bytes = ..., bytes_per_sep: int = 1) -> bytes: ...
-def hexlify(data: ReadableBuffer, sep: str | bytes = ..., bytes_per_sep: int = 1) -> bytes: ...
-def a2b_hex(hexstr: _AsciiBuffer, /) -> bytes: ...
-def unhexlify(hexstr: _AsciiBuffer, /) -> bytes: ...
+def crc_hqx(data: ReadableBuffer, crc: int, /) -> int:
+    """Compute CRC-CCITT incrementally."""
+    ...
+def crc32(data: ReadableBuffer, crc: int = 0, /) -> int:
+    """Compute CRC-32 incrementally."""
+    ...
+def b2a_hex(data: ReadableBuffer, sep: str | bytes = ..., bytes_per_sep: int = 1) -> bytes:
+    r"""
+    Hexadecimal representation of binary data.
+
+      sep
+        An optional single character or byte to separate hex bytes.
+      bytes_per_sep
+        How many bytes between separators.  Positive values count from the
+        right, negative values count from the left.
+
+    The return value is a bytes object.  This function is also
+    available as "hexlify()".
+
+    Example:
+    >>> binascii.b2a_hex(b'\xb9\x01\xef')
+    b'b901ef'
+    >>> binascii.hexlify(b'\xb9\x01\xef', ':')
+    b'b9:01:ef'
+    >>> binascii.b2a_hex(b'\xb9\x01\xef', b'_', 2)
+    b'b9_01ef'
+    """
+    ...
+def hexlify(data: ReadableBuffer, sep: str | bytes = ..., bytes_per_sep: int = 1) -> bytes:
+    """
+    Hexadecimal representation of binary data.
+
+      sep
+        An optional single character or byte to separate hex bytes.
+      bytes_per_sep
+        How many bytes between separators.  Positive values count from the
+        right, negative values count from the left.
+
+    The return value is a bytes object.  This function is also
+    available as "b2a_hex()".
+    """
+    ...
+def a2b_hex(hexstr: _AsciiBuffer, /) -> bytes:
+    """
+    Binary data of hexadecimal representation.
+
+    hexstr must contain an even number of hex digits (upper or lower case).
+    This function is also available as "unhexlify()".
+    """
+    ...
+def unhexlify(hexstr: _AsciiBuffer, /) -> bytes:
+    """
+    Binary data of hexadecimal representation.
+
+    hexstr must contain an even number of hex digits (upper or lower case).
+    """
+    ...
 
 class Error(ValueError): ...
 class Incomplete(Exception): ...

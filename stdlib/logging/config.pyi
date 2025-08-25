@@ -156,6 +156,7 @@ class ConvertingList(list[Any], ConvertingMixin):  # undocumented
 
 if sys.version_info >= (3, 12):
     class ConvertingTuple(tuple[Any, ...], ConvertingMixin):  # undocumented
+        """A converting tuple wrapper."""
         @overload
         def __getitem__(self, key: SupportsIndex) -> Any: ...
         @overload
@@ -164,6 +165,7 @@ if sys.version_info >= (3, 12):
 else:
     @disjoint_base
     class ConvertingTuple(tuple[Any, ...], ConvertingMixin):  # undocumented
+        """A converting tuple wrapper."""
         @overload
         def __getitem__(self, key: SupportsIndex) -> Any: ...
         @overload

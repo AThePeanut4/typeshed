@@ -130,19 +130,35 @@ class _uname_result_base(NamedTuple):
 # is lazily evaluated rather than being passed in to the constructor.
 if sys.version_info >= (3, 12):
     class uname_result(_uname_result_base):
+        """
+        A uname_result that's largely compatible with a
+        simple namedtuple except that 'processor' is
+        resolved late and cached to avoid calling "uname"
+        except when needed.
+        """
         __match_args__ = ("system", "node", "release", "version", "machine")  # pyright: ignore[reportAssignmentType]
 
-        def __new__(_cls, system: str, node: str, release: str, version: str, machine: str) -> Self: ...
+        def __new__(_cls, system: str, node: str, release: str, version: str, machine: str) -> Self:
+            """Create new instance of uname_result_base(system, node, release, version, machine)"""
+            ...
         @property
         def processor(self) -> str: ...
 
 else:
     @disjoint_base
     class uname_result(_uname_result_base):
+        """
+        A uname_result that's largely compatible with a
+        simple namedtuple except that 'processor' is
+        resolved late and cached to avoid calling "uname"
+        except when needed.
+        """
         if sys.version_info >= (3, 10):
             __match_args__ = ("system", "node", "release", "version", "machine")  # pyright: ignore[reportAssignmentType]
 
-        def __new__(_cls, system: str, node: str, release: str, version: str, machine: str) -> Self: ...
+        def __new__(_cls, system: str, node: str, release: str, version: str, machine: str) -> Self:
+            """Create new instance of uname_result_base(system, node, release, version, machine)"""
+            ...
         @property
         def processor(self) -> str: ...
 

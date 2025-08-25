@@ -1008,11 +1008,15 @@ class ChainMap(MutableMapping[_KT, _VT]):
     if sys.version_info >= (3, 13):
         @classmethod
         @overload
-        def fromkeys(cls, iterable: Iterable[_T], /) -> ChainMap[_T, Any | None]: ...
+        def fromkeys(cls, iterable: Iterable[_T], /) -> ChainMap[_T, Any | None]:
+            """Create a new ChainMap with keys from iterable and values set to value."""
+            ...
     else:
         @classmethod
         @overload
-        def fromkeys(cls, iterable: Iterable[_T]) -> ChainMap[_T, Any | None]: ...
+        def fromkeys(cls, iterable: Iterable[_T]) -> ChainMap[_T, Any | None]:
+            """Create a ChainMap with a single dict created from the iterable."""
+            ...
 
     @classmethod
     @overload

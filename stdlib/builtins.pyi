@@ -4638,7 +4638,15 @@ def len(obj: Sized, /) -> int:
 
 license: _sitebuiltins._Printer
 
-def locals() -> dict[str, Any]: ...
+def locals() -> dict[str, Any]:
+    """
+    Return a dictionary containing the current scope's local variables.
+
+    NOTE: Whether or not updates to this dictionary will affect name lookups in
+    the local scope and vice-versa is *implementation dependent* and not
+    covered by any backwards compatibility guarantees.
+    """
+    ...
 @disjoint_base
 class map(Generic[_S]):
     """
@@ -6181,7 +6189,14 @@ def vars(object: type, /) -> types.MappingProxyType[str, Any]:
     """
     ...
 @overload
-def vars(object: Any = ..., /) -> dict[str, Any]: ...
+def vars(object: Any = ..., /) -> dict[str, Any]:
+    """
+    vars([object]) -> dictionary
+
+    Without arguments, equivalent to locals().
+    With an argument, equivalent to object.__dict__.
+    """
+    ...
 @disjoint_base
 class zip(Generic[_T_co]):
     """
@@ -6400,15 +6415,22 @@ class AssertionError(Exception):
 if sys.version_info >= (3, 10):
     @disjoint_base
     class AttributeError(Exception):
+        """Attribute not found."""
         def __init__(self, *args: object, name: str | None = ..., obj: object = ...) -> None: ...
         name: str
         obj: object
 
 else:
-    class AttributeError(Exception): ...
+    class AttributeError(Exception):
+        """Attribute not found."""
+        ...
 
-class BufferError(Exception): ...
-class EOFError(Exception): ...
+class BufferError(Exception):
+    """Buffer error."""
+    ...
+class EOFError(Exception):
+    """Read beyond end of file."""
+    ...
 
 @disjoint_base
 class ImportError(Exception):
@@ -6430,15 +6452,24 @@ class MemoryError(Exception):
 if sys.version_info >= (3, 10):
     @disjoint_base
     class NameError(Exception):
+        """Name not found globally."""
         def __init__(self, *args: object, name: str | None = ...) -> None: ...
         name: str
 
 else:
-    class NameError(Exception): ...
+    class NameError(Exception):
+        """Name not found globally."""
+        ...
 
-class ReferenceError(Exception): ...
-class RuntimeError(Exception): ...
-class StopAsyncIteration(Exception): ...
+class ReferenceError(Exception):
+    """Weak ref proxy used after referent went away."""
+    ...
+class RuntimeError(Exception):
+    """Unspecified run-time error."""
+    ...
+class StopAsyncIteration(Exception):
+    """Signal the end from iterator.__anext__()."""
+    ...
 
 @disjoint_base
 class SyntaxError(Exception):

@@ -99,8 +99,17 @@ if sys.platform == "win32":
     def enum_certificates(store_name: str) -> _EnumRetType: ...
     def enum_crls(store_name: str) -> _EnumRetType: ...
 
-def txt2obj(txt: str, name: bool = False) -> tuple[int, str, str, str]: ...
-def nid2obj(nid: int, /) -> tuple[int, str, str, str]: ...
+def txt2obj(txt: str, name: bool = False) -> tuple[int, str, str, str]:
+    """
+    Lookup NID, short name, long name and OID of an ASN1_OBJECT.
+
+    By default objects are looked up by OID. With name=True short and
+    long name are also matched.
+    """
+    ...
+def nid2obj(nid: int, /) -> tuple[int, str, str, str]:
+    """Lookup NID, short name, long name and OID of an ASN1_OBJECT by NID."""
+    ...
 @disjoint_base
 class _SSLContext:
     check_hostname: bool

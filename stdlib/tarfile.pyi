@@ -1444,6 +1444,13 @@ def tar_filter(member: TarInfo, dest_path: str) -> TarInfo: ...
 def data_filter(member: TarInfo, dest_path: str) -> TarInfo: ...
 
 class TarInfo:
+    """
+    Informational class which holds the details about an
+    archive member given by a tar header block.
+    TarInfo objects are returned by TarFile.getmember(),
+    TarFile.getmembers() and TarFile.gettarinfo() and are
+    usually created internally.
+    """
     __slots__ = (
         "name",
         "mode",

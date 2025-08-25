@@ -1,3 +1,12 @@
+"""
+codecs -- Python Codec Registry, API and helpers.
+
+
+Written by Marc-Andre Lemburg (mal@lemburg.com).
+
+(c) Copyright CNRI, All Rights Reserved. NO WARRANTY.
+"""
+
 import sys
 import types
 from _codecs import *
@@ -125,6 +134,7 @@ class _BufferedIncrementalDecoder(Protocol):
 
 if sys.version_info >= (3, 12):
     class CodecInfo(tuple[_Encoder, _Decoder, _StreamReader, _StreamWriter]):
+        """Codec details when looking up the codec registry"""
         _is_text_encoding: bool
         @property
         def encode(self) -> _Encoder: ...
@@ -155,6 +165,7 @@ if sys.version_info >= (3, 12):
 else:
     @disjoint_base
     class CodecInfo(tuple[_Encoder, _Decoder, _StreamReader, _StreamWriter]):
+        """Codec details when looking up the codec registry"""
         _is_text_encoding: bool
         @property
         def encode(self) -> _Encoder: ...

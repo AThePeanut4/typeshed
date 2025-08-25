@@ -65,7 +65,14 @@ if sys.version_info >= (3, 11):
         clamp: int | None = None,
         traps: dict[_TrapType, bool] | None = None,
         flags: dict[_TrapType, bool] | None = None,
-    ) -> _ContextManager: ...
+    ) -> _ContextManager:
+        """
+        Return a context manager that will set the default context to a copy of ctx
+        on entry to the with-statement and restore the previous default context when
+        exiting the with-statement. If no context is specified, a copy of the current
+        default context is used.
+        """
+        ...
 
 else:
     def localcontext(ctx: Context | None = None) -> _ContextManager:

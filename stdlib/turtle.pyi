@@ -242,6 +242,20 @@ _PolygonCoords: TypeAlias = Sequence[tuple[float, float]]
 
 if sys.version_info >= (3, 12):
     class Vec2D(tuple[float, float]):
+        """
+        A 2 dimensional vector class, used as a helper class
+        for implementing turtle graphics.
+        May be useful for turtle graphics programs also.
+        Derived from tuple, so a vector is a tuple!
+
+        Provides (for a, b vectors, k number):
+           a+b vector addition
+           a-b vector subtraction
+           a*b inner product
+           k*a and a*k multiplication with scalar
+           |a| absolute value of a
+           a.rotate(angle) rotation
+        """
         def __new__(cls, x: float, y: float) -> Self: ...
         def __add__(self, other: tuple[float, float]) -> Vec2D: ...  # type: ignore[override]
         @overload  # type: ignore[override]
@@ -252,11 +266,30 @@ if sys.version_info >= (3, 12):
         def __sub__(self, other: tuple[float, float]) -> Vec2D: ...
         def __neg__(self) -> Vec2D: ...
         def __abs__(self) -> float: ...
-        def rotate(self, angle: float) -> Vec2D: ...
+        def rotate(self, angle: float) -> Vec2D:
+            """
+            rotate self counterclockwise by angle
+        
+            """
+            ...
 
 else:
     @disjoint_base
     class Vec2D(tuple[float, float]):
+        """
+        A 2 dimensional vector class, used as a helper class
+        for implementing turtle graphics.
+        May be useful for turtle graphics programs also.
+        Derived from tuple, so a vector is a tuple!
+
+        Provides (for a, b vectors, k number):
+           a+b vector addition
+           a-b vector subtraction
+           a*b inner product
+           k*a and a*k multiplication with scalar
+           |a| absolute value of a
+           a.rotate(angle) rotation
+        """
         def __new__(cls, x: float, y: float) -> Self: ...
         def __add__(self, other: tuple[float, float]) -> Vec2D: ...  # type: ignore[override]
         @overload  # type: ignore[override]
@@ -267,7 +300,12 @@ else:
         def __sub__(self, other: tuple[float, float]) -> Vec2D: ...
         def __neg__(self) -> Vec2D: ...
         def __abs__(self) -> float: ...
-        def rotate(self, angle: float) -> Vec2D: ...
+        def rotate(self, angle: float) -> Vec2D:
+            """
+            rotate self counterclockwise by angle
+        
+            """
+            ...
 
 # Does not actually inherit from Canvas, but dynamically gets all methods of Canvas
 class ScrolledCanvas(Canvas, Frame):  # type: ignore[misc]

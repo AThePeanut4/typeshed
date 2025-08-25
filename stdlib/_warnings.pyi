@@ -84,7 +84,9 @@ def warn_explicit(
     registry: dict[str | tuple[str, type[Warning], int], int] | None = None,
     module_globals: dict[str, Any] | None = None,
     source: Any | None = None,
-) -> None: ...
+) -> None:
+    """Issue a warning, or maybe ignore it or raise an exception."""
+    ...
 @overload
 def warn_explicit(
     message: Warning,
@@ -95,4 +97,6 @@ def warn_explicit(
     registry: dict[str | tuple[str, type[Warning], int], int] | None = None,
     module_globals: dict[str, Any] | None = None,
     source: Any | None = None,
-) -> None: ...
+) -> None:
+    """Issue a warning, or maybe ignore it or raise an exception."""
+    ...

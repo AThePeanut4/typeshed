@@ -447,6 +447,7 @@ if sys.version_info >= (3, 11):
 
 if sys.version_info >= (3, 12):
     class IntEnum(int, ReprEnum):
+        """Enum where members are also (and must be) ints"""
         _value_: int
         @_magic_enum_attr
         def value(self) -> int: ...
@@ -460,6 +461,7 @@ else:
 
     @disjoint_base
     class IntEnum(int, _IntEnumBase):
+        """Enum where members are also (and must be) ints"""
         _value_: int
         @_magic_enum_attr
         def value(self) -> int: ...
@@ -583,6 +585,7 @@ elif sys.version_info >= (3, 11):
     # The body of the class is the same, but the base classes are different.
     @disjoint_base
     class IntFlag(int, ReprEnum, Flag, boundary=KEEP):  # type: ignore[misc]  # complaints about incompatible bases
+        """Support for integer-based Flags"""
         def __new__(cls, value: int) -> Self: ...
         def __or__(self, other: int) -> Self: ...
         def __and__(self, other: int) -> Self: ...

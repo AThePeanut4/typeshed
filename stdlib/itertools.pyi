@@ -268,7 +268,9 @@ class takewhile(Generic[_T]):
         """Implement next(self)."""
         ...
 
-def tee(iterable: Iterable[_T], n: int = 2, /) -> tuple[Iterator[_T], ...]: ...
+def tee(iterable: Iterable[_T], n: int = 2, /) -> tuple[Iterator[_T], ...]:
+    """Returns a tuple of n independent iterators."""
+    ...
 @disjoint_base
 class zip_longest(Generic[_T_co]):
     """
