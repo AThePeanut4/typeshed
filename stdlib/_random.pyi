@@ -1,11 +1,12 @@
 """Module implements the Mersenne Twister random number generator."""
 
 import sys
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, disjoint_base
 
 # Actually Tuple[(int,) * 625]
 _State: TypeAlias = tuple[int, ...]
 
+@disjoint_base
 class Random:
     """Random() -> create a random number generator with its own internal state."""
     if sys.version_info >= (3, 10):

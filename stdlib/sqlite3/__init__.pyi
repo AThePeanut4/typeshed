@@ -97,7 +97,7 @@ from sqlite3.dbapi2 import (
 )
 from types import TracebackType
 from typing import Any, Literal, Protocol, SupportsIndex, TypeVar, final, overload, type_check_only
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, disjoint_base
 
 if sys.version_info < (3, 14):
     from sqlite3.dbapi2 import version_info as version_info
@@ -302,6 +302,7 @@ class OperationalError(DatabaseError): ...
 class ProgrammingError(DatabaseError): ...
 class Warning(Exception): ...
 
+@disjoint_base
 class Connection:
     """SQLite database connection object."""
     @property
@@ -671,6 +672,7 @@ class Connection:
         """
         ...
 
+@disjoint_base
 class Cursor:
     """SQLite database cursor class."""
     arraysize: int
@@ -731,6 +733,7 @@ class PrepareProtocol:
     """PEP 246 style object adaption protocol type."""
     def __init__(self, *args: object, **kwargs: object) -> None: ...
 
+@disjoint_base
 class Row(Sequence[Any]):
     def __new__(cls, cursor: Cursor, data: tuple[Any, ...], /) -> Self: ...
     def keys(self) -> list[str]:

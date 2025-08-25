@@ -81,22 +81,18 @@ def warn_explicit(
     filename: str,
     lineno: int,
     module: str | None = ...,
-    registry: dict[str | tuple[str, type[Warning], int], int] | None = ...,
-    module_globals: dict[str, Any] | None = ...,
-    source: Any | None = ...,
-) -> None:
-    """Issue a warning, or maybe ignore it or raise an exception."""
-    ...
+    registry: dict[str | tuple[str, type[Warning], int], int] | None = None,
+    module_globals: dict[str, Any] | None = None,
+    source: Any | None = None,
+) -> None: ...
 @overload
 def warn_explicit(
     message: Warning,
     category: Any,
     filename: str,
     lineno: int,
-    module: str | None = ...,
-    registry: dict[str | tuple[str, type[Warning], int], int] | None = ...,
-    module_globals: dict[str, Any] | None = ...,
-    source: Any | None = ...,
-) -> None:
-    """Issue a warning, or maybe ignore it or raise an exception."""
-    ...
+    module: str | None = None,
+    registry: dict[str | tuple[str, type[Warning], int], int] | None = None,
+    module_globals: dict[str, Any] | None = None,
+    source: Any | None = None,
+) -> None: ...

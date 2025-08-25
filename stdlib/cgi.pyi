@@ -1,5 +1,4 @@
-"""exec$(dirname $0)/python3.12$0$@"""
-
+import os
 from _typeshed import SupportsContainsAndGetItem, SupportsGetItem, SupportsItemAccess, Unused
 from builtins import list as _list, type as _type
 from collections.abc import Iterable, Iterator, Mapping
@@ -25,7 +24,7 @@ __all__ = [
 
 def parse(
     fp: IO[Any] | None = None,
-    environ: SupportsItemAccess[str, str] = ...,
+    environ: SupportsItemAccess[str, str] = os.environ,
     keep_blank_values: bool = ...,
     strict_parsing: bool = ...,
     separator: str = "&",
@@ -76,33 +75,12 @@ class _Environ(Protocol):
     def __getitem__(self, k: str, /) -> str: ...
     def keys(self) -> Iterable[str]: ...
 
-def parse_header(line: str) -> tuple[str, dict[str, str]]:
-    """
-    Parse a Content-type like header.
-
-    Return the main content-type and a dictionary of options.
-    """
-    ...
-def test(environ: _Environ = ...) -> None:
-    """
-    Robust test CGI script, usable as main program.
-
-    Write minimal HTTP headers and dump all information provided to
-    the script in HTML form.
-    """
-    ...
-def print_environ(environ: _Environ = ...) -> None:
-    """Dump the shell environment as HTML."""
-    ...
-def print_form(form: dict[str, Any]) -> None:
-    """Dump the contents of a form as HTML."""
-    ...
-def print_directory() -> None:
-    """Dump the current directory as HTML."""
-    ...
-def print_environ_usage() -> None:
-    """Dump a list of environment variables used by CGI as HTML."""
-    ...
+def parse_header(line: str) -> tuple[str, dict[str, str]]: ...
+def test(environ: _Environ = os.environ) -> None: ...
+def print_environ(environ: _Environ = os.environ) -> None: ...
+def print_form(form: dict[str, Any]) -> None: ...
+def print_directory() -> None: ...
+def print_environ_usage() -> None: ...
 
 class MiniFieldStorage:
     """Like FieldStorage, for use when no file uploads are possible."""
@@ -190,7 +168,7 @@ class FieldStorage:
         fp: IO[Any] | None = None,
         headers: Mapping[str, str] | Message | None = None,
         outerboundary: bytes = b"",
-        environ: SupportsContainsAndGetItem[str, str] = ...,
+        environ: SupportsContainsAndGetItem[str, str] = os.environ,
         keep_blank_values: int = 0,
         strict_parsing: int = 0,
         limit: int | None = None,

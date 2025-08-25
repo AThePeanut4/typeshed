@@ -4,7 +4,7 @@ import sys
 from abc import abstractmethod
 from time import struct_time
 from typing import ClassVar, Final, NoReturn, SupportsIndex, final, overload, type_check_only
-from typing_extensions import CapsuleType, Self, TypeAlias, deprecated
+from typing_extensions import CapsuleType, Self, TypeAlias, deprecated, disjoint_base
 
 if sys.version_info >= (3, 11):
     __all__ = ("date", "datetime", "time", "timedelta", "timezone", "tzinfo", "MINYEAR", "MAXYEAR", "UTC")
@@ -73,6 +73,7 @@ class _IsoCalendarDate(tuple[int, int, int]):
     @property
     def weekday(self) -> int: ...
 
+@disjoint_base
 class date:
     """date(year, month, day) --> date object"""
     min: ClassVar[date]
@@ -206,6 +207,7 @@ class date:
         """Return a named tuple containing ISO year, week number, and weekday."""
         ...
 
+@disjoint_base
 class time:
     """
     time([hour[, minute[, second[, microsecond[, tzinfo]]]]]) --> a time object
@@ -329,6 +331,7 @@ class time:
 _Date: TypeAlias = date
 _Time: TypeAlias = time
 
+@disjoint_base
 class timedelta:
     """
     Difference between two datetime values.
@@ -437,6 +440,7 @@ class timedelta:
         """Return hash(self)."""
         ...
 
+@disjoint_base
 class datetime(date):
     """
     datetime(year, month, day[, hour[, minute[, second[, microsecond[,tzinfo]]]]])

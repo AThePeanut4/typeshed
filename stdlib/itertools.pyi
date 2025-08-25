@@ -35,7 +35,7 @@ from _typeshed import MaybeNone
 from collections.abc import Callable, Iterable, Iterator
 from types import GenericAlias
 from typing import Any, Generic, Literal, SupportsComplex, SupportsFloat, SupportsIndex, SupportsInt, TypeVar, overload
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, disjoint_base
 
 _T = TypeVar("_T")
 _S = TypeVar("_S")
@@ -59,6 +59,7 @@ _Predicate: TypeAlias = Callable[[_T], object]
 
 # Technically count can take anything that implements a number protocol and has an add method
 # but we can't enforce the add method
+@disjoint_base
 class count(Generic[_N]):
     """
     Return a count object whose .__next__() method returns consecutive values.
@@ -83,6 +84,7 @@ class count(Generic[_N]):
         """Implement iter(self)."""
         ...
 
+@disjoint_base
 class cycle(Generic[_T]):
     """Return elements from the iterable until it is exhausted. Then repeat the sequence indefinitely."""
     def __new__(cls, iterable: Iterable[_T], /) -> Self: ...
@@ -93,6 +95,7 @@ class cycle(Generic[_T]):
         """Implement iter(self)."""
         ...
 
+@disjoint_base
 class repeat(Generic[_T]):
     """
     repeat(object [,times]) -> create an iterator which returns the object
@@ -113,6 +116,7 @@ class repeat(Generic[_T]):
         """Private method returning an estimate of len(list(it))."""
         ...
 
+@disjoint_base
 class accumulate(Generic[_T]):
     """Return series of accumulated sums (or other binary function results)."""
     @overload
@@ -126,6 +130,7 @@ class accumulate(Generic[_T]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class chain(Generic[_T]):
     """
     Return a chain object whose .__next__() method returns elements from the
@@ -148,6 +153,7 @@ class chain(Generic[_T]):
         """See PEP 585"""
         ...
 
+@disjoint_base
 class compress(Generic[_T]):
     """
     Return data elements corresponding to true selector elements.
@@ -163,6 +169,7 @@ class compress(Generic[_T]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class dropwhile(Generic[_T]):
     """
     Drop items from the iterable while predicate(item) is true.
@@ -177,6 +184,7 @@ class dropwhile(Generic[_T]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class filterfalse(Generic[_T]):
     """
     Return those items of iterable for which function(item) is false.
@@ -191,6 +199,7 @@ class filterfalse(Generic[_T]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class groupby(Generic[_T_co, _S_co]):
     """
     make an iterator that returns consecutive keys and groups from the iterable
@@ -213,6 +222,7 @@ class groupby(Generic[_T_co, _S_co]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class islice(Generic[_T]):
     """
     islice(iterable, stop) --> islice object
@@ -236,6 +246,7 @@ class islice(Generic[_T]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class starmap(Generic[_T_co]):
     """Return an iterator whose values are returned from the function evaluated with an argument tuple taken from the given sequence."""
     def __new__(cls, function: Callable[..., _T], iterable: Iterable[Iterable[Any]], /) -> starmap[_T]: ...
@@ -246,6 +257,7 @@ class starmap(Generic[_T_co]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class takewhile(Generic[_T]):
     """Return successive entries from an iterable as long as the predicate evaluates to true for each entry."""
     def __new__(cls, predicate: _Predicate[_T], iterable: Iterable[_T], /) -> Self: ...
@@ -256,10 +268,8 @@ class takewhile(Generic[_T]):
         """Implement next(self)."""
         ...
 
-def tee(iterable: Iterable[_T], n: int = 2, /) -> tuple[Iterator[_T], ...]:
-    """Returns a tuple of n independent iterators."""
-    ...
-
+def tee(iterable: Iterable[_T], n: int = 2, /) -> tuple[Iterator[_T], ...]: ...
+@disjoint_base
 class zip_longest(Generic[_T_co]):
     """
     Return a zip_longest object whose .__next__() method returns a tuple where
@@ -350,6 +360,7 @@ class zip_longest(Generic[_T_co]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class product(Generic[_T_co]):
     """
     Cartesian product of input iterables.  Equivalent to nested for-loops.
@@ -454,6 +465,7 @@ class product(Generic[_T_co]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class permutations(Generic[_T_co]):
     """
     Return successive r-length permutations of elements in the iterable.
@@ -477,6 +489,7 @@ class permutations(Generic[_T_co]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class combinations(Generic[_T_co]):
     """
     Return successive r-length combinations of elements in the iterable.
@@ -500,6 +513,7 @@ class combinations(Generic[_T_co]):
         """Implement next(self)."""
         ...
 
+@disjoint_base
 class combinations_with_replacement(Generic[_T_co]):
     """
     Return successive r-length combinations of elements in the iterable allowing individual elements to have successive repeats.
@@ -524,6 +538,7 @@ class combinations_with_replacement(Generic[_T_co]):
         ...
 
 if sys.version_info >= (3, 10):
+    @disjoint_base
     class pairwise(Generic[_T_co]):
         """
         Return an iterator of overlapping pairs taken from the input iterator.
@@ -539,6 +554,7 @@ if sys.version_info >= (3, 10):
             ...
 
 if sys.version_info >= (3, 12):
+    @disjoint_base
     class batched(Generic[_T_co]):
         """
         Batch data into tuples of length n. The last batch may be shorter than n.

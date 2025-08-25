@@ -4,7 +4,7 @@ from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping, S
 from contextlib import _GeneratorContextManager
 from types import TracebackType
 from typing import Any, ClassVar, Final, Generic, Literal, TypeVar, overload, type_check_only
-from typing_extensions import ParamSpec, Self, TypeAlias
+from typing_extensions import ParamSpec, Self, TypeAlias, disjoint_base
 
 _T = TypeVar("_T")
 _TT = TypeVar("_TT", bound=type[Any])
@@ -70,55 +70,66 @@ _ArgsKwargs: TypeAlias = tuple[tuple[Any, ...], Mapping[str, Any]]
 _NameArgsKwargs: TypeAlias = tuple[str, tuple[Any, ...], Mapping[str, Any]]
 _CallValue: TypeAlias = str | tuple[Any, ...] | Mapping[str, Any] | _ArgsKwargs | _NameArgsKwargs
 
-class _Call(tuple[Any, ...]):
-    """
-    A tuple for holding the results of a call to a mock, either in the form
-    `(args, kwargs)` or `(name, args, kwargs)`.
+if sys.version_info >= (3, 12):
+    class _Call(tuple[Any, ...]):
+        def __new__(
+            cls,
+            value: _CallValue = (),
+            name: str | None = "",
+            parent: _Call | None = None,
+            two: bool = False,
+            from_kall: bool = True,
+        ) -> Self: ...
+        def __init__(
+            self,
+            value: _CallValue = (),
+            name: str | None = None,
+            parent: _Call | None = None,
+            two: bool = False,
+            from_kall: bool = True,
+        ) -> None: ...
+        __hash__: ClassVar[None]  # type: ignore[assignment]
+        def __eq__(self, other: object) -> bool: ...
+        def __ne__(self, value: object, /) -> bool: ...
+        def __call__(self, *args: Any, **kwargs: Any) -> _Call: ...
+        def __getattr__(self, attr: str) -> Any: ...
+        def __getattribute__(self, attr: str) -> Any: ...
+        @property
+        def args(self) -> tuple[Any, ...]: ...
+        @property
+        def kwargs(self) -> Mapping[str, Any]: ...
+        def call_list(self) -> Any: ...
 
-    If args or kwargs are empty then a call tuple will compare equal to
-    a tuple without those values. This makes comparisons less verbose::
-
-        _Call(('name', (), {})) == ('name',)
-        _Call(('name', (1,), {})) == ('name', (1,))
-        _Call(((), {'a': 'b'})) == ({'a': 'b'},)
-
-    The `_Call` object provides a useful shortcut for comparing with call::
-
-        _Call(((1, 2), {'a': 3})) == call(1, 2, a=3)
-        _Call(('foo', (1, 2), {'a': 3})) == call.foo(1, 2, a=3)
-
-    If the _Call has no name then it will match any name.
-    """
-    def __new__(
-        cls, value: _CallValue = (), name: str | None = "", parent: _Call | None = None, two: bool = False, from_kall: bool = True
-    ) -> Self: ...
-    def __init__(
-        self,
-        value: _CallValue = (),
-        name: str | None = None,
-        parent: _Call | None = None,
-        two: bool = False,
-        from_kall: bool = True,
-    ) -> None: ...
-    __hash__: ClassVar[None]  # type: ignore[assignment]
-    def __eq__(self, other: object) -> bool: ...
-    def __ne__(self, value: object, /) -> bool:
-        """Return self!=value."""
-        ...
-    def __call__(self, *args: Any, **kwargs: Any) -> _Call: ...
-    def __getattr__(self, attr: str) -> Any: ...
-    def __getattribute__(self, attr: str) -> Any: ...
-    @property
-    def args(self) -> tuple[Any, ...]: ...
-    @property
-    def kwargs(self) -> Mapping[str, Any]: ...
-    def call_list(self) -> Any:
-        """
-        For a call object that represents multiple calls, `call_list`
-        returns a list of all the intermediate calls as well as the
-        final call.
-        """
-        ...
+else:
+    @disjoint_base
+    class _Call(tuple[Any, ...]):
+        def __new__(
+            cls,
+            value: _CallValue = (),
+            name: str | None = "",
+            parent: _Call | None = None,
+            two: bool = False,
+            from_kall: bool = True,
+        ) -> Self: ...
+        def __init__(
+            self,
+            value: _CallValue = (),
+            name: str | None = None,
+            parent: _Call | None = None,
+            two: bool = False,
+            from_kall: bool = True,
+        ) -> None: ...
+        __hash__: ClassVar[None]  # type: ignore[assignment]
+        def __eq__(self, other: object) -> bool: ...
+        def __ne__(self, value: object, /) -> bool: ...
+        def __call__(self, *args: Any, **kwargs: Any) -> _Call: ...
+        def __getattr__(self, attr: str) -> Any: ...
+        def __getattribute__(self, attr: str) -> Any: ...
+        @property
+        def args(self) -> tuple[Any, ...]: ...
+        @property
+        def kwargs(self) -> Mapping[str, Any]: ...
+        def call_list(self) -> Any: ...
 
 call: _Call
 

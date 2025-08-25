@@ -6,7 +6,7 @@ from _typeshed import SupportsAllComparisons, SupportsItems
 from collections.abc import Callable, Hashable, Iterable, Sized
 from types import GenericAlias
 from typing import Any, Final, Generic, Literal, NamedTuple, TypedDict, TypeVar, final, overload, type_check_only
-from typing_extensions import ParamSpec, Self, TypeAlias
+from typing_extensions import ParamSpec, Self, TypeAlias, disjoint_base
 
 __all__ = [
     "update_wrapper",
@@ -272,26 +272,9 @@ else:
         """
         Decorator factory to apply update_wrapper() to a wrapper function
 
-        Returns a decorator that invokes update_wrapper() with the decorated
-        function as the wrapper argument and the arguments to wraps() as the
-        remaining arguments. Default arguments are as for update_wrapper().
-        This is a convenience function to simplify applying partial() to
-        update_wrapper().
-        """
-        ...
-
-def total_ordering(cls: type[_T]) -> type[_T]:
-    """Class decorator that fills in missing ordering methods"""
-    ...
-def cmp_to_key(mycmp: Callable[[_T, _T], int]) -> Callable[[_T], SupportsAllComparisons]:
-    """
-    Convert a cmp= function into a key= function.
-
-    mycmp
-      Function that compares two objects.
-    """
-    ...
-
+def total_ordering(cls: type[_T]) -> type[_T]: ...
+def cmp_to_key(mycmp: Callable[[_T, _T], int]) -> Callable[[_T], SupportsAllComparisons]: ...
+@disjoint_base
 class partial(Generic[_T]):
     """
     Create a new function with partial application of the given arguments

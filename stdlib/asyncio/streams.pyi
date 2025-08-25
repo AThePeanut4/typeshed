@@ -34,7 +34,7 @@ if sys.version_info >= (3, 10):
         port: int | str | None = None,
         *,
         limit: int = 65536,
-        ssl_handshake_timeout: float | None = ...,
+        ssl_handshake_timeout: float | None = None,
         **kwds: Any,
     ) -> tuple[StreamReader, StreamWriter]:
         """
@@ -62,7 +62,7 @@ if sys.version_info >= (3, 10):
         port: int | str | None = None,
         *,
         limit: int = 65536,
-        ssl_handshake_timeout: float | None = ...,
+        ssl_handshake_timeout: float | None = None,
         **kwds: Any,
     ) -> Server:
         """
@@ -95,7 +95,7 @@ else:
         *,
         loop: events.AbstractEventLoop | None = None,
         limit: int = 65536,
-        ssl_handshake_timeout: float | None = ...,
+        ssl_handshake_timeout: float | None = None,
         **kwds: Any,
     ) -> tuple[StreamReader, StreamWriter]:
         """
@@ -124,7 +124,7 @@ else:
         *,
         loop: events.AbstractEventLoop | None = None,
         limit: int = 65536,
-        ssl_handshake_timeout: float | None = ...,
+        ssl_handshake_timeout: float | None = None,
         **kwds: Any,
     ) -> Server:
         """

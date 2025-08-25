@@ -11,7 +11,7 @@ from os import PathLike
 from pathlib import Path
 from re import Pattern
 from typing import Any, ClassVar, Generic, NamedTuple, TypeVar, overload
-from typing_extensions import Self, TypeAlias, deprecated
+from typing_extensions import Self, TypeAlias, deprecated, disjoint_base
 
 _T = TypeVar("_T")
 _KT = TypeVar("_KT")
@@ -84,45 +84,21 @@ else:
         value: str
         group: str
 
-class EntryPoint(_EntryPointBase):
-    """
-    An entry point as defined by Python packaging conventions.
-
-    See `the packaging docs on entry points
-    <https://packaging.python.org/specifications/entry-points/>`_
-    for more information.
-
-    >>> ep = EntryPoint(
-    ...     name=None, group=None, value='package.module:attr [extra1, extra2]')
-    >>> ep.module
-    'package.module'
-    >>> ep.attr
-    'attr'
-    >>> ep.extras
-    ['extra1', 'extra2']
-    """
-    pattern: ClassVar[Pattern[str]]
-    if sys.version_info >= (3, 11):
+if sys.version_info >= (3, 11):
+    class EntryPoint(_EntryPointBase):
+        pattern: ClassVar[Pattern[str]]
         name: str
         value: str
         group: str
 
         def __init__(self, name: str, value: str, group: str) -> None: ...
-
-    def load(self) -> Any:
-        """
-        Load the entry point from its definition. If only a module
-        is indicated by the value, return that module. Otherwise,
-        return the named object.
-        """
-        ...
-    @property
-    def extras(self) -> list[str]: ...
-    @property
-    def module(self) -> str: ...
-    @property
-    def attr(self) -> str: ...
-    if sys.version_info >= (3, 10):
+        def load(self) -> Any: ...  # Callable[[], Any] or an importable module
+        @property
+        def extras(self) -> list[str]: ...
+        @property
+        def module(self) -> str: ...
+        @property
+        def attr(self) -> str: ...
         dist: ClassVar[Distribution | None]
         def matches(
             self,
@@ -133,38 +109,40 @@ class EntryPoint(_EntryPointBase):
             module: str = ...,
             attr: str = ...,
             extras: list[str] = ...,
-        ) -> bool:
-            """
-            EntryPoint matches the given parameters.
-
-            >>> ep = EntryPoint(group='foo', name='bar', value='bing:bong [extra1, extra2]')
-            >>> ep.matches(group='foo')
-            True
-            >>> ep.matches(name='bar', value='bing:bong [extra1, extra2]')
-            True
-            >>> ep.matches(group='foo', name='other')
-            False
-            >>> ep.matches()
-            True
-            >>> ep.matches(extras=['extra1', 'extra2'])
-            True
-            >>> ep.matches(module='bing')
-            True
-            >>> ep.matches(attr='bong')
-            True
-            """
-            ...
-
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
-    if sys.version_info >= (3, 11):
+        ) -> bool: ...  # undocumented
+        def __hash__(self) -> int: ...
         def __eq__(self, other: object) -> bool: ...
         def __lt__(self, other: object) -> bool: ...
-    if sys.version_info < (3, 12):
-        def __iter__(self) -> Iterator[Any]:
-            """Supply iter so one may construct dicts of EntryPoints by name."""
-            ...
+        if sys.version_info < (3, 12):
+            def __iter__(self) -> Iterator[Any]: ...  # result of iter((str, Self)), really
+
+else:
+    @disjoint_base
+    class EntryPoint(_EntryPointBase):
+        pattern: ClassVar[Pattern[str]]
+
+        def load(self) -> Any: ...  # Callable[[], Any] or an importable module
+        @property
+        def extras(self) -> list[str]: ...
+        @property
+        def module(self) -> str: ...
+        @property
+        def attr(self) -> str: ...
+        if sys.version_info >= (3, 10):
+            dist: ClassVar[Distribution | None]
+            def matches(
+                self,
+                *,
+                name: str = ...,
+                value: str = ...,
+                group: str = ...,
+                module: str = ...,
+                attr: str = ...,
+                extras: list[str] = ...,
+            ) -> bool: ...  # undocumented
+
+        def __hash__(self) -> int: ...
+        def __iter__(self) -> Iterator[Any]: ...  # result of iter((str, Self)), really
 
 if sys.version_info >= (3, 12):
     class EntryPoints(tuple[EntryPoint, ...]):
@@ -199,44 +177,13 @@ if sys.version_info >= (3, 12):
 
 elif sys.version_info >= (3, 10):
     class DeprecatedList(list[_T]):
-        """
-        Allow an otherwise immutable object to implement mutability
-        for compatibility.
-
-        >>> recwarn = getfixture('recwarn')
-        >>> dl = DeprecatedList(range(3))
-        >>> dl[0] = 1
-        >>> dl.append(3)
-        >>> del dl[3]
-        >>> dl.reverse()
-        >>> dl.sort()
-        >>> dl.extend([4])
-        >>> dl.pop(-1)
-        4
-        >>> dl.remove(1)
-        >>> dl += [5]
-        >>> dl + [6]
-        [1, 2, 5, 6]
-        >>> dl + (6,)
-        [1, 2, 5, 6]
-        >>> dl.insert(0, 0)
-        >>> dl
-        [0, 1, 2, 5]
-        >>> dl == [0, 1, 2, 5]
-        True
-        >>> dl == (0, 1, 2, 5)
-        True
-        >>> len(recwarn)
-        1
-        """
-        ...
+        __slots__ = ()
 
     class EntryPoints(DeprecatedList[EntryPoint]):  # use as list is deprecated since 3.10
         """An immutable collection of selectable EntryPoint objects."""
         # int argument is deprecated since 3.10
-        def __getitem__(self, name: int | str) -> EntryPoint:
-            """Get the EntryPoint in self matching name."""
-            ...
+        __slots__ = ()
+        def __getitem__(self, name: int | str) -> EntryPoint: ...  # type: ignore[override]
         def select(
             self,
             *,

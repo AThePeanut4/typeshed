@@ -5,7 +5,9 @@ from _typeshed import structseq
 from collections.abc import Callable
 from types import CodeType
 from typing import Any, Final, final
+from typing_extensions import disjoint_base
 
+@disjoint_base
 class Profiler:
     """
     Profiler(timer=None, timeunit=None, subcalls=True, builtins=True)
