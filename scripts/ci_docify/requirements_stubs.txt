@@ -78,7 +78,7 @@ nanoleafapi==2.1.*
 flake8-builtins==3.0.*
 oauthlib==3.3.*
 jsonnet==0.21.*
-Authlib~=1.6.0
+Authlib~=1.6.2
 lupa==2.5.*
 google-cloud-ndb==2.3.*
 ibm-db==3.2.6
