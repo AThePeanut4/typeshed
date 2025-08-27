@@ -41,6 +41,7 @@ geopandas==1.1.1
 Send2Trash==1.8.*
 grpcio==1.*
 hnswlib==0.8.*
+pyluach==2.2.*
 keyboard==0.13.*
 django-filter==25.1.*
 entrypoints==0.4.*
@@ -68,6 +69,7 @@ decorator==5.2.*
 click-shell==2.1
 dateparser[fasttext,langdetect]~=1.2.2
 rfc3339-validator==0.1.*
+convertdate==2.4.*
 braintree==4.38.*
 polib==1.2.*
 pyinstaller==6.15.*
@@ -102,7 +104,7 @@ passpy==1.0.*
 inifile==0.4.*
 grpcio-health-checking==1.*
 flake8==7.3.*
-Jetson.GPIO==2.1.*
+Jetson.GPIO~=2.1.11
 pyxdg==0.28.*
 PyMySQL==1.1.*
 toml==0.10.*
@@ -169,7 +171,7 @@ passlib==1.7.*
 netifaces==0.11.*
 click-default-group==1.2.*
 seaborn==0.13.2
-cachetools==6.1.*
+cachetools==6.2.*
 xmltodict==0.14.*
 binaryornot==0.4.*
 requests-oauthlib==2.0.*
