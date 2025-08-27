@@ -1,7 +1,14 @@
+"""
+The utils module contains shared functions and constants.
+
+They are to be used internally.
+"""
+
 from enum import Enum
 from typing import Final
 
 class _Days(Enum):
+    """An enumeration."""
     ROSH_HASHANA = "Rosh Hashana"
     YOM_KIPPUR = "Yom Kippur"
     SUCCOS = "Succos"

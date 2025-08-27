@@ -20,8 +20,12 @@ class OpenIDToken:
     def get_jwt_config(self, grant: BaseGrant) -> dict[str, str | int]:
         """
         Get the JWT configuration for OpenIDCode extension. The JWT
-        configuration will be used to generate ``id_token``. Developers
-        MUST implement this method in subclass, e.g.::
+        configuration will be used to generate ``id_token``.
+        If ``alg`` is undefined, the ``id_token_signed_response_alg`` client
+        metadata will be used. By default ``RS256`` will be used.
+        If ``key`` is undefined, the ``jwks_uri`` or ``jwks`` client metadata
+        will be used.
+        Developers MUST implement this method in subclass, e.g.::
 
             def get_jwt_config(self, grant):
                 return {

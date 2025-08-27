@@ -1,3 +1,5 @@
+"""Autumn Holiday mixins"""
+
 import datetime
 from typing import ClassVar
 

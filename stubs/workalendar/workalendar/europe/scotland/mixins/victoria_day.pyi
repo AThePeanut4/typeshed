@@ -1,3 +1,5 @@
+"""Victoria Day mixins"""
+
 import datetime
 from typing import ClassVar
 

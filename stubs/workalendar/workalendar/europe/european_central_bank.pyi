@@ -1,3 +1,5 @@
 from ..core import WesternCalendar
 
-class EuropeanCentralBank(WesternCalendar): ...
+class EuropeanCentralBank(WesternCalendar):
+    """European Central Bank"""
+    ...

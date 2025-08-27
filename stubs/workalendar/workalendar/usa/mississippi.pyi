@@ -1,3 +1,5 @@
 from .core import UnitedStates
 
-class Mississippi(UnitedStates): ...
+class Mississippi(UnitedStates):
+    """Mississippi"""
+    ...

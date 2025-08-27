@@ -1,3 +1,5 @@
 from ..core import WesternCalendar
 
-class Malta(WesternCalendar): ...
+class Malta(WesternCalendar):
+    """Malta"""
+    ...

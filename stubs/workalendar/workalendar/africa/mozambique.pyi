@@ -1,3 +1,5 @@
 from ..core import WesternCalendar
 
-class Mozambique(WesternCalendar): ...
+class Mozambique(WesternCalendar):
+    """Mozambique"""
+    ...

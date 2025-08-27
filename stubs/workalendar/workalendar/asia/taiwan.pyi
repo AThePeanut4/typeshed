@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from ..core import ChineseNewYearCalendar
 
 class Taiwan(ChineseNewYearCalendar):
+    """Taiwan (Republic of China)"""
     def is_working_day(
         self,
         day: datetime.date | datetime.datetime,
