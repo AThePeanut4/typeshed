@@ -1,21 +1,10 @@
-from _typeshed import Incomplete
-from typing import ClassVar
+import datetime
+from typing import Any
+from typing_extensions import TypeAlias
 
 from ..core import Calendar
 
-class Israel(Calendar):
-    """Israel"""
-    include_new_years_day: ClassVar[bool]
-    WEEKEND_DAYS: Incomplete
-    def get_variable_days(self, year): ...
-    def get_hebrew_independence_day(self, jewish_year):
-        """
-        Returns the independence day eve and independence day dates
-        according to the given hebrew year
+_HebrewDate: TypeAlias = Any | datetime.date  # from `pyluach.dates` package
 
-        :param jewish_year: the specific hebrew year for calculating
-                            the independence day dates
-        :return: independence day dates
-                 in the type of List[Tuple[HebrewDate, str]]
-        """
-        ...
+class Israel(Calendar):
+    def get_hebrew_independence_day(self, jewish_year: int) -> list[tuple[_HebrewDate, str]]: ...

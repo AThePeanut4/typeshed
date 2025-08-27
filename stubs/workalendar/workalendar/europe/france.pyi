@@ -1,19 +1,4 @@
-from _typeshed import Incomplete
-from typing import ClassVar
-
 from ..core import WesternCalendar
 
-class France(WesternCalendar):
-    """France"""
-    include_easter_monday: ClassVar[bool]
-    include_ascension: ClassVar[bool]
-    include_whit_monday: ClassVar[bool]
-    include_all_saints: ClassVar[bool]
-    include_assumption: ClassVar[bool]
-    include_labour_day: ClassVar[bool]
-    FIXED_HOLIDAYS: Incomplete
-
-class FranceAlsaceMoselle(France):
-    """France Alsace/Moselle"""
-    include_good_friday: ClassVar[bool]
-    include_boxing_day: ClassVar[bool]
+class France(WesternCalendar): ...
+class FranceAlsaceMoselle(France): ...
