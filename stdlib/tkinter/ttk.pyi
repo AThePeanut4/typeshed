@@ -14,12 +14,13 @@ of the widgets appearance lies at Themes.
 """
 
 import _tkinter
+import sys
 import tkinter
-from _typeshed import Incomplete, MaybeNone
-from collections.abc import Callable
+from _typeshed import MaybeNone
+from collections.abc import Callable, Iterable
 from tkinter.font import _FontDescription
 from typing import Any, Literal, TypedDict, overload, type_check_only
-from typing_extensions import TypeAlias
+from typing_extensions import Never, TypeAlias, Unpack
 
 __all__ = [
     "Button",
@@ -49,22 +50,8 @@ __all__ = [
     "Spinbox",
 ]
 
-def tclobjs_to_py(adict: dict[Any, Any]) -> dict[Any, Any]:
-    """
-    Returns adict with its values converted from Tcl objects to Python
-    objects.
-    """
-    ...
-def setup_master(master=None):
-    """
-    If master is not None, itself is returned. If master is None,
-    the default master is returned if there is one, otherwise a new
-    master is created and returned.
-
-    If it is not allowed to use the default root and master is None,
-    RuntimeError is raised.
-    """
-    ...
+def tclobjs_to_py(adict: dict[Any, Any]) -> dict[Any, Any]: ...
+def setup_master(master: tkinter.Misc | None = None): ...
 
 _Padding: TypeAlias = (
     tkinter._ScreenUnits
@@ -77,108 +64,154 @@ _Padding: TypeAlias = (
 # from ttk_widget (aka ttk::widget) manual page, differs from tkinter._Compound
 _TtkCompound: TypeAlias = Literal["", "text", "image", tkinter._Compound]
 
+# Last item (option value to apply) varies between different options so use Any.
+# It could also be any iterable with items matching the tuple, but that case
+# hasn't been added here for consistency with _Padding above.
+_Statespec: TypeAlias = tuple[Unpack[tuple[str, ...]], Any]
+_ImageStatespec: TypeAlias = tuple[Unpack[tuple[str, ...]], tkinter._ImageSpec]
+_VsapiStatespec: TypeAlias = tuple[Unpack[tuple[str, ...]], int]
+
+class _Layout(TypedDict, total=False):
+    side: Literal["left", "right", "top", "bottom"]
+    sticky: str  # consists of letters 'n', 's', 'w', 'e', may contain repeats, may be empty
+    unit: Literal[0, 1] | bool
+    children: _LayoutSpec
+    # Note: there seem to be some other undocumented keys sometimes
+
+# This could be any sequence when passed as a parameter but will always be a list when returned.
+_LayoutSpec: TypeAlias = list[tuple[str, _Layout | None]]
+
+# Keep these in sync with the appropriate methods in Style
+class _ElementCreateImageKwargs(TypedDict, total=False):
+    border: _Padding
+    height: tkinter._ScreenUnits
+    padding: _Padding
+    sticky: str
+    width: tkinter._ScreenUnits
+
+_ElementCreateArgsCrossPlatform: TypeAlias = (
+    # Could be any sequence here but types are not homogenous so just type it as tuple
+    tuple[Literal["image"], tkinter._ImageSpec, Unpack[tuple[_ImageStatespec, ...]], _ElementCreateImageKwargs]
+    | tuple[Literal["from"], str, str]
+    | tuple[Literal["from"], str]  # (fromelement is optional)
+)
+if sys.platform == "win32" and sys.version_info >= (3, 13):
+    class _ElementCreateVsapiKwargsPadding(TypedDict, total=False):
+        padding: _Padding
+
+    class _ElementCreateVsapiKwargsMargin(TypedDict, total=False):
+        padding: _Padding
+
+    class _ElementCreateVsapiKwargsSize(TypedDict):
+        width: tkinter._ScreenUnits
+        height: tkinter._ScreenUnits
+
+    _ElementCreateVsapiKwargsDict: TypeAlias = (
+        _ElementCreateVsapiKwargsPadding | _ElementCreateVsapiKwargsMargin | _ElementCreateVsapiKwargsSize
+    )
+    _ElementCreateArgs: TypeAlias = (  # noqa: Y047  # It doesn't recognise the usage below for whatever reason
+        _ElementCreateArgsCrossPlatform
+        | tuple[Literal["vsapi"], str, int, _ElementCreateVsapiKwargsDict]
+        | tuple[Literal["vsapi"], str, int, _VsapiStatespec, _ElementCreateVsapiKwargsDict]
+    )
+else:
+    _ElementCreateArgs: TypeAlias = _ElementCreateArgsCrossPlatform
+_ThemeSettingsValue = TypedDict(
+    "_ThemeSettingsValue",
+    {
+        "configure": dict[str, Any],
+        "map": dict[str, Iterable[_Statespec]],
+        "layout": _LayoutSpec,
+        "element create": _ElementCreateArgs,
+    },
+    total=False,
+)
+_ThemeSettings: TypeAlias = dict[str, _ThemeSettingsValue]
+
 class Style:
-    """Manipulate style database."""
-    master: Incomplete
+    master: tkinter.Misc
     tk: _tkinter.TkappType
     def __init__(self, master: tkinter.Misc | None = None) -> None: ...
-    def configure(self, style, query_opt=None, **kw):
-        """
-        Query or sets the default value of the specified option(s) in
-        style.
+    # For these methods, values given vary between options. Returned values
+    # seem to be str, but this might not always be the case.
+    @overload
+    def configure(self, style: str) -> dict[str, Any] | None: ...  # Returns None if no configuration.
+    @overload
+    def configure(self, style: str, query_opt: str, **kw: Any) -> Any: ...
+    @overload
+    def configure(self, style: str, query_opt: None = None, **kw: Any) -> None: ...
+    @overload
+    def map(self, style: str, query_opt: str) -> _Statespec: ...
+    @overload
+    def map(self, style: str, query_opt: None = None, **kw: Iterable[_Statespec]) -> dict[str, _Statespec]: ...
+    def lookup(self, style: str, option: str, state: Iterable[str] | None = None, default: Any | None = None) -> Any: ...
+    @overload
+    def layout(self, style: str, layoutspec: _LayoutSpec) -> list[Never]: ...  # Always seems to return an empty list
+    @overload
+    def layout(self, style: str, layoutspec: None = None) -> _LayoutSpec: ...
+    @overload
+    def element_create(
+        self,
+        elementname: str,
+        etype: Literal["image"],
+        default_image: tkinter._ImageSpec,
+        /,
+        *imagespec: _ImageStatespec,
+        border: _Padding = ...,
+        height: tkinter._ScreenUnits = ...,
+        padding: _Padding = ...,
+        sticky: str = ...,
+        width: tkinter._ScreenUnits = ...,
+    ) -> None: ...
+    @overload
+    def element_create(self, elementname: str, etype: Literal["from"], themename: str, fromelement: str = ..., /) -> None: ...
+    if sys.platform == "win32" and sys.version_info >= (3, 13):  # and tk version >= 8.6
+        # margin, padding, and (width + height) are mutually exclusive. width
+        # and height must either both be present or not present at all. Note:
+        # There are other undocumented options if you look at ttk's source code.
+        @overload
+        def element_create(
+            self,
+            elementname: str,
+            etype: Literal["vsapi"],
+            class_: str,
+            part: int,
+            vs_statespec: _VsapiStatespec = ...,
+            /,
+            *,
+            padding: _Padding = ...,
+        ) -> None: ...
+        @overload
+        def element_create(
+            self,
+            elementname: str,
+            etype: Literal["vsapi"],
+            class_: str,
+            part: int,
+            vs_statespec: _VsapiStatespec = ...,
+            /,
+            *,
+            margin: _Padding = ...,
+        ) -> None: ...
+        @overload
+        def element_create(
+            self,
+            elementname: str,
+            etype: Literal["vsapi"],
+            class_: str,
+            part: int,
+            vs_statespec: _VsapiStatespec = ...,
+            /,
+            *,
+            width: tkinter._ScreenUnits,
+            height: tkinter._ScreenUnits,
+        ) -> None: ...
 
-        Each key in kw is an option and each value is either a string or
-        a sequence identifying the value for that option.
-        """
-        ...
-    def map(self, style, query_opt=None, **kw):
-        """
-        Query or sets dynamic values of the specified option(s) in
-        style.
-
-        Each key in kw is an option and each value should be a list or a
-        tuple (usually) containing statespecs grouped in tuples, or list,
-        or something else of your preference. A statespec is compound of
-        one or more states and then a value.
-        """
-        ...
-    def lookup(self, style, option, state=None, default=None):
-        """
-        Returns the value specified for option in style.
-
-        If state is specified it is expected to be a sequence of one
-        or more states. If the default argument is set, it is used as
-        a fallback value in case no specification for option is found.
-        """
-        ...
-    def layout(self, style, layoutspec=None):
-        """
-        Define the widget layout for given style. If layoutspec is
-        omitted, return the layout specification for given style.
-
-        layoutspec is expected to be a list or an object different than
-        None that evaluates to False if you want to "turn off" that style.
-        If it is a list (or tuple, or something else), each item should be
-        a tuple where the first item is the layout name and the second item
-        should have the format described below:
-
-        LAYOUTS
-
-            A layout can contain the value None, if takes no options, or
-            a dict of options specifying how to arrange the element.
-            The layout mechanism uses a simplified version of the pack
-            geometry manager: given an initial cavity, each element is
-            allocated a parcel. Valid options/values are:
-
-                side: whichside
-                    Specifies which side of the cavity to place the
-                    element; one of top, right, bottom or left. If
-                    omitted, the element occupies the entire cavity.
-
-                sticky: nswe
-                    Specifies where the element is placed inside its
-                    allocated parcel.
-
-                children: [sublayout... ]
-                    Specifies a list of elements to place inside the
-                    element. Each element is a tuple (or other sequence)
-                    where the first item is the layout name, and the other
-                    is a LAYOUT.
-        """
-        ...
-    def element_create(self, elementname, etype, *args, **kw) -> None:
-        """Create a new element in the current theme of given etype."""
-        ...
-    def element_names(self):
-        """Returns the list of elements defined in the current theme."""
-        ...
-    def element_options(self, elementname):
-        """Return the list of elementname's options."""
-        ...
-    def theme_create(self, themename, parent=None, settings=None) -> None:
-        """
-        Creates a new theme.
-
-        It is an error if themename already exists. If parent is
-        specified, the new theme will inherit styles, elements and
-        layouts from the specified parent theme. If settings are present,
-        they are expected to have the same syntax used for theme_settings.
-        """
-        ...
-    def theme_settings(self, themename, settings) -> None:
-        """
-        Temporarily sets the current theme to themename, apply specified
-        settings and then restore the previous theme.
-
-        Each key in settings is a style and each value may contain the
-        keys 'configure', 'map', 'layout' and 'element create' and they
-        are expected to have the same format as specified by the methods
-        configure, map, layout and element_create respectively.
-        """
-        ...
-    def theme_names(self) -> tuple[str, ...]:
-        """Returns a list of all known themes."""
-        ...
+    def element_names(self) -> tuple[str, ...]: ...
+    def element_options(self, elementname: str) -> tuple[str, ...]: ...
+    def theme_create(self, themename: str, parent: str | None = None, settings: _ThemeSettings | None = None) -> None: ...
+    def theme_settings(self, themename: str, settings: _ThemeSettings) -> None: ...
+    def theme_names(self) -> tuple[str, ...]: ...
     @overload
     def theme_use(self, themename: str) -> None:
         """
@@ -1304,46 +1337,11 @@ class Panedwindow(Widget, tkinter.PanedWindow):
         """
         ...
     @overload
-    def config(self, cnf: str) -> tuple[str, str, str, Any, Any]:
-        """
-        Configure resources of a widget.
-
-        The values for resources are specified as keyword
-        arguments. To get an overview about
-        the allowed keyword arguments call the method keys.
-        """
-        ...
-    forget: Incomplete
-    def insert(self, pos, child, **kw) -> None:
-        """
-        Inserts a pane at the specified positions.
-
-        pos is either the string end, and integer index, or the name
-        of a child. If child is already managed by the paned window,
-        moves it to the specified position.
-        """
-        ...
-    def pane(self, pane, option=None, **kw):
-        """
-        Query or modify the options of the specified pane.
-
-        pane is either an integer index or the name of a managed subwindow.
-        If kw is not given, returns a dict of the pane option values. If
-        option is specified then the value for that option is returned.
-        Otherwise, sets the options to the corresponding values.
-        """
-        ...
-    def sashpos(self, index, newpos=None):
-        """
-        If newpos is specified, sets the position of sash number index.
-
-        May adjust the positions of adjacent sashes to ensure that
-        positions are monotonically increasing. Sash positions are further
-        constrained to be between 0 and the total size of the widget.
-
-        Returns the new position of sash number index.
-        """
-        ...
+    def config(self, cnf: str) -> tuple[str, str, str, Any, Any]: ...
+    forget = tkinter.PanedWindow.forget
+    def insert(self, pos, child, **kw) -> None: ...
+    def pane(self, pane, option=None, **kw): ...
+    def sashpos(self, index, newpos=None): ...
 
 PanedWindow = Panedwindow
 
