@@ -137,7 +137,7 @@ channels==4.3.*
 jmespath==1.0.*
 opentracing==2.4.*
 xdgenvpy==3.0.*
-yt-dlp==2025.8.22
+yt-dlp==2025.8.27
 grpcio-status==1.*
 decorator==5.2.*
 pyRFC3339~=2.0.1
