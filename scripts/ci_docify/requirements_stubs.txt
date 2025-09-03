@@ -129,7 +129,7 @@ flake8-rst-docstrings==0.3.*
 objgraph==3.6.*
 qrcode[pil]==8.2.*
 grpcio==1.*
-regex==2025.8.29
+regex==2025.9.1
 polib==1.2.*
 flake8-docstrings==1.7.*
 pycocotools==2.0.*
