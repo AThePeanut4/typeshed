@@ -18,7 +18,7 @@ workalendar==17.0.*
 icalendar==6.3.1
 oauthlib==3.3.*
 console-menu==0.8.*
-Markdown==3.8.*
+Markdown==3.9.*
 pyaudio==0.2.*
 python-jose==3.5.*
 PyYAML==6.0.*
