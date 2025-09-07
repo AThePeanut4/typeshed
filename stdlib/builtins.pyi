@@ -3280,8 +3280,7 @@ class slice(Generic[_StartT_co, _StopT_co, _StepT_co]):
         """
         ...
 
-# Making this a disjoint_base upsets pyright
-# @disjoint_base
+@disjoint_base
 class tuple(Sequence[_T_co]):
     """
     Built-in immutable sequence.
