@@ -137,7 +137,7 @@ channels==4.3.*
 jmespath==1.0.*
 opentracing==2.4.*
 xdgenvpy==3.0.*
-yt-dlp==2025.8.27
+yt-dlp==2025.9.5
 grpcio-status==1.*
 decorator==5.2.*
 pyRFC3339~=2.0.1
@@ -147,7 +147,7 @@ lzstring==1.0.*
 antlr4-python3-runtime==4.13.*
 uWSGI==2.0.*
 hnswlib==0.8.*
-xmltodict==0.14.*
+xmltodict==0.15.*
 colorama==0.4.*
 docutils==0.22.*
 parsimonious==0.10.*
