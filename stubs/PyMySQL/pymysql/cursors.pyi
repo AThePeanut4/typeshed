@@ -160,9 +160,23 @@ class SSCursor(Cursor):
     possible to scroll backwards, as only the current row is held in memory.
     """
     def __del__(self) -> None: ...
-    def read_next(self) -> tuple[Any, ...] | None: ...
-    def fetchall(self) -> list[tuple[Any, ...]]: ...  # type: ignore[override]
-    def fetchall_unbuffered(self) -> Iterator[tuple[Any, ...]]: ...
+    def read_next(self) -> tuple[Any, ...] | None:
+        """Read next row."""
+        ...
+    def fetchall(self) -> list[tuple[Any, ...]]:
+        """
+        Fetch all, as per MySQLdb. Pretty useless for large queries, as
+        it is buffered. See fetchall_unbuffered(), if you want an unbuffered
+        generator version of this method.
+        """
+        ...
+    def fetchall_unbuffered(self) -> Iterator[tuple[Any, ...]]:
+        """
+        Fetch all, implemented as a generator, which isn't to standard,
+        however, it doesn't make sense to return everything in a list, as that
+        would use ridiculous memory for large result sets.
+        """
+        ...
     def scroll(self, value: int, mode: str = "relative") -> None: ...
 
 class DictCursor(DictCursorMixin, Cursor):
@@ -170,5 +184,14 @@ class DictCursor(DictCursorMixin, Cursor):
     ...
 
 class SSDictCursor(DictCursorMixin, SSCursor):  # type: ignore[misc]
-    def fetchall_unbuffered(self) -> Iterator[dict[str, Any]]: ...  # type: ignore[override]
-    def read_next(self) -> dict[str, Any] | None: ...  # type: ignore[override]
+    """An unbuffered cursor, which returns results as a dictionary"""
+    def fetchall_unbuffered(self) -> Iterator[dict[str, Any]]:
+        """
+        Fetch all, implemented as a generator, which isn't to standard,
+        however, it doesn't make sense to return everything in a list, as that
+        would use ridiculous memory for large result sets.
+        """
+        ...
+    def read_next(self) -> dict[str, Any] | None:
+        """Read next row."""
+        ...

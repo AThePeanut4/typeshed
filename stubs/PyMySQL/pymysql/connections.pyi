@@ -35,6 +35,76 @@ def dump_packet(data): ...
 def _lenenc_int(i: int) -> bytes: ...
 
 class Connection(Generic[_C]):
+    """
+    Representation of a socket with a mysql server.
+
+    The proper way to get an instance of this class is to call
+    connect().
+
+    Establish a connection to the MySQL database. Accepts several
+    arguments:
+
+    :param host: Host where the database server is located.
+    :param user: Username to log in as.
+    :param password: Password to use.
+    :param database: Database to use, None to not use a particular one.
+    :param port: MySQL port to use, default is usually OK. (default: 3306)
+    :param bind_address: When the client has multiple network interfaces, specify
+        the interface from which to connect to the host. Argument can be
+        a hostname or an IP address.
+    :param unix_socket: Use a unix socket rather than TCP/IP.
+    :param read_timeout: The timeout for reading from the connection in seconds.
+        (default: None - no timeout)
+    :param write_timeout: The timeout for writing to the connection in seconds.
+        (default: None - no timeout)
+    :param str charset: Charset to use.
+    :param str collation: Collation name to use.
+    :param sql_mode: Default SQL_MODE to use.
+    :param read_default_file:
+        Specifies  my.cnf file to read these parameters from under the [client] section.
+    :param conv:
+        Conversion dictionary to use instead of the default one.
+        This is used to provide custom marshalling and unmarshalling of types.
+        See converters.
+    :param use_unicode:
+        Whether or not to default to unicode strings.
+        This option defaults to true.
+    :param client_flag: Custom flags to send to MySQL. Find potential values in constants.CLIENT.
+    :param cursorclass: Custom cursor class to use.
+    :param init_command: Initial SQL statement to run when connection is established.
+    :param connect_timeout: The timeout for connecting to the database in seconds.
+        (default: 10, min: 1, max: 31536000)
+    :param ssl: A dict of arguments similar to mysql_ssl_set()'s parameters or an ssl.SSLContext.
+    :param ssl_ca: Path to the file that contains a PEM-formatted CA certificate.
+    :param ssl_cert: Path to the file that contains a PEM-formatted client certificate.
+    :param ssl_disabled: A boolean value that disables usage of TLS.
+    :param ssl_key: Path to the file that contains a PEM-formatted private key for
+        the client certificate.
+    :param ssl_key_password: The password for the client certificate private key.
+    :param ssl_verify_cert: Set to true to check the server certificate's validity.
+    :param ssl_verify_identity: Set to true to check the server's identity.
+    :param read_default_group: Group to read from in the configuration file.
+    :param autocommit: Autocommit mode. None means use server default. (default: False)
+    :param local_infile: Boolean to enable the use of LOAD DATA LOCAL command. (default: False)
+    :param max_allowed_packet: Max size of packet sent to server in bytes. (default: 16MB)
+        Only used to limit size of "LOAD LOCAL INFILE" data packet smaller than default (16KB).
+    :param defer_connect: Don't explicitly connect on construction - wait for connect call.
+        (default: False)
+    :param auth_plugin_map: A dict of plugin names to a class that processes that plugin.
+        The class will take the Connection object as the argument to the constructor.
+        The class needs an authenticate method taking an authentication packet as
+        an argument.  For the dialog plugin, a prompt(echo, prompt) method can be used
+        (if no authenticate method) for returning a string from the user. (experimental)
+    :param server_public_key: SHA256 authentication plugin public key value. (default: None)
+    :param binary_prefix: Add _binary prefix on bytes and bytearray. (default: False)
+    :param compress: Not supported.
+    :param named_pipe: Not supported.
+    :param db: **DEPRECATED** Alias for database.
+    :param passwd: **DEPRECATED** Alias for password.
+
+    See `Connection <https://www.python.org/dev/peps/pep-0249/#connection-objects>`_ in the
+    specification.
+    """
     ssl: bool
     host: str
     port: int
@@ -247,7 +317,16 @@ class Connection(Generic[_C]):
         passwd: str | bytes | None = None,  # deprecated
         db: str | bytes | None = None,  # deprecated
     ) -> None: ...
-    def close(self) -> None: ...
+    def close(self) -> None:
+        """
+        Send the quit message and close the socket.
+
+        See `Connection.close() <https://www.python.org/dev/peps/pep-0249/#Connection.close>`_
+        in the specification.
+
+        :raise Error: If the connection is already closed.
+        """
+        ...
     @property
     def open(self) -> bool:
         """Return True if the connection is open."""
@@ -257,12 +336,46 @@ class Connection(Generic[_C]):
         ...
     def autocommit(self, value) -> None: ...
     def get_autocommit(self) -> bool: ...
-    def commit(self) -> None: ...
-    def begin(self) -> None: ...
-    def rollback(self) -> None: ...
-    def select_db(self, db) -> None: ...
-    def escape(self, obj, mapping: Mapping[str, Incomplete] | None = None): ...
-    def literal(self, obj): ...
+    def commit(self) -> None:
+        """
+        Commit changes to stable storage.
+
+        See `Connection.commit() <https://www.python.org/dev/peps/pep-0249/#commit>`_
+        in the specification.
+        """
+        ...
+    def begin(self) -> None:
+        """Begin transaction."""
+        ...
+    def rollback(self) -> None:
+        """
+        Roll back the current transaction.
+
+        See `Connection.rollback() <https://www.python.org/dev/peps/pep-0249/#rollback>`_
+        in the specification.
+        """
+        ...
+    def select_db(self, db) -> None:
+        """
+        Set current db.
+
+        :param db: The name of the db.
+        """
+        ...
+    def escape(self, obj, mapping: Mapping[str, Incomplete] | None = None):
+        """
+        Escape whatever value is passed.
+
+        Non-standard, for internal use; do not use this in your applications.
+        """
+        ...
+    def literal(self, obj):
+        """
+        Alias for escape().
+
+        Non-standard, for internal use; do not use this in your applications.
+        """
+        ...
     def escape_string(self, s: AnyStr) -> AnyStr: ...
     @overload
     def cursor(self, cursor: None = None) -> _C:
@@ -360,7 +473,9 @@ class MySQLResult:
     rows: Incomplete
     has_next: bool | None
     unbuffered_active: bool
-    def __init__(self, connection: Connection[Any]) -> None: ...
+    def __init__(self, connection: Connection[Any]) -> None:
+        """:type connection: Connection"""
+        ...
     def __del__(self) -> None: ...
     first_packet: Incomplete
     def read(self) -> None: ...
@@ -375,4 +490,6 @@ class LoadLocalFile:
     filename: FileDescriptorOrPath
     connection: Connection[Any]
     def __init__(self, filename: FileDescriptorOrPath, connection: Connection[Any]) -> None: ...
-    def send_data(self) -> None: ...
+    def send_data(self) -> None:
+        """Send data packets from the local file to the server"""
+        ...
