@@ -24,7 +24,7 @@ python-jose==3.5.*
 PyYAML==6.0.*
 translationstring==1.4.*
 python-jenkins~=1.8.3
-pyluach==2.2.*
+pyluach==2.3.*
 Authlib~=1.6.2
 croniter==6.0.0
 usersettings==1.1.*
