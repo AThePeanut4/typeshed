@@ -975,6 +975,12 @@ def festival(
         ``True`` to prefix multi day festivals with the day of the
         festival. Default is ``False``.
 
+    Returns
+    -------
+    str or None
+        The name of the festival or ``None`` if the given date is not
+        a Jewish festival.
+
     Examples
     --------
     >>> from pyluach.dates import HebrewDate
@@ -986,12 +992,6 @@ def festival(
     >>> shavuos = HebrewDate(5783, 3, 6)
     >>> festival(shavuos, israel=True, prefix_day=True)
     'Shavuos'
-
-    Returns
-    -------
-    str or None
-        The name of the festival or ``None`` if the given date is not
-        a Jewish festival.
     """
     ...
 def holiday(date: BaseDate, israel: bool = False, hebrew: bool = False, prefix_day: bool = False) -> str | None:
@@ -1015,6 +1015,12 @@ def holiday(date: BaseDate, israel: bool = False, hebrew: bool = False, prefix_d
         ``True`` to prefix multi day holidays with the day of the
         holiday. Default is ``False``.
 
+    Returns
+    -------
+    str or None
+        The name of the holiday or ``None`` if the given date is not
+        a Jewish holiday.
+
     Examples
     --------
     >>> from pyluach.dates import HebrewDate
@@ -1026,11 +1032,5 @@ def holiday(date: BaseDate, israel: bool = False, hebrew: bool = False, prefix_d
     >>> taanis_esther = HebrewDate(5783, 12, 13)
     >>> holiday(taanis_esther, prefix_day=True)
     'Taanis Esther'
-
-    Returns
-    -------
-    str or None
-        The name of the holiday or ``None`` if the given date is not
-        a Jewish holiday.
     """
     ...
