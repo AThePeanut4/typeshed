@@ -2630,48 +2630,14 @@ class RawTurtle(TPen, TNavigator):  # type: ignore[misc]  # Conflicting methods 
         @contextmanager
         def fill(self) -> Generator[None]: ...
 
-    def begin_fill(self) -> None:
-        """
-        Called just before drawing a shape to be filled.
-
-        No argument.
-
-        Example (for a Turtle instance named turtle):
-        >>> turtle.color("black", "red")
-        >>> turtle.begin_fill()
-        >>> turtle.circle(60)
-        >>> turtle.end_fill()
-        """
-        ...
-    def end_fill(self) -> None:
-        """
-        Fill the shape drawn after the call begin_fill().
-
-        No argument.
-
-        Example (for a Turtle instance named turtle):
-        >>> turtle.color("black", "red")
-        >>> turtle.begin_fill()
-        >>> turtle.circle(60)
-        >>> turtle.end_fill()
-        """
-        ...
-    def dot(self, size: int | None = None, *color: _Color) -> None:
-        """
-        Draw a dot with diameter size, using color.
-
-        Optional arguments:
-        size -- an integer >= 1 (if given)
-        color -- a colorstring or a numeric color tuple
-
-        Draw a circular dot with diameter size, using color.
-        If size is not given, the maximum of pensize+4 and 2*pensize is used.
-
-        Example (for a Turtle instance named turtle):
-        >>> turtle.dot()
-        >>> turtle.fd(50); turtle.dot(20, "blue"); turtle.fd(50)
-        """
-        ...
+    def begin_fill(self) -> None: ...
+    def end_fill(self) -> None: ...
+    @overload
+    def dot(self, size: int | _Color | None = None) -> None: ...
+    @overload
+    def dot(self, size: int | None, color: _Color, /) -> None: ...
+    @overload
+    def dot(self, size: int | None, r: float, g: float, b: float, /) -> None: ...
     def write(
         self, arg: object, move: bool = False, align: str = "left", font: tuple[str, int, str] = ("Arial", 8, "normal")
     ) -> None:
@@ -5240,69 +5206,15 @@ if sys.version_info >= (3, 14):
     @contextmanager
     def fill() -> Generator[None]: ...
 
-def begin_fill() -> None:
-    """
-    Called just before drawing a shape to be filled.
-
-    No argument.
-
-    Example:
-    >>> color("black", "red")
-    >>> begin_fill()
-    >>> circle(60)
-    >>> end_fill()
-    """
-    ...
-def end_fill() -> None:
-    """
-    Fill the shape drawn after the call begin_fill().
-
-    No argument.
-
-    Example:
-    >>> color("black", "red")
-    >>> begin_fill()
-    >>> circle(60)
-    >>> end_fill()
-    """
-    ...
-def dot(size: int | None = None, *color: _Color) -> None:
-    """
-    Draw a dot with diameter size, using color.
-
-    Optional arguments:
-    size -- an integer >= 1 (if given)
-    color -- a colorstring or a numeric color tuple
-
-    Draw a circular dot with diameter size, using color.
-    If size is not given, the maximum of pensize+4 and 2*pensize is used.
-
-    Example:
-    >>> dot()
-    >>> fd(50); dot(20, "blue"); fd(50)
-    """
-    ...
-def write(arg: object, move: bool = False, align: str = "left", font: tuple[str, int, str] = ("Arial", 8, "normal")) -> None:
-    """
-    Write text at the current turtle position.
-
-    Arguments:
-    arg -- info, which is to be written to the TurtleScreen
-    move (optional) -- True/False
-    align (optional) -- one of the strings "left", "center" or right"
-    font (optional) -- a triple (fontname, fontsize, fonttype)
-
-    Write text - the string representation of arg - at the current
-    turtle position according to align ("left", "center" or right")
-    and with the given font.
-    If move is True, the pen is moved to the bottom-right corner
-    of the text. By default, move is False.
-
-    Example:
-    >>> write('Home = ', True, align="center")
-    >>> write((0,0), True)
-    """
-    ...
+def begin_fill() -> None: ...
+def end_fill() -> None: ...
+@overload
+def dot(size: int | _Color | None = None) -> None: ...
+@overload
+def dot(size: int | None, color: _Color, /) -> None: ...
+@overload
+def dot(size: int | None, r: float, g: float, b: float, /) -> None: ...
+def write(arg: object, move: bool = False, align: str = "left", font: tuple[str, int, str] = ("Arial", 8, "normal")) -> None: ...
 
 if sys.version_info >= (3, 14):
     @contextmanager
