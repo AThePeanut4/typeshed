@@ -187,6 +187,6 @@ python-http-client==3.3.7
 Flask-SocketIO==5.5.*
 click-web==0.8.*
 flake8==7.3.*
-httplib2==0.30.*
+httplib2==0.31.*
 python-xlib==0.33.*
 PySocks==1.7.1
