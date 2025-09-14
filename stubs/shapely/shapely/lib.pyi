@@ -1,5 +1,5 @@
 from typing import Literal, SupportsIndex, final, overload
-from typing_extensions import Never
+from typing_extensions import Never, Self
 
 import numpy as np
 from numpy.typing import NDArray
@@ -170,16 +170,10 @@ class Geometry:
 class STRtree:
     """A query-only R-tree created using the Sort-Tile-Recursive (STR) algorithm."""
     count: int
-    def __init__(self, geoms: NDArray[np.object_], node_capacity: SupportsIndex, /, **kwargs: object) -> None: ...
-    def dwithin(self, geoms: NDArray[np.object_], distances: NDArray[np.float64], /) -> NDArray[np.int64]:
-        """Queries the index for all item(s) in the tree within given distance of search geometries"""
-        ...
-    def nearest(self, geoms: NDArray[np.object_], /) -> NDArray[np.int64]:
-        """Queries the index for the nearest item to each of the given search geometries"""
-        ...
-    def query(self, geoms: NDArray[np.object_], predicate: SupportsIndex, /) -> NDArray[np.int64]:
-        """Queries the index for all items whose extents intersect the given search geometries, and optionally tests them against predicate function if provided. """
-        ...
+    def __new__(cls, geoms: NDArray[np.object_], node_capacity: SupportsIndex, /, **kwargs: object) -> Self: ...
+    def dwithin(self, geoms: NDArray[np.object_], distances: NDArray[np.float64], /) -> NDArray[np.int64]: ...
+    def nearest(self, geoms: NDArray[np.object_], /) -> NDArray[np.int64]: ...
+    def query(self, geoms: NDArray[np.object_], predicate: SupportsIndex, /) -> NDArray[np.int64]: ...
     def query_nearest(
         self, geoms: NDArray[np.object_], max_distance: float, exclusive: SupportsIndex, all_matches: SupportsIndex, /
     ) -> tuple[NDArray[np.int64], NDArray[np.float64]]:
