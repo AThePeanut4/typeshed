@@ -996,6 +996,19 @@ class ServicerContext(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
 # Client-Side Interceptor:
 
 class ClientCallDetails(abc.ABC):
+    """
+    Describes an RPC to be invoked.
+
+    This is an EXPERIMENTAL API.
+
+    Args:
+        method: The method name of the RPC.
+        timeout: An optional duration of time in seconds to allow for the RPC.
+        metadata: Optional metadata to be transmitted to the service-side of
+          the RPC.
+        credentials: An optional CallCredentials for the RPC.
+        wait_for_ready: An optional flag to enable :term:`wait_for_ready` mechanism.
+    """
     def __new__(
         _cls,
         method: str,
@@ -1003,7 +1016,9 @@ class ClientCallDetails(abc.ABC):
         metadata: Metadata | None,
         credentials: CallCredentials | None,
         wait_for_ready: bool | None,
-    ) -> Self: ...
+    ) -> Self:
+        """Create new instance of ClientCallDetails(method, timeout, metadata, credentials, wait_for_ready)"""
+        ...
 
     method: str
     timeout: float | None
