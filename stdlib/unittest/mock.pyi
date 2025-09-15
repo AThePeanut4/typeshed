@@ -871,6 +871,7 @@ class MagicProxy(Base):
 
 # See https://github.com/python/typeshed/issues/14701
 class _ANY(Any):
+    """A helper object that compares equal to everything."""
     def __eq__(self, other: object) -> Literal[True]: ...
     def __ne__(self, other: object) -> Literal[False]: ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
