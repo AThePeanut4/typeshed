@@ -14,6 +14,7 @@ an argument are now methods of the result object. Deprecated functions
 
 import builtins
 from _typeshed import Incomplete
+from typing_extensions import disjoint_base
 
 import MySQLdb._exceptions
 
@@ -92,6 +93,7 @@ class Warning(builtins.Warning, MySQLdb._exceptions.MySQLError):
     """
     ...
 
+@disjoint_base
 class connection:
     """
     Returns a MYSQL connection object. Exclusive use of
@@ -500,6 +502,7 @@ class connection:
         """Implement setattr(self, name, value)."""
         ...
 
+@disjoint_base
 class result:
     """
     result(connection, use=0, converter={}) -- Result set from a query.

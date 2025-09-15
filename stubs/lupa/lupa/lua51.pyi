@@ -3,7 +3,7 @@
 from _typeshed import MaybeNone
 from collections.abc import Callable, Iterable
 from typing import Any, Final, Generic, TypeVar, type_check_only
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, disjoint_base
 
 __all__ = [
     "LUA_VERSION",
@@ -64,6 +64,7 @@ class _LuaNoGC: ...
 
 _bint = TypeVar("_bint", bool, int)
 
+@disjoint_base
 class FastRLock(Generic[_bint]):
     """
     Fast, re-entrant locking.
@@ -108,6 +109,7 @@ class LuaMemoryError(LuaError, MemoryError):
     """
     ...
 
+@disjoint_base
 class LuaRuntime:
     """
     The main entry point to the Lua runtime.

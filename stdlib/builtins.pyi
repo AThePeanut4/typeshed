@@ -4070,10 +4070,8 @@ class property:
         """Delete an attribute of instance."""
         ...
 
-# This class does not exist at runtime, but stubtest complains if it's marked as
-# @type_check_only because it has an alias that does exist at runtime. See mypy#19568.
-# @type_check_only
 @final
+@type_check_only
 class _NotImplementedType(Any):
     __call__: None
 

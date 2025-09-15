@@ -5,7 +5,7 @@ from _typeshed import ConvertibleToInt, Incomplete, SupportsRead, SupportsReadli
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from types import TracebackType
 from typing import Any, Literal, NoReturn, Protocol, TextIO, TypeVar, overload, type_check_only
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, disjoint_base
 
 from psycopg2.extras import ReplicationCursor as extras_ReplicationCursor
 from psycopg2.sql import Composable
@@ -91,6 +91,7 @@ _T_co = TypeVar("_T_co", covariant=True)
 @type_check_only
 class _SupportsReadAndReadline(SupportsRead[_T_co], SupportsReadline[_T_co], Protocol[_T_co]): ...
 
+@disjoint_base
 class cursor:
     """A database cursor."""
     arraysize: int
@@ -271,6 +272,7 @@ class cursor:
 
 _Cursor: TypeAlias = cursor
 
+@disjoint_base
 class AsIs:
     """AsIs(str) -> new AsIs adapter object"""
     def __init__(self, obj: object, /, **kwargs: Unused) -> None: ...
@@ -281,6 +283,7 @@ class AsIs:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class Binary:
     """Binary(buffer) -> new binary object"""
     def __init__(self, str: object, /, **kwargs: Unused) -> None: ...
@@ -296,6 +299,7 @@ class Binary:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class Boolean:
     """Boolean(str) -> new Boolean adapter object"""
     def __init__(self, obj: object, /, **kwargs: Unused) -> None: ...
@@ -306,6 +310,7 @@ class Boolean:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class Column:
     """
     Description of a column returned by a query.
@@ -351,6 +356,7 @@ class Column:
         ...
     def __setstate__(self, state, /): ...
 
+@disjoint_base
 class ConnectionInfo:
     """
     Details about the native PostgreSQL database connection.
@@ -619,6 +625,7 @@ class ConnectionInfo:
         """
         ...
 
+@disjoint_base
 class Error(Exception):
     """Base class for error exceptions."""
     cursor: _Cursor | None
@@ -663,6 +670,7 @@ class Warning(Exception):
     """A database warning."""
     ...
 
+@disjoint_base
 class ISQLQuote:
     """
     Abstract ISQLQuote protocol
@@ -682,6 +690,7 @@ class ISQLQuote:
         """getquoted() -- return SQL-quoted representation of this object"""
         ...
 
+@disjoint_base
 class Decimal:
     """Decimal(str) -> new Decimal adapter object"""
     def __init__(self, value: object, /, **kwargs: Unused) -> None: ...
@@ -692,6 +701,7 @@ class Decimal:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class Diagnostics:
     """
     Details from a database error report.
@@ -726,6 +736,7 @@ class Diagnostics:
     table_name: str | None
     def __init__(self, err: Error, /) -> None: ...
 
+@disjoint_base
 class Float:
     """Float(str) -> new Float adapter object"""
     def __init__(self, value: float, /, **kwargs: Unused) -> None: ...
@@ -736,6 +747,7 @@ class Float:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class Int:
     """Int(str) -> new Int adapter object"""
     def __init__(self, value: ConvertibleToInt, /, **kwargs: Unused) -> None: ...
@@ -746,6 +758,7 @@ class Int:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class List:
     """List(list) -> new list wrapper object"""
     def __init__(self, objs: list[object], /, **kwargs: Unused) -> None: ...
@@ -759,6 +772,7 @@ class List:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class Notify:
     """
     A notification received from the backend.
@@ -802,6 +816,7 @@ class Notify:
         """Return self!=value."""
         ...
 
+@disjoint_base
 class QuotedString:
     """QuotedString(str) -> new quoted object"""
     encoding: str
@@ -818,6 +833,7 @@ class QuotedString:
         ...
     def __conform__(self, proto, /) -> Self | None: ...
 
+@disjoint_base
 class ReplicationCursor(cursor):
     """A database replication cursor."""
     feedback_timestamp: Any
@@ -837,6 +853,7 @@ class ReplicationCursor(cursor):
         """start_replication_expert(command, decode=False, status_interval=10) -- Start replication with a given command."""
         ...
 
+@disjoint_base
 class ReplicationMessage:
     """A replication protocol message."""
     cursor: Any
@@ -847,6 +864,7 @@ class ReplicationMessage:
     wal_end: Any
     def __init__(self, *args, **kwargs) -> None: ...
 
+@disjoint_base
 class Xid:
     """
     A transaction identifier used for two-phase commit.
@@ -887,6 +905,7 @@ class Xid:
 
 _T_cur = TypeVar("_T_cur", bound=cursor)
 
+@disjoint_base
 class connection:
     """
     connection(dsn, ...) -> new connection object
@@ -1158,6 +1177,7 @@ class connection:
 
 _Connection: TypeAlias = connection
 
+@disjoint_base
 class ReplicationConnection(connection):
     """A replication connection."""
     autocommit: Any
@@ -1231,6 +1251,7 @@ class ReplicationConnection(connection):
         """
         ...
 
+@disjoint_base
 class lobject:
     """A database large object."""
     closed: Any
