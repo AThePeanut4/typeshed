@@ -38,9 +38,7 @@ class SharedMemory:
         def __init__(self, name: str | None = None, create: bool = False, size: int = 0) -> None: ...
 
     @property
-    def buf(self) -> memoryview:
-        """A memoryview of contents of the shared memory block."""
-        ...
+    def buf(self) -> memoryview | None: ...
     @property
     def name(self) -> str:
         """Unique name that identifies the shared memory block."""
