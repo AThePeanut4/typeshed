@@ -461,10 +461,53 @@ class Variable:
         @deprecated("Deprecated since Python 3.14. Use `trace_info()` instead.")
         def trace_vinfo(self) -> list[Incomplete]: ...
     else:
-        def trace(self, mode, callback) -> str: ...
-        def trace_variable(self, mode, callback) -> str: ...
-        def trace_vdelete(self, mode, cbname) -> None: ...
-        def trace_vinfo(self) -> list[Incomplete]: ...
+        def trace(self, mode, callback) -> str:
+            """
+            Define a trace callback for the variable.
+
+            MODE is one of "r", "w", "u" for read, write, undefine.
+            CALLBACK must be a function which is called when
+            the variable is read, written or undefined.
+
+            Return the name of the callback.
+
+            This deprecated method wraps a deprecated Tcl method that will
+            likely be removed in the future.  Use trace_add() instead.
+            """
+            ...
+        def trace_variable(self, mode, callback) -> str:
+            """
+            Define a trace callback for the variable.
+
+            MODE is one of "r", "w", "u" for read, write, undefine.
+            CALLBACK must be a function which is called when
+            the variable is read, written or undefined.
+
+            Return the name of the callback.
+
+            This deprecated method wraps a deprecated Tcl method that will
+            likely be removed in the future.  Use trace_add() instead.
+            """
+            ...
+        def trace_vdelete(self, mode, cbname) -> None:
+            """
+            Delete the trace callback for a variable.
+
+            MODE is one of "r", "w", "u" for read, write, undefine.
+            CBNAME is the name of the callback returned from trace_variable or trace.
+
+            This deprecated method wraps a deprecated Tcl method that will
+            likely be removed in the future.  Use trace_remove() instead.
+            """
+            ...
+        def trace_vinfo(self) -> list[Incomplete]:
+            """
+            Return all trace callback information.
+
+            This deprecated method wraps a deprecated Tcl method that will
+            likely be removed in the future.  Use trace_info() instead.
+            """
+            ...
 
     def __eq__(self, other: object) -> bool: ...
     def __del__(self) -> None:
@@ -567,7 +610,9 @@ def mainloop(n: int = 0) -> None:
 getint = int
 getdouble = float
 
-def getboolean(s) -> bool: ...
+def getboolean(s) -> bool:
+    """Convert Tcl object to True or False."""
+    ...
 
 _Ts = TypeVarTuple("_Ts")
 
@@ -642,14 +687,41 @@ class Misc:
         """
         ...
     waitvar = wait_variable
-    def wait_window(self, window: Misc | None = None) -> None: ...
-    def wait_visibility(self, window: Misc | None = None) -> None: ...
-    def setvar(self, name: str = "PY_VAR", value: str = "1") -> None: ...
-    def getvar(self, name: str = "PY_VAR"): ...
+    def wait_window(self, window: Misc | None = None) -> None:
+        """
+        Wait until a WIDGET is destroyed.
+
+        If no parameter is given self is used.
+        """
+        ...
+    def wait_visibility(self, window: Misc | None = None) -> None:
+        """
+        Wait until the visibility of a WIDGET changes
+        (e.g. it appears).
+
+        If no parameter is given self is used.
+        """
+        ...
+    def setvar(self, name: str = "PY_VAR", value: str = "1") -> None:
+        """Set Tcl variable NAME to VALUE."""
+        ...
+    def getvar(self, name: str = "PY_VAR"):
+        """Return value of Tcl variable NAME."""
+        ...
     def getint(self, s) -> int: ...
     def getdouble(self, s) -> float: ...
-    def getboolean(self, s) -> bool: ...
-    def focus_set(self) -> None: ...
+    def getboolean(self, s) -> bool:
+        """Return a boolean value for Tcl boolean values true and false given as parameter."""
+        ...
+    def focus_set(self) -> None:
+        """
+        Direct input focus to this widget.
+
+        If the application currently does not have the focus
+        this widget will get the focus if the application gets
+        the focus through the window manager.
+        """
+        ...
     focus = focus_set
     def focus_force(self) -> None:
         """
@@ -1758,8 +1830,15 @@ class XView:
         """Query and change the horizontal position of the view."""
         ...
     @overload
-    def xview(self, *args) -> None: ...
-    def xview_moveto(self, fraction: float) -> None: ...
+    def xview(self, *args) -> None:
+        """Query and change the horizontal position of the view."""
+        ...
+    def xview_moveto(self, fraction: float) -> None:
+        """
+        Adjusts the view in the window so that FRACTION of the
+        total width of the canvas is off-screen to the left.
+        """
+        ...
     @overload
     def xview_scroll(self, number: int, what: Literal["units", "pages"]) -> None:
         """
@@ -1785,8 +1864,15 @@ class YView:
         """Query and change the vertical position of the view."""
         ...
     @overload
-    def yview(self, *args) -> None: ...
-    def yview_moveto(self, fraction: float) -> None: ...
+    def yview(self, *args) -> None:
+        """Query and change the vertical position of the view."""
+        ...
+    def yview_moveto(self, fraction: float) -> None:
+        """
+        Adjusts the view in the window so that FRACTION of the
+        total height of the canvas is off-screen to the top.
+        """
+        ...
     @overload
     def yview_scroll(self, number: int, what: Literal["units", "pages"]) -> None:
         """
@@ -2958,8 +3044,15 @@ class BaseWidget(Misc):
     """Internal class."""
     master: Misc
     widgetName: str
-    def __init__(self, master, widgetName: str, cnf={}, kw={}, extra=()) -> None: ...
-    def destroy(self) -> None: ...
+    def __init__(self, master, widgetName: str, cnf={}, kw={}, extra=()) -> None:
+        """
+        Construct a widget with the parent widget MASTER, a name WIDGETNAME
+        and appropriate options.
+        """
+        ...
+    def destroy(self) -> None:
+        """Destroy this and all descendants widgets."""
+        ...
 
 # This class represents any widget except Toplevel or Tk.
 class Widget(BaseWidget, Pack, Place, Grid):
@@ -7054,6 +7147,7 @@ class _setit:
 
 # manual page: tk_optionMenu
 class OptionMenu(Menubutton):
+    """OptionMenu which allows the user to select a value from a menu."""
     menuname: Incomplete
     def __init__(
         # differs from other widgets
@@ -7958,21 +8052,166 @@ class PanedWindow(Widget):
         """
         ...
     config = configure
-    def add(self, child: Widget, **kw) -> None: ...
-    def remove(self, child) -> None: ...
+    def add(self, child: Widget, **kw) -> None:
+        """
+        Add a child widget to the panedwindow in a new pane.
+
+        The child argument is the name of the child widget
+        followed by pairs of arguments that specify how to
+        manage the windows. The possible options and values
+        are the ones accepted by the paneconfigure method.
+        """
+        ...
+    def remove(self, child) -> None:
+        """
+        Remove the pane containing child from the panedwindow
+
+        All geometry management options for child will be forgotten.
+        """
+        ...
     forget = remove  # type: ignore[assignment]
-    def identify(self, x: int, y: int): ...
-    def proxy(self, *args) -> tuple[Incomplete, ...]: ...
-    def proxy_coord(self) -> tuple[Incomplete, ...]: ...
-    def proxy_forget(self) -> tuple[Incomplete, ...]: ...
-    def proxy_place(self, x, y) -> tuple[Incomplete, ...]: ...
-    def sash(self, *args) -> tuple[Incomplete, ...]: ...
-    def sash_coord(self, index) -> tuple[Incomplete, ...]: ...
-    def sash_mark(self, index) -> tuple[Incomplete, ...]: ...
-    def sash_place(self, index, x, y) -> tuple[Incomplete, ...]: ...
-    def panecget(self, child, option): ...
-    def paneconfigure(self, tagOrId, cnf=None, **kw): ...
+    def identify(self, x: int, y: int):
+        """
+        Identify the panedwindow component at point x, y
+
+        If the point is over a sash or a sash handle, the result
+        is a two element list containing the index of the sash or
+        handle, and a word indicating whether it is over a sash
+        or a handle, such as {0 sash} or {2 handle}. If the point
+        is over any other part of the panedwindow, the result is
+        an empty list.
+        """
+        ...
+    def proxy(self, *args) -> tuple[Incomplete, ...]:
+        """Internal function."""
+        ...
+    def proxy_coord(self) -> tuple[Incomplete, ...]:
+        """
+        Return the x and y pair of the most recent proxy location
+        
+        """
+        ...
+    def proxy_forget(self) -> tuple[Incomplete, ...]:
+        """
+        Remove the proxy from the display.
+        
+        """
+        ...
+    def proxy_place(self, x, y) -> tuple[Incomplete, ...]:
+        """
+        Place the proxy at the given x and y coordinates.
+        
+        """
+        ...
+    def sash(self, *args) -> tuple[Incomplete, ...]:
+        """Internal function."""
+        ...
+    def sash_coord(self, index) -> tuple[Incomplete, ...]:
+        """
+        Return the current x and y pair for the sash given by index.
+
+        Index must be an integer between 0 and 1 less than the
+        number of panes in the panedwindow. The coordinates given are
+        those of the top left corner of the region containing the sash.
+        pathName sash dragto index x y This command computes the
+        difference between the given coordinates and the coordinates
+        given to the last sash coord command for the given sash. It then
+        moves that sash the computed difference. The return value is the
+        empty string.
+        """
+        ...
+    def sash_mark(self, index) -> tuple[Incomplete, ...]:
+        """
+        Records x and y for the sash given by index;
+
+        Used in conjunction with later dragto commands to move the sash.
+        """
+        ...
+    def sash_place(self, index, x, y) -> tuple[Incomplete, ...]:
+        """
+        Place the sash given by index at the given coordinates
+        
+        """
+        ...
+    def panecget(self, child, option):
+        """
+        Query a management option for window.
+
+        Option may be any value allowed by the paneconfigure subcommand
+        """
+        ...
+    def paneconfigure(self, tagOrId, cnf=None, **kw):
+        """
+        Query or modify the management options for window.
+
+        If no option is specified, returns a list describing all
+        of the available options for pathName.  If option is
+        specified with no value, then the command returns a list
+        describing the one named option (this list will be identical
+        to the corresponding sublist of the value returned if no
+        option is specified). If one or more option-value pairs are
+        specified, then the command modifies the given widget
+        option(s) to have the given value(s); in this case the
+        command returns an empty string. The following options
+        are supported:
+
+        after window
+            Insert the window after the window specified. window
+            should be the name of a window already managed by pathName.
+        before window
+            Insert the window before the window specified. window
+            should be the name of a window already managed by pathName.
+        height size
+            Specify a height for the window. The height will be the
+            outer dimension of the window including its border, if
+            any. If size is an empty string, or if -height is not
+            specified, then the height requested internally by the
+            window will be used initially; the height may later be
+            adjusted by the movement of sashes in the panedwindow.
+            Size may be any value accepted by Tk_GetPixels.
+        minsize n
+            Specifies that the size of the window cannot be made
+            less than n. This constraint only affects the size of
+            the widget in the paned dimension -- the x dimension
+            for horizontal panedwindows, the y dimension for
+            vertical panedwindows. May be any value accepted by
+            Tk_GetPixels.
+        padx n
+            Specifies a non-negative value indicating how much
+            extra space to leave on each side of the window in
+            the X-direction. The value may have any of the forms
+            accepted by Tk_GetPixels.
+        pady n
+            Specifies a non-negative value indicating how much
+            extra space to leave on each side of the window in
+            the Y-direction. The value may have any of the forms
+            accepted by Tk_GetPixels.
+        sticky style
+            If a window's pane is larger than the requested
+            dimensions of the window, this option may be used
+            to position (or stretch) the window within its pane.
+            Style is a string that contains zero or more of the
+            characters n, s, e or w. The string can optionally
+            contains spaces or commas, but they are ignored. Each
+            letter refers to a side (north, south, east, or west)
+            that the window will "stick" to. If both n and s
+            (or e and w) are specified, the window will be
+            stretched to fill the entire height (or width) of
+            its cavity.
+        width size
+            Specify a width for the window. The width will be
+            the outer dimension of the window including its
+            border, if any. If size is an empty string, or
+            if -width is not specified, then the width requested
+            internally by the window will be used initially; the
+            width may later be adjusted by the movement of sashes
+            in the panedwindow. Size may be any value accepted by
+            Tk_GetPixels.
+        """
+        ...
     paneconfig = paneconfigure
-    def panes(self): ...
+    def panes(self):
+        """Returns an ordered list of the child panes."""
+        ...
 
 def _test() -> None: ...
