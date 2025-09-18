@@ -77,7 +77,13 @@ global___Syntax = Syntax
 
 @typing.final
 class Type(google.protobuf.message.Message):
-    """A protocol buffer message type."""
+    """A protocol buffer message type.
+
+    New usages of this message as an alternative to DescriptorProto are strongly
+    discouraged. This message does not reliability preserve all information
+    necessary to model the schema and preserve semantics. Instead make use of
+    FileDescriptorSet which preserves the necessary information.
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -150,7 +156,13 @@ global___Type = Type
 
 @typing.final
 class Field(google.protobuf.message.Message):
-    """A single field of a message type."""
+    """A single field of a message type.
+
+    New usages of this message as an alternative to FieldDescriptorProto are
+    strongly discouraged. This message does not reliability preserve all
+    information necessary to model the schema and preserve semantics. Instead
+    make use of FileDescriptorSet which preserves the necessary information.
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -352,7 +364,13 @@ global___Field = Field
 
 @typing.final
 class Enum(google.protobuf.message.Message):
-    """Enum type definition."""
+    """Enum type definition.
+
+    New usages of this message as an alternative to EnumDescriptorProto are
+    strongly discouraged. This message does not reliability preserve all
+    information necessary to model the schema and preserve semantics. Instead
+    make use of FileDescriptorSet which preserves the necessary information.
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -417,7 +435,13 @@ global___Enum = Enum
 
 @typing.final
 class EnumValue(google.protobuf.message.Message):
-    """Enum value definition."""
+    """Enum value definition.
+
+    New usages of this message as an alternative to EnumValueDescriptorProto are
+    strongly discouraged. This message does not reliability preserve all
+    information necessary to model the schema and preserve semantics. Instead
+    make use of FileDescriptorSet which preserves the necessary information.
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -449,6 +473,10 @@ global___EnumValue = EnumValue
 class Option(google.protobuf.message.Message):
     """A protocol buffer option, which can be attached to a message, field,
     enumeration, etc.
+
+    New usages of this message as an alternative to FileOptions, MessageOptions,
+    FieldOptions, EnumOptions, EnumValueOptions, ServiceOptions, or MethodOptions
+    are strongly discouraged.
     """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor

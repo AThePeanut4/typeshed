@@ -354,14 +354,11 @@ class FieldDescriptor(DescriptorBase):
     @property
     def label(self): ...
     @property
-    def camelcase_name(self) -> str:
-        """
-        Camelcase name of this field.
-
-        Returns:
-          str: the name in CamelCase.
-        """
-        ...
+    def is_required(self) -> bool: ...
+    @property
+    def is_repeated(self) -> bool: ...
+    @property
+    def camelcase_name(self) -> str: ...
     @property
     def has_presence(self) -> bool:
         """
