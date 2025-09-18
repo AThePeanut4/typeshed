@@ -6,7 +6,7 @@ xlrd==2.0.*
 requests[socks]~=2.32.4
 google-cloud-ndb==2.3.*
 keyboard==0.13.*
-pyinstaller==6.15.*
+pyinstaller==6.16.*
 grpcio-channelz==1.*
 fanstatic==1.5.*
 simplejson==3.20.*
@@ -173,7 +173,7 @@ setuptools==80.9.*
 hvac==2.3.*
 JACK-Client==0.5.*
 PyMySQL==1.1.*
-protobuf~=6.30.2
+protobuf~=6.32.1
 cffi==1.17.*
 rfc3339-validator==0.1.*
 pyflakes==3.4.*
