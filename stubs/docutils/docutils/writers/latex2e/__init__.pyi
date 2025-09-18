@@ -276,7 +276,7 @@ class LaTeXTranslator(nodes.NodeVisitor):
 
     def __init__(self, document: nodes.document, babel_class: type = ...) -> None: ...
     def stylesheet_call(self, path: StrPath) -> str:
-        """Return code to reference or embed stylesheet file `path`"""
+        """Return code to reference or embed stylesheet file `path`."""
         ...
     def to_latex_encoding(self, docutils_encoding: str) -> str:
         """
@@ -311,6 +311,9 @@ class LaTeXTranslator(nodes.NodeVisitor):
         If `set_anchor` is True, an anchor is set with \phantomsection.
         If `protect` is True, the \label cmd is made robust.
         If `newline` is True, a newline is added if there are labels.
+        If `pre_nl` is True, a newline is prepended if there are labels.
+
+        Provisional.
         """
         ...
     def append_hypertargets(self, node: nodes.Element) -> None:

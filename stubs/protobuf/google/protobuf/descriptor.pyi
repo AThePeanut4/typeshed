@@ -1,5 +1,6 @@
 """
 Descriptors essentially contain exactly the information found in a .proto
+
 file, in types that make this information accessible in Python.
 """
 
@@ -49,6 +50,7 @@ class DescriptorBase(metaclass=DescriptorMetaclass):
     def __init__(self, file, options, serialized_options, options_class_name) -> None:
         """
         Initialize the descriptor given its options message and the name of the
+
         class of the options message. The name of the class is required in case
         the options message is None and has to be created.
         """
@@ -118,41 +120,41 @@ class Descriptor(_NestedDescriptorBase):
 
     Attributes:
         name (str): Name of this protocol message type.
-        full_name (str): Fully-qualified name of this protocol message type,
-            which will include protocol "package" name and the name of any
-            enclosing types.
+        full_name (str): Fully-qualified name of this protocol message type, which
+          will include protocol "package" name and the name of any enclosing
+          types.
         containing_type (Descriptor): Reference to the descriptor of the type
-            containing us, or None if this is top-level.
-        fields (list[FieldDescriptor]): Field descriptors for all fields in
-            this type.
+          containing us, or None if this is top-level.
+        fields (list[FieldDescriptor]): Field descriptors for all fields in this
+          type.
         fields_by_number (dict(int, FieldDescriptor)): Same
-            :class:`FieldDescriptor` objects as in :attr:`fields`, but indexed
-            by "number" attribute in each FieldDescriptor.
-        fields_by_name (dict(str, FieldDescriptor)): Same
-            :class:`FieldDescriptor` objects as in :attr:`fields`, but indexed by
-            "name" attribute in each :class:`FieldDescriptor`.
-        nested_types (list[Descriptor]): Descriptor references
-            for all protocol message types nested within this one.
-        nested_types_by_name (dict(str, Descriptor)): Same Descriptor
-            objects as in :attr:`nested_types`, but indexed by "name" attribute
-            in each Descriptor.
-        enum_types (list[EnumDescriptor]): :class:`EnumDescriptor` references
-            for all enums contained within this type.
+          :class:`FieldDescriptor` objects as in :attr:`fields`, but indexed by
+          "number" attribute in each FieldDescriptor.
+        fields_by_name (dict(str, FieldDescriptor)): Same :class:`FieldDescriptor`
+          objects as in :attr:`fields`, but indexed by "name" attribute in each
+          :class:`FieldDescriptor`.
+        nested_types (list[Descriptor]): Descriptor references for all protocol
+          message types nested within this one.
+        nested_types_by_name (dict(str, Descriptor)): Same Descriptor objects as
+          in :attr:`nested_types`, but indexed by "name" attribute in each
+          Descriptor.
+        enum_types (list[EnumDescriptor]): :class:`EnumDescriptor` references for
+          all enums contained within this type.
         enum_types_by_name (dict(str, EnumDescriptor)): Same
-            :class:`EnumDescriptor` objects as in :attr:`enum_types`, but
-            indexed by "name" attribute in each EnumDescriptor.
-        enum_values_by_name (dict(str, EnumValueDescriptor)): Dict mapping
-            from enum value name to :class:`EnumValueDescriptor` for that value.
-        extensions (list[FieldDescriptor]): All extensions defined directly
-            within this message type (NOT within a nested type).
+          :class:`EnumDescriptor` objects as in :attr:`enum_types`, but indexed by
+          "name" attribute in each EnumDescriptor.
+        enum_values_by_name (dict(str, EnumValueDescriptor)): Dict mapping from
+          enum value name to :class:`EnumValueDescriptor` for that value.
+        extensions (list[FieldDescriptor]): All extensions defined directly within
+          this message type (NOT within a nested type).
         extensions_by_name (dict(str, FieldDescriptor)): Same FieldDescriptor
-            objects as :attr:`extensions`, but indexed by "name" attribute of each
-            FieldDescriptor.
+          objects as :attr:`extensions`, but indexed by "name" attribute of each
+          FieldDescriptor.
         is_extendable (bool):  Does this type define any extension ranges?
         oneofs (list[OneofDescriptor]): The list of descriptors for oneof fields
-            in this message.
+          in this message.
         oneofs_by_name (dict(str, OneofDescriptor)): Same objects as in
-            :attr:`oneofs`, but indexed by "name" attribute.
+          :attr:`oneofs`, but indexed by "name" attribute.
         file (FileDescriptor): Reference to file descriptor.
         is_map_entry: If the message type is a map entry.
     """
@@ -194,6 +196,7 @@ class Descriptor(_NestedDescriptorBase):
     ):
         """
         Arguments to __init__() are as described in the description
+
         of Descriptor fields above.
 
         Note that filename is an obsolete argument, that is not used anymore.
@@ -243,46 +246,36 @@ class FieldDescriptor(DescriptorBase):
       name (str): Name of this field, exactly as it appears in .proto.
       full_name (str): Name of this field, including containing scope.  This is
         particularly relevant for extensions.
-      index (int): Dense, 0-indexed index giving the order that this
-        field textually appears within its message in the .proto file.
+      index (int): Dense, 0-indexed index giving the order that this field
+        textually appears within its message in the .proto file.
       number (int): Tag number declared for this field in the .proto file.
-
       type (int): (One of the TYPE_* constants below) Declared type.
       cpp_type (int): (One of the CPPTYPE_* constants below) C++ type used to
         represent this field.
-
-      label (int): (One of the LABEL_* constants below) Tells whether this
-        field is optional, required, or repeated.
+      label (int): (One of the LABEL_* constants below) Tells whether this field
+        is optional, required, or repeated.
       has_default_value (bool): True if this field has a default value defined,
         otherwise false.
-      default_value (Varies): Default value of this field.  Only
-        meaningful for non-repeated scalar fields.  Repeated fields
-        should always set this to [], and non-repeated composite
-        fields should always set this to None.
-
-      containing_type (Descriptor): Descriptor of the protocol message
-        type that contains this field.  Set by the Descriptor constructor
-        if we're passed into one.
-        Somewhat confusingly, for extension fields, this is the
-        descriptor of the EXTENDED message, not the descriptor
-        of the message containing this field.  (See is_extension and
-        extension_scope below).
-      message_type (Descriptor): If a composite field, a descriptor
-        of the message type contained in this field.  Otherwise, this is None.
-      enum_type (EnumDescriptor): If this field contains an enum, a
-        descriptor of that enum.  Otherwise, this is None.
-
+      default_value (Varies): Default value of this field.  Only meaningful for
+        non-repeated scalar fields.  Repeated fields should always set this to [],
+        and non-repeated composite fields should always set this to None.
+      containing_type (Descriptor): Descriptor of the protocol message type that
+        contains this field.  Set by the Descriptor constructor if we're passed
+        into one. Somewhat confusingly, for extension fields, this is the
+        descriptor of the EXTENDED message, not the descriptor of the message
+        containing this field.  (See is_extension and extension_scope below).
+      message_type (Descriptor): If a composite field, a descriptor of the message
+        type contained in this field.  Otherwise, this is None.
+      enum_type (EnumDescriptor): If this field contains an enum, a descriptor of
+        that enum.  Otherwise, this is None.
       is_extension: True iff this describes an extension field.
-      extension_scope (Descriptor): Only meaningful if is_extension is True.
-        Gives the message that immediately contains this extension field.
-        Will be None iff we're a top-level (file-level) extension field.
-
+      extension_scope (Descriptor): Only meaningful if is_extension is True. Gives
+        the message that immediately contains this extension field. Will be None
+        iff we're a top-level (file-level) extension field.
       options (descriptor_pb2.FieldOptions): Protocol message field options or
         None to use default field options.
-
       containing_oneof (OneofDescriptor): If the field is a member of a oneof
         union, contains its descriptor. Otherwise, None.
-
       file (FileDescriptor): Reference to file descriptor.
     """
     TYPE_DOUBLE: Any
@@ -354,11 +347,22 @@ class FieldDescriptor(DescriptorBase):
     @property
     def label(self): ...
     @property
-    def is_required(self) -> bool: ...
+    def is_required(self) -> bool:
+        """Returns if the field is required."""
+        ...
     @property
-    def is_repeated(self) -> bool: ...
+    def is_repeated(self) -> bool:
+        """Returns if the field is repeated."""
+        ...
     @property
-    def camelcase_name(self) -> str: ...
+    def camelcase_name(self) -> str:
+        """
+        Camelcase name of this field.
+
+        Returns:
+          str: the name in CamelCase.
+        """
+        ...
     @property
     def has_presence(self) -> bool:
         """
@@ -405,6 +409,7 @@ class FieldDescriptor(DescriptorBase):
     ) -> None:
         """
         The arguments are as described in the description of FieldDescriptor
+
         attributes above.
 
         Note that containing_type may be None, and may be set later if necessary
@@ -423,6 +428,7 @@ class FieldDescriptor(DescriptorBase):
 
         Args:
           proto_type: the Python proto type (descriptor.FieldDescriptor.TYPE_*)
+
         Returns:
           int: descriptor.FieldDescriptor.CPPTYPE_*, the C++ type.
         Raises:
@@ -444,22 +450,19 @@ class EnumDescriptor(_NestedDescriptorBase):
 
     Attributes:
       name (str): Name of the enum type.
-      full_name (str): Full name of the type, including package name
-        and any enclosing type(s).
-
-      values (list[EnumValueDescriptor]): List of the values
-        in this enum.
-      values_by_name (dict(str, EnumValueDescriptor)): Same as :attr:`values`,
-        but indexed by the "name" field of each EnumValueDescriptor.
+      full_name (str): Full name of the type, including package name and any
+        enclosing type(s).
+      values (list[EnumValueDescriptor]): List of the values in this enum.
+      values_by_name (dict(str, EnumValueDescriptor)): Same as :attr:`values`, but
+        indexed by the "name" field of each EnumValueDescriptor.
       values_by_number (dict(int, EnumValueDescriptor)): Same as :attr:`values`,
         but indexed by the "number" field of each EnumValueDescriptor.
-      containing_type (Descriptor): Descriptor of the immediate containing
-        type of this enum, or None if this is an enum defined at the
-        top level in a .proto file.  Set by Descriptor's constructor
-        if we're passed into one.
+      containing_type (Descriptor): Descriptor of the immediate containing type of
+        this enum, or None if this is an enum defined at the top level in a .proto
+        file.  Set by Descriptor's constructor if we're passed into one.
       file (FileDescriptor): Reference to file descriptor.
-      options (descriptor_pb2.EnumOptions): Enum options message or
-        None to use default enum options.
+      options (descriptor_pb2.EnumOptions): Enum options message or None to use
+        default enum options.
     """
     def __new__(
         cls,
@@ -522,12 +525,11 @@ class EnumValueDescriptor(DescriptorBase):
 
     Attributes:
       name (str): Name of this value.
-      index (int): Dense, 0-indexed index giving the order that this
-        value appears textually within its enum in the .proto file.
+      index (int): Dense, 0-indexed index giving the order that this value appears
+        textually within its enum in the .proto file.
       number (int): Actual number assigned to this enum value.
-      type (EnumDescriptor): :class:`EnumDescriptor` to which this value
-        belongs.  Set by :class:`EnumDescriptor`'s constructor if we're
-        passed into one.
+      type (EnumDescriptor): :class:`EnumDescriptor` to which this value belongs.
+        Set by :class:`EnumDescriptor`'s constructor if we're passed into one.
       options (descriptor_pb2.EnumValueOptions): Enum value options message or
         None to use default enum value options options.
     """
@@ -555,13 +557,13 @@ class OneofDescriptor:
     Attributes:
       name (str): Name of the oneof field.
       full_name (str): Full name of the oneof field, including package name.
-      index (int): 0-based index giving the order of the oneof field inside
-        its containing type.
+      index (int): 0-based index giving the order of the oneof field inside its
+        containing type.
       containing_type (Descriptor): :class:`Descriptor` of the protocol message
         type that contains this field.  Set by the :class:`Descriptor` constructor
         if we're passed into one.
-      fields (list[FieldDescriptor]): The list of field descriptors this
-        oneof can contain.
+      fields (list[FieldDescriptor]): The list of field descriptors this oneof can
+        contain.
     """
     def __new__(cls, name, full_name, index, containing_type, fields, options=None, serialized_options=None, create_key=None): ...
     name: Any
@@ -590,15 +592,14 @@ class ServiceDescriptor(_NestedDescriptorBase):
     Attributes:
       name (str): Name of the service.
       full_name (str): Full name of the service, including package name.
-      index (int): 0-indexed index giving the order that this services
-        definition appears within the .proto file.
-      methods (list[MethodDescriptor]): List of methods provided by this
-        service.
+      index (int): 0-indexed index giving the order that this services definition
+        appears within the .proto file.
+      methods (list[MethodDescriptor]): List of methods provided by this service.
       methods_by_name (dict(str, MethodDescriptor)): Same
         :class:`MethodDescriptor` objects as in :attr:`methods_by_name`, but
         indexed by "name" attribute in each :class:`MethodDescriptor`.
-      options (descriptor_pb2.ServiceOptions): Service options message or
-        None to use default service options.
+      options (descriptor_pb2.ServiceOptions): Service options message or None to
+        use default service options.
       file (FileDescriptor): Reference to file info.
     """
     index: Any
@@ -705,6 +706,7 @@ class MethodDescriptor(DescriptorBase):
     ) -> None:
         """
         The arguments are as described in the description of MethodDescriptor
+
         attributes above.
 
         Note that containing_service may be None, and may be set later if necessary.

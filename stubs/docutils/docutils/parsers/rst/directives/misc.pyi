@@ -62,8 +62,6 @@ class Include(Directive):
         """
         Insert file content into the rST input of the calling parser.
 
-        Returns an empty list to comply with the API of `Directive.run()`.
-
         Provisional.
         """
         ...

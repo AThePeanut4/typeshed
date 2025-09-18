@@ -16,6 +16,7 @@ __docformat__: Final = "reStructuredText"
 _DirectiveFn: TypeAlias = Callable[[str], str | list[str]]
 
 class BasePseudoSection(Directive):
+    """Base class for Topic and Sidebar."""
     option_spec: ClassVar[dict[str, _DirectiveFn]]
     node_class: ClassVar[type[nodes.Node] | None]
     def run(self): ...

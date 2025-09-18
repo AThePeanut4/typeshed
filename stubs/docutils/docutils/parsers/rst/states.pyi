@@ -160,7 +160,7 @@ class NestedStateMachine(StateMachineWS[list[str]]):
         self, input_lines: Sequence[str] | StringList, input_offset: int, memo, node, match_titles: bool = True
     ) -> list[str]:
         """
-        Parse `input_lines` and populate a `docutils.nodes.document` instance.
+        Parse `input_lines` and populate `node`.
 
         Extend `StateMachineWS.run()`: set up document-wide data.
         """
@@ -204,8 +204,33 @@ class RSTState(StateWS[list[str]]):
         state_machine_kwargs=None,
     ):
         """
-        Create a new StateMachine rooted at `node` and run it over the input
-        `block`.
+        Parse the input `block` with a nested state-machine rooted at `node`.
+
+        :block:
+            reStructuredText source extract.
+        :input_offset:
+            Line number at start of the block.
+        :node:
+            Base node. Generated nodes will be appended to this node.
+            Default: the "current node" (`self.state_machine.node`).
+        :match_titles:
+            Allow section titles?
+            Caution: With a custom base node, this may lead to an invalid
+            or mixed up document tree. [#]_
+        :state_machine_class:
+            Default: `NestedStateMachine`.
+        :state_machine_kwargs:
+            Keyword arguments for the state-machine instantiation.
+            Default: `self.nested_sm_kwargs`.
+
+        Create a new state-machine instance if required.
+        Return new offset.
+
+        .. [#] See also ``test_parsers/test_rst/test_nested_parsing.py``
+               and Sphinx's `nested_parse_to_nodes()`__.
+
+        __ https://www.sphinx-doc.org/en/master/extdev/utils.html
+           #sphinx.util.parsing.nested_parse_to_nodes
         """
         ...
     def nested_list_parse(
@@ -222,9 +247,15 @@ class RSTState(StateWS[list[str]]):
         state_machine_kwargs=None,
     ):
         """
-        Create a new StateMachine rooted at `node` and run it over the input
-        `block`. Also keep track of optional intermediate blank lines and the
+        Parse the input `block` with a nested state-machine rooted at `node`.
+
+        Create a new StateMachine rooted at `node` and run it over the
+        input `block` (see also `nested_parse()`).
+        Also keep track of optional intermediate blank lines and the
         required final one.
+
+        Return new offset and a boolean indicating whether there was a
+        blank final line.
         """
         ...
     def section(self, title: str, source, style, lineno: int, messages) -> None:
@@ -236,7 +267,7 @@ class RSTState(StateWS[list[str]]):
 
         When a new section is reached that isn't a subsection of the current
         section, set `self.parent` to the new section's parent section
-        (or the document if the new section is a top-level section).
+        (or the root node if the new section is a top-level section).
         """
         ...
     def title_inconsistent(self, sourcetext: str, lineno: int): ...

@@ -417,7 +417,9 @@ class DescriptorProto(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["name", b"name", "options", b"options", "visibility", b"visibility"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -947,7 +949,9 @@ class EnumDescriptorProto(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["name", b"name", "options", b"options", "visibility", b"visibility"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+        ...
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -2614,7 +2618,9 @@ class FeatureSet(google.protobuf.message.Message):
             This is the recommended setting for new protos.
             """
 
-        class DefaultSymbolVisibility(_DefaultSymbolVisibility, metaclass=_DefaultSymbolVisibilityEnumTypeWrapper): ...
+        class DefaultSymbolVisibility(_DefaultSymbolVisibility, metaclass=_DefaultSymbolVisibilityEnumTypeWrapper):
+            """A utility for finding the names of enum values."""
+            ...
         DEFAULT_SYMBOL_VISIBILITY_UNKNOWN: FeatureSet.VisibilityFeature.DefaultSymbolVisibility.ValueType  # 0
         EXPORT_ALL: FeatureSet.VisibilityFeature.DefaultSymbolVisibility.ValueType  # 1
         """Default pre-EDITION_2024, all UNSET visibility are export."""
