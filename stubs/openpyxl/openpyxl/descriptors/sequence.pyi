@@ -44,6 +44,7 @@ class Sequence(Descriptor[_ContainerT]):
 
 # `_T` is the type of the elements in the sequence.
 class UniqueSequence(Sequence[set[_T]]):
+    """Use a set to keep values unique"""
     seq_types: tuple[type, ...]  # defaults to `list`, `tuple`, `set`
     container: type[set[_T]]
 
