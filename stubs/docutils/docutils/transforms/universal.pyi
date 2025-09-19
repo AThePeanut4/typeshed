@@ -92,7 +92,7 @@ class SmartQuotes(Transform):
     Also replace multiple dashes with em-dash/en-dash characters.
     """
     default_priority: ClassVar[int]
-    nodes_to_skip: ClassVar[tuple[type[nodes.Node], ...]]
+    nodes_to_skip: ClassVar[tuple[type[nodes.Node | nodes.Special], ...]]
     literal_nodes: ClassVar[tuple[type[nodes.Node | nodes.Body], ...]]
     smartquotes_action: ClassVar[str]
     unsupported_languages: set[str]
