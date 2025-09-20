@@ -147,7 +147,7 @@ lzstring==1.0.*
 antlr4-python3-runtime==4.13.*
 uWSGI==2.0.*
 hnswlib==0.8.*
-xmltodict==0.15.*
+xmltodict~=1.0.1
 colorama==0.4.*
 docutils==0.22.*
 parsimonious==0.10.*
