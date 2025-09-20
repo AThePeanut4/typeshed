@@ -7,7 +7,7 @@ __version__: Final[str]
 def normalizeTRBL(p):
     """
     Useful for interpreting short descriptions of paddings, borders, margin, etc.
-    Expects a single value or a tuple of length 2 to 4.
+    Expects a single value or a tuple of length 1 to 4.
     Returns a tuple representing (clockwise) the value(s) applied to the 4 sides of a rectangle:
     If a single value is given, that value is applied to all four sides.
     If two or three values are given, the missing values are taken from the opposite side(s).

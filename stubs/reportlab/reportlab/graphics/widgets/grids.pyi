@@ -104,13 +104,18 @@ def rotatedEnclosingRect(P, angle, rect):
     find the centroid of P and the axis at angle theta through it
     find the extreme points of P wrt axis parallel distance and axis
     orthogonal distance. Then compute the least rectangle that will still
-    enclose P when rotated by angle.
-
-    The class R
+    enclose P when rotated by angle. Positive angles correspond to clockwise
+    rotation of the enclosing rect.
     """
     ...
 
 class ShadedPolygon(Widget, LineShape):
+    """
+    given a list of points [(x0,y0),....] we construct an enclosing
+    shaded rectangle and mask using the polygon points.
+    At angle 0 the shading fillColorStart left --> fillColorEnd right.
+    positive angles rotate the shading clockwise.
+    """
     angle: int
     fillColorStart: Incomplete
     fillColorEnd: Incomplete
