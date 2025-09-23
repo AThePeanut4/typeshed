@@ -58,6 +58,11 @@ class PropHolder:
         ...
 
 class Widget(PropHolder, shapes.UserNode):
+    """
+    Base for all user-defined widgets.  Keep as simple as possible. Does
+    not inherit from Shape so that we can rewrite shapes without breaking
+    widgets and vice versa.
+    """
     def draw(self): ...  # abstract, but not marked as @abstractmethod
     def demo(self): ...  # abstract, but not marked as @abstractmethod
     def provideNode(self) -> shapes.Shape: ...

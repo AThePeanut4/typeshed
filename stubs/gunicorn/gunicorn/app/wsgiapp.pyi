@@ -17,4 +17,9 @@ class WSGIApplication(Application):
     @override
     def load(self) -> _WSGIAppType: ...
 
-def run(prog: str | None = None) -> None: ...
+def run(prog: str | None = None) -> None:
+    """
+    The ``gunicorn`` command line runner for launching Gunicorn with
+    generic WSGI applications.
+    """
+    ...

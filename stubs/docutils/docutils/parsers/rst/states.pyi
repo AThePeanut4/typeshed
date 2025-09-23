@@ -147,6 +147,10 @@ class RSTStateMachine(StateMachineWS[list[str]]):
         ...
 
 class NestedStateMachine(RSTStateMachine):
+    """
+    StateMachine run from within other StateMachine runs, to parse nested
+    document structures.
+    """
     parent_state_machine: Incomplete | None
     def __init__(self, state_classes, initial_state, debug: bool = False, parent_state_machine=None) -> None: ...
     def run(  # type: ignore[override]
@@ -195,7 +199,37 @@ class RSTState(StateWS[list[str]]):
         match_titles: bool = False,
         state_machine_class: StateMachineWS[Incomplete] | None = None,
         state_machine_kwargs: dict[Incomplete, Incomplete] | None = None,
-    ) -> int: ...
+    ) -> int:
+        """
+        Parse the input `block` with a nested state-machine rooted at `node`.
+
+        :block:
+            reStructuredText source extract.
+        :input_offset:
+            Line number at start of the block.
+        :node:
+            Base node. Generated nodes will be appended to this node.
+            Default: the "current node" (`self.state_machine.node`).
+        :match_titles:
+            Allow section titles?
+            Caution: With a custom base node, this may lead to an invalid
+            or mixed up document tree. [#]_
+        :state_machine_class:
+            Default: `NestedStateMachine`.
+        :state_machine_kwargs:
+            Keyword arguments for the state-machine instantiation.
+            Default: `self.nested_sm_kwargs`.
+
+        Create a new state-machine instance if required.
+        Return new offset.
+
+        .. [#] See also ``test_parsers/test_rst/test_nested_parsing.py``
+               and Sphinx's `nested_parse_to_nodes()`__.
+
+        __ https://www.sphinx-doc.org/en/master/extdev/utils.html
+           #sphinx.util.parsing.nested_parse_to_nodes
+        """
+        ...
     def nested_list_parse(
         self,
         block,

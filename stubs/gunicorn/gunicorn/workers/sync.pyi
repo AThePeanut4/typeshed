@@ -6,7 +6,9 @@ from gunicorn.workers.base import Worker
 
 from .._types import _AddressType
 
-class StopWaiting(Exception): ...
+class StopWaiting(Exception):
+    """exception raised to stop waiting for a connection """
+    ...
 
 class SyncWorker(Worker):
     def accept(self, listener: socket.socket) -> None: ...

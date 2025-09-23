@@ -1,3 +1,8 @@
+"""
+The debug module contains utilities and functions for better
+debugging Gunicorn.
+"""
+
 __all__ = ["spew", "unspew"]
 
 from collections.abc import Container
@@ -14,5 +19,15 @@ class Spew:
         self, frame: FrameType, event: str, arg: Any  # `arg` is not used inside the function, stub is set Any
     ) -> Self: ...
 
-def spew(trace_names: Container[str] | None = None, show_values: bool = False) -> None: ...
-def unspew() -> None: ...
+def spew(trace_names: Container[str] | None = None, show_values: bool = False) -> None:
+    """
+    Install a trace hook which writes incredibly detailed logs
+    about what code is being executed to stdout.
+    """
+    ...
+def unspew() -> None:
+    """
+    Remove the trace hook installed by spew.
+    
+    """
+    ...

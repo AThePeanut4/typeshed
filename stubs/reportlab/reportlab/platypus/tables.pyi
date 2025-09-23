@@ -71,6 +71,7 @@ class TableStyle:
     def getCommands(self) -> list[_TableCommand]: ...
 
 class ShadowStyle(NamedTuple):
+    """ShadowStyle(dx, dy, color0, color1, nshades)"""
     dx: int | Incomplete = 10  # TODO: is either `int` or `float`
     dy: int | Incomplete = -10  # TODO: is either `int` or `float`
     color0: _Color = "grey"
