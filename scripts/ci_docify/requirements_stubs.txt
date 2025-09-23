@@ -115,7 +115,7 @@ watchpoints==0.2.5
 jsonnet==0.21.*
 tabulate==0.9.*
 python-crontab==3.3.*
-reportlab[pycairo]~=4.4.1
+reportlab[pycairo]==4.4.4
 python-nmap==0.7.*
 portpicker==1.6.*
 retry==0.9.*
@@ -133,6 +133,7 @@ regex==2025.9.18
 polib==1.2.*
 flake8-docstrings==1.7.*
 pycocotools==2.0.*
+gunicorn==23.0.*
 channels==4.3.*
 jmespath==1.0.*
 opentracing==2.4.*
@@ -149,7 +150,7 @@ uWSGI==2.0.*
 hnswlib==0.8.*
 xmltodict~=1.0.1
 colorama==0.4.*
-docutils==0.22.*
+docutils==0.22.1
 parsimonious==0.10.*
 networkx==3.5
 str2bool==1.1
