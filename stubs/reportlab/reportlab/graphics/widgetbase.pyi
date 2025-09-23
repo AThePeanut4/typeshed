@@ -58,14 +58,8 @@ class PropHolder:
         ...
 
 class Widget(PropHolder, shapes.UserNode):
-    """
-    Base for all user-defined widgets.  Keep as simple as possible. Does
-    not inherit from Shape so that we can rewrite shapes without breaking
-    widgets and vice versa.
-    """
-    # TODO: draw should probably be marked abstract
-    def draw(self) -> None: ...
-    def demo(self) -> None: ...
+    def draw(self): ...  # abstract, but not marked as @abstractmethod
+    def demo(self): ...  # abstract, but not marked as @abstractmethod
     def provideNode(self) -> shapes.Shape: ...
     def getBounds(self) -> tuple[float, float, float, float]:
         """Return outer boundary as x1,y1,x2,y2.  Can be overridden for efficiency"""

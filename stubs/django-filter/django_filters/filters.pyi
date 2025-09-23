@@ -401,31 +401,10 @@ class LookupChoiceFilter(Filter):
     def filter(self, qs: QuerySet[Any], lookup: Lookup) -> QuerySet[Any]: ...
 
 class OrderingFilter(BaseCSVFilter, ChoiceFilter):
-    """
-    Enable queryset ordering. As an extension of ``ChoiceFilter`` it accepts
-    two additional arguments that are used to build the ordering choices.
-
-    * ``fields`` is a mapping of {model field name: parameter name}. The
-      parameter names are exposed in the choices and mask/alias the field
-      names used in the ``order_by()`` call. Similar to field ``choices``,
-      ``fields`` accepts the 'list of two-tuples' syntax that retains order.
-      ``fields`` may also just be an iterable of strings. In this case, the
-      field names simply double as the exposed parameter names.
-
-    * ``field_labels`` is an optional argument that allows you to customize
-      the display label for the corresponding parameter. It accepts a mapping
-      of {field name: human readable label}. Keep in mind that the key is the
-      field name, and not the exposed parameter name.
-
-    Additionally, you can just provide your own ``choices`` if you require
-    explicit control over the exposed options. For example, when you might
-    want to disable descending sort options.
-
-    This filter is also CSV-based, and accepts multiple ordering params. The
-    default select widget does not enable the use of this, but it is useful
-    for APIs.
-    """
-    field_class: type[BaseCSVField]  # Inherits CSV field behavior for comma-separated ordering
+    # Inherits CSV field behavior for comma-separated ordering.
+    # BaseCSVFilter constructs a custom ConcreteCSVField class that derives
+    # from BaseCSVField.
+    field_class: type[BaseCSVField]
     descending_fmt: str
     param_map: dict[str, str] | None
     def __init__(

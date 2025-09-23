@@ -129,6 +129,7 @@ class RSTStateMachine(StateMachineWS[list[str]]):
     document: nodes.document
     reporter: Reporter
     node: nodes.document | None
+    section_level_offset: int
     def run(  # type: ignore[override]
         self,
         input_lines: Sequence[str] | StringList,
@@ -145,17 +146,9 @@ class RSTStateMachine(StateMachineWS[list[str]]):
         """
         ...
 
-class NestedStateMachine(StateMachineWS[list[str]]):
-    """
-    StateMachine run from within other StateMachine runs, to parse nested
-    document structures.
-    """
-    match_titles: bool
-    memo: Incomplete
-    document: nodes.document
-    reporter: Reporter
-    language: Incomplete
-    node: Incomplete
+class NestedStateMachine(RSTStateMachine):
+    parent_state_machine: Incomplete | None
+    def __init__(self, state_classes, initial_state, debug: bool = False, parent_state_machine=None) -> None: ...
     def run(  # type: ignore[override]
         self, input_lines: Sequence[str] | StringList, input_offset: int, memo, node, match_titles: bool = True
     ) -> list[str]:
@@ -196,43 +189,13 @@ class RSTState(StateWS[list[str]]):
         ...
     def nested_parse(
         self,
-        block,
+        block: StringList,
         input_offset: int,
-        node,
+        node: nodes.Element | None = None,
         match_titles: bool = False,
-        state_machine_class: type[StateMachine[list[str]]] | None = None,
-        state_machine_kwargs=None,
-    ):
-        """
-        Parse the input `block` with a nested state-machine rooted at `node`.
-
-        :block:
-            reStructuredText source extract.
-        :input_offset:
-            Line number at start of the block.
-        :node:
-            Base node. Generated nodes will be appended to this node.
-            Default: the "current node" (`self.state_machine.node`).
-        :match_titles:
-            Allow section titles?
-            Caution: With a custom base node, this may lead to an invalid
-            or mixed up document tree. [#]_
-        :state_machine_class:
-            Default: `NestedStateMachine`.
-        :state_machine_kwargs:
-            Keyword arguments for the state-machine instantiation.
-            Default: `self.nested_sm_kwargs`.
-
-        Create a new state-machine instance if required.
-        Return new offset.
-
-        .. [#] See also ``test_parsers/test_rst/test_nested_parsing.py``
-               and Sphinx's `nested_parse_to_nodes()`__.
-
-        __ https://www.sphinx-doc.org/en/master/extdev/utils.html
-           #sphinx.util.parsing.nested_parse_to_nodes
-        """
-        ...
+        state_machine_class: StateMachineWS[Incomplete] | None = None,
+        state_machine_kwargs: dict[Incomplete, Incomplete] | None = None,
+    ) -> int: ...
     def nested_list_parse(
         self,
         block,
