@@ -1567,7 +1567,14 @@ class Misc:
         """
         ...
     propagate = pack_propagate
-    def grid_anchor(self, anchor: Literal["nw", "n", "ne", "w", "center", "e", "sw", "s", "se"] | None = None) -> None: ...
+    def grid_anchor(self, anchor: Literal["nw", "n", "ne", "w", "center", "e", "sw", "s", "se"] | None = None) -> None:
+        """
+        The anchor value controls how to place the grid within the
+        master when no row/column has any weight.
+
+        The default anchor is nw.
+        """
+        ...
     anchor = grid_anchor
     @overload
     def grid_bbox(
@@ -4554,7 +4561,20 @@ class Entry(Widget, XView):
         vcmd: str | list[str] | tuple[str, ...] | Callable[[], bool] = "",  # same as validatecommand
         width: int = 20,
         xscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct an entry widget with the parent MASTER.
+
+        Valid resource names: background, bd, bg, borderwidth, cursor,
+        exportselection, fg, font, foreground, highlightbackground,
+        highlightcolor, highlightthickness, insertbackground,
+        insertborderwidth, insertofftime, insertontime, insertwidth,
+        invalidcommand, invcmd, justify, relief, selectbackground,
+        selectborderwidth, selectforeground, show, state, takefocus,
+        textvariable, validate, validatecommand, vcmd, width,
+        xscrollcommand.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -4597,7 +4617,15 @@ class Entry(Widget, XView):
         vcmd: str | list[str] | tuple[str, ...] | Callable[[], bool] = ...,
         width: int = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -4906,7 +4934,17 @@ class Listbox(Widget, XView, YView):
         width: int = 20,
         xscrollcommand: str | Callable[[float, float], object] = "",
         yscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a listbox widget with the parent MASTER.
+
+        Valid resource names: background, bd, bg, borderwidth, cursor,
+        exportselection, fg, font, foreground, height, highlightbackground,
+        highlightcolor, highlightthickness, relief, selectbackground,
+        selectborderwidth, selectforeground, selectmode, setgrid, takefocus,
+        width, xscrollcommand, yscrollcommand, listvariable.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -4941,7 +4979,15 @@ class Listbox(Widget, XView, YView):
         width: int = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
         yscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -6033,7 +6079,30 @@ class Text(Widget, XView, YView):
         wrap: Literal["none", "char", "word"] = "char",
         xscrollcommand: str | Callable[[float, float], object] = "",
         yscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a text widget with the parent MASTER.
+
+        STANDARD OPTIONS
+
+            background, borderwidth, cursor,
+            exportselection, font, foreground,
+            highlightbackground, highlightcolor,
+            highlightthickness, insertbackground,
+            insertborderwidth, insertofftime,
+            insertontime, insertwidth, padx, pady,
+            relief, selectbackground,
+            selectborderwidth, selectforeground,
+            setgrid, takefocus,
+            xscrollcommand, yscrollcommand,
+
+        WIDGET-SPECIFIC OPTIONS
+
+            autoseparators, height, maxundo,
+            spacing1, spacing2, spacing3,
+            state, tabs, undo, width, wrap,
+        """
+        ...
     @overload
     def configure(
         self,
@@ -6084,7 +6153,15 @@ class Text(Widget, XView, YView):
         wrap: Literal["none", "char", "word"] = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
         yscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -7531,7 +7608,35 @@ class Spinbox(Widget, XView):
         width: int = 20,
         wrap: bool = False,
         xscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a spinbox widget with the parent MASTER.
+
+        STANDARD OPTIONS
+
+            activebackground, background, borderwidth,
+            cursor, exportselection, font, foreground,
+            highlightbackground, highlightcolor,
+            highlightthickness, insertbackground,
+            insertborderwidth, insertofftime,
+            insertontime, insertwidth, justify, relief,
+            repeatdelay, repeatinterval,
+            selectbackground, selectborderwidth
+            selectforeground, takefocus, textvariable
+            xscrollcommand.
+
+        WIDGET-SPECIFIC OPTIONS
+
+            buttonbackground, buttoncursor,
+            buttondownrelief, buttonuprelief,
+            command, disabledbackground,
+            disabledforeground, format, from,
+            invalidcommand, increment,
+            readonlybackground, state, to,
+            validate, validatecommand values,
+            width, wrap,
+        """
+        ...
     @overload
     def configure(
         self,
@@ -7587,7 +7692,15 @@ class Spinbox(Widget, XView):
         width: int = ...,
         wrap: bool = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """

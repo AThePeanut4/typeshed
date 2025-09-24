@@ -646,7 +646,24 @@ class Entry(Widget, tkinter.Entry):
         validatecommand: str | list[str] | tuple[str, ...] | Callable[[], bool] = "",
         width: int = 20,
         xscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Constructs a Ttk Entry widget with the parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus, xscrollcommand
+
+        WIDGET-SPECIFIC OPTIONS
+
+            exportselection, invalidcommand, justify, show, state,
+            textvariable, validate, validatecommand, width
+
+        VALIDATION MODES
+
+            none, key, focus, focusin, focusout, all
+        """
+        ...
     @overload  # type: ignore[override]
     def configure(
         self,
@@ -668,7 +685,15 @@ class Entry(Widget, tkinter.Entry):
         validatecommand: str | list[str] | tuple[str, ...] | Callable[[], bool] = ...,
         width: int = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -701,7 +726,15 @@ class Entry(Widget, tkinter.Entry):
         validatecommand: str | list[str] | tuple[str, ...] | Callable[[], bool] = ...,
         width: int = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def config(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -762,7 +795,20 @@ class Combobox(Entry):
         values: list[str] | tuple[str, ...] = ...,
         width: int = 20,
         xscrollcommand: str | Callable[[float, float], object] = ...,  # undocumented
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Combobox widget with the parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus
+
+        WIDGET-SPECIFIC OPTIONS
+
+            exportselection, justify, height, postcommand, state,
+            textvariable, values, width
+        """
+        ...
     @overload  # type: ignore[override]
     def configure(
         self,
@@ -787,7 +833,15 @@ class Combobox(Entry):
         values: list[str] | tuple[str, ...] = ...,
         width: int = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -823,7 +877,15 @@ class Combobox(Entry):
         values: list[str] | tuple[str, ...] = ...,
         width: int = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def config(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -1793,7 +1855,19 @@ class Scrollbar(Widget, tkinter.Scrollbar):  # type: ignore[misc]
         orient: Literal["horizontal", "vertical"] = "vertical",
         style: str = "",
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Scrollbar with parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus
+
+        WIDGET-SPECIFIC OPTIONS
+
+            command, orient
+        """
+        ...
     @overload  # type: ignore[override]
     def configure(
         self,
@@ -1804,7 +1878,15 @@ class Scrollbar(Widget, tkinter.Scrollbar):  # type: ignore[misc]
         orient: Literal["horizontal", "vertical"] = ...,
         style: str = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -1826,7 +1908,15 @@ class Scrollbar(Widget, tkinter.Scrollbar):  # type: ignore[misc]
         orient: Literal["horizontal", "vertical"] = ...,
         style: str = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def config(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -1853,7 +1943,19 @@ class Separator(Widget):
         orient: Literal["horizontal", "vertical"] = "horizontal",
         style: str = "",
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Separator with parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus
+
+        WIDGET-SPECIFIC OPTIONS
+
+            orient
+        """
+        ...
     @overload
     def configure(
         self,
@@ -1863,7 +1965,15 @@ class Separator(Widget):
         orient: Literal["horizontal", "vertical"] = ...,
         style: str = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -1890,7 +2000,15 @@ class Sizegrip(Widget):
         name: str = ...,
         style: str = "",
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Sizegrip with parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, state, style, takefocus
+        """
+        ...
     @overload
     def configure(
         self,
@@ -1899,7 +2017,15 @@ class Sizegrip(Widget):
         cursor: tkinter._Cursor = ...,
         style: str = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -1948,7 +2074,20 @@ class Spinbox(Entry):
         width: int = ...,  # undocumented
         wrap: bool = False,
         xscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Spinbox widget with the parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus, validate,
+            validatecommand, xscrollcommand, invalidcommand
+
+        WIDGET-SPECIFIC OPTIONS
+
+            to, from_, increment, values, wrap, format, command
+        """
+        ...
     @overload  # type: ignore[override]
     def configure(
         self,
@@ -1977,7 +2116,15 @@ class Spinbox(Entry):
         width: int = ...,
         wrap: bool = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -2054,7 +2201,28 @@ class Treeview(Widget, tkinter.XView, tkinter.YView):
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         xscrollcommand: str | Callable[[float, float], object] = "",
         yscrollcommand: str | Callable[[float, float], object] = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Treeview with parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus, xscrollcommand,
+            yscrollcommand
+
+        WIDGET-SPECIFIC OPTIONS
+
+            columns, displaycolumns, height, padding, selectmode, show
+
+        ITEM OPTIONS
+
+            text, image, values, open, tags
+
+        TAG OPTIONS
+
+            foreground, background, font, image
+        """
+        ...
     @overload
     def configure(
         self,
@@ -2071,7 +2239,15 @@ class Treeview(Widget, tkinter.XView, tkinter.YView):
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         xscrollcommand: str | Callable[[float, float], object] = ...,
         yscrollcommand: str | Callable[[float, float], object] = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -2745,7 +2921,16 @@ class Treeview(Widget, tkinter.XView, tkinter.YView):
         background: str = ...,
         font: _FontDescription = ...,
         image: tkinter._Image | str = ...,
-    ) -> _TreeviewTagDict | MaybeNone: ...  # can be None but annoying to check
+    ) -> _TreeviewTagDict | MaybeNone:
+        """
+        Query or modify the options for the specified tagname.
+
+        If kw is not given, returns a dict of the option settings for tagname.
+        If option is specified, returns the value for that option for the
+        specified tagname. Otherwise, sets the options to the corresponding
+        values for the given tagname.
+        """
+        ...
     @overload
     def tag_has(self, tagname: str, item: None = None) -> tuple[str, ...]:
         """
