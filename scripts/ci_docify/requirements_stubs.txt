@@ -150,7 +150,7 @@ uWSGI==2.0.*
 hnswlib==0.8.*
 xmltodict~=1.0.1
 colorama==0.4.*
-docutils==0.22.1
+docutils==0.22.2
 parsimonious==0.10.*
 networkx==3.5
 str2bool==1.1
