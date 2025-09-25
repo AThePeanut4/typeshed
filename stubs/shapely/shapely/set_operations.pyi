@@ -1485,6 +1485,9 @@ def coverage_union(a: OptGeoArrayLike, b: OptGeoArrayLike, *, axis: None = None,
 
     This is an optimized version of union which assumes the polygons to be
     non-overlapping.
+    If this assumption is not met, the exact result is not guaranteed
+    (depending on the GEOS version, it may return the input unchanged or raise
+    an error).
 
     Parameters
     ----------
@@ -1519,6 +1522,9 @@ def coverage_union(a: OptGeoArrayLike, b: OptGeoArrayLike, *, axis: int, **kwarg
 
     This is an optimized version of union which assumes the polygons to be
     non-overlapping.
+    If this assumption is not met, the exact result is not guaranteed
+    (depending on the GEOS version, it may return the input unchanged or raise
+    an error).
 
     Parameters
     ----------

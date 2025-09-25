@@ -129,7 +129,6 @@ class YoutubeDL:
     clean_infojson:    Remove internal metadata from the infojson
     getcomments:       Extract video comments. This will not be written to disk
                        unless writeinfojson is also given
-    writeannotations:  Write the video annotations to a .annotations.xml file
     writethumbnail:    Write the thumbnail image to a file
     allow_playlist_files: Whether to write playlists' description, infojson etc
                        also to disk when using the 'write*' options
@@ -336,11 +335,11 @@ class YoutubeDL:
     the downloader (see yt_dlp/downloader/common.py):
     nopart, updatetime, buffersize, ratelimit, throttledratelimit, min_filesize,
     max_filesize, test, noresizebuffer, retries, file_access_retries, fragment_retries,
-    continuedl, xattr_set_filesize, hls_use_mpegts, http_chunk_size,
-    external_downloader_args, concurrent_fragment_downloads, progress_delta.
+    continuedl, hls_use_mpegts, http_chunk_size, external_downloader_args,
+    concurrent_fragment_downloads, progress_delta.
 
     The following options are used by the post processors:
-    ffmpeg_location:   Location of the ffmpeg/avconv binary; either the path
+    ffmpeg_location:   Location of the ffmpeg binary; either the path
                        to the binary or its containing directory.
     postprocessor_args: A dictionary of postprocessor/executable keys (in lower case)
                        and a list of additional command-line arguments for the
@@ -391,32 +390,14 @@ class YoutubeDL:
     allsubtitles:      - Use subtitleslangs = ['all']
                        Downloads all the subtitles of the video
                        (requires writesubtitles or writeautomaticsub)
-    include_ads:       - Doesn't work
-                       Download ads as well
-    call_home:         - Not implemented
-                       Boolean, true if we are allowed to contact the
-                       yt-dlp servers for debugging.
     post_hooks:        - Register a custom postprocessor
                        A list of functions that get called as the final step
                        for each video file, after all postprocessors have been
                        called. The filename will be passed as the only argument.
     hls_prefer_native: - Use external_downloader = {'m3u8': 'native'} or {'m3u8': 'ffmpeg'}.
-                       Use the native HLS downloader instead of ffmpeg/avconv
-                       if True, otherwise use ffmpeg/avconv if False, otherwise
+                       Use the native HLS downloader instead of ffmpeg
+                       if True, otherwise use ffmpeg if False, otherwise
                        use downloader suggested by extractor if None.
-    prefer_ffmpeg:     - avconv support is deprecated
-                       If False, use avconv instead of ffmpeg if both are available,
-                       otherwise prefer ffmpeg.
-    youtube_include_dash_manifest: - Use extractor_args
-                       If True (default), DASH manifests and related
-                       data will be downloaded and processed by extractor.
-                       You can reduce network I/O by disabling it if you don't
-                       care about DASH. (only for youtube)
-    youtube_include_hls_manifest: - Use extractor_args
-                       If True (default), HLS manifests and related
-                       data will be downloaded and processed by extractor.
-                       You can reduce network I/O by disabling it if you don't
-                       care about HLS. (only for youtube)
     no_color:          Same as `color='no_color'`
     no_overwrites:     Same as `overwrites=False`
     """
