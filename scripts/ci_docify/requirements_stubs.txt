@@ -84,7 +84,7 @@ flake8-bugbear==24.12.12
 capturer==3.0.*
 click-shell==2.1
 keyboard==0.13.*
-pycurl==7.45.6
+pycurl==7.45.7
 boltons==25.0.*
 xmltodict~=1.0.1
 psutil==7.0.*
