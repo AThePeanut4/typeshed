@@ -295,7 +295,9 @@ class Style:
         padding: _Padding = ...,
         sticky: str = ...,
         width: float | str = ...,
-    ) -> None: ...
+    ) -> None:
+        """Create a new element in the current theme of given etype."""
+        ...
     @overload
     def element_create(self, elementname: str, etype: Literal["from"], themename: str, fromelement: str = ..., /) -> None:
         """Create a new element in the current theme of given etype."""
@@ -926,7 +928,19 @@ class Frame(Widget):
         style: str = "",
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = "",
         width: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Frame with parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus
+
+        WIDGET-SPECIFIC OPTIONS
+
+            borderwidth, relief, padding, width, height
+        """
+        ...
     @overload
     def configure(
         self,
@@ -941,7 +955,15 @@ class Frame(Widget):
         style: str = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -982,7 +1004,21 @@ class Label(Widget):
         underline: int = -1,
         width: int | Literal[""] = "",
         wraplength: float | str = ...,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Label with parent master.
+
+        STANDARD OPTIONS
+
+            class, compound, cursor, image, style, takefocus, text,
+            textvariable, underline, width
+
+        WIDGET-SPECIFIC OPTIONS
+
+            anchor, background, font, foreground, justify, padding,
+            relief, text, wraplength
+        """
+        ...
     @overload
     def configure(
         self,
@@ -1008,7 +1044,15 @@ class Label(Widget):
         underline: int = ...,
         width: int | Literal[""] = ...,
         wraplength: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -1046,7 +1090,19 @@ class Labelframe(Widget):
         text: float | str = "",
         underline: int = -1,
         width: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a Ttk Labelframe with parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, style, takefocus
+
+        WIDGET-SPECIFIC OPTIONS
+            labelanchor, text, underline, padding, labelwidget, width,
+            height
+        """
+        ...
     @overload
     def configure(
         self,
@@ -1065,7 +1121,15 @@ class Labelframe(Widget):
         text: float | str = ...,
         underline: int = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -2917,7 +2981,19 @@ class LabeledScale(Frame):
         style: str = "",
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = "",
         width: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a horizontal LabeledScale with parent master, a
+        variable to be associated with the Ttk Scale widget and its range.
+        If variable is not specified, a tkinter.IntVar is created.
+
+        WIDGET-SPECIFIC OPTIONS
+
+            compound: 'top' or 'bottom'
+                Specifies how to display the label relative to the scale.
+                Defaults to 'top'.
+        """
+        ...
     # destroy is overridden, signature does not change
     value: Any
 

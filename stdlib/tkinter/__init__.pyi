@@ -1047,57 +1047,227 @@ class Misc:
             """Returns the exact version of the Tcl library."""
             ...
 
-    def winfo_atom(self, name: str, displayof: Literal[0] | Misc | None = 0) -> int: ...
-    def winfo_atomname(self, id: int, displayof: Literal[0] | Misc | None = 0) -> str: ...
-    def winfo_cells(self) -> int: ...
-    def winfo_children(self) -> list[Widget]: ...  # Widget because it can't be Toplevel or Tk
-    def winfo_class(self) -> str: ...
-    def winfo_colormapfull(self) -> bool: ...
-    def winfo_containing(self, rootX: int, rootY: int, displayof: Literal[0] | Misc | None = 0) -> Misc | None: ...
-    def winfo_depth(self) -> int: ...
-    def winfo_exists(self) -> bool: ...
-    def winfo_fpixels(self, number: float | str) -> float: ...
-    def winfo_geometry(self) -> str: ...
-    def winfo_height(self) -> int: ...
-    def winfo_id(self) -> int: ...
-    def winfo_interps(self, displayof: Literal[0] | Misc | None = 0) -> tuple[str, ...]: ...
-    def winfo_ismapped(self) -> bool: ...
-    def winfo_manager(self) -> str: ...
-    def winfo_name(self) -> str: ...
-    def winfo_parent(self) -> str: ...  # return value needs nametowidget()
-    def winfo_pathname(self, id: int, displayof: Literal[0] | Misc | None = 0): ...
-    def winfo_pixels(self, number: float | str) -> int: ...
-    def winfo_pointerx(self) -> int: ...
-    def winfo_pointerxy(self) -> tuple[int, int]: ...
-    def winfo_pointery(self) -> int: ...
-    def winfo_reqheight(self) -> int: ...
-    def winfo_reqwidth(self) -> int: ...
-    def winfo_rgb(self, color: str) -> tuple[int, int, int]: ...
-    def winfo_rootx(self) -> int: ...
-    def winfo_rooty(self) -> int: ...
-    def winfo_screen(self) -> str: ...
-    def winfo_screencells(self) -> int: ...
-    def winfo_screendepth(self) -> int: ...
-    def winfo_screenheight(self) -> int: ...
-    def winfo_screenmmheight(self) -> int: ...
-    def winfo_screenmmwidth(self) -> int: ...
-    def winfo_screenvisual(self) -> str: ...
-    def winfo_screenwidth(self) -> int: ...
-    def winfo_server(self) -> str: ...
-    def winfo_toplevel(self) -> Tk | Toplevel: ...
-    def winfo_viewable(self) -> bool: ...
-    def winfo_visual(self) -> str: ...
-    def winfo_visualid(self) -> str: ...
-    def winfo_visualsavailable(self, includeids: bool = False) -> list[tuple[str, int]]: ...
-    def winfo_vrootheight(self) -> int: ...
-    def winfo_vrootwidth(self) -> int: ...
-    def winfo_vrootx(self) -> int: ...
-    def winfo_vrooty(self) -> int: ...
-    def winfo_width(self) -> int: ...
-    def winfo_x(self) -> int: ...
-    def winfo_y(self) -> int: ...
-    def update(self) -> None: ...
-    def update_idletasks(self) -> None: ...
+    def winfo_atom(self, name: str, displayof: Literal[0] | Misc | None = 0) -> int:
+        """Return integer which represents atom NAME."""
+        ...
+    def winfo_atomname(self, id: int, displayof: Literal[0] | Misc | None = 0) -> str:
+        """Return name of atom with identifier ID."""
+        ...
+    def winfo_cells(self) -> int:
+        """Return number of cells in the colormap for this widget."""
+        ...
+    def winfo_children(self) -> list[Widget]:
+        """Return a list of all widgets which are children of this widget."""
+        ...
+    def winfo_class(self) -> str:
+        """Return window class name of this widget."""
+        ...
+    def winfo_colormapfull(self) -> bool:
+        """Return True if at the last color request the colormap was full."""
+        ...
+    def winfo_containing(self, rootX: int, rootY: int, displayof: Literal[0] | Misc | None = 0) -> Misc | None:
+        """Return the widget which is at the root coordinates ROOTX, ROOTY."""
+        ...
+    def winfo_depth(self) -> int:
+        """Return the number of bits per pixel."""
+        ...
+    def winfo_exists(self) -> bool:
+        """Return true if this widget exists."""
+        ...
+    def winfo_fpixels(self, number: float | str) -> float:
+        """
+        Return the number of pixels for the given distance NUMBER
+        (e.g. "3c") as float.
+        """
+        ...
+    def winfo_geometry(self) -> str:
+        """Return geometry string for this widget in the form "widthxheight+X+Y"."""
+        ...
+    def winfo_height(self) -> int:
+        """Return height of this widget."""
+        ...
+    def winfo_id(self) -> int:
+        """Return identifier ID for this widget."""
+        ...
+    def winfo_interps(self, displayof: Literal[0] | Misc | None = 0) -> tuple[str, ...]:
+        """Return the name of all Tcl interpreters for this display."""
+        ...
+    def winfo_ismapped(self) -> bool:
+        """Return true if this widget is mapped."""
+        ...
+    def winfo_manager(self) -> str:
+        """Return the window manager name for this widget."""
+        ...
+    def winfo_name(self) -> str:
+        """Return the name of this widget."""
+        ...
+    def winfo_parent(self) -> str:
+        """Return the name of the parent of this widget."""
+        ...
+    def winfo_pathname(self, id: int, displayof: Literal[0] | Misc | None = 0):
+        """Return the pathname of the widget given by ID."""
+        ...
+    def winfo_pixels(self, number: float | str) -> int:
+        """Rounded integer value of winfo_fpixels."""
+        ...
+    def winfo_pointerx(self) -> int:
+        """Return the x coordinate of the pointer on the root window."""
+        ...
+    def winfo_pointerxy(self) -> tuple[int, int]:
+        """Return a tuple of x and y coordinates of the pointer on the root window."""
+        ...
+    def winfo_pointery(self) -> int:
+        """Return the y coordinate of the pointer on the root window."""
+        ...
+    def winfo_reqheight(self) -> int:
+        """Return requested height of this widget."""
+        ...
+    def winfo_reqwidth(self) -> int:
+        """Return requested width of this widget."""
+        ...
+    def winfo_rgb(self, color: str) -> tuple[int, int, int]:
+        """Return a tuple of integer RGB values in range(65536) for color in this widget."""
+        ...
+    def winfo_rootx(self) -> int:
+        """
+        Return x coordinate of upper left corner of this widget on the
+        root window.
+        """
+        ...
+    def winfo_rooty(self) -> int:
+        """
+        Return y coordinate of upper left corner of this widget on the
+        root window.
+        """
+        ...
+    def winfo_screen(self) -> str:
+        """Return the screen name of this widget."""
+        ...
+    def winfo_screencells(self) -> int:
+        """
+        Return the number of the cells in the colormap of the screen
+        of this widget.
+        """
+        ...
+    def winfo_screendepth(self) -> int:
+        """
+        Return the number of bits per pixel of the root window of the
+        screen of this widget.
+        """
+        ...
+    def winfo_screenheight(self) -> int:
+        """
+        Return the number of pixels of the height of the screen of this widget
+        in pixel.
+        """
+        ...
+    def winfo_screenmmheight(self) -> int:
+        """
+        Return the number of pixels of the height of the screen of
+        this widget in mm.
+        """
+        ...
+    def winfo_screenmmwidth(self) -> int:
+        """
+        Return the number of pixels of the width of the screen of
+        this widget in mm.
+        """
+        ...
+    def winfo_screenvisual(self) -> str:
+        """
+        Return one of the strings directcolor, grayscale, pseudocolor,
+        staticcolor, staticgray, or truecolor for the default
+        colormodel of this screen.
+        """
+        ...
+    def winfo_screenwidth(self) -> int:
+        """
+        Return the number of pixels of the width of the screen of
+        this widget in pixel.
+        """
+        ...
+    def winfo_server(self) -> str:
+        """
+        Return information of the X-Server of the screen of this widget in
+        the form "XmajorRminor vendor vendorVersion".
+        """
+        ...
+    def winfo_toplevel(self) -> Tk | Toplevel:
+        """Return the toplevel widget of this widget."""
+        ...
+    def winfo_viewable(self) -> bool:
+        """Return true if the widget and all its higher ancestors are mapped."""
+        ...
+    def winfo_visual(self) -> str:
+        """
+        Return one of the strings directcolor, grayscale, pseudocolor,
+        staticcolor, staticgray, or truecolor for the
+        colormodel of this widget.
+        """
+        ...
+    def winfo_visualid(self) -> str:
+        """Return the X identifier for the visual for this widget."""
+        ...
+    def winfo_visualsavailable(self, includeids: bool = False) -> list[tuple[str, int]]:
+        """
+        Return a list of all visuals available for the screen
+        of this widget.
+
+        Each item in the list consists of a visual name (see winfo_visual), a
+        depth and if includeids is true is given also the X identifier.
+        """
+        ...
+    def winfo_vrootheight(self) -> int:
+        """
+        Return the height of the virtual root window associated with this
+        widget in pixels. If there is no virtual root window return the
+        height of the screen.
+        """
+        ...
+    def winfo_vrootwidth(self) -> int:
+        """
+        Return the width of the virtual root window associated with this
+        widget in pixel. If there is no virtual root window return the
+        width of the screen.
+        """
+        ...
+    def winfo_vrootx(self) -> int:
+        """
+        Return the x offset of the virtual root relative to the root
+        window of the screen of this widget.
+        """
+        ...
+    def winfo_vrooty(self) -> int:
+        """
+        Return the y offset of the virtual root relative to the root
+        window of the screen of this widget.
+        """
+        ...
+    def winfo_width(self) -> int:
+        """Return the width of this widget."""
+        ...
+    def winfo_x(self) -> int:
+        """
+        Return the x coordinate of the upper left corner of this widget
+        in the parent.
+        """
+        ...
+    def winfo_y(self) -> int:
+        """
+        Return the y coordinate of the upper left corner of this widget
+        in the parent.
+        """
+        ...
+    def update(self) -> None:
+        """Enter event loop until all pending events have been processed by Tcl."""
+        ...
+    def update_idletasks(self) -> None:
+        """
+        Enter event loop until all idle callbacks have been called. This
+        will update the display of windows but not process events caused by
+        the user.
+        """
+        ...
     @overload
     def bindtags(self, tagList: None = None) -> tuple[str, ...]:
         """
@@ -1491,7 +1661,13 @@ class Misc:
         ...
     columnconfigure = grid_columnconfigure
     rowconfigure = grid_rowconfigure
-    def grid_location(self, x: float | str, y: float | str) -> tuple[int, int]: ...
+    def grid_location(self, x: float | str, y: float | str) -> tuple[int, int]:
+        """
+        Return a tuple of column and row which identify the cell
+        at which the pixel at position X and Y inside the master
+        widget is located.
+        """
+        ...
     @overload
     def grid_propagate(self, flag: bool) -> None:
         """
@@ -1577,10 +1753,25 @@ class Misc:
         when: Literal["now", "tail", "head", "mark"] = ...,
         x: float | str = ...,
         y: float | str = ...,
-    ) -> None: ...
-    def event_info(self, virtual: str | None = None) -> tuple[str, ...]: ...
-    def image_names(self) -> tuple[str, ...]: ...
-    def image_types(self) -> tuple[str, ...]: ...
+    ) -> None:
+        """
+        Generate an event SEQUENCE. Additional
+        keyword arguments specify parameter of the event
+        (e.g. x, y, rootx, rooty).
+        """
+        ...
+    def event_info(self, virtual: str | None = None) -> tuple[str, ...]:
+        """
+        Return a list of all virtual events or the information
+        about the SEQUENCE bound to the virtual event VIRTUAL.
+        """
+        ...
+    def image_names(self) -> tuple[str, ...]:
+        """Return a list of all existing image names."""
+        ...
+    def image_types(self) -> tuple[str, ...]:
+        """Return a list of all available image types (e.g. photo bitmap)."""
+        ...
     # See #4363 and #4891
     def __setitem__(self, key: str, value: Any) -> None: ...
     def __getitem__(self, key: str) -> Any:
@@ -1643,7 +1834,12 @@ class XView:
         """
         ...
     @overload
-    def xview_scroll(self, number: float | str, what: Literal["pixels"]) -> None: ...
+    def xview_scroll(self, number: float | str, what: Literal["pixels"]) -> None:
+        """
+        Shift the x-view according to NUMBER which is measured in "units"
+        or "pages" (WHAT).
+        """
+        ...
 
 class YView:
     """
@@ -1672,7 +1868,12 @@ class YView:
         """
         ...
     @overload
-    def yview_scroll(self, number: float | str, what: Literal["pixels"]) -> None: ...
+    def yview_scroll(self, number: float | str, what: Literal["pixels"]) -> None:
+        """
+        Shift the y-view according to NUMBER which is measured in
+        "units" or "pages" (WHAT).
+        """
+        ...
 
 if sys.platform == "darwin":
     @type_check_only
@@ -2545,7 +2746,15 @@ class Tk(Misc, Wm):
         relief: Literal["raised", "sunken", "flat", "ridge", "solid", "groove"] = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -3008,7 +3217,16 @@ class Toplevel(BaseWidget, Wm):
         use: int = ...,
         visual: str | tuple[str, int] = "",
         width: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a toplevel widget with the parent MASTER.
+
+        Valid resource names: background, bd, bg, borderwidth, class,
+        colormap, container, cursor, height, highlightbackground,
+        highlightcolor, highlightthickness, menu, relief, screen, takefocus,
+        use, visual, width.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -3030,7 +3248,15 @@ class Toplevel(BaseWidget, Wm):
         relief: Literal["raised", "sunken", "flat", "ridge", "solid", "groove"] = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -3092,7 +3318,27 @@ class Button(Widget):
         underline: int = -1,
         width: float | str = 0,
         wraplength: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a button widget with the parent MASTER.
+
+        STANDARD OPTIONS
+
+            activebackground, activeforeground, anchor,
+            background, bitmap, borderwidth, cursor,
+            disabledforeground, font, foreground
+            highlightbackground, highlightcolor,
+            highlightthickness, image, justify,
+            padx, pady, relief, repeatdelay,
+            repeatinterval, takefocus, text,
+            textvariable, underline, wraplength
+
+        WIDGET-SPECIFIC OPTIONS
+
+            command, compound, default, height,
+            overrelief, state, width
+        """
+        ...
     @overload
     def configure(
         self,
@@ -3134,7 +3380,15 @@ class Button(Widget):
         underline: int = ...,
         width: float | str = ...,
         wraplength: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -3210,7 +3464,19 @@ class Canvas(Widget, XView, YView):
         xscrollincrement: float | str = 0,
         yscrollcommand: str | Callable[[float, float], object] = "",
         yscrollincrement: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a canvas widget with the parent MASTER.
+
+        Valid resource names: background, bd, bg, borderwidth, closeenough,
+        confine, cursor, height, highlightbackground, highlightcolor,
+        highlightthickness, insertbackground, insertborderwidth,
+        insertofftime, insertontime, insertwidth, offset, relief,
+        scrollregion, selectbackground, selectborderwidth, selectforeground,
+        state, takefocus, width, xscrollcommand, xscrollincrement,
+        yscrollcommand, yscrollincrement.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -3246,7 +3512,15 @@ class Canvas(Widget, XView, YView):
         xscrollincrement: float | str = ...,
         yscrollcommand: str | Callable[[float, float], object] = ...,
         yscrollincrement: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -3272,20 +3546,66 @@ class Canvas(Widget, XView, YView):
         ...
     def addtag_closest(
         self, newtag: str, x: float | str, y: float | str, halo: float | str | None = None, start: str | int | None = None
-    ) -> None: ...
-    def addtag_enclosed(self, newtag: str, x1: float | str, y1: float | str, x2: float | str, y2: float | str) -> None: ...
-    def addtag_overlapping(self, newtag: str, x1: float | str, y1: float | str, x2: float | str, y2: float | str) -> None: ...
-    def addtag_withtag(self, newtag: str, tagOrId: str | int) -> None: ...
-    def find(self, *args): ...  # internal method
-    def find_above(self, tagOrId: str | int) -> tuple[int, ...]: ...
-    def find_all(self) -> tuple[int, ...]: ...
-    def find_below(self, tagOrId: str | int) -> tuple[int, ...]: ...
+    ) -> None:
+        """
+        Add tag NEWTAG to item which is closest to pixel at X, Y.
+        If several match take the top-most.
+        All items closer than HALO are considered overlapping (all are
+        closest). If START is specified the next below this tag is taken.
+        """
+        ...
+    def addtag_enclosed(self, newtag: str, x1: float | str, y1: float | str, x2: float | str, y2: float | str) -> None:
+        """
+        Add tag NEWTAG to all items in the rectangle defined
+        by X1,Y1,X2,Y2.
+        """
+        ...
+    def addtag_overlapping(self, newtag: str, x1: float | str, y1: float | str, x2: float | str, y2: float | str) -> None:
+        """
+        Add tag NEWTAG to all items which overlap the rectangle
+        defined by X1,Y1,X2,Y2.
+        """
+        ...
+    def addtag_withtag(self, newtag: str, tagOrId: str | int) -> None:
+        """Add tag NEWTAG to all items with TAGORID."""
+        ...
+    def find(self, *args):
+        """Internal function."""
+        ...
+    def find_above(self, tagOrId: str | int) -> tuple[int, ...]:
+        """Return items above TAGORID."""
+        ...
+    def find_all(self) -> tuple[int, ...]:
+        """Return all items."""
+        ...
+    def find_below(self, tagOrId: str | int) -> tuple[int, ...]:
+        """Return all items below TAGORID."""
+        ...
     def find_closest(
         self, x: float | str, y: float | str, halo: float | str | None = None, start: str | int | None = None
-    ) -> tuple[int, ...]: ...
-    def find_enclosed(self, x1: float | str, y1: float | str, x2: float | str, y2: float | str) -> tuple[int, ...]: ...
-    def find_overlapping(self, x1: float | str, y1: float | str, x2: float | str, y2: float) -> tuple[int, ...]: ...
-    def find_withtag(self, tagOrId: str | int) -> tuple[int, ...]: ...
+    ) -> tuple[int, ...]:
+        """
+        Return item which is closest to pixel at X, Y.
+        If several match take the top-most.
+        All items closer than HALO are considered overlapping (all are
+        closest). If START is specified the next below this tag is taken.
+        """
+        ...
+    def find_enclosed(self, x1: float | str, y1: float | str, x2: float | str, y2: float | str) -> tuple[int, ...]:
+        """
+        Return all items in rectangle defined
+        by X1,Y1,X2,Y2.
+        """
+        ...
+    def find_overlapping(self, x1: float | str, y1: float | str, x2: float | str, y2: float) -> tuple[int, ...]:
+        """
+        Return all items which overlap the rectangle
+        defined by X1,Y1,X2,Y2.
+        """
+        ...
+    def find_withtag(self, tagOrId: str | int) -> tuple[int, ...]:
+        """Return all items with TAGORID."""
+        ...
     # Incompatible with Misc.bbox(), tkinter violates LSP
     def bbox(self, *args: str | int) -> tuple[int, int, int, int]:
         """
@@ -3404,7 +3724,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create line with coordinates x1,y1,...,xn,yn."""
+        ...
     @overload
     def create_line(
         self,
@@ -3434,7 +3756,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create line with coordinates x1,y1,...,xn,yn."""
+        ...
     @overload
     def create_line(
         self,
@@ -3470,7 +3794,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create line with coordinates x1,y1,...,xn,yn."""
+        ...
     @overload
     def create_oval(
         self,
@@ -3503,7 +3829,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create oval with coordinates x1,y1,x2,y2."""
+        ...
     @overload
     def create_oval(
         self,
@@ -3534,7 +3862,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create oval with coordinates x1,y1,x2,y2."""
+        ...
     @overload
     def create_oval(
         self,
@@ -3571,7 +3901,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create oval with coordinates x1,y1,x2,y2."""
+        ...
     @overload
     def create_polygon(
         self,
@@ -3607,7 +3939,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create polygon with coordinates x1,y1,...,xn,yn."""
+        ...
     @overload
     def create_polygon(
         self,
@@ -3641,7 +3975,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create polygon with coordinates x1,y1,...,xn,yn."""
+        ...
     @overload
     def create_polygon(
         self,
@@ -3681,7 +4017,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create polygon with coordinates x1,y1,...,xn,yn."""
+        ...
     @overload
     def create_rectangle(
         self,
@@ -3714,7 +4052,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create rectangle with coordinates x1,y1,x2,y2."""
+        ...
     @overload
     def create_rectangle(
         self,
@@ -3745,7 +4085,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create rectangle with coordinates x1,y1,x2,y2."""
+        ...
     @overload
     def create_rectangle(
         self,
@@ -3782,7 +4124,9 @@ class Canvas(Widget, XView, YView):
         stipple: str = ...,
         tags: str | list[str] | tuple[str, ...] = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create rectangle with coordinates x1,y1,x2,y2."""
+        ...
     @overload
     def create_text(
         self,
@@ -3805,7 +4149,9 @@ class Canvas(Widget, XView, YView):
         tags: str | list[str] | tuple[str, ...] = ...,
         text: float | str = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create text with coordinates x1,y1."""
+        ...
     @overload
     def create_text(
         self,
@@ -3827,7 +4173,9 @@ class Canvas(Widget, XView, YView):
         tags: str | list[str] | tuple[str, ...] = ...,
         text: float | str = ...,
         width: float | str = ...,
-    ) -> int: ...
+    ) -> int:
+        """Create text with coordinates x1,y1."""
+        ...
     @overload
     def create_window(
         self,
@@ -3945,20 +4293,67 @@ class Canvas(Widget, XView, YView):
     #    lift = tkraise = tag_raise
     #
     # But mypy doesn't like aliasing here (maybe because Misc defines the same names)
-    def tag_lower(self, first: str | int, second: str | int | None = ..., /) -> None: ...
-    def lower(self, first: str | int, second: str | int | None = ..., /) -> None: ...  # type: ignore[override]
-    def tag_raise(self, first: str | int, second: str | int | None = ..., /) -> None: ...
-    def tkraise(self, first: str | int, second: str | int | None = ..., /) -> None: ...  # type: ignore[override]
-    def lift(self, first: str | int, second: str | int | None = ..., /) -> None: ...  # type: ignore[override]
-    def scale(self, tagOrId: str | int, xOrigin: float | str, yOrigin: float | str, xScale: float, yScale: float, /) -> None: ...
-    def scan_mark(self, x, y) -> None: ...
-    def scan_dragto(self, x, y, gain: int = 10) -> None: ...
-    def select_adjust(self, tagOrId, index) -> None: ...
-    def select_clear(self) -> None: ...
-    def select_from(self, tagOrId, index) -> None: ...
-    def select_item(self): ...
-    def select_to(self, tagOrId, index) -> None: ...
-    def type(self, tagOrId: str | int) -> int | None: ...
+    def tag_lower(self, first: str | int, second: str | int | None = ..., /) -> None:
+        """
+        Lower an item TAGORID given in ARGS
+        (optional below another item).
+        """
+        ...
+    def lower(self, first: str | int, second: str | int | None = ..., /) -> None:
+        """
+        Lower an item TAGORID given in ARGS
+        (optional below another item).
+        """
+        ...
+    def tag_raise(self, first: str | int, second: str | int | None = ..., /) -> None:
+        """
+        Raise an item TAGORID given in ARGS
+        (optional above another item).
+        """
+        ...
+    def tkraise(self, first: str | int, second: str | int | None = ..., /) -> None:
+        """
+        Raise an item TAGORID given in ARGS
+        (optional above another item).
+        """
+        ...
+    def lift(self, first: str | int, second: str | int | None = ..., /) -> None:
+        """
+        Raise an item TAGORID given in ARGS
+        (optional above another item).
+        """
+        ...
+    def scale(self, tagOrId: str | int, xOrigin: float | str, yOrigin: float | str, xScale: float, yScale: float, /) -> None:
+        """Scale item TAGORID with XORIGIN, YORIGIN, XSCALE, YSCALE."""
+        ...
+    def scan_mark(self, x, y) -> None:
+        """Remember the current X, Y coordinates."""
+        ...
+    def scan_dragto(self, x, y, gain: int = 10) -> None:
+        """
+        Adjust the view of the canvas to GAIN times the
+        difference between X and Y and the coordinates given in
+        scan_mark.
+        """
+        ...
+    def select_adjust(self, tagOrId, index) -> None:
+        """Adjust the end of the selection near the cursor of an item TAGORID to index."""
+        ...
+    def select_clear(self) -> None:
+        """Clear the selection if it is in this widget."""
+        ...
+    def select_from(self, tagOrId, index) -> None:
+        """Set the fixed end of a selection in item TAGORID to INDEX."""
+        ...
+    def select_item(self):
+        """Return the item which has the selection."""
+        ...
+    def select_to(self, tagOrId, index) -> None:
+        """Set the variable end of a selection in item TAGORID to INDEX."""
+        ...
+    def type(self, tagOrId: str | int) -> int | None:
+        """Return the type of the item TAGORID."""
+        ...
 
 class Checkbutton(Widget):
     """Checkbutton widget which is either in on- or off-state."""
@@ -4020,7 +4415,19 @@ class Checkbutton(Widget):
         variable: Variable | Literal[""] = ...,
         width: float | str = 0,
         wraplength: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a checkbutton widget with the parent MASTER.
+
+        Valid resource names: activebackground, activeforeground, anchor,
+        background, bd, bg, bitmap, borderwidth, command, cursor,
+        disabledforeground, fg, font, foreground, height,
+        highlightbackground, highlightcolor, highlightthickness, image,
+        indicatoron, justify, offvalue, onvalue, padx, pady, relief,
+        selectcolor, selectimage, state, takefocus, text, textvariable,
+        underline, variable, width, wraplength.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -4068,7 +4475,15 @@ class Checkbutton(Widget):
         variable: Variable | Literal[""] = ...,
         width: float | str = ...,
         wraplength: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -4297,7 +4712,15 @@ class Frame(Widget):
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = 0,
         visual: str | tuple[str, int] = "",  # can't be changed with configure()
         width: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a frame widget with the parent MASTER.
+
+        Valid resource names: background, bd, bg, borderwidth, class,
+        colormap, container, cursor, height, highlightbackground,
+        highlightcolor, highlightthickness, relief, takefocus, visual, width.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -4318,7 +4741,15 @@ class Frame(Widget):
         relief: Literal["raised", "sunken", "flat", "ridge", "solid", "groove"] = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -4370,7 +4801,25 @@ class Label(Widget):
         underline: int = -1,
         width: float | str = 0,
         wraplength: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a label widget with the parent MASTER.
+
+        STANDARD OPTIONS
+
+            activebackground, activeforeground, anchor,
+            background, bitmap, borderwidth, cursor,
+            disabledforeground, font, foreground,
+            highlightbackground, highlightcolor,
+            highlightthickness, image, justify,
+            padx, pady, relief, takefocus, text,
+            textvariable, underline, wraplength
+
+        WIDGET-SPECIFIC OPTIONS
+
+            height, state, width
+        """
+        ...
     @overload
     def configure(
         self,
@@ -4407,7 +4856,15 @@ class Label(Widget):
         underline: int = ...,
         width: float | str = ...,
         wraplength: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -5047,7 +5504,15 @@ class Menubutton(Widget):
         underline: int = ...,
         width: float | str = ...,
         wraplength: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -5119,7 +5584,15 @@ class Message(Widget):
         text: float | str = ...,
         textvariable: Variable = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -5181,7 +5654,19 @@ class Radiobutton(Widget):
         variable: Variable | Literal[""] = ...,
         width: float | str = 0,
         wraplength: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a radiobutton widget with the parent MASTER.
+
+        Valid resource names: activebackground, activeforeground, anchor,
+        background, bd, bg, bitmap, borderwidth, command, cursor,
+        disabledforeground, fg, font, foreground, height,
+        highlightbackground, highlightcolor, highlightthickness, image,
+        indicatoron, justify, padx, pady, relief, selectcolor, selectimage,
+        state, takefocus, text, textvariable, underline, value, variable,
+        width, wraplength.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -5228,7 +5713,15 @@ class Radiobutton(Widget):
         variable: Variable | Literal[""] = ...,
         width: float | str = ...,
         wraplength: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -5296,7 +5789,18 @@ class Scale(Widget):
         troughcolor: str = ...,
         variable: IntVar | DoubleVar = ...,
         width: float | str = 15,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a scale widget with the parent MASTER.
+
+        Valid resource names: activebackground, background, bigincrement, bd,
+        bg, borderwidth, command, cursor, digits, fg, font, foreground, from,
+        highlightbackground, highlightcolor, highlightthickness, label,
+        length, orient, relief, repeatdelay, repeatinterval, resolution,
+        showvalue, sliderlength, sliderrelief, state, takefocus,
+        tickinterval, to, troughcolor, variable, width.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -5336,7 +5840,15 @@ class Scale(Widget):
         troughcolor: str = ...,
         variable: IntVar | DoubleVar = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -5401,7 +5913,18 @@ class Scrollbar(Widget):
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = "",
         troughcolor: str = ...,
         width: float | str = ...,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a scrollbar widget with the parent MASTER.
+
+        Valid resource names: activebackground, activerelief,
+        background, bd, bg, borderwidth, command, cursor,
+        elementborderwidth, highlightbackground,
+        highlightcolor, highlightthickness, jump, orient,
+        relief, repeatdelay, repeatinterval, takefocus,
+        troughcolor, width.
+        """
+        ...
     @overload
     def configure(
         self,
@@ -5428,7 +5951,15 @@ class Scrollbar(Widget):
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         troughcolor: str = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -6290,7 +6821,9 @@ class Text(Widget, XView, YView):
         name: str = ...,
         padx: float | str = ...,
         pady: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, str, str | int]] | None: ...
+    ) -> dict[str, tuple[str, str, str, str, str | int]] | None:
+        """Configure an embedded image at INDEX."""
+        ...
     def image_create(
         self,
         index: _TextIndex,
@@ -6301,10 +6834,21 @@ class Text(Widget, XView, YView):
         name: str = ...,
         padx: float | str = ...,
         pady: float | str = ...,
-    ) -> str: ...
-    def image_names(self) -> tuple[str, ...]: ...
-    def index(self, index: _TextIndex) -> str: ...
-    def insert(self, index: _TextIndex, chars: str, *args: str | list[str] | tuple[str, ...]) -> None: ...
+    ) -> str:
+        """Create an embedded image at INDEX."""
+        ...
+    def image_names(self) -> tuple[str, ...]:
+        """Return all names of embedded images in this widget."""
+        ...
+    def index(self, index: _TextIndex) -> str:
+        """Return the index in the form line.char for INDEX."""
+        ...
+    def insert(self, index: _TextIndex, chars: str, *args: str | list[str] | tuple[str, ...]) -> None:
+        """
+        Insert CHARS before the characters at INDEX. An additional
+        tag can be given in ARGS. Additional CHARS and tags can follow in ARGS.
+        """
+        ...
     @overload
     def mark_gravity(self, markName: str, direction: None = None) -> Literal["left", "right"]:
         """
@@ -7335,7 +7879,24 @@ class LabelFrame(Widget):
         text: float | str = "",
         visual: str | tuple[str, int] = "",  # can't be changed with configure()
         width: float | str = 0,
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a labelframe widget with the parent MASTER.
+
+        STANDARD OPTIONS
+
+            borderwidth, cursor, font, foreground,
+            highlightbackground, highlightcolor,
+            highlightthickness, padx, pady, relief,
+            takefocus, text
+
+        WIDGET-SPECIFIC OPTIONS
+
+            background, class, colormap, container,
+            height, labelanchor, labelwidget,
+            visual, width
+        """
+        ...
     @overload
     def configure(
         self,
@@ -7362,7 +7923,15 @@ class LabelFrame(Widget):
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         text: float | str = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """
@@ -7404,7 +7973,22 @@ class PanedWindow(Widget):
         sashwidth: float | str = 3,
         showhandle: bool = False,
         width: float | str = "",
-    ) -> None: ...
+    ) -> None:
+        """
+        Construct a panedwindow widget with the parent MASTER.
+
+        STANDARD OPTIONS
+
+            background, borderwidth, cursor, height,
+            orient, relief, width
+
+        WIDGET-SPECIFIC OPTIONS
+
+            handlepad, handlesize, opaqueresize,
+            sashcursor, sashpad, sashrelief,
+            sashwidth, showhandle,
+        """
+        ...
     @overload
     def configure(
         self,
@@ -7431,7 +8015,15 @@ class PanedWindow(Widget):
         sashwidth: float | str = ...,
         showhandle: bool = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """
+        Configure resources of a widget.
+
+        The values for resources are specified as keyword
+        arguments. To get an overview about
+        the allowed keyword arguments call the method keys.
+        """
+        ...
     @overload
     def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]:
         """

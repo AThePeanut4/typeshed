@@ -96,8 +96,12 @@ class ThemedTk(tkinter.Tk, ThemedWidget):
         relief: Literal["raised", "sunken", "flat", "ridge", "solid", "groove"] = ...,
         takefocus: bool | Literal[0, 1, ""] | Callable[[str], bool | None] = ...,
         width: float | str = ...,
-    ) -> dict[str, tuple[str, str, str, Any, Any]] | None: ...
-    def cget(self, k: str) -> Any: ...
+    ) -> dict[str, tuple[str, str, str, Any, Any]] | None:
+        """configure redirect to support additional options"""
+        ...
+    def cget(self, k: str) -> Any:
+        """cget redirect to support additional options"""
+        ...
     def configure(  # type: ignore[override]
         self,
         kw: dict[str, Any] | None = None,
