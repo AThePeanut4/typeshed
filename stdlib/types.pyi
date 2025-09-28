@@ -496,8 +496,8 @@ class CellType:
     cell_contents: Any
 
 _YieldT_co = TypeVar("_YieldT_co", covariant=True)
-_SendT_contra = TypeVar("_SendT_contra", contravariant=True)
-_ReturnT_co = TypeVar("_ReturnT_co", covariant=True)
+_SendT_contra = TypeVar("_SendT_contra", contravariant=True, default=None)
+_ReturnT_co = TypeVar("_ReturnT_co", covariant=True, default=None)
 
 @final
 class GeneratorType(Generator[_YieldT_co, _SendT_contra, _ReturnT_co]):
@@ -617,8 +617,12 @@ class AsyncGeneratorType(AsyncGenerator[_YieldT_co, _SendT_contra]):
         """See PEP 585"""
         ...
 
+# Non-default variations to accommodate coroutines
+_SendT_nd_contra = TypeVar("_SendT_nd_contra", contravariant=True)
+_ReturnT_nd_co = TypeVar("_ReturnT_nd_co", covariant=True)
+
 @final
-class CoroutineType(Coroutine[_YieldT_co, _SendT_contra, _ReturnT_co]):
+class CoroutineType(Coroutine[_YieldT_co, _SendT_nd_contra, _ReturnT_nd_co]):
     __name__: str
     __qualname__: str
     @property
@@ -637,18 +641,9 @@ class CoroutineType(Coroutine[_YieldT_co, _SendT_contra, _ReturnT_co]):
         @property
         def cr_suspended(self) -> bool: ...
 
-    def close(self) -> None:
-        """close() -> raise GeneratorExit inside coroutine."""
-        ...
-    def __await__(self) -> Generator[Any, None, _ReturnT_co]:
-        """Return an iterator to be used in await expression."""
-        ...
-    def send(self, arg: _SendT_contra, /) -> _YieldT_co:
-        """
-        send(arg) -> send 'arg' into coroutine,
-        return next iterated value or raise StopIteration.
-        """
-        ...
+    def close(self) -> None: ...
+    def __await__(self) -> Generator[Any, None, _ReturnT_nd_co]: ...
+    def send(self, arg: _SendT_nd_contra, /) -> _YieldT_co: ...
     @overload
     def throw(
         self, typ: type[BaseException], val: BaseException | object = ..., tb: TracebackType | None = ..., /
