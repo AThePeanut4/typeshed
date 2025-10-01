@@ -417,10 +417,99 @@ def node_clique_number(
     """
     ...
 @overload
-def node_clique_number(G: Graph[_Node], nodes=None, cliques: Iterable[Incomplete] | None = None, separate_nodes=False) -> int: ...
-def number_of_cliques(G: Graph[_Node], nodes=None, cliques=None) -> int | dict[Incomplete, Incomplete]: ...
+def node_clique_number(G: Graph[_Node], nodes=None, cliques: Iterable[Incomplete] | None = None, separate_nodes=False) -> int:
+    """
+    Returns the size of the largest maximal clique containing each given node.
+
+    Returns a single or list depending on input nodes.
+    An optional list of cliques can be input if already computed.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        An undirected graph.
+
+    cliques : list, optional (default=None)
+        A list of cliques, each of which is itself a list of nodes.
+        If not specified, the list of all cliques will be computed
+        using :func:`find_cliques`.
+
+    Returns
+    -------
+    int or dict
+        If `nodes` is a single node, returns the size of the
+        largest maximal clique in `G` containing that node.
+        Otherwise return a dict keyed by node to the size
+        of the largest maximal clique containing that node.
+
+    See Also
+    --------
+    find_cliques
+        find_cliques yields the maximal cliques of G.
+        It accepts a `nodes` argument which restricts consideration to
+        maximal cliques containing all the given `nodes`.
+        The search for the cliques is optimized for `nodes`.
+    """
+    ...
+def number_of_cliques(G: Graph[_Node], nodes=None, cliques=None) -> int | dict[Incomplete, Incomplete]:
+    """
+    Returns the number of maximal cliques for each node.
+
+    Returns a single or list depending on input nodes.
+    Optional list of cliques can be input if already computed.
+    """
+    ...
 @_dispatchable
-def max_weight_clique(G: Graph[_Node], weight="weight") -> tuple[list[Incomplete], int]: ...
+def max_weight_clique(G: Graph[_Node], weight="weight") -> tuple[list[Incomplete], int]:
+    """
+    Find a maximum weight clique in G.
+
+    A *clique* in a graph is a set of nodes such that every two distinct nodes
+    are adjacent.  The *weight* of a clique is the sum of the weights of its
+    nodes.  A *maximum weight clique* of graph G is a clique C in G such that
+    no clique in G has weight greater than the weight of C.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        Undirected graph
+    weight : string or None, optional (default='weight')
+        The node attribute that holds the integer value used as a weight.
+        If None, then each node has weight 1.
+
+    Returns
+    -------
+    clique : list
+        the nodes of a maximum weight clique
+    weight : int
+        the weight of a maximum weight clique
+
+    Notes
+    -----
+    The implementation is recursive, and therefore it may run into recursion
+    depth issues if G contains a clique whose number of nodes is close to the
+    recursion depth limit.
+
+    At each search node, the algorithm greedily constructs a weighted
+    independent set cover of part of the graph in order to find a small set of
+    nodes on which to branch.  The algorithm is very similar to the algorithm
+    of Tavares et al. [1]_, other than the fact that the NetworkX version does
+    not use bitsets.  This style of algorithm for maximum weight clique (and
+    maximum weight independent set, which is the same problem but on the
+    complement graph) has a decades-long history.  See Algorithm B of Warren
+    and Hicks [2]_ and the references in that paper.
+
+    References
+    ----------
+    .. [1] Tavares, W.A., Neto, M.B.C., Rodrigues, C.D., Michelon, P.: Um
+           algoritmo de branch and bound para o problema da clique máxima
+           ponderada.  Proceedings of XLVII SBPO 1 (2015).
+
+    .. [2] Warren, Jeffrey S, Hicks, Illya V.: Combinatorial Branch-and-Bound
+           for the Maximum Weight Independent Set Problem.  Technical Report,
+           Texas A&M University (2016).
+    """
+    ...
 
 class MaxWeightClique:
     """

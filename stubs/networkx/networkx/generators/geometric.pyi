@@ -17,7 +17,60 @@ __all__ = [
 ]
 
 @_dispatchable
-def geometric_edges(G: Graph[_Node], radius, p: float = 2): ...
+def geometric_edges(G: Graph[_Node], radius, p: float = 2):
+    """
+    Returns edge list of node pairs within `radius` of each other.
+
+    Parameters
+    ----------
+    G : networkx graph
+        The graph from which to generate the edge list. The nodes in `G` should
+        have an attribute ``pos`` corresponding to the node position, which is
+        used to compute the distance to other nodes.
+    radius : scalar
+        The distance threshold. Edges are included in the edge list if the
+        distance between the two nodes is less than `radius`.
+    pos_name : string, default="pos"
+        The name of the node attribute which represents the position of each
+        node in 2D coordinates. Every node in the Graph must have this attribute.
+    p : scalar, default=2
+        The `Minkowski distance metric
+        <https://en.wikipedia.org/wiki/Minkowski_distance>`_ used to compute
+        distances. The default value is 2, i.e. Euclidean distance.
+
+    Returns
+    -------
+    edges : list
+        List of edges whose distances are less than `radius`
+
+    Notes
+    -----
+    Radius uses Minkowski distance metric `p`.
+    If scipy is available, `scipy.spatial.cKDTree` is used to speed computation.
+
+    Examples
+    --------
+    Create a graph with nodes that have a "pos" attribute representing 2D
+    coordinates.
+
+    >>> G = nx.Graph()
+    >>> G.add_nodes_from(
+    ...     [
+    ...         (0, {"pos": (0, 0)}),
+    ...         (1, {"pos": (3, 0)}),
+    ...         (2, {"pos": (8, 0)}),
+    ...     ]
+    ... )
+    >>> nx.geometric_edges(G, radius=1)
+    []
+    >>> nx.geometric_edges(G, radius=4)
+    [(0, 1)]
+    >>> nx.geometric_edges(G, radius=6)
+    [(0, 1), (1, 2)]
+    >>> nx.geometric_edges(G, radius=9)
+    [(0, 1), (0, 2), (1, 2)]
+    """
+    ...
 @_dispatchable
 def random_geometric_graph(n, radius, dim: int = 2, pos=None, p: float = 2, seed=None):
     """

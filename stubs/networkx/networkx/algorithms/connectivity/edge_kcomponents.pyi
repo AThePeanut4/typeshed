@@ -260,9 +260,72 @@ class EdgeComponentAuxGraph:
     H: Incomplete
 
     @classmethod
-    def construct(cls, G: Graph[_Node]): ...
-    def k_edge_components(self, k: int) -> Generator[Incomplete, Incomplete, None]: ...
-    def k_edge_subgraphs(self, k: int) -> Generator[Incomplete, Incomplete, None]: ...
+    def construct(cls, G: Graph[_Node]):
+        """
+        Builds an auxiliary graph encoding edge-connectivity between nodes.
+
+        Notes
+        -----
+        Given G=(V, E), initialize an empty auxiliary graph A.
+        Choose an arbitrary source node s.  Initialize a set N of available
+        nodes (that can be used as the sink). The algorithm picks an
+        arbitrary node t from N - {s}, and then computes the minimum st-cut
+        (S, T) with value w. If G is directed the minimum of the st-cut or
+        the ts-cut is used instead. Then, the edge (s, t) is added to the
+        auxiliary graph with weight w. The algorithm is called recursively
+        first using S as the available nodes and s as the source, and then
+        using T and t. Recursion stops when the source is the only available
+        node.
+
+        Parameters
+        ----------
+        G : NetworkX graph
+        """
+        ...
+    def k_edge_components(self, k: int) -> Generator[Incomplete, Incomplete, None]:
+        """
+        Queries the auxiliary graph for k-edge-connected components.
+
+        Parameters
+        ----------
+        k : Integer
+            Desired edge connectivity
+
+        Returns
+        -------
+        k_edge_components : a generator of k-edge-ccs
+
+        Notes
+        -----
+        Given the auxiliary graph, the k-edge-connected components can be
+        determined in linear time by removing all edges with weights less than
+        k from the auxiliary graph.  The resulting connected components are the
+        k-edge-ccs in the original graph.
+        """
+        ...
+    def k_edge_subgraphs(self, k: int) -> Generator[Incomplete, Incomplete, None]:
+        """
+        Queries the auxiliary graph for k-edge-connected subgraphs.
+
+        Parameters
+        ----------
+        k : Integer
+            Desired edge connectivity
+
+        Returns
+        -------
+        k_edge_subgraphs : a generator of k-edge-subgraphs
+
+        Notes
+        -----
+        Refines the k-edge-ccs into k-edge-subgraphs. The running time is more
+        than $O(|V|)$.
+
+        For single values of k it is faster to use `nx.k_edge_subgraphs`.
+        But for multiple values of k, it can be faster to build AuxGraph and
+        then use this method.
+        """
+        ...
 
 @_dispatchable
 def general_k_edge_subgraphs(G: Graph[_Node], k):

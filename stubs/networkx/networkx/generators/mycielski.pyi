@@ -1,10 +1,56 @@
+"""
+Functions related to the Mycielski Operation and the Mycielskian family
+of graphs.
+"""
+
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
 __all__ = ["mycielskian", "mycielski_graph"]
 
 @_dispatchable
-def mycielskian(G: Graph[_Node], iterations: int = 1): ...
+def mycielskian(G: Graph[_Node], iterations: int = 1):
+    r"""
+    Returns the Mycielskian of a simple, undirected graph G
+
+    The Mycielskian of graph preserves a graph's triangle free
+    property while increasing the chromatic number by 1.
+
+    The Mycielski Operation on a graph, :math:`G=(V, E)`, constructs a new
+    graph with :math:`2|V| + 1` nodes and :math:`3|E| + |V|` edges.
+
+    The construction is as follows:
+
+    Let :math:`V = {0, ..., n-1}`. Construct another vertex set
+    :math:`U = {n, ..., 2n}` and a vertex, `w`.
+    Construct a new graph, `M`, with vertices :math:`U \bigcup V \bigcup w`.
+    For edges, :math:`(u, v) \in E` add edges :math:`(u, v), (u, v + n)`, and
+    :math:`(u + n, v)` to M. Finally, for all vertices :math:`u \in U`, add
+    edge :math:`(u, w)` to M.
+
+    The Mycielski Operation can be done multiple times by repeating the above
+    process iteratively.
+
+    More information can be found at https://en.wikipedia.org/wiki/Mycielskian
+
+    Parameters
+    ----------
+    G : graph
+        A simple, undirected NetworkX graph
+    iterations : int
+        The number of iterations of the Mycielski operation to
+        perform on G. Defaults to 1. Must be a non-negative integer.
+
+    Returns
+    -------
+    M : graph
+        The Mycielskian of G after the specified number of iterations.
+
+    Notes
+    -----
+    Graph, node, and edge data are not necessarily propagated to the new graph.
+    """
+    ...
 @_dispatchable
 def mycielski_graph(n):
     """

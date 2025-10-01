@@ -85,7 +85,14 @@ def copy(x: _T) -> _T:
 if sys.version_info >= (3, 13):
     __all__ += ["replace"]
     # The types accepted by `**changes` match those of `obj.__replace__`.
-    def replace(obj: _SupportsReplace[_RT_co], /, **changes: Any) -> _RT_co: ...
+    def replace(obj: _SupportsReplace[_RT_co], /, **changes: Any) -> _RT_co:
+        """
+        Return a new object replacing specified fields with new values.
+
+        This is especially useful for immutable objects, like named tuples or
+        frozen dataclasses.
+        """
+        ...
 
 class Error(Exception): ...
 
