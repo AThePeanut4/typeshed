@@ -28,7 +28,9 @@ class _DataEssentialsAndFunctions:
     prev_node_dft: Incomplete
     last_descendent_dft: Incomplete
 
-    def __init__(self, G, multigraph, demand: str = "demand", capacity: str = "capacity", weight: str = "weight") -> None: ...
+    def __init__(
+        self, G: Graph[_Node], multigraph, demand: str = "demand", capacity: str = "capacity", weight: str = "weight"
+    ) -> None: ...
     def initialize_spanning_tree(self, n, faux_inf) -> None: ...
     def find_apex(self, p, q):
         """Find the lowest common ancestor of nodes p and q in the spanning tree."""

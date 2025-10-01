@@ -17,6 +17,7 @@ from types import ModuleType
 from typing_extensions import Self, TypeAlias
 
 import numpy
+from networkx.classes.graph import Graph, _Node
 
 __all__ = [
     "flatten",
@@ -205,105 +206,8 @@ class PythonRandomInterface:
     def expovariate(self, scale): ...
     def paretovariate(self, shape): ...
 
-def create_py_random_state(random_state: _RandomState = None):
-    """
-    Returns a random.Random instance depending on input.
-
-    Parameters
-    ----------
-    random_state : int or random number generator or None (default=None)
-        - If int, return a `random.Random` instance set with seed=int.
-        - If `random.Random` instance, return it.
-        - If None or the `np.random` package, return the global random number
-          generator used by `np.random`.
-        - If an `np.random.Generator` instance, or the `np.random` package, or
-          the global numpy random number generator, then return it.
-          wrapped in a `PythonRandomViaNumpyBits` class.
-        - If a `PythonRandomViaNumpyBits` instance, return it.
-        - If a `PythonRandomInterface` instance, return it.
-        - If a `np.random.RandomState` instance and not the global numpy default,
-          return it wrapped in `PythonRandomInterface` for backward bit-stream
-          matching with legacy code.
-
-    Notes
-    -----
-    - A diagram intending to illustrate the relationships behind our support
-      for numpy random numbers is called
-      `NetworkX Numpy Random Numbers <https://excalidraw.com/#room=b5303f2b03d3af7ccc6a,e5ZDIWdWWCTTsg8OqoRvPA>`_.
-    - More discussion about this support also appears in
-      `gh-6869#comment <https://github.com/networkx/networkx/pull/6869#issuecomment-1944799534>`_.
-    - Wrappers of numpy.random number generators allow them to mimic the Python random
-      number generation algorithms. For example, Python can create arbitrarily large
-      random ints, and the wrappers use Numpy bit-streams with CPython's random module
-      to choose arbitrarily large random integers too.
-    - We provide two wrapper classes:
-      `PythonRandomViaNumpyBits` is usually what you want and is always used for
-      `np.Generator` instances. But for users who need to recreate random numbers
-      produced in NetworkX 3.2 or earlier, we maintain the `PythonRandomInterface`
-      wrapper as well. We use it only used if passed a (non-default) `np.RandomState`
-      instance pre-initialized from a seed. Otherwise the newer wrapper is used.
-    """
-    ...
-def nodes_equal(nodes1, nodes2) -> bool:
-    """
-    Check if nodes are equal.
-
-    Equality here means equal as Python objects.
-    Node data must match if included.
-    The order of nodes is not relevant.
-
-    Parameters
-    ----------
-    nodes1, nodes2 : iterables of nodes, or (node, datadict) tuples
-
-    Returns
-    -------
-    bool
-        True if nodes are equal, False otherwise.
-    """
-    ...
-def edges_equal(edges1, edges2) -> bool:
-    """
-    Check if edges are equal.
-
-    Equality here means equal as Python objects.
-    Edge data must match if included.
-    The order of the edges is not relevant.
-
-    Parameters
-    ----------
-    edges1, edges2 : iterables of with u, v nodes as
-        edge tuples (u, v), or
-        edge tuples with data dicts (u, v, d), or
-        edge tuples with keys and data dicts (u, v, k, d)
-
-    Returns
-    -------
-    bool
-        True if edges are equal, False otherwise.
-    """
-    ...
-def graphs_equal(graph1, graph2) -> bool:
-    """
-    Check if graphs are equal.
-
-    Equality here means equal as Python objects (not isomorphism).
-    Node, edge and graph data must match.
-
-    Parameters
-    ----------
-    graph1, graph2 : graph
-
-    Returns
-    -------
-    bool
-        True if graphs are equal, False otherwise.
-    """
-    ...
-def _clear_cache(G) -> None:
-    """
-    Clear the cache of a graph (currently stores converted graphs).
-
-    Caching is controlled via ``nx.config.cache_converted_graphs`` configuration.
-    """
-    ...
+def create_py_random_state(random_state: _RandomState = None): ...
+def nodes_equal(nodes1, nodes2) -> bool: ...
+def edges_equal(edges1, edges2) -> bool: ...
+def graphs_equal(graph1, graph2) -> bool: ...
+def _clear_cache(G: Graph[_Node]) -> None: ...

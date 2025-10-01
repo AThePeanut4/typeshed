@@ -457,8 +457,8 @@ def composite_channel_credentials(
 
 def server(
     thread_pool: futures.ThreadPoolExecutor,
-    handlers: list[GenericRpcHandler[Any, Any]] | None = None,
-    interceptors: list[ServerInterceptor[Any, Any]] | None = None,
+    handlers: list[GenericRpcHandler] | None = None,
+    interceptors: list[ServerInterceptor] | None = None,
     options: _Options | None = None,
     maximum_concurrent_rpcs: int | None = None,
     compression: Compression | None = None,
@@ -714,21 +714,7 @@ def stream_stream_rpc_method_handler(
     ...
 def method_handlers_generic_handler(
     service: str, method_handlers: dict[str, RpcMethodHandler[Any, Any]]
-) -> GenericRpcHandler[Any, Any]:
-    """
-    Creates a GenericRpcHandler from RpcMethodHandlers.
-
-    Args:
-      service: The name of the service that is implemented by the
-        method_handlers.
-      method_handlers: A dictionary that maps method names to corresponding
-        RpcMethodHandler.
-
-    Returns:
-      A GenericRpcHandler. This is typically added to the grpc.Server object
-      with add_generic_rpc_handlers() before starting the server.
-    """
-    ...
+) -> GenericRpcHandler: ...
 
 # Channel Ready Future:
 
@@ -998,17 +984,7 @@ class Channel(abc.ABC):
 class Server(abc.ABC):
     """Services RPCs."""
     @abc.abstractmethod
-    def add_generic_rpc_handlers(self, generic_rpc_handlers: Iterable[GenericRpcHandler[Any, Any]]) -> None:
-        """
-        Registers GenericRpcHandlers with this Server.
-
-        This method is only safe to call before the server is started.
-
-        Args:
-          generic_rpc_handlers: An iterable of GenericRpcHandlers that will be
-          used to service RPCs.
-        """
-        ...
+    def add_generic_rpc_handlers(self, generic_rpc_handlers: Iterable[GenericRpcHandler]) -> None: ...
 
     # Returns an integer port on which server will accept RPC requests.
     @abc.abstractmethod
@@ -1778,32 +1754,12 @@ class HandlerCallDetails(abc.ABC):
     method: str
     invocation_metadata: _Metadata
 
-class GenericRpcHandler(abc.ABC, Generic[_TRequest, _TResponse]):
-    """An implementation of arbitrarily many RPC methods."""
+class GenericRpcHandler(abc.ABC):
+    # The return type depends on the handler call details.
     @abc.abstractmethod
-    def service(self, handler_call_details: HandlerCallDetails) -> RpcMethodHandler[_TRequest, _TResponse] | None:
-        """
-        Returns the handler for servicing the RPC.
+    def service(self, handler_call_details: HandlerCallDetails) -> RpcMethodHandler[Any, Any] | None: ...
 
-        Args:
-          handler_call_details: A HandlerCallDetails describing the RPC.
-
-        Returns:
-          An RpcMethodHandler with which the RPC may be serviced if the
-          implementation chooses to service this RPC, or None otherwise.
-        """
-        ...
-
-class ServiceRpcHandler(GenericRpcHandler[_TRequest, _TResponse], metaclass=abc.ABCMeta):
-    """
-    An implementation of RPC methods belonging to a service.
-
-    A service handles RPC methods with structured names of the form
-    '/Service.Name/Service.Method', where 'Service.Name' is the value
-    returned by service_name(), and 'Service.Method' is the method
-    name.  A service can have multiple method names, but only a single
-    service name.
-    """
+class ServiceRpcHandler(GenericRpcHandler, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def service_name(self) -> str:
         """
@@ -1816,8 +1772,8 @@ class ServiceRpcHandler(GenericRpcHandler[_TRequest, _TResponse], metaclass=abc.
 
 # Service-Side Interceptor:
 
-class ServerInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
-    """Affords intercepting incoming RPCs on the service-side."""
+class ServerInterceptor(abc.ABC):
+    # This method (not the class) is generic over _TRequest and _TResponse.
     @abc.abstractmethod
     def intercept_service(
         self,

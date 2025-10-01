@@ -1909,7 +1909,6 @@ class MultiHeadAttention(Layer[Any, tf.Tensor]):
         autocast: bool = True,
         name: str | None = None,
     ) -> None: ...
-    # @override
     @overload  # type: ignore[override]
     def __call__(
         self,

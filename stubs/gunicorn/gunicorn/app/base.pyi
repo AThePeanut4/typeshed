@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
 from typing import Any
-from typing_extensions import override
 
 from gunicorn.config import Config
 from gunicorn.glogging import Logger as GLogger
@@ -47,7 +46,5 @@ class Application(BaseApplication):
         """
         ...
     def load_config_from_file(self, filename: str) -> dict[str, Any]: ...
-    @override
     def load_config(self) -> None: ...
-    @override
     def run(self) -> None: ...

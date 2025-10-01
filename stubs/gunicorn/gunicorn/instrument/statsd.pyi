@@ -4,7 +4,6 @@ import logging
 import socket
 from collections.abc import Mapping
 from datetime import timedelta
-from typing_extensions import override
 
 from gunicorn.config import Config
 from gunicorn.glogging import Logger
@@ -32,7 +31,6 @@ class Statsd(Logger):
     cfg: Config
 
     def __init__(self, cfg: Config) -> None: ...
-    @override
     def critical(
         self,
         msg: object,
@@ -42,7 +40,6 @@ class Statsd(Logger):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
     ) -> None: ...
-    @override
     def error(
         self,
         msg: object,
@@ -52,7 +49,6 @@ class Statsd(Logger):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
     ) -> None: ...
-    @override
     def warning(
         self,
         msg: object,
@@ -62,7 +58,6 @@ class Statsd(Logger):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
     ) -> None: ...
-    @override
     def info(
         self,
         msg: object,
@@ -72,7 +67,6 @@ class Statsd(Logger):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
     ) -> None: ...
-    @override
     def debug(
         self,
         msg: object,
@@ -82,7 +76,6 @@ class Statsd(Logger):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
     ) -> None: ...
-    @override
     def exception(
         self,
         msg: object,
@@ -92,7 +85,6 @@ class Statsd(Logger):
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
     ) -> None: ...
-    @override
     def log(
         self,
         lvl: _LogLevelType,
@@ -102,19 +94,8 @@ class Statsd(Logger):
         stack_info: bool = False,
         stacklevel: int = 1,
         extra: Mapping[str, object] | None = None,
-    ) -> None:
-        """
-        Log a given statistic if metric, value and type are present
-        
-        """
-        ...
-    @override
-    def access(self, resp: Response, req: Request, environ: _EnvironType, request_time: timedelta) -> None:
-        """
-        Measure request duration
-        request_time is a datetime.timedelta
-        """
-        ...
+    ) -> None: ...
+    def access(self, resp: Response, req: Request, environ: _EnvironType, request_time: timedelta) -> None: ...
     def gauge(self, name: str, value: float) -> None: ...
     def increment(self, name: str, value: int, sampling_rate: float = 1.0) -> None: ...
     def decrement(self, name: str, value: int, sampling_rate: float = 1.0) -> None: ...

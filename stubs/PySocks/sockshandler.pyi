@@ -13,7 +13,6 @@ import sys
 import urllib.request
 from _typeshed import Incomplete, SupportsKeysAndGetItem
 from typing import Any, TypeVar
-from typing_extensions import override
 
 import socks
 
@@ -42,7 +41,6 @@ class SocksiPyConnection(http.client.HTTPConnection):  # undocumented
         source_address: tuple[str, int] | None = None,
         blocksize: int = 8192,
     ) -> None: ...
-    @override
     def connect(self) -> None: ...
 
 class SocksiPyConnectionS(http.client.HTTPSConnection):  # undocumented
@@ -86,7 +84,6 @@ class SocksiPyConnectionS(http.client.HTTPSConnection):  # undocumented
             blocksize: int = 8192,
         ) -> None: ...
 
-    @override
     def connect(self) -> None: ...
 
 class SocksiPyHandler(urllib.request.HTTPHandler, urllib.request.HTTPSHandler):
@@ -105,7 +102,5 @@ class SocksiPyHandler(urllib.request.HTTPHandler, urllib.request.HTTPSHandler):
         blocksize: int = 8192,
         **kwargs: Any,  # any additional arguments to `SocksiPyConnection` or `SocksiPyConnectionS`
     ) -> None: ...
-    @override
     def http_open(self, req: urllib.request.Request) -> http.client.HTTPResponse: ...  # undocumented
-    @override
     def https_open(self, req: urllib.request.Request) -> http.client.HTTPResponse: ...  # undocumented

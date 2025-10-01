@@ -24,99 +24,13 @@ adjacency list (anything following the # in a line is a comment)::
 
 from collections.abc import Generator
 
+from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
 __all__ = ["generate_adjlist", "write_adjlist", "parse_adjlist", "read_adjlist"]
 
-def generate_adjlist(G, delimiter: str = " ") -> Generator[str, None, None]:
-    """
-    Generate a single line of the graph G in adjacency list format.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    delimiter : string, optional
-       Separator for node labels
-
-    Returns
-    -------
-    lines : string
-        Lines of data in adjlist format.
-
-    Examples
-    --------
-    >>> G = nx.lollipop_graph(4, 3)
-    >>> for line in nx.generate_adjlist(G):
-    ...     print(line)
-    0 1 2 3
-    1 2 3
-    2 3
-    3 4
-    4 5
-    5 6
-    6
-
-    See Also
-    --------
-    write_adjlist, read_adjlist
-
-    Notes
-    -----
-    The default `delimiter=" "` will result in unexpected results if node names contain
-    whitespace characters. To avoid this problem, specify an alternate delimiter when spaces are
-    valid in node names.
-
-    NB: This option is not available for data that isn't user-generated.
-    """
-    ...
-def write_adjlist(G, path, comments: str = "#", delimiter: str = " ", encoding: str = "utf-8") -> None:
-    """
-    Write graph G in single-line adjacency-list format to path.
-
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    path : string or file
-       Filename or file handle for data output.
-       Filenames ending in .gz or .bz2 will be compressed.
-
-    comments : string, optional
-       Marker for comment lines
-
-    delimiter : string, optional
-       Separator for node labels
-
-    encoding : string, optional
-       Text encoding.
-
-    Examples
-    --------
-    >>> G = nx.path_graph(4)
-    >>> nx.write_adjlist(G, "path4.adjlist")
-
-    The path can be a filehandle or a string with the name of the file. If a
-    filehandle is provided, it has to be opened in 'wb' mode.
-
-    >>> fh = open("path4.adjlist2", "wb")
-    >>> nx.write_adjlist(G, fh)
-
-    Notes
-    -----
-    The default `delimiter=" "` will result in unexpected results if node names contain
-    whitespace characters. To avoid this problem, specify an alternate delimiter when spaces are
-    valid in node names.
-    NB: This option is not available for data that isn't user-generated.
-
-    This format does not store graph, node, or edge data.
-
-    See Also
-    --------
-    read_adjlist, generate_adjlist
-    """
-    ...
+def generate_adjlist(G: Graph[_Node], delimiter: str = " ") -> Generator[str, None, None]: ...
+def write_adjlist(G: Graph[_Node], path, comments: str = "#", delimiter: str = " ", encoding: str = "utf-8") -> None: ...
 @_dispatchable
 def parse_adjlist(lines, comments: str = "#", delimiter=None, create_using=None, nodetype=None):
     """

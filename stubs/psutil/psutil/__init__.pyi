@@ -19,7 +19,7 @@ import sys
 from _typeshed import Incomplete
 from collections.abc import Callable, Iterable, Iterator
 from contextlib import AbstractContextManager
-from typing import Any, Literal, overload
+from typing import Any, Literal, Protocol, overload, type_check_only
 from typing_extensions import Self, TypeAlias, deprecated
 
 from psutil._common import (
@@ -674,38 +674,18 @@ class Popen(Process):
     def __getattribute__(self, name: str) -> Any: ...
     def __dir__(self) -> list[str]: ...
 
-def pids() -> list[int]:
-    """Return a list of current running PIDs."""
-    ...
-def pid_exists(pid: int) -> bool:
-    """
-    Return True if given PID exists in the current process list.
-    This is faster than doing "pid in psutil.pids()" and
-    should be preferred.
-    """
-    ...
-def process_iter(
-    attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value=None
-) -> Iterator[Process]:
-    """
-    Return a generator yielding a Process instance for all
-    running processes.
+@type_check_only
+class _ProcessIterCallable(Protocol):
+    def __call__(
+        self, attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value=None
+    ) -> Iterator[Process]: ...
+    def cache_clear(self) -> None: ...
 
-    Every new Process instance is only created once and then cached
-    into an internal table which is updated every time this is used.
-    Cache can optionally be cleared via `process_iter.clear_cache()`.
+def pids() -> list[int]: ...
+def pid_exists(pid: int) -> bool: ...
 
-    The sorting order in which processes are yielded is based on
-    their PIDs.
+process_iter: _ProcessIterCallable
 
-    *attrs* and *ad_value* have the same meaning as in
-    Process.as_dict(). If *attrs* is specified as_dict() is called
-    and the resulting dict is stored as a 'info' attribute attached
-    to returned Process instance.
-    If *attrs* is an empty list it will retrieve all process info
-    (slow).
-    """
-    ...
 def wait_procs(
     procs: Iterable[Process], timeout: float | None = None, callback: Callable[[Process], object] | None = None
 ) -> tuple[list[Process], list[Process]]:

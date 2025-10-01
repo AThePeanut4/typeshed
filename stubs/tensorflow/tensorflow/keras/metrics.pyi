@@ -8,7 +8,7 @@ since your modifications would be overwritten.
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any, Literal
-from typing_extensions import Self, TypeAlias, override
+from typing_extensions import Self, TypeAlias
 
 import tensorflow as tf
 from tensorflow import Operation, Tensor
@@ -123,7 +123,6 @@ class Metric(tf.keras.layers.Layer[tf.Tensor, tf.Tensor], metaclass=ABCMeta):
         """
         ...
     # Metric inherits from keras.Layer, but its add_weight method is incompatible with the one from "Layer".
-    @override
     def add_weight(  # type: ignore[override]
         self,
         name: str,
