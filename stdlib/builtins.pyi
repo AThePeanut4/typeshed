@@ -367,8 +367,12 @@ class type:
     if sys.version_info >= (3, 10):
         # `int | str` produces an instance of `UnionType`, but `int | int` produces an instance of `type`,
         # and `abc.ABC | abc.ABC` produces an instance of `abc.ABCMeta`.
-        def __or__(self: _typeshed.Self, value: Any, /) -> types.UnionType | _typeshed.Self: ...
-        def __ror__(self: _typeshed.Self, value: Any, /) -> types.UnionType | _typeshed.Self: ...
+        def __or__(self: _typeshed.Self, value: Any, /) -> types.UnionType | _typeshed.Self:
+            """Return self|value."""
+            ...
+        def __ror__(self: _typeshed.Self, value: Any, /) -> types.UnionType | _typeshed.Self:
+            """Return value|self."""
+            ...
     if sys.version_info >= (3, 12):
         __type_params__: tuple[TypeVar | ParamSpec | TypeVarTuple, ...]
     __annotations__: dict[str, AnnotationForm]
