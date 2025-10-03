@@ -426,7 +426,7 @@ class int:
     4
     """
     @overload
-    def __new__(cls, x: ConvertibleToInt = ..., /) -> Self: ...
+    def __new__(cls, x: ConvertibleToInt = 0, /) -> Self: ...
     @overload
     def __new__(cls, x: str | bytes | bytearray, /, base: SupportsIndex) -> Self: ...
     def as_integer_ratio(self) -> tuple[int, Literal[1]]:
@@ -760,36 +760,10 @@ class int:
 
 @disjoint_base
 class float:
-    """Convert a string or number to a floating-point number, if possible."""
-    def __new__(cls, x: ConvertibleToFloat = ..., /) -> Self: ...
-    def as_integer_ratio(self) -> tuple[int, int]:
-        """
-        Return a pair of integers, whose ratio is exactly equal to the original float.
-
-        The ratio is in lowest terms and has a positive denominator.  Raise
-        OverflowError on infinities and a ValueError on NaNs.
-
-        >>> (10.0).as_integer_ratio()
-        (10, 1)
-        >>> (0.0).as_integer_ratio()
-        (0, 1)
-        >>> (-.25).as_integer_ratio()
-        (-1, 4)
-        """
-        ...
-    def hex(self) -> str:
-        """
-        Return a hexadecimal representation of a floating-point number.
-
-        >>> (-0.1).hex()
-        '-0x1.999999999999ap-4'
-        >>> 3.14159.hex()
-        '0x1.921f9f01b866ep+1'
-        """
-        ...
-    def is_integer(self) -> bool:
-        """Return True if the float is an integer."""
-        ...
+    def __new__(cls, x: ConvertibleToFloat = 0, /) -> Self: ...
+    def as_integer_ratio(self) -> tuple[int, int]: ...
+    def hex(self) -> str: ...
+    def is_integer(self) -> bool: ...
     @classmethod
     def fromhex(cls, string: str, /) -> Self:
         """
@@ -963,8 +937,8 @@ class complex:
     @overload
     def __new__(
         cls,
-        real: complex | SupportsComplex | SupportsFloat | SupportsIndex = ...,
-        imag: complex | SupportsFloat | SupportsIndex = ...,
+        real: complex | SupportsComplex | SupportsFloat | SupportsIndex = 0,
+        imag: complex | SupportsFloat | SupportsIndex = 0,
     ) -> Self: ...
     @overload
     def __new__(cls, real: str | SupportsComplex | SupportsFloat | SupportsIndex | complex) -> Self: ...
@@ -1064,9 +1038,9 @@ class str(Sequence[str]):
     errors defaults to 'strict'.
     """
     @overload
-    def __new__(cls, object: object = ...) -> Self: ...
+    def __new__(cls, object: object = "") -> Self: ...
     @overload
-    def __new__(cls, object: ReadableBuffer, encoding: str = ..., errors: str = ...) -> Self: ...
+    def __new__(cls, object: ReadableBuffer, encoding: str = "utf-8", errors: str = "strict") -> Self: ...
     @overload
     def capitalize(self: LiteralString) -> LiteralString:
         """
@@ -1102,48 +1076,12 @@ class str(Sequence[str]):
         """
         ...
     @overload
-    def center(self, width: SupportsIndex, fillchar: str = " ", /) -> str:
-        """
-        Return a centered string of length width.
-
-        Padding is done using the specified fill character (default is a space).
-        """
-        ...
-    def count(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the number of non-overlapping occurrences of substring sub in string S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        """
-        ...
-    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
-        """
-        Encode the string using the codec registered for encoding.
-
-        encoding
-          The encoding in which to encode the string.
-        errors
-          The error handling scheme to use for encoding errors.
-          The default is 'strict' meaning that encoding errors raise a
-          UnicodeEncodeError.  Other possible values are 'ignore', 'replace' and
-          'xmlcharrefreplace' as well as any other name registered with
-          codecs.register_error that can handle UnicodeEncodeErrors.
-        """
-        ...
+    def center(self, width: SupportsIndex, fillchar: str = " ", /) -> str: ...  # type: ignore[misc]
+    def count(self, sub: str, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /) -> int: ...
+    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes: ...
     def endswith(
-        self, suffix: str | tuple[str, ...], start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> bool:
-        """
-        Return True if the string ends with the specified suffix, False otherwise.
-
-        suffix
-          A string or a tuple of strings to try.
-        start
-          Optional start position. Default: start of the string.
-        end
-          Optional stop position. Default: end of the string.
-        """
-        ...
+        self, suffix: str | tuple[str, ...], start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> bool: ...
     @overload
     def expandtabs(self: LiteralString, tabsize: SupportsIndex = 8) -> LiteralString:
         """
@@ -1153,21 +1091,8 @@ class str(Sequence[str]):
         """
         ...
     @overload
-    def expandtabs(self, tabsize: SupportsIndex = 8) -> str:
-        """
-        Return a copy where all tab characters are expanded using spaces.
-
-        If tabsize is not given, a tab size of 8 characters is assumed.
-        """
-        ...
-    def find(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        Return -1 on failure.
-        """
-        ...
+    def expandtabs(self, tabsize: SupportsIndex = 8) -> str: ...  # type: ignore[misc]
+    def find(self, sub: str, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /) -> int: ...
     @overload
     def format(self: LiteralString, *args: LiteralString, **kwargs: LiteralString) -> LiteralString:
         """
@@ -1176,122 +1101,21 @@ class str(Sequence[str]):
         """
         ...
     @overload
-    def format(self, *args: object, **kwargs: object) -> str:
-        """
-        Return a formatted version of the string, using substitutions from args and kwargs.
-        The substitutions are identified by braces ('{' and '}').
-        """
-        ...
-    def format_map(self, mapping: _FormatMapMapping, /) -> str:
-        """
-        Return a formatted version of the string, using substitutions from mapping.
-        The substitutions are identified by braces ('{' and '}').
-        """
-        ...
-    def index(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        Raises ValueError when the substring is not found.
-        """
-        ...
-    def isalnum(self) -> bool:
-        """
-        Return True if the string is an alpha-numeric string, False otherwise.
-
-        A string is alpha-numeric if all characters in the string are alpha-numeric and
-        there is at least one character in the string.
-        """
-        ...
-    def isalpha(self) -> bool:
-        """
-        Return True if the string is an alphabetic string, False otherwise.
-
-        A string is alphabetic if all characters in the string are alphabetic and there
-        is at least one character in the string.
-        """
-        ...
-    def isascii(self) -> bool:
-        """
-        Return True if all characters in the string are ASCII, False otherwise.
-
-        ASCII characters have code points in the range U+0000-U+007F.
-        Empty string is ASCII too.
-        """
-        ...
-    def isdecimal(self) -> bool:
-        """
-        Return True if the string is a decimal string, False otherwise.
-
-        A string is a decimal string if all characters in the string are decimal and
-        there is at least one character in the string.
-        """
-        ...
-    def isdigit(self) -> bool:
-        """
-        Return True if the string is a digit string, False otherwise.
-
-        A string is a digit string if all characters in the string are digits and there
-        is at least one character in the string.
-        """
-        ...
-    def isidentifier(self) -> bool:
-        """
-        Return True if the string is a valid Python identifier, False otherwise.
-
-        Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
-        such as "def" or "class".
-        """
-        ...
-    def islower(self) -> bool:
-        """
-        Return True if the string is a lowercase string, False otherwise.
-
-        A string is lowercase if all cased characters in the string are lowercase and
-        there is at least one cased character in the string.
-        """
-        ...
-    def isnumeric(self) -> bool:
-        """
-        Return True if the string is a numeric string, False otherwise.
-
-        A string is numeric if all characters in the string are numeric and there is at
-        least one character in the string.
-        """
-        ...
-    def isprintable(self) -> bool:
-        """
-        Return True if the string is printable, False otherwise.
-
-        A string is printable if all of its characters are considered printable in
-        repr() or if it is empty.
-        """
-        ...
-    def isspace(self) -> bool:
-        """
-        Return True if the string is a whitespace string, False otherwise.
-
-        A string is whitespace if all characters in the string are whitespace and there
-        is at least one character in the string.
-        """
-        ...
-    def istitle(self) -> bool:
-        """
-        Return True if the string is a title-cased string, False otherwise.
-
-        In a title-cased string, upper- and title-case characters may only
-        follow uncased characters and lowercase characters only cased ones.
-        """
-        ...
-    def isupper(self) -> bool:
-        """
-        Return True if the string is an uppercase string, False otherwise.
-
-        A string is uppercase if all cased characters in the string are uppercase and
-        there is at least one cased character in the string.
-        """
-        ...
+    def format(self, *args: object, **kwargs: object) -> str: ...
+    def format_map(self, mapping: _FormatMapMapping, /) -> str: ...
+    def index(self, sub: str, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /) -> int: ...
+    def isalnum(self) -> bool: ...
+    def isalpha(self) -> bool: ...
+    def isascii(self) -> bool: ...
+    def isdecimal(self) -> bool: ...
+    def isdigit(self) -> bool: ...
+    def isidentifier(self) -> bool: ...
+    def islower(self) -> bool: ...
+    def isnumeric(self) -> bool: ...
+    def isprintable(self) -> bool: ...
+    def isspace(self) -> bool: ...
+    def istitle(self) -> bool: ...
+    def isupper(self) -> bool: ...
     @overload
     def join(self: LiteralString, iterable: Iterable[LiteralString], /) -> LiteralString:
         """
@@ -1468,31 +1292,9 @@ class str(Sequence[str]):
         """
         ...
     @overload
-    def removesuffix(self, suffix: str, /) -> str:
-        """
-        Return a str with the given suffix string removed if present.
-
-        If the string ends with the suffix string and that suffix is not empty,
-        return string[:-len(suffix)]. Otherwise, return a copy of the original
-        string.
-        """
-        ...
-    def rfind(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        Return -1 on failure.
-        """
-        ...
-    def rindex(self, sub: str, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /) -> int:
-        """
-        Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].
-
-        Optional arguments start and end are interpreted as in slice notation.
-        Raises ValueError when the substring is not found.
-        """
-        ...
+    def removesuffix(self, suffix: str, /) -> str: ...  # type: ignore[misc]
+    def rfind(self, sub: str, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /) -> int: ...
+    def rindex(self, sub: str, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /) -> int: ...
     @overload
     def rjust(self: LiteralString, width: SupportsIndex, fillchar: LiteralString = " ", /) -> LiteralString:
         """
@@ -1650,19 +1452,8 @@ class str(Sequence[str]):
         """
         ...
     def startswith(
-        self, prefix: str | tuple[str, ...], start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> bool:
-        """
-        Return True if the string starts with the specified prefix, False otherwise.
-
-        prefix
-          A string or a tuple of strings to try.
-        start
-          Optional start position. Default: start of the string.
-        end
-          Optional stop position. Default: end of the string.
-        """
-        ...
+        self, prefix: str | tuple[str, ...], start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> bool: ...
     @overload
     def strip(self: LiteralString, chars: LiteralString | None = None, /) -> LiteralString:
         """
@@ -1886,7 +1677,7 @@ class bytes(Sequence[int]):
     @overload
     def __new__(cls, o: Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | ReadableBuffer, /) -> Self: ...
     @overload
-    def __new__(cls, string: str, /, encoding: str, errors: str = ...) -> Self: ...
+    def __new__(cls, string: str, /, encoding: str, errors: str = "strict") -> Self: ...
     @overload
     def __new__(cls) -> Self: ...
     def capitalize(self) -> bytes:
@@ -1905,36 +1696,14 @@ class bytes(Sequence[int]):
         """
         ...
     def count(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the number of non-overlapping occurrences of subsection 'sub' in bytes B[start:end].
-
-        start
-          Optional start position. Default: start of the bytes.
-        end
-          Optional stop position. Default: end of the bytes.
-        """
-        ...
-    def decode(self, encoding: str = "utf-8", errors: str = "strict") -> str:
-        """
-        Decode the bytes using the codec registered for encoding.
-
-        encoding
-          The encoding with which to decode the bytes.
-        errors
-          The error handling scheme to use for the handling of decoding errors.
-          The default is 'strict' meaning that decoding errors raise a
-          UnicodeDecodeError. Other possible values are 'ignore' and 'replace'
-          as well as any other name registered with codecs.register_error that
-          can handle UnicodeDecodeErrors.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def decode(self, encoding: str = "utf-8", errors: str = "strict") -> str: ...
     def endswith(
         self,
         suffix: ReadableBuffer | tuple[ReadableBuffer, ...],
-        start: SupportsIndex | None = ...,
-        end: SupportsIndex | None = ...,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
         /,
     ) -> bool:
         """
@@ -1956,289 +1725,45 @@ class bytes(Sequence[int]):
         """
         ...
     def find(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the lowest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start,end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Return -1 on failure.
-        """
-        ...
-    def hex(self, sep: str | bytes = ..., bytes_per_sep: SupportsIndex = ...) -> str:
-        r"""
-        Create a string of hexadecimal numbers from a bytes object.
-
-          sep
-            An optional single character or byte to separate hex bytes.
-          bytes_per_sep
-            How many bytes between separators.  Positive values count from the
-            right, negative values count from the left.
-
-        Example:
-        >>> value = b'\xb9\x01\xef'
-        >>> value.hex()
-        'b901ef'
-        >>> value.hex(':')
-        'b9:01:ef'
-        >>> value.hex(':', 2)
-        'b9:01ef'
-        >>> value.hex(':', -2)
-        'b901:ef'
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def hex(self, sep: str | bytes = ..., bytes_per_sep: SupportsIndex = 1) -> str: ...
     def index(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the lowest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start,end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Raise ValueError if the subsection is not found.
-        """
-        ...
-    def isalnum(self) -> bool:
-        """
-        B.isalnum() -> bool
-
-        Return True if all characters in B are alphanumeric
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isalpha(self) -> bool:
-        """
-        B.isalpha() -> bool
-
-        Return True if all characters in B are alphabetic
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isascii(self) -> bool:
-        """
-        B.isascii() -> bool
-
-        Return True if B is empty or all characters in B are ASCII,
-        False otherwise.
-        """
-        ...
-    def isdigit(self) -> bool:
-        """
-        B.isdigit() -> bool
-
-        Return True if all characters in B are digits
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def islower(self) -> bool:
-        """
-        B.islower() -> bool
-
-        Return True if all cased characters in B are lowercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def isspace(self) -> bool:
-        """
-        B.isspace() -> bool
-
-        Return True if all characters in B are whitespace
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def istitle(self) -> bool:
-        """
-        B.istitle() -> bool
-
-        Return True if B is a titlecased string and there is at least one
-        character in B, i.e. uppercase characters may only follow uncased
-        characters and lowercase characters only cased ones. Return False
-        otherwise.
-        """
-        ...
-    def isupper(self) -> bool:
-        """
-        B.isupper() -> bool
-
-        Return True if all cased characters in B are uppercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytes:
-        """
-        Concatenate any number of bytes objects.
-
-        The bytes whose method is called is inserted in between each pair.
-
-        The result is returned as a new bytes object.
-
-        Example: b'.'.join([b'ab', b'pq', b'rs']) -> b'ab.pq.rs'.
-        """
-        ...
-    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytes:
-        """
-        Return a left-justified string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
-    def lower(self) -> bytes:
-        """
-        B.lower() -> copy of B
-
-        Return a copy of B with all ASCII characters converted to lowercase.
-        """
-        ...
-    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytes:
-        """
-        Strip leading bytes contained in the argument.
-
-        If the argument is omitted or None, strip leading  ASCII whitespace.
-        """
-        ...
-    def partition(self, sep: ReadableBuffer, /) -> tuple[bytes, bytes, bytes]:
-        """
-        Partition the bytes into three parts using the given separator.
-
-        This will search for the separator sep in the bytes. If the separator is found,
-        returns a 3-tuple containing the part before the separator, the separator
-        itself, and the part after it.
-
-        If the separator is not found, returns a 3-tuple containing the original bytes
-        object and two empty bytes objects.
-        """
-        ...
-    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytes:
-        """
-        Return a copy with all occurrences of substring old replaced by new.
-
-          count
-            Maximum number of occurrences to replace.
-            -1 (the default value) means replace all occurrences.
-
-        If the optional argument count is given, only the first count occurrences are
-        replaced.
-        """
-        ...
-    def removeprefix(self, prefix: ReadableBuffer, /) -> bytes:
-        """
-        Return a bytes object with the given prefix string removed if present.
-
-        If the bytes starts with the prefix string, return bytes[len(prefix):].
-        Otherwise, return a copy of the original bytes.
-        """
-        ...
-    def removesuffix(self, suffix: ReadableBuffer, /) -> bytes:
-        """
-        Return a bytes object with the given suffix string removed if present.
-
-        If the bytes ends with the suffix string and that suffix is not empty,
-        return bytes[:-len(prefix)].  Otherwise, return a copy of the original
-        bytes.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def isalnum(self) -> bool: ...
+    def isalpha(self) -> bool: ...
+    def isascii(self) -> bool: ...
+    def isdigit(self) -> bool: ...
+    def islower(self) -> bool: ...
+    def isspace(self) -> bool: ...
+    def istitle(self) -> bool: ...
+    def isupper(self) -> bool: ...
+    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytes: ...
+    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytes: ...
+    def lower(self) -> bytes: ...
+    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytes: ...
+    def partition(self, sep: ReadableBuffer, /) -> tuple[bytes, bytes, bytes]: ...
+    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytes: ...
+    def removeprefix(self, prefix: ReadableBuffer, /) -> bytes: ...
+    def removesuffix(self, suffix: ReadableBuffer, /) -> bytes: ...
     def rfind(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the highest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start,end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Return -1 on failure.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
     def rindex(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the highest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start,end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Raise ValueError if the subsection is not found.
-        """
-        ...
-    def rjust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytes:
-        """
-        Return a right-justified string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
-    def rpartition(self, sep: ReadableBuffer, /) -> tuple[bytes, bytes, bytes]:
-        """
-        Partition the bytes into three parts using the given separator.
-
-        This will search for the separator sep in the bytes, starting at the end. If
-        the separator is found, returns a 3-tuple containing the part before the
-        separator, the separator itself, and the part after it.
-
-        If the separator is not found, returns a 3-tuple containing two empty bytes
-        objects and the original bytes object.
-        """
-        ...
-    def rsplit(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytes]:
-        """
-        Return a list of the sections in the bytes, using sep as the delimiter.
-
-          sep
-            The delimiter according which to split the bytes.
-            None (the default value) means split on ASCII whitespace characters
-            (space, tab, return, newline, formfeed, vertical tab).
-          maxsplit
-            Maximum number of splits to do.
-            -1 (the default value) means no limit.
-
-        Splitting is done starting at the end of the bytes and working to the front.
-        """
-        ...
-    def rstrip(self, bytes: ReadableBuffer | None = None, /) -> bytes:
-        """
-        Strip trailing bytes contained in the argument.
-
-        If the argument is omitted or None, strip trailing ASCII whitespace.
-        """
-        ...
-    def split(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytes]:
-        """
-        Return a list of the sections in the bytes, using sep as the delimiter.
-
-        sep
-          The delimiter according which to split the bytes.
-          None (the default value) means split on ASCII whitespace characters
-          (space, tab, return, newline, formfeed, vertical tab).
-        maxsplit
-          Maximum number of splits to do.
-          -1 (the default value) means no limit.
-        """
-        ...
-    def splitlines(self, keepends: bool = False) -> list[bytes]:
-        """
-        Return a list of the lines in the bytes, breaking at line boundaries.
-
-        Line breaks are not included in the resulting list unless keepends is given and
-        true.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def rjust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytes: ...
+    def rpartition(self, sep: ReadableBuffer, /) -> tuple[bytes, bytes, bytes]: ...
+    def rsplit(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytes]: ...
+    def rstrip(self, bytes: ReadableBuffer | None = None, /) -> bytes: ...
+    def split(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytes]: ...
+    def splitlines(self, keepends: bool = False) -> list[bytes]: ...
     def startswith(
         self,
         prefix: ReadableBuffer | tuple[ReadableBuffer, ...],
-        start: SupportsIndex | None = ...,
-        end: SupportsIndex | None = ...,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
         /,
     ) -> bool:
         """
@@ -2402,64 +1927,20 @@ class bytearray(MutableSequence[int]):
     @overload
     def __init__(self, ints: Iterable[SupportsIndex] | SupportsIndex | ReadableBuffer, /) -> None: ...
     @overload
-    def __init__(self, string: str, /, encoding: str, errors: str = ...) -> None: ...
-    def append(self, item: SupportsIndex, /) -> None:
-        """
-        Append a single item to the end of the bytearray.
-
-        item
-          The item to be appended.
-        """
-        ...
-    def capitalize(self) -> bytearray:
-        """
-        B.capitalize() -> copy of B
-
-        Return a copy of B with only its first character capitalized (ASCII)
-        and the rest lower-cased.
-        """
-        ...
-    def center(self, width: SupportsIndex, fillchar: bytes = b" ", /) -> bytearray:
-        """
-        Return a centered string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
+    def __init__(self, string: str, /, encoding: str, errors: str = "strict") -> None: ...
+    def append(self, item: SupportsIndex, /) -> None: ...
+    def capitalize(self) -> bytearray: ...
+    def center(self, width: SupportsIndex, fillchar: bytes = b" ", /) -> bytearray: ...
     def count(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the number of non-overlapping occurrences of subsection 'sub' in bytes B[start:end].
-
-        start
-          Optional start position. Default: start of the bytes.
-        end
-          Optional stop position. Default: end of the bytes.
-        """
-        ...
-    def copy(self) -> bytearray:
-        """Return a copy of B."""
-        ...
-    def decode(self, encoding: str = "utf-8", errors: str = "strict") -> str:
-        """
-        Decode the bytearray using the codec registered for encoding.
-
-        encoding
-          The encoding with which to decode the bytearray.
-        errors
-          The error handling scheme to use for the handling of decoding errors.
-          The default is 'strict' meaning that decoding errors raise a
-          UnicodeDecodeError. Other possible values are 'ignore' and 'replace'
-          as well as any other name registered with codecs.register_error that
-          can handle UnicodeDecodeErrors.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def copy(self) -> bytearray: ...
+    def decode(self, encoding: str = "utf-8", errors: str = "strict") -> str: ...
     def endswith(
         self,
         suffix: ReadableBuffer | tuple[ReadableBuffer, ...],
-        start: SupportsIndex | None = ...,
-        end: SupportsIndex | None = ...,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
         /,
     ) -> bool:
         """
@@ -2489,318 +1970,48 @@ class bytearray(MutableSequence[int]):
         """
         ...
     def find(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the lowest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start:end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Return -1 on failure.
-        """
-        ...
-    def hex(self, sep: str | bytes = ..., bytes_per_sep: SupportsIndex = ...) -> str:
-        """
-        Create a string of hexadecimal numbers from a bytearray object.
-
-          sep
-            An optional single character or byte to separate hex bytes.
-          bytes_per_sep
-            How many bytes between separators.  Positive values count from the
-            right, negative values count from the left.
-
-        Example:
-        >>> value = bytearray([0xb9, 0x01, 0xef])
-        >>> value.hex()
-        'b901ef'
-        >>> value.hex(':')
-        'b9:01:ef'
-        >>> value.hex(':', 2)
-        'b9:01ef'
-        >>> value.hex(':', -2)
-        'b901:ef'
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def hex(self, sep: str | bytes = ..., bytes_per_sep: SupportsIndex = 1) -> str: ...
     def index(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the lowest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start:end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Raise ValueError if the subsection is not found.
-        """
-        ...
-    def insert(self, index: SupportsIndex, item: SupportsIndex, /) -> None:
-        """
-        Insert a single item into the bytearray before the given index.
-
-        index
-          The index where the value is to be inserted.
-        item
-          The item to be inserted.
-        """
-        ...
-    def isalnum(self) -> bool:
-        """
-        B.isalnum() -> bool
-
-        Return True if all characters in B are alphanumeric
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isalpha(self) -> bool:
-        """
-        B.isalpha() -> bool
-
-        Return True if all characters in B are alphabetic
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def isascii(self) -> bool:
-        """
-        B.isascii() -> bool
-
-        Return True if B is empty or all characters in B are ASCII,
-        False otherwise.
-        """
-        ...
-    def isdigit(self) -> bool:
-        """
-        B.isdigit() -> bool
-
-        Return True if all characters in B are digits
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def islower(self) -> bool:
-        """
-        B.islower() -> bool
-
-        Return True if all cased characters in B are lowercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def isspace(self) -> bool:
-        """
-        B.isspace() -> bool
-
-        Return True if all characters in B are whitespace
-        and there is at least one character in B, False otherwise.
-        """
-        ...
-    def istitle(self) -> bool:
-        """
-        B.istitle() -> bool
-
-        Return True if B is a titlecased string and there is at least one
-        character in B, i.e. uppercase characters may only follow uncased
-        characters and lowercase characters only cased ones. Return False
-        otherwise.
-        """
-        ...
-    def isupper(self) -> bool:
-        """
-        B.isupper() -> bool
-
-        Return True if all cased characters in B are uppercase and there is
-        at least one cased character in B, False otherwise.
-        """
-        ...
-    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytearray:
-        """
-        Concatenate any number of bytes/bytearray objects.
-
-        The bytearray whose method is called is inserted in between each pair.
-
-        The result is returned as a new bytearray object.
-        """
-        ...
-    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytearray:
-        """
-        Return a left-justified string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
-    def lower(self) -> bytearray:
-        """
-        B.lower() -> copy of B
-
-        Return a copy of B with all ASCII characters converted to lowercase.
-        """
-        ...
-    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytearray:
-        """
-        Strip leading bytes contained in the argument.
-
-        If the argument is omitted or None, strip leading ASCII whitespace.
-        """
-        ...
-    def partition(self, sep: ReadableBuffer, /) -> tuple[bytearray, bytearray, bytearray]:
-        """
-        Partition the bytearray into three parts using the given separator.
-
-        This will search for the separator sep in the bytearray. If the separator is
-        found, returns a 3-tuple containing the part before the separator, the
-        separator itself, and the part after it as new bytearray objects.
-
-        If the separator is not found, returns a 3-tuple containing the copy of the
-        original bytearray object and two empty bytearray objects.
-        """
-        ...
-    def pop(self, index: int = -1, /) -> int:
-        """
-        Remove and return a single item from B.
-
-          index
-            The index from where to remove the item.
-            -1 (the default value) means remove the last item.
-
-        If no index argument is given, will pop the last item.
-        """
-        ...
-    def remove(self, value: int, /) -> None:
-        """
-        Remove the first occurrence of a value in the bytearray.
-
-        value
-          The value to remove.
-        """
-        ...
-    def removeprefix(self, prefix: ReadableBuffer, /) -> bytearray:
-        """
-        Return a bytearray with the given prefix string removed if present.
-
-        If the bytearray starts with the prefix string, return
-        bytearray[len(prefix):].  Otherwise, return a copy of the original
-        bytearray.
-        """
-        ...
-    def removesuffix(self, suffix: ReadableBuffer, /) -> bytearray:
-        """
-        Return a bytearray with the given suffix string removed if present.
-
-        If the bytearray ends with the suffix string and that suffix is not
-        empty, return bytearray[:-len(suffix)].  Otherwise, return a copy of
-        the original bytearray.
-        """
-        ...
-    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytearray:
-        """
-        Return a copy with all occurrences of substring old replaced by new.
-
-          count
-            Maximum number of occurrences to replace.
-            -1 (the default value) means replace all occurrences.
-
-        If the optional argument count is given, only the first count occurrences are
-        replaced.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def insert(self, index: SupportsIndex, item: SupportsIndex, /) -> None: ...
+    def isalnum(self) -> bool: ...
+    def isalpha(self) -> bool: ...
+    def isascii(self) -> bool: ...
+    def isdigit(self) -> bool: ...
+    def islower(self) -> bool: ...
+    def isspace(self) -> bool: ...
+    def istitle(self) -> bool: ...
+    def isupper(self) -> bool: ...
+    def join(self, iterable_of_bytes: Iterable[ReadableBuffer], /) -> bytearray: ...
+    def ljust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytearray: ...
+    def lower(self) -> bytearray: ...
+    def lstrip(self, bytes: ReadableBuffer | None = None, /) -> bytearray: ...
+    def partition(self, sep: ReadableBuffer, /) -> tuple[bytearray, bytearray, bytearray]: ...
+    def pop(self, index: int = -1, /) -> int: ...
+    def remove(self, value: int, /) -> None: ...
+    def removeprefix(self, prefix: ReadableBuffer, /) -> bytearray: ...
+    def removesuffix(self, suffix: ReadableBuffer, /) -> bytearray: ...
+    def replace(self, old: ReadableBuffer, new: ReadableBuffer, count: SupportsIndex = -1, /) -> bytearray: ...
     def rfind(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the highest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start:end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Return -1 on failure.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
     def rindex(
-        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = ..., end: SupportsIndex | None = ..., /
-    ) -> int:
-        """
-        Return the highest index in B where subsection 'sub' is found, such that 'sub' is contained within B[start:end].
-
-          start
-            Optional start position. Default: start of the bytes.
-          end
-            Optional stop position. Default: end of the bytes.
-
-        Raise ValueError if the subsection is not found.
-        """
-        ...
-    def rjust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytearray:
-        """
-        Return a right-justified string of length width.
-
-        Padding is done using the specified fill character.
-        """
-        ...
-    def rpartition(self, sep: ReadableBuffer, /) -> tuple[bytearray, bytearray, bytearray]:
-        """
-        Partition the bytearray into three parts using the given separator.
-
-        This will search for the separator sep in the bytearray, starting at the end.
-        If the separator is found, returns a 3-tuple containing the part before the
-        separator, the separator itself, and the part after it as new bytearray
-        objects.
-
-        If the separator is not found, returns a 3-tuple containing two empty bytearray
-        objects and the copy of the original bytearray object.
-        """
-        ...
-    def rsplit(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytearray]:
-        """
-        Return a list of the sections in the bytearray, using sep as the delimiter.
-
-          sep
-            The delimiter according which to split the bytearray.
-            None (the default value) means split on ASCII whitespace characters
-            (space, tab, return, newline, formfeed, vertical tab).
-          maxsplit
-            Maximum number of splits to do.
-            -1 (the default value) means no limit.
-
-        Splitting is done starting at the end of the bytearray and working to the front.
-        """
-        ...
-    def rstrip(self, bytes: ReadableBuffer | None = None, /) -> bytearray:
-        """
-        Strip trailing bytes contained in the argument.
-
-        If the argument is omitted or None, strip trailing ASCII whitespace.
-        """
-        ...
-    def split(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytearray]:
-        """
-        Return a list of the sections in the bytearray, using sep as the delimiter.
-
-        sep
-          The delimiter according which to split the bytearray.
-          None (the default value) means split on ASCII whitespace characters
-          (space, tab, return, newline, formfeed, vertical tab).
-        maxsplit
-          Maximum number of splits to do.
-          -1 (the default value) means no limit.
-        """
-        ...
-    def splitlines(self, keepends: bool = False) -> list[bytearray]:
-        """
-        Return a list of the lines in the bytearray, breaking at line boundaries.
-
-        Line breaks are not included in the resulting list unless keepends is given and
-        true.
-        """
-        ...
+        self, sub: ReadableBuffer | SupportsIndex, start: SupportsIndex | None = None, end: SupportsIndex | None = None, /
+    ) -> int: ...
+    def rjust(self, width: SupportsIndex, fillchar: bytes | bytearray = b" ", /) -> bytearray: ...
+    def rpartition(self, sep: ReadableBuffer, /) -> tuple[bytearray, bytearray, bytearray]: ...
+    def rsplit(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytearray]: ...
+    def rstrip(self, bytes: ReadableBuffer | None = None, /) -> bytearray: ...
+    def split(self, sep: ReadableBuffer | None = None, maxsplit: SupportsIndex = -1) -> list[bytearray]: ...
+    def splitlines(self, keepends: bool = False) -> list[bytearray]: ...
     def startswith(
         self,
         prefix: ReadableBuffer | tuple[ReadableBuffer, ...],
-        start: SupportsIndex | None = ...,
-        end: SupportsIndex | None = ...,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
         /,
     ) -> bool:
         """
@@ -3096,61 +2307,12 @@ class memoryview(Sequence[_I]):
             """
             Return the data in the buffer as a byte string.
 
-            Order can be {'C', 'F', 'A'}. When order is 'C' or 'F', the data of the
-            original array is converted to C or Fortran order. For contiguous views,
-            'A' returns an exact copy of the physical memory. In particular, in-memory
-            Fortran order is preserved. For non-contiguous views, the data is converted
-            to C first. order=None is the same as order='C'.
-            """
-            ...
-    else:
-        def tobytes(self, order: Literal["C", "F", "A"] | None = None) -> bytes:
-            """
-            Return the data in the buffer as a byte string. Order can be {'C', 'F', 'A'}.
-            When order is 'C' or 'F', the data of the original array is converted to C or
-            Fortran order. For contiguous views, 'A' returns an exact copy of the physical
-            memory. In particular, in-memory Fortran order is preserved. For non-contiguous
-            views, the data is converted to C first. order=None is the same as order='C'.
-            """
-            ...
-
-    def tolist(self) -> list[int]:
-        """Return the data in the buffer as a list of elements."""
-        ...
-    def toreadonly(self) -> memoryview:
-        """Return a readonly version of the memoryview."""
-        ...
-    def release(self) -> None:
-        """Release the underlying buffer exposed by the memoryview object."""
-        ...
-    def hex(self, sep: str | bytes = ..., bytes_per_sep: SupportsIndex = ...) -> str:
-        r"""
-        Return the data in the buffer as a str of hexadecimal numbers.
-
-          sep
-            An optional single character or byte to separate hex bytes.
-          bytes_per_sep
-            How many bytes between separators.  Positive values count from the
-            right, negative values count from the left.
-
-        Example:
-        >>> value = memoryview(b'\xb9\x01\xef')
-        >>> value.hex()
-        'b901ef'
-        >>> value.hex(':')
-        'b9:01:ef'
-        >>> value.hex(':', 2)
-        'b9:01ef'
-        >>> value.hex(':', -2)
-        'b901:ef'
-        """
-        ...
-    def __buffer__(self, flags: int, /) -> memoryview:
-        """Return a buffer object that exposes the underlying memory of the object."""
-        ...
-    def __release_buffer__(self, buffer: memoryview, /) -> None:
-        """Release the buffer object that exposes the underlying memory of the object."""
-        ...
+    def tolist(self) -> list[int]: ...
+    def toreadonly(self) -> memoryview: ...
+    def release(self) -> None: ...
+    def hex(self, sep: str | bytes = ..., bytes_per_sep: SupportsIndex = 1) -> str: ...
+    def __buffer__(self, flags: int, /) -> memoryview: ...
+    def __release_buffer__(self, buffer: memoryview, /) -> None: ...
 
     # These are inherited from the Sequence ABC, but don't actually exist on memoryview.
     # See https://github.com/python/cpython/issues/125420
@@ -3161,12 +2323,7 @@ class memoryview(Sequence[_I]):
 
 @final
 class bool(int):
-    """
-    Returns True when the argument is true, False otherwise.
-    The builtins True and False are the only two instances of the class bool.
-    The class bool is a subclass of the class int, and cannot be subclassed.
-    """
-    def __new__(cls, o: object = ..., /) -> Self: ...
+    def __new__(cls, o: object = False, /) -> Self: ...
     # The following overloads could be represented more elegantly with a TypeVar("_B", bool, int),
     # however mypy has a bug regarding TypeVar constraints (https://github.com/python/mypy/issues/11880).
     @overload
@@ -3284,21 +2441,9 @@ class slice(Generic[_StartT_co, _StopT_co, _StepT_co]):
 
 @disjoint_base
 class tuple(Sequence[_T_co]):
-    """
-    Built-in immutable sequence.
-
-    If no argument is given, the constructor returns an empty tuple.
-    If iterable is specified the tuple is initialized from iterable's items.
-
-    If the argument is a tuple, the return value is the same object.
-    """
-    def __new__(cls, iterable: Iterable[_T_co] = ..., /) -> Self: ...
-    def __len__(self) -> int:
-        """Return len(self)."""
-        ...
-    def __contains__(self, key: object, /) -> bool:
-        """Return bool(key in self)."""
-        ...
+    def __new__(cls, iterable: Iterable[_T_co] = (), /) -> Self: ...
+    def __len__(self) -> int: ...
+    def __contains__(self, key: object, /) -> bool: ...
     @overload
     def __getitem__(self, key: SupportsIndex, /) -> _T_co:
         """Return self[key]."""
@@ -3961,31 +3106,14 @@ class range(Sequence[int]):
     @overload
     def __new__(cls, stop: SupportsIndex, /) -> Self: ...
     @overload
-    def __new__(cls, start: SupportsIndex, stop: SupportsIndex, step: SupportsIndex = ..., /) -> Self: ...
-    def count(self, value: int, /) -> int:
-        """rangeobject.count(value) -> integer -- return number of occurrences of value"""
-        ...
-    def index(self, value: int, /) -> int:
-        """
-        rangeobject.index(value) -> integer -- return index of value.
-        Raise ValueError if the value is not present.
-        """
-        ...
-    def __len__(self) -> int:
-        """Return len(self)."""
-        ...
-    def __eq__(self, value: object, /) -> bool:
-        """Return self==value."""
-        ...
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
-    def __contains__(self, key: object, /) -> bool:
-        """Return bool(key in self)."""
-        ...
-    def __iter__(self) -> Iterator[int]:
-        """Implement iter(self)."""
-        ...
+    def __new__(cls, start: SupportsIndex, stop: SupportsIndex, step: SupportsIndex = 1, /) -> Self: ...
+    def count(self, value: int, /) -> int: ...
+    def index(self, value: int, /) -> int: ...  # type: ignore[override]
+    def __len__(self) -> int: ...
+    def __eq__(self, value: object, /) -> bool: ...
+    def __hash__(self) -> int: ...
+    def __contains__(self, key: object, /) -> bool: ...
+    def __iter__(self) -> Iterator[int]: ...
     @overload
     def __getitem__(self, key: SupportsIndex, /) -> int:
         """Return self[key]."""
@@ -4043,10 +3171,10 @@ class property:
 
     def __init__(
         self,
-        fget: Callable[[Any], Any] | None = ...,
-        fset: Callable[[Any, Any], None] | None = ...,
-        fdel: Callable[[Any], None] | None = ...,
-        doc: str | None = ...,
+        fget: Callable[[Any], Any] | None = None,
+        fset: Callable[[Any, Any], None] | None = None,
+        fdel: Callable[[Any], None] | None = None,
+        doc: str | None = None,
     ) -> None: ...
     def getter(self, fget: Callable[[Any], Any], /) -> property:
         """Descriptor to obtain a copy of the property with a different getter."""
@@ -6212,18 +5340,25 @@ class zip(Generic[_T_co]):
     """
     if sys.version_info >= (3, 10):
         @overload
-        def __new__(cls, *, strict: bool = ...) -> zip[Any]: ...
+        def __new__(cls, *, strict: bool = False) -> zip[Any]: ...
         @overload
-        def __new__(cls, iter1: Iterable[_T1], /, *, strict: bool = ...) -> zip[tuple[_T1]]: ...
+        def __new__(cls, iter1: Iterable[_T1], /, *, strict: bool = False) -> zip[tuple[_T1]]: ...
         @overload
-        def __new__(cls, iter1: Iterable[_T1], iter2: Iterable[_T2], /, *, strict: bool = ...) -> zip[tuple[_T1, _T2]]: ...
+        def __new__(cls, iter1: Iterable[_T1], iter2: Iterable[_T2], /, *, strict: bool = False) -> zip[tuple[_T1, _T2]]: ...
         @overload
         def __new__(
-            cls, iter1: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /, *, strict: bool = ...
+            cls, iter1: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /, *, strict: bool = False
         ) -> zip[tuple[_T1, _T2, _T3]]: ...
         @overload
         def __new__(
-            cls, iter1: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], /, *, strict: bool = ...
+            cls,
+            iter1: Iterable[_T1],
+            iter2: Iterable[_T2],
+            iter3: Iterable[_T3],
+            iter4: Iterable[_T4],
+            /,
+            *,
+            strict: bool = False,
         ) -> zip[tuple[_T1, _T2, _T3, _T4]]: ...
         @overload
         def __new__(
@@ -6235,7 +5370,7 @@ class zip(Generic[_T_co]):
             iter5: Iterable[_T5],
             /,
             *,
-            strict: bool = ...,
+            strict: bool = False,
         ) -> zip[tuple[_T1, _T2, _T3, _T4, _T5]]: ...
         @overload
         def __new__(
@@ -6248,7 +5383,7 @@ class zip(Generic[_T_co]):
             iter6: Iterable[Any],
             /,
             *iterables: Iterable[Any],
-            strict: bool = ...,
+            strict: bool = False,
         ) -> zip[tuple[Any, ...]]: ...
     else:
         @overload
@@ -6414,9 +5549,8 @@ class AssertionError(Exception):
 if sys.version_info >= (3, 10):
     @disjoint_base
     class AttributeError(Exception):
-        """Attribute not found."""
-        def __init__(self, *args: object, name: str | None = ..., obj: object = ...) -> None: ...
-        name: str
+        def __init__(self, *args: object, name: str | None = None, obj: object = None) -> None: ...
+        name: str | None
         obj: object
 
 else:
@@ -6433,8 +5567,7 @@ class EOFError(Exception):
 
 @disjoint_base
 class ImportError(Exception):
-    """Import can't find module, or can't find name in module."""
-    def __init__(self, *args: object, name: str | None = ..., path: str | None = ...) -> None: ...
+    def __init__(self, *args: object, name: str | None = None, path: str | None = None) -> None: ...
     name: str | None
     path: str | None
     msg: str  # undocumented
@@ -6451,9 +5584,8 @@ class MemoryError(Exception):
 if sys.version_info >= (3, 10):
     @disjoint_base
     class NameError(Exception):
-        """Name not found globally."""
-        def __init__(self, *args: object, name: str | None = ...) -> None: ...
-        name: str
+        def __init__(self, *args: object, name: str | None = None) -> None: ...
+        name: str | None
 
 else:
     class NameError(Exception):
