@@ -15,7 +15,7 @@ python-nmap==0.7.*
 pytest-lazy-fixture==0.6.*
 zstd~=1.5.7.1
 watchpoints==0.2.5
-Authlib~=1.6.4
+Authlib==1.6.5
 grpcio-reflection==1.*
 parsimonious==0.10.*
 paramiko==4.0.*
