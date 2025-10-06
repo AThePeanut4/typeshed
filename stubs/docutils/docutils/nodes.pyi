@@ -268,15 +268,7 @@ class Node:
     @overload
     def next_node(
         self, condition: type[_N], include_self: bool = False, descend: bool = True, siblings: bool = False, ascend: bool = False
-    ) -> _N:
-        """
-        Return the first node in the iterator returned by findall(),
-        or None if the iterable is empty.
-
-        Parameter list is the same as of `findall()`.  Note that `include_self`
-        defaults to False, though.
-        """
-        ...
+    ) -> _N | None: ...
     @overload
     def next_node(
         self,
@@ -285,32 +277,9 @@ class Node:
         descend: bool = True,
         siblings: bool = False,
         ascend: bool = False,
-    ) -> Node:
-        """
-        Return the first node in the iterator returned by findall(),
-        or None if the iterable is empty.
-
-        Parameter list is the same as of `findall()`.  Note that `include_self`
-        defaults to False, though.
-        """
-        ...
-    def validate(self, recursive: bool = True) -> None:
-        """
-        Raise ValidationError if this node is not valid.
-
-        Override in subclasses that define validity constraints.
-        """
-        ...
-    def validate_position(self) -> None:
-        """
-        Hook for additional checks of the parent's content model.
-
-        Raise ValidationError, if `self` is at an invalid position.
-
-        Override in subclasses with complex validity constraints. See
-        `subtitle.validate_position()` and `transition.validate_position()`.
-        """
-        ...
+    ) -> Node | None: ...
+    def validate(self, recursive: bool = True) -> None: ...
+    def validate_position(self) -> None: ...
 
 # Left out
 # - def ensure_str (deprecated)
