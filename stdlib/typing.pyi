@@ -2102,31 +2102,21 @@ if sys.version_info >= (3, 12):
         ...
     @final
     class TypeAliasType:
-        """
-        Type alias.
-
-        Type aliases are created through the type statement::
-
-            type Alias = int
-
-        In this example, Alias and int will be treated equivalently by static
-        type checkers.
-
-        At runtime, Alias is an instance of TypeAliasType. The __name__
-        attribute holds the name of the type alias. The value of the type alias
-        is stored in the __value__ attribute. It is evaluated lazily, so the
-        value is computed only if the attribute is accessed.
-
-        Type aliases can also be generic::
-
-            type ListOrSet[T] = list[T] | set[T]
-
-        In this case, the type parameters of the alias are stored in the
-        __type_params__ attribute.
-
-        See PEP 695 for more information.
-        """
-        def __new__(cls, name: str, value: Any, *, type_params: tuple[TypeVar | ParamSpec | TypeVarTuple, ...] = ()) -> Self: ...
+        def __new__(
+            cls,
+            name: str,
+            value: Any,
+            *,
+            type_params: tuple[
+                TypeVar
+                | typing_extensions.TypeVar
+                | ParamSpec
+                | typing_extensions.ParamSpec
+                | TypeVarTuple
+                | typing_extensions.TypeVarTuple,
+                ...,
+            ] = (),
+        ) -> Self: ...
         @property
         def __value__(self) -> Any: ...  # AnnotationForm
         @property
