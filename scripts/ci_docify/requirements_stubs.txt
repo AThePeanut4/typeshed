@@ -140,7 +140,7 @@ lunardate==0.2.*
 mysqlclient==2.2.*
 icalendar==6.3.1
 aiofiles==24.1.*
-django-filter==25.1.*
+django-filter==25.2.*
 tabulate==0.9.*
 pywin32==311.*
 python-dateutil==2.9.*
