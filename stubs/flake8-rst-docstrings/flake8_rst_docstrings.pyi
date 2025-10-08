@@ -45,7 +45,7 @@ class reStructuredTextChecker:
         ...
     @classmethod
     def parse_options(cls, options: Namespace) -> None:
-        """Adding black-config option."""
+        """Parse options and add black-config option."""
         ...
     def run(self) -> Generator[tuple[int, int, str, type[reStructuredTextChecker]], None, None]:
         """Use docutils to check docstrings are valid RST."""
