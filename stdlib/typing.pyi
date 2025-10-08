@@ -2073,78 +2073,23 @@ def _type_repr(obj: object) -> str:
     ...
 
 if sys.version_info >= (3, 12):
-    def override(method: _F, /) -> _F:
-        """
-        Indicate that a method is intended to override a method in a base class.
+    _TypeParameter: typing_extensions.TypeAlias = (
+        TypeVar
+        | typing_extensions.TypeVar
+        | ParamSpec
+        | typing_extensions.ParamSpec
+        | TypeVarTuple
+        | typing_extensions.TypeVarTuple
+    )
 
-        Usage::
-
-            class Base:
-                def method(self) -> None:
-                    pass
-
-            class Child(Base):
-                @override
-                def method(self) -> None:
-                    super().method()
-
-        When this decorator is applied to a method, the type checker will
-        validate that it overrides a method or attribute with the same name on a
-        base class.  This helps prevent bugs that may occur when a base class is
-        changed without an equivalent change to a child class.
-
-        There is no runtime checking of this property. The decorator attempts to
-        set the ``__override__`` attribute to ``True`` on the decorated object to
-        allow runtime introspection.
-
-        See PEP 698 for details.
-        """
-        ...
+    def override(method: _F, /) -> _F: ...
     @final
     class TypeAliasType:
-        """
-        Type alias.
-
-        Type aliases are created through the type statement::
-
-            type Alias = int
-
-        In this example, Alias and int will be treated equivalently by static
-        type checkers.
-
-        At runtime, Alias is an instance of TypeAliasType. The __name__
-        attribute holds the name of the type alias. The value of the type alias
-        is stored in the __value__ attribute. It is evaluated lazily, so the
-        value is computed only if the attribute is accessed.
-
-        Type aliases can also be generic::
-
-            type ListOrSet[T] = list[T] | set[T]
-
-        In this case, the type parameters of the alias are stored in the
-        __type_params__ attribute.
-
-        See PEP 695 for more information.
-        """
-        def __new__(
-            cls,
-            name: str,
-            value: Any,
-            *,
-            type_params: tuple[
-                TypeVar
-                | typing_extensions.TypeVar
-                | ParamSpec
-                | typing_extensions.ParamSpec
-                | TypeVarTuple
-                | typing_extensions.TypeVarTuple,
-                ...,
-            ] = (),
-        ) -> Self: ...
+        def __new__(cls, name: str, value: Any, *, type_params: tuple[_TypeParameter, ...] = ()) -> Self: ...
         @property
         def __value__(self) -> Any: ...  # AnnotationForm
         @property
-        def __type_params__(self) -> tuple[TypeVar | ParamSpec | TypeVarTuple, ...]: ...
+        def __type_params__(self) -> tuple[_TypeParameter, ...]: ...
         @property
         def __parameters__(self) -> tuple[Any, ...]: ...  # AnnotationForm
         @property
