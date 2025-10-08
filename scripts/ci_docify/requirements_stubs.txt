@@ -53,7 +53,7 @@ Jetson.GPIO==2.1.11
 ttkthemes==3.2.*
 yt-dlp==2025.9.26
 flake8-docstrings==1.7.*
-flake8-rst-docstrings==0.3.*
+flake8-rst-docstrings==0.4.*
 docker==7.1.*
 pep8-naming==0.15.*
 singledispatch==4.1.*
@@ -172,6 +172,7 @@ gevent==25.4.*
 channels==4.3.*
 decorator==5.2.*
 Pygments==2.19.*
+xmldiff==2.7.*
 pytz==2025.2
 TgCrypto==1.2.*
 polib==1.2.*
