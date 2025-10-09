@@ -55,11 +55,15 @@ def diff_trees(
 @overload
 def diff_texts(
     left: str | bytes, right: str | bytes, *, diff_options: dict[str, Any] | None = None, formatter: BaseFormatter = ...
-) -> str: ...
+) -> str:
+    """Takes two Unicode strings containing XML"""
+    ...
 @overload
 def diff_texts(
     left: str | bytes, right: str | bytes, diff_options: dict[str, Any] | None = None, formatter: None = None
-) -> Iterable[_ACTIONS]: ...
+) -> Iterable[_ACTIONS]:
+    """Takes two Unicode strings containing XML"""
+    ...
 @overload
 def diff_files(left: str, right: str, *, diff_options: dict[str, Any] | None = None, formatter: BaseFormatter = ...) -> str:
     """Takes two filenames or streams, and diffs the XML in those files"""

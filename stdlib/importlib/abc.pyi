@@ -140,7 +140,14 @@ class InspectLoader(Loader):
     @staticmethod
     def source_to_code(
         data: ReadableBuffer | str | _ast.Module | _ast.Expression | _ast.Interactive, path: bytes | StrPath = "<string>"
-    ) -> types.CodeType: ...
+    ) -> types.CodeType:
+        """
+        Compile 'data' into a code object.
+
+        The 'data' argument can be anything that compile() can handle. The'path'
+        argument should be where the data was retrieved (when applicable).
+        """
+        ...
 
 class ExecutionLoader(InspectLoader):
     """

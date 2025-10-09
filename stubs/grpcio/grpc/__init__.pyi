@@ -275,7 +275,30 @@ _Interceptor: TypeAlias = (
     UnaryUnaryClientInterceptor | UnaryStreamClientInterceptor | StreamUnaryClientInterceptor | StreamStreamClientInterceptor
 )
 
-def intercept_channel(channel: Channel, *interceptors: _Interceptor) -> Channel: ...
+def intercept_channel(channel: Channel, *interceptors: _Interceptor) -> Channel:
+    """
+    Intercepts a channel through a set of interceptors.
+
+    Args:
+      channel: A Channel.
+      interceptors: Zero or more objects of type
+        UnaryUnaryClientInterceptor,
+        UnaryStreamClientInterceptor,
+        StreamUnaryClientInterceptor, or
+        StreamStreamClientInterceptor.
+        Interceptors are given control in the order they are listed.
+
+    Returns:
+      A Channel that intercepts each invocation via the provided interceptors.
+
+    Raises:
+      TypeError: If interceptor does not derive from any of
+        UnaryUnaryClientInterceptor,
+        UnaryStreamClientInterceptor,
+        StreamUnaryClientInterceptor, or
+        StreamStreamClientInterceptor.
+    """
+    ...
 
 # Create Client Credentials:
 
@@ -1334,6 +1357,7 @@ class ClientCallDetails(abc.ABC):
 class _CallFuture(Call, Future[_TResponse], metaclass=abc.ABCMeta): ...
 
 class UnaryUnaryClientInterceptor(abc.ABC):
+    """Affords intercepting unary-unary invocations."""
     # This method (not the class) is generic over _TRequest and _TResponse
     # and the types must satisfy the no-op implementation of
     # `return continuation(client_call_details, request)`.
@@ -1379,6 +1403,7 @@ class _CallIterator(Call, Generic[_TResponse], metaclass=abc.ABCMeta):
     def __next__(self) -> _TResponse: ...
 
 class UnaryStreamClientInterceptor(abc.ABC):
+    """Affords intercepting unary-stream invocations."""
     # This method (not the class) is generic over _TRequest and _TResponse
     # and the types must satisfy the no-op implementation of
     # `return continuation(client_call_details, request)`.
@@ -1418,6 +1443,7 @@ class UnaryStreamClientInterceptor(abc.ABC):
         ...
 
 class StreamUnaryClientInterceptor(abc.ABC):
+    """Affords intercepting stream-unary invocations."""
     # This method (not the class) is generic over _TRequest and _TResponse
     # and the types must satisfy the no-op implementation of
     # `return continuation(client_call_details, request_iterator)`.
@@ -1457,6 +1483,7 @@ class StreamUnaryClientInterceptor(abc.ABC):
         ...
 
 class StreamStreamClientInterceptor(abc.ABC):
+    """Affords intercepting stream-stream invocations."""
     # This method (not the class) is generic over _TRequest and _TResponse
     # and the types must satisfy the no-op implementation of
     # `return continuation(client_call_details, request_iterator)`.
@@ -1785,6 +1812,7 @@ class ServiceRpcHandler(GenericRpcHandler, metaclass=abc.ABCMeta):
 # Service-Side Interceptor:
 
 class ServerInterceptor(abc.ABC):
+    """Affords intercepting incoming RPCs on the service-side."""
     # This method (not the class) is generic over _TRequest and _TResponse
     # and the types must satisfy the no-op implementation of
     # `return continuation(handler_call_details)`.

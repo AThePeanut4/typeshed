@@ -201,9 +201,13 @@ class Element(Generic[_Tag]):
     # Doesn't actually exist at runtime, but instance of the class are indeed iterable due to __getitem__.
     def __iter__(self) -> Iterator[Element]: ...
     @overload
-    def __setitem__(self, key: SupportsIndex, value: Element[Any], /) -> None: ...
+    def __setitem__(self, key: SupportsIndex, value: Element[Any], /) -> None:
+        """Set self[key] to value."""
+        ...
     @overload
-    def __setitem__(self, key: slice, value: Iterable[Element[Any]], /) -> None: ...
+    def __setitem__(self, key: slice, value: Iterable[Element[Any]], /) -> None:
+        """Set self[key] to value."""
+        ...
 
     # Doesn't really exist in earlier versions, where __len__ is called implicitly instead
     @deprecated("Testing an element's truth value is deprecated.")
@@ -212,8 +216,27 @@ class Element(Generic[_Tag]):
         ...
 
 def SubElement(parent: Element[Any], tag: str, attrib: dict[str, str] = ..., **extra: str) -> Element: ...
-def Comment(text: str | None = None) -> Element[_ElementCallable]: ...
-def ProcessingInstruction(target: str, text: str | None = None) -> Element[_ElementCallable]: ...
+def Comment(text: str | None = None) -> Element[_ElementCallable]:
+    """
+    Comment element factory.
+
+    This function creates a special element which the standard serializer
+    serializes as an XML comment.
+
+    *text* is a string containing the comment string.
+    """
+    ...
+def ProcessingInstruction(target: str, text: str | None = None) -> Element[_ElementCallable]:
+    """
+    Processing Instruction element factory.
+
+    This function creates a special element which the standard serializer
+    serializes as an XML comment.
+
+    *target* is a string containing the processing instruction, *text* is a
+    string containing the processing instruction contents, if any.
+    """
+    ...
 
 PI = ProcessingInstruction
 
@@ -243,11 +266,54 @@ class QName:
 _Root = TypeVar("_Root", Element, Element | None, default=Element | None)
 
 class ElementTree(Generic[_Root]):
+    """
+    An XML element hierarchy.
+
+    This class also provides support for serialization to and from
+    standard XML.
+
+    *element* is an optional root element node,
+    *file* is an optional file handle or file name of an XML file whose
+    contents will be used to initialize the tree with.
+    """
     def __init__(self, element: Element[Any] | None = None, file: _FileRead | None = None) -> None: ...
-    def getroot(self) -> _Root: ...
-    def parse(self, source: _FileRead, parser: XMLParser | None = None) -> Element: ...
-    def iter(self, tag: str | None = None) -> Generator[Element, None, None]: ...
-    def find(self, path: str, namespaces: dict[str, str] | None = None) -> Element | None: ...
+    def getroot(self) -> _Root:
+        """Return root element of this tree."""
+        ...
+    def parse(self, source: _FileRead, parser: XMLParser | None = None) -> Element:
+        """
+        Load external XML document into element tree.
+
+        *source* is a file name or file object, *parser* is an optional parser
+        instance that defaults to XMLParser.
+
+        ParseError is raised if the parser fails to parse the document.
+
+        Returns the root element of the given source document.
+        """
+        ...
+    def iter(self, tag: str | None = None) -> Generator[Element, None, None]:
+        """
+        Create and return tree iterator for the root element.
+
+        The iterator loops over all elements in this tree, in document order.
+
+        *tag* is a string with the tag name to iterate over
+        (default is to return all elements).
+        """
+        ...
+    def find(self, path: str, namespaces: dict[str, str] | None = None) -> Element | None:
+        """
+        Find first matching element by tag name or path.
+
+        Same as getroot().find(path), which is Element.find()
+
+        *path* is a string having either an element tag or an XPath,
+        *namespaces* is an optional mapping from namespace prefix to full name.
+
+        Return the first matching element, or None if no element was found.
+        """
+        ...
     @overload
     def findtext(self, path: str, default: None = None, namespaces: dict[str, str] | None = None) -> str | None:
         """
@@ -465,9 +531,44 @@ def tostringlist(
     default_namespace: str | None = None,
     short_empty_elements: bool = True,
 ) -> list[Any]: ...
-def dump(elem: Element[Any] | ElementTree[Any]) -> None: ...
-def indent(tree: Element[Any] | ElementTree[Any], space: str = "  ", level: int = 0) -> None: ...
-def parse(source: _FileRead, parser: XMLParser[Any] | None = None) -> ElementTree[Element]: ...
+def dump(elem: Element[Any] | ElementTree[Any]) -> None:
+    """
+    Write element tree or element structure to sys.stdout.
+
+    This function should be used for debugging only.
+
+    *elem* is either an ElementTree, or a single Element.  The exact output
+    format is implementation dependent.  In this version, it's written as an
+    ordinary XML file.
+    """
+    ...
+def indent(tree: Element[Any] | ElementTree[Any], space: str = "  ", level: int = 0) -> None:
+    """
+    Indent an XML document by inserting newlines and indentation space
+    after elements.
+
+    *tree* is the ElementTree or Element to modify.  The (root) element
+    itself will not be changed, but the tail text of all elements in its
+    subtree will be adapted.
+
+    *space* is the whitespace to insert for each indentation level, two
+    space characters by default.
+
+    *level* is the initial indentation level. Setting this to a higher
+    value than 0 can be used for indenting subtrees that are more deeply
+    nested inside of a document.
+    """
+    ...
+def parse(source: _FileRead, parser: XMLParser[Any] | None = None) -> ElementTree[Element]:
+    """
+    Parse XML document into element tree.
+
+    *source* is a filename or file object containing XML data,
+    *parser* is an optional parser instance defaulting to XMLParser.
+
+    Return an ElementTree instance.
+    """
+    ...
 
 # This class is defined inside the body of iterparse
 @type_check_only

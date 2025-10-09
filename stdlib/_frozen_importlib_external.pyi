@@ -267,8 +267,21 @@ class SourceLoader(_LoaderBasics):
         ...
     def source_to_code(
         self, data: ReadableBuffer | str | _ast.Module | _ast.Expression | _ast.Interactive, path: bytes | StrPath
-    ) -> types.CodeType: ...
-    def get_code(self, fullname: str) -> types.CodeType | None: ...
+    ) -> types.CodeType:
+        """
+        Return the code object compiled from source.
+
+        The 'data' argument can be any object type that compile() supports.
+        """
+        ...
+    def get_code(self, fullname: str) -> types.CodeType | None:
+        """
+        Concrete implementation of InspectLoader.get_code.
+
+        Reading of bytecode requires path_stats to be implemented. To write
+        bytecode, set_data must also be implemented.
+        """
+        ...
 
 class FileLoader:
     """

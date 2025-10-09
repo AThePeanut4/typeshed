@@ -233,7 +233,9 @@ class itemgetter(Generic[_T_co]):
     # then we can't annotate __call__'s return type or it'll break on tuples
     #
     # These issues are best demonstrated by the `itertools.check_itertools_recipes.unique_justseen` test.
-    def __call__(self, obj: SupportsGetItem[Any, Any]) -> Any: ...
+    def __call__(self, obj: SupportsGetItem[Any, Any]) -> Any:
+        """Call self as a function."""
+        ...
 
 @final
 class methodcaller:

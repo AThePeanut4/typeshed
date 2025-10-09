@@ -283,6 +283,18 @@ class RestartPolicy(dict[str, Incomplete]):
     ) -> None: ...
 
 class DriverConfig(dict[str, Incomplete]):
+    """
+    Indicates which driver to use, as well as its configuration. Can be used
+    as ``log_driver`` in a :py:class:`~docker.types.ContainerSpec`,
+    for the `driver_config` in a volume :py:class:`~docker.types.Mount`, or
+    as the driver object in
+    :py:meth:`create_secret`.
+
+    Args:
+
+        name (string): Name of the driver to use.
+        options (dict): Driver-specific options. Default: ``None``.
+    """
     def __init__(self, name: str, options: dict[str, str] | None = None) -> None: ...
 
 class EndpointSpec(dict[str, Incomplete]):
@@ -470,4 +482,15 @@ class Privileges(dict[str, Incomplete]):
     ) -> None: ...
 
 class NetworkAttachmentConfig(dict[str, Incomplete]):
+    """
+    Network attachment options for a service.
+
+    Args:
+        target (str): The target network for attachment.
+            Can be a network name or ID.
+        aliases (:py:class:`list`): A list of discoverable alternate names
+            for the service.
+        options (:py:class:`dict`): Driver attachment options for the
+            network target.
+    """
     def __init__(self, target: str, aliases: list[str] | None = None, options: dict[str, str] | None = None) -> None: ...
