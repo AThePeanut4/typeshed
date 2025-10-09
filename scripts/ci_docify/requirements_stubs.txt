@@ -49,13 +49,14 @@ shapely==2.1.*
 braintree==4.38.*
 gunicorn==23.0.*
 aws-xray-sdk==2.14.*
-Jetson.GPIO==2.1.11
+Jetson.GPIO==2.1.12
 ttkthemes==3.2.*
 yt-dlp==2025.9.26
 flake8-docstrings==1.7.*
 flake8-rst-docstrings==0.4.*
 docker==7.1.*
 pep8-naming==0.15.*
+www-authenticate==0.9.*
 singledispatch==4.1.*
 bleach[css]==6.2.*
 xdgenvpy==3.0.*
