@@ -1,5 +1,3 @@
-from _typeshed import Incomplete
-
 from .resource import Collection, Model
 
 class Service(Model):
@@ -228,7 +226,7 @@ class ServiceCollection(Collection[Service]):
         """
         ...
 
-CONTAINER_SPEC_KWARGS: Incomplete
-TASK_TEMPLATE_KWARGS: Incomplete
-CREATE_SERVICE_KWARGS: Incomplete
-PLACEMENT_KWARGS: Incomplete
+CONTAINER_SPEC_KWARGS: list[str]
+TASK_TEMPLATE_KWARGS: list[str]
+CREATE_SERVICE_KWARGS: list[str]
+PLACEMENT_KWARGS: list[str]

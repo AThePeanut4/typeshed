@@ -272,36 +272,10 @@ def secure_channel(
     ...
 
 _Interceptor: TypeAlias = (
-    UnaryUnaryClientInterceptor[_TRequest, _TResponse]
-    | UnaryStreamClientInterceptor[_TRequest, _TResponse]
-    | StreamUnaryClientInterceptor[_TRequest, _TResponse]
-    | StreamStreamClientInterceptor[_TRequest, _TResponse]
+    UnaryUnaryClientInterceptor | UnaryStreamClientInterceptor | StreamUnaryClientInterceptor | StreamStreamClientInterceptor
 )
 
-def intercept_channel(channel: Channel, *interceptors: _Interceptor[_TRequest, _TResponse]) -> Channel:
-    """
-    Intercepts a channel through a set of interceptors.
-
-    Args:
-      channel: A Channel.
-      interceptors: Zero or more objects of type
-        UnaryUnaryClientInterceptor,
-        UnaryStreamClientInterceptor,
-        StreamUnaryClientInterceptor, or
-        StreamStreamClientInterceptor.
-        Interceptors are given control in the order they are listed.
-
-    Returns:
-      A Channel that intercepts each invocation via the provided interceptors.
-
-    Raises:
-      TypeError: If interceptor does not derive from any of
-        UnaryUnaryClientInterceptor,
-        UnaryStreamClientInterceptor,
-        StreamUnaryClientInterceptor, or
-        StreamStreamClientInterceptor.
-    """
-    ...
+def intercept_channel(channel: Channel, *interceptors: _Interceptor) -> Channel: ...
 
 # Create Client Credentials:
 
@@ -1359,26 +1333,13 @@ class ClientCallDetails(abc.ABC):
 @type_check_only
 class _CallFuture(Call, Future[_TResponse], metaclass=abc.ABCMeta): ...
 
-class UnaryUnaryClientInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
-    """Affords intercepting unary-unary invocations."""
+class UnaryUnaryClientInterceptor(abc.ABC):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return continuation(client_call_details, request)`.
     @abc.abstractmethod
     def intercept_unary_unary(
         self,
-        # FIXME: decode these cryptic runes to confirm the typing mystery of
-        # this callable's signature that was left for us by past civilisations:
-        #
-        #     continuation - A function that proceeds with the invocation by
-        #     executing the next interceptor in chain or invoking the actual RPC
-        #     on the underlying Channel. It is the interceptor's responsibility
-        #     to call it if it decides to move the RPC forward. The interceptor
-        #     can use response_future = continuation(client_call_details,
-        #     request) to continue with the RPC. continuation returns an object
-        #     that is both a Call for the RPC and a Future. In the event of RPC
-        #     completion, the return Call-Future's result value will be the
-        #     response message of the RPC. Should the event terminate with non-OK
-        #     status, the returned Call-Future's exception value will be an
-        #     RpcError.
-        #
         continuation: Callable[[ClientCallDetails, _TRequest], _CallFuture[_TResponse]],
         client_call_details: ClientCallDetails,
         request: _TRequest,
@@ -1417,8 +1378,10 @@ class _CallIterator(Call, Generic[_TResponse], metaclass=abc.ABCMeta):
     def __iter__(self) -> Iterator[_TResponse]: ...
     def __next__(self) -> _TResponse: ...
 
-class UnaryStreamClientInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
-    """Affords intercepting unary-stream invocations."""
+class UnaryStreamClientInterceptor(abc.ABC):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return continuation(client_call_details, request)`.
     @abc.abstractmethod
     def intercept_unary_stream(
         self,
@@ -1454,12 +1417,14 @@ class UnaryStreamClientInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
         """
         ...
 
-class StreamUnaryClientInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
-    """Affords intercepting stream-unary invocations."""
+class StreamUnaryClientInterceptor(abc.ABC):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return continuation(client_call_details, request_iterator)`.
     @abc.abstractmethod
     def intercept_stream_unary(
         self,
-        continuation: Callable[[ClientCallDetails, _TRequest], _CallFuture[_TResponse]],
+        continuation: Callable[[ClientCallDetails, Iterator[_TRequest]], _CallFuture[_TResponse]],
         client_call_details: ClientCallDetails,
         request_iterator: Iterator[_TRequest],
     ) -> _CallFuture[_TResponse]:
@@ -1491,12 +1456,14 @@ class StreamUnaryClientInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
         """
         ...
 
-class StreamStreamClientInterceptor(abc.ABC, Generic[_TRequest, _TResponse]):
-    """Affords intercepting stream-stream invocations."""
+class StreamStreamClientInterceptor(abc.ABC):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return continuation(client_call_details, request_iterator)`.
     @abc.abstractmethod
     def intercept_stream_stream(
         self,
-        continuation: Callable[[ClientCallDetails, _TRequest], _CallIterator[_TResponse]],
+        continuation: Callable[[ClientCallDetails, Iterator[_TRequest]], _CallIterator[_TResponse]],
         client_call_details: ClientCallDetails,
         request_iterator: Iterator[_TRequest],
     ) -> _CallIterator[_TResponse]:
@@ -1818,8 +1785,9 @@ class ServiceRpcHandler(GenericRpcHandler, metaclass=abc.ABCMeta):
 # Service-Side Interceptor:
 
 class ServerInterceptor(abc.ABC):
-    """Affords intercepting incoming RPCs on the service-side."""
-    # This method (not the class) is generic over _TRequest and _TResponse.
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return continuation(handler_call_details)`.
     @abc.abstractmethod
     def intercept_service(
         self,

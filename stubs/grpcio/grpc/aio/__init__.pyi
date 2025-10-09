@@ -103,10 +103,6 @@ class AioRpcError(RpcError):
 
 # Create Client:
 
-class ClientInterceptor(metaclass=abc.ABCMeta):
-    """Base class used for all Aio Client Interceptor classes"""
-    ...
-
 def insecure_channel(
     target: str,
     options: _Options | None = None,
@@ -1058,7 +1054,7 @@ class InterceptedUnaryUnaryCall(_InterceptedCall[_TRequest, _TResponse], metacla
     def __await__(self) -> Generator[Incomplete, None, _TResponse]: ...
     def __init__(
         self,
-        interceptors: Sequence[UnaryUnaryClientInterceptor[_TRequest, _TResponse]],
+        interceptors: Sequence[UnaryUnaryClientInterceptor],
         request: _TRequest,
         timeout: float | None,
         metadata: Metadata,
@@ -1074,7 +1070,7 @@ class InterceptedUnaryUnaryCall(_InterceptedCall[_TRequest, _TResponse], metacla
     # pylint: disable=too-many-arguments
     async def _invoke(
         self,
-        interceptors: Sequence[UnaryUnaryClientInterceptor[_TRequest, _TResponse]],
+        interceptors: Sequence[UnaryUnaryClientInterceptor],
         method: bytes,
         timeout: float | None,
         metadata: Metadata | None,
@@ -1088,172 +1084,67 @@ class InterceptedUnaryUnaryCall(_InterceptedCall[_TRequest, _TResponse], metacla
         ...
     def time_remaining(self) -> float | None: ...
 
-class UnaryUnaryClientInterceptor(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
-    """Affords intercepting unary-unary invocations."""
+class ClientInterceptor(metaclass=abc.ABCMeta): ...
+
+class UnaryUnaryClientInterceptor(ClientInterceptor, metaclass=abc.ABCMeta):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return await continuation(client_call_details, request)`.
     @abc.abstractmethod
     async def intercept_unary_unary(
         self,
-        # XXX: See equivalent function in grpc types for notes about continuation:
-        continuation: Callable[[ClientCallDetails, _TRequest], UnaryUnaryCall[_TRequest, _TResponse]],
+        continuation: Callable[[ClientCallDetails, _TRequest], Awaitable[UnaryUnaryCall[_TRequest, _TResponse]]],
         client_call_details: ClientCallDetails,
         request: _TRequest,
-    ) -> _TResponse:
-        """
-        Intercepts a unary-unary invocation asynchronously.
+    ) -> _TResponse | UnaryUnaryCall[_TRequest, _TResponse]: ...
 
-        Args:
-          continuation: A coroutine that proceeds with the invocation by
-            executing the next interceptor in the chain or invoking the
-            actual RPC on the underlying Channel. It is the interceptor's
-            responsibility to call it if it decides to move the RPC forward.
-            The interceptor can use
-            `call = await continuation(client_call_details, request)`
-            to continue with the RPC. `continuation` returns the call to the
-            RPC.
-          client_call_details: A ClientCallDetails object describing the
-            outgoing RPC.
-          request: The request value for the RPC.
-
-        Returns:
-          An object with the RPC response.
-
-        Raises:
-          AioRpcError: Indicating that the RPC terminated with non-OK status.
-          asyncio.CancelledError: Indicating that the RPC was canceled.
-        """
-        ...
-
-class UnaryStreamClientInterceptor(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
-    """Affords intercepting unary-stream invocations."""
+class UnaryStreamClientInterceptor(ClientInterceptor, metaclass=abc.ABCMeta):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return await continuation(client_call_details, request)`.
     @abc.abstractmethod
     async def intercept_unary_stream(
         self,
-        continuation: Callable[[ClientCallDetails, _TRequest], UnaryStreamCall[_TRequest, _TResponse]],
+        continuation: Callable[[ClientCallDetails, _TRequest], Awaitable[UnaryStreamCall[_TRequest, _TResponse]]],
         client_call_details: ClientCallDetails,
         request: _TRequest,
-    ) -> AsyncIterable[_TResponse] | UnaryStreamCall[_TRequest, _TResponse]:
-        """
-        Intercepts a unary-stream invocation asynchronously.
+    ) -> AsyncIterator[_TResponse] | UnaryStreamCall[_TRequest, _TResponse]: ...
 
-        The function could return the call object or an asynchronous
-        iterator, in case of being an asyncrhonous iterator this will
-        become the source of the reads done by the caller.
-
-        Args:
-          continuation: A coroutine that proceeds with the invocation by
-            executing the next interceptor in the chain or invoking the
-            actual RPC on the underlying Channel. It is the interceptor's
-            responsibility to call it if it decides to move the RPC forward.
-            The interceptor can use
-            `call = await continuation(client_call_details, request)`
-            to continue with the RPC. `continuation` returns the call to the
-            RPC.
-          client_call_details: A ClientCallDetails object describing the
-            outgoing RPC.
-          request: The request value for the RPC.
-
-        Returns:
-          The RPC Call or an asynchronous iterator.
-
-        Raises:
-          AioRpcError: Indicating that the RPC terminated with non-OK status.
-          asyncio.CancelledError: Indicating that the RPC was canceled.
-        """
-        ...
-
-class StreamUnaryClientInterceptor(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
-    """Affords intercepting stream-unary invocations."""
+class StreamUnaryClientInterceptor(ClientInterceptor, metaclass=abc.ABCMeta):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return await continuation(client_call_details, request_iterator)`.
     @abc.abstractmethod
     async def intercept_stream_unary(
         self,
-        continuation: Callable[[ClientCallDetails, _TRequest], StreamUnaryCall[_TRequest, _TResponse]],
+        continuation: Callable[
+            [ClientCallDetails, AsyncIterable[_TRequest] | Iterable[_TRequest]], Awaitable[StreamUnaryCall[_TRequest, _TResponse]]
+        ],
         client_call_details: ClientCallDetails,
         request_iterator: AsyncIterable[_TRequest] | Iterable[_TRequest],
-    ) -> AsyncIterable[_TResponse] | UnaryStreamCall[_TRequest, _TResponse]:
-        """
-        Intercepts a stream-unary invocation asynchronously.
+    ) -> _TResponse | StreamUnaryCall[_TRequest, _TResponse]: ...
 
-        Within the interceptor the usage of the call methods like `write` or
-        even awaiting the call should be done carefully, since the caller
-        could be expecting an untouched call, for example for start writing
-        messages to it.
-
-        Args:
-          continuation: A coroutine that proceeds with the invocation by
-            executing the next interceptor in the chain or invoking the
-            actual RPC on the underlying Channel. It is the interceptor's
-            responsibility to call it if it decides to move the RPC forward.
-            The interceptor can use
-            `call = await continuation(client_call_details, request_iterator)`
-            to continue with the RPC. `continuation` returns the call to the
-            RPC.
-          client_call_details: A ClientCallDetails object describing the
-            outgoing RPC.
-          request_iterator: The request iterator that will produce requests
-            for the RPC.
-
-        Returns:
-          The RPC Call.
-
-        Raises:
-          AioRpcError: Indicating that the RPC terminated with non-OK status.
-          asyncio.CancelledError: Indicating that the RPC was canceled.
-        """
-        ...
-
-class StreamStreamClientInterceptor(Generic[_TRequest, _TResponse], metaclass=abc.ABCMeta):
-    """Affords intercepting stream-stream invocations."""
+class StreamStreamClientInterceptor(ClientInterceptor, metaclass=abc.ABCMeta):
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return await continuation(client_call_details, request_iterator)`.
     @abc.abstractmethod
     async def intercept_stream_stream(
         self,
-        continuation: Callable[[ClientCallDetails, _TRequest], StreamStreamCall[_TRequest, _TResponse]],
+        continuation: Callable[
+            [ClientCallDetails, AsyncIterable[_TRequest] | Iterable[_TRequest]],
+            Awaitable[StreamStreamCall[_TRequest, _TResponse]],
+        ],
         client_call_details: ClientCallDetails,
         request_iterator: AsyncIterable[_TRequest] | Iterable[_TRequest],
-    ) -> AsyncIterable[_TResponse] | StreamStreamCall[_TRequest, _TResponse]:
-        """
-        Intercepts a stream-stream invocation asynchronously.
-
-        Within the interceptor the usage of the call methods like `write` or
-        even awaiting the call should be done carefully, since the caller
-        could be expecting an untouched call, for example for start writing
-        messages to it.
-
-        The function could return the call object or an asynchronous
-        iterator, in case of being an asyncrhonous iterator this will
-        become the source of the reads done by the caller.
-
-        Args:
-          continuation: A coroutine that proceeds with the invocation by
-            executing the next interceptor in the chain or invoking the
-            actual RPC on the underlying Channel. It is the interceptor's
-            responsibility to call it if it decides to move the RPC forward.
-            The interceptor can use
-            `call = await continuation(client_call_details, request_iterator)`
-            to continue with the RPC. `continuation` returns the call to the
-            RPC.
-          client_call_details: A ClientCallDetails object describing the
-            outgoing RPC.
-          request_iterator: The request iterator that will produce requests
-            for the RPC.
-
-        Returns:
-          The RPC Call or an asynchronous iterator.
-
-        Raises:
-          AioRpcError: Indicating that the RPC terminated with non-OK status.
-          asyncio.CancelledError: Indicating that the RPC was canceled.
-        """
-        ...
+    ) -> AsyncIterator[_TResponse] | StreamStreamCall[_TRequest, _TResponse]: ...
 
 # Server-Side Interceptor:
 
 class ServerInterceptor(metaclass=abc.ABCMeta):
-    """
-    Affords intercepting incoming RPCs on the service-side.
-
-    This is an EXPERIMENTAL API.
-    """
-    # This method (not the class) is generic over _TRequest and _TResponse.
+    # This method (not the class) is generic over _TRequest and _TResponse
+    # and the types must satisfy the no-op implementation of
+    # `return await continuation(handler_call_details)`.
     @abc.abstractmethod
     async def intercept_service(
         self,
