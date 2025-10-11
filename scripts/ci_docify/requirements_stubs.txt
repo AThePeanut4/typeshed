@@ -43,7 +43,7 @@ python-jenkins~=1.8.3
 grpcio-health-checking==1.*
 auth0-python==4.10.*
 qrbill==1.1.*
-flake8-typing-imports==1.16.*
+flake8-typing-imports==1.17.*
 hnswlib==0.8.*
 shapely==2.1.*
 braintree==4.38.*
@@ -140,7 +140,7 @@ untangle==1.2.*
 lunardate==0.2.*
 mysqlclient==2.2.*
 icalendar==6.3.1
-aiofiles==24.1.*
+aiofiles==25.1.*
 django-filter==25.2.*
 tabulate==0.9.*
 pywin32==311.*
