@@ -1,5 +1,3 @@
-"""Various base classes."""
-
 from asyncio.events import AbstractEventLoop
 from collections.abc import Awaitable, Callable, Generator
 from concurrent.futures import Executor

@@ -1,3 +1,5 @@
+"""A parser for HTML and XHTML."""
+
 from _markupbase import ParserBase
 from re import Pattern
 from typing import Final
