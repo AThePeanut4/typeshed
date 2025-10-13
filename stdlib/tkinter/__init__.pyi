@@ -6167,13 +6167,23 @@ class Text(Widget, XView, YView):
         """
         ...
     config = configure
-    def bbox(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> tuple[int, int, int, int] | None: ...  # type: ignore[override]
+    def bbox(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> tuple[int, int, int, int] | None:
+        """
+        Return a tuple of (x,y,width,height) which gives the bounding
+        box of the visible part of the character at the given index.
+        """
+        ...
     def compare(
         self,
         index1: str | float | _tkinter.Tcl_Obj | Widget,
         op: Literal["<", "<=", "==", ">=", ">", "!="],
         index2: str | float | _tkinter.Tcl_Obj | Widget,
-    ) -> bool: ...
+    ) -> bool:
+        """
+        Return whether between index INDEX1 and index INDEX2 the
+        relation OP is satisfied. OP is one of <, <=, ==, >=, >, or !=.
+        """
+        ...
     if sys.version_info >= (3, 13):
         @overload
         def count(
@@ -6182,7 +6192,25 @@ class Text(Widget, XView, YView):
             index2: str | float | _tkinter.Tcl_Obj | Widget,
             *,
             return_ints: Literal[True],
-        ) -> int: ...
+        ) -> int:
+            """
+            Counts the number of relevant things between the two indices.
+
+            If INDEX1 is after INDEX2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given.
+            The result is a tuple of integers, one for the result of each
+            counting option given, if more than one option is specified or
+            return_ints is false (default), otherwise it is an integer.
+            Valid counting options are "chars", "displaychars",
+            "displayindices", "displaylines", "indices", "lines", "xpixels"
+            and "ypixels". The default value, if no option is specified, is
+            "indices". There is an additional possible option "update",
+            which if given then all subsequent options ensure that any
+            possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6192,7 +6220,25 @@ class Text(Widget, XView, YView):
             /,
             *,
             return_ints: Literal[True],
-        ) -> int: ...
+        ) -> int:
+            """
+            Counts the number of relevant things between the two indices.
+
+            If INDEX1 is after INDEX2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given.
+            The result is a tuple of integers, one for the result of each
+            counting option given, if more than one option is specified or
+            return_ints is false (default), otherwise it is an integer.
+            Valid counting options are "chars", "displaychars",
+            "displayindices", "displaylines", "indices", "lines", "xpixels"
+            and "ypixels". The default value, if no option is specified, is
+            "indices". There is an additional possible option "update",
+            which if given then all subsequent options ensure that any
+            possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6261,7 +6307,25 @@ class Text(Widget, XView, YView):
             /,
             *,
             return_ints: Literal[True],
-        ) -> tuple[int, int]: ...
+        ) -> tuple[int, int]:
+            """
+            Counts the number of relevant things between the two indices.
+
+            If INDEX1 is after INDEX2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given.
+            The result is a tuple of integers, one for the result of each
+            counting option given, if more than one option is specified or
+            return_ints is false (default), otherwise it is an integer.
+            Valid counting options are "chars", "displaychars",
+            "displayindices", "displaylines", "indices", "lines", "xpixels"
+            and "ypixels". The default value, if no option is specified, is
+            "indices". There is an additional possible option "update",
+            which if given then all subsequent options ensure that any
+            possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6299,7 +6363,25 @@ class Text(Widget, XView, YView):
             index2: str | float | _tkinter.Tcl_Obj | Widget,
             *,
             return_ints: Literal[False] = False,
-        ) -> tuple[int] | None: ...
+        ) -> tuple[int] | None:
+            """
+            Counts the number of relevant things between the two indices.
+
+            If INDEX1 is after INDEX2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given.
+            The result is a tuple of integers, one for the result of each
+            counting option given, if more than one option is specified or
+            return_ints is false (default), otherwise it is an integer.
+            Valid counting options are "chars", "displaychars",
+            "displayindices", "displaylines", "indices", "lines", "xpixels"
+            and "ypixels". The default value, if no option is specified, is
+            "indices". There is an additional possible option "update",
+            which if given then all subsequent options ensure that any
+            possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6449,7 +6531,21 @@ class Text(Widget, XView, YView):
         @overload
         def count(
             self, index1: str | float | _tkinter.Tcl_Obj | Widget, index2: str | float | _tkinter.Tcl_Obj | Widget
-        ) -> tuple[int] | None: ...
+        ) -> tuple[int] | None:
+            """
+            Counts the number of relevant things between the two indices.
+            If index1 is after index2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given by
+            args. The result is a list of integers, one for the result of each
+            counting option given. Valid counting options are "chars",
+            "displaychars", "displayindices", "displaylines", "indices",
+            "lines", "xpixels" and "ypixels". There is an additional possible
+            option "update", which if given then all subsequent options ensure
+            that any possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6457,7 +6553,21 @@ class Text(Widget, XView, YView):
             index2: str | float | _tkinter.Tcl_Obj | Widget,
             arg: _WhatToCount | Literal["update"],
             /,
-        ) -> tuple[int] | None: ...
+        ) -> tuple[int] | None:
+            """
+            Counts the number of relevant things between the two indices.
+            If index1 is after index2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given by
+            args. The result is a list of integers, one for the result of each
+            counting option given. Valid counting options are "chars",
+            "displaychars", "displayindices", "displaylines", "indices",
+            "lines", "xpixels" and "ypixels". There is an additional possible
+            option "update", which if given then all subsequent options ensure
+            that any possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6466,7 +6576,21 @@ class Text(Widget, XView, YView):
             arg1: Literal["update"],
             arg2: _WhatToCount,
             /,
-        ) -> int | None: ...
+        ) -> int | None:
+            """
+            Counts the number of relevant things between the two indices.
+            If index1 is after index2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given by
+            args. The result is a list of integers, one for the result of each
+            counting option given. Valid counting options are "chars",
+            "displaychars", "displayindices", "displaylines", "indices",
+            "lines", "xpixels" and "ypixels". There is an additional possible
+            option "update", which if given then all subsequent options ensure
+            that any possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6475,7 +6599,21 @@ class Text(Widget, XView, YView):
             arg1: _WhatToCount,
             arg2: Literal["update"],
             /,
-        ) -> int | None: ...
+        ) -> int | None:
+            """
+            Counts the number of relevant things between the two indices.
+            If index1 is after index2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given by
+            args. The result is a list of integers, one for the result of each
+            counting option given. Valid counting options are "chars",
+            "displaychars", "displayindices", "displaylines", "indices",
+            "lines", "xpixels" and "ypixels". There is an additional possible
+            option "update", which if given then all subsequent options ensure
+            that any possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6484,7 +6622,21 @@ class Text(Widget, XView, YView):
             arg1: _WhatToCount,
             arg2: _WhatToCount,
             /,
-        ) -> tuple[int, int]: ...
+        ) -> tuple[int, int]:
+            """
+            Counts the number of relevant things between the two indices.
+            If index1 is after index2, the result will be a negative number
+            (and this holds for each of the possible options).
+
+            The actual items which are counted depends on the options given by
+            args. The result is a list of integers, one for the result of each
+            counting option given. Valid counting options are "chars",
+            "displaychars", "displayindices", "displaylines", "indices",
+            "lines", "xpixels" and "ypixels". There is an additional possible
+            option "update", which if given then all subsequent options ensure
+            that any possible out of date information is recalculated.
+            """
+            ...
         @overload
         def count(
             self,
@@ -6519,11 +6671,24 @@ class Text(Widget, XView, YView):
         """
         ...
     @overload
-    def debug(self, boolean: bool) -> None: ...
+    def debug(self, boolean: bool) -> None:
+        """
+        Turn on the internal consistency checks of the B-Tree inside the text
+        widget according to BOOLEAN.
+        """
+        ...
     def delete(
         self, index1: str | float | _tkinter.Tcl_Obj | Widget, index2: str | float | _tkinter.Tcl_Obj | Widget | None = None
-    ) -> None: ...
-    def dlineinfo(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> tuple[int, int, int, int, int] | None: ...
+    ) -> None:
+        """Delete the characters between INDEX1 and INDEX2 (not included)."""
+        ...
+    def dlineinfo(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> tuple[int, int, int, int, int] | None:
+        """
+        Return tuple (x,y,width,height,baseline) giving the bounding box
+        and baseline position of the visible part of the line containing
+        the character at INDEX.
+        """
+        ...
     @overload
     def dump(
         self,
@@ -6635,28 +6800,80 @@ class Text(Widget, XView, YView):
         """
         ...
     @overload
-    def edit_modified(self, arg: bool) -> None: ...  # actually returns empty string
-    def edit_redo(self) -> None: ...  # actually returns empty string
-    def edit_reset(self) -> None: ...  # actually returns empty string
-    def edit_separator(self) -> None: ...  # actually returns empty string
-    def edit_undo(self) -> None: ...  # actually returns empty string
+    def edit_modified(self, arg: bool) -> None:
+        """
+        Get or Set the modified flag
+
+        If arg is not specified, returns the modified
+        flag of the widget. The insert, delete, edit undo and
+        edit redo commands or the user can set or clear the
+        modified flag. If boolean is specified, sets the
+        modified flag of the widget to arg.
+        """
+        ...
+    def edit_redo(self) -> None:
+        """
+        Redo the last undone edit
+
+        When the undo option is true, reapplies the last
+        undone edits provided no other edits were done since
+        then. Generates an error when the redo stack is empty.
+        Does nothing when the undo option is false.
+        """
+        ...
+    def edit_reset(self) -> None:
+        """
+        Clears the undo and redo stacks
+        
+        """
+        ...
+    def edit_separator(self) -> None:
+        """
+        Inserts a separator (boundary) on the undo stack.
+
+        Does nothing when the undo option is false
+        """
+        ...
+    def edit_undo(self) -> None:
+        """
+        Undoes the last edit action
+
+        If the undo option is true. An edit action is defined
+        as all the insert and delete commands that are recorded
+        on the undo stack in between two separators. Generates
+        an error when the undo stack is empty. Does nothing
+        when the undo option is false
+        """
+        ...
     def get(
         self, index1: str | float | _tkinter.Tcl_Obj | Widget, index2: str | float | _tkinter.Tcl_Obj | Widget | None = None
-    ) -> str: ...
+    ) -> str:
+        """Return the text from INDEX1 to INDEX2 (not included)."""
+        ...
     @overload
-    def image_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["image", "name"]) -> str: ...
+    def image_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["image", "name"]) -> str:
+        """Return the value of OPTION of an embedded image at INDEX."""
+        ...
     @overload
-    def image_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["padx", "pady"]) -> int: ...
+    def image_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["padx", "pady"]) -> int:
+        """Return the value of OPTION of an embedded image at INDEX."""
+        ...
     @overload
     def image_cget(
         self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["align"]
-    ) -> Literal["baseline", "bottom", "center", "top"]: ...
+    ) -> Literal["baseline", "bottom", "center", "top"]:
+        """Return the value of OPTION of an embedded image at INDEX."""
+        ...
     @overload
-    def image_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: str) -> Any: ...
+    def image_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: str) -> Any:
+        """Return the value of OPTION of an embedded image at INDEX."""
+        ...
     @overload
     def image_configure(
         self, index: str | float | _tkinter.Tcl_Obj | Widget, cnf: str
-    ) -> tuple[str, str, str, str, str | int]: ...
+    ) -> tuple[str, str, str, str, str | int]:
+        """Configure an embedded image at INDEX."""
+        ...
     @overload
     def image_configure(
         self,
@@ -6681,12 +6898,23 @@ class Text(Widget, XView, YView):
         name: str = ...,
         padx: float | str = ...,
         pady: float | str = ...,
-    ) -> str: ...
-    def image_names(self) -> tuple[str, ...]: ...
-    def index(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> str: ...
+    ) -> str:
+        """Create an embedded image at INDEX."""
+        ...
+    def image_names(self) -> tuple[str, ...]:
+        """Return all names of embedded images in this widget."""
+        ...
+    def index(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> str:
+        """Return the index in the form line.char for INDEX."""
+        ...
     def insert(
         self, index: str | float | _tkinter.Tcl_Obj | Widget, chars: str, *args: str | list[str] | tuple[str, ...]
-    ) -> None: ...
+    ) -> None:
+        """
+        Insert CHARS before the characters at INDEX. An additional
+        tag can be given in ARGS. Additional CHARS and tags can follow in ARGS.
+        """
+        ...
     @overload
     def mark_gravity(self, markName: str, direction: None = None) -> Literal["left", "right"]:
         """
@@ -6695,24 +6923,67 @@ class Text(Widget, XView, YView):
         """
         ...
     @overload
-    def mark_gravity(self, markName: str, direction: Literal["left", "right"]) -> None: ...  # actually returns empty string
-    def mark_names(self) -> tuple[str, ...]: ...
-    def mark_set(self, markName: str, index: str | float | _tkinter.Tcl_Obj | Widget) -> None: ...
-    def mark_unset(self, *markNames: str) -> None: ...
-    def mark_next(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> str | None: ...
-    def mark_previous(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> str | None: ...
+    def mark_gravity(self, markName: str, direction: Literal["left", "right"]) -> None:
+        """
+        Change the gravity of a mark MARKNAME to DIRECTION (LEFT or RIGHT).
+        Return the current value if None is given for DIRECTION.
+        """
+        ...
+    def mark_names(self) -> tuple[str, ...]:
+        """Return all mark names."""
+        ...
+    def mark_set(self, markName: str, index: str | float | _tkinter.Tcl_Obj | Widget) -> None:
+        """Set mark MARKNAME before the character at INDEX."""
+        ...
+    def mark_unset(self, *markNames: str) -> None:
+        """Delete all marks in MARKNAMES."""
+        ...
+    def mark_next(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> str | None:
+        """Return the name of the next mark after INDEX."""
+        ...
+    def mark_previous(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> str | None:
+        """Return the name of the previous mark before INDEX."""
+        ...
     # **kw of peer_create is same as the kwargs of Text.__init__
-    def peer_create(self, newPathName: str | Text, cnf: dict[str, Any] = {}, **kw) -> None: ...
-    def peer_names(self) -> tuple[_tkinter.Tcl_Obj, ...]: ...
+    def peer_create(self, newPathName: str | Text, cnf: dict[str, Any] = {}, **kw) -> None:
+        """
+        Creates a peer text widget with the given newPathName, and any
+        optional standard configuration options. By default the peer will
+        have the same start and end line as the parent widget, but
+        these can be overridden with the standard configuration options.
+        """
+        ...
+    def peer_names(self) -> tuple[_tkinter.Tcl_Obj, ...]:
+        """
+        Returns a list of peers of this widget (this does not include
+        the widget itself).
+        """
+        ...
     def replace(
         self,
         index1: str | float | _tkinter.Tcl_Obj | Widget,
         index2: str | float | _tkinter.Tcl_Obj | Widget,
         chars: str,
         *args: str | list[str] | tuple[str, ...],
-    ) -> None: ...
-    def scan_mark(self, x: int, y: int) -> None: ...
-    def scan_dragto(self, x: int, y: int) -> None: ...
+    ) -> None:
+        """
+        Replaces the range of characters between index1 and index2 with
+        the given characters and tags specified by args.
+
+        See the method insert for some more information about args, and the
+        method delete for information about the indices.
+        """
+        ...
+    def scan_mark(self, x: int, y: int) -> None:
+        """Remember the current X, Y coordinates."""
+        ...
+    def scan_dragto(self, x: int, y: int) -> None:
+        """
+        Adjust the view of the text to 10 times the
+        difference between X and Y and the coordinates given in
+        scan_mark.
+        """
+        ...
     def search(
         self,
         pattern: str,
@@ -6725,11 +6996,24 @@ class Text(Widget, XView, YView):
         nocase: bool | None = None,
         count: Variable | None = None,
         elide: bool | None = None,
-    ) -> str: ...  # returns empty string for not found
-    def see(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> None: ...
+    ) -> str:
+        """
+        Search PATTERN beginning from INDEX until STOPINDEX.
+        Return the index of the first character of a match or an
+        empty string.
+        """
+        ...
+    def see(self, index: str | float | _tkinter.Tcl_Obj | Widget) -> None:
+        """Scroll such that the character at INDEX is visible."""
+        ...
     def tag_add(
         self, tagName: str, index1: str | float | _tkinter.Tcl_Obj | Widget, *args: str | float | _tkinter.Tcl_Obj | Widget
-    ) -> None: ...
+    ) -> None:
+        """
+        Add tag TAGNAME to all characters between INDEX1 and index2 in ARGS.
+        Additional pairs of indices may follow in ARGS.
+        """
+        ...
     # tag_bind stuff is very similar to Canvas
     @overload
     def tag_bind(
@@ -6809,48 +7093,90 @@ class Text(Widget, XView, YView):
         """Configure a tag TAGNAME."""
         ...
     tag_config = tag_configure
-    def tag_delete(self, first_tag_name: str, /, *tagNames: str) -> None: ...  # error if no tag names given
-    def tag_lower(self, tagName: str, belowThis: str | None = None) -> None: ...
-    def tag_names(self, index: str | float | _tkinter.Tcl_Obj | Widget | None = None) -> tuple[str, ...]: ...
+    def tag_delete(self, first_tag_name: str, /, *tagNames: str) -> None:
+        """Delete all tags in TAGNAMES."""
+        ...
+    def tag_lower(self, tagName: str, belowThis: str | None = None) -> None:
+        """
+        Change the priority of tag TAGNAME such that it is lower
+        than the priority of BELOWTHIS.
+        """
+        ...
+    def tag_names(self, index: str | float | _tkinter.Tcl_Obj | Widget | None = None) -> tuple[str, ...]:
+        """Return a list of all tag names."""
+        ...
     def tag_nextrange(
         self,
         tagName: str,
         index1: str | float | _tkinter.Tcl_Obj | Widget,
         index2: str | float | _tkinter.Tcl_Obj | Widget | None = None,
-    ) -> tuple[str, str] | tuple[()]: ...
+    ) -> tuple[str, str] | tuple[()]:
+        """
+        Return a list of start and end index for the first sequence of
+        characters between INDEX1 and INDEX2 which all have tag TAGNAME.
+        The text is searched forward from INDEX1.
+        """
+        ...
     def tag_prevrange(
         self,
         tagName: str,
         index1: str | float | _tkinter.Tcl_Obj | Widget,
         index2: str | float | _tkinter.Tcl_Obj | Widget | None = None,
-    ) -> tuple[str, str] | tuple[()]: ...
-    def tag_raise(self, tagName: str, aboveThis: str | None = None) -> None: ...
-    def tag_ranges(self, tagName: str) -> tuple[_tkinter.Tcl_Obj, ...]: ...
+    ) -> tuple[str, str] | tuple[()]:
+        """
+        Return a list of start and end index for the first sequence of
+        characters between INDEX1 and INDEX2 which all have tag TAGNAME.
+        The text is searched backwards from INDEX1.
+        """
+        ...
+    def tag_raise(self, tagName: str, aboveThis: str | None = None) -> None:
+        """
+        Change the priority of tag TAGNAME such that it is higher
+        than the priority of ABOVETHIS.
+        """
+        ...
+    def tag_ranges(self, tagName: str) -> tuple[_tkinter.Tcl_Obj, ...]:
+        """Return a list of ranges of text which have tag TAGNAME."""
+        ...
     # tag_remove and tag_delete are different
     def tag_remove(
         self,
         tagName: str,
         index1: str | float | _tkinter.Tcl_Obj | Widget,
         index2: str | float | _tkinter.Tcl_Obj | Widget | None = None,
-    ) -> None: ...
+    ) -> None:
+        """Remove tag TAGNAME from all characters between INDEX1 and INDEX2."""
+        ...
     @overload
-    def window_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["padx", "pady"]) -> int: ...
+    def window_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["padx", "pady"]) -> int:
+        """Return the value of OPTION of an embedded window at INDEX."""
+        ...
     @overload
     def window_cget(
         self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["stretch"]
-    ) -> bool: ...  # actually returns Literal[0, 1]
+    ) -> bool:
+        """Return the value of OPTION of an embedded window at INDEX."""
+        ...
     @overload
     def window_cget(
         self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["align"]
-    ) -> Literal["baseline", "bottom", "center", "top"]: ...
+    ) -> Literal["baseline", "bottom", "center", "top"]:
+        """Return the value of OPTION of an embedded window at INDEX."""
+        ...
     @overload  # window is set to a widget, but read as the string name.
-    def window_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["create", "window"]) -> str: ...
+    def window_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: Literal["create", "window"]) -> str:
+        """Return the value of OPTION of an embedded window at INDEX."""
+        ...
     @overload
-    def window_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: str) -> Any: ...
+    def window_cget(self, index: str | float | _tkinter.Tcl_Obj | Widget, option: str) -> Any:
+        """Return the value of OPTION of an embedded window at INDEX."""
+        ...
     @overload
     def window_configure(
         self, index: str | float | _tkinter.Tcl_Obj | Widget, cnf: str
-    ) -> tuple[str, str, str, str, str | int]: ...
+    ) -> tuple[str, str, str, str, str | int]:
+        """Configure an embedded window at INDEX."""
+        ...
     @overload
     def window_configure(
         self,
