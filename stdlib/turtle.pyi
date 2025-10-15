@@ -407,16 +407,61 @@ class TurtleGraphicsError(Exception):
     ...
 
 class Shape:
+    """
+    Data structure modeling shapes.
+
+    attribute _type is one of "polygon", "image", "compound"
+    attribute _data is - depending on _type a poygon-tuple,
+    an image or a list constructed using the addcomponent method.
+    """
     def __init__(
         self, type_: Literal["polygon", "image", "compound"], data: _PolygonCoords | PhotoImage | None = None
     ) -> None: ...
-    def addcomponent(self, poly: _PolygonCoords, fill: _Color, outline: _Color | None = None) -> None: ...
+    def addcomponent(self, poly: _PolygonCoords, fill: _Color, outline: _Color | None = None) -> None:
+        """
+        Add component to a shape of type compound.
+
+        Arguments: poly is a polygon, i. e. a tuple of number pairs.
+        fill is the fillcolor of the component,
+        outline is the outline color of the component.
+
+        call (for a Shapeobject namend s):
+        --   s.addcomponent(((0,0), (10,10), (-10,10)), "red", "blue")
+
+        Example:
+        >>> poly = ((0,0),(10,-5),(0,10),(-10,-5))
+        >>> s = Shape("compound")
+        >>> s.addcomponent(poly, "red", "blue")
+        >>> # .. add more components and then use register_shape()
+        """
+        ...
 
 class TurtleScreen(TurtleScreenBase):
+    """
+    Provides screen oriented methods like bgcolor etc.
+
+    Only relies upon the methods of TurtleScreenBase and NOT
+    upon components of the underlying graphics toolkit -
+    which is Tkinter in this case.
+    """
     def __init__(
         self, cv: Canvas, mode: Literal["standard", "logo", "world"] = "standard", colormode: float = 1.0, delay: int = 10
     ) -> None: ...
-    def clear(self) -> None: ...
+    def clear(self) -> None:
+        """
+        Delete all drawings and all turtles from the TurtleScreen.
+
+        No argument.
+
+        Reset empty TurtleScreen to its initial state: white background,
+        no backgroundimage, no eventbindings and tracing on.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.clear()
+
+        Note: this method is not available as function.
+        """
+        ...
     @overload
     def mode(self, mode: None = None) -> str:
         """
@@ -443,9 +488,78 @@ class TurtleScreen(TurtleScreenBase):
         """
         ...
     @overload
-    def mode(self, mode: Literal["standard", "logo", "world"]) -> None: ...
-    def setworldcoordinates(self, llx: float, lly: float, urx: float, ury: float) -> None: ...
-    def register_shape(self, name: str, shape: _PolygonCoords | Shape | None = None) -> None: ...
+    def mode(self, mode: Literal["standard", "logo", "world"]) -> None:
+        """
+        Set turtle-mode ('standard', 'logo' or 'world') and perform reset.
+
+        Optional argument:
+        mode -- one of the strings 'standard', 'logo' or 'world'
+
+        Mode 'standard' is compatible with turtle.py.
+        Mode 'logo' is compatible with most Logo-Turtle-Graphics.
+        Mode 'world' uses userdefined 'worldcoordinates'. *Attention*: in
+        this mode angles appear distorted if x/y unit-ratio doesn't equal 1.
+        If mode is not given, return the current mode.
+
+             Mode      Initial turtle heading     positive angles
+         ------------|-------------------------|-------------------
+          'standard'    to the right (east)       counterclockwise
+            'logo'        upward    (north)         clockwise
+
+        Examples:
+        >>> mode('logo')   # resets turtle heading to north
+        >>> mode()
+        'logo'
+        """
+        ...
+    def setworldcoordinates(self, llx: float, lly: float, urx: float, ury: float) -> None:
+        """
+        Set up a user defined coordinate-system.
+
+        Arguments:
+        llx -- a number, x-coordinate of lower left corner of canvas
+        lly -- a number, y-coordinate of lower left corner of canvas
+        urx -- a number, x-coordinate of upper right corner of canvas
+        ury -- a number, y-coordinate of upper right corner of canvas
+
+        Set up user coodinat-system and switch to mode 'world' if necessary.
+        This performs a screen.reset. If mode 'world' is already active,
+        all drawings are redrawn according to the new coordinates.
+
+        But ATTENTION: in user-defined coordinatesystems angles may appear
+        distorted. (see Screen.mode())
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.setworldcoordinates(-10,-0.5,50,1.5)
+        >>> for _ in range(36):
+        ...     left(10)
+        ...     forward(0.5)
+        """
+        ...
+    def register_shape(self, name: str, shape: _PolygonCoords | Shape | None = None) -> None:
+        """
+        Adds a turtle shape to TurtleScreen's shapelist.
+
+        Arguments:
+        (1) name is the name of a gif-file and shape is None.
+            Installs the corresponding image shape.
+            !! Image-shapes DO NOT rotate when turning the turtle,
+            !! so they do not display the heading of the turtle!
+        (2) name is an arbitrary string and shape is a tuple
+            of pairs of coordinates. Installs the corresponding
+            polygon shape
+        (3) name is an arbitrary string and shape is a
+            (compound) Shape object. Installs the corresponding
+            compound shape.
+        To use a shape, you have to issue the command shape(shapename).
+
+        call: register_shape("turtle.gif")
+        --or: register_shape("tri", ((0,0), (10,10), (-10,10)))
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.register_shape("triangle", ((5,-3),(0,5),(-5,-3)))
+        """
+        ...
     @overload
     def colormode(self, cmode: None = None) -> float:
         """
@@ -873,11 +987,9 @@ class TNavigator:
     DEFAULT_ANGLEOFFSET: int
     DEFAULT_ANGLEORIENT: int
     def __init__(self, mode: Literal["standard", "logo", "world"] = "standard") -> None: ...
-    def reset(self) -> None: ...
-    def degrees(self, fullcircle: float = 360.0) -> None: ...
-    def radians(self) -> None: ...
-    if sys.version_info >= (3, 12):
-        def teleport(self, x: float | None = None, y: float | None = None, *, fill_gap: bool = False) -> None: ...
+    def reset(self) -> None:
+        """
+        reset turtle to its initial values
 
         Will be overwritten by parent class
         """
@@ -1351,44 +1463,15 @@ class TNavigator:
     seth = setheading
 
 class TPen:
+    """
+    Drawing part of the RawTurtle.
+    Implements drawing properties.
+    """
     def __init__(self, resizemode: Literal["auto", "user", "noresize"] = "noresize") -> None: ...
     @overload
-    def resizemode(self, rmode: None = None) -> str: ...
-    @overload
-    def resizemode(self, rmode: Literal["auto", "user", "noresize"]) -> None: ...
-    @overload
-    def pensize(self, width: None = None) -> int: ...
-    @overload
-    def pensize(self, width: int) -> None: ...
-    def penup(self) -> None: ...
-    def pendown(self) -> None: ...
-    def isdown(self) -> bool: ...
-    @overload
-    def speed(self, speed: None = None) -> int: ...
-    @overload
-    def speed(self, speed: _Speed) -> None: ...
-    @overload
-    def pencolor(self) -> _AnyColor: ...
-    @overload
-    def pencolor(self, color: _Color) -> None: ...
-    @overload
-    def pencolor(self, r: float, g: float, b: float) -> None: ...
-    @overload
-    def fillcolor(self) -> _AnyColor: ...
-    @overload
-    def fillcolor(self, color: _Color) -> None: ...
-    @overload
-    def fillcolor(self, r: float, g: float, b: float) -> None: ...
-    @overload
-    def color(self) -> tuple[_AnyColor, _AnyColor]: ...
-    @overload
-    def color(self, color: _Color) -> None: ...
-    @overload
-    def color(self, r: float, g: float, b: float) -> None: ...
-    @overload
-    def color(self, color1: _Color, color2: _Color) -> None: ...
-    if sys.version_info >= (3, 12):
-        def teleport(self, x: float | None = None, y: float | None = None, *, fill_gap: bool = False) -> None: ...
+    def resizemode(self, rmode: None = None) -> str:
+        """
+        Set resizemode to one of the values: "auto", "user", "noresize".
 
         (Optional) Argument:
         rmode -- one of the strings "auto", "user", "noresize"
@@ -1411,7 +1494,7 @@ class TPen:
         """
         ...
     @overload
-    def resizemode(self, rmode: str) -> None:
+    def resizemode(self, rmode: Literal["auto", "user", "noresize"]) -> None:
         """
         Set resizemode to one of the values: "auto", "user", "noresize".
 
@@ -3011,9 +3094,78 @@ def mode(mode: None = None) -> str:
     """
     ...
 @overload
-def mode(mode: Literal["standard", "logo", "world"]) -> None: ...
-def setworldcoordinates(llx: float, lly: float, urx: float, ury: float) -> None: ...
-def register_shape(name: str, shape: _PolygonCoords | Shape | None = None) -> None: ...
+def mode(mode: Literal["standard", "logo", "world"]) -> None:
+    """
+    Set turtle-mode ('standard', 'logo' or 'world') and perform reset.
+
+    Optional argument:
+    mode -- one of the strings 'standard', 'logo' or 'world'
+
+    Mode 'standard' is compatible with turtle.py.
+    Mode 'logo' is compatible with most Logo-Turtle-Graphics.
+    Mode 'world' uses userdefined 'worldcoordinates'. *Attention*: in
+    this mode angles appear distorted if x/y unit-ratio doesn't equal 1.
+    If mode is not given, return the current mode.
+
+         Mode      Initial turtle heading     positive angles
+     ------------|-------------------------|-------------------
+      'standard'    to the right (east)       counterclockwise
+        'logo'        upward    (north)         clockwise
+
+    Examples:
+    >>> mode('logo')   # resets turtle heading to north
+    >>> mode()
+    'logo'
+    """
+    ...
+def setworldcoordinates(llx: float, lly: float, urx: float, ury: float) -> None:
+    """
+    Set up a user defined coordinate-system.
+
+    Arguments:
+    llx -- a number, x-coordinate of lower left corner of canvas
+    lly -- a number, y-coordinate of lower left corner of canvas
+    urx -- a number, x-coordinate of upper right corner of canvas
+    ury -- a number, y-coordinate of upper right corner of canvas
+
+    Set up user coodinat-system and switch to mode 'world' if necessary.
+    This performs a reset. If mode 'world' is already active,
+    all drawings are redrawn according to the new coordinates.
+
+    But ATTENTION: in user-defined coordinatesystems angles may appear
+    distorted. (see Screen.mode())
+
+    Example:
+    >>> setworldcoordinates(-10,-0.5,50,1.5)
+    >>> for _ in range(36):
+    ...     left(10)
+    ...     forward(0.5)
+    """
+    ...
+def register_shape(name: str, shape: _PolygonCoords | Shape | None = None) -> None:
+    """
+    Adds a turtle shape to TurtleScreen's shapelist.
+
+    Arguments:
+    (1) name is the name of a gif-file and shape is None.
+        Installs the corresponding image shape.
+        !! Image-shapes DO NOT rotate when turning the turtle,
+        !! so they do not display the heading of the turtle!
+    (2) name is an arbitrary string and shape is a tuple
+        of pairs of coordinates. Installs the corresponding
+        polygon shape
+    (3) name is an arbitrary string and shape is a
+        (compound) Shape object. Installs the corresponding
+        compound shape.
+    To use a shape, you have to issue the command shape(shapename).
+
+    call: register_shape("turtle.gif")
+    --or: register_shape("tri", ((0,0), (10,10), (-10,10)))
+
+    Example:
+    >>> register_shape("triangle", ((5,-3),(0,5),(-5,-3)))
+    """
+    ...
 @overload
 def colormode(cmode: None = None) -> float:
     """
@@ -4015,7 +4167,30 @@ def resizemode(rmode: None = None) -> str:
     """
     ...
 @overload
-def resizemode(rmode: Literal["auto", "user", "noresize"]) -> None: ...
+def resizemode(rmode: Literal["auto", "user", "noresize"]) -> None:
+    """
+    Set resizemode to one of the values: "auto", "user", "noresize".
+
+    (Optional) Argument:
+    rmode -- one of the strings "auto", "user", "noresize"
+
+    Different resizemodes have the following effects:
+      - "auto" adapts the appearance of the turtle
+               corresponding to the value of pensize.
+      - "user" adapts the appearance of the turtle according to the
+               values of stretchfactor and outlinewidth (outline),
+               which are set by shapesize()
+      - "noresize" no adaption of the turtle's appearance takes place.
+    If no argument is given, return current resizemode.
+    resizemode("user") is called by a call of shapesize with arguments.
+
+
+    Examples:
+    >>> resizemode("noresize")
+    >>> resizemode()
+    'noresize'
+    """
+    ...
 @overload
 def pensize(width: None = None) -> int:
     """

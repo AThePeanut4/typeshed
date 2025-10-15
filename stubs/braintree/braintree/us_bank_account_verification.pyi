@@ -31,6 +31,7 @@ class UsBankAccountVerification(AttributeGetter):
 
         * braintree.UsBankAccountVerification.VerificationMethod.NetworkCheck
         * braintree.UsBankAccountVerification.VerificationMethod.IndependentCheck
+        * braintree.UsBankAccountVerification.VerificationMethod.InstantVerificationAccountValidation
         * braintree.UsBankAccountVerification.VerificationMethod.TokenizedCheck
         * braintree.UsBankAccountVerification.VerificationMethod.MicroTransfers
         """
