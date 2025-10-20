@@ -314,8 +314,15 @@ class Sheet(BaseObject):
         """
         ...
     @overload
-    def __getitem__(self, item: tuple[int, int]) -> Cell: ...
-    def get_rows(self) -> Generator[list[Cell]]: ...
+    def __getitem__(self, item: tuple[int, int]) -> Cell:
+        """
+        Takes either rowindex or (rowindex, colindex) as an index,
+        and returns either row or cell respectively.
+        """
+        ...
+    def get_rows(self) -> Generator[list[Cell]]:
+        """Returns a generator for iterating through each row."""
+        ...
     __iter__ = get_rows
     def row_types(self, rowx: int, start_colx: int = 0, end_colx: int | None = None) -> Sequence[int]:
         """Returns a slice of the types of the cells in the given row."""
