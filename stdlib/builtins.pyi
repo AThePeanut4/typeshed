@@ -6358,11 +6358,20 @@ class BaseException:
     def __init__(self, *args: object) -> None: ...
     def __new__(cls, *args: Any, **kwds: Any) -> Self: ...
     def __setstate__(self, state: dict[str, Any] | None, /) -> None: ...
-    def with_traceback(self, tb: TracebackType | None, /) -> Self: ...
+    def with_traceback(self, tb: TracebackType | None, /) -> Self:
+        """
+        Exception.with_traceback(tb) --
+        set self.__traceback__ to tb and return self.
+        """
+        ...
     # Necessary for security-focused static analyzers (e.g, pysa)
     # See https://github.com/python/typeshed/pull/14900
-    def __str__(self) -> str: ...  # noqa: Y029
-    def __repr__(self) -> str: ...  # noqa: Y029
+    def __str__(self) -> str:
+        """Return str(self)."""
+        ...
+    def __repr__(self) -> str:
+        """Return repr(self)."""
+        ...
     if sys.version_info >= (3, 11):
         # only present after add_note() is called
         __notes__: list[str]
