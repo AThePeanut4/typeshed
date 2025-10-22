@@ -138,6 +138,7 @@ class TLRUCache(_TimedCache[_KT, _VT]):
         ...
 
 class _CacheInfo(NamedTuple):
+    """CacheInfo(hits, misses, maxsize, currsize)"""
     hits: int
     misses: int
     maxsize: int | None
@@ -158,7 +159,12 @@ def cached(
     lock: AbstractContextManager[Any] | None = None,
     condition: Condition | None = None,
     info: Literal[True] = ...,
-) -> Callable[[Callable[..., _R]], _cached_wrapper_info[_R]]: ...
+) -> Callable[[Callable[..., _R]], _cached_wrapper_info[_R]]:
+    """
+    Decorator to wrap a function with a memoizing callable that saves
+    results in a cache.
+    """
+    ...
 @overload
 def cached(
     cache: MutableMapping[_KT, Any] | None,
@@ -166,7 +172,12 @@ def cached(
     lock: AbstractContextManager[Any] | None = None,
     condition: Condition | None = None,
     info: Literal[False] = ...,
-) -> Callable[[Callable[..., _R]], _cached_wrapper[_R]]: ...
+) -> Callable[[Callable[..., _R]], _cached_wrapper[_R]]:
+    """
+    Decorator to wrap a function with a memoizing callable that saves
+    results in a cache.
+    """
+    ...
 @overload
 @deprecated("Passing `info` as positional parameter is deprecated.")
 def cached(
@@ -174,7 +185,12 @@ def cached(
     key: Callable[..., _KT] = ...,
     lock: AbstractContextManager[Any] | None = None,
     condition: Literal[True] = ...,
-) -> Callable[[Callable[..., _R]], _cached_wrapper_info[_R]]: ...
+) -> Callable[[Callable[..., _R]], _cached_wrapper_info[_R]]:
+    """
+    Decorator to wrap a function with a memoizing callable that saves
+    results in a cache.
+    """
+    ...
 @overload
 @deprecated("Passing `info` as positional parameter is deprecated.")
 def cached(
@@ -182,7 +198,12 @@ def cached(
     key: Callable[..., _KT] = ...,
     lock: AbstractContextManager[Any] | None = None,
     condition: Literal[False] | None = ...,
-) -> Callable[[Callable[..., _R]], _cached_wrapper[_R]]: ...
+) -> Callable[[Callable[..., _R]], _cached_wrapper[_R]]:
+    """
+    Decorator to wrap a function with a memoizing callable that saves
+    results in a cache.
+    """
+    ...
 def cachedmethod(
     cache: Callable[[Any], MutableMapping[_KT, Any] | None],
     key: Callable[..., _KT] = ...,

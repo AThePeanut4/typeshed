@@ -740,15 +740,127 @@ class TurtleScreen(TurtleScreenBase):
         @contextmanager
         def no_animation(self) -> Generator[None]: ...
 
-    def update(self) -> None: ...
-    def window_width(self) -> int: ...
-    def window_height(self) -> int: ...
-    def getcanvas(self) -> Canvas: ...
-    def getshapes(self) -> list[str]: ...
-    def onclick(self, fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None: ...
-    def onkey(self, fun: Callable[[], object], key: str) -> None: ...
-    def listen(self, xdummy: float | None = None, ydummy: float | None = None) -> None: ...
-    def ontimer(self, fun: Callable[[], object], t: int = 0) -> None: ...
+    def update(self) -> None:
+        """
+        Perform a TurtleScreen update.
+        
+        """
+        ...
+    def window_width(self) -> int:
+        """
+        Return the width of the turtle window.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.window_width()
+        640
+        """
+        ...
+    def window_height(self) -> int:
+        """
+        Return the height of the turtle window.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.window_height()
+        480
+        """
+        ...
+    def getcanvas(self) -> Canvas:
+        """
+        Return the Canvas of this TurtleScreen.
+
+        No argument.
+
+        Example (for a Screen instance named screen):
+        >>> cv = screen.getcanvas()
+        >>> cv
+        <turtle.ScrolledCanvas instance at 0x010742D8>
+        """
+        ...
+    def getshapes(self) -> list[str]:
+        """
+        Return a list of names of all currently available turtle shapes.
+
+        No argument.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.getshapes()
+        ['arrow', 'blank', 'circle', ... , 'turtle']
+        """
+        ...
+    def onclick(self, fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None:
+        """
+        Bind fun to mouse-click event on canvas.
+
+        Arguments:
+        fun -- a function with two arguments, the coordinates of the
+               clicked point on the canvas.
+        btn -- the number of the mouse-button, defaults to 1
+
+        Example (for a TurtleScreen instance named screen)
+
+        >>> screen.onclick(goto)
+        >>> # Subsequently clicking into the TurtleScreen will
+        >>> # make the turtle move to the clicked point.
+        >>> screen.onclick(None)
+        """
+        ...
+    def onkey(self, fun: Callable[[], object], key: str) -> None:
+        """
+        Bind fun to key-release event of key.
+
+        Arguments:
+        fun -- a function with no arguments
+        key -- a string: key (e.g. "a") or key-symbol (e.g. "space")
+
+        In order to be able to register key-events, TurtleScreen
+        must have focus. (See method listen.)
+
+        Example (for a TurtleScreen instance named screen):
+
+        >>> def f():
+        ...     fd(50)
+        ...     lt(60)
+        ...
+        >>> screen.onkey(f, "Up")
+        >>> screen.listen()
+
+        Subsequently the turtle can be moved by repeatedly pressing
+        the up-arrow key, consequently drawing a hexagon
+        """
+        ...
+    def listen(self, xdummy: float | None = None, ydummy: float | None = None) -> None:
+        """
+        Set focus on TurtleScreen (in order to collect key-events)
+
+        No arguments.
+        Dummy arguments are provided in order
+        to be able to pass listen to the onclick method.
+
+        Example (for a TurtleScreen instance named screen):
+        >>> screen.listen()
+        """
+        ...
+    def ontimer(self, fun: Callable[[], object], t: int = 0) -> None:
+        """
+        Install a timer, which calls fun after t milliseconds.
+
+        Arguments:
+        fun -- a function with no arguments.
+        t -- a number >= 0
+
+        Example (for a TurtleScreen instance named screen):
+
+        >>> running = True
+        >>> def f():
+        ...     if running:
+        ...             fd(50)
+        ...             lt(60)
+        ...             screen.ontimer(f, 250)
+        ...
+        >>> f()   # makes the turtle marching around
+        >>> running = False
+        """
+        ...
     @overload
     def bgpic(self, picname: None = None) -> str:
         """
@@ -3246,15 +3358,130 @@ if sys.version_info >= (3, 14):
     @contextmanager
     def no_animation() -> Generator[None]: ...
 
-def update() -> None: ...
-def window_width() -> int: ...
-def window_height() -> int: ...
-def getcanvas() -> Canvas: ...
-def getshapes() -> list[str]: ...
-def onclick(fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None: ...
-def onkey(fun: Callable[[], object], key: str) -> None: ...
-def listen(xdummy: float | None = None, ydummy: float | None = None) -> None: ...
-def ontimer(fun: Callable[[], object], t: int = 0) -> None: ...
+def update() -> None:
+    """
+    Perform a TurtleScreen update.
+        
+    """
+    ...
+def window_width() -> int:
+    """
+    Return the width of the turtle window.
+
+    Example:
+    >>> window_width()
+    640
+    """
+    ...
+def window_height() -> int:
+    """
+    Return the height of the turtle window.
+
+    Example:
+    >>> window_height()
+    480
+    """
+    ...
+def getcanvas() -> Canvas:
+    """
+    Return the Canvas of this TurtleScreen.
+
+    No argument.
+
+    Example:
+    >>> cv = getcanvas()
+    >>> cv
+    <turtle.ScrolledCanvas instance at 0x010742D8>
+    """
+    ...
+def getshapes() -> list[str]:
+    """
+    Return a list of names of all currently available turtle shapes.
+
+    No argument.
+
+    Example:
+    >>> getshapes()
+    ['arrow', 'blank', 'circle', ... , 'turtle']
+    """
+    ...
+def onclick(fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None:
+    """
+    Bind fun to mouse-click event on this turtle on canvas.
+
+    Arguments:
+    fun --  a function with two arguments, to which will be assigned
+            the coordinates of the clicked point on the canvas.
+    btn --  number of the mouse-button defaults to 1 (left mouse button).
+    add --  True or False. If True, new binding will be added, otherwise
+            it will replace a former binding.
+
+    Example for the anonymous turtle, i. e. the procedural way:
+
+    >>> def turn(x, y):
+    ...     left(360)
+    ...
+    >>> onclick(turn)  # Now clicking into the turtle will turn it.
+    >>> onclick(None)  # event-binding will be removed
+    """
+    ...
+def onkey(fun: Callable[[], object], key: str) -> None:
+    """
+    Bind fun to key-release event of key.
+
+    Arguments:
+    fun -- a function with no arguments
+    key -- a string: key (e.g. "a") or key-symbol (e.g. "space")
+
+    In order to be able to register key-events, TurtleScreen
+    must have focus. (See method listen.)
+
+    Example:
+
+    >>> def f():
+    ...     fd(50)
+    ...     lt(60)
+    ...
+    >>> onkey(f, "Up")
+    >>> listen()
+
+    Subsequently the turtle can be moved by repeatedly pressing
+    the up-arrow key, consequently drawing a hexagon
+    """
+    ...
+def listen(xdummy: float | None = None, ydummy: float | None = None) -> None:
+    """
+    Set focus on TurtleScreen (in order to collect key-events)
+
+    No arguments.
+    Dummy arguments are provided in order
+    to be able to pass listen to the onclick method.
+
+    Example:
+    >>> listen()
+    """
+    ...
+def ontimer(fun: Callable[[], object], t: int = 0) -> None:
+    """
+    Install a timer, which calls fun after t milliseconds.
+
+    Arguments:
+    fun -- a function with no arguments.
+    t -- a number >= 0
+
+    Example:
+
+    >>> running = True
+    >>> def f():
+    ...     if running:
+    ...             fd(50)
+    ...             lt(60)
+    ...             ontimer(f, 250)
+    ...
+    >>> f()   # makes the turtle marching around
+    >>> running = False
+    """
+    ...
 @overload
 def bgpic(picname: None = None) -> str:
     """
@@ -5228,9 +5455,69 @@ def getturtle() -> Turtle:
 
 getpen = getturtle
 
-def onrelease(fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None: ...
-def ondrag(fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None: ...
-def undo() -> None: ...
+def onrelease(fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None:
+    """
+    Bind fun to mouse-button-release event on this turtle on canvas.
+
+    Arguments:
+    fun -- a function with two arguments, to which will be assigned
+            the coordinates of the clicked point on the canvas.
+    btn --  number of the mouse-button defaults to 1 (left mouse button).
+
+    Example (for a MyTurtle instance named joe):
+    >>> class MyTurtle(Turtle):
+    ...     def glow(self,x,y):
+    ...             self.fillcolor("red")
+    ...     def unglow(self,x,y):
+    ...             self.fillcolor("")
+    ...
+    >>> joe = MyTurtle()
+    >>> joe.onclick(joe.glow)
+    >>> joe.onrelease(joe.unglow)
+
+    Clicking on joe turns fillcolor red, unclicking turns it to
+    transparent.
+    """
+    ...
+def ondrag(fun: Callable[[float, float], object], btn: int = 1, add: bool | None = None) -> None:
+    """
+    Bind fun to mouse-move event on this turtle on canvas.
+
+    Arguments:
+    fun -- a function with two arguments, to which will be assigned
+           the coordinates of the clicked point on the canvas.
+    btn -- number of the mouse-button defaults to 1 (left mouse button).
+
+    Every sequence of mouse-move-events on a turtle is preceded by a
+    mouse-click event on that 
+
+    Example:
+    >>> ondrag(goto)
+
+    Subsequently clicking and dragging a Turtle will move it
+    across the screen thereby producing handdrawings (if pen is
+    down).
+    """
+    ...
+def undo() -> None:
+    """
+    undo (repeatedly) the last turtle action.
+
+    No argument.
+
+    undo (repeatedly) the last turtle action.
+    Number of available undo actions is determined by the size of
+    the undobuffer.
+
+    Example:
+    >>> for i in range(4):
+    ...     fd(50); lt(80)
+    ...
+    >>> for i in range(8):
+    ...     undo()
+    ...
+    """
+    ...
 
 turtlesize = shapesize
 
