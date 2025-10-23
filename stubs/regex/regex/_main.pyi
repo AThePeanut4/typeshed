@@ -750,12 +750,25 @@ def cache_all(value: bool = True) -> None:
     """
     ...
 @overload
-def cache_all(value: None) -> bool: ...
-def escape(pattern: AnyStr, special_only: bool = True, literal_spaces: bool = False) -> AnyStr: ...
+def cache_all(value: None) -> bool:
+    """
+    Sets whether to cache all patterns, even those are compiled explicitly.
+    Passing None has no effect, but returns the current setting.
+    """
+    ...
+def escape(pattern: AnyStr, special_only: bool = True, literal_spaces: bool = False) -> AnyStr:
+    """
+    Escape a string for use as a literal in a pattern. If special_only is
+    True, escape only special characters, else escape all non-alphanumeric
+    characters. If literal_spaces is True, don't escape spaces.
+    """
+    ...
 
 DEFAULT_VERSION = RegexFlag.VERSION0
 
-def template(pattern: AnyStr | Pattern[AnyStr], flags: int = 0) -> Pattern[AnyStr]: ...
+def template(pattern: AnyStr | Pattern[AnyStr], flags: int = 0) -> Pattern[AnyStr]:
+    """Compile a template pattern, returning a pattern object."""
+    ...
 
 Regex = compile
 
