@@ -46,7 +46,7 @@ qrbill==1.1.*
 flake8-typing-imports==1.17.*
 hnswlib==0.8.*
 shapely==2.1.*
-braintree==4.39.*
+braintree==4.40.*
 gunicorn==23.0.*
 aws-xray-sdk==2.14.*
 Jetson.GPIO==2.1.12
