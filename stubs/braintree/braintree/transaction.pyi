@@ -47,6 +47,7 @@ class Transaction(Resource):
             "amount": "100.00",
             "order_id": "123",
             "channel": "MyShoppingCartProvider",
+            "processing_merchant_category_code": "5411",
             "credit_card": {
                 "number": "5105105105105100",
                 "expiration_date": "05/2011",
