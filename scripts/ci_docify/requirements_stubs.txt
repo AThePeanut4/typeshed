@@ -104,7 +104,7 @@ entrypoints==0.4.*
 dateparser[fasttext,langdetect]~=1.2.2
 passpy==1.0.*
 setuptools==80.9.*
-lupa==2.5.*
+lupa==2.6.*
 objgraph==3.6.*
 antlr4-python3-runtime==4.13.*
 Flask-Cors==6.0.*
@@ -168,7 +168,6 @@ xlrd==2.0.*
 ratelimit==2.2.*
 croniter==6.0.0
 pynput~=1.8.1
-ExifRead==3.0.*
 gevent==25.4.*
 channels==4.3.*
 decorator==5.2.*
