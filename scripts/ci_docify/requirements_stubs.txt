@@ -152,7 +152,7 @@ click-web==0.8.*
 colorama==0.4.*
 PyYAML==6.0.*
 mock==5.2.*
-flake8-builtins==3.0.*
+flake8-builtins==3.1.*
 pyasn1==0.6.*
 editdistance==0.8.*
 regex==2025.10.23
