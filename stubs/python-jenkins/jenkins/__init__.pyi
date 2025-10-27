@@ -371,26 +371,307 @@ class Jenkins:
         """
         ...
     @deprecated("Deprecated since 0.4.9. Use `get_plugins` instead.")
-    def get_plugins_info(self, depth: int = 2) -> _JSON: ...
-    def get_plugin_info(self, name: str, depth: int = 2) -> _JSON: ...
-    def get_plugins(self, depth: int = 2) -> _JSON: ...
-    def get_jobs(self, folder_depth: int = 0, folder_depth_per_request: int = 10, view_name: str | None = None) -> list[_Job]: ...
-    def get_all_jobs(self, folder_depth: int | None = None, folder_depth_per_request: int = 10) -> list[_Job]: ...
-    def copy_job(self, from_name: str, to_name: str) -> None: ...
-    def rename_job(self, from_name: str, to_name: str) -> None: ...
-    def delete_job(self, name: str) -> None: ...
-    def enable_job(self, name: str) -> None: ...
-    def disable_job(self, name: str) -> None: ...
-    def set_next_build_number(self, name: str, number: int) -> None: ...
-    def job_exists(self, name: str) -> bool: ...
-    def jobs_count(self) -> int: ...
-    def assert_job_exists(self, name: str, exception_message: str = "job[%s] does not exist") -> None: ...
-    def create_folder(self, folder_name: str, ignore_failures: bool = False) -> None: ...
-    def upsert_job(self, name: str, config_xml: str) -> None: ...
-    def check_jenkinsfile_syntax(self, jenkinsfile: str) -> list[str]: ...
-    def create_job(self, name: str, config_xml: str) -> None: ...
-    def get_job_config(self, name: str) -> str: ...
-    def reconfig_job(self, name: str, config_xml: str) -> None: ...
+    def get_plugins_info(self, depth: int = 2) -> _JSON:
+        """
+        Get all installed plugins information on this Master.
+
+        This method retrieves information about each plugin that is installed
+        on master returning the raw plugin data in a JSON format.
+
+        .. deprecated:: 0.4.9
+           Use :func:`get_plugins` instead.
+
+        :param depth: JSON depth, ``int``
+        :returns: info on all plugins ``[dict]``
+
+        Example::
+
+            >>> info = server.get_plugins_info()
+            >>> print(info)
+            [{u'backupVersion': None, u'version': u'0.0.4', u'deleted': False,
+            u'supportsDynamicLoad': u'MAYBE', u'hasUpdate': True,
+            u'enabled': True, u'pinned': False, u'downgradable': False,
+            u'dependencies': [], u'url':
+            u'http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin',
+            u'longName': u'Gearman Plugin', u'active': True, u'shortName':
+            u'gearman-plugin', u'bundled': False}, ..]
+        """
+        ...
+    def get_plugin_info(self, name: str, depth: int = 2) -> _JSON:
+        """
+        Get an installed plugin information on this Master.
+
+        This method retrieves information about a specific plugin and returns
+        the raw plugin data in a JSON format.
+        The passed in plugin name (short or long) must be an exact match.
+
+        .. note:: Calling this method will query Jenkins fresh for the
+            information for all plugins on each call. If you need to retrieve
+            information for multiple plugins it's recommended to use
+            :func:`get_plugins` instead, which will return a multi key
+            dictionary that can be accessed via either the short or long name
+            of the plugin.
+
+        :param name: Name (short or long) of plugin, ``str``
+        :param depth: JSON depth, ``int``
+        :returns: a specific plugin ``dict``
+
+        Example::
+
+            >>> info = server.get_plugin_info("Gearman Plugin")
+            >>> print(info)
+            {u'backupVersion': None, u'version': u'0.0.4', u'deleted': False,
+            u'supportsDynamicLoad': u'MAYBE', u'hasUpdate': True,
+            u'enabled': True, u'pinned': False, u'downgradable': False,
+            u'dependencies': [], u'url':
+            u'http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin',
+            u'longName': u'Gearman Plugin', u'active': True, u'shortName':
+            u'gearman-plugin', u'bundled': False}
+        """
+        ...
+    def get_plugins(self, depth: int = 2) -> _JSON:
+        """
+        Return plugins info using helper class for version comparison
+
+        This method retrieves information about all the installed plugins and
+        uses a Plugin helper class to simplify version comparison. Also uses
+        a multi key dict to allow retrieval via either short or long names.
+
+        When printing/dumping the data, the version will transparently return
+        a unicode string, which is exactly what was previously returned by the
+        API.
+
+        :param depth: JSON depth, ``int``
+        :returns: info on all plugins ``[dict]``
+
+        Example::
+
+            >>> j = Jenkins()
+            >>> info = j.get_plugins()
+            >>> print(info)
+            {('gearman-plugin', 'Gearman Plugin'):
+              {u'backupVersion': None, u'version': u'0.0.4',
+               u'deleted': False, u'supportsDynamicLoad': u'MAYBE',
+               u'hasUpdate': True, u'enabled': True, u'pinned': False,
+               u'downgradable': False, u'dependencies': [], u'url':
+               u'http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin',
+               u'longName': u'Gearman Plugin', u'active': True, u'shortName':
+               u'gearman-plugin', u'bundled': False}, ...}
+        """
+        ...
+    def get_jobs(self, folder_depth: int = 0, folder_depth_per_request: int = 10, view_name: str | None = None) -> list[_Job]:
+        """
+        Get list of jobs.
+
+        Each job is a dictionary with 'name', 'url', 'color' and 'fullname'
+        keys.
+
+        If the ``view_name`` parameter is present, the list of
+        jobs will be limited to only those configured in the
+        specified view. In this case, the job dictionary 'fullname' key
+        would be equal to the job name.
+
+        :param folder_depth: Number of levels to search, ``int``. By default
+            0, which will limit search to toplevel. None disables the limit.
+        :param folder_depth_per_request: Number of levels to fetch at once,
+            ``int``. See :func:`get_all_jobs`.
+        :param view_name: Name of a Jenkins view for which to
+            retrieve jobs, ``str``. By default, the job list is
+            not limited to a specific view.
+        :returns: list of jobs, ``[{str: str, str: str, str: str, str: str}]``
+
+        Example::
+
+            >>> jobs = server.get_jobs()
+            >>> print(jobs)
+            [{
+                u'name': u'all_tests',
+                u'url': u'http://your_url.here/job/all_tests/',
+                u'color': u'blue',
+                u'fullname': u'all_tests'
+            }]
+        """
+        ...
+    def get_all_jobs(self, folder_depth: int | None = None, folder_depth_per_request: int = 10) -> list[_Job]:
+        """
+        Get list of all jobs recursively to the given folder depth.
+
+        Each job is a dictionary with 'name', 'url', 'color' and 'fullname'
+        keys.
+
+        :param folder_depth: Number of levels to search, ``int``. By default
+            None, which will search all levels. 0 limits to toplevel.
+        :param folder_depth_per_request: Number of levels to fetch at once,
+            ``int``. By default 10, which is usually enough to fetch all jobs
+            using a single request and still easily fits into an HTTP request.
+        :returns: list of jobs, ``[ { str: str} ]``
+
+        .. note::
+
+            On instances with many folders it would not be efficient to fetch
+            each folder separately, hence `folder_depth_per_request` levels
+            are fetched at once using the ``tree`` query parameter::
+
+                ?tree=jobs[url,color,name,jobs[...,jobs[...,jobs[...,jobs]]]]
+
+            If there are more folder levels than the query asks for, Jenkins
+            returns empty [#]_ objects at the deepest level::
+
+                {"name": "folder", "url": "...", "jobs": [{}, {}, ...]}
+
+            This makes it possible to detect when additional requests are
+            needed.
+
+            .. [#] Actually recent Jenkins includes a ``_class`` field
+                everywhere, but it's missing the requested fields.
+        """
+        ...
+    def copy_job(self, from_name: str, to_name: str) -> None:
+        """
+        Copy a Jenkins job.
+
+        Will raise an exception whenever the source and destination folder
+        for this jobs won't be the same.
+
+        :param from_name: Name of Jenkins job to copy from, ``str``
+        :param to_name: Name of Jenkins job to copy to, ``str``
+        :throws: :class:`JenkinsException` whenever the source and destination
+            folder are not the same
+        """
+        ...
+    def rename_job(self, from_name: str, to_name: str) -> None:
+        """
+        Rename an existing Jenkins job
+
+        Will raise an exception whenever the source and destination folder
+        for this jobs won't be the same.
+
+        :param from_name: Name of Jenkins job to rename, ``str``
+        :param to_name: New Jenkins job name, ``str``
+        :throws: :class:`JenkinsException` whenever the source and destination
+            folder are not the same
+        """
+        ...
+    def delete_job(self, name: str) -> None:
+        """
+        Delete Jenkins job permanently.
+
+        :param name: Name of Jenkins job, ``str``
+        """
+        ...
+    def enable_job(self, name: str) -> None:
+        """
+        Enable Jenkins job.
+
+        :param name: Name of Jenkins job, ``str``
+        """
+        ...
+    def disable_job(self, name: str) -> None:
+        """
+        Disable Jenkins job.
+
+        To re-enable, call :meth:`Jenkins.enable_job`.
+
+        :param name: Name of Jenkins job, ``str``
+        """
+        ...
+    def set_next_build_number(self, name: str, number: int) -> None:
+        """
+        Set a job's next build number.
+
+        The current next build number is contained within the job
+        information retrieved using :meth:`Jenkins.get_job_info`.  If
+        the specified next build number is less than the last build
+        number, Jenkins will ignore the request.
+
+        Note that the `Next Build Number Plugin
+        <https://wiki.jenkins-ci.org/display/JENKINS/Next+Build+Number+Plugin>`_
+        must be installed to enable this functionality.
+
+        :param name: Name of Jenkins job, ``str``
+        :param number: Next build number to set, ``int``
+
+        Example::
+
+            >>> next_bn = server.get_job_info('job_name')['nextBuildNumber']
+            >>> server.set_next_build_number('job_name', next_bn + 50)
+        """
+        ...
+    def job_exists(self, name: str) -> bool:
+        """
+        Check whether a job exists
+
+        :param name: Name of Jenkins job, ``str``
+        :returns: ``True`` if Jenkins job exists
+        """
+        ...
+    def jobs_count(self) -> int:
+        """
+        Get the number of jobs on the Jenkins server
+
+        :returns: Total number of jobs, ``int``
+        """
+        ...
+    def assert_job_exists(self, name: str, exception_message: str = "job[%s] does not exist") -> None:
+        """
+        Raise an exception if a job does not exist
+
+        :param name: Name of Jenkins job, ``str``
+        :param exception_message: Message to use for the exception. Formatted
+                                  with ``name``
+        :throws: :class:`JenkinsException` whenever the job does not exist
+        """
+        ...
+    def create_folder(self, folder_name: str, ignore_failures: bool = False) -> None:
+        """
+        Create a new Jenkins folder
+
+        :param folder_name: Name of Jenkins Folder, ``str``
+        :param ignore_failures: if True, don't raise if it was not possible to create the folder, ``bool``
+        """
+        ...
+    def upsert_job(self, name: str, config_xml: str) -> None:
+        """
+        Create a new Jenkins job or reconfigures it if it exists
+
+        :param name: Name of Jenkins job, ``str``
+        :param config_xml: config file text, ``str``
+        """
+        ...
+    def check_jenkinsfile_syntax(self, jenkinsfile: str) -> list[str]:
+        """
+        Checks if a Pipeline Jenkinsfile has a valid syntax
+
+        :param jenkinsfile: Jenkinsfile text, ``str``
+        :returns: List of errors in the Jenkinsfile. Empty list if no errors.
+        """
+        ...
+    def create_job(self, name: str, config_xml: str) -> None:
+        """
+        Create a new Jenkins job
+
+        :param name: Name of Jenkins job, ``str``
+        :param config_xml: config file text, ``str``
+        """
+        ...
+    def get_job_config(self, name: str) -> str:
+        """
+        Get configuration of existing Jenkins job.
+
+        :param name: Name of Jenkins job, ``str``
+        :returns: job configuration (XML format)
+        """
+        ...
+    def reconfig_job(self, name: str, config_xml: str) -> None:
+        """
+        Change configuration of existing Jenkins job.
+
+        To create a new job, see :meth:`Jenkins.create_job`.
+
+        :param name: Name of Jenkins job, ``str``
+        :param config_xml: New XML configuration, ``str``
+        """
+        ...
     @overload
     def build_job_url(
         self,
