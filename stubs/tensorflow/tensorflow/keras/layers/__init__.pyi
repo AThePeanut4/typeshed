@@ -483,9 +483,9 @@ class StringLookup(_IndexLookup):
     tokens will be used to create the vocabulary and all others will be treated
     as out-of-vocabulary (OOV).
 
-    There are two possible output modes for the layer.
-    When `output_mode` is `"int"`,
-    input strings are converted to their index in the vocabulary (an integer).
+    There are two possible output modes for the layer. When `output_mode` is
+    `"int"`, input strings are converted to their index in the vocabulary (an
+    integer).
     When `output_mode` is `"multi_hot"`, `"count"`, or `"tf_idf"`, input strings
     are encoded into an array where each dimension corresponds to an element in
     the vocabulary.
@@ -505,7 +505,7 @@ class StringLookup(_IndexLookup):
     It can however be used with any backend when running eagerly.
     It can also always be used as part of an input preprocessing pipeline
     with any backend (outside the model itself), which is how we recommend
-    to use this layer.
+    using this layer.
 
     **Note:** This layer is safe to use inside a `tf.data` pipeline
     (independently of which backend you're using).
@@ -522,28 +522,26 @@ class StringLookup(_IndexLookup):
             If this value is 0, OOV inputs will cause an error when calling
             the layer. Defaults to `1`.
         mask_token: A token that represents masked inputs. When `output_mode` is
-            `"int"`, the token is included in vocabulary and mapped to index 0.
-            In other output modes, the token will not appear
-            in the vocabulary and instances of the mask token
-            in the input will be dropped. If set to `None`,
-            no mask term will be added. Defaults to `None`.
+            `"int"`, the token is included in the vocabulary and mapped to index
+            0.
+            In other output modes, the token will not appear in the vocabulary
+            and instances of the mask token in the input will be dropped.
+            If set to `None`, no mask term will be added. Defaults to `None`.
         oov_token: Only used when `invert` is True. The token to return for OOV
             indices. Defaults to `"[UNK]"`.
-        vocabulary: Optional. Either an array of integers or a string path to a
-            text file. If passing an array, can pass a tuple, list,
-            1D NumPy array, or 1D tensor containing the integer vocbulary terms.
-            If passing a file path, the file should contain one line per term
-            in the vocabulary. If this argument is set,
-            there is no need to `adapt()` the layer.
-        vocabulary_dtype: The dtype of the vocabulary terms, for example
-            `"int64"` or `"int32"`. Defaults to `"int64"`.
+        vocabulary: Optional. Either an array of strings or a string path to a
+            text file. If passing an array, you can pass a tuple, list, 1D NumPy
+            array, or 1D tensor containing the string vocabulary terms.
+            If passing a file path, the file should contain one line per term in
+            the vocabulary. If this argument is set, there is no need to
+            `adapt()` the layer.
         idf_weights: Only valid when `output_mode` is `"tf_idf"`.
             A tuple, list, 1D NumPy array, or 1D tensor or the same length
             as the vocabulary, containing the floating point inverse document
             frequency weights, which will be multiplied by per sample term
             counts for the final TF-IDF weight.
-            If the `vocabulary` argument is set, and `output_mode` is
-            `"tf_idf"`, this argument must be supplied.
+            If the `vocabulary` argument is set and `output_mode` is `"tf_idf"`,
+            this argument must be supplied.
         invert: Only valid when `output_mode` is `"int"`.
             If `True`, this layer will map indices to vocabulary items
             instead of mapping vocabulary items to indices.
@@ -559,11 +557,11 @@ class StringLookup(_IndexLookup):
                 If the last dimension is not size 1, will append a new
                 dimension for the encoded output.
             - `"multi_hot"`: Encodes each sample in the input into a single
-                array the same size as the vocabulary,
-                containing a 1 for each vocabulary term present in the sample.
-                Treats the last dimension as the sample dimension,
-                if input shape is `(..., sample_length)`,
-                output shape will be `(..., num_tokens)`.
+                array the same size as the vocabulary containing a 1 for each
+                vocabulary term present in the sample.
+                Treats the last dimension as the sample dimension, if the input
+                shape is `(..., sample_length)`, the output shape will be
+                `(..., num_tokens)`.
             - `"count"`: As `"multi_hot"`, but the int array contains
                 a count of the number of times the token at that index
                 appeared in the sample.
@@ -697,8 +695,8 @@ class StringLookup(_IndexLookup):
     array([[0.  , 0.25, 0.  , 0.6 , 0.8 ],
            [1.0 , 0.  , 0.75, 0.  , 0.4 ]], dtype=float32)
 
-    To specify the idf weights for oov values, you will need to pass the entire
-    vocabulary including the leading oov token.
+    To specify the idf weights for OOV values, you will need to pass the entire
+    vocabulary including the leading OOV token.
 
     >>> vocab = ["[UNK]", "a", "b", "c", "d"]
     >>> idf_weights = [0.9, 0.25, 0.75, 0.6, 0.4]
@@ -726,7 +724,7 @@ class StringLookup(_IndexLookup):
     array([[b'a', b'c', b'd'],
            [b'd', b'[UNK]', b'b']], dtype=object)
 
-    Note that the first index correspond to the oov token by default.
+    Note that the first index corresponds to the OOV token by default.
 
 
     **Forward and inverse lookup pairs**
@@ -775,7 +773,7 @@ class StringLookup(_IndexLookup):
     ) -> None: ...
     def adapt(self, data: tf.data.Dataset[TensorLike] | AnyArray | DataSequence, steps: Float | None = None) -> None:
         """
-        Computes a vocabulary of integer terms from tokens in a dataset.
+        Computes a vocabulary of terms from tokens in a dataset.
 
         Calling `adapt()` on a `StringLookup` layer is an alternative to passing
         in a precomputed vocabulary on construction via the `vocabulary`
@@ -874,8 +872,9 @@ class IntegerLookup(_IndexLookup):
             If passing a file path, the file should contain one line per term
             in the vocabulary. If this argument is set,
             there is no need to `adapt()` the layer.
-        vocabulary_dtype: The dtype of the vocabulary terms, for example
-            `"int64"` or `"int32"`. Defaults to `"int64"`.
+        vocabulary_dtype: The dtype of the vocabulary terms.
+            Only `vocabulary_dtype='int64'` is supported at this time.
+            Defaults to `"int64"`.
         idf_weights: Only valid when `output_mode` is `"tf_idf"`.
             A tuple, list, 1D NumPy array, or 1D tensor or the same length
             as the vocabulary, containing the floating point inverse document
@@ -908,9 +907,12 @@ class IntegerLookup(_IndexLookup):
                 appeared in the sample.
             - `"tf_idf"`: As `"multi_hot"`, but the TF-IDF algorithm is
                 applied to find the value in each token slot.
-            For `"int"` output, any shape of input and output is supported.
-            For all other output modes, currently only output up to rank 2
-            is supported. Defaults to `"int"`.
+            For `"int"` output, the output shape matches the input shape.
+            For `"one_hot"` output, the output shape is
+            `input_shape + (vocabulary_size,)`, where `input_shape` may
+            have arbitrary rank. For other output modes (`"multi_hot"`,
+            `"count"`, `"tf_idf"`), the output shape is `(batch_size,
+            vocabulary_size)`. Defaults to `"int"`.
         pad_to_max_tokens: Only applicable when `output_mode` is `"multi_hot"`,
             `"count"`, or `"tf_idf"`. If `True`, the output will have
             its feature axis padded to `max_tokens` even if the number
