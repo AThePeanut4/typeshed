@@ -90,7 +90,7 @@ class Cleaner:
         :arg dict attributes: allowed attributes; can be a callable, list or dict;
             defaults to ``bleach.sanitizer.ALLOWED_ATTRIBUTES``
 
-        :arg list protocols: allowed list of protocols for links; defaults
+        :arg set protocols: set of allowed protocols for links; defaults
             to ``bleach.sanitizer.ALLOWED_PROTOCOLS``
 
         :arg bool strip: whether or not to strip disallowed elements
@@ -171,7 +171,7 @@ class BleachSanitizerFilter(SanitizerFilter):
         :arg dict attributes: allowed attributes; can be a callable, list or dict;
             defaults to ``bleach.sanitizer.ALLOWED_ATTRIBUTES``
 
-        :arg list allowed_protocols: allowed list of protocols for links; defaults
+        :arg set allowed_protocols: set of allowed protocols for links; defaults
             to ``bleach.sanitizer.ALLOWED_PROTOCOLS``
 
         :arg attr_val_is_uri: set of attributes that have URI values
@@ -234,7 +234,7 @@ class BleachSanitizerFilter(SanitizerFilter):
         Checks a uri value to see if it's allowed
 
         :arg value: the uri value to sanitize
-        :arg allowed_protocols: list of allowed protocols
+        :arg allowed_protocols: set of allowed protocols
 
         :returns: allowed value or None
         """
