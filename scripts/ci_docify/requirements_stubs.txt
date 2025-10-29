@@ -58,7 +58,7 @@ docker==7.1.*
 pep8-naming==0.15.*
 www-authenticate==0.9.*
 singledispatch==4.1.*
-bleach[css]==6.2.*
+bleach[css]==6.3.*
 xdgenvpy==3.0.*
 PySocks==1.7.1
 click-spinner==0.1.*
