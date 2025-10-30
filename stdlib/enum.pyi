@@ -543,10 +543,30 @@ if sys.version_info >= (3, 11):
     EJECT: Final = FlagBoundary.EJECT
     KEEP: Final = FlagBoundary.KEEP
 
-    def global_str(self: Enum) -> str: ...
-    def global_enum(cls: _EnumerationT, update_str: bool = False) -> _EnumerationT: ...
-    def global_enum_repr(self: Enum) -> str: ...
-    def global_flag_repr(self: Flag) -> str: ...
+    def global_str(self: Enum) -> str:
+        """use enum_name instead of class.enum_name"""
+        ...
+    def global_enum(cls: _EnumerationT, update_str: bool = False) -> _EnumerationT:
+        """
+        decorator that makes the repr() of an enum member reference its module
+        instead of its class; also exports all members to the enum's module's
+        global namespace
+        """
+        ...
+    def global_enum_repr(self: Enum) -> str:
+        """
+        use module.enum_name instead of class.enum_name
+
+        the module is the last module in case of a multi-module name
+        """
+        ...
+    def global_flag_repr(self: Flag) -> str:
+        """
+        use module.flag_name instead of class.flag_name
+
+        the module is the last module in case of a multi-module name
+        """
+        ...
     def show_flag_values(value: int) -> list[int]: ...
 
 if sys.version_info >= (3, 12):

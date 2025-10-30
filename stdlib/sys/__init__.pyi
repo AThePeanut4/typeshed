@@ -459,10 +459,22 @@ def _getframe(depth: int = 0, /) -> FrameType:
 
 # documented -- see https://docs.python.org/3/library/sys.html#sys._current_exceptions
 if sys.version_info >= (3, 12):
-    def _current_exceptions() -> dict[int, BaseException | None]: ...
+    def _current_exceptions() -> dict[int, BaseException | None]:
+        """
+        Return a dict mapping each thread's identifier to its current raised exception.
+
+        This function should be used for specialized purposes only.
+        """
+        ...
 
 else:
-    def _current_exceptions() -> dict[int, OptExcInfo]: ...
+    def _current_exceptions() -> dict[int, OptExcInfo]:
+        """
+        Return a dict mapping each thread's identifier to its current raised exception.
+
+        This function should be used for specialized purposes only.
+        """
+        ...
 
 if sys.version_info >= (3, 12):
     def _getframemodulename(depth: int = 0) -> str | None:
@@ -505,13 +517,32 @@ if sys.version_info >= (3, 11):
         """
         Return the current exception.
 
-def exit(status: _ExitCode = None, /) -> NoReturn: ...
+        Return the most recent exception caught by an except clause
+        in the current stack frame or in an older stack frame, or None
+        if no such exception exists.
+        """
+        ...
+
+def exit(status: _ExitCode = None, /) -> NoReturn:
+    """
+    Exit the interpreter by raising SystemExit(status).
+
+    If the status is omitted or None, it defaults to zero (i.e., success).
+    If the status is an integer, it will be used as the system exit status.
+    If it is another kind of object, it will be printed and the system
+    exit status will be one (i.e., failure).
+    """
+    ...
 
 if sys.platform == "android":  # noqa: Y008
     def getandroidapilevel() -> int: ...
 
-def getallocatedblocks() -> int: ...
-def getdefaultencoding() -> str: ...
+def getallocatedblocks() -> int:
+    """Return the number of memory blocks currently allocated."""
+    ...
+def getdefaultencoding() -> str:
+    """Return the current default encoding used by the Unicode implementation."""
+    ...
 
 if sys.platform != "win32":
     def getdlopenflags() -> int:
