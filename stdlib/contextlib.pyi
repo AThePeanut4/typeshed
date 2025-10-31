@@ -289,8 +289,23 @@ class _RedirectStream(AbstractContextManager[_SupportsRedirectT, None]):
         self, exctype: type[BaseException] | None, excinst: BaseException | None, exctb: TracebackType | None
     ) -> None: ...
 
-class redirect_stdout(_RedirectStream[_SupportsRedirectT]): ...
-class redirect_stderr(_RedirectStream[_SupportsRedirectT]): ...
+class redirect_stdout(_RedirectStream[_SupportsRedirectT]):
+    """
+    Context manager for temporarily redirecting stdout to another file.
+
+    # How to send help() to stderr
+    with redirect_stdout(sys.stderr):
+        help(dir)
+
+    # How to write help() to a file
+    with open('help.txt', 'w') as f:
+        with redirect_stdout(f):
+            help(pow)
+    """
+    ...
+class redirect_stderr(_RedirectStream[_SupportsRedirectT]):
+    """Context manager for temporarily redirecting stderr to another file."""
+    ...
 
 class _BaseExitStack(Generic[_ExitT_co]):
     """A base class for ExitStack and AsyncExitStack."""

@@ -235,7 +235,15 @@ class Transaction(Resource):
         """
         ...
     @staticmethod
-    def find(transaction_id: str) -> Transaction: ...
+    def find(transaction_id: str) -> Transaction:
+        """
+        Find a transaction, given a transaction_id. This does not return
+        a result object. This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>` if the provided
+        credit_card_id is not found. ::
+
+            transaction = braintree.Transaction.find("my_transaction_id")
+        """
+        ...
     @staticmethod
     def refund(transaction_id, amount_or_options=None):
         """

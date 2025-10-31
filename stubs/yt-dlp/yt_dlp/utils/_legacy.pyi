@@ -1,3 +1,5 @@
+"""No longer used and new code should not use. Exists only for API compat."""
+
 import urllib.request
 from _socket import _Address
 from _typeshed import ReadableBuffer, SupportsRead, Unused

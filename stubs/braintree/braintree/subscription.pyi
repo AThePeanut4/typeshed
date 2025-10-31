@@ -64,19 +64,76 @@ class Subscription(Resource):
         Pending: Final = "Pending"
 
     @staticmethod
-    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
+    def create(params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None:
+        """
+        Create a Subscription
+
+        Token and Plan are required:::
+
+            result = braintree.Subscription.create({
+                "payment_method_token": "my_payment_token",
+                "plan_id": "some_plan_id",
+            })
+        """
+        ...
     @staticmethod
     def create_signature(): ...
     @staticmethod
-    def find(subscription_id: str) -> Subscription: ...
+    def find(subscription_id: str) -> Subscription:
+        """
+        Find a subscription given a subscription_id.  This does not return a result
+        object.  This will raise a :class:`NotFoundError <braintree.exceptions.not_found_error.NotFoundError>`
+        if the provided subscription_id is not found. ::
+
+            subscription = braintree.Subscription.find("my_subscription_id")
+        """
+        ...
     @staticmethod
     def retry_charge(subscription_id, amount=None, submit_for_settlement: bool = False): ...
     @staticmethod
-    def update(subscription_id: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None: ...
+    def update(subscription_id: str, params: dict[str, Incomplete] | None = None) -> SuccessfulResult | ErrorResult | None:
+        """
+        Update an existing subscription
+
+        By subscription_id. The params are similar to create::
+
+
+            result = braintree.Subscription.update("my_subscription_id", {
+                "price": "9.99",
+            })
+        """
+        ...
     @staticmethod
-    def cancel(subscription_id: str) -> SuccessfulResult | ErrorResult | None: ...
+    def cancel(subscription_id: str) -> SuccessfulResult | ErrorResult | None:
+        """
+        Cancel a subscription
+
+        By subscription_id::
+
+            result = braintree.Subscription.cancel("my_subscription_id")
+        """
+        ...
     @staticmethod
-    def search(*query) -> ResourceCollection: ...
+    def search(*query) -> ResourceCollection:
+        """
+        Allows searching on subscriptions. There are two types of fields that are searchable: text and
+        multiple value fields. Searchable text fields are:
+        - plan_id
+        - days_past_due
+
+        Searchable multiple value fields are:
+        - status
+
+        For text fields, you can search using the following operators: ==, !=, starts_with, ends_with
+        and contains. For multiple value fields, you can search using the in_list operator. An example::
+
+            braintree.Subscription.search([
+                braintree.SubscriptionSearch.plan_id.starts_with("abc"),
+                braintree.SubscriptionSearch.days_past_due == "30",
+                braintree.SubscriptionSearch.status.in_list([braintree.Subscription.Status.PastDue])
+            ])
+        """
+        ...
     @staticmethod
     def update_signature(): ...
     price: Decimal
