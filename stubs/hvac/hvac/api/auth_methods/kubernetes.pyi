@@ -78,8 +78,115 @@ class Kubernetes(VaultApiBase):
         mount_point="kubernetes",
         alias_name_source=None,
         audience: str | None = None,
-    ): ...
-    def read_role(self, name, mount_point="kubernetes"): ...
-    def list_roles(self, mount_point="kubernetes"): ...
-    def delete_role(self, name, mount_point="kubernetes"): ...
-    def login(self, role, jwt, use_token: bool = True, mount_point="kubernetes"): ...
+    ):
+        """
+        Create a role in the method.
+
+        Registers a role in the auth method. Role types have specific entities that can perform login operations
+        against this endpoint. Constraints specific to the role type must be set on the role. These are applied to
+        the authenticated entities attempting to login.
+
+        Supported methods:
+            POST: /auth/{mount_point}/role/{name}. Produces: 204 (empty body)
+
+        :param name: Name of the role.
+        :type name: str | unicode
+        :param bound_service_account_names: List of service account names able to access this role. If set to "*"
+            all names are allowed.
+        :type bound_service_account_names: list | str | unicode
+        :param bound_service_account_namespaces: List of namespaces allowed to access this role. If set to "*" all
+            namespaces are allowed.
+        :type bound_service_account_namespaces: list | str | unicode
+        :param ttl: The TTL period of tokens issued using this role in seconds.
+        :type ttl: str | unicode
+        :param max_ttl: The maximum allowed lifetime of tokens issued in seconds using this role.
+        :type max_ttl: str | unicode
+        :param period: If set, indicates that the token generated using this role should never expire. The token should
+            be renewed within the duration specified by this value. At each renewal, the token's TTL will be set to the
+            value of this parameter.
+        :type period: str | unicode
+        :param policies: Policies to be set on tokens issued using this role.
+        :type policies: list | str | unicode
+        :param token_type: The type of token that should be generated. Can be service, batch, or default to use the
+            mount's tuned default (which unless changed will be service tokens). For token store roles, there are two
+            additional possibilities: default-service and default-batch which specify the type to return unless the
+            client requests a different type at generation time.
+        :type token_type: str
+        :param mount_point: The "path" the kubernetes auth method was mounted on.
+        :type mount_point: str | unicode
+        :param alias_name_source: Configures how identity aliases are generated.
+            Valid choices are: serviceaccount_uid, serviceaccount_name.
+        :type alias_name_source: str | unicode
+        :param audience: Audience claim to verify in the JWT. Required in Vault 1.21+.
+        :type audience: str | unicode
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+        ...
+    def read_role(self, name, mount_point="kubernetes"):
+        """
+        Returns the previously registered role configuration.
+
+        Supported methods:
+            POST: /auth/{mount_point}/role/{name}. Produces: 200 application/json
+
+        :param name: Name of the role.
+        :type name: str | unicode
+        :param mount_point: The "path" the kubernetes auth method was mounted on.
+        :type mount_point: str | unicode
+        :return: The "data" key from the JSON response of the request.
+        :rtype: dict
+        """
+        ...
+    def list_roles(self, mount_point="kubernetes"):
+        """
+        List all the roles that are registered with the plugin.
+
+        Supported methods:
+            LIST: /auth/{mount_point}/role. Produces: 200 application/json
+
+        :param mount_point: The "path" the kubernetes auth method was mounted on.
+        :type mount_point: str | unicode
+        :return: The "data" key from the JSON response of the request.
+        :rtype: dict
+        """
+        ...
+    def delete_role(self, name, mount_point="kubernetes"):
+        """
+        Delete the previously registered role.
+
+        Supported methods:
+            DELETE: /auth/{mount_point}/role/{name}. Produces: 204 (empty body)
+
+
+        :param name: Name of the role.
+        :type name: str | unicode
+        :param mount_point: The "path" the kubernetes auth method was mounted on.
+        :type mount_point: str | unicode
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+        ...
+    def login(self, role, jwt, use_token: bool = True, mount_point="kubernetes"):
+        """
+        Fetch a token.
+
+        This endpoint takes a signed JSON Web Token (JWT) and a role name for some entity. It verifies the JWT signature
+        to authenticate that entity and then authorizes the entity for the given role.
+
+        Supported methods:
+            POST: /auth/{mount_point}/login. Produces: 200 application/json
+
+        :param role: Name of the role against which the login is being attempted.
+        :type role: str | unicode
+        :param jwt: Signed JSON Web Token (JWT) from Kubernetes service account.
+        :type jwt: str | unicode
+        :param use_token: if True, uses the token in the response received from the auth request to set the "token"
+            attribute on the the :py:meth:`hvac.adapters.Adapter` instance under the _adapter Client attribute.
+        :type use_token: bool
+        :param mount_point: The "path" the kubernetes auth method was mounted on.
+        :type mount_point: str | unicode
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+        ...

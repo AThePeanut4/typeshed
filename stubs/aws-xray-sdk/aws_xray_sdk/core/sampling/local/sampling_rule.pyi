@@ -15,7 +15,7 @@ class _Rule(TypedDict):
 
 class SamplingRule:
     """
-    One SamolingRule represents one rule defined from local rule json file
+    One SamplingRule represents one rule defined from local rule json file
     or from a dictionary. It can be either a custom rule or default rule.
     """
     FIXED_TARGET: ClassVar[str]
