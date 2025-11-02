@@ -266,6 +266,9 @@ def patch_ssl() -> None:
     :mod:`ssl` with cooperative versions.
 
     This is only useful if :func:`patch_socket` has been called.
+
+    It is important to call this function before :mod:`ssl` has been imported.
+    For more information, see :mod:`gevent.ssl`.
     """
     ...
 def patch_select(aggressive: bool = True) -> None:

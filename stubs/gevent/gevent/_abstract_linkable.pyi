@@ -1,4 +1,14 @@
-"""Internal module, support for the linkable protocol for "event" like objects."""
+"""
+Internal use only base class for objects
+that can be waited on and then asked to notify (wake up)
+waiters.  Examples include locks, events, semaphores.
+
+gevent has the generic concept of "linkable" objects, or the "linkable"
+protocol, which is the ``link`` and ``rawlink`` methods. (Actually sending
+the notification is up to the implementation of the individual
+objects.) `gevent.greenlet.Greenlet` implements this protocol but
+does not extend this object (TODO: It probably should.)
+"""
 
 from collections.abc import Callable
 from typing_extensions import Self
@@ -31,6 +41,7 @@ class AbstractLinkable:
     def unlink(self, callback: Callable[[Self], object], /) -> None:
         """
         AbstractLinkable.unlink(self, callback)
+
         Remove the callback set by :meth:`rawlink`
         """
         ...

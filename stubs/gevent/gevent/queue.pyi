@@ -92,7 +92,9 @@ class SimpleQueue(Generic[_T]):
     @property
     def hub(self) -> Hub: ...  # readonly in Cython
     @property
-    def queue(self) -> deque[_T]: ...  # readonly in Cython
+    def queue(self) -> deque[_T]:
+        """queue: object"""
+        ...
     maxsize: int | None
     is_shutdown: bool
 
@@ -116,16 +118,17 @@ class SimpleQueue(Generic[_T]):
     def empty(self) -> bool:
         """
         SimpleQueue.empty(self) -> bool
+
         Return ``True`` if the queue is empty, ``False`` otherwise.
         """
         ...
     def full(self) -> bool:
         """
         SimpleQueue.full(self) -> bool
+
         Return ``True`` if the queue is full, ``False`` otherwise.
 
-                ``Queue(None)`` is never full.
-        
+        ``Queue(None)`` is never full.
         """
         ...
     def get(self, block: bool = True, timeout: float | None = None) -> _T:
@@ -145,35 +148,35 @@ class SimpleQueue(Generic[_T]):
     def get_nowait(self) -> _T:
         """
         SimpleQueue.get_nowait(self)
+
         Remove and return an item from the queue without blocking.
 
-                Only get an item if one is immediately available. Otherwise
-                raise the :class:`Empty` exception.
-        
+        Only get an item if one is immediately available. Otherwise
+        raise the :class:`Empty` exception.
         """
         ...
     def peek(self, block: bool = True, timeout: float | None = None) -> _T:
         """
         SimpleQueue.peek(self, block=True, timeout=None)
+
         Return an item from the queue without removing it.
 
-                If optional args *block* is true and *timeout* is ``None`` (the default),
-                block if necessary until an item is available. If *timeout* is a positive number,
-                it blocks at most *timeout* seconds and raises the :class:`Empty` exception
-                if no item was available within that time. Otherwise (*block* is false), return
-                an item if one is immediately available, else raise the :class:`Empty` exception
-                (*timeout* is ignored in that case).
-        
+        If optional args *block* is true and *timeout* is ``None`` (the default),
+        block if necessary until an item is available. If *timeout* is a positive number,
+        it blocks at most *timeout* seconds and raises the :class:`Empty` exception
+        if no item was available within that time. Otherwise (*block* is false), return
+        an item if one is immediately available, else raise the :class:`Empty` exception
+        (*timeout* is ignored in that case).
         """
         ...
     def peek_nowait(self) -> _T:
         """
         SimpleQueue.peek_nowait(self)
+
         Return an item from the queue without blocking.
 
-                Only return an item if one is immediately available. Otherwise
-                raise the :class:`Empty` exception.
-        
+        Only return an item if one is immediately available. Otherwise
+        raise the :class:`Empty` exception.
         """
         ...
     def put(self, item: _T, block: bool = True, timeout: float | None = None) -> None:
@@ -198,16 +201,17 @@ class SimpleQueue(Generic[_T]):
     def put_nowait(self, item: _T) -> None:
         """
         SimpleQueue.put_nowait(self, item)
+
         Put an item into the queue without blocking.
 
-                Only enqueue the item if a free slot is immediately available.
-                Otherwise raise the :class:`Full` exception.
-        
+        Only enqueue the item if a free slot is immediately available.
+        Otherwise raise the :class:`Full` exception.
         """
         ...
     def qsize(self) -> int:
         """
         SimpleQueue.qsize(self) -> Py_ssize_t
+
         Return the size of the queue.
         """
         ...
@@ -219,6 +223,8 @@ class SimpleQueue(Generic[_T]):
         ...
     def __len__(self) -> int:
         """
+        SimpleQueue.__len__(self)
+
         Return the size of the queue. This is the same as :meth:`qsize`.
 
         .. versionadded: 1.1b3
@@ -290,16 +296,16 @@ class Queue(SimpleQueue[_T]):
     def task_done(self) -> None:
         """
         Queue.task_done(self)
+
         Indicate that a formerly enqueued task is complete. Used by queue consumer threads.
-                For each :meth:`get <Queue.get>` used to fetch a task, a subsequent call to
-                :meth:`task_done` tells the queue that the processing on the task is complete.
+        For each :meth:`get <Queue.get>` used to fetch a task, a subsequent call to
+        :meth:`task_done` tells the queue that the processing on the task is complete.
 
-                If a :meth:`join` is currently blocking, it will resume when all items have been processed
-                (meaning that a :meth:`task_done` call was received for every item that had been
-                :meth:`put <Queue.put>` into the queue).
+        If a :meth:`join` is currently blocking, it will resume when all items have been processed
+        (meaning that a :meth:`task_done` call was received for every item that had been
+        :meth:`put <Queue.put>` into the queue).
 
-                Raises a :exc:`ValueError` if called more times than there were items placed in the queue.
-        
+        Raises a :exc:`ValueError` if called more times than there were items placed in the queue.
         """
         ...
     def shutdown(self, immediate: bool = False) -> None:

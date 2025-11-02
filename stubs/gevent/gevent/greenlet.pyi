@@ -332,6 +332,7 @@ class Greenlet(greenlet.greenlet, Generic[_P, _T]):
     def unlink(self, callback: Callable[[Self], Any]) -> None:
         """
         Greenlet.unlink(self, callback)
+
         Remove the callback set by :meth:`link` or :meth:`rawlink`
         """
         ...
@@ -440,6 +441,7 @@ class Greenlet(greenlet.greenlet, Generic[_P, _T]):
     def start(self) -> None:
         """
         Greenlet.start(self)
+
         Schedule the greenlet to run in this loop iteration
         """
         ...

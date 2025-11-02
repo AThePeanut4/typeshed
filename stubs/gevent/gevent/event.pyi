@@ -80,6 +80,7 @@ class Event(AbstractLinkable):
     def is_set(self) -> bool:
         """
         Event.is_set(self)
+
         Return true if and only if the internal flag is true.
         """
         ...
@@ -269,53 +270,55 @@ class AsyncResult(AbstractLinkable, Generic[_T]):
     def ready(self) -> bool:
         """
         AsyncResult.ready(self) -> bool
+
         Return true if and only if it holds a value or an exception
         """
         ...
     def successful(self) -> bool:
         """
         AsyncResult.successful(self) -> bool
+
         Return true if and only if it is ready and holds a value
         """
         ...
     def set(self, value: _T | None = None) -> None:
         """
         AsyncResult.set(self, value=None)
+
         Store the value and wake up any waiters.
 
-                All greenlets blocking on :meth:`get` or :meth:`wait` are awakened.
-                Subsequent calls to :meth:`wait` and :meth:`get` will not block at all.
-        
+        All greenlets blocking on :meth:`get` or :meth:`wait` are awakened.
+        Subsequent calls to :meth:`wait` and :meth:`get` will not block at all.
         """
         ...
     @overload
     def set_exception(self, exception: BaseException, exc_info: None = None) -> None:
         """
         AsyncResult.set_exception(self, exception, exc_info=None)
+
         Store the exception and wake up any waiters.
 
-                All greenlets blocking on :meth:`get` or :meth:`wait` are awakened.
-                Subsequent calls to :meth:`wait` and :meth:`get` will not block at all.
+        All greenlets blocking on :meth:`get` or :meth:`wait` are awakened.
+        Subsequent calls to :meth:`wait` and :meth:`get` will not block at all.
 
-                :keyword tuple exc_info: If given, a standard three-tuple of type, value, :class:`traceback`
-                    as returned by :func:`sys.exc_info`. This will be used when the exception
-                    is re-raised to propagate the correct traceback.
-        
+        :keyword tuple exc_info: If given, a standard three-tuple of type, value, :class:`traceback`
+            as returned by :func:`sys.exc_info`. This will be used when the exception
+            is re-raised to propagate the correct traceback.
         """
         ...
     @overload
     def set_exception(self, exception: BaseException | None, exc_info: _OptExcInfo) -> None:
         """
         AsyncResult.set_exception(self, exception, exc_info=None)
+
         Store the exception and wake up any waiters.
 
-                All greenlets blocking on :meth:`get` or :meth:`wait` are awakened.
-                Subsequent calls to :meth:`wait` and :meth:`get` will not block at all.
+        All greenlets blocking on :meth:`get` or :meth:`wait` are awakened.
+        Subsequent calls to :meth:`wait` and :meth:`get` will not block at all.
 
-                :keyword tuple exc_info: If given, a standard three-tuple of type, value, :class:`traceback`
-                    as returned by :func:`sys.exc_info`. This will be used when the exception
-                    is re-raised to propagate the correct traceback.
-        
+        :keyword tuple exc_info: If given, a standard three-tuple of type, value, :class:`traceback`
+            as returned by :func:`sys.exc_info`. This will be used when the exception
+            is re-raised to propagate the correct traceback.
         """
         ...
     # technically get/get_nowait/result should just return _T, but the API is designed in
@@ -328,20 +331,20 @@ class AsyncResult(AbstractLinkable, Generic[_T]):
     def get(self, block: bool = True, timeout: float | None = None) -> _T | None:
         """
         AsyncResult.get(self, block=True, timeout=None)
+
         Return the stored value or raise the exception.
 
-                If this instance already holds a value or an exception, return  or raise it immediately.
-                Otherwise, block until another greenlet calls :meth:`set` or :meth:`set_exception` or
-                until the optional timeout occurs.
+        If this instance already holds a value or an exception, return  or raise it immediately.
+        Otherwise, block until another greenlet calls :meth:`set` or :meth:`set_exception` or
+        until the optional timeout occurs.
 
-                When the *timeout* argument is present and not ``None``, it should be a
-                floating point number specifying a timeout for the operation in seconds
-                (or fractions thereof). If the *timeout* elapses, the *Timeout* exception will
-                be raised.
+        When the *timeout* argument is present and not ``None``, it should be a
+        floating point number specifying a timeout for the operation in seconds
+        (or fractions thereof). If the *timeout* elapses, the *Timeout* exception will
+        be raised.
 
-                :keyword bool block: If set to ``False`` and this instance is not ready,
-                    immediately raise a :class:`Timeout` exception.
-        
+        :keyword bool block: If set to ``False`` and this instance is not ready,
+            immediately raise a :class:`Timeout` exception.
         """
         ...
     def get_nowait(self) -> _T | None:
@@ -357,24 +360,23 @@ class AsyncResult(AbstractLinkable, Generic[_T]):
     def wait(self, timeout: float | None = None) -> _T | None:
         """
         AsyncResult.wait(self, timeout=None)
+
         Block until the instance is ready.
 
-                If this instance already holds a value, it is returned immediately. If this
-                instance already holds an exception, ``None`` is returned immediately.
+        If this instance already holds a value, it is returned immediately. If this
+        instance already holds an exception, ``None`` is returned immediately.
 
-                Otherwise, block until another greenlet calls :meth:`set` or :meth:`set_exception`
-                (at which point either the value or ``None`` will be returned, respectively),
-                or until the optional timeout expires (at which point ``None`` will also be
-                returned).
+        Otherwise, block until another greenlet calls :meth:`set` or :meth:`set_exception`
+        (at which point either the value or ``None`` will be returned, respectively),
+        or until the optional timeout expires (at which point ``None`` will also be
+        returned).
 
-                When the *timeout* argument is present and not ``None``, it should be a
-                floating point number specifying a timeout for the operation in seconds
-                (or fractions thereof).
+        When the *timeout* argument is present and not ``None``, it should be a
+        floating point number specifying a timeout for the operation in seconds
+        (or fractions thereof).
 
-                .. note:: If a timeout is given and expires, ``None`` will be returned
-                    (no timeout exception will be raised).
-
-        
+        .. note:: If a timeout is given and expires, ``None`` will be returned
+            (no timeout exception will be raised).
         """
         ...
     def __call__(self, source: _ValueSource[_T]) -> None:

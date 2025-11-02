@@ -42,7 +42,24 @@ class GeventSelector(BaseSelector):
     def __init__(self, hub: Hub | None = None) -> None: ...
     @Lazy
     def hub(self) -> Hub: ...
-    def register(self, fileobj: FileDescriptorLike, events: _EventMask, data: Any = None) -> SelectorKey: ...
+    def register(self, fileobj: FileDescriptorLike, events: _EventMask, data: Any = None) -> SelectorKey:
+        """
+        Register a file object for selection, monitoring it for I/O events.
+
+        *fileobj* is the file object to monitor. It may either be an integer file descriptor
+        or an object with a ``fileno()`` method. *events* is a bitwise mask of events to
+        monitor. *data* is an opaque object.
+
+        :return: A new `SelectorKey` instance.
+        :raises ValueError: In case of invalid
+            event mask or file descriptor
+        :raises KeyError: if the file object is already registered.
+
+        .. versionchanged:: 25.8.1
+           More reliably raises a ``ValueError`` if the file descriptor
+           is invalid.
+        """
+        ...
     def unregister(self, fileobj: FileDescriptorLike) -> SelectorKey: ...
     def select(self, timeout: float | None = None) -> list[tuple[SelectorKey, _EventMask]]:
         """

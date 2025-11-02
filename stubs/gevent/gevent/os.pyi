@@ -68,10 +68,53 @@ def tp_write(fd: FileDescriptor, buf: ReadableBuffer) -> int:
     ...
 
 if sys.platform != "win32":
-    def close(fd: FileDescriptor) -> None: ...
-    def make_nonblocking(fd: FileDescriptor) -> Literal[True] | None: ...
-    def nb_read(fd: FileDescriptor, n: int) -> bytes: ...
-    def nb_write(fd: FileDescriptor, buf: ReadableBuffer) -> int: ...
+    def close(fd: FileDescriptor) -> None:
+        """
+        Close a file descriptor.
+
+        This function cooperates with gevent to avoid crashing
+        the process if you (accidentally) call it while you're
+        still performing IO on the file descriptor; for example, if you have it
+        registered with a ``Selector`` implementation, which documents
+        that you *must* unregister FDs before closing them.
+
+        If the *fd* refers to a regular file, this cooperation is *not*
+        used. This is because trying to use gevent to poll on regular
+        files doesn't work and shouldn't be done. We assume that everyone
+        is following the rules.
+
+        .. caution::
+           This function is not intended for use on Windows.
+
+        .. versionadded:: 25.8.1
+        """
+        ...
+    def make_nonblocking(fd: FileDescriptor) -> Literal[True] | None:
+        """
+        Put the file descriptor *fd* into non-blocking mode if
+        possible.
+
+        :return: A boolean value that evaluates to True if successful.
+        """
+        ...
+    def nb_read(fd: FileDescriptor, n: int) -> bytes:
+        """
+        Read up to *n* bytes from file descriptor *fd*. Return a
+        byte string containing the bytes read, which may be shorter than
+        *n*. If end-of-file is reached, an empty string is returned.
+
+        The descriptor must be in non-blocking mode.
+        """
+        ...
+    def nb_write(fd: FileDescriptor, buf: ReadableBuffer) -> int:
+        """
+        Write some number of bytes from buffer *buf* to file
+        descriptor *fd*. Return the number of bytes written, which may
+        be less than the length of *buf*.
+
+        The file descriptor must be in non-blocking mode.
+        """
+        ...
     fork = os.fork
     forkpty = os.forkpty
     def fork_gevent() -> int:

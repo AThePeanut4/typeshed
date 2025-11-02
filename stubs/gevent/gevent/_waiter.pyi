@@ -81,12 +81,14 @@ class Waiter(Generic[_T]):
     def ready(self) -> bool:
         """
         Waiter.ready(self)
+
         Return true if and only if it holds a value or an exception
         """
         ...
     def successful(self) -> bool:
         """
         Waiter.successful(self)
+
         Return true if and only if it is ready and holds a value
         """
         ...
@@ -109,6 +111,7 @@ class Waiter(Generic[_T]):
     def throw(self, typ: type[BaseException], val: BaseException | object = None, tb: TracebackType | None = None, /) -> None:
         """
         Waiter.throw(self, *throw_args)
+
         Switch to the greenlet with the exception. If there's no greenlet, store the exception.
         """
         ...
@@ -116,12 +119,14 @@ class Waiter(Generic[_T]):
     def throw(self, typ: BaseException = ..., val: None = None, tb: TracebackType | None = None, /) -> None:
         """
         Waiter.throw(self, *throw_args)
+
         Switch to the greenlet with the exception. If there's no greenlet, store the exception.
         """
         ...
     def get(self) -> _T:
         """
         Waiter.get(self)
+
         If a value/an exception is stored, return/raise it. Otherwise until switch() or throw() is called.
         """
         ...
