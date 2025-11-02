@@ -68,32 +68,10 @@ def tp_write(fd: FileDescriptor, buf: ReadableBuffer) -> int:
     ...
 
 if sys.platform != "win32":
-    def make_nonblocking(fd: FileDescriptor) -> Literal[True] | None:
-        """
-        Put the file descriptor *fd* into non-blocking mode if
-        possible.
-
-        :return: A boolean value that evaluates to True if successful.
-        """
-        ...
-    def nb_read(fd: FileDescriptor, n: int) -> bytes:
-        """
-        Read up to *n* bytes from file descriptor *fd*. Return a
-        byte string containing the bytes read, which may be shorter than
-        *n*. If end-of-file is reached, an empty string is returned.
-
-        The descriptor must be in non-blocking mode.
-        """
-        ...
-    def nb_write(fd: FileDescriptor, buf: ReadableBuffer) -> int:
-        """
-        Write some number of bytes from buffer *buf* to file
-        descriptor *fd*. Return the number of bytes written, which may
-        be less than the length of *buf*.
-
-        The file descriptor must be in non-blocking mode.
-        """
-        ...
+    def close(fd: FileDescriptor) -> None: ...
+    def make_nonblocking(fd: FileDescriptor) -> Literal[True] | None: ...
+    def nb_read(fd: FileDescriptor, n: int) -> bytes: ...
+    def nb_write(fd: FileDescriptor, buf: ReadableBuffer) -> int: ...
     fork = os.fork
     forkpty = os.forkpty
     def fork_gevent() -> int:
