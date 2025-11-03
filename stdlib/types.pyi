@@ -1051,7 +1051,9 @@ if sys.version_info >= (3, 10):
         ...
 
     @final
-    class NotImplementedType(Any): ...
+    class NotImplementedType(Any):
+        """The type of the NotImplemented singleton."""
+        ...
 
     @final
     class UnionType:
