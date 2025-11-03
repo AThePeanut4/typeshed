@@ -4074,67 +4074,14 @@ class property:
         """Delete an attribute of instance."""
         ...
 
-@final
-@type_check_only
-class _NotImplementedType(Any):
-    __call__: None
-
-NotImplemented: _NotImplementedType
-
-def abs(x: SupportsAbs[_T], /) -> _T:
-    """Return the absolute value of the argument."""
-    ...
-def all(iterable: Iterable[object], /) -> bool:
-    """
-    Return True if bool(x) is True for all values x in the iterable.
-
-    If the iterable is empty, return True.
-    """
-    ...
-def any(iterable: Iterable[object], /) -> bool:
-    """
-    Return True if bool(x) is True for any x in the iterable.
-
-    If the iterable is empty, return False.
-    """
-    ...
-def ascii(obj: object, /) -> str:
-    r"""
-    Return an ASCII-only representation of an object.
-
-    As repr(), return a string containing a printable representation of an
-    object, but escape the non-ASCII characters in the string returned by
-    repr() using \\x, \\u or \\U escapes. This generates a string similar
-    to that returned by repr() in Python 2.
-    """
-    ...
-def bin(number: int | SupportsIndex, /) -> str:
-    """
-    Return the binary representation of an integer.
-
-    >>> bin(2796202)
-    '0b1010101010101010101010'
-    """
-    ...
-def breakpoint(*args: Any, **kws: Any) -> None:
-    """
-    Call sys.breakpointhook(*args, **kws).  sys.breakpointhook() must accept
-    whatever arguments are passed.
-
-    By default, this drops you into the pdb debugger.
-    """
-    ...
-def callable(obj: object, /) -> TypeIs[Callable[..., object]]:
-    """
-    Return whether the object is callable (i.e., some kind of function).
-
-    Note that classes are callable, as are instances of classes with a
-    __call__() method.
-    """
-    ...
-def chr(i: int | SupportsIndex, /) -> str:
-    """Return a Unicode string of one character with ordinal i; 0 <= i <= 0x10ffff."""
-    ...
+def abs(x: SupportsAbs[_T], /) -> _T: ...
+def all(iterable: Iterable[object], /) -> bool: ...
+def any(iterable: Iterable[object], /) -> bool: ...
+def ascii(obj: object, /) -> str: ...
+def bin(number: int | SupportsIndex, /) -> str: ...
+def breakpoint(*args: Any, **kws: Any) -> None: ...
+def callable(obj: object, /) -> TypeIs[Callable[..., object]]: ...
+def chr(i: int | SupportsIndex, /) -> str: ...
 
 if sys.version_info >= (3, 10):
     def aiter(async_iterable: SupportsAiter[_SupportsAnextT_co], /) -> _SupportsAnextT_co:
@@ -6332,14 +6279,14 @@ def __build_class__(func: Callable[[], CellType | Any], name: str, /, *bases: An
     ...
 
 if sys.version_info >= (3, 10):
-    from types import EllipsisType
+    from types import EllipsisType, NotImplementedType
 
     # Backwards compatibility hack for folks who relied on the ellipsis type
     # existing in typeshed in Python 3.9 and earlier.
     ellipsis = EllipsisType
 
     Ellipsis: EllipsisType
-
+    NotImplemented: NotImplementedType
 else:
     # Actually the type of Ellipsis is <type 'ellipsis'>, but since it's
     # not exposed anywhere under that name, we make it private here.
@@ -6348,6 +6295,13 @@ else:
     class ellipsis: ...
 
     Ellipsis: ellipsis
+
+    @final
+    @type_check_only
+    class _NotImplementedType(Any):
+        __call__: None
+
+    NotImplemented: _NotImplementedType
 
 @disjoint_base
 class BaseException:

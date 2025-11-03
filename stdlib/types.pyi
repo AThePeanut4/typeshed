@@ -1050,9 +1050,9 @@ if sys.version_info >= (3, 10):
         """The type of the Ellipsis singleton."""
         ...
 
-    from builtins import _NotImplementedType
+    @final
+    class NotImplementedType(Any): ...
 
-    NotImplementedType = _NotImplementedType
     @final
     class UnionType:
         """
