@@ -553,10 +553,191 @@ class PlanarEmbedding(DiGraph[_Node]):
         ...
     def traverse_face(
         self, v: _Node, w: _Node, mark_half_edges: MutableSet[tuple[_Node, _Node]] | None = None
-    ) -> list[_Node]: ...
+    ) -> list[_Node]:
+        """
+        Returns nodes on the face that belong to the half-edge (v, w).
+
+        The face that is traversed lies to the right of the half-edge (in an
+        orientation where v is below w).
+
+        Optionally it is possible to pass a set to which all encountered half
+        edges are added. Before calling this method, this set must not include
+        any half-edges that belong to the face.
+
+        Parameters
+        ----------
+        v : node
+            Start node of half-edge.
+        w : node
+            End node of half-edge.
+        mark_half_edges: set, optional
+            Set to which all encountered half-edges are added.
+
+        Returns
+        -------
+        face : list
+            A list of nodes that lie on this face.
+        """
+        ...
     # Overriden in __init__ to always raise
-    def add_edge(self, u_of_edge: _Node, v_of_edge: _Node, **attr: Unused) -> NoReturn: ...
-    def add_edges_from(self, ebunch_to_add: Iterable[_EdgePlus[_Node]], **attr: Unused) -> NoReturn: ...
+    def add_edge(self, u_of_edge: _Node, v_of_edge: _Node, **attr: Unused) -> NoReturn:
+        """
+        Add an edge between u and v.
+
+        The nodes u and v will be automatically added if they are
+        not already in the graph.
+
+        Edge attributes can be specified with keywords or by directly
+        accessing the edge's attribute dictionary. See examples below.
+
+        Parameters
+        ----------
+        u_of_edge, v_of_edge : nodes
+            Nodes can be, for example, strings or numbers.
+            Nodes must be hashable (and not None) Python objects.
+        attr : keyword arguments, optional
+            Edge data (or labels or objects) can be assigned using
+            keyword arguments.
+
+        See Also
+        --------
+        add_edges_from : add a collection of edges
+
+        Notes
+        -----
+        Adding an edge that already exists updates the edge data.
+
+        Many NetworkX algorithms designed for weighted graphs use
+        an edge attribute (by default `weight`) to hold a numerical value.
+
+        Examples
+        --------
+        The following all add the edge e=(1, 2) to graph G:
+
+        >>> G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> e = (1, 2)
+        >>> G.add_edge(1, 2)  # explicit two-node form
+        >>> G.add_edge(*e)  # single edge as tuple of two nodes
+        >>> G.add_edges_from([(1, 2)])  # add edges from iterable container
+
+        Associate data to edges using keywords:
+
+        >>> G.add_edge(1, 2, weight=3)
+        >>> G.add_edge(1, 3, weight=7, capacity=15, length=342.7)
+
+        For non-string attribute keys, use subscript notation.
+
+        >>> G.add_edge(1, 2)
+        >>> G[1][2].update({0: 5})
+        >>> G.edges[1, 2].update({0: 5})
+        """
+        ...
+    def add_edges_from(self, ebunch_to_add: Iterable[_EdgePlus[_Node]], **attr: Unused) -> NoReturn:
+        """
+        Add all the edges in ebunch_to_add.
+
+        Parameters
+        ----------
+        ebunch_to_add : container of edges
+            Each edge given in the container will be added to the
+            graph. The edges must be given as 2-tuples (u, v) or
+            3-tuples (u, v, d) where d is a dictionary containing edge data.
+        attr : keyword arguments, optional
+            Edge data (or labels or objects) can be assigned using
+            keyword arguments.
+
+        See Also
+        --------
+        add_edge : add a single edge
+        add_weighted_edges_from : convenient way to add weighted edges
+
+        Notes
+        -----
+        Adding the same edge twice has no effect but any edge data
+        will be updated when each duplicate edge is added.
+
+        Edge attributes specified in an ebunch take precedence over
+        attributes specified via keyword arguments.
+
+        When adding edges from an iterator over the graph you are changing,
+        a `RuntimeError` can be raised with message:
+        `RuntimeError: dictionary changed size during iteration`. This
+        happens when the graph's underlying dictionary is modified during
+        iteration. To avoid this error, evaluate the iterator into a separate
+        object, e.g. by using `list(iterator_of_edges)`, and pass this
+        object to `G.add_edges_from`.
+
+        Examples
+        --------
+        >>> G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> G.add_edges_from([(0, 1), (1, 2)])  # using a list of edge tuples
+        >>> e = zip(range(0, 3), range(1, 4))
+        >>> G.add_edges_from(e)  # Add the path graph 0-1-2-3
+
+        Associate data to edges
+
+        >>> G.add_edges_from([(1, 2), (2, 3)], weight=3)
+        >>> G.add_edges_from([(3, 4), (1, 4)], label="WN2898")
+
+        Evaluate an iterator over a graph if using it to modify the same graph
+
+        >>> G = nx.DiGraph([(1, 2), (2, 3), (3, 4)])
+        >>> # Grow graph by one new node, adding edges to all existing nodes.
+        >>> # wrong way - will raise RuntimeError
+        >>> # G.add_edges_from(((5, n) for n in G.nodes))
+        >>> # right way - note that there will be no self-edge for node 5
+        >>> G.add_edges_from(list((5, n) for n in G.nodes))
+        """
+        ...
     def add_weighted_edges_from(
         self, ebunch_to_add: Iterable[tuple[_Node, _Node, float]], weight: str = "weight", **attr: Unused
-    ) -> NoReturn: ...
+    ) -> NoReturn:
+        """
+        Add weighted edges in `ebunch_to_add` with specified weight attr
+
+        Parameters
+        ----------
+        ebunch_to_add : container of edges
+            Each edge given in the list or container will be added
+            to the graph. The edges must be given as 3-tuples (u, v, w)
+            where w is a number.
+        weight : string, optional (default= 'weight')
+            The attribute name for the edge weights to be added.
+        attr : keyword arguments, optional (default= no attributes)
+            Edge attributes to add/update for all edges.
+
+        See Also
+        --------
+        add_edge : add a single edge
+        add_edges_from : add multiple edges
+
+        Notes
+        -----
+        Adding the same edge twice for Graph/DiGraph simply updates
+        the edge data. For MultiGraph/MultiDiGraph, duplicate edges
+        are stored.
+
+        When adding edges from an iterator over the graph you are changing,
+        a `RuntimeError` can be raised with message:
+        `RuntimeError: dictionary changed size during iteration`. This
+        happens when the graph's underlying dictionary is modified during
+        iteration. To avoid this error, evaluate the iterator into a separate
+        object, e.g. by using `list(iterator_of_edges)`, and pass this
+        object to `G.add_weighted_edges_from`.
+
+        Examples
+        --------
+        >>> G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> G.add_weighted_edges_from([(0, 1, 3.0), (1, 2, 7.5)])
+
+        Evaluate an iterator over edges before passing it
+
+        >>> G = nx.Graph([(1, 2), (2, 3), (3, 4)])
+        >>> weight = 0.1
+        >>> # Grow graph by one new node, adding edges to all existing nodes.
+        >>> # wrong way - will raise RuntimeError
+        >>> # G.add_weighted_edges_from(((5, n, weight) for n in G.nodes))
+        >>> # correct way - note that there will be no self-edge for node 5
+        >>> G.add_weighted_edges_from(list((5, n, weight) for n in G.nodes))
+        """
+        ...

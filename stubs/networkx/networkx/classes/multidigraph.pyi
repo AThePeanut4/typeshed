@@ -327,7 +327,86 @@ class MultiDiGraph(MultiGraph[_Node], DiGraph[_Node]):
         """
         ...
     @cached_property
-    def edges(self) -> OutMultiEdgeView[_Node]: ...
+    def edges(self) -> OutMultiEdgeView[_Node]:
+        """
+        An OutMultiEdgeView of the Graph as G.edges or G.edges().
+
+        edges(self, nbunch=None, data=False, keys=False, default=None)
+
+        The OutMultiEdgeView provides set-like operations on the edge-tuples
+        as well as edge attribute lookup. When called, it also provides
+        an EdgeDataView object which allows control of access to edge
+        attributes (but does not provide set-like operations).
+        Hence, ``G.edges[u, v, k]['color']`` provides the value of the color
+        attribute for the edge from ``u`` to ``v`` with key ``k`` while
+        ``for (u, v, k, c) in G.edges(data='color', default='red', keys=True):``
+        iterates through all the edges yielding the color attribute with
+        default `'red'` if no color attribute exists.
+
+        Edges are returned as tuples with optional data and keys
+        in the order (node, neighbor, key, data). If ``keys=True`` is not
+        provided, the tuples will just be (node, neighbor, data), but
+        multiple tuples with the same node and neighbor will be
+        generated when multiple edges between two nodes exist.
+
+        Parameters
+        ----------
+        nbunch : single node, container, or all nodes (default= all nodes)
+            The view will only report edges from these nodes.
+        data : string or bool, optional (default=False)
+            The edge attribute returned in 3-tuple (u, v, ddict[data]).
+            If True, return edge attribute dict in 3-tuple (u, v, ddict).
+            If False, return 2-tuple (u, v).
+        keys : bool, optional (default=False)
+            If True, return edge keys with each edge, creating (u, v, k,
+            d) tuples when data is also requested (the default) and (u,
+            v, k) tuples when data is not requested.
+        default : value, optional (default=None)
+            Value used for edges that don't have the requested attribute.
+            Only relevant if data is not True or False.
+
+        Returns
+        -------
+        edges : OutMultiEdgeView
+            A view of edge attributes, usually it iterates over (u, v)
+            (u, v, k) or (u, v, k, d) tuples of edges, but can also be
+            used for attribute lookup as ``edges[u, v, k]['foo']``.
+
+        Notes
+        -----
+        Nodes in nbunch that are not in the graph will be (quietly) ignored.
+        For directed graphs this returns the out-edges.
+
+        Examples
+        --------
+        >>> G = nx.MultiDiGraph()
+        >>> nx.add_path(G, [0, 1, 2])
+        >>> key = G.add_edge(2, 3, weight=5)
+        >>> key2 = G.add_edge(1, 2)  # second edge between these nodes
+        >>> [e for e in G.edges()]
+        [(0, 1), (1, 2), (1, 2), (2, 3)]
+        >>> list(G.edges(data=True))  # default data is {} (empty dict)
+        [(0, 1, {}), (1, 2, {}), (1, 2, {}), (2, 3, {'weight': 5})]
+        >>> list(G.edges(data="weight", default=1))
+        [(0, 1, 1), (1, 2, 1), (1, 2, 1), (2, 3, 5)]
+        >>> list(G.edges(keys=True))  # default keys are integers
+        [(0, 1, 0), (1, 2, 0), (1, 2, 1), (2, 3, 0)]
+        >>> list(G.edges(data=True, keys=True))
+        [(0, 1, 0, {}), (1, 2, 0, {}), (1, 2, 1, {}), (2, 3, 0, {'weight': 5})]
+        >>> list(G.edges(data="weight", default=1, keys=True))
+        [(0, 1, 0, 1), (1, 2, 0, 1), (1, 2, 1, 1), (2, 3, 0, 5)]
+        >>> list(G.edges([0, 2]))
+        [(0, 1), (2, 3)]
+        >>> list(G.edges(0))
+        [(0, 1)]
+        >>> list(G.edges(1))
+        [(1, 2), (1, 2)]
+
+        See Also
+        --------
+        in_edges, out_edges
+        """
+        ...
     @cached_property
     def out_edges(self) -> OutMultiEdgeView[_Node]:
         """
@@ -410,9 +489,86 @@ class MultiDiGraph(MultiGraph[_Node], DiGraph[_Node]):
         """
         ...
     @cached_property
-    def in_edges(self) -> InMultiEdgeView[_Node]: ...
+    def in_edges(self) -> InMultiEdgeView[_Node]:
+        """
+        A view of the in edges of the graph as G.in_edges or G.in_edges().
+
+        in_edges(self, nbunch=None, data=False, keys=False, default=None)
+
+        Parameters
+        ----------
+        nbunch : single node, container, or all nodes (default= all nodes)
+            The view will only report edges incident to these nodes.
+        data : string or bool, optional (default=False)
+            The edge attribute returned in 3-tuple (u, v, ddict[data]).
+            If True, return edge attribute dict in 3-tuple (u, v, ddict).
+            If False, return 2-tuple (u, v).
+        keys : bool, optional (default=False)
+            If True, return edge keys with each edge, creating 3-tuples
+            (u, v, k) or with data, 4-tuples (u, v, k, d).
+        default : value, optional (default=None)
+            Value used for edges that don't have the requested attribute.
+            Only relevant if data is not True or False.
+
+        Returns
+        -------
+        in_edges : InMultiEdgeView or InMultiEdgeDataView
+            A view of edge attributes, usually it iterates over (u, v)
+            or (u, v, k) or (u, v, k, d) tuples of edges, but can also be
+            used for attribute lookup as `edges[u, v, k]['foo']`.
+
+        See Also
+        --------
+        edges
+        """
+        ...
     @cached_property
-    def degree(self) -> DiMultiDegreeView[_Node]: ...
+    def degree(self) -> DiMultiDegreeView[_Node]:
+        """
+        A DegreeView for the Graph as G.degree or G.degree().
+
+        The node degree is the number of edges adjacent to the node.
+        The weighted node degree is the sum of the edge weights for
+        edges incident to that node.
+
+        This object provides an iterator for (node, degree) as well as
+        lookup for the degree for a single node.
+
+        Parameters
+        ----------
+        nbunch : single node, container, or all nodes (default= all nodes)
+            The view will only report edges incident to these nodes.
+
+        weight : string or None, optional (default=None)
+           The name of an edge attribute that holds the numerical value used
+           as a weight.  If None, then each edge has weight 1.
+           The degree is the sum of the edge weights adjacent to the node.
+
+        Returns
+        -------
+        DiMultiDegreeView or int
+            If multiple nodes are requested (the default), returns a `DiMultiDegreeView`
+            mapping nodes to their degree.
+            If a single node is requested, returns the degree of the node as an integer.
+
+        See Also
+        --------
+        out_degree, in_degree
+
+        Examples
+        --------
+        >>> G = nx.MultiDiGraph()
+        >>> nx.add_path(G, [0, 1, 2, 3])
+        >>> G.degree(0)  # node 0 with degree 1
+        1
+        >>> list(G.degree([0, 1, 2]))
+        [(0, 1), (1, 2), (2, 2)]
+        >>> G.add_edge(0, 1)  # parallel edge
+        1
+        >>> list(G.degree([0, 1, 2]))  # parallel edges are counted
+        [(0, 2), (1, 3), (2, 2)]
+        """
+        ...
     @cached_property
     def in_degree(self) -> InMultiDegreeView[_Node]:
         """
@@ -464,5 +620,104 @@ class MultiDiGraph(MultiGraph[_Node], DiGraph[_Node]):
         """
         ...
     @cached_property
-    def out_degree(self) -> OutMultiDegreeView[_Node]: ...
-    def to_undirected(self, reciprocal: bool = False, as_view: bool = False) -> MultiGraph[_Node]: ...  # type: ignore[override] # Has an additional `reciprocal` keyword argument
+    def out_degree(self) -> OutMultiDegreeView[_Node]:
+        """
+        Returns an iterator for (node, out-degree) or out-degree for single node.
+
+        out_degree(self, nbunch=None, weight=None)
+
+        The node out-degree is the number of edges pointing out of the node.
+        This function returns the out-degree for a single node or an iterator
+        for a bunch of nodes or if nothing is passed as argument.
+
+        Parameters
+        ----------
+        nbunch : single node, container, or all nodes (default= all nodes)
+            The view will only report edges incident to these nodes.
+
+        weight : string or None, optional (default=None)
+           The edge attribute that holds the numerical value used
+           as a weight.  If None, then each edge has weight 1.
+           The degree is the sum of the edge weights.
+
+        Returns
+        -------
+        If a single node is requested
+        deg : int
+            Degree of the node
+
+        OR if multiple nodes are requested
+        nd_iter : iterator
+            The iterator returns two-tuples of (node, out-degree).
+
+        See Also
+        --------
+        degree, in_degree
+
+        Examples
+        --------
+        >>> G = nx.MultiDiGraph()
+        >>> nx.add_path(G, [0, 1, 2, 3])
+        >>> G.out_degree(0)  # node 0 with degree 1
+        1
+        >>> list(G.out_degree([0, 1, 2]))
+        [(0, 1), (1, 1), (2, 1)]
+        >>> G.add_edge(0, 1)  # parallel edge
+        1
+        >>> list(G.out_degree([0, 1, 2]))  # counts parallel edges
+        [(0, 2), (1, 1), (2, 1)]
+        """
+        ...
+    def to_undirected(self, reciprocal: bool = False, as_view: bool = False) -> MultiGraph[_Node]:
+        """
+        Returns an undirected representation of the digraph.
+
+        Parameters
+        ----------
+        reciprocal : bool (optional)
+          If True only keep edges that appear in both directions
+          in the original digraph.
+        as_view : bool (optional, default=False)
+          If True return an undirected view of the original directed graph.
+
+        Returns
+        -------
+        G : MultiGraph
+            An undirected graph with the same name and nodes and
+            with edge (u, v, data) if either (u, v, data) or (v, u, data)
+            is in the digraph.  If both edges exist in digraph and
+            their edge data is different, only one edge is created
+            with an arbitrary choice of which edge data to use.
+            You must check and correct for this manually if desired.
+
+        See Also
+        --------
+        MultiGraph, copy, add_edge, add_edges_from
+
+        Notes
+        -----
+        This returns a "deepcopy" of the edge, node, and
+        graph attributes which attempts to completely copy
+        all of the data and references.
+
+        This is in contrast to the similar D=MultiDiGraph(G) which
+        returns a shallow copy of the data.
+
+        See the Python copy module for more information on shallow
+        and deep copies, https://docs.python.org/3/library/copy.html.
+
+        Warning: If you have subclassed MultiDiGraph to use dict-like
+        objects in the data structure, those changes do not transfer
+        to the MultiGraph created by this method.
+
+        Examples
+        --------
+        >>> G = nx.path_graph(2)  # or MultiGraph, etc
+        >>> H = G.to_directed()
+        >>> list(H.edges)
+        [(0, 1), (1, 0)]
+        >>> G2 = H.to_undirected()
+        >>> list(G2.edges)
+        [(0, 1)]
+        """
+        ...
