@@ -95,8 +95,22 @@ class Protocol(BaseProtocol):
     """
     # Need annotation or mypy will complain about 'Cannot determine type of "__slots__" in base class'
     __slots__: tuple[str, ...] = ()
-    def data_received(self, data: bytes) -> None: ...
-    def eof_received(self) -> bool | None: ...
+    def data_received(self, data: bytes) -> None:
+        """
+        Called when some data is received.
+
+        The argument is a bytes object.
+        """
+        ...
+    def eof_received(self) -> bool | None:
+        """
+        Called when the other end calls write_eof() or equivalent.
+
+        If this returns a false value (including None), the transport
+        will close itself.  If it returns a true value, closing the
+        transport is up to the protocol.
+        """
+        ...
 
 class BufferedProtocol(BaseProtocol):
     """
@@ -181,7 +195,24 @@ class DatagramProtocol(BaseProtocol):
         ...
 
 class SubprocessProtocol(BaseProtocol):
+    """Interface for protocol for subprocess calls."""
     __slots__: tuple[str, ...] = ()
-    def pipe_data_received(self, fd: int, data: bytes) -> None: ...
-    def pipe_connection_lost(self, fd: int, exc: Exception | None) -> None: ...
-    def process_exited(self) -> None: ...
+    def pipe_data_received(self, fd: int, data: bytes) -> None:
+        """
+        Called when the subprocess writes data into stdout/stderr pipe.
+
+        fd is int file descriptor.
+        data is bytes object.
+        """
+        ...
+    def pipe_connection_lost(self, fd: int, exc: Exception | None) -> None:
+        """
+        Called when a file descriptor associated with the child process is
+        closed.
+
+        fd is the int file descriptor that was closed.
+        """
+        ...
+    def process_exited(self) -> None:
+        """Called when subprocess has exited."""
+        ...
