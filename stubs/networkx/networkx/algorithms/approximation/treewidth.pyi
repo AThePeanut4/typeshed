@@ -30,6 +30,8 @@ There are two different functions for computing a tree decomposition:
 """
 
 from _typeshed import Incomplete
+from collections.abc import Callable, Mapping
+from typing import Generic
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
@@ -37,85 +39,18 @@ from networkx.utils.backends import _dispatchable
 __all__ = ["treewidth_min_degree", "treewidth_min_fill_in"]
 
 @_dispatchable
-def treewidth_min_degree(G: Graph[_Node]):
-    """
-    Returns a treewidth decomposition using the Minimum Degree heuristic.
-
-    The heuristic chooses the nodes according to their degree, i.e., first
-    the node with the lowest degree is chosen, then the graph is updated
-    and the corresponding node is removed. Next, a new node with the lowest
-    degree is chosen, and so on.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    Returns
-    -------
-    Treewidth decomposition : (int, Graph) tuple
-          2-tuple with treewidth and the corresponding decomposed tree.
-    """
-    ...
+def treewidth_min_degree(G: Graph[_Node]) -> tuple[int, Graph[frozenset[_Node]]]: ...
 @_dispatchable
-def treewidth_min_fill_in(G: Graph[_Node]):
-    """
-    Returns a treewidth decomposition using the Minimum Fill-in heuristic.
+def treewidth_min_fill_in(G: Graph[_Node]) -> tuple[int, Graph[frozenset[_Node]]]: ...
 
-    The heuristic chooses a node from the graph, where the number of edges
-    added turning the neighborhood of the chosen node into clique is as
-    small as possible.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    Returns
-    -------
-    Treewidth decomposition : (int, Graph) tuple
-        2-tuple with treewidth and the corresponding decomposed tree.
-    """
-    ...
-
-class MinDegreeHeuristic:
-    """
-    Implements the Minimum Degree heuristic.
-
-    The heuristic chooses the nodes according to their degree
-    (number of neighbors), i.e., first the node with the lowest degree is
-    chosen, then the graph is updated and the corresponding node is
-    removed. Next, a new node with the lowest degree is chosen, and so on.
-    """
+class MinDegreeHeuristic(Generic[_Node]):
     count: Incomplete
 
-    def __init__(self, graph) -> None: ...
-    def best_node(self, graph): ...
+    def __init__(self, graph: Graph[_Node]) -> None: ...
+    def best_node(self, graph: Mapping[_Node, set[_Node]]) -> _Node | None: ...
 
-def min_fill_in_heuristic(graph_dict) -> Incomplete | None:
-    """
-    Implements the Minimum Degree heuristic.
-
-    graph_dict: dict keyed by node to sets of neighbors (no self-loops)
-
-    Returns the node from the graph, where the number of edges added when
-    turning the neighborhood of the chosen node into clique is as small as
-    possible. This algorithm chooses the nodes using the Minimum Fill-In
-    heuristic. The running time of the algorithm is :math:`O(V^3)` and it uses
-    additional constant memory.
-    """
-    ...
+def min_fill_in_heuristic(graph_dict: Mapping[_Node, set[_Node]]) -> _Node | None: ...
 @_dispatchable
-def treewidth_decomp(G: Graph[_Node], heuristic=...) -> tuple[int, Graph[_Node]]:
-    """
-    Returns a treewidth decomposition using the passed heuristic.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-    heuristic : heuristic function
-
-    Returns
-    -------
-    Treewidth decomposition : (int, Graph) tuple
-        2-tuple with treewidth and the corresponding decomposed tree.
-    """
-    ...
+def treewidth_decomp(
+    G: Graph[_Node], heuristic: Callable[[dict[_Node, set[_Node]]], _Node | None] = ...
+) -> tuple[int, Graph[frozenset[_Node]]]: ...
