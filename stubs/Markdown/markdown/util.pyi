@@ -31,9 +31,7 @@ if sys.version_info >= (3, 10):
         ...
 
 else:
-    def get_installed_extensions():
-        """Return all entry_points in the `markdown.extensions` group. """
-        ...
+    def get_installed_extensions(): ...
 
 def deprecated(message: str, stacklevel: int = 2):
     """
