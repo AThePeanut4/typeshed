@@ -140,7 +140,7 @@ zxcvbn==4.5.*
 untangle==1.2.*
 lunardate==0.2.*
 mysqlclient==2.2.*
-icalendar==6.3.1
+icalendar==6.3.2
 aiofiles==25.1.*
 django-filter==25.2.*
 tabulate==0.9.*
