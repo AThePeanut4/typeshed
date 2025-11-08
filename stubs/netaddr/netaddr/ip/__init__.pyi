@@ -3,6 +3,7 @@
 from _typeshed import ConvertibleToInt, Unused
 from abc import abstractmethod
 from collections.abc import Iterable, Iterator
+from types import ModuleType
 from typing import Literal, SupportsIndex, SupportsInt, overload
 from typing_extensions import Self, TypeAlias
 
@@ -526,7 +527,9 @@ class IPListMixin:
         """
         ...
 
-def parse_ip_network(module, addr: tuple[int, int] | str, flags: int = 0, *, expand_partial: bool = False) -> tuple[int, int]: ...
+def parse_ip_network(
+    module: ModuleType, addr: tuple[int, int] | str, flags: int = 0, *, expand_partial: bool = False
+) -> tuple[int, int]: ...
 
 class IPNetwork(BaseIP, IPListMixin):
     """

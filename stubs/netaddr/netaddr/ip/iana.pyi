@@ -1,19 +1,9 @@
-"""
-Routines for accessing data published by IANA (Internet Assigned Numbers
-Authority).
-
-More details can be found at the following URLs :-
-
-    - IANA Home Page - http://www.iana.org/
-    - IEEE Protocols Information Home Page - http://www.iana.org/protocols/
-"""
-
-from _typeshed import Incomplete, SupportsWrite
+from _typeshed import SupportsWrite
 from collections.abc import Callable, Mapping, MutableMapping
 from typing import Any
 from typing_extensions import TypeAlias
-from xml.sax import handler
-from xml.sax.xmlreader import AttributesImpl, XMLReader
+from xml.sax import _Source, handler
+from xml.sax.xmlreader import AttributesImpl, InputSource, XMLReader
 
 from netaddr.core import Publisher, Subscriber
 from netaddr.ip import IPAddress, IPNetwork, IPRange
@@ -31,23 +21,9 @@ class SaxRecordParser(handler.ContentHandler):
 class XMLRecordParser(Publisher):
     """A configurable Parser that understands how to parse XML based records."""
     xmlparser: XMLReader
-    fh: Incomplete
-    def __init__(self, fh, **kwargs: object) -> None:
-        """
-        Constructor.
-
-        fh - a valid, open file handle to XML based record data.
-        """
-        ...
-    def process_record(self, rec: Mapping[str, object]) -> dict[str, str] | None:
-        """
-        This is the callback method invoked for every record. It is usually
-        over-ridden by base classes to provide specific record-based logic.
-
-        Any record can be vetoed (not passed to registered Subscriber objects)
-        by simply returning None.
-        """
-        ...
+    fh: InputSource | _Source
+    def __init__(self, fh: InputSource | _Source, **kwargs: object) -> None: ...
+    def process_record(self, rec: Mapping[str, object]) -> dict[str, str] | None: ...
     def consume_record(self, rec: object) -> None: ...
     def parse(self) -> None:
         """
@@ -123,16 +99,11 @@ class MulticastParser(XMLRecordParser):
         ...
 
 class DictUpdater(Subscriber):
-    """
-    Concrete Subscriber that inserts records received from a Publisher into a
-    dictionary.
-    """
-    dct: MutableMapping[_IanaInfoKey, Incomplete]
+    dct: MutableMapping[_IanaInfoKey, dict[str, Any]]
     topic: str
     unique_key: str
-    def __init__(self, dct: MutableMapping[_IanaInfoKey, Incomplete], topic: str, unique_key: str) -> None:
-        """
-        Constructor.
+    def __init__(self, dct: MutableMapping[_IanaInfoKey, dict[str, Any]], topic: str, unique_key: str) -> None: ...
+    def update(self, data: dict[str, Any]) -> None: ...
 
         dct - lookup dict or dict like object to insert records into.
 

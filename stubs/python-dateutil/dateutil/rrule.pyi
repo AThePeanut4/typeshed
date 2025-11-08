@@ -6,10 +6,11 @@ including support for caching of results.
 """
 
 import datetime
-from _typeshed import Incomplete
-from collections.abc import Generator, Iterable, Iterator, Sequence
+from collections.abc import Callable, Generator, Iterable, Iterator, Mapping, Sequence
 from typing import Final, Literal, overload
 from typing_extensions import Self, TypeAlias
+
+from dateutil.parser._parser import _TzInfos
 
 from ._common import weekday as weekdaybase
 
@@ -67,55 +68,15 @@ SU: weekday
 class rrulebase:
     def __init__(self, cache: bool | None = False) -> None: ...
     def __iter__(self) -> Iterator[datetime.datetime]: ...
-    def __getitem__(self, item): ...
-    def __contains__(self, item) -> bool: ...
-    def count(self) -> int | None:
-        """
-        Returns the number of recurrences in this set. It will have go
-        through the whole recurrence, if this hasn't been done before. 
-        """
-        ...
-    def before(self, dt, inc: bool = False):
-        """
-        Returns the last recurrence before the given datetime instance. The
-        inc keyword defines what happens if dt is an occurrence. With
-        inc=True, if dt itself is an occurrence, it will be returned. 
-        """
-        ...
-    def after(self, dt, inc: bool = False):
-        """
-        Returns the first recurrence after the given datetime instance. The
-        inc keyword defines what happens if dt is an occurrence. With
-        inc=True, if dt itself is an occurrence, it will be returned.  
-        """
-        ...
-    def xafter(self, dt, count=None, inc: bool = False) -> Generator[Incomplete]:
-        """
-        Generator which yields up to `count` recurrences after the given
-        datetime instance, equivalent to `after`.
-
-        :param dt:
-            The datetime at which to start generating recurrences.
-
-        :param count:
-            The maximum number of recurrences to generate. If `None` (default),
-            dates are generated until the recurrence rule is exhausted.
-
-        :param inc:
-            If `dt` is an instance of the rule and `inc` is `True`, it is
-            included in the output.
-
-        :yields: Yields a sequence of `datetime` objects.
-        """
-        ...
-    def between(self, after, before, inc: bool = False, count: int = 1) -> list[Incomplete]:
-        """
-        Returns all the occurrences of the rrule between after and before.
-        The inc keyword defines what happens if after and/or before are
-        themselves occurrences. With inc=True, they will be included in the
-        list, if they are found in the recurrence set. 
-        """
-        ...
+    def __getitem__(self, item: int | slice) -> datetime.datetime: ...
+    def __contains__(self, item: datetime.datetime) -> bool: ...
+    def count(self) -> int | None: ...
+    def before(self, dt: datetime.datetime, inc: bool = False): ...
+    def after(self, dt: datetime.datetime, inc: bool = False): ...
+    def xafter(self, dt: datetime.datetime, count: int | None = None, inc: bool = False) -> Generator[datetime.datetime]: ...
+    def between(
+        self, after: datetime.datetime, before: datetime.datetime, inc: bool = False, count: int = 1
+    ) -> list[datetime.datetime]: ...
 
 class rrule(rrulebase):
     """
@@ -343,44 +304,22 @@ class rruleset(rrulebase):
                   performance of multiple queries considerably. 
     """
     class _genitem:
-        dt: Incomplete
-        genlist: list[Incomplete]
-        gen: Incomplete
-        def __init__(self, genlist, gen) -> None: ...
+        dt: datetime.datetime
+        genlist: list[Self]
+        gen: Iterator[datetime.datetime]
+        def __init__(self, genlist: list[Self], gen: Iterator[datetime.datetime]) -> None: ...
         def __next__(self) -> None: ...
         next = __next__
-        def __lt__(self, other) -> bool: ...
-        def __gt__(self, other) -> bool: ...
-        def __eq__(self, other) -> bool: ...
-        def __ne__(self, other) -> bool: ...
+        def __lt__(self, other: Self) -> bool: ...
+        def __gt__(self, other: Self) -> bool: ...
+        def __eq__(self, other: object) -> bool: ...
+        def __ne__(self, other: object) -> bool: ...
 
     def __init__(self, cache: bool | None = False) -> None: ...
-    def rrule(self, rrule: _RRule) -> None:
-        """
-        Include the given :py:class:`rrule` instance in the recurrence set
-        generation. 
-        """
-        ...
-    def rdate(self, rdate) -> None:
-        """
-        Include the given :py:class:`datetime` instance in the recurrence
-        set generation. 
-        """
-        ...
-    def exrule(self, exrule) -> None:
-        """
-        Include the given rrule instance in the recurrence set exclusion
-        list. Dates which are part of the given recurrence rules will not
-        be generated, even if some inclusive rrule or rdate matches them.
-        """
-        ...
-    def exdate(self, exdate) -> None:
-        """
-        Include the given datetime instance in the recurrence set
-        exclusion list. Dates included that way will not be generated,
-        even if some inclusive rrule or rdate matches them. 
-        """
-        ...
+    def rrule(self, rrule: _RRule) -> None: ...
+    def rdate(self, rdate: datetime.datetime) -> None: ...
+    def exrule(self, exrule: _RRule) -> None: ...
+    def exdate(self, exdate: datetime.datetime) -> None: ...
 
 class _rrulestr:
     """
@@ -438,8 +377,8 @@ class _rrulestr:
         unfold: bool = False,
         compatible: bool = False,
         ignoretz: bool = False,
-        tzids=None,
-        tzinfos=None,
+        tzids: Callable[[str], datetime.tzinfo] | Mapping[str, datetime.tzinfo] | None = None,
+        tzinfos: _TzInfos | None = None,
     ) -> rruleset: ...
     @overload
     def __call__(
@@ -452,8 +391,8 @@ class _rrulestr:
         unfold: bool = False,
         forceset: bool = False,
         ignoretz: bool = False,
-        tzids=None,
-        tzinfos=None,
+        tzids: Callable[[str], datetime.tzinfo] | Mapping[str, datetime.tzinfo] | None = None,
+        tzinfos: _TzInfos | None = None,
     ) -> rruleset: ...
     @overload
     def __call__(
@@ -466,8 +405,8 @@ class _rrulestr:
         forceset: bool = False,
         compatible: bool = False,
         ignoretz: bool = False,
-        tzids=None,
-        tzinfos=None,
+        tzids: Callable[[str], datetime.tzinfo] | Mapping[str, datetime.tzinfo] | None = None,
+        tzinfos: _TzInfos | None = None,
     ) -> rrule | rruleset: ...
 
 rrulestr: _rrulestr
