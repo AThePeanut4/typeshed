@@ -43,7 +43,7 @@ python-crontab==3.3.*
 python-jenkins~=1.8.3
 grpcio-health-checking==1.*
 auth0-python==4.10.*
-qrbill==1.1.*
+qrbill==1.2.*
 flake8-typing-imports==1.17.*
 hnswlib==0.8.*
 shapely==2.1.*
@@ -97,6 +97,7 @@ vobject~=0.9.9
 python-http-client==3.3.7
 nanoid==2.0.0
 qrcode[pil]==8.2.*
+colorful==0.5.*
 lzstring==1.0.*
 hvac==2.4.*
 uWSGI==2.0.*
@@ -172,6 +173,7 @@ pynput~=1.8.1
 gevent==25.9.*
 channels==4.3.*
 decorator==5.2.*
+webencodings==0.5.*
 Pygments==2.19.*
 xmldiff==2.7.*
 pytz==2025.2
