@@ -63,8 +63,27 @@ class tzutc(tzinfo):
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
     def tzname(self, dt: datetime | None) -> str: ...
-    def is_ambiguous(self, dt: datetime | None) -> bool: ...
-    def fromutc(self, dt: _DT) -> _DT: ...
+    def is_ambiguous(self, dt: datetime | None) -> bool:
+        """
+        Whether or not the "wall time" of a given datetime is ambiguous in this
+        zone.
+
+        :param dt:
+            A :py:class:`datetime.datetime`, naive or time zone aware.
+
+
+        :return:
+            Returns ``True`` if ambiguous, ``False`` otherwise.
+
+        .. versionadded:: 2.6.0
+        """
+        ...
+    def fromutc(self, dt: _DT) -> _DT:
+        """
+        Fast track version of fromutc() returns the original ``dt`` object for
+        any valid :py:class:`datetime.datetime` object.
+        """
+        ...
     def __eq__(self, other: object) -> bool: ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     def __ne__(self, other: object) -> bool: ...
@@ -73,6 +92,15 @@ class tzutc(tzinfo):
 UTC: tzutc
 
 class tzoffset(tzinfo):
+    """
+    A simple class for representing a fixed offset from UTC.
+
+    :param name:
+        The timezone name, to be returned when ``tzname()`` is called.
+    :param offset:
+        The time zone offset in seconds, or (since version 2.6.0, represented
+        as a :py:class:`datetime.timedelta` object).
+    """
     def __init__(self, name: str | None, offset: float | timedelta) -> None: ...
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
@@ -96,7 +124,9 @@ class tzoffset(tzinfo):
     def __ne__(self, other: object) -> bool: ...
     __reduce__ = object.__reduce__
     @classmethod
-    def instance(cls, name: str | None, offset: float | timedelta) -> tzoffset: ...
+    def instance(cls, name: str | None, offset: float | timedelta) -> tzoffset:
+        """Alternate constructor that returns a fresh instance"""
+        ...
 
 class tzlocal(_tzinfo):
     """A :class:`tzinfo` subclass built around the ``time`` timezone functions."""
@@ -104,7 +134,21 @@ class tzlocal(_tzinfo):
     def utcoffset(self, dt: datetime | None) -> timedelta | None: ...
     def dst(self, dt: datetime | None) -> timedelta | None: ...
     def tzname(self, dt: datetime | None) -> str: ...
-    def is_ambiguous(self, dt: datetime | None) -> bool: ...
+    def is_ambiguous(self, dt: datetime | None) -> bool:
+        """
+        Whether or not the "wall time" of a given datetime is ambiguous in this
+        zone.
+
+        :param dt:
+            A :py:class:`datetime.datetime`, naive or time zone aware.
+
+
+        :return:
+            Returns ``True`` if ambiguous, ``False`` otherwise.
+
+        .. versionadded:: 2.6.0
+        """
+        ...
     def __eq__(self, other: object) -> bool: ...
     __hash__: ClassVar[None]  # type: ignore[assignment]
     def __ne__(self, other: object) -> bool: ...
@@ -310,7 +354,21 @@ class tzrange(tzrangebase):
         start: relativedelta | None = None,
         end: relativedelta | None = None,
     ) -> None: ...
-    def transitions(self, year: int) -> tuple[datetime, datetime]: ...
+    def transitions(self, year: int) -> tuple[datetime, datetime]:
+        """
+        For a given year, get the DST on and off transition times, expressed
+        always on the standard time side. For zones with no transitions, this
+        function returns ``None``.
+
+        :param year:
+            The year whose transitions you would like to query.
+
+        :return:
+            Returns a :class:`tuple` of :class:`datetime.datetime` objects,
+            ``(dston, dstoff)`` for zones with an annual DST transition, or
+            ``None`` for fixed offset zones.
+        """
+        ...
     def __eq__(self, other: object) -> bool: ...
 
 class tzstr(tzrange):
@@ -358,7 +416,9 @@ class tzstr(tzrange):
     hasdst: bool
     def __init__(self, s: str, posix_offset: bool = False) -> None: ...
     @classmethod
-    def instance(cls, name: str | None, offset: float | timedelta) -> tzoffset: ...
+    def instance(cls, name: str | None, offset: float | timedelta) -> tzoffset:
+        """Alternate constructor that returns a fresh instance"""
+        ...
 
 @type_check_only
 class _ICalReader(Protocol):
@@ -378,8 +438,28 @@ class tzical:
     .. _`RFC 5545`: https://tools.ietf.org/html/rfc5545
     """
     def __init__(self, fileobj: str | _ICalReader) -> None: ...
-    def keys(self) -> list[str]: ...
-    def get(self, tzid: str | None = None) -> tzinfo | None: ...
+    def keys(self) -> list[str]:
+        """Retrieves the available time zones as a list."""
+        ...
+    def get(self, tzid: str | None = None) -> tzinfo | None:
+        """
+        Retrieve a :py:class:`datetime.tzinfo` object by its ``tzid``.
+
+        :param tzid:
+            If there is exactly one time zone available, omitting ``tzid``
+            or passing :py:const:`None` value returns it. Otherwise a valid
+            key (which can be retrieved from :func:`keys`) is required.
+
+        :raises ValueError:
+            Raised if ``tzid`` is not specified but there are either more
+            or fewer than 1 zone defined.
+
+        :returns:
+            Returns either a :py:class:`datetime.tzinfo` object representing
+            the relevant time zone or :py:const:`None` if the ``tzid`` was
+            not found.
+        """
+        ...
 
 TZFILES: list[str]
 TZPATHS: list[str]

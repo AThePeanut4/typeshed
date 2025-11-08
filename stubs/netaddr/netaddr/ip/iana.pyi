@@ -1,3 +1,13 @@
+"""
+Routines for accessing data published by IANA (Internet Assigned Numbers
+Authority).
+
+More details can be found at the following URLs :-
+
+    - IANA Home Page - http://www.iana.org/
+    - IEEE Protocols Information Home Page - http://www.iana.org/protocols/
+"""
+
 from _typeshed import SupportsWrite
 from collections.abc import Callable, Mapping, MutableMapping
 from typing import Any
@@ -22,8 +32,22 @@ class XMLRecordParser(Publisher):
     """A configurable Parser that understands how to parse XML based records."""
     xmlparser: XMLReader
     fh: InputSource | _Source
-    def __init__(self, fh: InputSource | _Source, **kwargs: object) -> None: ...
-    def process_record(self, rec: Mapping[str, object]) -> dict[str, str] | None: ...
+    def __init__(self, fh: InputSource | _Source, **kwargs: object) -> None:
+        """
+        Constructor.
+
+        fh - a valid, open file handle to XML based record data.
+        """
+        ...
+    def process_record(self, rec: Mapping[str, object]) -> dict[str, str] | None:
+        """
+        This is the callback method invoked for every record. It is usually
+        over-ridden by base classes to provide specific record-based logic.
+
+        Any record can be vetoed (not passed to registered Subscriber objects)
+        by simply returning None.
+        """
+        ...
     def consume_record(self, rec: object) -> None: ...
     def parse(self) -> None:
         """
@@ -99,11 +123,16 @@ class MulticastParser(XMLRecordParser):
         ...
 
 class DictUpdater(Subscriber):
+    """
+    Concrete Subscriber that inserts records received from a Publisher into a
+    dictionary.
+    """
     dct: MutableMapping[_IanaInfoKey, dict[str, Any]]
     topic: str
     unique_key: str
-    def __init__(self, dct: MutableMapping[_IanaInfoKey, dict[str, Any]], topic: str, unique_key: str) -> None: ...
-    def update(self, data: dict[str, Any]) -> None: ...
+    def __init__(self, dct: MutableMapping[_IanaInfoKey, dict[str, Any]], topic: str, unique_key: str) -> None:
+        """
+        Constructor.
 
         dct - lookup dict or dict like object to insert records into.
 
@@ -112,7 +141,7 @@ class DictUpdater(Subscriber):
         unique_key - key name in data dict that uniquely identifies it.
         """
         ...
-    def update(self, data) -> None:
+    def update(self, data: dict[str, Any]) -> None:
         """
         Callback function used by Publisher to notify this Subscriber about
         an update. Stores topic based information into dictionary passed to

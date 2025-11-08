@@ -1,3 +1,13 @@
+"""
+webencodings.x_user_defined
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An implementation of the x-user-defined encoding.
+
+:copyright: Copyright 2012 by Simon Sapin
+:license: BSD, see LICENSE for details.
+"""
+
 import codecs
 from _codecs import _CharMap
 from _typeshed import ReadableBuffer
