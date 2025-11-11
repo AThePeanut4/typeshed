@@ -51,7 +51,7 @@ braintree==4.40.*
 gunicorn==23.0.*
 aws-xray-sdk==2.15.*
 Jetson.GPIO==2.1.12
-ttkthemes==3.2.*
+ttkthemes==3.3.*
 yt-dlp==2025.10.22
 flake8-docstrings==1.7.*
 flake8-rst-docstrings==0.4.*
@@ -73,6 +73,7 @@ protobuf~=6.32.1
 pyserial[cp2110]==3.5.*
 pyxdg==0.28.*
 google-cloud-ndb==2.3.*
+tzdata==2025.*
 cffi==1.17.*
 gdb==16.3.*
 six==1.17.*
