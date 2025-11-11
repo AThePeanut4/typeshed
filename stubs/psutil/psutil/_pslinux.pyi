@@ -2,7 +2,7 @@
 
 import enum
 from _typeshed import Incomplete
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 from psutil._common import (
     NIC_DUPLEX_FULL as NIC_DUPLEX_FULL,
@@ -18,19 +18,19 @@ from psutil._common import (
     usage_percent as usage_percent,
 )
 
-__extra__all__: Any
+__extra__all__: Incomplete
 POWER_SUPPLY_PATH: str
 HAS_PROC_SMAPS: bool
 HAS_PROC_SMAPS_ROLLUP: bool
-HAS_PROC_IO_PRIORITY: Any
-HAS_CPU_AFFINITY: Any
-CLOCK_TICKS: Any
-PAGESIZE: Any
-BOOT_TIME: Any
-LITTLE_ENDIAN: Any
+HAS_PROC_IO_PRIORITY: Incomplete
+HAS_CPU_AFFINITY: Incomplete
+CLOCK_TICKS: Incomplete
+PAGESIZE: Incomplete
+BOOT_TIME: Incomplete
+LITTLE_ENDIAN: Incomplete
 DISK_SECTOR_SIZE: int
-AF_LINK: Any
-AddressFamily: Any
+AF_LINK: Incomplete
+AddressFamily: Incomplete
 IOPRIO_CLASS_NONE: int
 IOPRIO_CLASS_RT: int
 IOPRIO_CLASS_BE: int
@@ -43,8 +43,8 @@ class IOPriority(enum.IntEnum):
     IOPRIO_CLASS_BE = 2
     IOPRIO_CLASS_IDLE = 3
 
-PROC_STATUSES: Any
-TCP_STATUSES: Any
+PROC_STATUSES: Incomplete
+TCP_STATUSES: Incomplete
 
 class svmem(NamedTuple):
     """svmem(total, available, percent, used, free, active, inactive, buffers, cached, shared, slab)"""
@@ -61,34 +61,31 @@ class svmem(NamedTuple):
     slab: int
 
 class sdiskio(NamedTuple):
-    """sdiskio(read_count, write_count, read_bytes, write_bytes, read_time, write_time, read_merged_count, write_merged_count, busy_time)"""
-    read_count: Any
-    write_count: Any
-    read_bytes: Any
-    write_bytes: Any
-    read_time: Any
-    write_time: Any
-    read_merged_count: Any
-    write_merged_count: Any
-    busy_time: Any
+    read_count: Incomplete
+    write_count: Incomplete
+    read_bytes: Incomplete
+    write_bytes: Incomplete
+    read_time: Incomplete
+    write_time: Incomplete
+    read_merged_count: Incomplete
+    write_merged_count: Incomplete
+    busy_time: Incomplete
 
 class popenfile(NamedTuple):
-    """popenfile(path, fd, position, mode, flags)"""
-    path: Any
-    fd: Any
-    position: Any
-    mode: Any
-    flags: Any
+    path: Incomplete
+    fd: Incomplete
+    position: Incomplete
+    mode: Incomplete
+    flags: Incomplete
 
 class pmem(NamedTuple):
-    """pmem(rss, vms, shared, text, lib, data, dirty)"""
-    rss: Any
-    vms: Any
-    shared: Any
-    text: Any
-    lib: Any
-    data: Any
-    dirty: Any
+    rss: Incomplete
+    vms: Incomplete
+    shared: Incomplete
+    text: Incomplete
+    lib: Incomplete
+    data: Incomplete
+    dirty: Incomplete
 
 class pfullmem(NamedTuple):
     """pfullmem(rss, vms, shared, text, lib, data, dirty, uss, pss, swap)"""
@@ -104,29 +101,27 @@ class pfullmem(NamedTuple):
     swap: Incomplete
 
 class pmmap_grouped(NamedTuple):
-    """pmmap_grouped(path, rss, size, pss, shared_clean, shared_dirty, private_clean, private_dirty, referenced, anonymous, swap)"""
-    path: Any
-    rss: Any
-    size: Any
-    pss: Any
-    shared_clean: Any
-    shared_dirty: Any
-    private_clean: Any
-    private_dirty: Any
-    referenced: Any
-    anonymous: Any
-    swap: Any
+    path: Incomplete
+    rss: Incomplete
+    size: Incomplete
+    pss: Incomplete
+    shared_clean: Incomplete
+    shared_dirty: Incomplete
+    private_clean: Incomplete
+    private_dirty: Incomplete
+    referenced: Incomplete
+    anonymous: Incomplete
+    swap: Incomplete
 
-pmmap_ext: Any
+pmmap_ext: Incomplete
 
 class pio(NamedTuple):
-    """pio(read_count, write_count, read_bytes, write_bytes, read_chars, write_chars)"""
-    read_count: Any
-    write_count: Any
-    read_bytes: Any
-    write_bytes: Any
-    read_chars: Any
-    write_chars: Any
+    read_count: Incomplete
+    write_count: Incomplete
+    read_bytes: Incomplete
+    write_bytes: Incomplete
+    read_chars: Incomplete
+    write_chars: Incomplete
 
 class pcputimes(NamedTuple):
     """pcputimes(user, system, children_user, children_system, iowait)"""
@@ -245,23 +240,12 @@ def cpu_freq():
     """
     ...
 
-net_if_addrs: Any
+net_if_addrs: Incomplete
 
 class _Ipv6UnsupportedError(Exception): ...
 
 class NetConnections:
-    """
-    A wrapper on top of /proc/net/* files, retrieving per-process
-    and system-wide open connections (TCP, UDP, UNIX) similarly to
-    "netstat -an".
-
-    Note: in case of UNIX sockets we're only able to determine the
-    local endpoint/path, not the one it's connected to.
-    According to [1] it would be possible but not easily.
-
-    [1] http://serverfault.com/a/417946
-    """
-    tmap: Any
+    tmap: Incomplete
     def __init__(self) -> None: ...
     def get_proc_inodes(self, pid): ...
     def get_all_inodes(self): ...
@@ -307,7 +291,7 @@ def net_if_stats():
     """Get NIC stats (isup, duplex, speed, mtu)."""
     ...
 
-disk_usage: Any
+disk_usage: Incomplete
 
 def disk_io_counters(perdisk: bool = ...):
     """
@@ -400,8 +384,7 @@ def wrap_exceptions(fun):
     ...
 
 class Process:
-    """Linux process implementation."""
-    pid: Any
+    pid: Incomplete
     def __init__(self, pid) -> None: ...
     def oneshot_enter(self) -> None: ...
     def oneshot_exit(self) -> None: ...

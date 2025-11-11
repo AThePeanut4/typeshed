@@ -3,7 +3,7 @@
 import enum
 from _typeshed import Incomplete
 from collections.abc import Iterable
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 from psutil import _psutil_windows
 from psutil._common import (
@@ -28,13 +28,13 @@ from psutil._psutil_windows import (
     REALTIME_PRIORITY_CLASS as REALTIME_PRIORITY_CLASS,
 )
 
-__extra__all__: Any
+__extra__all__: Incomplete
 CONN_DELETE_TCB: str
 ERROR_PARTIAL_COPY: int
-PYPY: Any
+PYPY: Incomplete
 AF_LINK: int
-AddressFamily: Any
-TCP_STATUSES: Any
+AddressFamily: Incomplete
+TCP_STATUSES: Incomplete
 
 # These noqas workaround https://github.com/astral-sh/ruff/issues/10874
 class Priority(enum.IntEnum):
@@ -58,7 +58,7 @@ class IOPriority(enum.IntEnum):
     IOPRIO_NORMAL = 2
     IOPRIO_HIGH = 3
 
-pinfo_map: Any
+pinfo_map: Incomplete
 
 class scputimes(NamedTuple):
     """scputimes(user, system, idle, interrupt, dpc)"""
@@ -77,19 +77,18 @@ class svmem(NamedTuple):
     free: int
 
 class pmem(NamedTuple):
-    """pmem(rss, vms, num_page_faults, peak_wset, wset, peak_paged_pool, paged_pool, peak_nonpaged_pool, nonpaged_pool, pagefile, peak_pagefile, private)"""
-    rss: Any
-    vms: Any
-    num_page_faults: Any
-    peak_wset: Any
-    wset: Any
-    peak_paged_pool: Any
-    paged_pool: Any
-    peak_nonpaged_pool: Any
-    nonpaged_pool: Any
-    pagefile: Any
-    peak_pagefile: Any
-    private: Any
+    rss: Incomplete
+    vms: Incomplete
+    num_page_faults: Incomplete
+    peak_wset: Incomplete
+    wset: Incomplete
+    peak_paged_pool: Incomplete
+    paged_pool: Incomplete
+    peak_nonpaged_pool: Incomplete
+    nonpaged_pool: Incomplete
+    pagefile: Incomplete
+    peak_pagefile: Incomplete
+    private: Incomplete
 
 class pfullmem(NamedTuple):
     """pfullmem(rss, vms, num_page_faults, peak_wset, wset, peak_paged_pool, paged_pool, peak_nonpaged_pool, nonpaged_pool, pagefile, peak_pagefile, private, uss)"""
@@ -108,20 +107,18 @@ class pfullmem(NamedTuple):
     uss: Incomplete
 
 class pmmap_grouped(NamedTuple):
-    """pmmap_grouped(path, rss)"""
-    path: Any
-    rss: Any
+    path: Incomplete
+    rss: Incomplete
 
-pmmap_ext: Any
+pmmap_ext: Incomplete
 
 class pio(NamedTuple):
-    """pio(read_count, write_count, read_bytes, write_bytes, other_count, other_bytes)"""
-    read_count: Any
-    write_count: Any
-    read_bytes: Any
-    write_bytes: Any
-    other_count: Any
-    other_bytes: Any
+    read_count: Incomplete
+    write_count: Incomplete
+    read_bytes: Incomplete
+    write_bytes: Incomplete
+    other_count: Incomplete
+    other_bytes: Incomplete
 
 def convert_dos_path(s):
     r"""
@@ -139,7 +136,7 @@ def swap_memory():
     """Swap system memory as a (total, used, free, sin, sout) tuple."""
     ...
 
-disk_io_counters: Any
+disk_io_counters: Incomplete
 
 def disk_usage(path):
     """Return disk usage associated with path."""
@@ -260,9 +257,9 @@ class WindowsService:
         """
         ...
 
-pids: Any
-pid_exists: Any
-ppid_map: Any
+pids: Incomplete
+pid_exists: Incomplete
+ppid_map: Incomplete
 
 def is_permission_err(exc):
     """Return True if this is a permission error."""
@@ -281,8 +278,7 @@ def retry_error_partial_copy(fun):
     ...
 
 class Process:
-    """Wrapper class around underlying C implementation."""
-    pid: Any
+    pid: Incomplete
     def __init__(self, pid) -> None: ...
     def oneshot_enter(self) -> None: ...
     def oneshot_exit(self) -> None: ...

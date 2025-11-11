@@ -229,113 +229,23 @@ class Process:
         """The process PID."""
         ...
     # Only present if attrs argument is passed to process_iter
-    info: dict[str, Any]
-    def oneshot(self) -> AbstractContextManager[None]:
-        """
-        Utility context manager which considerably speeds up the
-        retrieval of multiple process information at the same time.
-
-        Internally different process info (e.g. name, ppid, uids,
-        gids, ...) may be fetched by using the same routine, but
-        only one information is returned and the others are discarded.
-        When using this context manager the internal routine is
-        executed once (in the example below on name()) and the
-        other info are cached.
-
-        The cache is cleared when exiting the context manager block.
-        The advice is to use this every time you retrieve more than
-        one information about the process. If you're lucky, you'll
-        get a hell of a speedup.
-
-        >>> import psutil
-        >>> p = psutil.Process()
-        >>> with p.oneshot():
-        ...     p.name()  # collect multiple info
-        ...     p.cpu_times()  # return cached value
-        ...     p.cpu_percent()  # return cached value
-        ...     p.create_time()  # return cached value
-        ...
-        >>>
-        """
-        ...
+    info: dict[str, Incomplete]
+    def oneshot(self) -> AbstractContextManager[None]: ...
     def as_dict(
         self, attrs: list[str] | tuple[str, ...] | set[str] | frozenset[str] | None = None, ad_value=None
-    ) -> dict[str, Any]:
-        """
-        Utility method returning process information as a
-        hashable dictionary.
-        If *attrs* is specified it must be a list of strings
-        reflecting available Process class' attribute names
-        (e.g. ['cpu_times', 'name']) else all public (read
-        only) attributes are assumed.
-        *ad_value* is the value which gets assigned in case
-        AccessDenied or ZombieProcess exception is raised when
-        retrieving that particular process information.
-        """
-        ...
-    def parent(self) -> Process | None:
-        """
-        Return the parent process as a Process object pre-emptively
-        checking whether PID has been reused.
-        If no parent is known return None.
-        """
-        ...
-    def parents(self) -> list[Process]:
-        """
-        Return the parents of this process as a list of Process
-        instances. If no parents are known return an empty list.
-        """
-        ...
-    def is_running(self) -> bool:
-        """
-        Return whether this process is running.
-
-        It also checks if PID has been reused by another process, in
-        which case it will remove the process from `process_iter()`
-        internal cache and return False.
-        """
-        ...
-    def ppid(self) -> int:
-        """
-        The process parent PID.
-        On Windows the return value is cached after first call.
-        """
-        ...
-    def name(self) -> str:
-        """The process name. The return value is cached after first call."""
-        ...
-    def exe(self) -> str:
-        """
-        The process executable as an absolute path.
-        May also be an empty string.
-        The return value is cached after first call.
-        """
-        ...
-    def cmdline(self) -> list[str]:
-        """The command line this process has been called with."""
-        ...
-    def status(self) -> _Status:
-        """The process current status as a STATUS_* constant."""
-        ...
-    def username(self) -> str:
-        """
-        The name of the user that owns the process.
-        On UNIX this is calculated by using *real* process uid.
-        """
-        ...
-    def create_time(self) -> float:
-        """
-        The process creation time as a floating point number
-        expressed in seconds since the epoch.
-        The return value is cached after first call.
-        """
-        ...
-    def cwd(self) -> str:
-        """Process current working directory as an absolute path."""
-        ...
-    def nice(self, value: int | None = None) -> int:
-        """Get or set process niceness (priority)."""
-        ...
+    ) -> dict[str, Incomplete]: ...
+    def parent(self) -> Process | None: ...
+    def parents(self) -> list[Process]: ...
+    def is_running(self) -> bool: ...
+    def ppid(self) -> int: ...
+    def name(self) -> str: ...
+    def exe(self) -> str: ...
+    def cmdline(self) -> list[str]: ...
+    def status(self) -> _Status: ...
+    def username(self) -> str: ...
+    def create_time(self) -> float: ...
+    def cwd(self) -> str: ...
+    def nice(self, value: int | None = None) -> int: ...
     if sys.platform != "win32":
         def uids(self) -> puids:
             """

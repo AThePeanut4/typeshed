@@ -1,7 +1,7 @@
 """macOS platform implementation."""
 
 from _typeshed import Incomplete
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 from psutil._common import (
     AccessDenied as AccessDenied,
@@ -14,13 +14,13 @@ from psutil._common import (
     usage_percent as usage_percent,
 )
 
-__extra__all__: Any
-PAGESIZE: Any
-AF_LINK: Any
-TCP_STATUSES: Any
-PROC_STATUSES: Any
-kinfo_proc_map: Any
-pidtaskinfo_map: Any
+__extra__all__: Incomplete
+PAGESIZE: Incomplete
+AF_LINK: Incomplete
+TCP_STATUSES: Incomplete
+PROC_STATUSES: Incomplete
+kinfo_proc_map: Incomplete
+pidtaskinfo_map: Incomplete
 
 class scputimes(NamedTuple):
     """scputimes(user, nice, system, idle)"""
@@ -41,11 +41,10 @@ class svmem(NamedTuple):
     wired: int
 
 class pmem(NamedTuple):
-    """pmem(rss, vms, pfaults, pageins)"""
-    rss: Any
-    vms: Any
-    pfaults: Any
-    pageins: Any
+    rss: Incomplete
+    vms: Incomplete
+    pfaults: Incomplete
+    pageins: Incomplete
 
 class pfullmem(NamedTuple):
     """pfullmem(rss, vms, pfaults, pageins, uss)"""
@@ -83,8 +82,8 @@ def cpu_freq():
     """
     ...
 
-disk_usage: Any
-disk_io_counters: Any
+disk_usage: Incomplete
+disk_io_counters: Incomplete
 
 def disk_partitions(all: bool = False):
     """Return mounted disk partitions as a list of namedtuples."""
@@ -93,8 +92,8 @@ def sensors_battery():
     """Return battery information."""
     ...
 
-net_io_counters: Any
-net_if_addrs: Any
+net_io_counters: Incomplete
+net_if_addrs: Incomplete
 
 def net_connections(kind: str = "inet"):
     """System-wide network connections."""
@@ -110,7 +109,7 @@ def users():
     ...
 def pids(): ...
 
-pid_exists: Any
+pid_exists: Incomplete
 
 def is_zombie(pid): ...
 def wrap_exceptions(fun):
@@ -123,7 +122,7 @@ def wrap_exceptions(fun):
 class Process:
     """Wrapper class around underlying C implementation."""
     __slots__ = ["_cache", "_name", "_ppid", "pid"]
-    pid: Any
+    pid: Incomplete
     def __init__(self, pid) -> None: ...
     def oneshot_enter(self) -> None: ...
     def oneshot_exit(self) -> None: ...
