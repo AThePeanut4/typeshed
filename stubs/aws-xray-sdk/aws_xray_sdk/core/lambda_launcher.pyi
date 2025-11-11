@@ -9,7 +9,12 @@ LAMBDA_TASK_ROOT_KEY: Final = "LAMBDA_TASK_ROOT"
 TOUCH_FILE_DIR: Final = "/tmp/.aws-xray/"
 TOUCH_FILE_PATH: Final = "/tmp/.aws-xray/initialized"
 
-def check_in_lambda() -> LambdaContext | None: ...
+def check_in_lambda() -> LambdaContext | None:
+    """
+    Return None if SDK is not loaded in AWS Lambda worker.
+    Otherwise drop a touch file and return a lambda context.
+    """
+    ...
 
 class LambdaContext(Context):
     """

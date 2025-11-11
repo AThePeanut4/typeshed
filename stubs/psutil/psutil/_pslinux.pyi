@@ -61,6 +61,7 @@ class svmem(NamedTuple):
     slab: int
 
 class sdiskio(NamedTuple):
+    """sdiskio(read_count, write_count, read_bytes, write_bytes, read_time, write_time, read_merged_count, write_merged_count, busy_time)"""
     read_count: Incomplete
     write_count: Incomplete
     read_bytes: Incomplete
@@ -72,6 +73,7 @@ class sdiskio(NamedTuple):
     busy_time: Incomplete
 
 class popenfile(NamedTuple):
+    """popenfile(path, fd, position, mode, flags)"""
     path: Incomplete
     fd: Incomplete
     position: Incomplete
@@ -79,6 +81,7 @@ class popenfile(NamedTuple):
     flags: Incomplete
 
 class pmem(NamedTuple):
+    """pmem(rss, vms, shared, text, lib, data, dirty)"""
     rss: Incomplete
     vms: Incomplete
     shared: Incomplete
@@ -101,6 +104,7 @@ class pfullmem(NamedTuple):
     swap: Incomplete
 
 class pmmap_grouped(NamedTuple):
+    """pmmap_grouped(path, rss, size, pss, shared_clean, shared_dirty, private_clean, private_dirty, referenced, anonymous, swap)"""
     path: Incomplete
     rss: Incomplete
     size: Incomplete
@@ -116,6 +120,7 @@ class pmmap_grouped(NamedTuple):
 pmmap_ext: Incomplete
 
 class pio(NamedTuple):
+    """pio(read_count, write_count, read_bytes, write_bytes, read_chars, write_chars)"""
     read_count: Incomplete
     write_count: Incomplete
     read_bytes: Incomplete
@@ -245,6 +250,17 @@ net_if_addrs: Incomplete
 class _Ipv6UnsupportedError(Exception): ...
 
 class NetConnections:
+    """
+    A wrapper on top of /proc/net/* files, retrieving per-process
+    and system-wide open connections (TCP, UDP, UNIX) similarly to
+    "netstat -an".
+
+    Note: in case of UNIX sockets we're only able to determine the
+    local endpoint/path, not the one it's connected to.
+    According to [1] it would be possible but not easily.
+
+    [1] http://serverfault.com/a/417946
+    """
     tmap: Incomplete
     def __init__(self) -> None: ...
     def get_proc_inodes(self, pid): ...
@@ -384,6 +400,7 @@ def wrap_exceptions(fun):
     ...
 
 class Process:
+    """Linux process implementation."""
     pid: Incomplete
     def __init__(self, pid) -> None: ...
     def oneshot_enter(self) -> None: ...

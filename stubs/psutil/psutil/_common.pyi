@@ -402,6 +402,10 @@ def deprecated_method(replacement: str) -> Callable[[_Func], _Func]:
     ...
 
 class _WrapNumbers:
+    """
+    Watches numbers so that they don't overflow and wrap
+    (reset to zero).
+    """
     lock: Incomplete
     cache: Incomplete
     reminders: Incomplete

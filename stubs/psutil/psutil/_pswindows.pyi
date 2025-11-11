@@ -77,6 +77,7 @@ class svmem(NamedTuple):
     free: int
 
 class pmem(NamedTuple):
+    """pmem(rss, vms, num_page_faults, peak_wset, wset, peak_paged_pool, paged_pool, peak_nonpaged_pool, nonpaged_pool, pagefile, peak_pagefile, private)"""
     rss: Incomplete
     vms: Incomplete
     num_page_faults: Incomplete
@@ -107,12 +108,14 @@ class pfullmem(NamedTuple):
     uss: Incomplete
 
 class pmmap_grouped(NamedTuple):
+    """pmmap_grouped(path, rss)"""
     path: Incomplete
     rss: Incomplete
 
 pmmap_ext: Incomplete
 
 class pio(NamedTuple):
+    """pio(read_count, write_count, read_bytes, write_bytes, other_count, other_bytes)"""
     read_count: Incomplete
     write_count: Incomplete
     read_bytes: Incomplete
@@ -278,6 +281,7 @@ def retry_error_partial_copy(fun):
     ...
 
 class Process:
+    """Wrapper class around underlying C implementation."""
     pid: Incomplete
     def __init__(self, pid) -> None: ...
     def oneshot_enter(self) -> None: ...

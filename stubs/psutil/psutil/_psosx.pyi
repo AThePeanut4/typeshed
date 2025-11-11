@@ -41,6 +41,7 @@ class svmem(NamedTuple):
     wired: int
 
 class pmem(NamedTuple):
+    """pmem(rss, vms, pfaults, pageins)"""
     rss: Incomplete
     vms: Incomplete
     pfaults: Incomplete
