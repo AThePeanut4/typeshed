@@ -3,9 +3,12 @@ from parsimonious.grammar import LazyReference
 from parsimonious.nodes import Node
 from parsimonious.utils import StrAndRepr
 
-class ParsimoniousError(Exception): ...
+class ParsimoniousError(Exception):
+    """A base exception class to allow library users to catch any Parsimonious error."""
+    ...
 
 class ParseError(StrAndRepr, ParsimoniousError):
+    """A call to ``Expression.parse()`` or ``match()`` didn't match."""
     text: str
     pos: int
     expr: Expression | None
@@ -29,10 +32,32 @@ class IncompleteParseError(ParseError):
     ...
 
 class VisitationError(ParsimoniousError):
-    original_class: type[BaseException]
-    def __init__(self, exc: BaseException, exc_class: type[BaseException], node: Node) -> None: ...
+    """
+    Something went wrong while traversing a parse tree.
 
-class BadGrammar(StrAndRepr, ParsimoniousError): ...
+    This exception exists to augment an underlying exception with information
+    about where in the parse tree the error occurred. Otherwise, it could be
+    tiresome to figure out what went wrong; you'd have to play back the whole
+    tree traversal in your head.
+    """
+    original_class: type[BaseException]
+    def __init__(self, exc: BaseException, exc_class: type[BaseException], node: Node) -> None:
+        """
+        Construct.
+
+        :arg exc: What went wrong. We wrap this and add more info.
+        :arg node: The node at which the error occurred
+        """
+        ...
+
+class BadGrammar(StrAndRepr, ParsimoniousError):
+    """
+    Something was wrong with the definition of a grammar.
+
+    Note that a ParseError might be raised instead if the error is in the
+    grammar definition syntax.
+    """
+    ...
 
 class UndefinedLabel(BadGrammar):
     """
