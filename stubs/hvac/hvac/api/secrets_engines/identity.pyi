@@ -1,3 +1,5 @@
+"""Identity secret engine module."""
+
 import logging
 
 from hvac.api.vault_api_base import VaultApiBase

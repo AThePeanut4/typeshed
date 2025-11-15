@@ -1,3 +1,5 @@
+"""Collection of Vault system backend API endpoint classes."""
+
 from hvac.api.system_backend.audit import Audit as Audit
 from hvac.api.system_backend.auth import Auth as Auth
 from hvac.api.system_backend.capabilities import Capabilities as Capabilities

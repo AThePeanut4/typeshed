@@ -298,15 +298,94 @@ class TimeoutExpired(Error):
 
 _Func = TypeVar("_Func", bound=Callable[..., Incomplete])
 
-def usage_percent(used, total, round_: int | None = None) -> float: ...
-def memoize(fun: _Func) -> _Func: ...
-def memoize_when_activated(fun: _Func) -> _Func: ...
-def isfile_strict(path: StrOrBytesPath) -> bool: ...
-def path_exists_strict(path: StrOrBytesPath) -> bool: ...
-def supports_ipv6() -> bool: ...
-def parse_environ_block(data: str) -> dict[str, str]: ...
-def sockfam_to_enum(num: int) -> AddressFamily: ...
-def socktype_to_enum(num: int) -> SocketKind: ...
+def usage_percent(used, total, round_: int | None = None) -> float:
+    """Calculate percentage usage of 'used' against 'total'."""
+    ...
+def memoize(fun: _Func) -> _Func:
+    """
+    A simple memoize decorator for functions supporting (hashable)
+    positional arguments.
+    It also provides a cache_clear() function for clearing the cache:
+
+    >>> @memoize
+    ... def foo()
+    ...     return 1
+        ...
+    >>> foo()
+    1
+    >>> foo.cache_clear()
+    >>>
+
+    It supports:
+     - functions
+     - classes (acts as a @singleton)
+     - staticmethods
+     - classmethods
+
+    It does NOT support:
+     - methods
+    """
+    ...
+def memoize_when_activated(fun: _Func) -> _Func:
+    """
+    A memoize decorator which is disabled by default. It can be
+    activated and deactivated on request.
+    For efficiency reasons it can be used only against class methods
+    accepting no arguments.
+
+    >>> class Foo:
+    ...     @memoize
+    ...     def foo()
+    ...         print(1)
+    ...
+    >>> f = Foo()
+    >>> # deactivated (default)
+    >>> foo()
+    1
+    >>> foo()
+    1
+    >>>
+    >>> # activated
+    >>> foo.cache_activate(self)
+    >>> foo()
+    1
+    >>> foo()
+    >>> foo()
+    >>>
+    """
+    ...
+def isfile_strict(path: StrOrBytesPath) -> bool:
+    """
+    Same as os.path.isfile() but does not swallow EACCES / EPERM
+    exceptions, see:
+    http://mail.python.org/pipermail/python-dev/2012-June/120787.html.
+    """
+    ...
+def path_exists_strict(path: StrOrBytesPath) -> bool:
+    """
+    Same as os.path.exists() but does not swallow EACCES / EPERM
+    exceptions. See:
+    http://mail.python.org/pipermail/python-dev/2012-June/120787.html.
+    """
+    ...
+def supports_ipv6() -> bool:
+    """Return True if IPv6 is supported on this platform."""
+    ...
+def parse_environ_block(data: str) -> dict[str, str]:
+    """Parse a C environ block of environment variables into a dictionary."""
+    ...
+def sockfam_to_enum(num: int) -> AddressFamily:
+    """
+    Convert a numeric socket family value to an IntEnum member.
+    If it's not a known member, return the numeric value itself.
+    """
+    ...
+def socktype_to_enum(num: int) -> SocketKind:
+    """
+    Convert a numeric socket type value to an IntEnum member.
+    If it's not a known member, return the numeric value itself.
+    """
+    ...
 @overload
 def conn_to_ntuple(fd: int, fam: int, type_: int, laddr, raddr, status: str, status_map, pid: int) -> sconn:
     """Convert a raw connection tuple to a proper ntuple."""

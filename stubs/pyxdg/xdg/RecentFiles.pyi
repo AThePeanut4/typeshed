@@ -1,3 +1,8 @@
+"""
+Implementation of the XDG Recent File Storage Specification
+http://standards.freedesktop.org/recent-file-spec
+"""
+
 from _typeshed import StrOrBytesPath, StrPath
 from collections.abc import Iterable
 
@@ -22,9 +27,28 @@ class RecentFiles:
         ...
     def getFiles(
         self, mimetypes: Iterable[str] | None = None, groups: Iterable[str] | None = None, limit: int = 0
-    ) -> list[RecentFile]: ...
-    def addFile(self, item: StrPath, mimetype: str, groups: Iterable[str] | None = None, private: bool = False) -> None: ...
-    def deleteFile(self, item: RecentFile | StrPath) -> None: ...
+    ) -> list[RecentFile]:
+        """
+        Get a list of recently used files.
+
+        The parameters can be used to filter by mime types, by group, or to
+        limit the number of items returned. By default, the entire list is
+        returned, except for items marked private.
+        """
+        ...
+    def addFile(self, item: StrPath, mimetype: str, groups: Iterable[str] | None = None, private: bool = False) -> None:
+        """
+        Add a recently used file.
+
+        item should be the URI of the file, typically starting with ``file:///``.
+        """
+        ...
+    def deleteFile(self, item: RecentFile | StrPath) -> None:
+        """
+        Remove a recently used file, by URI, from the list.
+        
+        """
+        ...
     def sort(self) -> None: ...
 
 class RecentFile:

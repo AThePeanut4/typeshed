@@ -10,9 +10,26 @@ from hvac.api.vault_api_base import VaultApiBase
 logger: Logger
 
 class VaultApiCategory(VaultApiBase, metaclass=ABCMeta):
+    """Base class for API categories."""
     implemented_class_names: list[str]
-    def __init__(self, adapter: Adapter[Any]) -> None: ...
-    def __getattr__(self, item): ...
+    def __init__(self, adapter: Adapter[Any]) -> None:
+        """
+        API Category class constructor.
+
+        :param adapter: Instance of :py:class:`hvac.adapters.Adapter`; used for performing HTTP requests.
+        :type adapter: hvac.adapters.Adapter
+        """
+        ...
+    def __getattr__(self, item):
+        """
+        Get an instance of an class instance in this category where available.
+
+        :param item: Name of the class being requested.
+        :type item: str | unicode
+        :return: The requested class instance where available.
+        :rtype: hvac.api.VaultApiBase
+        """
+        ...
     @property
     def adapter(self) -> Adapter[Any]:
         """
@@ -42,7 +59,14 @@ class VaultApiCategory(VaultApiBase, metaclass=ABCMeta):
         """
         ...
     @property
-    def unimplemented_classes(self) -> list[str]: ...
+    def unimplemented_classes(self) -> list[str]:
+        """
+        List of known unimplemented classes under this category.
+
+        :return: List of known unimplemented classes under this category.
+        :rtype: List[str]
+        """
+        ...
     @staticmethod
     def get_private_attr_name(class_name):
         """

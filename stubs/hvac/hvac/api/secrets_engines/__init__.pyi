@@ -1,3 +1,5 @@
+"""Vault secrets engines endpoints"""
+
 from hvac.api.secrets_engines.active_directory import ActiveDirectory as ActiveDirectory
 from hvac.api.secrets_engines.aws import Aws as Aws
 from hvac.api.secrets_engines.azure import Azure as Azure
@@ -36,5 +38,6 @@ __all__ = (
 )
 
 class SecretsEngines(VaultApiCategory):
+    """Secrets Engines."""
     implemented_classes: list[type[VaultApiBase]]
     unimplemented_classes: list[str]

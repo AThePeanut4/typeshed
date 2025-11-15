@@ -18,6 +18,18 @@ _K = TypeVar("_K")
 _V = TypeVar("_V")
 
 class MethodDispatcher(dict[_K, _V]):
+    """
+    Dict with 2 special properties:
+
+    On initiation, keys that are lists, sets or tuples are converted to
+    multiple keys so accessing any one of the items in the original
+    list-like object returns the matching value
+
+    md = MethodDispatcher({("foo", "bar"):"baz"})
+    md["foo"] == "baz"
+
+    A default value which can be set through the default attribute.
+    """
     default: _V | None
     @overload  # to solve `reportInvalidTypeVarUse`
     def __init__(self) -> None: ...

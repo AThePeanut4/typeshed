@@ -1,3 +1,5 @@
+"""Legacy multi-factor authentication methods module."""
+
 from hvac.api.vault_api_base import VaultApiBase
 
 SUPPORTED_MFA_TYPES: list[str]
