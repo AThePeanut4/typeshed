@@ -1,324 +1,231 @@
-"""Windows platform implementation."""
+import sys
 
-import enum
-from _typeshed import Incomplete
-from collections.abc import Iterable
-from typing import NamedTuple
+if sys.platform == "win32":
+    import enum
+    from _typeshed import Incomplete
+    from collections.abc import Iterable, Iterator
+    from signal import Signals
+    from typing import Final, Literal, NamedTuple, TypedDict, overload, type_check_only
 
-from psutil import _psutil_windows
-from psutil._common import (
-    ENCODING as ENCODING,
-    AccessDenied as AccessDenied,
-    NoSuchProcess as NoSuchProcess,
-    TimeoutExpired as TimeoutExpired,
-    conn_tmap as conn_tmap,
-    conn_to_ntuple as conn_to_ntuple,
-    debug as debug,
-    isfile_strict as isfile_strict,
-    memoize as memoize,
-    parse_environ_block as parse_environ_block,
-    usage_percent as usage_percent,
-)
-from psutil._psutil_windows import (
-    ABOVE_NORMAL_PRIORITY_CLASS as ABOVE_NORMAL_PRIORITY_CLASS,
-    BELOW_NORMAL_PRIORITY_CLASS as BELOW_NORMAL_PRIORITY_CLASS,
-    HIGH_PRIORITY_CLASS as HIGH_PRIORITY_CLASS,
-    IDLE_PRIORITY_CLASS as IDLE_PRIORITY_CLASS,
-    NORMAL_PRIORITY_CLASS as NORMAL_PRIORITY_CLASS,
-    REALTIME_PRIORITY_CLASS as REALTIME_PRIORITY_CLASS,
-)
+    from psutil import _psutil_windows
+    from psutil._common import (
+        ENCODING as ENCODING,
+        AccessDenied as AccessDenied,
+        NoSuchProcess as NoSuchProcess,
+        TimeoutExpired as TimeoutExpired,
+        conn_tmap as conn_tmap,
+        conn_to_ntuple as conn_to_ntuple,
+        debug as debug,
+        isfile_strict as isfile_strict,
+        memoize as memoize,
+        memoize_when_activated as memoize_when_activated,
+        parse_environ_block as parse_environ_block,
+        usage_percent as usage_percent,
+    )
+    from psutil._psutil_windows import (
+        ABOVE_NORMAL_PRIORITY_CLASS as ABOVE_NORMAL_PRIORITY_CLASS,
+        BELOW_NORMAL_PRIORITY_CLASS as BELOW_NORMAL_PRIORITY_CLASS,
+        HIGH_PRIORITY_CLASS as HIGH_PRIORITY_CLASS,
+        IDLE_PRIORITY_CLASS as IDLE_PRIORITY_CLASS,
+        NORMAL_PRIORITY_CLASS as NORMAL_PRIORITY_CLASS,
+        REALTIME_PRIORITY_CLASS as REALTIME_PRIORITY_CLASS,
+    )
 
-__extra__all__: Incomplete
-CONN_DELETE_TCB: str
-ERROR_PARTIAL_COPY: int
-PYPY: Incomplete
-AF_LINK: int
-AddressFamily: Incomplete
-TCP_STATUSES: Incomplete
+    from . import _common
 
-# These noqas workaround https://github.com/astral-sh/ruff/issues/10874
-class Priority(enum.IntEnum):
-    """An enumeration."""
-    ABOVE_NORMAL_PRIORITY_CLASS = _psutil_windows.ABOVE_NORMAL_PRIORITY_CLASS  # noqa: F811
-    BELOW_NORMAL_PRIORITY_CLASS = _psutil_windows.BELOW_NORMAL_PRIORITY_CLASS  # noqa: F811
-    HIGH_PRIORITY_CLASS = _psutil_windows.HIGH_PRIORITY_CLASS  # noqa: F811
-    IDLE_PRIORITY_CLASS = _psutil_windows.IDLE_PRIORITY_CLASS  # noqa: F811
-    NORMAL_PRIORITY_CLASS = _psutil_windows.NORMAL_PRIORITY_CLASS  # noqa: F811
-    REALTIME_PRIORITY_CLASS = _psutil_windows.REALTIME_PRIORITY_CLASS  # noqa: F811
+    __extra__all__: list[str]
+    CONN_DELETE_TCB: Final = "DELETE_TCB"
+    ERROR_PARTIAL_COPY: Final = 299
+    PYPY: Final[bool]
 
-IOPRIO_VERYLOW: int
-IOPRIO_LOW: int
-IOPRIO_NORMAL: int
-IOPRIO_HIGH: int
+    class AddressFamily(enum.IntEnum):
+        AF_LINK = -1
 
-class IOPriority(enum.IntEnum):
-    """An enumeration."""
-    IOPRIO_VERYLOW = 0
-    IOPRIO_LOW = 1
-    IOPRIO_NORMAL = 2
-    IOPRIO_HIGH = 3
+    AF_LINK: Final = AddressFamily.AF_LINK
+    TCP_STATUSES: Final[dict[int, str]]
 
-pinfo_map: Incomplete
+    # These noqas workaround https://github.com/astral-sh/ruff/issues/10874
+    class Priority(enum.IntEnum):
+        ABOVE_NORMAL_PRIORITY_CLASS = _psutil_windows.ABOVE_NORMAL_PRIORITY_CLASS  # noqa: F811
+        BELOW_NORMAL_PRIORITY_CLASS = _psutil_windows.BELOW_NORMAL_PRIORITY_CLASS  # noqa: F811
+        HIGH_PRIORITY_CLASS = _psutil_windows.HIGH_PRIORITY_CLASS  # noqa: F811
+        IDLE_PRIORITY_CLASS = _psutil_windows.IDLE_PRIORITY_CLASS  # noqa: F811
+        NORMAL_PRIORITY_CLASS = _psutil_windows.NORMAL_PRIORITY_CLASS  # noqa: F811
+        REALTIME_PRIORITY_CLASS = _psutil_windows.REALTIME_PRIORITY_CLASS  # noqa: F811
 
-class scputimes(NamedTuple):
-    """scputimes(user, system, idle, interrupt, dpc)"""
-    user: float
-    system: float
-    idle: float
-    interrupt: float
-    dpc: float
+    class IOPriority(enum.IntEnum):
+        IOPRIO_VERYLOW = 0
+        IOPRIO_LOW = 1
+        IOPRIO_NORMAL = 2
+        IOPRIO_HIGH = 3
 
-class svmem(NamedTuple):
-    """svmem(total, available, percent, used, free)"""
-    total: int
-    available: int
-    percent: float
-    used: int
-    free: int
+    IOPRIO_VERYLOW: Final = IOPriority.IOPRIO_VERYLOW
+    IOPRIO_LOW: Final = IOPriority.IOPRIO_LOW
+    IOPRIO_NORMAL: Final = IOPriority.IOPRIO_NORMAL
+    IOPRIO_HIGH: Final = IOPriority.IOPRIO_HIGH
 
-class pmem(NamedTuple):
-    """pmem(rss, vms, num_page_faults, peak_wset, wset, peak_paged_pool, paged_pool, peak_nonpaged_pool, nonpaged_pool, pagefile, peak_pagefile, private)"""
-    rss: Incomplete
-    vms: Incomplete
-    num_page_faults: Incomplete
-    peak_wset: Incomplete
-    wset: Incomplete
-    peak_paged_pool: Incomplete
-    paged_pool: Incomplete
-    peak_nonpaged_pool: Incomplete
-    nonpaged_pool: Incomplete
-    pagefile: Incomplete
-    peak_pagefile: Incomplete
-    private: Incomplete
+    pinfo_map: Final[dict[str, int]]
 
-class pfullmem(NamedTuple):
-    """pfullmem(rss, vms, num_page_faults, peak_wset, wset, peak_paged_pool, paged_pool, peak_nonpaged_pool, nonpaged_pool, pagefile, peak_pagefile, private, uss)"""
-    rss: Incomplete
-    vms: Incomplete
-    num_page_faults: Incomplete
-    peak_wset: Incomplete
-    wset: Incomplete
-    peak_paged_pool: Incomplete
-    paged_pool: Incomplete
-    peak_nonpaged_pool: Incomplete
-    nonpaged_pool: Incomplete
-    pagefile: Incomplete
-    peak_pagefile: Incomplete
-    private: Incomplete
-    uss: Incomplete
+    class scputimes(NamedTuple):
+        user: float
+        system: float
+        idle: float
+        interrupt: float
+        dpc: float
 
-class pmmap_grouped(NamedTuple):
-    """pmmap_grouped(path, rss)"""
-    path: Incomplete
-    rss: Incomplete
+    class svmem(NamedTuple):
+        total: int
+        available: int
+        percent: float
+        used: int
+        free: int
 
-pmmap_ext: Incomplete
+    class pmem(NamedTuple):
+        rss: int
+        vms: int
+        num_page_faults: int
+        peak_wset: int
+        wset: int
+        peak_paged_pool: int
+        paged_pool: int
+        peak_nonpaged_pool: int
+        nonpaged_pool: int
+        pagefile: int
+        peak_pagefile: int
+        private: int
 
-class pio(NamedTuple):
-    """pio(read_count, write_count, read_bytes, write_bytes, other_count, other_bytes)"""
-    read_count: Incomplete
-    write_count: Incomplete
-    read_bytes: Incomplete
-    write_bytes: Incomplete
-    other_count: Incomplete
-    other_bytes: Incomplete
+    class pfullmem(NamedTuple):
+        rss: int
+        vms: int
+        num_page_faults: int
+        peak_wset: int
+        wset: int
+        peak_paged_pool: int
+        paged_pool: int
+        peak_nonpaged_pool: int
+        nonpaged_pool: int
+        pagefile: int
+        peak_pagefile: int
+        private: int
+        uss: int
 
-def convert_dos_path(s):
-    r"""
-    Convert paths using native DOS format like:
-        "\Device\HarddiskVolume1\Windows\systemew\file.txt"
-    into:
-        "C:\Windows\systemew\file.txt".
-    """
-    ...
-def getpagesize(): ...
-def virtual_memory() -> svmem:
-    """System virtual memory as a namedtuple."""
-    ...
-def swap_memory():
-    """Swap system memory as a (total, used, free, sin, sout) tuple."""
-    ...
+    class pmmap_grouped(NamedTuple):
+        path: Incomplete
+        rss: Incomplete
 
-disk_io_counters: Incomplete
+    class pmmap_ext(NamedTuple):
+        addr: Incomplete
+        perms: Incomplete
+        path: Incomplete
+        rss: Incomplete
 
-def disk_usage(path):
-    """Return disk usage associated with path."""
-    ...
-def disk_partitions(all):
-    """Return disk partitions."""
-    ...
-def cpu_times():
-    """Return system CPU times as a named tuple."""
-    ...
-def per_cpu_times():
-    """Return system per-CPU times as a list of named tuples."""
-    ...
-def cpu_count_logical():
-    """Return the number of logical CPUs in the system."""
-    ...
-def cpu_count_cores() -> int | None:
-    """Return the number of CPU cores in the system."""
-    ...
-def cpu_stats():
-    """Return CPU statistics."""
-    ...
-def cpu_freq():
-    """
-    Return CPU frequency.
-    On Windows per-cpu frequency is not supported.
-    """
-    ...
-def getloadavg():
-    """
-    Return the number of processes in the system run queue averaged
-    over the last 1, 5, and 15 minutes respectively as a tuple.
-    """
-    ...
-def net_connections(kind, _pid: int = -1):
-    """
-    Return socket connections.  If pid == -1 return system-wide
-    connections (as opposed to connections opened by one process only).
-    """
-    ...
-def net_if_stats():
-    """Get NIC stats (isup, duplex, speed, mtu)."""
-    ...
-def net_io_counters():
-    """
-    Return network I/O statistics for every network interface
-    installed on the system as a dict of raw tuples.
-    """
-    ...
-def net_if_addrs():
-    """Return the addresses associated to each NIC."""
-    ...
-def sensors_battery():
-    """Return battery information."""
-    ...
-def boot_time():
-    """The system boot time expressed in seconds since the epoch."""
-    ...
-def users():
-    """Return currently connected users as a list of namedtuples."""
-    ...
-def win_service_iter() -> Iterable[WindowsService]:
-    """Yields a list of WindowsService instances."""
-    ...
-def win_service_get(name):
-    """Open a Windows service and return it as a WindowsService instance."""
-    ...
+    class pio(NamedTuple):
+        read_count: int
+        write_count: int
+        read_bytes: int
+        write_bytes: int
+        other_count: int
+        other_bytes: int
 
-class WindowsService:
-    """Represents an installed Windows service."""
-    def __init__(self, name, display_name) -> None: ...
-    def __eq__(self, other): ...
-    def __ne__(self, other): ...
-    def name(self):
-        """
-        The service name. This string is how a service is referenced
-        and can be passed to win_service_get() to get a new
-        WindowsService instance.
-        """
-        ...
-    def display_name(self):
-        """
-        The service display name. The value is cached when this class
-        is instantiated.
-        """
-        ...
-    def binpath(self):
-        """
-        The fully qualified path to the service binary/exe file as
-        a string, including command line arguments.
-        """
-        ...
-    def username(self):
-        """The name of the user that owns this service."""
-        ...
-    def start_type(self):
-        """
-        A string which can either be "automatic", "manual" or
-        "disabled".
-        """
-        ...
-    def pid(self):
-        """
-        The process PID, if any, else None. This can be passed
-        to Process class to control the service's process.
-        """
-        ...
-    def status(self):
-        """Service status as a string."""
-        ...
-    def description(self):
-        """Service long description."""
-        ...
-    def as_dict(self):
-        """
-        Utility method retrieving all the information above as a
-        dictionary.
-        """
-        ...
+    def convert_dos_path(s: str) -> str: ...
+    def getpagesize() -> int: ...
+    def virtual_memory() -> svmem: ...
+    def swap_memory() -> _common.sswap: ...
 
-pids: Incomplete
-pid_exists: Incomplete
-ppid_map: Incomplete
+    disk_io_counters = _psutil_windows.disk_io_counters
 
-def is_permission_err(exc):
-    """Return True if this is a permission error."""
-    ...
-def convert_oserror(exc, pid=None, name=None):
-    """Convert OSError into NoSuchProcess or AccessDenied."""
-    ...
-def wrap_exceptions(fun):
-    """Decorator which converts OSError into NoSuchProcess or AccessDenied."""
-    ...
-def retry_error_partial_copy(fun):
-    """
-    Workaround for https://github.com/giampaolo/psutil/issues/875.
-    See: https://stackoverflow.com/questions/4457745#4457745.
-    """
-    ...
+    def disk_usage(path: str) -> _common.sdiskusage: ...
+    def disk_partitions(all: bool) -> list[_common.sdiskpart]: ...
+    def cpu_times() -> scputimes: ...
+    def per_cpu_times() -> list[scputimes]: ...
+    def cpu_count_logical() -> int | None: ...
+    def cpu_count_cores() -> int | None: ...
+    def cpu_stats() -> _common.scpustats: ...
+    def cpu_freq() -> list[_common.scpufreq]: ...
+    def getloadavg() -> tuple[float, float, float]: ...
+    @overload
+    def net_connections(kind: str, _pid: Literal[-1] = -1) -> list[_common.sconn]: ...
+    @overload
+    def net_connections(kind: str, _pid: int = -1) -> list[_common.pconn]: ...
+    def net_if_stats() -> dict[str, _common.snicstats]: ...
+    def net_io_counters() -> dict[str, tuple[int, int, int, int, int, int, int, int]]: ...
+    def net_if_addrs() -> list[tuple[str, int, str, str | None, None, None]]: ...
+    def sensors_battery() -> _common.sbattery | None: ...
+    def boot_time() -> float: ...
+    def users() -> list[_common.suser]: ...
+    def win_service_iter() -> Iterator[WindowsService]: ...
+    def win_service_get(name: str) -> WindowsService: ...
+    @type_check_only
+    class _WindowsServiceAttrs(TypedDict):
+        name: str
+        display_name: str | None
+        description: str
+        binpath: str
+        username: str
+        start_type: str
+        status: str
+        pid: int | None
 
-class Process:
-    """Wrapper class around underlying C implementation."""
-    pid: Incomplete
-    def __init__(self, pid) -> None: ...
-    def oneshot_enter(self) -> None: ...
-    def oneshot_exit(self) -> None: ...
-    def name(self):
-        """
-        Return process name, which on Windows is always the final
-        part of the executable.
-        """
-        ...
-    def exe(self): ...
-    def cmdline(self): ...
-    def environ(self): ...
-    def ppid(self): ...
-    def memory_info(self): ...
-    def memory_full_info(self): ...
-    def memory_maps(self) -> None: ...
-    def kill(self): ...
-    def send_signal(self, sig) -> None: ...
-    def wait(self, timeout=None): ...
-    def username(self): ...
-    def create_time(self, fast_only: bool = False): ...
-    def num_threads(self): ...
-    def threads(self): ...
-    def cpu_times(self): ...
-    def suspend(self) -> None: ...
-    def resume(self) -> None: ...
-    def cwd(self): ...
-    def open_files(self): ...
-    def net_connections(self, kind: str = "inet"): ...
-    def nice_get(self): ...
-    def nice_set(self, value): ...
-    def ionice_get(self): ...
-    def ionice_set(self, ioclass, value) -> None: ...
-    def io_counters(self) -> pio: ...
-    def status(self): ...
-    def cpu_affinity_get(self): ...
-    def cpu_affinity_set(self, value): ...
-    def num_handles(self): ...
-    def num_ctx_switches(self): ...
+    class WindowsService:
+        def __init__(self, name: str, display_name: str | None) -> None: ...
+        def __eq__(self, other: object) -> bool: ...
+        def __ne__(self, other: object) -> bool: ...
+        def name(self) -> str: ...
+        def display_name(self) -> str | None: ...
+        def binpath(self) -> str: ...
+        def username(self) -> str: ...
+        def start_type(self) -> str: ...
+        def pid(self) -> int: ...
+        def status(self) -> str: ...
+        def description(self) -> str: ...
+        def as_dict(self) -> _WindowsServiceAttrs: ...
+
+    pids = _psutil_windows.pids
+    pid_exists = _psutil_windows.pid_exists
+    ppid_map = _psutil_windows.ppid_map
+
+    def is_permission_err(exc: OSError) -> bool: ...
+    @overload
+    def convert_oserror(exc: PermissionError, pid=None, name=None) -> AccessDenied: ...
+    @overload
+    def convert_oserror(exc: OSError, pid=None, name=None) -> AccessDenied | NoSuchProcess: ...
+    def wrap_exceptions(fun): ...
+    def retry_error_partial_copy(fun): ...
+
+    class Process:
+        __slots__ = ["_cache", "_name", "_ppid", "pid"]
+        pid: int
+        def __init__(self, pid: int) -> None: ...
+        def oneshot_enter(self) -> None: ...
+        def oneshot_exit(self) -> None: ...
+        def name(self) -> str: ...
+        def exe(self) -> str: ...
+        def cmdline(self) -> list[str]: ...
+        def environ(self) -> dict[str, str]: ...
+        def ppid(self) -> int: ...
+        def memory_info(self) -> pmem: ...
+        def memory_full_info(self) -> pfullmem: ...
+        def memory_maps(self) -> Iterator[tuple[str, str, str, int]]: ...
+        def kill(self) -> None: ...
+        def send_signal(self, sig: Literal[Signals.SIGTERM, Signals.CTRL_C_EVENT, Signals.CTRL_BREAK_EVENT]) -> None: ...
+        def wait(self, timeout: float | None = None) -> int | None: ...
+        def username(self) -> str: ...
+        def create_time(self, fast_only: bool = False) -> float: ...
+        def num_threads(self) -> int: ...
+        def threads(self) -> list[_common.pthread]: ...
+        def cpu_times(self) -> _common.pcputimes: ...
+        def suspend(self) -> None: ...
+        def resume(self) -> None: ...
+        def cwd(self) -> str: ...
+        def open_files(self) -> list[_common.popenfile]: ...
+        def net_connections(self, kind: str = "inet") -> list[_common.pconn]: ...
+        def nice_get(self) -> Priority: ...
+        def nice_set(self, value) -> None: ...
+        def ionice_get(self) -> IOPriority: ...
+        def ionice_set(self, ioclass: int, value: None) -> None: ...
+        def io_counters(self) -> pio: ...
+        def status(self) -> Literal["stopped", "running"]: ...
+        def cpu_affinity_get(self) -> list[int]: ...
+        def cpu_affinity_set(self, value: Iterable[int]) -> None: ...
+        def num_handles(self) -> int: ...
+        def num_ctx_switches(self) -> _common.pctxsw: ...

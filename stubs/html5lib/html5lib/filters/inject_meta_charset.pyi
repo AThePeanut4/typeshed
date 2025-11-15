@@ -1,15 +1,8 @@
+from _typeshed import Incomplete
+from collections.abc import Iterable
+
 from . import base
 
-class Filter(base.Filter):
-    """Injects ``<meta charset=ENCODING>`` tag into head of document"""
+class Filter(base.Filter[dict[str, Incomplete]]):
     encoding: str | None
-    def __init__(self, source, encoding: str | None) -> None:
-        """
-        Creates a Filter
-
-        :arg source: the source token stream
-
-        :arg encoding: the encoding to set
-        """
-        ...
-    def __iter__(self): ...
+    def __init__(self, source: Iterable[dict[str, Incomplete]], encoding: str | None) -> None: ...

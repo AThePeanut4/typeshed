@@ -1,11 +1,7 @@
-"""Legacy multi-factor authentication methods module."""
-
-from _typeshed import Incomplete
-
 from hvac.api.vault_api_base import VaultApiBase
 
-SUPPORTED_MFA_TYPES: Incomplete
-SUPPORTED_AUTH_METHODS: Incomplete
+SUPPORTED_MFA_TYPES: list[str]
+SUPPORTED_AUTH_METHODS: list[str]
 
 class LegacyMfa(VaultApiBase):
     """

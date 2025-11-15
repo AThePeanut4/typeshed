@@ -9,8 +9,8 @@ import sys
 from _typeshed import FileDescriptorLike
 from collections.abc import Iterable
 from types import TracebackType
-from typing import Any, ClassVar, Final, final
-from typing_extensions import Self
+from typing import Any, ClassVar, Final, TypeVar, final
+from typing_extensions import Never, Self
 
 if sys.platform != "win32":
     PIPE_BUF: Final[int]
@@ -44,34 +44,13 @@ if sys.platform != "win32":
         def unregister(self, fd: FileDescriptorLike, /) -> None: ...
         def poll(self, timeout: float | None = None, /) -> list[tuple[int, int]]: ...
 
+_R = TypeVar("_R", default=Never)
+_W = TypeVar("_W", default=Never)
+_X = TypeVar("_X", default=Never)
+
 def select(
-    rlist: Iterable[Any], wlist: Iterable[Any], xlist: Iterable[Any], timeout: float | None = None, /
-) -> tuple[list[Any], list[Any], list[Any]]:
-    """
-    Wait until one or more file descriptors are ready for some kind of I/O.
-
-    The first three arguments are iterables of file descriptors to be waited for:
-    rlist -- wait until ready for reading
-    wlist -- wait until ready for writing
-    xlist -- wait for an "exceptional condition"
-    If only one kind of condition is required, pass [] for the other lists.
-
-    A file descriptor is either a socket or file object, or a small integer
-    gotten from a fileno() method call on one of those.
-
-    The optional 4th argument specifies a timeout in seconds; it may be
-    a floating-point number to specify fractions of seconds.  If it is absent
-    or None, the call will never time out.
-
-    The return value is a tuple of three lists corresponding to the first three
-    arguments; each contains the subset of the corresponding file descriptors
-    that are ready.
-
-    *** IMPORTANT NOTICE ***
-    On Windows, only sockets are supported; on Unix, all file
-    descriptors can be used.
-    """
-    ...
+    rlist: Iterable[_R], wlist: Iterable[_W], xlist: Iterable[_X], timeout: float | None = None, /
+) -> tuple[list[_R], list[_W], list[_X]]: ...
 
 error = OSError
 

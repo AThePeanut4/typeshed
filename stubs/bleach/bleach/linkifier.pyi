@@ -107,19 +107,7 @@ class Linker:
 # or `html5lib` token might be reused
 _Token: TypeAlias = dict[str, Any]
 
-class LinkifyFilter(Filter):
-    """
-    html5lib filter that linkifies text
-
-    This will do the following:
-
-    * convert email addresses into links
-    * convert urls into links
-    * edit existing links by running them through callbacks--the default is to
-      add a ``rel="nofollow"``
-
-    This filter can be used anywhere html5lib filters can be used.
-    """
+class LinkifyFilter(Filter[_Token]):
     callbacks: Iterable[_Callback]
     skip_tags: Container[str]
     parse_email: bool

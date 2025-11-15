@@ -1,11 +1,10 @@
-"""Azure auth method module."""
-
-from _typeshed import Incomplete
+import logging
 
 from hvac.api.vault_api_base import VaultApiBase
 
 DEFAULT_MOUNT_POINT: str
-logger: Incomplete
+
+logger: logging.Logger
 
 class Azure(VaultApiBase):
     """

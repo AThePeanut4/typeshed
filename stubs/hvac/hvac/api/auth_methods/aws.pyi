@@ -1,10 +1,8 @@
-"""AWS auth method module """
-
-from _typeshed import Incomplete
+import logging
 
 from hvac.api.vault_api_base import VaultApiBase
 
-logger: Incomplete
+logger: logging.Logger
 
 class Aws(VaultApiBase):
     """

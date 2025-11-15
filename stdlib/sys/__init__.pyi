@@ -656,6 +656,8 @@ def intern(string: str, /) -> str:
     """
     ...
 
+__interactivehook__: Callable[[], object]
+
 if sys.version_info >= (3, 13):
     def _is_gil_enabled() -> bool:
         """Return True if the GIL is currently enabled and False otherwise."""

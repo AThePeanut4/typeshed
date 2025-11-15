@@ -66,7 +66,7 @@ class Cleaner:
     protocols: Iterable[str]
     strip: bool
     strip_comments: bool
-    filters: Iterable[Filter]
+    filters: Iterable[_FilterConstructor]
     css_sanitizer: CSSSanitizer | None
     parser: BleachHTMLParser
     walker: TreeWalker
@@ -196,50 +196,8 @@ class BleachSanitizerFilter(SanitizerFilter):
         """Merge consecutive Characters tokens in a stream"""
         ...
     def __iter__(self) -> Iterator[_Token]: ...
-    def sanitize_token(self, token: _Token) -> _Token | list[_Token] | None:
-        """
-        Sanitize a token either by HTML-encoding or dropping.
-
-        Unlike sanitizer.Filter, allowed_attributes can be a dict of {'tag':
-        ['attribute', 'pairs'], 'tag': callable}.
-
-        Here callable is a function with two arguments of attribute name and
-        value. It should return true of false.
-
-        Also gives the option to strip tags instead of encoding.
-
-        :arg dict token: token to sanitize
-
-        :returns: token or list of tokens
-        """
-        ...
-    def sanitize_characters(self, token: _Token) -> _Token | list[_Token]:
-        """
-        Handles Characters tokens
-
-        Our overridden tokenizer doesn't do anything with entities. However,
-        that means that the serializer will convert all ``&`` in Characters
-        tokens to ``&amp;``.
-
-        Since we don't want that, we extract entities here and convert them to
-        Entity tokens so the serializer will let them be.
-
-        :arg token: the Characters token to work on
-
-        :returns: a list of tokens
-        """
-        ...
-    def sanitize_uri_value(self, value: str, allowed_protocols: Container[str]) -> str | None:
-        """
-        Checks a uri value to see if it's allowed
-
-        :arg value: the uri value to sanitize
-        :arg allowed_protocols: set of allowed protocols
-
-        :returns: allowed value or None
-        """
-        ...
-    def allow_token(self, token: _Token) -> _Token:
-        """Handles the case where we're allowing the tag"""
-        ...
+    def sanitize_token(self, token: _Token) -> _Token | list[_Token] | None: ...  # type: ignore[override]
+    def sanitize_characters(self, token: _Token) -> _Token | list[_Token]: ...
+    def sanitize_uri_value(self, value: str, allowed_protocols: Container[str]) -> str | None: ...
+    def allow_token(self, token: _Token) -> _Token: ...
     def disallowed_token(self, token: _Token) -> _Token: ...
