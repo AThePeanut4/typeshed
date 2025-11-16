@@ -54,6 +54,7 @@ Jetson.GPIO==2.1.12
 ttkthemes==3.3.*
 yt-dlp==2025.11.12
 flake8-docstrings==1.7.*
+pycountry==24.6.*
 flake8-rst-docstrings==0.4.*
 docker==7.1.*
 pep8-naming==0.15.*
