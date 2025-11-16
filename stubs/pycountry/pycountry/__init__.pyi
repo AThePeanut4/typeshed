@@ -1,3 +1,5 @@
+"""pycountry"""
+
 import pycountry.db
 
 LOCALES_DIR: str
@@ -9,28 +11,40 @@ def get_version(distribution_name: str) -> str | None: ...
 def remove_accents(input_str: str) -> str: ...
 
 class ExistingCountries(pycountry.db.Database):
+    """Provides access to an ISO 3166 database (Countries)."""
     data_class: type
     root_key: str
     def search_fuzzy(self, query: str) -> list[pycountry.db.Country]: ...
 
 class HistoricCountries(ExistingCountries):
+    """
+    Provides access to an ISO 3166-3 database
+    (Countries that have been removed from the standard).
+    """
     data_class: type
     root_key: str
 
 class Scripts(pycountry.db.Database):
+    """Provides access to an ISO 15924 database (Scripts)."""
     data_class: str
     root_key: str
 
 class Currencies(pycountry.db.Database):
+    """Provides access to an ISO 4217 database (Currencies)."""
     data_class: str
     root_key: str
 
 class Languages(pycountry.db.Database):
+    """Provides access to an ISO 639-1/2T/3 database (Languages)."""
     no_index: list[str]
     data_class: str
     root_key: str
 
 class LanguageFamilies(pycountry.db.Database):
+    """
+    Provides access to an ISO 639-5 database
+    (Language Families and Groups).
+    """
     data_class: str
     root_key: str
 

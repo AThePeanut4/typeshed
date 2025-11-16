@@ -240,8 +240,9 @@ def cpu_stats():
     ...
 def cpu_freq():
     """
-    Alternate implementation using /proc/cpuinfo.
-    min and max frequencies are not available and are set to None.
+    Return frequency metrics for all CPUs.
+    Contrarily to other OSes, Linux updates these values in
+    real-time.
     """
     ...
 
