@@ -78,7 +78,7 @@ from builtins import object as _object
 from collections.abc import AsyncGenerator, Callable, Sequence
 from io import TextIOWrapper
 from types import FrameType, ModuleType, TracebackType
-from typing import Any, Final, Literal, NoReturn, Protocol, TextIO, TypeVar, final, type_check_only
+from typing import Any, Final, Literal, NoReturn, Protocol, TextIO, TypeVar, final, overload, type_check_only
 from typing_extensions import LiteralString, TypeAlias, deprecated
 
 _T = TypeVar("_T")
@@ -537,86 +537,24 @@ def exit(status: _ExitCode = None, /) -> NoReturn:
 if sys.platform == "android":  # noqa: Y008
     def getandroidapilevel() -> int: ...
 
-def getallocatedblocks() -> int:
-    """Return the number of memory blocks currently allocated."""
-    ...
-def getdefaultencoding() -> str:
-    """Return the current default encoding used by the Unicode implementation."""
-    ...
+def getallocatedblocks() -> int: ...
+def getdefaultencoding() -> Literal["utf-8"]: ...
 
 if sys.platform != "win32":
     def getdlopenflags() -> int:
         """
         Return the current value of the flags that are used for dlopen calls.
 
-        The flag constants are defined in the os module.
-        """
-        ...
-
-def getfilesystemencoding() -> str:
-    """Return the encoding used to convert Unicode filenames to OS filenames."""
-    ...
-def getfilesystemencodeerrors() -> str:
-    """Return the error mode used Unicode to OS filename conversion."""
-    ...
-def getrefcount(object: Any, /) -> int:
-    """
-    Return the reference count of object.
-
-    The count returned is generally one higher than you might expect,
-    because it includes the (temporary) reference as an argument to
-    getrefcount().
-    """
-    ...
-def getrecursionlimit() -> int:
-    """
-    Return the current value of the recursion limit.
-
-    The recursion limit is the maximum depth of the Python interpreter
-    stack.  This limit prevents infinite recursion from causing an overflow
-    of the C stack and crashing Python.
-    """
-    ...
-def getsizeof(obj: object, default: int = ...) -> int:
-    """
-    getsizeof(object [, default]) -> int
-
-    Return the size of object in bytes.
-    """
-    ...
-def getswitchinterval() -> float:
-    """Return the current thread switch interval; see sys.setswitchinterval()."""
-    ...
-def getprofile() -> ProfileFunction | None:
-    """
-    Return the profiling function set with sys.setprofile.
-
-    See the profiler chapter in the library manual.
-    """
-    ...
-def setprofile(function: ProfileFunction | None, /) -> None:
-    """
-    Set the profiling function.
-
-    It will be called on each function call and return.  See the profiler
-    chapter in the library manual.
-    """
-    ...
-def gettrace() -> TraceFunction | None:
-    """
-    Return the global debug tracing function set with sys.settrace.
-
-    See the debugger chapter in the library manual.
-    """
-    ...
-def settrace(function: TraceFunction | None, /) -> None:
-    """
-    Set the global debug tracing function.
-
-    It will be called on each function call.  See the debugger chapter
-    in the library manual.
-    """
-    ...
+def getfilesystemencoding() -> LiteralString: ...
+def getfilesystemencodeerrors() -> LiteralString: ...
+def getrefcount(object: Any, /) -> int: ...
+def getrecursionlimit() -> int: ...
+def getsizeof(obj: object, default: int = ...) -> int: ...
+def getswitchinterval() -> float: ...
+def getprofile() -> ProfileFunction | None: ...
+def setprofile(function: ProfileFunction | None, /) -> None: ...
+def gettrace() -> TraceFunction | None: ...
+def settrace(function: TraceFunction | None, /) -> None: ...
 
 if sys.platform == "win32":
     # A tuple of length 5, even though it has more than 5 attributes.
@@ -646,15 +584,10 @@ if sys.platform == "win32":
 
     def getwindowsversion() -> _WinVersion: ...
 
-def intern(string: str, /) -> str:
-    """
-    ``Intern'' the given string.
-
-    This enters the string in the (global) table of interned strings whose
-    purpose is to speed up dictionary lookups. Return the string itself or
-    the previously interned string object with the same value.
-    """
-    ...
+@overload
+def intern(string: LiteralString, /) -> LiteralString: ...
+@overload
+def intern(string: str, /) -> str: ...  # type: ignore[misc]
 
 __interactivehook__: Callable[[], object]
 
