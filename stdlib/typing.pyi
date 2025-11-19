@@ -693,15 +693,71 @@ _KT_co = TypeVar("_KT_co", covariant=True)  # Key type covariant containers.
 _VT_co = TypeVar("_VT_co", covariant=True)  # Value type covariant containers.
 _TC = TypeVar("_TC", bound=type[object])
 
-def overload(func: _F) -> _F: ...
-def no_type_check(arg: _F) -> _F: ...
+def overload(func: _F) -> _F:
+    """
+    Decorator for overloaded functions/methods.
+
+    In a stub file, place two or more stub definitions for the same
+    function in a row, each decorated with @overload.
+
+    For example::
+
+        @overload
+        def utf8(value: None) -> None: ...
+        @overload
+        def utf8(value: bytes) -> bytes: ...
+        @overload
+        def utf8(value: str) -> bytes: ...
+
+    In a non-stub file (i.e. a regular .py file), do the same but
+    follow it with an implementation.  The implementation should *not*
+    be decorated with @overload::
+
+        @overload
+        def utf8(value: None) -> None: ...
+        @overload
+        def utf8(value: bytes) -> bytes: ...
+        @overload
+        def utf8(value: str) -> bytes: ...
+        def utf8(value):
+            ...  # implementation goes here
+
+    The overloads for a function can be retrieved at runtime using the
+    get_overloads() function.
+    """
+    ...
+def no_type_check(arg: _F) -> _F:
+    """
+    Decorator to indicate that annotations are not type hints.
+
+    The argument must be a class or function; if it is a class, it
+    applies recursively to all methods and classes defined in that class
+    (but not to methods defined in its superclasses or subclasses).
+
+    This mutates the function(s) or class(es) in place.
+    """
+    ...
 
 if sys.version_info >= (3, 13):
     @deprecated("Deprecated since Python 3.13; removed in Python 3.15.")
-    def no_type_check_decorator(decorator: Callable[_P, _T]) -> Callable[_P, _T]: ...
+    def no_type_check_decorator(decorator: Callable[_P, _T]) -> Callable[_P, _T]:
+        """
+        Decorator to give another decorator the @no_type_check effect.
+
+        This wraps the decorator with something that wraps the decorated
+        function in @no_type_check.
+        """
+        ...
 
 else:
-    def no_type_check_decorator(decorator: Callable[_P, _T]) -> Callable[_P, _T]: ...
+    def no_type_check_decorator(decorator: Callable[_P, _T]) -> Callable[_P, _T]:
+        """
+        Decorator to give another decorator the @no_type_check effect.
+
+        This wraps the decorator with something that wraps the decorated
+        function in @no_type_check.
+        """
+        ...
 
 # This itself is only available during type checking
 def type_check_only(func_or_cls: _FT) -> _FT: ...
@@ -1862,7 +1918,9 @@ class NamedTuple(tuple[Any, ...]):
         ...
     @overload
     @deprecated("Creating a typing.NamedTuple using keyword arguments is deprecated and support will be removed in Python 3.15")
-    def __init__(self, typename: str, fields: None = None, /, **kwargs: Any) -> None: ...
+    def __init__(self, typename: str, fields: None = None, /, **kwargs: Any) -> None:
+        """Initialize self.  See help(type(self)) for accurate signature."""
+        ...
     @classmethod
     def _make(cls, iterable: Iterable[Any]) -> typing_extensions.Self: ...
     def _asdict(self) -> dict[str, Any]: ...
