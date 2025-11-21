@@ -1,9 +1,9 @@
 """Low-level utilities used internally by ``ndb``"""
 
 import threading
-from typing import Any
+from _typeshed import Incomplete
 
-TRUTHY_STRINGS: Any
+TRUTHY_STRINGS: Incomplete
 
 def asbool(value):
     """
@@ -18,7 +18,7 @@ def asbool(value):
     """
     ...
 
-DEBUG: Any
+DEBUG: Incomplete
 
 def code_info(*args, **kwargs) -> None: ...
 def decorator(*args, **kwargs) -> None: ...
@@ -38,13 +38,7 @@ def logging_debug(log, message, *args, **kwargs) -> None:
     ...
 
 class keyword_only:
-    """
-    A decorator to get some of the functionality of keyword-only arguments
-    from Python 3. It takes allowed keyword args and default values as
-    parameters. Raises TypeError if a keyword argument not included in those
-    parameters is passed in.
-    """
-    defaults: Any
+    defaults: Incomplete
     def __init__(self, **kwargs) -> None: ...
     def __call__(self, wrapped): ...
 

@@ -2,7 +2,7 @@
 
 from _typeshed import Incomplete
 from collections.abc import Callable
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 from google.cloud.ndb import Key, exceptions as exceptions
 
@@ -70,19 +70,18 @@ def get_toplevel_context(raise_context_error: bool = ...):
     ...
 
 class _ContextTuple(NamedTuple):
-    """_ContextTuple(id, client, namespace, eventloop, batches, commit_batches, transaction, cache, global_cache, on_commit_callbacks, transaction_complete_callbacks, legacy_data)"""
-    id: Any
-    client: Any
-    namespace: Any
-    eventloop: Any
-    batches: Any
-    commit_batches: Any
-    transaction: Any
-    cache: Any
-    global_cache: Any
-    on_commit_callbacks: Any
-    transaction_complete_callbacks: Any
-    legacy_data: Any
+    id: Incomplete
+    client: Incomplete
+    namespace: Incomplete
+    eventloop: Incomplete
+    batches: Incomplete
+    commit_batches: Incomplete
+    transaction: Incomplete
+    cache: Incomplete
+    global_cache: Incomplete
+    on_commit_callbacks: Incomplete
+    transaction_complete_callbacks: Incomplete
+    legacy_data: Incomplete
 
 class _Context(_ContextTuple):
     """
@@ -144,126 +143,25 @@ class _Context(_ContextTuple):
         ...
 
 class Context(_Context):
-    """User management of cache and other policy."""
-    def clear_cache(self) -> None:
-        """
-        Clears the in-memory cache.
-
-        This does not affect global cache.
-        """
-        ...
-    def flush(self) -> None:
-        """Force any pending batch operations to go ahead and run."""
-        ...
-    def get_namespace(self):
-        """
-        Return the current context namespace.
-
-        If `namespace` isn't set on the context, the client's namespace will be
-        returned.
-
-        Returns:
-            str: The namespace, or `None`.
-        """
-        ...
-    def get_cache_policy(self):
-        """
-        Return the current context cache policy function.
-
-        Returns:
-            Callable: A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns a ``bool`` indicating if it
-                should be cached. May be :data:`None`.
-        """
-        ...
-    def get_datastore_policy(self) -> None:
-        """
-        Return the current context datastore policy function.
-
-        Returns:
-            Callable: A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns a ``bool`` indicating if it
-                should use the datastore. May be :data:`None`.
-        """
-        ...
-    def get_global_cache_policy(self):
-        """
-        Return the current global cache policy function.
-
-        Returns:
-            Callable: A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns a ``bool`` indicating if it
-                should be cached. May be :data:`None`.
-        """
-        ...
-    get_memcache_policy: Any
-    def get_global_cache_timeout_policy(self):
-        """
-        Return the current policy function global cache timeout (expiration).
-
-        Returns:
-            Callable: A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns an ``int`` indicating the
-                timeout, in seconds, for the key. ``0`` implies the default
-                timeout. May be :data:`None`.
-        """
-        ...
-    get_memcache_timeout_policy: Any
-    cache_policy: Any
-    def set_cache_policy(self, policy):
-        """
-        Set the context cache policy function.
-
-        Args:
-            policy (Callable): A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns a ``bool`` indicating if it
-                should be cached.  May be :data:`None`.
-        """
-        ...
-    datastore_policy: Any
-    def set_datastore_policy(self, policy):
-        """
-        Set the context datastore policy function.
-
-        Args:
-            policy (Callable): A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns a ``bool`` indicating if it
-                should use the datastore.  May be :data:`None`.
-        """
-        ...
-    global_cache_policy: Any
-    def set_global_cache_policy(self, policy):
-        """
-        Set the global cache policy function.
-
-        Args:
-            policy (Callable): A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns a ``bool`` indicating if it
-                should be cached.  May be :data:`None`.
-        """
-        ...
-    set_memcache_policy: Any
-    global_cache_timeout_policy: Any
-    def set_global_cache_timeout_policy(self, policy):
-        """
-        Set the policy function for global cache timeout (expiration).
-
-        Args:
-            policy (Callable): A function that accepts a
-                :class:`~google.cloud.ndb.key.Key` instance as a single
-                positional argument and returns an ``int`` indicating the
-                timeout, in seconds, for the key. ``0`` implies the default
-                timeout. May be :data:`None`.
-        """
-        ...
-    set_memcache_timeout_policy: Any
+    def clear_cache(self) -> None: ...
+    def flush(self) -> None: ...
+    def get_namespace(self): ...
+    def get_cache_policy(self): ...
+    def get_datastore_policy(self) -> None: ...
+    def get_global_cache_policy(self): ...
+    get_memcache_policy: Incomplete
+    def get_global_cache_timeout_policy(self): ...
+    get_memcache_timeout_policy: Incomplete
+    cache_policy: Incomplete
+    def set_cache_policy(self, policy): ...
+    datastore_policy: Incomplete
+    def set_datastore_policy(self, policy): ...
+    global_cache_policy: Incomplete
+    def set_global_cache_policy(self, policy): ...
+    set_memcache_policy: Incomplete
+    global_cache_timeout_policy: Incomplete
+    def set_global_cache_timeout_policy(self, policy): ...
+    set_memcache_timeout_policy: Incomplete
     def get_retry_state(self): ...
     def set_retry_state(self, state) -> None: ...
     def clear_retry_state(self) -> None: ...

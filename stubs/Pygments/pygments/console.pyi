@@ -1,19 +1,9 @@
-"""
-pygments.console
-~~~~~~~~~~~~~~~~
-
-Format colored console output.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any
+from _typeshed import Incomplete
 
 esc: str
-codes: Any
-dark_colors: Any
-light_colors: Any
+codes: Incomplete
+dark_colors: Incomplete
+light_colors: Incomplete
 
 def reset_color(): ...
 def colorize(color_key, text): ...

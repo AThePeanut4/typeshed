@@ -75,9 +75,8 @@ namespace. To explicitly select the empty namespace pass ``namespace=""``.
 """
 
 from _typeshed import Incomplete
-from typing import Any
 
-UNDEFINED: Any
+UNDEFINED: Incomplete
 
 class Key:
     r"""
@@ -233,312 +232,30 @@ class Key:
             arguments were given with the path.
     """
     def __new__(cls, *path_args, **kwargs): ...
-    def __hash__(self) -> int:
-        """
-        Hash value, for use in dictionary lookups.
-
-        .. note::
-
-            This ignores ``app``, ``database``, and ``namespace``. Since :func:`hash` isn't
-            expected to return a unique value (it just reduces the chance of
-            collision), this doesn't try to increase entropy by including other
-            values. The primary concern is that hashes of equal keys are
-            equal, not the other way around.
-        """
-        ...
-    def __eq__(self, other):
-        """Equality comparison operation."""
-        ...
-    def __ne__(self, other):
-        """The opposite of __eq__."""
-        ...
-    def __lt__(self, other):
-        """Less than ordering."""
-        ...
-    def __le__(self, other):
-        """Less than or equal ordering."""
-        ...
-    def __gt__(self, other):
-        """Greater than ordering."""
-        ...
-    def __ge__(self, other):
-        """Greater than or equal ordering."""
-        ...
-    def __getnewargs__(self):
-        """
-        Private API used to specify ``__new__`` arguments when unpickling.
-
-        .. note::
-
-            This method is provided for backwards compatibility, though it
-            isn't needed.
-
-        Returns:
-            Tuple[Dict[str, Any]]: A tuple containing a single dictionary of
-            state to pickle. The dictionary has four keys: ``pairs``, ``app``,
-            ``database`` and ``namespace``.
-        """
-        ...
-    def parent(self):
-        """
-        Parent key constructed from all but the last ``(kind, id)`` pairs.
-
-        If there is only one ``(kind, id)`` pair, return :data:`None`.
-
-        .. doctest:: key-parent
-
-            >>> key = ndb.Key(
-            ...     pairs=[
-            ...         ("Purchase", "Food"),
-            ...         ("Type", "Drink"),
-            ...         ("Coffee", 11),
-            ...     ]
-            ... )
-            >>> parent = key.parent()
-            >>> parent
-            Key('Purchase', 'Food', 'Type', 'Drink')
-            >>>
-            >>> grandparent = parent.parent()
-            >>> grandparent
-            Key('Purchase', 'Food')
-            >>>
-            >>> grandparent.parent() is None
-            True
-        """
-        ...
-    def root(self):
-        """
-        The root key.
-
-        This is either the current key or the highest parent.
-
-        .. doctest:: key-root
-
-            >>> key = ndb.Key("a", 1, "steak", "sauce")
-            >>> root_key = key.root()
-            >>> root_key
-            Key('a', 1)
-            >>> root_key.root() is root_key
-            True
-        """
-        ...
-    def namespace(self):
-        """
-        The namespace for the key, if set.
-
-        .. doctest:: key-namespace
-
-            >>> key = ndb.Key("A", "B")
-            >>> key.namespace() is None
-            True
-            >>>
-            >>> key = ndb.Key("A", "B", namespace="rock")
-            >>> key.namespace()
-            'rock'
-        """
-        ...
-    def project(self):
-        """
-        The project ID for the key.
-
-        .. warning::
-
-            This **may** differ from the original ``app`` passed in to the
-            constructor. This is because prefixed application IDs like
-            ``s~example`` are "legacy" identifiers from Google App Engine.
-            They have been replaced by equivalent project IDs, e.g. here it
-            would be ``example``.
-
-        .. doctest:: key-app
-
-            >>> key = ndb.Key("A", "B", project="s~example")
-            >>> key.project()
-            'example'
-            >>>
-            >>> key = ndb.Key("A", "B", project="example")
-            >>> key.project()
-            'example'
-        """
-        ...
-    app: Any
-    def database(self) -> str | None:
-        """
-        The database ID for the key.
-
-        .. doctest:: key-database
-
-           >>> key = ndb.Key("A", "B", database="mydb")
-           >>> key.database()
-           'mydb'
-        """
-        ...
-    def id(self):
-        """
-        The string or integer ID in the last ``(kind, id)`` pair, if any.
-
-        .. doctest:: key-id
-
-            >>> key_int = ndb.Key("A", 37)
-            >>> key_int.id()
-            37
-            >>> key_str = ndb.Key("A", "B")
-            >>> key_str.id()
-            'B'
-            >>> key_partial = ndb.Key("A", None)
-            >>> key_partial.id() is None
-            True
-        """
-        ...
-    def string_id(self):
-        """
-        The string ID in the last ``(kind, id)`` pair, if any.
-
-        .. doctest:: key-string-id
-
-            >>> key_int = ndb.Key("A", 37)
-            >>> key_int.string_id() is None
-            True
-            >>> key_str = ndb.Key("A", "B")
-            >>> key_str.string_id()
-            'B'
-            >>> key_partial = ndb.Key("A", None)
-            >>> key_partial.string_id() is None
-            True
-        """
-        ...
-    def integer_id(self):
-        """
-        The integer ID in the last ``(kind, id)`` pair, if any.
-
-        .. doctest:: key-integer-id
-
-            >>> key_int = ndb.Key("A", 37)
-            >>> key_int.integer_id()
-            37
-            >>> key_str = ndb.Key("A", "B")
-            >>> key_str.integer_id() is None
-            True
-            >>> key_partial = ndb.Key("A", None)
-            >>> key_partial.integer_id() is None
-            True
-        """
-        ...
-    def pairs(self):
-        """
-        The ``(kind, id)`` pairs for the key.
-
-        .. doctest:: key-pairs
-
-            >>> key = ndb.Key("Satellite", "Moon", "Space", "Dust")
-            >>> key.pairs()
-            (('Satellite', 'Moon'), ('Space', 'Dust'))
-            >>>
-            >>> partial_key = ndb.Key("Known", None)
-            >>> partial_key.pairs()
-            (('Known', None),)
-        """
-        ...
-    def flat(self):
-        """
-        The flat path for the key.
-
-        .. doctest:: key-flat
-
-            >>> key = ndb.Key("Satellite", "Moon", "Space", "Dust")
-            >>> key.flat()
-            ('Satellite', 'Moon', 'Space', 'Dust')
-            >>>
-            >>> partial_key = ndb.Key("Known", None)
-            >>> partial_key.flat()
-            ('Known', None)
-        """
-        ...
-    def kind(self):
-        """
-        The kind of the entity referenced.
-
-        This comes from the last ``(kind, id)`` pair.
-
-        .. doctest:: key-kind
-
-            >>> key = ndb.Key("Satellite", "Moon", "Space", "Dust")
-            >>> key.kind()
-            'Space'
-            >>>
-            >>> partial_key = ndb.Key("Known", None)
-            >>> partial_key.kind()
-            'Known'
-        """
-        ...
-    def reference(self):
-        """
-        The ``Reference`` protobuf object for this key.
-
-        The return value will be stored on the current key, so the caller
-        promises not to mutate it.
-
-        .. doctest:: key-reference
-
-            >>> key = ndb.Key("Trampoline", 88, project="xy", database="wv", namespace="zt")
-            >>> key.reference()
-            app: "xy"
-            path {
-              element {
-                type: "Trampoline"
-                id: 88
-              }
-            }
-            name_space: "zt"
-            database_id: "wv"
-            <BLANKLINE>
-        """
-        ...
-    def serialized(self):
-        r"""
-        A ``Reference`` protobuf serialized to bytes.
-
-        .. doctest:: key-serialized
-
-            >>> key = ndb.Key("Kind", 1337, project="example", database="example-db")
-            >>> key.serialized()
-            b'j\x07exampler\x0b\x0b\x12\x04Kind\x18\xb9\n\x0c\xba\x01\nexample-db'
-        """
-        ...
-    def urlsafe(self):
-        """
-        A ``Reference`` protobuf serialized and encoded as urlsafe base 64.
-
-        .. doctest:: key-urlsafe
-
-            >>> key = ndb.Key("Kind", 1337, project="example")
-            >>> key.urlsafe()
-            b'agdleGFtcGxlcgsLEgRLaW5kGLkKDA'
-        """
-        ...
-    def to_legacy_urlsafe(self, location_prefix):
-        """
-        A urlsafe serialized ``Reference`` protobuf with an App Engine prefix.
-
-        This will produce a urlsafe string which includes an App Engine
-        location prefix ("partition"), compatible with the Google Datastore
-        admin console.
-
-        This only supports the default database. For a named database,
-        please use urlsafe() instead.
-
-        Arguments:
-            location_prefix (str): A location prefix ("partition") to be
-                prepended to the key's `project` when serializing the key. A
-                typical value is "s~", but "e~" or other partitions are
-                possible depending on the project's region and other factors.
-
-        .. doctest:: key-legacy-urlsafe
-
-            >>> key = ndb.Key("Kind", 1337, project="example")
-            >>> key.to_legacy_urlsafe("s~")
-            b'aglzfmV4YW1wbGVyCwsSBEtpbmQYuQoM'
-        """
-        ...
+    def __hash__(self) -> int: ...
+    def __eq__(self, other): ...
+    def __ne__(self, other): ...
+    def __lt__(self, other): ...
+    def __le__(self, other): ...
+    def __gt__(self, other): ...
+    def __ge__(self, other): ...
+    def __getnewargs__(self): ...
+    def parent(self): ...
+    def root(self): ...
+    def namespace(self): ...
+    def project(self): ...
+    app: Incomplete
+    def database(self) -> str | None: ...
+    def id(self): ...
+    def string_id(self): ...
+    def integer_id(self): ...
+    def pairs(self): ...
+    def flat(self): ...
+    def kind(self): ...
+    def reference(self): ...
+    def serialized(self): ...
+    def urlsafe(self): ...
+    def to_legacy_urlsafe(self, location_prefix): ...
     def get(
         self,
         read_consistency: Incomplete | None = ...,

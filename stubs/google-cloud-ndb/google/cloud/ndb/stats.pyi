@@ -1,11 +1,4 @@
-"""
-Models for accessing datastore usage statistics.
-
-These entities cannot be created by users, but are populated in the
-application's datastore by offline processes run by the Google Cloud team.
-"""
-
-from typing import Any
+from _typeshed import Incomplete
 
 from google.cloud.ndb import model
 
@@ -22,9 +15,9 @@ class BaseStatistic(model.Model):
             written to Cloud Datastore.
     """
     STORED_KIND_NAME: str
-    bytes: Any
-    count: Any
-    timestamp: Any
+    bytes: Incomplete
+    count: Incomplete
+    timestamp: Incomplete
 
 class BaseKindStatistic(BaseStatistic):
     """
@@ -37,8 +30,8 @@ class BaseKindStatistic(BaseStatistic):
             in Cloud Datastore minus the cost of storing indices.
     """
     STORED_KIND_NAME: str
-    kind_name: Any
-    entity_bytes: Any
+    kind_name: Incomplete
+    entity_bytes: Incomplete
 
 class GlobalStat(BaseStatistic):
     """
@@ -59,11 +52,11 @@ class GlobalStat(BaseStatistic):
         composite_index_count (int): the number of composite index entries.
     """
     STORED_KIND_NAME: str
-    entity_bytes: Any
-    builtin_index_bytes: Any
-    builtin_index_count: Any
-    composite_index_bytes: Any
-    composite_index_count: Any
+    entity_bytes: Incomplete
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
+    composite_index_bytes: Incomplete
+    composite_index_count: Incomplete
 
 class NamespaceStat(BaseStatistic):
     """
@@ -87,12 +80,12 @@ class NamespaceStat(BaseStatistic):
         composite_index_count (int): the number of composite index entries.
     """
     STORED_KIND_NAME: str
-    subject_namespace: Any
-    entity_bytes: Any
-    builtin_index_bytes: Any
-    builtin_index_count: Any
-    composite_index_bytes: Any
-    composite_index_count: Any
+    subject_namespace: Incomplete
+    entity_bytes: Incomplete
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
+    composite_index_bytes: Incomplete
+    composite_index_count: Incomplete
 
 class KindStat(BaseKindStatistic):
     """
@@ -110,10 +103,10 @@ class KindStat(BaseKindStatistic):
         composite_index_count (int): the number of composite index entries.
     """
     STORED_KIND_NAME: str
-    builtin_index_bytes: Any
-    builtin_index_count: Any
-    composite_index_bytes: Any
-    composite_index_count: Any
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
+    composite_index_bytes: Incomplete
+    composite_index_count: Incomplete
 
 class KindRootEntityStat(BaseKindStatistic):
     """
@@ -153,10 +146,10 @@ class PropertyTypeStat(BaseStatistic):
         builtin_index_count (int): the number of built-in index entries.
     """
     STORED_KIND_NAME: str
-    property_type: Any
-    entity_bytes: Any
-    builtin_index_bytes: Any
-    builtin_index_count: Any
+    property_type: Incomplete
+    entity_bytes: Incomplete
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
 
 class KindPropertyTypeStat(BaseKindStatistic):
     """
@@ -172,9 +165,9 @@ class KindPropertyTypeStat(BaseKindStatistic):
         builtin_index_count (int): the number of built-in index entries.
     """
     STORED_KIND_NAME: str
-    property_type: Any
-    builtin_index_bytes: Any
-    builtin_index_count: Any
+    property_type: Incomplete
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
 
 class KindPropertyNameStat(BaseKindStatistic):
     """
@@ -191,9 +184,9 @@ class KindPropertyNameStat(BaseKindStatistic):
         builtin_index_count (int): the number of built-in index entries.
     """
     STORED_KIND_NAME: str
-    property_name: Any
-    builtin_index_bytes: Any
-    builtin_index_count: Any
+    property_name: Incomplete
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
 
 class KindPropertyNamePropertyTypeStat(BaseKindStatistic):
     """
@@ -213,10 +206,10 @@ class KindPropertyNamePropertyTypeStat(BaseKindStatistic):
       builtin_index_count (int): the number of built-in index entries.
     """
     STORED_KIND_NAME: str
-    property_type: Any
-    property_name: Any
-    builtin_index_bytes: Any
-    builtin_index_count: Any
+    property_type: Incomplete
+    property_name: Incomplete
+    builtin_index_bytes: Incomplete
+    builtin_index_count: Incomplete
 
 class KindCompositeIndexStat(BaseStatistic):
     """
@@ -232,8 +225,8 @@ class KindCompositeIndexStat(BaseStatistic):
             instance.
     """
     STORED_KIND_NAME: str
-    index_id: Any
-    kind_name: Any
+    index_id: Incomplete
+    kind_name: Incomplete
 
 class NamespaceGlobalStat(GlobalStat):
     """

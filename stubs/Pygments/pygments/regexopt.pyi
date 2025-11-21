@@ -1,18 +1,7 @@
-"""
-pygments.regexopt
-~~~~~~~~~~~~~~~~~
+from _typeshed import Incomplete
 
-An algorithm that generates optimized regexes for matching long lists of
-literal strings.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any
-
-CS_ESCAPE: Any
-FIRST_ELEMENT: Any
+CS_ESCAPE: Incomplete
+FIRST_ELEMENT: Incomplete
 
 def make_charset(letters): ...
 def regex_opt_inner(strings, open_paren):

@@ -1,14 +1,5 @@
-"""
-pygments.formatters.bbcode
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-BBcode formatter.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any, TypeVar
+from _typeshed import Incomplete
+from typing import TypeVar
 
 from pygments.formatter import Formatter
 
@@ -44,7 +35,7 @@ class BBCodeFormatter(Formatter[_T]):
         (default: ``false``).
     """
     name: str
-    aliases: Any
-    filenames: Any
-    styles: Any
+    aliases: Incomplete
+    filenames: Incomplete
+    styles: Incomplete
     def format_unencoded(self, tokensource, outfile) -> None: ...

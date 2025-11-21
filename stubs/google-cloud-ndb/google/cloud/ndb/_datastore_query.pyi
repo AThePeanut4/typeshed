@@ -1,7 +1,6 @@
 """Translate NDB queries to Datastore calls."""
 
 from _typeshed import Incomplete
-from typing import Any
 
 class QueryIterator:
     """
@@ -122,7 +121,7 @@ class Cursor:
     """
     @classmethod
     def from_websafe_string(cls, urlsafe): ...
-    cursor: Any
+    cursor: Incomplete
     def __init__(self, cursor: Incomplete | None = ..., urlsafe: Incomplete | None = ...) -> None: ...
     def to_websafe_string(self): ...
     def urlsafe(self): ...

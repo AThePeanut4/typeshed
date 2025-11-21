@@ -1,5 +1,4 @@
 from _typeshed import Incomplete
-from typing import Any
 
 from google.cloud.ndb import tasklets as tasklets
 
@@ -51,21 +50,11 @@ class _GlobalCacheBatch:
         """Generate info string for Future. To be overridden."""
         ...
 
-global_get: Any
+global_get: Incomplete
 
 class _GlobalCacheGetBatch(_GlobalCacheBatch):
-    """
-    Batch for global cache get requests.
-
-    Attributes:
-        todo (Dict[bytes, List[Future]]): Mapping of keys to futures that are
-            waiting on them.
-
-    Arguments:
-        ignore_options (Any): Ignored.
-    """
-    todo: Any
-    keys: Any
+    todo: Incomplete
+    keys: Incomplete
     def __init__(self, ignore_options) -> None: ...
     def add(self, key):
         """
@@ -111,8 +100,7 @@ def global_set(key, value, expires: Incomplete | None = ..., read: bool = ...):
     ...
 
 class _GlobalCacheSetBatch(_GlobalCacheBatch):
-    """Batch for global cache set requests."""
-    expires: Any
+    expires: Incomplete
     todo: object
     futures: object
     def __init__(self, options) -> None: ...
@@ -169,12 +157,11 @@ class _GlobalCacheSetIfNotExistsBatch(_GlobalCacheSetBatch):
         """Generate info string for Future."""
         ...
 
-global_delete: Any
+global_delete: Incomplete
 
 class _GlobalCacheDeleteBatch(_GlobalCacheBatch):
-    """Batch for global cache delete requests."""
-    keys: Any
-    futures: Any
+    keys: Incomplete
+    futures: Incomplete
     def __init__(self, ignore_options) -> None: ...
     def add(self, key):
         """
@@ -194,7 +181,7 @@ class _GlobalCacheDeleteBatch(_GlobalCacheBatch):
         """Generate info string for Future."""
         ...
 
-global_watch: Any
+global_watch: Incomplete
 
 class _GlobalCacheWatchBatch(_GlobalCacheDeleteBatch):
     """Batch for global cache watch requests."""
@@ -230,7 +217,7 @@ class _GlobalCacheUnwatchBatch(_GlobalCacheDeleteBatch):
         """Generate info string for Future."""
         ...
 
-global_compare_and_swap: Any
+global_compare_and_swap: Incomplete
 
 class _GlobalCacheCompareAndSwapBatch(_GlobalCacheSetBatch):
     """Batch for global cache compare and swap requests."""

@@ -1,19 +1,19 @@
 """"""
 
 import socket
-from typing import Any
+from _typeshed import Incomplete
 from typing_extensions import Self
 
 class LDAPException(Exception): ...
 
 class LDAPOperationResult(LDAPException):
     def __new__(cls, result=None, description=None, dn=None, message=None, response_type=None, response=None) -> Self: ...
-    result: Any
-    description: Any
-    dn: Any
-    message: Any
-    type: Any
-    response: Any
+    result: Incomplete
+    description: Incomplete
+    dn: Incomplete
+    message: Incomplete
+    type: Incomplete
+    response: Incomplete
     def __init__(self, result=None, description=None, dn=None, message=None, response_type=None, response=None) -> None: ...
 
 class LDAPOperationsErrorResult(LDAPOperationResult): ...
@@ -65,7 +65,7 @@ class LDAPAssertionFailedResult(LDAPOperationResult): ...
 class LDAPAuthorizationDeniedResult(LDAPOperationResult): ...
 class LDAPESyncRefreshRequiredResult(LDAPOperationResult): ...
 
-exception_table: Any
+exception_table: Incomplete
 
 class LDAPExceptionError(LDAPException): ...
 class LDAPConfigurationError(LDAPExceptionError): ...

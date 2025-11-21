@@ -1,8 +1,6 @@
-""""""
+from _typeshed import Incomplete
 
-from typing import Any
-
-change_table: Any
+change_table: Incomplete
 
 def modify_operation(dn, changes, auto_encode, schema=None, validator=None, check_names: bool = False): ...
 def modify_request_to_dict(request): ...

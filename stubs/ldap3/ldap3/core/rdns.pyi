@@ -1,14 +1,12 @@
-"""Utilities and constants related to reverse dns lookup """
-
-from typing import Any
+from _typeshed import Incomplete
 
 class ReverseDnsSetting:
-    OFF: Any
-    REQUIRE_RESOLVE_ALL_ADDRESSES: Any
-    REQUIRE_RESOLVE_IP_ADDRESSES_ONLY: Any
-    OPTIONAL_RESOLVE_ALL_ADDRESSES: Any
-    OPTIONAL_RESOLVE_IP_ADDRESSES_ONLY: Any
-    SUPPORTED_VALUES: Any
+    OFF: Incomplete
+    REQUIRE_RESOLVE_ALL_ADDRESSES: Incomplete
+    REQUIRE_RESOLVE_IP_ADDRESSES_ONLY: Incomplete
+    OPTIONAL_RESOLVE_ALL_ADDRESSES: Incomplete
+    OPTIONAL_RESOLVE_IP_ADDRESSES_ONLY: Incomplete
+    SUPPORTED_VALUES: Incomplete
 
 def get_hostname_by_addr(addr, success_required: bool = True):
     """

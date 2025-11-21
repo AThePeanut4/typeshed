@@ -1,14 +1,5 @@
-"""
-pygments.formatters.svg
-~~~~~~~~~~~~~~~~~~~~~~~
-
-Formatter for SVG output.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any, TypeVar
+from _typeshed import Incomplete
+from typing import TypeVar
 
 from pygments.formatter import Formatter
 
@@ -75,24 +66,17 @@ class SvgFormatter(Formatter[_T]):
         and defaults to ``True``.
     """
     name: str
-    aliases: Any
-    filenames: Any
-    nowrap: Any
-    fontfamily: Any
-    fontsize: Any
-    xoffset: Any
-    yoffset: Any
-    ystep: Any
-    spacehack: Any
-    linenos: Any
-    linenostart: Any
-    linenostep: Any
-    linenowidth: Any
-    def format_unencoded(self, tokensource, outfile) -> None:
-        """
-        Format ``tokensource``, an iterable of ``(tokentype, tokenstring)``
-        tuples and write it into ``outfile``.
-
-        For our implementation we put all lines in their own 'line group'.
-        """
-        ...
+    aliases: Incomplete
+    filenames: Incomplete
+    nowrap: Incomplete
+    fontfamily: Incomplete
+    fontsize: Incomplete
+    xoffset: Incomplete
+    yoffset: Incomplete
+    ystep: Incomplete
+    spacehack: Incomplete
+    linenos: Incomplete
+    linenostart: Incomplete
+    linenostep: Incomplete
+    linenowidth: Incomplete
+    def format_unencoded(self, tokensource, outfile) -> None: ...

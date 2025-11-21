@@ -1,14 +1,5 @@
-"""
-pygments.formatters.img
-~~~~~~~~~~~~~~~~~~~~~~~
-
-Formatter for Pixmap output.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any, TypeVar
+from _typeshed import Incomplete
+from typing import TypeVar
 
 from pygments.formatter import Formatter
 
@@ -22,11 +13,10 @@ class FontNotFound(Exception):
     ...
 
 class FontManager:
-    """Manages a set of fonts: normal, italic, bold, etc..."""
-    font_name: Any
-    font_size: Any
-    fonts: Any
-    encoding: Any
+    font_name: Incomplete
+    font_size: Incomplete
+    fonts: Incomplete
+    encoding: Incomplete
     variable: bool
     def __init__(self, font_name, font_size: int = 14) -> None: ...
     def get_char_size(self):
@@ -156,31 +146,31 @@ class ImageFormatter(Formatter[_T]):
         Default: highlight color of the selected style
     """
     name: str
-    aliases: Any
-    filenames: Any
+    aliases: Incomplete
+    filenames: Incomplete
     unicodeoutput: bool
     default_image_format: str
     encoding: str
-    styles: Any
+    styles: Incomplete
     background_color: str
-    image_format: Any
-    image_pad: Any
-    line_pad: Any
-    fonts: Any
-    line_number_fg: Any
-    line_number_bg: Any
-    line_number_chars: Any
-    line_number_bold: Any
-    line_number_italic: Any
-    line_number_pad: Any
-    line_numbers: Any
-    line_number_separator: Any
-    line_number_step: Any
-    line_number_start: Any
-    line_number_width: Any
-    hl_lines: Any
-    hl_color: Any
-    drawables: Any
+    image_format: Incomplete
+    image_pad: Incomplete
+    line_pad: Incomplete
+    fonts: Incomplete
+    line_number_fg: Incomplete
+    line_number_bg: Incomplete
+    line_number_chars: Incomplete
+    line_number_bold: Incomplete
+    line_number_italic: Incomplete
+    line_number_pad: Incomplete
+    line_numbers: Incomplete
+    line_number_separator: Incomplete
+    line_number_step: Incomplete
+    line_number_start: Incomplete
+    line_number_width: Incomplete
+    hl_lines: Incomplete
+    hl_color: Incomplete
+    drawables: Incomplete
     def get_style_defs(self, arg: str = "") -> None: ...
     def format(self, tokensource, outfile) -> None:
         """
@@ -200,8 +190,8 @@ class GifImageFormatter(ImageFormatter[_T]):
     .. versionadded:: 1.0
     """
     name: str
-    aliases: Any
-    filenames: Any
+    aliases: Incomplete
+    filenames: Incomplete
     default_image_format: str
 
 class JpgImageFormatter(ImageFormatter[_T]):
@@ -212,8 +202,8 @@ class JpgImageFormatter(ImageFormatter[_T]):
     .. versionadded:: 1.0
     """
     name: str
-    aliases: Any
-    filenames: Any
+    aliases: Incomplete
+    filenames: Incomplete
     default_image_format: str
 
 class BmpImageFormatter(ImageFormatter[_T]):
@@ -224,6 +214,6 @@ class BmpImageFormatter(ImageFormatter[_T]):
     .. versionadded:: 1.0
     """
     name: str
-    aliases: Any
-    filenames: Any
+    aliases: Incomplete
+    filenames: Incomplete
     default_image_format: str

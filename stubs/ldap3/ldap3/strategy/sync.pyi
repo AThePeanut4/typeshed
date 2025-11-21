@@ -1,10 +1,8 @@
-""""""
-
-from typing import Any
+from _typeshed import Incomplete
 
 from ..strategy.base import BaseStrategy
 
-LDAP_MESSAGE_TEMPLATE: Any
+LDAP_MESSAGE_TEMPLATE: Incomplete
 
 class SyncStrategy(BaseStrategy):
     """
@@ -17,7 +15,7 @@ class SyncStrategy(BaseStrategy):
     no_real_dsa: bool
     pooled: bool
     can_stream: bool
-    socket_size: Any
+    socket_size: Incomplete
     def __init__(self, ldap_connection) -> None: ...
     def open(self, reset_usage: bool = True, read_server_info: bool = True) -> None: ...
     def receiving(self):

@@ -1,7 +1,5 @@
-""""""
-
+from _typeshed import Incomplete
 from threading import Thread
-from typing import Any
 
 from ..strategy.base import BaseStrategy
 
@@ -16,9 +14,8 @@ class AsyncStrategy(BaseStrategy):
     Response appear in strategy._responses dictionary
     """
     class ReceiverSocketThread(Thread):
-        """The thread that actually manage the receiver socket"""
-        connection: Any
-        socket_size: Any
+        connection: Incomplete
+        socket_size: Incomplete
         def __init__(self, ldap_connection) -> None: ...
         def run(self) -> None:
             """
@@ -31,9 +28,9 @@ class AsyncStrategy(BaseStrategy):
     no_real_dsa: bool
     pooled: bool
     can_stream: bool
-    receiver: Any
-    async_lock: Any
-    event_lock: Any
+    receiver: Incomplete
+    async_lock: Incomplete
+    event_lock: Incomplete
     def __init__(self, ldap_connection) -> None: ...
     def open(self, reset_usage: bool = True, read_server_info: bool = True) -> None:
         """Open connection and start listen on the socket in a different thread"""

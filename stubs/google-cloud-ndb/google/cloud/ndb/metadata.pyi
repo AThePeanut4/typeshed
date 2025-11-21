@@ -26,7 +26,6 @@ A simplified API is also offered:
 """
 
 from _typeshed import Incomplete
-from typing import Any
 
 from google.cloud.ndb import model
 
@@ -126,15 +125,8 @@ class Property(_BaseMetadata):
         """
         ...
     @property
-    def kind_name(self):
-        """
-        Return the kind name specified by this entity's key.
-
-        Returns:
-            str: the kind name.
-        """
-        ...
-    property_representation: Any
+    def kind_name(self): ...
+    property_representation: Incomplete
     @classmethod
     def key_for_kind(cls, kind):
         """

@@ -1,6 +1,4 @@
-""""""
-
-from typing import Any
+from _typeshed import Incomplete
 
 from .asynchronous import AsyncStrategy
 from .mockBase import MockBaseStrategy
@@ -12,6 +10,6 @@ class MockAsyncStrategy(MockBaseStrategy, AsyncStrategy):
     """
     def __init__(self, ldap_connection) -> None: ...
     def post_send_search(self, payload): ...
-    bound: Any
+    bound: Incomplete
     def post_send_single_response(self, payload): ...
     def get_response(self, message_id, timeout=None, get_request: bool = False): ...

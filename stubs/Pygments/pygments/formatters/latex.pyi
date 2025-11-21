@@ -1,14 +1,5 @@
-"""
-pygments.formatters.latex
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Formatter for LaTeX fancyvrb output.
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any, TypeVar
+from _typeshed import Incomplete
+from typing import TypeVar
 
 from pygments.formatter import Formatter
 from pygments.lexer import Lexer
@@ -121,43 +112,28 @@ class LatexFormatter(Formatter[_T]):
         .. versionadded:: 2.0
     """
     name: str
-    aliases: Any
-    filenames: Any
-    docclass: Any
-    preamble: Any
-    linenos: Any
-    linenostart: Any
-    linenostep: Any
-    verboptions: Any
-    nobackground: Any
-    commandprefix: Any
-    texcomments: Any
-    mathescape: Any
-    escapeinside: Any
-    left: Any
-    right: Any
-    envname: Any
-    def get_style_defs(self, arg: str = ""):
-        """
-        Return the command sequences needed to define the commands
-        used to format text in the verbatim environment. ``arg`` is ignored.
-        """
-        ...
+    aliases: Incomplete
+    filenames: Incomplete
+    docclass: Incomplete
+    preamble: Incomplete
+    linenos: Incomplete
+    linenostart: Incomplete
+    linenostep: Incomplete
+    verboptions: Incomplete
+    nobackground: Incomplete
+    commandprefix: Incomplete
+    texcomments: Incomplete
+    mathescape: Incomplete
+    escapeinside: Incomplete
+    left: Incomplete
+    right: Incomplete
+    envname: Incomplete
+    def get_style_defs(self, arg: str = ""): ...
     def format_unencoded(self, tokensource, outfile) -> None: ...
 
 class LatexEmbeddedLexer(Lexer):
-    """
-    This lexer takes one lexer as argument, the lexer for the language
-    being formatted, and the left and right delimiters for escaped text.
-
-    First everything is scanned using the language lexer to obtain
-    strings and comments. All other consecutive tokens are merged and
-    the resulting text is scanned for escaped segments, which are given
-    the Token.Escape type. Finally text that is not escaped is scanned
-    again with the language lexer.
-    """
-    left: Any
-    right: Any
-    lang: Any
+    left: Incomplete
+    right: Incomplete
+    lang: Incomplete
     def __init__(self, left, right, lang, **options) -> None: ...
     def get_tokens_unprocessed(self, text): ...

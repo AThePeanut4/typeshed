@@ -1,14 +1,5 @@
-"""
-pygments.formatters.irc
-~~~~~~~~~~~~~~~~~~~~~~~
-
-Formatter for IRC output
-
-:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
-:license: BSD, see LICENSE for details.
-"""
-
-from typing import Any, TypeVar
+from _typeshed import Incomplete
+from typing import TypeVar
 
 from pygments.formatter import Formatter
 
@@ -36,9 +27,9 @@ class IRCFormatter(Formatter[_T]):
         (default: ``False`` = no line numbers).
     """
     name: str
-    aliases: Any
-    filenames: Any
-    darkbg: Any
-    colorscheme: Any
-    linenos: Any
+    aliases: Incomplete
+    filenames: Incomplete
+    darkbg: Incomplete
+    colorscheme: Incomplete
+    linenos: Incomplete
     def format_unencoded(self, tokensource, outfile) -> None: ...

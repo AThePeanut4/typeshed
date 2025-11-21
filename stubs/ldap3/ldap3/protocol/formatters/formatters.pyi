@@ -1,6 +1,4 @@
-""""""
-
-from typing import Any
+from _typeshed import Incomplete
 
 def format_unicode(raw_value): ...
 def format_integer(raw_value): ...
@@ -16,7 +14,7 @@ def format_ad_timestamp(raw_value):
     """
     ...
 
-time_format: Any
+time_format: Incomplete
 
 def format_time(raw_value): ...
 def format_ad_timedelta(raw_value):
