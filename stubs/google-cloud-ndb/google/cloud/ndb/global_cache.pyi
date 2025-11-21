@@ -7,6 +7,42 @@ from typing_extensions import Self
 ConnectionError: Incomplete
 
 class GlobalCache(metaclass=abc.ABCMeta):
+    """
+    Abstract base class for a global entity cache.
+
+    A global entity cache is shared across contexts, sessions, and possibly
+    even servers. A concrete implementation is available which uses Redis.
+
+    Essentially, this class models a simple key/value store where keys and
+    values are arbitrary ``bytes`` instances. "Compare and swap", aka
+    "optimistic transactions" should also be supported.
+
+    Concrete implementations can either by synchronous or asynchronous.
+    Asynchronous implementations should return
+    :class:`~google.cloud.ndb.tasklets.Future` instances whose eventual results
+    match the return value described for each method. Because coordinating with
+    the single threaded event model used by ``NDB`` can be tricky with remote
+    services, it's not recommended that casual users write asynchronous
+    implementations, as some specialized knowledge is required.
+
+    Attributes:
+        strict_read (bool): If :data:`False`, transient errors that occur as part of a
+            entity lookup operation will be logged as warnings but not raised to the
+            application layer. If :data:`True`, in the event of transient errors, cache
+            operations will be retried a number of times before eventually raising the
+            transient error to the application layer, if it does not resolve after
+            retrying. Setting this to :data:`True` will cause NDB operations to take
+            longer to complete if there are transient errors in the cache layer.
+        strict_write (bool): If :data:`False`, transient errors that occur as part of
+            a put or delete operation will be logged as warnings, but not raised to the
+            application layer. If :data:`True`, in the event of transient errors, cache
+            operations will be retried a number of times before eventually raising the
+            transient error to the application layer if it does not resolve after
+            retrying. Setting this to :data:`False` somewhat increases the risk
+            that other clients might read stale data from the cache. Setting this to
+            :data:`True` will cause NDB operations to take longer to complete if there
+            are transient errors in the cache layer.
+    """
     __metaclass__: Incomplete
     transient_errors: Incomplete
     strict_read: bool
@@ -105,6 +141,13 @@ class GlobalCache(metaclass=abc.ABCMeta):
         ...
 
 class _InProcessGlobalCache(GlobalCache):
+    """
+    Reference implementation of :class:`GlobalCache`.
+
+    Not intended for production use. Uses a single process wide dictionary to
+    keep an in memory cache. For use in testing and to have an easily grokkable
+    reference implementation. Thread safety is potentially a little sketchy.
+    """
     cache: Incomplete
     def __init__(self) -> None: ...
     def get(self, keys):
@@ -130,9 +173,76 @@ class _InProcessGlobalCache(GlobalCache):
         ...
 
 class RedisCache(GlobalCache):
+    """
+    Redis implementation of the :class:`GlobalCache`.
+
+    This is a synchronous implementation. The idea is that calls to Redis
+    should be fast enough not to warrant the added complexity of an
+    asynchronous implementation.
+
+    Args:
+        redis (redis.Redis): Instance of Redis client to use.
+        strict_read (bool): If :data:`False`, connection errors during read operations
+            will be logged with a warning and treated as cache misses, but will not
+            raise an exception in the application, with connection errors during reads
+            being treated as cache misses. If :data:`True`, in the event of connection
+            errors, cache operations will be retried a number of times before eventually
+            raising the connection error to the application layer, if it does not
+            resolve after retrying. Setting this to :data:`True` will cause NDB
+            operations to take longer to complete if there are transient errors in the
+            cache layer. Default: :data:`False`.
+        strict_write (bool): If :data:`False`, connection errors during write
+            operations will be logged with a warning, but will not raise an exception in
+            the application. If :data:`True`, connection errors during write will be
+            raised as exceptions in the application. Because write operations involve
+            cache invalidation, setting this to :data:`False` may allow other clients to
+            retrieve stale data from the cache. If :data:`True`, in the event of
+            connection errors, cache operations will be retried a number of times before
+            eventually raising the connection error to the application layer, if it does
+            not resolve after retrying. Setting this to :data:`True` will cause NDB
+            operations to take longer to complete if there are transient errors in the
+            cache layer. Default: :data:`True`.
+    """
     transient_errors: Incomplete
     @classmethod
-    def from_environment(cls, strict_read: bool = ..., strict_write: bool = ...) -> Self: ...
+    def from_environment(cls, strict_read: bool = ..., strict_write: bool = ...) -> Self:
+        """
+        Generate a class:`RedisCache` from an environment variable.
+
+        This class method looks for the ``REDIS_CACHE_URL`` environment
+        variable and, if it is set, passes its value to ``Redis.from_url`` to
+        construct a ``Redis`` instance which is then used to instantiate a
+        ``RedisCache`` instance.
+
+        Args:
+            strict_read (bool): If :data:`False`, connection errors during read
+                operations will be logged with a warning and treated as cache misses,
+                but will not raise an exception in the application, with connection
+                errors during reads being treated as cache misses. If :data:`True`, in
+                the event of connection errors, cache operations will be retried a
+                number of times before eventually raising the connection error to the
+                application layer, if it does not resolve after retrying. Setting this
+                to :data:`True` will cause NDB operations to take longer to complete if
+                there are transient errors in the cache layer. Default: :data:`False`.
+            strict_write (bool): If :data:`False`, connection errors during write
+                operations will be logged with a warning, but will not raise an
+                exception in the application. If :data:`True`, connection errors during
+                write will be raised as exceptions in the application. Because write
+                operations involve cache invalidation, setting this to :data:`False` may
+                allow other clients to retrieve stale data from the cache. If
+                :data:`True`, in the event of connection errors, cache operations will
+                be retried a number of times before eventually raising the connection
+                error to the application layer, if it does not resolve after retrying.
+                Setting this to :data:`True` will cause NDB operations to take longer to
+                complete if there are transient errors in the cache layer.  Default:
+                :data:`True`.
+
+        Returns:
+            Optional[RedisCache]: A :class:`RedisCache` instance or
+                :data:`None`, if ``REDIS_CACHE_URL`` is not set in the
+                environment.
+        """
+        ...
     redis: Incomplete
     strict_read: Incomplete
     strict_write: Incomplete
@@ -199,7 +309,49 @@ class MemcacheCache(GlobalCache):
 
     transient_errors: Incomplete
     @classmethod
-    def from_environment(cls, max_pool_size: int = ..., strict_read: bool = ..., strict_write: bool = ...) -> Self: ...
+    def from_environment(cls, max_pool_size: int = ..., strict_read: bool = ..., strict_write: bool = ...) -> Self:
+        """
+        Generate a ``pymemcache.Client`` from an environment variable.
+
+        This class method looks for the ``MEMCACHED_HOSTS`` environment
+        variable and, if it is set, parses the value as a space delimited list of
+        hostnames, optionally with ports. For example:
+
+            "localhost"
+            "localhost:11211"
+            "1.1.1.1:11211 2.2.2.2:11211 3.3.3.3:11211"
+
+        Args:
+            max_pool_size (int): Size of connection pool to be used by client. If set to
+                ``0`` or ``1``, connection pooling will not be used. Default: ``4``
+            strict_read (bool): If :data:`False`, connection errors during read
+                operations will be logged with a warning and treated as cache misses,
+                but will not raise an exception in the application, with connection
+                errors during reads being treated as cache misses. If :data:`True`, in
+                the event of connection errors, cache operations will be retried a
+                number of times before eventually raising the connection error to the
+                application layer, if it does not resolve after retrying. Setting this
+                to :data:`True` will cause NDB operations to take longer to complete if
+                there are transient errors in the cache layer. Default: :data:`False`.
+            strict_write (bool): If :data:`False`, connection errors during write
+                operations will be logged with a warning, but will not raise an
+                exception in the application. If :data:`True`, connection errors during
+                write will be raised as exceptions in the application. Because write
+                operations involve cache invalidation, setting this to :data:`False` may
+                allow other clients to retrieve stale data from the cache. If
+                :data:`True`, in the event of connection errors, cache operations will
+                be retried a number of times before eventually raising the connection
+                error to the application layer, if it does not resolve after retrying.
+                Setting this to :data:`True` will cause NDB operations to take longer to
+                complete if there are transient errors in the cache layer. Default:
+                :data:`True`.
+
+        Returns:
+            Optional[MemcacheCache]: A :class:`MemcacheCache` instance or
+                :data:`None`, if ``MEMCACHED_HOSTS`` is not set in the
+                environment.
+        """
+        ...
     client: Incomplete
     strict_read: Incomplete
     strict_write: Incomplete

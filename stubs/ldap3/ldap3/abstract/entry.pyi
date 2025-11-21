@@ -1,6 +1,13 @@
+""""""
+
 from _typeshed import Incomplete
 
 class EntryState:
+    """
+    Contains data on the status of the entry. Does not pollute the Entry __dict__.
+
+    
+    """
     dn: Incomplete
     status: Incomplete
     attributes: Incomplete

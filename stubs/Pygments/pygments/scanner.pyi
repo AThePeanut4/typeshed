@@ -1,3 +1,20 @@
+"""
+pygments.scanner
+~~~~~~~~~~~~~~~~
+
+This library implements a regex based scanner. Some languages
+like Pascal are easy to parse but have some keywords that
+depend on the context. Because of this it's impossible to lex
+that just by using a regular expression lexer like the
+`RegexLexer`.
+
+Have a look at the `DelphiLexer` to get an idea of how to use
+this scanner.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 
 class EndOfText(RuntimeError):
@@ -8,6 +25,12 @@ class EndOfText(RuntimeError):
     ...
 
 class Scanner:
+    """
+    Simple scanner
+
+    All method patterns are regular expression strings (not
+    compiled expressions!)
+    """
     data: Incomplete
     data_length: Incomplete
     start_pos: int
@@ -15,7 +38,12 @@ class Scanner:
     flags: Incomplete
     last: Incomplete
     match: Incomplete
-    def __init__(self, text, flags: int = 0) -> None: ...
+    def __init__(self, text, flags: int = 0) -> None:
+        """
+        :param text:    The text which should be scanned
+        :param flags:   default regular expression flags
+        """
+        ...
     @property
     def eos(self):
         """`True` if the scanner reached the end of text."""

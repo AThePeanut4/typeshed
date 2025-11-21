@@ -1,3 +1,13 @@
+"""
+pygments.formatters.img
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Formatter for Pixmap output.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 from typing import TypeVar
 
@@ -13,6 +23,7 @@ class FontNotFound(Exception):
     ...
 
 class FontManager:
+    """Manages a set of fonts: normal, italic, bold, etc..."""
     font_name: Incomplete
     font_size: Incomplete
     fonts: Incomplete

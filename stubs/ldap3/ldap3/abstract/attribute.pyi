@@ -1,6 +1,16 @@
+""""""
+
 from _typeshed import Incomplete
 
 class Attribute:
+    """
+    Attribute/values object, it includes the search result (after post_query transformation) of each attribute in an entry
+
+    Attribute object is read only
+
+    - values: contain the processed attribute values
+    - raw_values': contain the unprocessed attribute values
+    """
     key: Incomplete
     definition: Incomplete
     values: Incomplete

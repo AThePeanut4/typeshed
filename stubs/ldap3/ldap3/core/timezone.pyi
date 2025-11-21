@@ -1,7 +1,10 @@
+""""""
+
 from _typeshed import Incomplete
 from datetime import tzinfo
 
 class OffsetTzInfo(tzinfo):
+    """Fixed offset in minutes east from UTC"""
     offset: Incomplete
     name: Incomplete
     def __init__(self, offset, name) -> None: ...

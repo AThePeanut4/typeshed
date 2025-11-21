@@ -38,6 +38,12 @@ def logging_debug(log, message, *args, **kwargs) -> None:
     ...
 
 class keyword_only:
+    """
+    A decorator to get some of the functionality of keyword-only arguments
+    from Python 3. It takes allowed keyword args and default values as
+    parameters. Raises TypeError if a keyword argument not included in those
+    parameters is passed in.
+    """
     defaults: Incomplete
     def __init__(self, **kwargs) -> None: ...
     def __call__(self, wrapped): ...

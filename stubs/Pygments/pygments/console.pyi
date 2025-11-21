@@ -1,3 +1,13 @@
+"""
+pygments.console
+~~~~~~~~~~~~~~~~
+
+Format colored console output.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 
 esc: str

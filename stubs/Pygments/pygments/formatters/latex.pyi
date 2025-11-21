@@ -1,3 +1,13 @@
+"""
+pygments.formatters.latex
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Formatter for LaTeX fancyvrb output.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 from typing import TypeVar
 
@@ -128,10 +138,25 @@ class LatexFormatter(Formatter[_T]):
     left: Incomplete
     right: Incomplete
     envname: Incomplete
-    def get_style_defs(self, arg: str = ""): ...
+    def get_style_defs(self, arg: str = ""):
+        """
+        Return the command sequences needed to define the commands
+        used to format text in the verbatim environment. ``arg`` is ignored.
+        """
+        ...
     def format_unencoded(self, tokensource, outfile) -> None: ...
 
 class LatexEmbeddedLexer(Lexer):
+    """
+    This lexer takes one lexer as argument, the lexer for the language
+    being formatted, and the left and right delimiters for escaped text.
+
+    First everything is scanned using the language lexer to obtain
+    strings and comments. All other consecutive tokens are merged and
+    the resulting text is scanned for escaped segments, which are given
+    the Token.Escape type. Finally text that is not escaped is scanned
+    again with the language lexer.
+    """
     left: Incomplete
     right: Incomplete
     lang: Incomplete

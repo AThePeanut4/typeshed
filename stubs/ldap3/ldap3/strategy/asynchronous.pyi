@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 from threading import Thread
 
@@ -14,6 +16,7 @@ class AsyncStrategy(BaseStrategy):
     Response appear in strategy._responses dictionary
     """
     class ReceiverSocketThread(Thread):
+        """The thread that actually manage the receiver socket"""
         connection: Incomplete
         socket_size: Incomplete
         def __init__(self, ldap_connection) -> None: ...

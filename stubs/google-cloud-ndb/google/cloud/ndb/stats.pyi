@@ -1,3 +1,10 @@
+"""
+Models for accessing datastore usage statistics.
+
+These entities cannot be created by users, but are populated in the
+application's datastore by offline processes run by the Google Cloud team.
+"""
+
 from _typeshed import Incomplete
 
 from google.cloud.ndb import model

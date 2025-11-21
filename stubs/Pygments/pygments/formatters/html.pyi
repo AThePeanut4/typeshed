@@ -1,3 +1,13 @@
+"""
+pygments.formatters.html
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Formatter for HTML output.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 from typing import TypeVar
 
@@ -325,7 +335,13 @@ class HtmlFormatter(Formatter[_T]):
     linespans: Incomplete
     anchorlinenos: Incomplete
     hl_lines: Incomplete
-    def get_style_defs(self, arg=None): ...
+    def get_style_defs(self, arg=None):
+        """
+        Return CSS style definitions for the classes produced by the current
+        highlighting style. ``arg`` can be a string or list of selectors to
+        insert before the token type classes.
+        """
+        ...
     def get_token_style_defs(self, arg=None): ...
     def get_background_style_defs(self, arg=None): ...
     def get_linenos_style_defs(self): ...

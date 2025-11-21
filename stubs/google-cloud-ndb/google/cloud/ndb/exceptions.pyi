@@ -1,3 +1,11 @@
+"""
+Classes representing legacy Google App Engine exceptions.
+
+Unless otherwise noted, these are meant to act as shims for the exception
+types defined in the ``google.appengine.api.datastore_errors`` module in
+legacy Google App Engine runtime.
+"""
+
 from _typeshed import Incomplete
 
 class Error(Exception):
@@ -48,6 +56,12 @@ class BadQueryError(Error):
     ...
 
 class BadFilterError(Error):
+    """
+    Indicates a filter value is invalid.
+
+    Raised by ``Query.__setitem__()`` and ``Query.Run()`` when a filter string
+    is invalid.
+    """
     filter: Incomplete
     def __init__(self, filter) -> None: ...
 

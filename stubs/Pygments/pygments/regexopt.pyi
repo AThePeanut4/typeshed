@@ -1,3 +1,14 @@
+"""
+pygments.regexopt
+~~~~~~~~~~~~~~~~~
+
+An algorithm that generates optimized regexes for matching long lists of
+literal strings.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 
 CS_ESCAPE: Incomplete

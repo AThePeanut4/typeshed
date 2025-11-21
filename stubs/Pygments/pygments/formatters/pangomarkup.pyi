@@ -1,3 +1,13 @@
+"""
+pygments.formatters.pangomarkup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Formatter for Pango markup output.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 from typing import TypeVar
 

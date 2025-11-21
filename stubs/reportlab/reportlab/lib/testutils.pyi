@@ -1,3 +1,12 @@
+"""
+Provides support for the test suite.
+
+The test suite as a whole, and individual tests, need to share
+certain support functions.  We have to put these in here so they
+can always be imported, and so that individual tests need to import
+nothing more than "reportlab.whatever..."
+"""
+
 import re
 import unittest
 from _typeshed import Incomplete, StrPath, Unused
@@ -18,16 +27,44 @@ def isWritable(D: Unused) -> Literal[0, 1]: ...
 RL_HOME: str | None
 testsFolder: str | None
 
-def setOutDir(name: str) -> str: ...
+def setOutDir(name: str) -> str:
+    """
+    Is it a writable file system distro being invoked within
+    test directory?  If so, can write test output here.  If not,
+    it had better go in a temp directory.  Only do this once per
+    process
+    """
+    ...
 def mockUrlRead(name: str): ...
-def outputfile(fn: StrPath | None) -> str: ...
+def outputfile(fn: StrPath | None) -> str:
+    """
+    This works out where to write test output.  If running
+    code in a locked down file system, this will be a
+    temp directory; otherwise, the output of 'test_foo.py' will
+    normally be a file called 'test_foo.pdf', next door.
+    """
+    ...
 def printLocation(depth: int = 1) -> None: ...
-def makeSuiteForClasses(*classes: type[unittest.TestCase], testMethodPrefix: str | None = None) -> unittest.TestSuite: ...
-def getCVSEntries(folder: StrPath, files: bool | Literal[1, 0] = 1, folders: bool | Literal[1, 0] = 0) -> list[str]: ...
+def makeSuiteForClasses(*classes: type[unittest.TestCase], testMethodPrefix: str | None = None) -> unittest.TestSuite:
+    """Return a test suite with tests loaded from provided classes."""
+    ...
+def getCVSEntries(folder: StrPath, files: bool | Literal[1, 0] = 1, folders: bool | Literal[1, 0] = 0) -> list[str]:
+    """
+    Returns a list of filenames as listed in the CVS/Entries file.
+
+    'folder' is the folder that should contain the CVS subfolder.
+    If there is no such subfolder an empty list is returned.
+    'files' is a boolean; 1 and 0 means to return files or not.
+    'folders' is a boolean; 1 and 0 means to return folders or not.
+    """
+    ...
 
 class ExtConfigParser(ConfigParser):
+    """A slightly extended version to return lists of strings."""
     pat: re.Pattern[str]
-    def getstringlist(self, section: _SectionName, option: str): ...
+    def getstringlist(self, section: _SectionName, option: str):
+        """Coerce option to a list of strings or return unchanged if that fails."""
+        ...
 
 class GlobDirectoryWalker:
     """A forward iterator that traverses files in a directory tree."""
@@ -38,7 +75,9 @@ class GlobDirectoryWalker:
     directory: str
     def __init__(self, directory: str, pattern: str = "*") -> None: ...
     def __getitem__(self, index) -> str | None: ...
-    def filterFiles(self, folder, files): ...
+    def filterFiles(self, folder, files):
+        """Filter hook, overwrite in subclasses as needed."""
+        ...
 
 class RestrictedGlobDirectoryWalker(GlobDirectoryWalker):
     """An restricted directory tree iterator."""

@@ -53,6 +53,16 @@ class _GlobalCacheBatch:
 global_get: Incomplete
 
 class _GlobalCacheGetBatch(_GlobalCacheBatch):
+    """
+    Batch for global cache get requests.
+
+    Attributes:
+        todo (Dict[bytes, List[Future]]): Mapping of keys to futures that are
+            waiting on them.
+
+    Arguments:
+        ignore_options (Any): Ignored.
+    """
     todo: Incomplete
     keys: Incomplete
     def __init__(self, ignore_options) -> None: ...
@@ -100,6 +110,7 @@ def global_set(key, value, expires: Incomplete | None = ..., read: bool = ...):
     ...
 
 class _GlobalCacheSetBatch(_GlobalCacheBatch):
+    """Batch for global cache set requests."""
     expires: Incomplete
     todo: object
     futures: object
@@ -160,6 +171,7 @@ class _GlobalCacheSetIfNotExistsBatch(_GlobalCacheSetBatch):
 global_delete: Incomplete
 
 class _GlobalCacheDeleteBatch(_GlobalCacheBatch):
+    """Batch for global cache delete requests."""
     keys: Incomplete
     futures: Incomplete
     def __init__(self, ignore_options) -> None: ...

@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 
 algorithms_table: Incomplete

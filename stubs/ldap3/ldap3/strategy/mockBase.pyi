@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 
 SEARCH_CONTROLS: Incomplete
@@ -15,6 +17,7 @@ class PagedSearchSet:
     def next(self, size=None): ...
 
 class MockBaseStrategy:
+    """Base class for connection strategy"""
     entries: Incomplete
     no_real_dsa: bool
     bound: Incomplete

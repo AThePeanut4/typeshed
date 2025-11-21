@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 
 unix_socket_available: bool
@@ -6,6 +8,7 @@ TRANSACTION_ERROR: str
 RESPONSE_COMPLETE: str
 
 class BaseStrategy:
+    """Base class for connection strategy"""
     connection: Incomplete
     sync: Incomplete
     no_real_dsa: Incomplete

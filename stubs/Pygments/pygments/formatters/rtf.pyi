@@ -1,3 +1,13 @@
+"""
+pygments.formatters.rtf
+~~~~~~~~~~~~~~~~~~~~~~~
+
+A formatter that generates RTF files.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 from typing import TypeVar
 

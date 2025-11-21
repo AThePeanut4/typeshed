@@ -1,3 +1,5 @@
+""""""
+
 from _typeshed import Incomplete
 from threading import Thread
 
@@ -10,6 +12,15 @@ BOGUS_EXTENDED: int
 BOGUS_ABANDON: int
 
 class ReusableStrategy(BaseStrategy):
+    """
+    A pool of reusable SyncWaitRestartable connections with lazy behaviour and limited lifetime.
+    The connection using this strategy presents itself as a normal connection, but internally the strategy has a pool of
+    connections that can be used as needed. Each connection lives in its own thread and has a busy/available status.
+    The strategy performs the requested operation on the first available connection.
+    The pool of connections is instantiated at strategy initialization.
+    Strategy has two customizable properties, the total number of connections in the pool and the lifetime of each connection.
+    When lifetime is expired the connection is closed and will be open again when needed.
+    """
     pools: Incomplete
     def receiving(self) -> None: ...
     def get_stream(self) -> None: ...
@@ -52,6 +63,7 @@ class ReusableStrategy(BaseStrategy):
         def run(self) -> None: ...
 
     class PooledConnectionWorker:
+        """Container for the restartable connection. it includes a thread and a lock to execute the connection in the pool"""
         master_connection: Incomplete
         request_queue: Incomplete
         running: bool

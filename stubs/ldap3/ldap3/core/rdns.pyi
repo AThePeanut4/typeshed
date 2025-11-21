@@ -1,3 +1,5 @@
+"""Utilities and constants related to reverse dns lookup """
+
 from _typeshed import Incomplete
 
 class ReverseDnsSetting:

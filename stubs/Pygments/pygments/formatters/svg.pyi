@@ -1,3 +1,13 @@
+"""
+pygments.formatters.svg
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Formatter for SVG output.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from _typeshed import Incomplete
 from typing import TypeVar
 
@@ -79,4 +89,11 @@ class SvgFormatter(Formatter[_T]):
     linenostart: Incomplete
     linenostep: Incomplete
     linenowidth: Incomplete
-    def format_unencoded(self, tokensource, outfile) -> None: ...
+    def format_unencoded(self, tokensource, outfile) -> None:
+        """
+        Format ``tokensource``, an iterable of ``(tokentype, tokenstring)``
+        tuples and write it into ``outfile``.
+
+        For our implementation we put all lines in their own 'line group'.
+        """
+        ...
