@@ -429,58 +429,13 @@ class Condition:
     ) -> None: ...
     def acquire(self, blocking: bool = True, timeout: float = -1) -> bool: ...
     def release(self) -> None: ...
-    def wait(self, timeout: float | None = None) -> bool:
-        """
-        Wait until notified or until a timeout occurs.
+    if sys.version_info >= (3, 14):
+        def locked(self) -> bool: ...
 
-        If the calling thread has not acquired the lock when this method is
-        called, a RuntimeError is raised.
-
-        This method releases the underlying lock, and then blocks until it is
-        awakened by a notify() or notify_all() call for the same condition
-        variable in another thread, or until the optional timeout occurs. Once
-        awakened or timed out, it re-acquires the lock and returns.
-
-        When the timeout argument is present and not None, it should be a
-        floating-point number specifying a timeout for the operation in seconds
-        (or fractions thereof).
-
-        When the underlying lock is an RLock, it is not released using its
-        release() method, since this may not actually unlock the lock when it
-        was acquired multiple times recursively. Instead, an internal interface
-        of the RLock class is used, which really unlocks it even when it has
-        been recursively acquired several times. Another internal interface is
-        then used to restore the recursion level when the lock is reacquired.
-        """
-        ...
-    def wait_for(self, predicate: Callable[[], _T], timeout: float | None = None) -> _T:
-        """
-        Wait until a condition evaluates to True.
-
-        predicate should be a callable which result will be interpreted as a
-        boolean value.  A timeout may be provided giving the maximum time to
-        wait.
-        """
-        ...
-    def notify(self, n: int = 1) -> None:
-        """
-        Wake up one or more threads waiting on this condition, if any.
-
-        If the calling thread has not acquired the lock when this method is
-        called, a RuntimeError is raised.
-
-        This method wakes up at most n of the threads waiting for the condition
-        variable; it is a no-op if no threads are waiting.
-        """
-        ...
-    def notify_all(self) -> None:
-        """
-        Wake up all threads waiting on this condition.
-
-        If the calling thread has not acquired the lock when this method
-        is called, a RuntimeError is raised.
-        """
-        ...
+    def wait(self, timeout: float | None = None) -> bool: ...
+    def wait_for(self, predicate: Callable[[], _T], timeout: float | None = None) -> _T: ...
+    def notify(self, n: int = 1) -> None: ...
+    def notify_all(self) -> None: ...
     @deprecated("Deprecated since Python 3.10. Use `notify_all()` instead.")
     def notifyAll(self) -> None:
         """
