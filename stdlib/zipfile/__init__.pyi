@@ -506,9 +506,29 @@ class ZipInfo:
 
     def __init__(self, filename: str = "NoName", date_time: _DateTuple = (1980, 1, 1, 0, 0, 0)) -> None: ...
     @classmethod
-    def from_file(cls, filename: StrPath, arcname: StrPath | None = None, *, strict_timestamps: bool = True) -> Self: ...
-    def is_dir(self) -> bool: ...
-    def FileHeader(self, zip64: bool | None = None) -> bytes: ...
+    def from_file(cls, filename: StrPath, arcname: StrPath | None = None, *, strict_timestamps: bool = True) -> Self:
+        """
+        Construct an appropriate ZipInfo for a file on the filesystem.
+
+        filename should be the path to a file or directory on the filesystem.
+
+        arcname is the name which it will have within the archive (by default,
+        this will be the same as filename, but without a drive letter and with
+        leading path separators removed).
+        """
+        ...
+    def is_dir(self) -> bool:
+        """Return True if this archive member is a directory."""
+        ...
+    def FileHeader(self, zip64: bool | None = None) -> bytes:
+        """
+        Return the per-file header as a bytes object.
+
+        When the optional zip64 arg is None rather than a bool, we will
+        decide based upon the file_size and compress_size, if known,
+        False otherwise.
+        """
+        ...
     if sys.version_info >= (3, 14):
         def _for_archive(self, archive: ZipFile) -> Self: ...
 

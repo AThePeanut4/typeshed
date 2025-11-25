@@ -307,18 +307,181 @@ class Container(Model):
         since: datetime.datetime | float | None = None,
         follow: bool | None = None,
         until: datetime.datetime | float | None = None,
-    ) -> bytes: ...
-    def pause(self) -> None: ...
-    def put_archive(self, path: str, data) -> bool: ...
-    def remove(self, *, v: bool = False, link: bool = False, force: bool = False) -> None: ...
-    def rename(self, name: str): ...
-    def resize(self, height: int, width: int): ...
-    def restart(self, *, timeout: float | None = 10): ...
-    def start(self) -> None: ...
-    def stats(self, **kwargs): ...
-    def stop(self, *, timeout: float | None = None) -> None: ...
-    def top(self, *, ps_args: str | None = None) -> _TopResult: ...
-    def unpause(self): ...
+    ) -> bytes:
+        """
+        Get logs from this container. Similar to the ``docker logs`` command.
+
+        The ``stream`` parameter makes the ``logs`` function return a blocking
+        generator you can iterate over to retrieve log output as it happens.
+
+        Args:
+            stdout (bool): Get ``STDOUT``. Default ``True``
+            stderr (bool): Get ``STDERR``. Default ``True``
+            stream (bool): Stream the response. Default ``False``
+            timestamps (bool): Show timestamps. Default ``False``
+            tail (str or int): Output specified number of lines at the end of
+                logs. Either an integer of number of lines or the string
+                ``all``. Default ``all``
+            since (datetime, int, or float): Show logs since a given datetime,
+                integer epoch (in seconds) or float (in nanoseconds)
+            follow (bool): Follow log output. Default ``False``
+            until (datetime, int, or float): Show logs that occurred before
+                the given datetime, integer epoch (in seconds), or
+                float (in nanoseconds)
+
+        Returns:
+            (generator of bytes or bytes): Logs from the container.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def pause(self) -> None:
+        """
+        Pauses all processes within this container.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def put_archive(self, path: str, data) -> bool:
+        """
+        Insert a file or folder in this container using a tar archive as
+        source.
+
+        Args:
+            path (str): Path inside the container where the file(s) will be
+                extracted. Must exist.
+            data (bytes or stream): tar data to be extracted
+
+        Returns:
+            (bool): True if the call succeeds.
+
+        Raises:
+            :py:class:`~docker.errors.APIError` If an error occurs.
+        """
+        ...
+    def remove(self, *, v: bool = False, link: bool = False, force: bool = False) -> None:
+        """
+        Remove this container. Similar to the ``docker rm`` command.
+
+        Args:
+            v (bool): Remove the volumes associated with the container
+            link (bool): Remove the specified link and not the underlying
+                container
+            force (bool): Force the removal of a running container (uses
+                ``SIGKILL``)
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def rename(self, name: str):
+        """
+        Rename this container. Similar to the ``docker rename`` command.
+
+        Args:
+            name (str): New name for the container
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def resize(self, height: int, width: int):
+        """
+        Resize the tty session.
+
+        Args:
+            height (int): Height of tty session
+            width (int): Width of tty session
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def restart(self, *, timeout: float | None = 10):
+        """
+        Restart this container. Similar to the ``docker restart`` command.
+
+        Args:
+            timeout (int): Number of seconds to try to stop for before killing
+                the container. Once killed it will then be restarted. Default
+                is 10 seconds.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def start(self) -> None:
+        """
+        Start this container. Similar to the ``docker start`` command, but
+        doesn't support attach options.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def stats(self, **kwargs):
+        """
+        Stream statistics for this container. Similar to the
+        ``docker stats`` command.
+
+        Args:
+            decode (bool): If set to true, stream will be decoded into dicts
+                on the fly. Only applicable if ``stream`` is True.
+                False by default.
+            stream (bool): If set to false, only the current stats will be
+                returned instead of a stream. True by default.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def stop(self, *, timeout: float | None = None) -> None:
+        """
+        Stops a container. Similar to the ``docker stop`` command.
+
+        Args:
+            timeout (int): Timeout in seconds to wait for the container to
+                stop before sending a ``SIGKILL``. Default: 10
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def top(self, *, ps_args: str | None = None) -> _TopResult:
+        """
+        Display the running processes of the container.
+
+        Args:
+            ps_args (str): An optional arguments passed to ps (e.g. ``aux``)
+
+        Returns:
+            (str): The output of the top
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def unpause(self):
+        """
+        Unpause all processes within the container.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
     def update(
         self,
         *,

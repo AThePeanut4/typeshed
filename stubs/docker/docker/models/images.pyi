@@ -31,11 +31,83 @@ class Image(Model):
         """
         ...
     @property
-    def tags(self) -> list[str]: ...
-    def history(self) -> list[Any]: ...
-    def remove(self, force: bool = False, noprune: bool = False) -> dict[str, Any]: ...
-    def save(self, chunk_size: int = 2097152, named: str | bool = False) -> Iterator[Any]: ...
-    def tag(self, repository: str, tag: str | None = None, **kwargs) -> bool: ...
+    def tags(self) -> list[str]:
+        """The image's tags."""
+        ...
+    def history(self) -> list[Any]:
+        """
+        Show the history of an image.
+
+        Returns:
+            (list): The history of the image.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def remove(self, force: bool = False, noprune: bool = False) -> dict[str, Any]:
+        """
+        Remove this image.
+
+        Args:
+            force (bool): Force removal of the image
+            noprune (bool): Do not delete untagged parents
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def save(self, chunk_size: int = 2097152, named: str | bool = False) -> Iterator[Any]:
+        """
+        Get a tarball of an image. Similar to the ``docker save`` command.
+
+        Args:
+            chunk_size (int): The generator will return up to that much data
+                per iteration, but may return less. If ``None``, data will be
+                streamed as it is received. Default: 2 MB
+            named (str or bool): If ``False`` (default), the tarball will not
+                retain repository and tag information for this image. If set
+                to ``True``, the first tag in the :py:attr:`~tags` list will
+                be used to identify the image. Alternatively, any element of
+                the :py:attr:`~tags` list can be used as an argument to use
+                that specific tag as the saved identifier.
+
+        Returns:
+            (generator): A stream of raw archive data.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+
+        Example:
+
+            >>> image = cli.images.get("busybox:latest")
+            >>> f = open('/tmp/busybox-latest.tar', 'wb')
+            >>> for chunk in image.save():
+            >>>   f.write(chunk)
+            >>> f.close()
+        """
+        ...
+    def tag(self, repository: str, tag: str | None = None, **kwargs) -> bool:
+        """
+        Tag this image into a repository. Similar to the ``docker tag``
+        command.
+
+        Args:
+            repository (str): The repository to set for the tag
+            tag (str): The tag name
+            force (bool): Force
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+
+        Returns:
+            (bool): ``True`` if successful
+        """
+        ...
 
 class RegistryData(Model):
     """Image metadata stored on the registry, including available platforms."""
