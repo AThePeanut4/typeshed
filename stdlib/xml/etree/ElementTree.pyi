@@ -277,43 +277,11 @@ class ElementTree(Generic[_Root]):
     contents will be used to initialize the tree with.
     """
     def __init__(self, element: Element[Any] | None = None, file: _FileRead | None = None) -> None: ...
-    def getroot(self) -> _Root:
-        """Return root element of this tree."""
-        ...
-    def parse(self, source: _FileRead, parser: XMLParser | None = None) -> Element:
-        """
-        Load external XML document into element tree.
-
-        *source* is a file name or file object, *parser* is an optional parser
-        instance that defaults to XMLParser.
-
-        ParseError is raised if the parser fails to parse the document.
-
-        Returns the root element of the given source document.
-        """
-        ...
-    def iter(self, tag: str | None = None) -> Generator[Element, None, None]:
-        """
-        Create and return tree iterator for the root element.
-
-        The iterator loops over all elements in this tree, in document order.
-
-        *tag* is a string with the tag name to iterate over
-        (default is to return all elements).
-        """
-        ...
-    def find(self, path: str, namespaces: dict[str, str] | None = None) -> Element | None:
-        """
-        Find first matching element by tag name or path.
-
-        Same as getroot().find(path), which is Element.find()
-
-        *path* is a string having either an element tag or an XPath,
-        *namespaces* is an optional mapping from namespace prefix to full name.
-
-        Return the first matching element, or None if no element was found.
-        """
-        ...
+    def getroot(self) -> _Root: ...
+    def _setroot(self, element: Element[Any]) -> None: ...
+    def parse(self, source: _FileRead, parser: XMLParser | None = None) -> Element: ...
+    def iter(self, tag: str | None = None) -> Generator[Element, None, None]: ...
+    def find(self, path: str, namespaces: dict[str, str] | None = None) -> Element | None: ...
     @overload
     def findtext(self, path: str, default: None = None, namespaces: dict[str, str] | None = None) -> str | None:
         """

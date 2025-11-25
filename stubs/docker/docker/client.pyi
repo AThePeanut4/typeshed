@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import NoReturn, Protocol, type_check_only
+from typing import Any, Literal, NoReturn, Protocol, overload, type_check_only
 
 from docker import APIClient
 from docker.models.configs import ConfigCollection
@@ -12,6 +12,7 @@ from docker.models.secrets import SecretCollection
 from docker.models.services import ServiceCollection
 from docker.models.swarm import Swarm
 from docker.models.volumes import VolumeCollection
+from docker.types import CancellableStream
 
 @type_check_only
 class _Environ(Protocol):
@@ -164,129 +165,17 @@ class DockerClient:
         """
         ...
     @property
-    def volumes(self) -> VolumeCollection:
-        """
-        An object for managing volumes on the server. See the
-        :doc:`volumes documentation <volumes>` for full details.
-        """
-        ...
-    def events(self, *args, **kwargs):
-        """
-        Get real-time events from the server. Similar to the ``docker events``
-        command.
-
-        Args:
-            since (UTC datetime or int): Get events from this point
-            until (UTC datetime or int): Get events until this point
-            filters (dict): Filter the events by event time, container or image
-            decode (bool): If set to true, stream will be decoded into dicts on
-                the fly. False by default.
-
-        Returns:
-            A :py:class:`docker.types.daemon.CancellableStream` generator
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-
-        Example:
-
-            >>> for event in client.events(decode=True)
-            ...   print(event)
-            {u'from': u'image/with:tag',
-             u'id': u'container-id',
-             u'status': u'start',
-             u'time': 1423339459}
-            ...
-
-            or
-
-            >>> events = client.events()
-            >>> for event in events:
-            ...   print(event)
-            >>> # and cancel from another thread
-            >>> events.close()
-        """
-        ...
-    def df(self):
-        """
-        Get data usage information.
-
-        Returns:
-            (dict): A dictionary representing different resource categories
-            and their respective data usage.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def info(self, *args, **kwargs):
-        """
-        Display system-wide information. Identical to the ``docker info``
-        command.
-
-        Returns:
-            (dict): The info as a dict
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def login(self, *args, **kwargs):
-        """
-        Authenticate with a registry. Similar to the ``docker login`` command.
-
-        Args:
-            username (str): The registry username
-            password (str): The plaintext password
-            email (str): The email for the registry account
-            registry (str): URL to the registry.  E.g.
-                ``https://index.docker.io/v1/``
-            reauth (bool): Whether or not to refresh existing authentication on
-                the Docker server.
-            dockercfg_path (str): Use a custom path for the Docker config file
-                (default ``$HOME/.docker/config.json`` if present,
-                otherwise ``$HOME/.dockercfg``)
-
-        Returns:
-            (dict): The response from the login request
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def ping(self, *args, **kwargs):
-        """
-        Checks the server is responsive. An exception will be raised if it
-        isn't responding.
-
-        Returns:
-            (bool) The response from the server.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def version(self, *args, **kwargs):
-        """
-        Returns version information from the server. Similar to the ``docker
-        version`` command.
-
-        Returns:
-            (dict): The server version information
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def close(self):
-        """Closes all adapters and as such the session"""
-        ...
+    def volumes(self) -> VolumeCollection: ...
+    @overload
+    def events(self, *args, decode: Literal[False] | None = None, **kwargs) -> CancellableStream[str]: ...
+    @overload
+    def events(self, *args, decode: Literal[True] = ..., **kwargs) -> CancellableStream[dict[str, Any]]: ...
+    def df(self) -> dict[str, Any]: ...
+    def info(self, *args, **kwargs) -> dict[str, Any]: ...
+    def login(self, *args, **kwargs) -> dict[str, Any]: ...
+    def ping(self, *args, **kwargs) -> bool: ...
+    def version(self, *args, **kwargs) -> dict[str, Any]: ...
+    def close(self) -> None: ...
     def __getattr__(self, name: str) -> NoReturn: ...
 
 from_env = DockerClient.from_env
