@@ -49,13 +49,60 @@ def triangles(G: Graph[_Node], nodes=None) -> int | dict[Incomplete, int]:
     >>> print(list(nx.triangles(G, [0, 1]).values()))
     [6, 6]
 
+    The total number of unique triangles in `G` can be determined by summing
+    the number of triangles for each node and dividing by 3 (because a given
+    triangle gets counted three times, once for each of its nodes).
+
+    >>> sum(nx.triangles(G).values()) // 3
+    10
+
     Notes
     -----
     Self loops are ignored.
     """
     ...
 @_dispatchable
-def all_triangles(G: Graph[_Node], nbunch: _NBunch[_Node] = None) -> Generator[tuple[Incomplete, Incomplete, Incomplete]]: ...
+def all_triangles(G: Graph[_Node], nbunch: _NBunch[_Node] = None) -> Generator[tuple[Incomplete, Incomplete, Incomplete]]:
+    """
+    Yields all unique triangles in an undirected graph.
+
+    A triangle is a set of three distinct nodes where each node is connected to
+    the other two.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        An undirected graph.
+
+    nbunch : node, iterable of nodes, or None (default=None)
+        If a node or iterable of nodes, only triangles involving at least one
+        node in `nbunch` are yielded.
+        If ``None``, yields all unique triangles in the graph.
+
+    Yields
+    ------
+    tuple
+        A tuple of three nodes forming a triangle ``(u, v, w)``.
+
+    Examples
+    --------
+    >>> G = nx.complete_graph(4)
+    >>> sorted([sorted(t) for t in all_triangles(G)])
+    [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]]
+
+    Notes
+    -----
+    This algorithm ensures each triangle is yielded once using an internal node ordering.
+    In multigraphs, triangles are identified by their unique set of nodes,
+    ignoring multiple edges between the same nodes. Self-loops are ignored.
+    Runs in ``O(m * d)`` time in the worst case, where ``m`` the number of edges
+    and ``d`` the maximum degree.
+
+    See Also
+    --------
+    :func:`~networkx.algorithms.triads.all_triads` : related function for directed graphs
+    """
+    ...
 @_dispatchable
 def average_clustering(
     G: Graph[_Node], nodes: Iterable[_Node] | None = None, weight: str | None = None, count_zeros: bool = True

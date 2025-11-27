@@ -437,10 +437,11 @@ def spring_layout(
     >>> # suppress the returned dict and store on the graph directly
     >>> _ = nx.spring_layout(G, seed=123, store_pos_as="pos")
     >>> pprint(nx.get_node_attributes(G, "pos"))
-    {0: array([-0.61520994, -1.        ]),
-     1: array([-0.21840965, -0.35501755]),
-     2: array([0.21841264, 0.35502078]),
-     3: array([0.61520696, 0.99999677])}
+    {0: array([-0.61495802, -1.        ]),
+     1: array([-0.21789544, -0.35432583]),
+     2: array([0.21847843, 0.35527369]),
+     3: array([0.61437502, 0.99905215])}
+
 
     # The same using longer but equivalent function name
     >>> pos = nx.fruchterman_reingold_layout(G)
@@ -903,8 +904,6 @@ def forceatlas2_layout(
     weight : string or None, optional (default: None)
         The edge attribute that holds the numerical value used for
         the edge weight. If None, then all edge weights are 1.
-    dissuade_hubs : bool (default: False)
-        Prevents the clustering of hub nodes.
     linlog : bool (default: False)
         Uses logarithmic attraction instead of linear.
     seed : int, RandomState instance or None  optional (default=None)
@@ -1026,6 +1025,13 @@ def bfs_layout(
 
     start : node in `G`
         Starting node for bfs
+
+    align : string (default='vertical')
+        The alignment of nodes within a layer, either `"vertical"` or
+        `"horizontal"`.
+
+    scale : number (default: 1)
+        Scale factor for positions.
 
     center : array-like or None
         Coordinate pair around which to center the layout.

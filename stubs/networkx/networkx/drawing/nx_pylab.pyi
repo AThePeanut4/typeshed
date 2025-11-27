@@ -128,7 +128,39 @@ def apply_matplotlib_colors(
     vmin: float | None = None,
     vmax: float | None = None,
     nodes: bool = True,
-) -> None: ...
+) -> None:
+    """
+    Apply colors from a matplotlib colormap to a graph.
+
+    Reads values from the `src_attr` and use a matplotlib colormap
+    to produce a color. Write the color to `dest_attr`.
+
+    Parameters
+    ----------
+    G : nx.Graph
+        The graph to read and compute colors for.
+
+    src_attr : str or other attribute name
+        The name of the attribute to read from the graph.
+
+    dest_attr : str or other attribute name
+        The name of the attribute to write to on the graph.
+
+    map : matplotlib.colormap
+        The matplotlib colormap to use.
+
+    vmin : float, default None
+        The minimum value for scaling the colormap. If `None`, find the
+        minimum value of `src_attr`.
+
+    vmax : float, default None
+        The maximum value for scaling the colormap. If `None`, find the
+        maximum value of `src_attr`.
+
+    nodes : bool, default True
+        Whether the attribute names are edge attributes or node attributes.
+    """
+    ...
 
 class CurvedArrowTextBase:
     arrow: FancyArrowPatch
@@ -179,11 +211,11 @@ def display(
     Draw the graph G.
 
     Draw the graph as a collection of nodes connected by edges.
-    The exact details of what the graph looks like are controled by the below
+    The exact details of what the graph looks like are controlled by the below
     attributes. All nodes and nodes at the end of visible edges must have a
     position set, but nearly all other node and edge attributes are options and
     nodes or edges missing the attribute will use the default listed below. A more
-    complete discription of each parameter is given below this summary.
+    complete description of each parameter is given below this summary.
 
     .. list-table:: Default Visualization Attributes
         :widths: 25 25 50
@@ -192,7 +224,7 @@ def display(
         * - Parameter
           - Default Attribute
           - Default Value
-        * - pos
+        * - node_pos
           - `"pos"`
           - If there is not position, a layout will be calculated with `nx.spring_layout`.
         * - node_visible
@@ -263,10 +295,10 @@ def display(
         * - edge_alpha
           - `"alpha"`
           - 1.0
-        * - arrowstyle
+        * - edge_arrowstyle
           - `"arrowstyle"`
           - ``"-|>"`` if `G` is directed else ``"-"``
-        * - arrowsize
+        * - edge_arrowsize
           - `"arrowsize"`
           - 10 if `G` is directed else 0
         * - edge_curvature
@@ -287,7 +319,7 @@ def display(
     canvas : Matplotlib Axes object, optional
         Draw the graph in specified Matplotlib axes
 
-    pos : string or function, default "pos"
+    node_pos : string or function, default "pos"
         A string naming the node attribute storing the position of nodes as a tuple.
         Or a function to be called with input `G` which returns the layout as a dict keyed
         by node to position tuple like the NetworkX layout functions.
@@ -393,14 +425,14 @@ def display(
         A string naming the edge attribute which stores the alpha value of each edge.
         Visible edges without this attribute will use an alpha value of 1.0.
 
-    arrowstyle : string, default "arrow"
+    edge_arrowstyle : string, default "arrowstyle"
         A string naming the edge attribute which stores the type of arrowhead to use for
         each edge. Visible edges without this attribute use ``"-"`` for undirected graphs
         and ``"-|>"`` for directed graphs.
 
         See `matplotlib.patches.ArrowStyle` for more options
 
-    arrowsize : string or int, default "arrow_size"
+    edge_arrowsize : string or int, default "arrowsize"
         A string naming the edge attribute which stores the size of the arrowhead for each
         edge. Visible edges without this attribute will use a default value of 10.
 

@@ -746,7 +746,79 @@ def panther_similarity(
     eps: float | None = None,
     weight: str | None = "weight",
     seed: int | RandomState | None = None,
-) -> dict[bytes, bytes]: ...
+) -> dict[bytes, bytes]:
+    r"""
+    Returns the Panther similarity of nodes in the graph `G` to node ``v``.
+
+    Panther is a similarity metric that says "two objects are considered
+    to be similar if they frequently appear on the same paths." [1]_.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+    source : node
+        Source node for which to find the top `k` similar other nodes
+    k : int (default = 5)
+        The number of most similar nodes to return.
+    path_length : int (default = 5)
+        How long the randomly generated paths should be (``T`` in [1]_)
+    c : float (default = 0.5)
+        A universal constant that controls the number of random paths to generate.
+        Higher values increase the number of sample paths and potentially improve
+        accuracy at the cost of more computation. Defaults to 0.5 as recommended
+        in [1]_.
+    delta : float (default = 0.1)
+        The probability that the similarity $S$ is not an epsilon-approximation to (R, phi),
+        where $R$ is the number of random paths and $\phi$ is the probability
+        that an element sampled from a set $A \subseteq D$, where $D$ is the domain.
+    eps : float or None (default = None)
+        The error bound for similarity approximation. This controls the accuracy
+        of the sampled paths in representing the true similarity. Smaller values
+        yield more accurate results but require more sample paths. If `None`, a
+        value of ``sqrt(1/|E|)`` is used, which the authors found empirically
+        effective.
+    weight : string or None, optional (default="weight")
+        The name of an edge attribute that holds the numerical value
+        used as a weight. If None then each edge has weight 1.
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    similarity : dictionary
+        Dictionary of nodes to similarity scores (as floats). Note:
+        the self-similarity (i.e., ``v``) will not be included in
+        the returned dictionary. So, for ``k = 5``, a dictionary of
+        top 4 nodes and their similarity scores will be returned.
+
+    Raises
+    ------
+    NetworkXUnfeasible
+        If `source` is an isolated node.
+
+    NodeNotFound
+        If `source` is not in `G`.
+
+    Notes
+    -----
+        The isolated nodes in `G` are ignored.
+
+    Examples
+    --------
+    >>> G = nx.star_graph(10)
+    >>> sim = nx.panther_similarity(G, 0)
+
+    References
+    ----------
+    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
+           Panther: Fast top-k similarity search on large networks.
+           In Proceedings of the ACM SIGKDD International Conference
+           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
+           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
+    """
+    ...
 @_dispatchable
 def panther_vector_similarity(
     G: Graph[_Node],
@@ -760,7 +832,105 @@ def panther_vector_similarity(
     eps: float | None = None,
     weight: str | None = "weight",
     seed: int | RandomState | None = None,
-) -> dict[Incomplete, float]: ...
+) -> dict[Incomplete, float]:
+    """
+    Returns the Panther vector similarity (Panther++) of nodes in `G`.
+
+    Computes similarity between nodes based on the "Panther++" algorithm [1]_, which extends
+    the basic Panther algorithm by using feature vectors to better capture structural
+    similarity.
+
+    While basic Panther similarity measures how often two nodes appear on the same paths,
+    Panther vector similarity (Panther++) creates a ``D``-dimensional feature vector for each
+    node using its top similarity scores with other nodes, then computes similarity based
+    on the Euclidean distance between these feature vectors. This approach better captures
+    structural similarity and addresses the bias towards close neighbors present in
+    the original Panther algorithm.
+
+    This approach is preferred when:
+
+    1. You need better structural similarity than basic path co-occurrence
+    2. You want to overcome the close-neighbor bias of standard Panther
+    3. You're working with large graphs where k-d tree indexing would be beneficial
+    4. Graph edit distance-like similarity is more appropriate than path co-occurrence
+
+    Parameters
+    ----------
+    G : NetworkX graph
+        A NetworkX graph
+    source : node
+        Source node for which to find the top ``k`` similar other nodes
+    D : int
+        The number of similarity scores to use (in descending order)
+        for each feature vector. Defaults to 10. Note that the original paper
+        used D=50 [1]_, but KDTree is optimized for lower dimensions.
+    k : int
+        The number of most similar nodes to return
+    path_length : int
+        How long the randomly generated paths should be (``T`` in [1]_)
+    c : float
+        A universal constant that controls the number of random paths to generate.
+        Higher values increase the number of sample paths and potentially improve
+        accuracy at the cost of more computation. Defaults to 0.5 as recommended
+        in [1]_.
+    delta : float
+        The probability that ``S`` is not an epsilon-approximation to (R, phi)
+    eps : float
+        The error bound for similarity approximation. This controls the accuracy
+        of the sampled paths in representing the true similarity. Smaller values
+        yield more accurate results but require more sample paths. If None, a
+        value of ``sqrt(1/|E|)`` is used, which the authors found empirically
+        effective.
+    weight : string or None, optional (default="weight")
+        The name of an edge attribute that holds the numerical value
+        used as a weight. If `None` then each edge has weight 1.
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    similarity : dict
+        Dict of nodes to similarity scores (as floats).
+        Note: the self-similarity (i.e., `node`) is not included in the dict.
+
+    Examples
+    --------
+    >>> G = nx.star_graph(100)
+
+    The "hub" node is distinct from the "spoke" nodes
+
+    >>> from pprint import pprint
+    >>> pprint(nx.panther_vector_similarity(G, source=0, seed=42))
+    {35: 0.10402634656233918,
+     61: 0.10434063328712018,
+     65: 0.10401247833456054,
+     85: 0.10506718868571752,
+     88: 0.10402634656233918}
+
+    But "spoke" nodes are similar to one another
+
+    >>> result = nx.panther_vector_similarity(G, source=1, seed=42)
+    >>> len(result)
+    5
+    >>> all(similarity == 1.0 for similarity in result.values())
+    True
+
+    Notes
+    -----
+    Results may be nondeterministic when feature vectors have the same distances,
+    as the KDTree's internal tie-breaking behavior can vary between runs.
+    Using the same ``seed`` parameter ensures reproducible results.
+
+    References
+    ----------
+    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
+           Panther: Fast top-k similarity search on large networks.
+           In Proceedings of the ACM SIGKDD International Conference
+           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
+           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
+    """
+    ...
 @_dispatchable
 def generate_random_paths(
     G: Graph[_Node],

@@ -1112,7 +1112,6 @@ def all_neighbors(graph: Graph[_Node], node: _Node) -> Iterator[_Node]:
     ----------
     graph : NetworkX graph
         Graph to find neighbors.
-
     node : node
         The node whose neighbors will be returned.
 
@@ -1120,6 +1119,37 @@ def all_neighbors(graph: Graph[_Node], node: _Node) -> Iterator[_Node]:
     -------
     neighbors : iterator
         Iterator of neighbors
+
+    Raises
+    ------
+    NetworkXError
+        If `node` is not in the graph.
+
+    Examples
+    --------
+    For undirected graphs, this function is equivalent to ``G.neighbors(node)``.
+
+    >>> G = nx.path_graph(4)  # or DiGraph, MultiGraph, MultiDiGraph, etc
+    >>> list(nx.all_neighbors(G, 1))
+    [0, 2]
+
+    For directed graphs, this function returns both predecessors and successors,
+    which may include duplicates if a node is both a predecessor and successor
+    (e.g., in bidirectional edges or self-loops).
+
+    >>> DG = nx.DiGraph([(0, 1), (1, 2), (2, 1)])
+    >>> list(nx.all_neighbors(DG, 1))
+    [0, 2, 2]
+
+    Notes
+    -----
+    This function iterates over all neighbors (both predecessors and successors).
+
+    See Also
+    --------
+    Graph.neighbors : Returns successors for both Graph and DiGraph
+    DiGraph.predecessors : Returns predecessors for directed graphs only
+    DiGraph.successors : Returns successors for directed graphs only
     """
     ...
 def non_neighbors(graph: Graph[_Node], node: _Node) -> Generator[_Node, None, None]:
@@ -1647,7 +1677,133 @@ def selfloop_edges(
     """
     ...
 @_dispatchable
-def number_of_selfloops(G: Graph[Hashable]) -> int: ...
-def is_path(G: Graph[_Node], path: Iterable[Incomplete]) -> bool: ...
-def path_weight(G: Graph[_Node], path, weight) -> int: ...
-def describe(G: Graph[_Node], describe_hook: Callable[[Graph[_Node]], dict[str, Incomplete]] | None = None) -> None: ...
+def number_of_selfloops(G: Graph[Hashable]) -> int:
+    """
+    Returns the number of selfloop edges.
+
+    A selfloop edge has the same node at both ends.
+
+    Returns
+    -------
+    nloops : int
+        The number of selfloops.
+
+    See Also
+    --------
+    nodes_with_selfloops, selfloop_edges
+
+    Examples
+    --------
+    >>> G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc
+    >>> G.add_edge(1, 1)
+    >>> G.add_edge(1, 2)
+    >>> nx.number_of_selfloops(G)
+    1
+    """
+    ...
+def is_path(G: Graph[_Node], path: Iterable[Incomplete]) -> bool:
+    """
+    Returns whether or not the specified path exists.
+
+    For it to return True, every node on the path must exist and
+    each consecutive pair must be connected via one or more edges.
+
+    Parameters
+    ----------
+    G : graph
+        A NetworkX graph.
+
+    path : list
+        A list of nodes which defines the path to traverse
+
+    Returns
+    -------
+    bool
+        True if `path` is a valid path in `G`
+    """
+    ...
+def path_weight(G: Graph[_Node], path, weight) -> int:
+    """
+    Returns total cost associated with specified path and weight
+
+    Parameters
+    ----------
+    G : graph
+        A NetworkX graph.
+
+    path: list
+        A list of node labels which defines the path to traverse
+
+    weight: string
+        A string indicating which edge attribute to use for path cost
+
+    Returns
+    -------
+    cost: int or float
+        An integer or a float representing the total cost with respect to the
+        specified weight of the specified path
+
+    Raises
+    ------
+    NetworkXNoPath
+        If the specified edge does not exist.
+    """
+    ...
+def describe(G: Graph[_Node], describe_hook: Callable[[Graph[_Node]], dict[str, Incomplete]] | None = None) -> None:
+    """
+    Prints a description of the graph G.
+
+    By default, the description includes some basic properties of the graph.
+    You can also provide additional functions to compute and include
+    more properties in the description.
+
+    Parameters
+    ----------
+    G : graph
+        A NetworkX graph.
+
+    describe_hook: callable, optional (default=None)
+        A function that takes a graph as input and returns a
+        dictionary of additional properties to include in the description.
+        The keys of the dictionary are the property names, and the values
+        are the corresponding property values.
+
+    Examples
+    --------
+    >>> G = nx.path_graph(5)
+    >>> nx.describe(G)
+    Number of nodes                : 5
+    Number of edges                : 4
+    Directed                       : False
+    Multigraph                     : False
+    Tree                           : True
+    Bipartite                      : True
+    Average degree (min, max)      : 1.60 (1, 2)
+    Number of connected components : 1
+
+    >>> def augment_description(G):
+    ...     return {"Average Shortest Path Length": nx.average_shortest_path_length(G)}
+    >>> nx.describe(G, describe_hook=augment_description)
+    Number of nodes                : 5
+    Number of edges                : 4
+    Directed                       : False
+    Multigraph                     : False
+    Tree                           : True
+    Bipartite                      : True
+    Average degree (min, max)      : 1.60 (1, 2)
+    Number of connected components : 1
+    Average Shortest Path Length   : 2.0
+
+    >>> G.name = "Path Graph of 5 nodes"
+    >>> nx.describe(G)
+    Name of Graph                  : Path Graph of 5 nodes
+    Number of nodes                : 5
+    Number of edges                : 4
+    Directed                       : False
+    Multigraph                     : False
+    Tree                           : True
+    Bipartite                      : True
+    Average degree (min, max)      : 1.60 (1, 2)
+    Number of connected components : 1
+    """
+    ...

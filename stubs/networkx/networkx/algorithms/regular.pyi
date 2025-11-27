@@ -8,11 +8,11 @@ __all__ = ["is_regular", "is_k_regular", "k_factor"]
 @_dispatchable
 def is_regular(G: Graph[_Node]) -> bool:
     """
-    Determines whether the graph ``G`` is a regular graph.
+    Determines whether a graph is regular.
 
-    A regular graph is a graph where each vertex has the same degree. A
-    regular digraph is a graph where the indegree and outdegree of each
-    vertex are equal.
+    A regular graph is a graph where all nodes have the same degree. A regular
+    digraph is a graph where all nodes have the same indegree and all nodes
+    have the same outdegree.
 
     Parameters
     ----------
@@ -56,33 +56,36 @@ def is_k_regular(G: Graph[_Node], k) -> bool:
 @_dispatchable
 def k_factor(G: Graph[_Node], k, matching_weight: str | None = "weight"):
     """
-    Compute a k-factor of G
+    Compute a `k`-factor of a graph.
 
-    A k-factor of a graph is a spanning k-regular subgraph.
-    A spanning k-regular subgraph of G is a subgraph that contains
-    each vertex of G and a subset of the edges of G such that each
-    vertex has degree k.
+    A `k`-factor of a graph is a spanning `k`-regular subgraph.
+    A spanning `k`-regular subgraph of `G` is a subgraph that contains
+    each node of `G` and a subset of the edges of `G` such that each
+    node has degree `k`.
 
     Parameters
     ----------
     G : NetworkX graph
-      Undirected graph
+        An undirected graph.
 
-    matching_weight: string, optional (default='weight')
-       Edge data key corresponding to the edge weight.
-       Used for finding the max-weighted perfect matching.
-       If key not found, uses 1 as weight.
+    k : int
+        The degree of the `k`-factor.
+
+    matching_weight: string, optional (default="weight")
+        Edge attribute name corresponding to the edge weight.
+        If not present, the edge is assumed to have weight 1.
+        Used for finding the max-weighted perfect matching.
 
     Returns
     -------
-    G2 : NetworkX graph
-        A k-factor of G
+    NetworkX graph
+        A `k`-factor of `G`.
 
     Examples
     --------
     >>> G = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 1)])
-    >>> G2 = nx.k_factor(G, k=1)
-    >>> G2.edges()
+    >>> KF = nx.k_factor(G, k=1)
+    >>> KF.edges()
     EdgeView([(1, 2), (3, 4)])
 
     References

@@ -393,8 +393,10 @@ def center(
 
     See Also
     --------
+    :func:`~networkx.algorithms.tree.distance_measures.center` : tree center
     barycenter
     periphery
+    :func:`~networkx.algorithms.tree.distance_measures.centroid` : tree centroid
     """
     ...
 @_dispatchable
@@ -457,6 +459,7 @@ def barycenter(
     --------
     center
     periphery
+    :func:`~networkx.algorithms.tree.distance_measures.centroid` : tree centroid
     """
     ...
 @_dispatchable

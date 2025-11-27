@@ -83,35 +83,37 @@ def kosaraju_strongly_connected_components(G: DiGraph[_Node], source: _Node | No
     G : NetworkX Graph
         A directed graph.
 
-    Returns
-    -------
-    comp : generator of sets
-        A generator of sets of nodes, one for each strongly connected
-        component of G.
+    source : node, optional (default=None)
+        Specify a node from which to start the depth-first search.
+        If not provided, the algorithm will start from an arbitrary node.
+
+    Yields
+    ------
+    set
+        A set of all nodes in a strongly connected component of `G`.
 
     Raises
     ------
     NetworkXNotImplemented
-        If G is undirected.
+        If `G` is undirected.
+
+    NetworkXError
+        If `source` is not a node in `G`.
 
     Examples
     --------
-    Generate a sorted list of strongly connected components, largest first.
+    Generate a list of strongly connected components of a graph:
 
     >>> G = nx.cycle_graph(4, create_using=nx.DiGraph())
     >>> nx.add_cycle(G, [10, 11, 12])
-    >>> [
-    ...     len(c)
-    ...     for c in sorted(
-    ...         nx.kosaraju_strongly_connected_components(G), key=len, reverse=True
-    ...     )
-    ... ]
-    [4, 3]
+    >>> sorted(nx.kosaraju_strongly_connected_components(G), key=len, reverse=True)
+    [{0, 1, 2, 3}, {10, 11, 12}]
 
     If you only want the largest component, it's more efficient to
-    use max instead of sort.
+    use `max()` instead of `sorted()`.
 
-    >>> largest = max(nx.kosaraju_strongly_connected_components(G), key=len)
+    >>> max(nx.kosaraju_strongly_connected_components(G), key=len)
+    {0, 1, 2, 3}
 
     See Also
     --------

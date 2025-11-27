@@ -108,6 +108,9 @@ def shortest_path(
     ValueError
         If `method` is not among the supported options.
 
+    NetworkXNoPath
+       If `source` and `target` are specified but no path exists between them.
+
     Examples
     --------
     >>> G = nx.path_graph(5)
@@ -208,6 +211,9 @@ def shortest_path(
 
     ValueError
         If `method` is not among the supported options.
+
+    NetworkXNoPath
+       If `source` and `target` are specified but no path exists between them.
 
     Examples
     --------
@@ -310,6 +316,9 @@ def shortest_path(
     ValueError
         If `method` is not among the supported options.
 
+    NetworkXNoPath
+       If `source` and `target` are specified but no path exists between them.
+
     Examples
     --------
     >>> G = nx.path_graph(5)
@@ -411,6 +420,9 @@ def shortest_path(
     ValueError
         If `method` is not among the supported options.
 
+    NetworkXNoPath
+       If `source` and `target` are specified but no path exists between them.
+
     Examples
     --------
     >>> G = nx.path_graph(5)
@@ -511,6 +523,9 @@ def shortest_path(  # source and target are not specified => generator of (t, {s
 
     ValueError
         If `method` is not among the supported options.
+
+    NetworkXNoPath
+       If `source` and `target` are specified but no path exists between them.
 
     Examples
     --------

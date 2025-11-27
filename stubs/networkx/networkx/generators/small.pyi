@@ -152,6 +152,10 @@ def cubical_graph(create_using=None):
     G : networkx Graph
         A cubical graph with 8 nodes and 12 edges
 
+    See Also
+    --------
+    tetrahedral_graph, octahedral_graph, dodecahedral_graph, icosahedral_graph
+
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Cube#Cubical_graph
@@ -163,9 +167,9 @@ def desargues_graph(create_using=None):
     Returns the Desargues Graph
 
     The Desargues Graph is a non-planar, distance-transitive cubic graph
-    with 20 nodes and 30 edges [1]_.
-    It is a symmetric graph. It can be represented in LCF notation
-    as [5,-5,9,-9]^5 [2]_.
+    with 20 nodes and 30 edges [1]_. It is isomorphic to the Generalized
+    Petersen Graph GP(10, 3). It is a symmetric graph. It can be represented
+    in LCF notation as [5,-5,9,-9]^5 [2]_.
 
     Parameters
     ----------
@@ -225,6 +229,10 @@ def dodecahedral_graph(create_using=None):
     -------
     G : networkx Graph
         Dodecahedral Graph with 20 nodes and 30 edges
+
+    See Also
+    --------
+    tetrahedral_graph, cubical_graph, octahedral_graph, icosahedral_graph
 
     References
     ----------
@@ -297,7 +305,7 @@ def hoffman_singleton_graph():
     All indices lie in ``Z % 5``: that is, the integers mod 5 [1]_.
     It is the only regular graph of vertex degree 7, diameter 2, and girth 5.
     It is the unique (7,5)-cage graph and Moore graph, and contains many
-    copies of the Petersen graph [2]_.
+    copies of the Petersen Graph [2]_.
 
     Returns
     -------
@@ -382,6 +390,10 @@ def icosahedral_graph(create_using=None):
     G : networkx Graph
         Icosahedral graph with 12 nodes and 30 edges.
 
+    See Also
+    --------
+    tetrahedral_graph, cubical_graph, octahedral_graph, dodecahedral_graph
+
     References
     ----------
     .. [1] https://mathworld.wolfram.com/IcosahedralGraph.html
@@ -425,7 +437,7 @@ def moebius_kantor_graph(create_using=None):
 
     The Möbius-Kantor graph is the cubic symmetric graph on 16 nodes.
     Its LCF notation is [5,-5]^8, and it is isomorphic to the generalized
-    Petersen graph [1]_.
+    Petersen Graph GP(8, 3) [1]_.
 
     Parameters
     ----------
@@ -463,6 +475,10 @@ def octahedral_graph(create_using=None):
     G : networkx Graph
         Octahedral graph
 
+    See Also
+    --------
+    tetrahedral_graph, cubical_graph, dodecahedral_graph, icosahedral_graph
+
     References
     ----------
     .. [1] https://mathworld.wolfram.com/OctahedralGraph.html
@@ -491,9 +507,9 @@ def pappus_graph():
 @_dispatchable
 def petersen_graph(create_using=None):
     """
-    Returns the Petersen graph.
+    Returns the Petersen Graph.
 
-    The Peterson graph is a cubic, undirected graph with 10 nodes and 15 edges [1]_.
+    The Peterson Graph is a cubic, undirected graph with 10 nodes and 15 edges [1]_.
     Julius Petersen constructed the graph as the smallest counterexample
     against the claim that a connected bridgeless cubic graph
     has an edge colouring with three colours [2]_.
@@ -506,7 +522,7 @@ def petersen_graph(create_using=None):
     Returns
     -------
     G : networkx Graph
-        Petersen graph
+        Petersen Graph
 
     References
     ----------
@@ -515,9 +531,67 @@ def petersen_graph(create_using=None):
     """
     ...
 @_dispatchable
-def generalized_petersen_graph(n: int, k: int, *, create_using=None): ...
+def generalized_petersen_graph(n: int, k: int, *, create_using=None):
+    """
+    Returns the Generalized Petersen Graph GP(n,k).
+
+    The Generalized Peterson Graph consists of an outer cycle of n nodes
+    connected to an inner circulant graph of n nodes, where nodes in the
+    inner circulant are connected to their kth nearest neighbor [1]_ [2]_.
+    A Generalized Petersen Graph is cubic with 2n nodes and 3n edges.
+
+    Some well known graphs are examples of Generalized Petersen Graphs such
+    as the Petersen Graph GP(5, 2), the Desargues graph GP(10, 3), the
+    Moebius-Kantor graph GP(8, 3), and the dodecahedron graph GP(10, 2).
+
+    Parameters
+    ----------
+    n : int
+       Number of nodes in the outer cycle and inner circulant. ``n >= 3`` is required.
+
+    k : int
+       Neighbor to connect in the inner circulant. ``1 <= k <= n/2``.
+       Note that some people require ``k < n/2`` but we and others allow equality.
+       Also, ``k < n/2`` is equivalent to ``k <= floor((n-1)/2)``
+
+    create_using : NetworkX graph constructor, optional (default=nx.Graph)
+       Graph type to create. If graph instance, then cleared before populated.
+
+    Returns
+    -------
+    G : networkx Graph
+        Generalized Petersen Graph n k
+
+    References
+    ----------
+    .. [1] https://mathworld.wolfram.com/GeneralizedPetersenGraph.html
+    .. [2] https://en.wikipedia.org/wiki/Generalized_Petersen_graph
+    """
+    ...
 @_dispatchable
-def sedgewick_maze_graph(create_using=None): ...
+def sedgewick_maze_graph(create_using=None):
+    """
+    Return a small maze with a cycle.
+
+    This is the maze used in Sedgewick, 3rd Edition, Part 5, Graph
+    Algorithms, Chapter 18, e.g. Figure 18.2 and following [1]_.
+    Nodes are numbered 0,..,7
+
+    Parameters
+    ----------
+    create_using : NetworkX graph constructor, optional (default=nx.Graph)
+       Graph type to create. If graph instance, then cleared before populated.
+
+    Returns
+    -------
+    G : networkx Graph
+        Small maze with a cycle
+
+    References
+    ----------
+    .. [1] Figure 18.2, Chapter 18, Graph Algorithms (3rd Ed), Sedgewick
+    """
+    ...
 @_dispatchable
 def tetrahedral_graph(create_using=None):
     """
@@ -536,6 +610,10 @@ def tetrahedral_graph(create_using=None):
     -------
     G : networkx Graph
         Tetrahedral Graph
+
+    See Also
+    --------
+    cubical_graph, octahedral_graph, dodecahedral_graph, icosahedral_graph
 
     References
     ----------

@@ -24,7 +24,81 @@ def approximate_current_flow_betweenness_centrality(
     seed: int | RandomState | None = None,
     *,
     sample_weight: float = 1,
-) -> dict[Incomplete, float]: ...
+) -> dict[Incomplete, float]:
+    r"""
+    Compute the approximate current-flow betweenness centrality for nodes.
+
+    Approximates the current-flow betweenness centrality within absolute
+    error of epsilon with high probability [1]_.
+
+
+    Parameters
+    ----------
+    G : graph
+      A NetworkX graph
+
+    normalized : bool, optional (default=True)
+      If True the betweenness values are normalized by 2/[(n-1)(n-2)] where
+      n is the number of nodes in G.
+
+    weight : string or None, optional (default=None)
+      Key for edge data used as the edge weight.
+      If None, then use 1 as each edge weight.
+      The weight reflects the capacity or the strength of the
+      edge.
+
+    dtype : data type (float)
+      Default data type for internal matrices.
+      Set to np.float32 for lower memory consumption.
+
+    solver : string (default='full')
+       Type of linear solver to use for computing the flow matrix.
+       Options are "full" (uses most memory), "lu" (recommended), and
+       "cg" (uses least memory).
+
+    epsilon: float
+        Absolute error tolerance. Note that smaller values of `epsilon` lead to
+        higher numbers of sample pairs (``k``) and thus more computation time. The number
+        of sample pairs is approximately ``(c/epsilon)^2 * log(n)`` where ``n`` is the
+        number of nodes.
+
+    kmax: int
+       Maximum number of sample node pairs to use for approximation.
+
+    sample_weight : float (default=1)
+       Multiplicative factor for the number of sample node pairs used in approximation.
+       Higher values may improve accuracy at the expense of increased computation time.
+
+    seed : integer, random_state, or None (default)
+        Indicator of random number generation state.
+        See :ref:`Randomness<randomness>`.
+
+    Returns
+    -------
+    nodes : dictionary
+       Dictionary of nodes with betweenness centrality as the value.
+
+    See Also
+    --------
+    current_flow_betweenness_centrality
+
+    Notes
+    -----
+    The running time is $O((1/\epsilon^2)m{\sqrt k} \log n)$
+    and the space required is $O(m)$ for $n$ nodes and $m$ edges.
+
+    If the edges have a 'weight' attribute they will be used as
+    weights in this algorithm.  Unspecified weights are set to 1.
+
+    References
+    ----------
+    .. [1] Ulrik Brandes and Daniel Fleischer:
+       Centrality Measures Based on Current Flow.
+       Proc. 22nd Symp. Theoretical Aspects of Computer Science (STACS '05).
+       LNCS 3404, pp. 533-544. Springer-Verlag, 2005.
+       https://doi.org/10.1007/978-3-540-31856-9_44
+    """
+    ...
 @_dispatchable
 def current_flow_betweenness_centrality(
     G: Graph[_Node], normalized: bool | None = True, weight: str | None = None, dtype: type = ..., solver: str = "full"

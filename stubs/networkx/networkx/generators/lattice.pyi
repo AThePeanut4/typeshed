@@ -43,6 +43,13 @@ def grid_2d_graph(m, n, periodic: bool = False, create_using=None):
     -------
     NetworkX graph
         The (possibly periodic) grid graph of the specified dimensions.
+
+    See Also
+    --------
+    triangular_lattice_graph, hexagonal_lattice_graph :
+        Other 2D lattice graphs
+    grid_graph, hypercube_graph :
+        N-dimensional lattice graphs
     """
     ...
 @_dispatchable
@@ -72,6 +79,13 @@ def grid_graph(dim, periodic: bool = False):
     NetworkX graph
         The (possibly periodic) grid graph of the specified dimensions.
 
+    See Also
+    --------
+    grid_2d_graph, triangular_lattice_graph, hexagonal_lattice_graph :
+        2D lattice graphs
+    hypercube_graph :
+        A special case of `grid_graph` where all elements of `dim` are identical
+
     Examples
     --------
     To produce a 2 by 3 by 4 grid graph, a graph on 24 nodes:
@@ -90,23 +104,36 @@ def hypercube_graph(n):
     """
     Returns the *n*-dimensional hypercube graph.
 
-    The nodes are the integers between 0 and ``2 ** n - 1``, inclusive.
-
-    For more information on the hypercube graph, see the Wikipedia
-    article `Hypercube graph`_.
-
-    .. _Hypercube graph: https://en.wikipedia.org/wiki/Hypercube_graph
+    The *n*-dimensional hypercube graph [1]_ has ``2**n`` nodes, each represented as
+    a binary integer in the form of a tuple of 0's and 1's. Edges exist between
+    nodes that differ in exactly one bit.
 
     Parameters
     ----------
     n : int
-        The dimension of the hypercube.
-        The number of nodes in the graph will be ``2 ** n``.
+        Dimension of the hypercube, must be a positive integer.
 
     Returns
     -------
-    NetworkX graph
-        The hypercube graph of dimension *n*.
+    networkx.Graph
+        The n-dimensional hypercube graph as an undirected graph.
+
+    See Also
+    --------
+    grid_2d_graph, triangular_lattice_graph, hexagonal_lattice_graph :
+        2D lattice graphs
+    grid_graph :
+        A more general N-dimensional grid
+
+    Examples
+    --------
+    >>> G = nx.hypercube_graph(3)
+    >>> list(G.neighbors((0, 0, 0)))
+    [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Hypercube_graph
     """
     ...
 @_dispatchable
@@ -164,6 +191,13 @@ def triangular_lattice_graph(m, n, periodic: bool = False, with_positions: bool 
     -------
     NetworkX graph
         The *m* by *n* triangular lattice graph.
+
+    See Also
+    --------
+    grid_2d_graph, hexagonal_lattice_graph :
+        Other 2D lattice graphs
+    grid_graph, hypercube_graph :
+        N-dimensional lattice graphs
     """
     ...
 @_dispatchable
@@ -214,5 +248,12 @@ def hexagonal_lattice_graph(m, n, periodic: bool = False, with_positions: bool =
     -------
     NetworkX graph
         The *m* by *n* hexagonal lattice graph.
+
+    See Also
+    --------
+    grid_2d_graph, triangular_lattice_graph :
+        Other 2D lattice graphs
+    grid_graph, hypercube_graph :
+        N-dimensional lattice graphs
     """
     ...

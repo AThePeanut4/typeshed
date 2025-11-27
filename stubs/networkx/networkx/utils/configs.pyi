@@ -135,10 +135,11 @@ class NetworkXConfig(Config):
     backend_priority : list of backend names or dict or BackendPriorities
         Enable automatic conversion of graphs to backend graphs for functions
         implemented by the backend. Priority is given to backends listed earlier.
-        This is a nested configuration with keys ``algos``, ``generators``, and,
-        optionally, function names. Setting this value to a list of backend names
-        will set ``nx.config.backend_priority.algos``. For more information, see
-        ``help(nx.config.backend_priority)``. Default is empty list.
+        This is a nested configuration with keys ``algos``, ``generators``,
+        ``classes``, and, optionally, function names. Setting this value to a
+        list of backend names will set ``nx.config.backend_priority.algos``.
+        For more information, see ``help(nx.config.backend_priority)``.
+        Default is empty list.
 
     backends : Config mapping of backend names to backend Config
         The keys of the Config mapping are names of all installed NetworkX backends,

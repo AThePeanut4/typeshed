@@ -31,19 +31,20 @@ __all__ = ["generate_adjlist", "write_adjlist", "parse_adjlist", "read_adjlist"]
 
 def generate_adjlist(G: Graph[_Node], delimiter: str = " ") -> Generator[str, None, None]:
     """
-    Generate a single line of the graph G in adjacency list format.
+    Generate lines representing a graph in adjacency list format.
 
     Parameters
     ----------
     G : NetworkX graph
 
-    delimiter : string, optional
-       Separator for node labels
+    delimiter : str, default=" "
+        Separator for node labels.
 
-    Returns
-    -------
-    lines : string
-        Lines of data in adjlist format.
+    Yields
+    ------
+    str
+        Adjacency list for a node in `G`. The first item is the node label,
+        followed by the labels of its neighbors.
 
     Examples
     --------
@@ -57,6 +58,25 @@ def generate_adjlist(G: Graph[_Node], delimiter: str = " ") -> Generator[str, No
     4 5
     5 6
     6
+
+    When `G` is undirected, each edge is only listed once. For directed graphs,
+    edges appear once for each direction.
+
+    >>> G = nx.complete_graph(3, create_using=nx.DiGraph)
+    >>> for line in nx.generate_adjlist(G):
+    ...     print(line)
+    0 1 2
+    1 0 2
+    2 0 1
+
+    Node labels are shown multiple times for multiedges, but edge data (including keys)
+    are not included in the output.
+
+    >>> G = nx.MultiGraph([(0, 1, {"weight": 1}), (0, 1, {"weight": 2})])
+    >>> for line in nx.generate_adjlist(G):
+    ...     print(line)
+    0 1 1
+    1
 
     See Also
     --------

@@ -293,12 +293,72 @@ class MultiGraph(Graph[_Node]):
     True
     """
     edge_key_dict_factory: ClassVar[_MapFactory]
-    def to_directed_class(self) -> type[MultiDiGraph[_Node]]: ...
-    def to_undirected_class(self) -> type[MultiGraph[_Node]]: ...
+    def to_directed_class(self) -> type[MultiDiGraph[_Node]]:
+        """
+        Returns the class to use for empty directed copies.
+
+        If you subclass the base classes, use this to designate
+        what directed class to use for `to_directed()` copies.
+        """
+        ...
+    def to_undirected_class(self) -> type[MultiGraph[_Node]]:
+        """
+        Returns the class to use for empty undirected copies.
+
+        If you subclass the base classes, use this to designate
+        what directed class to use for `to_directed()` copies.
+        """
+        ...
     # @_dispatchable adds `backend` argument, but this decorated is unsupported constructor type here
     # and __init__() ignores this argument
     def __new__(cls, incoming_graph_data=None, multigraph_input: bool | None = None, *, backend=None, **attr: Any) -> Self: ...
-    def __init__(self, incoming_graph_data=None, multigraph_input: bool | None = None, **attr: Any) -> None: ...
+    def __init__(self, incoming_graph_data=None, multigraph_input: bool | None = None, **attr: Any) -> None:
+        """
+        Initialize a graph with edges, name, or graph attributes.
+
+        Parameters
+        ----------
+        incoming_graph_data : input graph
+            Data to initialize graph.  If incoming_graph_data=None (default)
+            an empty graph is created.  The data can be an edge list, or any
+            NetworkX graph object.  If the corresponding optional Python
+            packages are installed the data can also be a 2D NumPy array, a
+            SciPy sparse array, or a PyGraphviz graph.
+
+        multigraph_input : bool or None (default None)
+            Note: Only used when `incoming_graph_data` is a dict.
+            If True, `incoming_graph_data` is assumed to be a
+            dict-of-dict-of-dict-of-dict structure keyed by
+            node to neighbor to edge keys to edge data for multi-edges.
+            A NetworkXError is raised if this is not the case.
+            If False, :func:`to_networkx_graph` is used to try to determine
+            the dict's graph data structure as either a dict-of-dict-of-dict
+            keyed by node to neighbor to edge data, or a dict-of-iterable
+            keyed by node to neighbors.
+            If None, the treatment for True is tried, but if it fails,
+            the treatment for False is tried.
+
+        attr : keyword arguments, optional (default= no attributes)
+            Attributes to add to graph as key=value pairs.
+
+        See Also
+        --------
+        convert
+
+        Examples
+        --------
+        >>> G = nx.MultiGraph()
+        >>> G = nx.MultiGraph(name="my graph")
+        >>> e = [(1, 2), (1, 2), (2, 3), (3, 4)]  # list of edges
+        >>> G = nx.MultiGraph(e)
+
+        Arbitrary graph attribute pairs (key=value) may be assigned
+
+        >>> G = nx.MultiGraph(e, day="Friday")
+        >>> G.graph
+        {'day': 'Friday'}
+        """
+        ...
     @cached_property
     def adj(self) -> MultiAdjacencyView[_Node, _Node, dict[str, Any]]:
         """

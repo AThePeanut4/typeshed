@@ -11,7 +11,29 @@ __all__ = ["metric_closure", "steiner_tree"]
 @deprecated(
     "`metric_closure` is deprecated and will be removed in NetworkX 3.8. Use `networkx.all_pairs_shortest_path_length` instead."
 )
-def metric_closure(G: Graph[_Node], weight="weight"): ...
+def metric_closure(G: Graph[_Node], weight="weight"):
+    """
+    Return the metric closure of a graph.
+
+    The metric closure of a graph *G* is the complete graph in which each edge
+    is weighted by the shortest path distance between the nodes in *G* .
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    Returns
+    -------
+    NetworkX graph
+        Metric closure of the graph `G`.
+
+    Notes
+    -----
+    .. deprecated:: 3.6
+       `metric_closure` is deprecated and will be removed in NetworkX 3.8.
+       Use :func:`networkx.all_pairs_shortest_path_length` instead.
+    """
+    ...
 @_dispatchable
 def steiner_tree(G: Graph[_Node], terminal_nodes: Iterable[Incomplete], weight: str = "weight", method: str | None = None):
     r"""
