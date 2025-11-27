@@ -11,6 +11,7 @@ __all__ = [
     "diamond_graph",
     "dodecahedral_graph",
     "frucht_graph",
+    "generalized_petersen_graph",
     "heawood_graph",
     "hoffman_singleton_graph",
     "house_graph",
@@ -514,29 +515,9 @@ def petersen_graph(create_using=None):
     """
     ...
 @_dispatchable
-def sedgewick_maze_graph(create_using=None):
-    """
-    Return a small maze with a cycle.
-
-    This is the maze used in Sedgewick, 3rd Edition, Part 5, Graph
-    Algorithms, Chapter 18, e.g. Figure 18.2 and following [1]_.
-    Nodes are numbered 0,..,7
-
-    Parameters
-    ----------
-    create_using : NetworkX graph constructor, optional (default=nx.Graph)
-       Graph type to create. If graph instance, then cleared before populated.
-
-    Returns
-    -------
-    G : networkx Graph
-        Small maze with a cycle
-
-    References
-    ----------
-    .. [1] Figure 18.2, Chapter 18, Graph Algorithms (3rd Ed), Sedgewick
-    """
-    ...
+def generalized_petersen_graph(n: int, k: int, *, create_using=None): ...
+@_dispatchable
+def sedgewick_maze_graph(create_using=None): ...
 @_dispatchable
 def tetrahedral_graph(create_using=None):
     """

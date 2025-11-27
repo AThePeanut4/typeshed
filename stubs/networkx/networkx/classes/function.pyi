@@ -1,7 +1,7 @@
 """Functional interface to graph methods and assorted utilities."""
 
 from _typeshed import Incomplete, SupportsItems, SupportsKeysAndGetItem, Unused
-from collections.abc import Generator, Hashable, Iterable, Iterator
+from collections.abc import Callable, Generator, Hashable, Iterable, Iterator
 from typing import Literal, TypeVar, overload
 
 from networkx import _dispatchable
@@ -50,6 +50,7 @@ __all__ = [
     "number_of_selfloops",
     "path_weight",
     "is_path",
+    "describe",
 ]
 
 _U = TypeVar("_U")
@@ -1646,75 +1647,7 @@ def selfloop_edges(
     """
     ...
 @_dispatchable
-def number_of_selfloops(G: Graph[Hashable]) -> int:
-    """
-    Returns the number of selfloop edges.
-
-    A selfloop edge has the same node at both ends.
-
-    Returns
-    -------
-    nloops : int
-        The number of selfloops.
-
-    See Also
-    --------
-    nodes_with_selfloops, selfloop_edges
-
-    Examples
-    --------
-    >>> G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc
-    >>> G.add_edge(1, 1)
-    >>> G.add_edge(1, 2)
-    >>> nx.number_of_selfloops(G)
-    1
-    """
-    ...
-def is_path(G: Graph[_Node], path: Iterable[Incomplete]) -> bool:
-    """
-    Returns whether or not the specified path exists.
-
-    For it to return True, every node on the path must exist and
-    each consecutive pair must be connected via one or more edges.
-
-    Parameters
-    ----------
-    G : graph
-        A NetworkX graph.
-
-    path : list
-        A list of nodes which defines the path to traverse
-
-    Returns
-    -------
-    bool
-        True if `path` is a valid path in `G`
-    """
-    ...
-def path_weight(G: Graph[_Node], path, weight) -> int:
-    """
-    Returns total cost associated with specified path and weight
-
-    Parameters
-    ----------
-    G : graph
-        A NetworkX graph.
-
-    path: list
-        A list of node labels which defines the path to traverse
-
-    weight: string
-        A string indicating which edge attribute to use for path cost
-
-    Returns
-    -------
-    cost: int or float
-        An integer or a float representing the total cost with respect to the
-        specified weight of the specified path
-
-    Raises
-    ------
-    NetworkXNoPath
-        If the specified edge does not exist.
-    """
-    ...
+def number_of_selfloops(G: Graph[Hashable]) -> int: ...
+def is_path(G: Graph[_Node], path: Iterable[Incomplete]) -> bool: ...
+def path_weight(G: Graph[_Node], path, weight) -> int: ...
+def describe(G: Graph[_Node], describe_hook: Callable[[Graph[_Node]], dict[str, Incomplete]] | None = None) -> None: ...

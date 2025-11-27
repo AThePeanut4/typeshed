@@ -128,39 +128,27 @@ def apply_matplotlib_colors(
     vmin: float | None = None,
     vmax: float | None = None,
     nodes: bool = True,
-) -> None:
-    """
-    Apply colors from a matplotlib colormap to a graph.
+) -> None: ...
 
-    Reads values from the `src_attr` and use a matplotlib colormap
-    to produce a color. Write the color to `dest_attr`.
+class CurvedArrowTextBase:
+    arrow: FancyArrowPatch
+    label_pos: float
+    labels_horizontal: bool
+    ax: Axes
+    x: Incomplete
+    y: Incomplete
+    angle: Incomplete
+    def __init__(
+        self,
+        arrow: FancyArrowPatch,
+        *args,
+        label_pos: float = 0.5,
+        labels_horizontal: bool = False,
+        ax: Axes | None = None,
+        **kwargs,
+    ) -> None: ...
+    def draw(self, renderer) -> None: ...
 
-    Parameters
-    ----------
-    G : nx.Graph
-        The graph to read and compute colors for.
-
-    src_attr : str or other attribute name
-        The name of the attribute to read from the graph.
-
-    dest_attr : str or other attribute name
-        The name of the attribute to write to on the graph.
-
-    map : matplotlib.colormap
-        The matplotlib colormap to use.
-
-    vmin : float, default None
-        The minimum value for scaling the colormap. If `None`, find the
-        minimum value of `src_attr`.
-
-    vmax : float, default None
-        The maximum value for scaling the colormap. If `None`, find the
-        maximum value of `src_attr`.
-
-    nodes : bool, default True
-        Whether the attribute names are edge attributes or node attributes.
-    """
-    ...
 def display(
     G: _G,
     canvas: Axes | None = None,

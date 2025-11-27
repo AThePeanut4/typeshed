@@ -28,6 +28,7 @@ __all__ = [
     "optimize_edit_paths",
     "simrank_similarity",
     "panther_similarity",
+    "panther_vector_similarity",
     "generate_random_paths",
 ]
 
@@ -742,73 +743,24 @@ def panther_similarity(
     path_length: int = 5,
     c: float = 0.5,
     delta: float = 0.1,
-    eps=None,
+    eps: float | None = None,
     weight: str | None = "weight",
-) -> dict[bytes, bytes]:
-    r"""
-    Returns the Panther similarity of nodes in the graph `G` to node ``v``.
-
-    Panther is a similarity metric that says "two objects are considered
-    to be similar if they frequently appear on the same paths." [1]_.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-        A NetworkX graph
-    source : node
-        Source node for which to find the top `k` similar other nodes
-    k : int (default = 5)
-        The number of most similar nodes to return.
-    path_length : int (default = 5)
-        How long the randomly generated paths should be (``T`` in [1]_)
-    c : float (default = 0.5)
-        A universal positive constant used to scale the number
-        of sample random paths to generate.
-    delta : float (default = 0.1)
-        The probability that the similarity $S$ is not an epsilon-approximation to (R, phi),
-        where $R$ is the number of random paths and $\phi$ is the probability
-        that an element sampled from a set $A \subseteq D$, where $D$ is the domain.
-    eps : float or None (default = None)
-        The error bound. Per [1]_, a good value is ``sqrt(1/|E|)``. Therefore,
-        if no value is provided, the recommended computed value will be used.
-    weight : string or None, optional (default="weight")
-        The name of an edge attribute that holds the numerical value
-        used as a weight. If None then each edge has weight 1.
-
-    Returns
-    -------
-    similarity : dictionary
-        Dictionary of nodes to similarity scores (as floats). Note:
-        the self-similarity (i.e., ``v``) will not be included in
-        the returned dictionary. So, for ``k = 5``, a dictionary of
-        top 4 nodes and their similarity scores will be returned.
-
-    Raises
-    ------
-    NetworkXUnfeasible
-        If `source` is an isolated node.
-
-    NodeNotFound
-        If `source` is not in `G`.
-
-    Notes
-    -----
-        The isolated nodes in `G` are ignored.
-
-    Examples
-    --------
-    >>> G = nx.star_graph(10)
-    >>> sim = nx.panther_similarity(G, 0)
-
-    References
-    ----------
-    .. [1] Zhang, J., Tang, J., Ma, C., Tong, H., Jing, Y., & Li, J.
-           Panther: Fast top-k similarity search on large networks.
-           In Proceedings of the ACM SIGKDD International Conference
-           on Knowledge Discovery and Data Mining (Vol. 2015-August, pp. 1445–1454).
-           Association for Computing Machinery. https://doi.org/10.1145/2783258.2783267.
-    """
-    ...
+    seed: int | RandomState | None = None,
+) -> dict[bytes, bytes]: ...
+@_dispatchable
+def panther_vector_similarity(
+    G: Graph[_Node],
+    source: _Node,
+    *,
+    D: int = 10,
+    k: int = 5,
+    path_length: int = 5,
+    c: float = 0.5,
+    delta: float = 0.1,
+    eps: float | None = None,
+    weight: str | None = "weight",
+    seed: int | RandomState | None = None,
+) -> dict[Incomplete, float]: ...
 @_dispatchable
 def generate_random_paths(
     G: Graph[_Node],

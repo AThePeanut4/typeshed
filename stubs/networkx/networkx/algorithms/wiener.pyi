@@ -19,7 +19,7 @@ References
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
 
-__all__ = ["wiener_index", "schultz_index", "gutman_index"]
+__all__ = ["wiener_index", "schultz_index", "gutman_index", "hyper_wiener_index"]
 
 @_dispatchable
 def wiener_index(G: Graph[_Node], weight: str | None = None) -> float:
@@ -143,59 +143,6 @@ def schultz_index(G: Graph[_Node], weight=None) -> float:
     """
     ...
 @_dispatchable
-def gutman_index(G: Graph[_Node], weight=None) -> float:
-    """
-    Returns the Gutman Index for the graph `G`.
-
-    The *Gutman Index* measures the topology of networks, especially for molecule
-    networks of atoms connected by bonds [1]_. It is also called the Schultz Index
-    of the second kind [2]_.
-
-    Consider an undirected graph `G` with node set ``V``.
-    The Gutman Index of a graph is the sum over all (unordered) pairs of nodes
-    of nodes ``(u, v)``, with distance ``dist(u, v)`` and degrees ``deg(u)``
-    and ``deg(v)``, of ``dist(u, v) * deg(u) * deg(v)``
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    weight : string or None, optional (default: None)
-        If None, every edge has weight 1.
-        If a string, use this edge attribute as the edge weight.
-        Any edge attribute not present defaults to 1.
-        The edge weights are used to computing shortest-path distances.
-
-    Returns
-    -------
-    number
-        The Gutman Index of the graph `G`.
-
-    Examples
-    --------
-    The Gutman Index of the (unweighted) complete graph on *n* nodes
-    equals the number of pairs of the *n* nodes times ``(n - 1) * (n - 1)``,
-    since each pair of nodes is at distance one and the product of degree of two
-    vertices is ``(n - 1) * (n - 1)``.
-
-    >>> n = 10
-    >>> G = nx.complete_graph(n)
-    >>> nx.gutman_index(G) == (n * (n - 1) / 2) * ((n - 1) * (n - 1))
-    True
-
-    Graphs that are disconnected
-
-    >>> G = nx.empty_graph(2)
-    >>> nx.gutman_index(G)
-    inf
-
-    References
-    ----------
-    .. [1] M.V. Diudeaa and I. Gutman, Wiener-Type Topological Indices,
-           Croatica Chemica Acta, 71 (1998), 21-51.
-           https://hrcak.srce.hr/132323
-    .. [2] I. Gutman, Selected properties of the Schultz molecular topological index,
-           J. Chem. Inf. Comput. Sci. 34 (1994), 1087–1089.
-           https://doi.org/10.1021/ci00021a009
-    """
-    ...
+def gutman_index(G: Graph[_Node], weight=None) -> float: ...
+@_dispatchable
+def hyper_wiener_index(G: Graph[_Node], weight=None) -> float: ...
