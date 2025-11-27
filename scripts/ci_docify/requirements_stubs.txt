@@ -31,7 +31,7 @@ ujson==5.10.*
 assertpy==1.1.*
 PyMySQL==1.1.*
 django-import-export==4.3.*
-pyinstaller==6.16.*
+pyinstaller==6.17.*
 netifaces==0.11.*
 grpcio-status==1.*
 pyluach==2.3.*
@@ -196,4 +196,4 @@ click-log==0.4.*
 chevron==0.14.*
 pika==1.3.*
 pycocotools==2.0.*
-networkx==3.5
+networkx==3.6
