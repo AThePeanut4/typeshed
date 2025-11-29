@@ -655,6 +655,7 @@ if sys.version_info >= (3, 10):
         def __or__(self, other: Any) -> _SpecialForm: ...
         def __ror__(self, other: Any) -> _SpecialForm: ...
         __supertype__: type | NewType
+        __name__: str
 
 else:
     def NewType(name: str, tp: Any) -> Any:
