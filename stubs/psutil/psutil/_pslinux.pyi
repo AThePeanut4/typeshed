@@ -1,3 +1,5 @@
+"""Linux platform implementation."""
+
 import sys
 
 if sys.platform == "linux":
