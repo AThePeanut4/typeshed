@@ -1,3 +1,5 @@
+"""Routines common to all posix systems."""
+
 import enum
 import sys
 from _typeshed import FileDescriptorOrPath, Incomplete, StrOrBytesPath, Unused
@@ -5,10 +7,13 @@ from collections.abc import Callable
 
 from ._common import sdiskusage
 
-def pid_exists(pid: int) -> bool: ...
+def pid_exists(pid: int) -> bool:
+    """Check whether pid exists in the current process table."""
+    ...
 
 # Sync with `signal.Signals`, but with opposite values:
 class Negsignal(enum.IntEnum):
+    """An enumeration."""
     SIGABRT = -6
     SIGFPE = -8
     SIGILL = -4
@@ -57,7 +62,9 @@ class Negsignal(enum.IntEnum):
             if sys.version_info >= (3, 11):
                 SIGSTKFLT = -16
 
-def negsig_to_enum(num: int) -> int: ...
+def negsig_to_enum(num: int) -> int:
+    """Convert a negative signal value to an enum."""
+    ...
 def wait_pid(
     pid: int,
     timeout: float | None = None,
@@ -67,7 +74,26 @@ def wait_pid(
     _min: Callable[..., Incomplete] = ...,
     _sleep: Callable[[float], None] = ...,
     _pid_exists: Callable[[int], bool] = ...,
-) -> int | None: ...
+) -> int | None:
+    """
+    Wait for a process PID to terminate.
+
+    If the process terminated normally by calling exit(3) or _exit(2),
+    or by returning from main(), the return value is the positive integer
+    passed to *exit().
+
+    If it was terminated by a signal it returns the negated value of the
+    signal which caused the termination (e.g. -SIGTERM).
+
+    If PID is not a children of os.getpid() (current process) just
+    wait until the process disappears and return None.
+
+    If PID does not exist at all return None immediately.
+
+    If *timeout* != None and process is still alive raise TimeoutExpired.
+    timeout=0 is also possible (either return immediately or raise).
+    """
+    ...
 
 if sys.platform == "darwin":
     def disk_usage(path: StrOrBytesPath) -> sdiskusage: ...
