@@ -2242,75 +2242,20 @@ class bytes(Sequence[int]):
         start: SupportsIndex | None = None,
         end: SupportsIndex | None = None,
         /,
-    ) -> bool:
-        """
-        Return True if the bytes starts with the specified prefix, False otherwise.
+    ) -> bool: ...
+    def strip(self, bytes: ReadableBuffer | None = None, /) -> bytes: ...
+    def swapcase(self) -> bytes: ...
+    def title(self) -> bytes: ...
+    def translate(self, table: ReadableBuffer | None, /, delete: ReadableBuffer = b"") -> bytes: ...
+    def upper(self) -> bytes: ...
+    def zfill(self, width: SupportsIndex, /) -> bytes: ...
+    if sys.version_info >= (3, 14):
+        @classmethod
+        def fromhex(cls, string: str | ReadableBuffer, /) -> Self: ...
+    else:
+        @classmethod
+        def fromhex(cls, string: str, /) -> Self: ...
 
-        prefix
-          A bytes or a tuple of bytes to try.
-        start
-          Optional start position. Default: start of the bytes.
-        end
-          Optional stop position. Default: end of the bytes.
-        """
-        ...
-    def strip(self, bytes: ReadableBuffer | None = None, /) -> bytes:
-        """
-        Strip leading and trailing bytes contained in the argument.
-
-        If the argument is omitted or None, strip leading and trailing ASCII whitespace.
-        """
-        ...
-    def swapcase(self) -> bytes:
-        """
-        B.swapcase() -> copy of B
-
-        Return a copy of B with uppercase ASCII characters converted
-        to lowercase ASCII and vice versa.
-        """
-        ...
-    def title(self) -> bytes:
-        """
-        B.title() -> copy of B
-
-        Return a titlecased version of B, i.e. ASCII words start with uppercase
-        characters, all remaining cased characters have lowercase.
-        """
-        ...
-    def translate(self, table: ReadableBuffer | None, /, delete: ReadableBuffer = b"") -> bytes:
-        """
-        Return a copy with each character mapped by the given translation table.
-
-          table
-            Translation table, which must be a bytes object of length 256.
-
-        All characters occurring in the optional argument delete are removed.
-        The remaining characters are mapped through the given translation table.
-        """
-        ...
-    def upper(self) -> bytes:
-        """
-        B.upper() -> copy of B
-
-        Return a copy of B with all ASCII characters converted to uppercase.
-        """
-        ...
-    def zfill(self, width: SupportsIndex, /) -> bytes:
-        """
-        Pad a numeric string with zeros on the left, to fill a field of the given width.
-
-        The original string is never truncated.
-        """
-        ...
-    @classmethod
-    def fromhex(cls, string: str, /) -> Self:
-        r"""
-        Create a bytes object from a string of hexadecimal numbers.
-
-        Spaces between two numbers are accepted.
-        Example: bytes.fromhex('B9 01EF') -> b'\\xb9\\x01\\xef'.
-        """
-        ...
     @staticmethod
     def maketrans(frm: ReadableBuffer, to: ReadableBuffer, /) -> bytes:
         """
@@ -2804,75 +2749,20 @@ class bytearray(MutableSequence[int]):
         start: SupportsIndex | None = None,
         end: SupportsIndex | None = None,
         /,
-    ) -> bool:
-        """
-        Return True if the bytearray starts with the specified prefix, False otherwise.
+    ) -> bool: ...
+    def strip(self, bytes: ReadableBuffer | None = None, /) -> bytearray: ...
+    def swapcase(self) -> bytearray: ...
+    def title(self) -> bytearray: ...
+    def translate(self, table: ReadableBuffer | None, /, delete: bytes = b"") -> bytearray: ...
+    def upper(self) -> bytearray: ...
+    def zfill(self, width: SupportsIndex, /) -> bytearray: ...
+    if sys.version_info >= (3, 14):
+        @classmethod
+        def fromhex(cls, string: str | ReadableBuffer, /) -> Self: ...
+    else:
+        @classmethod
+        def fromhex(cls, string: str, /) -> Self: ...
 
-        prefix
-          A bytes or a tuple of bytes to try.
-        start
-          Optional start position. Default: start of the bytearray.
-        end
-          Optional stop position. Default: end of the bytearray.
-        """
-        ...
-    def strip(self, bytes: ReadableBuffer | None = None, /) -> bytearray:
-        """
-        Strip leading and trailing bytes contained in the argument.
-
-        If the argument is omitted or None, strip leading and trailing ASCII whitespace.
-        """
-        ...
-    def swapcase(self) -> bytearray:
-        """
-        B.swapcase() -> copy of B
-
-        Return a copy of B with uppercase ASCII characters converted
-        to lowercase ASCII and vice versa.
-        """
-        ...
-    def title(self) -> bytearray:
-        """
-        B.title() -> copy of B
-
-        Return a titlecased version of B, i.e. ASCII words start with uppercase
-        characters, all remaining cased characters have lowercase.
-        """
-        ...
-    def translate(self, table: ReadableBuffer | None, /, delete: bytes = b"") -> bytearray:
-        """
-        Return a copy with each character mapped by the given translation table.
-
-          table
-            Translation table, which must be a bytes object of length 256.
-
-        All characters occurring in the optional argument delete are removed.
-        The remaining characters are mapped through the given translation table.
-        """
-        ...
-    def upper(self) -> bytearray:
-        """
-        B.upper() -> copy of B
-
-        Return a copy of B with all ASCII characters converted to uppercase.
-        """
-        ...
-    def zfill(self, width: SupportsIndex, /) -> bytearray:
-        """
-        Pad a numeric string with zeros on the left, to fill a field of the given width.
-
-        The original string is never truncated.
-        """
-        ...
-    @classmethod
-    def fromhex(cls, string: str, /) -> Self:
-        r"""
-        Create a bytearray object from a string of hexadecimal numbers.
-
-        Spaces between two numbers are accepted.
-        Example: bytearray.fromhex('B9 01EF') -> bytearray(b'\\xb9\\x01\\xef')
-        """
-        ...
     @staticmethod
     def maketrans(frm: ReadableBuffer, to: ReadableBuffer, /) -> bytes:
         """
