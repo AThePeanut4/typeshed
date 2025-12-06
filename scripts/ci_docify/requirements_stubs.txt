@@ -9,7 +9,7 @@ python-xlib==0.33.*
 m3u8==6.0.*
 defusedxml==0.7.*
 python-jose==3.5.*
-greenlet==3.2.*
+greenlet==3.3.*
 html5lib[all]==1.1.*
 python-nmap==0.7.*
 simple-websocket==1.1.*
