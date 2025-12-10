@@ -366,13 +366,64 @@ class Process:
             """
             ...
     if sys.platform != "darwin":
-        def io_counters(self) -> pio: ...
-        def ionice(self, ioclass: int | None = None, value: int | None = None) -> pionice: ...
+        def io_counters(self) -> pio:
+            """
+            Return process I/O statistics as a
+            (read_count, write_count, read_bytes, write_bytes)
+            namedtuple.
+            Those are the number of read/write calls performed and the
+            amount of bytes read and written by the process.
+            """
+            ...
+        def ionice(self, ioclass: int | None = None, value: int | None = None) -> pionice:
+            """
+            Get or set process I/O niceness (priority).
+
+            On Linux *ioclass* is one of the IOPRIO_CLASS_* constants.
+            *value* is a number which goes from 0 to 7. The higher the
+            value, the lower the I/O priority of the process.
+
+            On Windows only *ioclass* is used and it can be set to 2
+            (normal), 1 (low) or 0 (very low).
+
+            Available on Linux and Windows > Vista only.
+            """
+            ...
         @overload
-        def cpu_affinity(self, cpus: None = None) -> list[int]: ...
+        def cpu_affinity(self, cpus: None = None) -> list[int]:
+            """
+            Get or set process CPU affinity.
+            If specified, *cpus* must be a list of CPUs for which you
+            want to set the affinity (e.g. [0, 1]).
+            If an empty list is passed, all egible CPUs are assumed
+            (and set).
+            (Windows, Linux and BSD only).
+            """
+            ...
         @overload
-        def cpu_affinity(self, cpus: list[int]) -> None: ...
-        def memory_maps(self, grouped: bool = True): ...
+        def cpu_affinity(self, cpus: list[int]) -> None:
+            """
+            Get or set process CPU affinity.
+            If specified, *cpus* must be a list of CPUs for which you
+            want to set the affinity (e.g. [0, 1]).
+            If an empty list is passed, all egible CPUs are assumed
+            (and set).
+            (Windows, Linux and BSD only).
+            """
+            ...
+        def memory_maps(self, grouped: bool = True):
+            """
+            Return process' mapped memory regions as a list of namedtuples
+            whose fields are variable depending on the platform.
+
+            If *grouped* is True the mapped regions with the same 'path'
+            are grouped together and the different memory fields are summed.
+
+            If *grouped* is False every mapped region is shown as a single
+            entity and the namedtuple will also include the mapped region's
+            address space ('addr') and permission set ('perms').
+            """
+            ...
     if sys.platform == "linux":
         def rlimit(self, resource: int, limits: tuple[int, int] | None = ...) -> tuple[int, int]: ...
         def cpu_num(self) -> int: ...

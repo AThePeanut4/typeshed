@@ -91,4 +91,64 @@ def from_biadjacency_matrix(
     *,
     row_order: Iterable[Incomplete] | None = None,
     column_order: Iterable[Incomplete] | None = None,
-): ...
+):
+    """
+    Creates a new bipartite graph from a biadjacency matrix given as a
+    SciPy sparse array.
+
+    Parameters
+    ----------
+    A : scipy sparse array
+      A biadjacency matrix representation of a graph
+
+    create_using : NetworkX graph
+       Use specified graph for result.  The default is Graph()
+
+    edge_attribute : string
+       Name of edge attribute to store matrix numeric value. The data will
+       have the same type as the matrix entry (int, float, (real,imag)).
+
+    row_order : list, optional (default: range(number of rows in `A`))
+        A list of the nodes represented by the rows of the matrix `A`. Will
+        be represented in the graph as nodes with the `bipartite` attribute set
+        to 0. Must be the same length as the number of rows in `A`.
+
+    column_order : list, optional (default: range(number of columns in `A`))
+        A list of the nodes represented by the columns of the matrix `A`. Will
+        be represented in the graph as nodes with the `bipartite` attribute set
+        to 1. Must be the same length as the number of columns in `A`.
+
+    Returns
+    -------
+    G : NetworkX graph
+        A bipartite graph with edges from the biadjacency matrix `A`, and
+        nodes from `row_order` and `column_order`.
+
+    Raises
+    ------
+    ValueError
+        If `row_order` or `column_order` are provided and are not the same
+        length as the number of rows or columns in `A`, respectively.
+
+    Notes
+    -----
+    The nodes are labeled with the attribute `bipartite` set to an integer
+    0 or 1 representing membership in the `top` set (`bipartite=0`) or `bottom`
+    set (`bipartite=1`) of the bipartite graph.
+
+    If `create_using` is an instance of :class:`networkx.MultiGraph` or
+    :class:`networkx.MultiDiGraph` and the entries of `A` are of
+    type :class:`int`, then this function returns a multigraph (of the same
+    type as `create_using`) with parallel edges. In this case, `edge_attribute`
+    will be ignored.
+
+    See Also
+    --------
+    biadjacency_matrix
+    from_numpy_array
+
+    References
+    ----------
+    [1] https://en.wikipedia.org/wiki/Adjacency_matrix#Adjacency_matrix_of_a_bipartite_graph
+    """
+    ...

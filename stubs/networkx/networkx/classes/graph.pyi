@@ -307,7 +307,40 @@ class Graph(Collection[_Node]):
     # @_dispatchable adds `backend` argument, but this decorated is unsupported constructor type here
     # and __init__() ignores this argument
     def __new__(cls, *args, backend=None, **kwargs) -> Self: ...
-    def __init__(self, incoming_graph_data: _Data[_Node] | None = None, **attr: Any) -> None: ...  # attr: key=value pairs
+    def __init__(self, incoming_graph_data: _Data[_Node] | None = None, **attr: Any) -> None:
+        """
+        Initialize a graph with edges, name, or graph attributes.
+
+        Parameters
+        ----------
+        incoming_graph_data : input graph (optional, default: None)
+            Data to initialize graph. If None (default) an empty
+            graph is created.  The data can be an edge list, or any
+            NetworkX graph object.  If the corresponding optional Python
+            packages are installed the data can also be a 2D NumPy array, a
+            SciPy sparse array, or a PyGraphviz graph.
+
+        attr : keyword arguments, optional (default= no attributes)
+            Attributes to add to graph as key=value pairs.
+
+        See Also
+        --------
+        convert
+
+        Examples
+        --------
+        >>> G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc
+        >>> G = nx.Graph(name="my graph")
+        >>> e = [(1, 2), (2, 3), (3, 4)]  # list of edges
+        >>> G = nx.Graph(e)
+
+        Arbitrary graph attribute pairs (key=value) may be assigned
+
+        >>> G = nx.Graph(e, day="Friday")
+        >>> G.graph
+        {'day': 'Friday'}
+        """
+        ...
     @cached_property
     def adj(self) -> AdjacencyView[_Node, _Node, dict[str, Any]]:
         """
