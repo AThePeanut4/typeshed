@@ -401,8 +401,29 @@ class Process:
             """
             ...
         @overload
-        def cpu_affinity(self, cpus: list[int]) -> None: ...
-        def memory_maps(self, grouped: bool = True) -> list[Incomplete]: ...
+        def cpu_affinity(self, cpus: list[int]) -> None:
+            """
+            Get or set process CPU affinity.
+            If specified, *cpus* must be a list of CPUs for which you
+            want to set the affinity (e.g. [0, 1]).
+            If an empty list is passed, all egible CPUs are assumed
+            (and set).
+            (Windows, Linux and BSD only).
+            """
+            ...
+        def memory_maps(self, grouped: bool = True) -> list[Incomplete]:
+            """
+            Return process' mapped memory regions as a list of namedtuples
+            whose fields are variable depending on the platform.
+
+            If *grouped* is True the mapped regions with the same 'path'
+            are grouped together and the different memory fields are summed.
+
+            If *grouped* is False every mapped region is shown as a single
+            entity and the namedtuple will also include the mapped region's
+            address space ('addr') and permission set ('perms').
+            """
+            ...
     if sys.platform == "linux":
         def rlimit(self, resource: int, limits: tuple[int, int] | None = ...) -> tuple[int, int]: ...
         def cpu_num(self) -> int: ...

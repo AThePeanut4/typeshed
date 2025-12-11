@@ -248,7 +248,12 @@ class addr(NamedTuple):
 
 conn_tmap: dict[str, tuple[list[AddressFamily], list[SocketKind]]]
 
-class Error(Exception): ...
+class Error(Exception):
+    """
+    Base exception class. All other psutil exceptions inherit
+    from this one.
+    """
+    ...
 
 class NoSuchProcess(Error):
     """
@@ -395,7 +400,9 @@ def conn_to_ntuple(
     status: int | str,
     status_map: dict[int, str] | dict[str, str],
     pid: int,
-) -> sconn: ...
+) -> sconn:
+    """Convert a raw connection tuple to a proper ntuple."""
+    ...
 @overload
 def conn_to_ntuple(
     fd: int,
@@ -406,8 +413,15 @@ def conn_to_ntuple(
     status: int | str,
     status_map: dict[int, str] | dict[str, str],
     pid: None = None,
-) -> pconn: ...
-def deprecated_method(replacement: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]: ...
+) -> pconn:
+    """Convert a raw connection tuple to a proper ntuple."""
+    ...
+def deprecated_method(replacement: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]:
+    """
+    A decorator which can be used to mark a method as deprecated
+    'replcement' is the method name which will be called instead.
+    """
+    ...
 
 class _WrapNumbers:
     """
@@ -419,36 +433,91 @@ class _WrapNumbers:
     reminders: dict[str, defaultdict[Incomplete, int]]
     reminder_keys: dict[str, defaultdict[Incomplete, set[Incomplete]]]
     def __init__(self) -> None: ...
-    def run(self, input_dict: dict[str, tuple[int, ...]], name: str) -> dict[str, tuple[int, ...]]: ...
-    def cache_clear(self, name: str | None = None) -> None: ...
+    def run(self, input_dict: dict[str, tuple[int, ...]], name: str) -> dict[str, tuple[int, ...]]:
+        """
+        Cache dict and sum numbers which overflow and wrap.
+        Return an updated copy of `input_dict`.
+        """
+        ...
+    def cache_clear(self, name: str | None = None) -> None:
+        """Clear the internal cache, optionally only for function 'name'."""
+        ...
     def cache_info(
         self,
     ) -> tuple[
         dict[str, dict[str, tuple[int, ...]]],
         dict[str, defaultdict[Incomplete, int]],
         dict[str, defaultdict[Incomplete, set[Incomplete]]],
-    ]: ...
+    ]:
+        """Return internal cache dicts as a tuple of 3 elements."""
+        ...
 
-def wrap_numbers(input_dict: dict[str, tuple[int, ...]], name: str) -> dict[str, tuple[int, ...]]: ...
+def wrap_numbers(input_dict: dict[str, tuple[int, ...]], name: str) -> dict[str, tuple[int, ...]]:
+    """
+    Given an `input_dict` and a function `name`, adjust the numbers
+    which "wrap" (restart from zero) across different calls by adding
+    "old value" to "new value" and return an updated dict.
+    """
+    ...
 def open_binary(fname: FileDescriptorOrPath) -> BinaryIO: ...
-def open_text(fname: FileDescriptorOrPath) -> io.TextIOWrapper: ...
+def open_text(fname: FileDescriptorOrPath) -> io.TextIOWrapper:
+    """
+    Open a file in text mode by using the proper FS encoding and
+    en/decoding error handlers.
+    """
+    ...
 @overload
-def cat(fname: FileDescriptorOrPath, _open: Callable[[FileDescriptorOrPath], io.TextIOWrapper] = ...) -> str: ...
+def cat(fname: FileDescriptorOrPath, _open: Callable[[FileDescriptorOrPath], io.TextIOWrapper] = ...) -> str:
+    """
+    Read entire file content and return it as a string. File is
+    opened in text mode. If specified, `fallback` is the value
+    returned in case of error, either if the file does not exist or
+    it can't be read().
+    """
+    ...
 @overload
 def cat(
     fname: FileDescriptorOrPath, fallback: _T = ..., _open: Callable[[FileDescriptorOrPath], io.TextIOWrapper] = ...
-) -> str | _T: ...
+) -> str | _T:
+    """
+    Read entire file content and return it as a string. File is
+    opened in text mode. If specified, `fallback` is the value
+    returned in case of error, either if the file does not exist or
+    it can't be read().
+    """
+    ...
 @overload
-def bcat(fname: FileDescriptorOrPath) -> str: ...
+def bcat(fname: FileDescriptorOrPath) -> str:
+    """Same as above but opens file in binary mode."""
+    ...
 @overload
-def bcat(fname: FileDescriptorOrPath, fallback: _T = ...) -> str | _T: ...
-def bytes2human(n: int, format: str = "%(value).1f%(symbol)s") -> str: ...
-def get_procfs_path() -> str: ...
+def bcat(fname: FileDescriptorOrPath, fallback: _T = ...) -> str | _T:
+    """Same as above but opens file in binary mode."""
+    ...
+def bytes2human(n: int, format: str = "%(value).1f%(symbol)s") -> str:
+    """
+    Used by various scripts. See: https://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764.
+
+    >>> bytes2human(10000)
+    '9.8K'
+    >>> bytes2human(100001221)
+    '95.4M'
+    """
+    ...
+def get_procfs_path() -> str:
+    """Return updated psutil.PROCFS_PATH constant."""
+    ...
 def decode(s: bytes) -> str: ...
 def term_supports_colors(file: SupportsWrite[str] = sys.stdout) -> bool: ...
-def hilite(s: str, color: str | None = None, bold: bool = False) -> str: ...
-def print_color(s: str, color: str | None = None, bold: bool = False, file: SupportsWrite[str] = sys.stdout) -> None: ...
-def debug(msg: str | Exception) -> None: ...
+def hilite(s: str, color: str | None = None, bold: bool = False) -> str:
+    """Return an highlighted version of 'string'."""
+    ...
+def print_color(s: str, color: str | None = None, bold: bool = False, file: SupportsWrite[str] = sys.stdout) -> None:
+    """Print a colorized version of string."""
+    ...
+def debug(msg: str | Exception) -> None:
+    """If PSUTIL_DEBUG env var is set, print a debug message to stderr."""
+    ...
 
 __all__ = [
     # OS constants
