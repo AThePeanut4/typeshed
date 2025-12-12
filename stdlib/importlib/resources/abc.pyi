@@ -62,7 +62,15 @@ if sys.version_info >= (3, 11):
             """Yield Traversable objects in self"""
             ...
         @abstractmethod
-        def joinpath(self, *descendants: StrPath) -> Traversable: ...
+        def joinpath(self, *descendants: StrPath) -> Traversable:
+            """
+            Return Traversable resolved with any descendants applied.
+
+            Each descendant should be a path segment relative to self
+            and each may contain multiple levels separated by
+            ``posixpath.sep`` (``/``).
+            """
+            ...
 
         # The documentation and runtime protocol allows *args, **kwargs arguments,
         # but this would mean that all implementers would have to support them,
@@ -91,8 +99,12 @@ if sys.version_info >= (3, 11):
             ...
         @property
         @abstractmethod
-        def name(self) -> str: ...
-        def __truediv__(self, child: StrPath, /) -> Traversable: ...
+        def name(self) -> str:
+            """The base name of this object without any parent references."""
+            ...
+        def __truediv__(self, child: StrPath, /) -> Traversable:
+            """Return Traversable child in self"""
+            ...
         @abstractmethod
         def read_bytes(self) -> bytes:
             """Read contents of self as bytes"""
