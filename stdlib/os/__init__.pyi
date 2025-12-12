@@ -2847,129 +2847,76 @@ else:
 
     from resource import struct_rusage
 
-    def wait3(options: int) -> tuple[int, int, struct_rusage]:
-        """
-        Wait for completion of a child process.
+    def wait3(options: int) -> tuple[int, int, struct_rusage]: ...
+    def wait4(pid: int, options: int) -> tuple[int, int, struct_rusage]: ...
+    def WCOREDUMP(status: int, /) -> bool: ...
+    def WIFCONTINUED(status: int) -> bool: ...
+    def WIFSTOPPED(status: int) -> bool: ...
+    def WIFSIGNALED(status: int) -> bool: ...
+    def WIFEXITED(status: int) -> bool: ...
+    def WEXITSTATUS(status: int) -> int: ...
+    def WSTOPSIG(status: int) -> int: ...
+    def WTERMSIG(status: int) -> int: ...
 
-        Returns a tuple of information about the child process:
-          (pid, status, rusage)
-        """
-        ...
-    def wait4(pid: int, options: int) -> tuple[int, int, struct_rusage]:
-        """
-        Wait for completion of a specific child process.
+    if sys.version_info >= (3, 13):
+        def posix_spawn(
+            path: StrOrBytesPath,
+            argv: _ExecVArgs,
+            env: _ExecEnv | None,  # None allowed starting in 3.13
+            /,
+            *,
+            file_actions: Sequence[tuple[Any, ...]] | None = ...,
+            setpgroup: int | None = ...,
+            resetids: bool = ...,
+            setsid: bool = ...,
+            setsigmask: Iterable[int] = ...,
+            setsigdef: Iterable[int] = ...,
+            scheduler: tuple[Any, sched_param] | None = ...,
+        ) -> int: ...
+        def posix_spawnp(
+            path: StrOrBytesPath,
+            argv: _ExecVArgs,
+            env: _ExecEnv | None,  # None allowed starting in 3.13
+            /,
+            *,
+            file_actions: Sequence[tuple[Any, ...]] | None = ...,
+            setpgroup: int | None = ...,
+            resetids: bool = ...,
+            setsid: bool = ...,
+            setsigmask: Iterable[int] = ...,
+            setsigdef: Iterable[int] = ...,
+            scheduler: tuple[Any, sched_param] | None = ...,
+        ) -> int: ...
+    else:
+        def posix_spawn(
+            path: StrOrBytesPath,
+            argv: _ExecVArgs,
+            env: _ExecEnv,
+            /,
+            *,
+            file_actions: Sequence[tuple[Any, ...]] | None = ...,
+            setpgroup: int | None = ...,
+            resetids: bool = ...,
+            setsid: bool = ...,
+            setsigmask: Iterable[int] = ...,
+            setsigdef: Iterable[int] = ...,
+            scheduler: tuple[Any, sched_param] | None = ...,
+        ) -> int: ...
+        def posix_spawnp(
+            path: StrOrBytesPath,
+            argv: _ExecVArgs,
+            env: _ExecEnv,
+            /,
+            *,
+            file_actions: Sequence[tuple[Any, ...]] | None = ...,
+            setpgroup: int | None = ...,
+            resetids: bool = ...,
+            setsid: bool = ...,
+            setsigmask: Iterable[int] = ...,
+            setsigdef: Iterable[int] = ...,
+            scheduler: tuple[Any, sched_param] | None = ...,
+        ) -> int: ...
 
-        Returns a tuple of information about the child process:
-          (pid, status, rusage)
-        """
-        ...
-    def WCOREDUMP(status: int, /) -> bool:
-        """Return True if the process returning status was dumped to a core file."""
-        ...
-    def WIFCONTINUED(status: int) -> bool:
-        """
-        Return True if a particular process was continued from a job control stop.
-
-        Return True if the process returning status was continued from a
-        job control stop.
-        """
-        ...
-    def WIFSTOPPED(status: int) -> bool:
-        """Return True if the process returning status was stopped."""
-        ...
-    def WIFSIGNALED(status: int) -> bool:
-        """Return True if the process returning status was terminated by a signal."""
-        ...
-    def WIFEXITED(status: int) -> bool:
-        """Return True if the process returning status exited via the exit() system call."""
-        ...
-    def WEXITSTATUS(status: int) -> int:
-        """Return the process return code from status."""
-        ...
-    def WSTOPSIG(status: int) -> int:
-        """Return the signal that stopped the process that provided the status value."""
-        ...
-    def WTERMSIG(status: int) -> int:
-        """Return the signal that terminated the process that provided the status value."""
-        ...
-    def posix_spawn(
-        path: StrOrBytesPath,
-        argv: _ExecVArgs,
-        env: _ExecEnv,
-        /,
-        *,
-        file_actions: Sequence[tuple[Any, ...]] | None = ...,
-        setpgroup: int | None = ...,
-        resetids: bool = ...,
-        setsid: bool = ...,
-        setsigmask: Iterable[int] = ...,
-        setsigdef: Iterable[int] = ...,
-        scheduler: tuple[Any, sched_param] | None = ...,
-    ) -> int:
-        """
-        Execute the program specified by path in a new process.
-
-        path
-          Path of executable file.
-        argv
-          Tuple or list of strings.
-        env
-          Dictionary of strings mapping to strings.
-        file_actions
-          A sequence of file action tuples.
-        setpgroup
-          The pgroup to use with the POSIX_SPAWN_SETPGROUP flag.
-        resetids
-          If the value is `true` the POSIX_SPAWN_RESETIDS will be activated.
-        setsid
-          If the value is `true` the POSIX_SPAWN_SETSID or POSIX_SPAWN_SETSID_NP will be activated.
-        setsigmask
-          The sigmask to use with the POSIX_SPAWN_SETSIGMASK flag.
-        setsigdef
-          The sigmask to use with the POSIX_SPAWN_SETSIGDEF flag.
-        scheduler
-          A tuple with the scheduler policy (optional) and parameters.
-        """
-        ...
-    def posix_spawnp(
-        path: StrOrBytesPath,
-        argv: _ExecVArgs,
-        env: _ExecEnv,
-        /,
-        *,
-        file_actions: Sequence[tuple[Any, ...]] | None = ...,
-        setpgroup: int | None = ...,
-        resetids: bool = ...,
-        setsid: bool = ...,
-        setsigmask: Iterable[int] = ...,
-        setsigdef: Iterable[int] = ...,
-        scheduler: tuple[Any, sched_param] | None = ...,
-    ) -> int:
-        """
-        Execute the program specified by path in a new process.
-
-        path
-          Path of executable file.
-        argv
-          Tuple or list of strings.
-        env
-          Dictionary of strings mapping to strings.
-        file_actions
-          A sequence of file action tuples.
-        setpgroup
-          The pgroup to use with the POSIX_SPAWN_SETPGROUP flag.
-        resetids
-          If the value is `True` the POSIX_SPAWN_RESETIDS will be activated.
-        setsid
-          If the value is `True` the POSIX_SPAWN_SETSID or POSIX_SPAWN_SETSID_NP will be activated.
-        setsigmask
-          The sigmask to use with the POSIX_SPAWN_SETSIGMASK flag.
-        setsigdef
-          The sigmask to use with the POSIX_SPAWN_SETSIGDEF flag.
-        scheduler
-          A tuple with the scheduler policy (optional) and parameters.
-        """
-        ...
     POSIX_SPAWN_OPEN: Final = 0
     POSIX_SPAWN_CLOSE: Final = 1
     POSIX_SPAWN_DUP2: Final = 2
