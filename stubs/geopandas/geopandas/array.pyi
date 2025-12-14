@@ -418,9 +418,54 @@ class GeometryArray(ExtensionArray):
         method: Literal["backfill", "bfill", "pad", "ffill"] | None = None,
         limit: int | None = None,
         copy: bool = True,
-    ) -> GeometryArray: ...
+    ) -> GeometryArray:
+        """
+        Fill NA values with geometry (or geometries) or using the specified method.
+
+        Parameters
+        ----------
+        value : shapely geometry object or GeometryArray
+            If a geometry value is passed it is used to fill all missing values.
+            Alternatively, an GeometryArray 'value' can be given. It's expected
+            that the GeometryArray has the same length as 'self'.
+
+        method : {'backfill', 'bfill', 'pad', 'ffill', None}, default None
+            Method to use for filling holes in reindexed Series
+            pad / ffill: propagate last valid observation forward to next valid
+            backfill / bfill: use NEXT valid observation to fill gap
+
+        limit : int, default None
+            The maximum number of entries where NA values will be filled.
+
+        copy : bool, default True
+            Whether to make a copy of the data before filling. If False, then
+            the original should be modified and no new memory should be allocated.
+
+        Returns
+        -------
+        GeometryArray
+        """
+        ...
     @overload  # type: ignore[override]
-    def astype(self, dtype: GeometryDtype, copy: bool = True) -> GeometryArray: ...
+    def astype(self, dtype: GeometryDtype, copy: bool = True) -> GeometryArray:
+        """
+        Cast to a NumPy array with 'dtype'.
+
+        Parameters
+        ----------
+        dtype : str or dtype
+            Typecode or data-type to which the array is cast.
+        copy : bool, default True
+            Whether to copy the data, even if not necessary. If False,
+            a copy is made only if the old dtype does not match the
+            new dtype.
+
+        Returns
+        -------
+        array : ndarray
+            NumPy ndarray with 'dtype' for its dtype.
+        """
+        ...
     @overload
     def astype(self, dtype: ExtensionDtype | Literal["string"], copy: bool = True) -> ExtensionArray:
         """
