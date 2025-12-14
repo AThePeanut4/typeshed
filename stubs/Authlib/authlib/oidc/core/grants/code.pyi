@@ -11,59 +11,16 @@ per `Section 3.1`_.
 from logging import Logger
 
 from authlib.oauth2 import OAuth2Request
+from authlib.oauth2.client import OAuth2Client
 from authlib.oauth2.rfc6749 import BaseGrant
 from authlib.oidc.core import UserInfo
 
 log: Logger
 
 class OpenIDToken:
-    def get_jwt_config(self, grant: BaseGrant) -> dict[str, str | int]:
-        """
-        Get the JWT configuration for OpenIDCode extension. The JWT
-        configuration will be used to generate ``id_token``.
-        If ``alg`` is undefined, the ``id_token_signed_response_alg`` client
-        metadata will be used. By default ``RS256`` will be used.
-        If ``key`` is undefined, the ``jwks_uri`` or ``jwks`` client metadata
-        will be used.
-        Developers MUST implement this method in subclass, e.g.::
-
-            def get_jwt_config(self, grant):
-                return {
-                    "key": read_private_key_file(key_path),
-                    "alg": "RS256",
-                    "iss": "issuer-identity",
-                    "exp": 3600,
-                }
-
-        :param grant: AuthorizationCodeGrant instance
-        :return: dict
-        """
-        ...
-    def generate_user_info(self, user, scope: str) -> UserInfo:
-        """
-        Provide user information for the given scope. Developers
-        MUST implement this method in subclass, e.g.::
-
-            from authlib.oidc.core import UserInfo
-
-
-            def generate_user_info(self, user, scope):
-                user_info = UserInfo(sub=user.id, name=user.name)
-                if "email" in scope:
-                    user_info["email"] = user.email
-                return user_info
-
-        :param user: user instance
-        :param scope: scope of the token
-        :return: ``authlib.oidc.core.UserInfo`` instance
-        """
-        ...
-    def get_audiences(self, request: OAuth2Request) -> list[str]:
-        """
-        Parse `aud` value for id_token, default value is client id. Developers
-        MAY rewrite this method to provide a customized audience value.
-        """
-        ...
+    def get_jwt_config(self, grant: BaseGrant, client: OAuth2Client) -> dict[str, str | int]: ...
+    def generate_user_info(self, user, scope: str) -> UserInfo: ...
+    def get_audiences(self, request: OAuth2Request) -> list[str]: ...
     def process_token(self, grant: BaseGrant, response) -> dict[str, str | int]: ...
     def __call__(self, grant: BaseGrant) -> None: ...
 

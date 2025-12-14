@@ -5,8 +5,7 @@ from collections.abc import Mapping
 from typing import TypeVar, overload
 
 from pandas import DataFrame
-from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameProtocol
-from seaborn._core.typing import DataSource, VariableSpec
+from seaborn._core.typing import DataSource, SupportsDataFrame, VariableSpec
 
 _T = TypeVar("_T", Mapping[Incomplete, Incomplete], None)
 
@@ -55,9 +54,5 @@ def handle_data_source(data: _T) -> _T:
     """Convert the data source object to a common union representation."""
     ...
 @overload
-def handle_data_source(data: DataFrameProtocol) -> DataFrame:
-    """Convert the data source object to a common union representation."""
-    ...
-def convert_dataframe_to_pandas(data: object) -> DataFrame:
-    """Use the DataFrame exchange protocol, or fail gracefully."""
-    ...
+def handle_data_source(data: SupportsDataFrame) -> DataFrame: ...
+def convert_dataframe_to_pandas(data: object) -> DataFrame: ...
