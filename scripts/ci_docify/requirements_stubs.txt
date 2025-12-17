@@ -73,7 +73,7 @@ requests[socks]~=2.32.4
 protobuf~=6.32.1
 pyserial[cp2110]==3.5.*
 pyxdg==0.28.*
-google-cloud-ndb==2.3.*
+google-cloud-ndb==2.4.*
 tzdata==2025.*
 cffi==1.17.*
 gdb==16.3.*
