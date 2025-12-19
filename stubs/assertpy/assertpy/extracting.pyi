@@ -1,4 +1,5 @@
-from collections.abc import Callable, Iterable as _Iterable, Mapping
+from _typeshed import SupportsRichComparison
+from collections.abc import Callable, Iterable, Mapping
 from typing import Any
 from typing_extensions import Self
 
@@ -89,50 +90,7 @@ class ExtractingMixin:
     def extracting(
         self,
         *names: str,
+        # The callable must accept the type of the items in the self.val collection.
         filter: str | Mapping[str, Any] | Callable[[Any], bool] = ...,
-        sort: str | _Iterable[str] | Callable[[Any], Any] = ...,
-    ) -> Self:
-        """
-        Asserts that val is iterable, then extracts the named attributes, properties, or
-        zero-arg methods into a list (or list of tuples if multiple names are given).
-
-        Args:
-            *names: the attribute to be extracted (or property or zero-arg method)
-            **kwargs: see below
-
-        Keyword Args:
-            filter: extract only those items where filter is truthy
-            sort: order the extracted items by the sort key
-
-        Examples:
-            Usage::
-
-                alice = User('Alice', 20, True)
-                bob = User('Bob', 30, False)
-                charlie = User('Charlie', 10, True)
-                users = [alice, bob, charlie]
-
-                assert_that(users).extracting('user').contains('Alice', 'Bob', 'Charlie')
-
-            Works with *dict-like* objects too::
-
-                users = [
-                    {'user': 'Alice', 'age': 20, 'active': True},
-                    {'user': 'Bob', 'age': 30, 'active': False},
-                    {'user': 'Charlie', 'age': 10, 'active': True}
-                ]
-
-                assert_that(people).extracting('user').contains('Alice', 'Bob', 'Charlie')
-
-            Filter::
-
-                assert_that(users).extracting('user', filter='active').is_equal_to(['Alice', 'Charlie'])
-
-            Sort::
-
-                assert_that(users).extracting('user', sort='age').is_equal_to(['Charlie', 'Alice', 'Bob'])
-
-        Returns:
-            AssertionBuilder: returns a new instance (now with the extracted list as the val) to chain to the next assertion
-        """
-        ...
+        sort: str | Iterable[str] | Callable[[Any], SupportsRichComparison] = ...,
+    ) -> Self: ...
