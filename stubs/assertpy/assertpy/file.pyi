@@ -3,7 +3,30 @@ from typing_extensions import Self
 
 __tracebackhide__: bool
 
-def contents_of(file: SupportsRead[str] | StrPath, encoding: str = "utf-8") -> str: ...
+def contents_of(file: SupportsRead[str] | StrPath, encoding: str = "utf-8") -> str:
+    """
+    Helper to read the contents of the given file or path into a string with the given encoding.
+
+    Args:
+        file: a *path-like object* (aka a file name) or a *file-like object* (aka a file)
+        encoding (str): the target encoding.  Defaults to ``utf-8``, other useful encodings are ``ascii`` and ``latin-1``.
+
+    Examples:
+        Usage::
+
+            from assertpy import assert_that, contents_of
+
+            contents = contents_of('foo.txt')
+            assert_that(contents).starts_with('foo').ends_with('bar').contains('oob')
+
+    Returns:
+        str: returns the file contents as a string
+
+    Raises:
+        IOError: if file not found
+        TypeError: if file is not a *path-like object* or a *file-like object*
+    """
+    ...
 
 class FileMixin:
     """File assertions mixin."""
