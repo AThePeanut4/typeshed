@@ -26,9 +26,60 @@ class ClientRegistrationEndpoint:
         """
         ...
     def create_endpoint_request(self, request): ...
-    def generate_client_id(self, request) -> str: ...
-    def generate_client_secret(self, request) -> str: ...
-    def get_server_metadata(self): ...
-    def authenticate_token(self, request): ...
-    def resolve_public_key(self, request): ...
-    def save_client(self, client_info, client_metadata, request): ...
+    def generate_client_id(self, request) -> str:
+        """
+        Generate ``client_id`` value. Developers MAY rewrite this method
+        to use their own way to generate ``client_id``.
+        """
+        ...
+    def generate_client_secret(self, request) -> str:
+        """
+        Generate ``client_secret`` value. Developers MAY rewrite this method
+        to use their own way to generate ``client_secret``.
+        """
+        ...
+    def get_server_metadata(self):
+        """
+        Return server metadata which includes supported grant types,
+        response types and etc.
+        """
+        ...
+    def authenticate_token(self, request):
+        """
+        Authenticate current credential who is requesting to register a client.
+        Developers MUST implement this method in subclass::
+
+            def authenticate_token(self, request):
+                auth = request.headers.get("Authorization")
+                return get_token_by_auth(auth)
+
+        :return: token instance
+        """
+        ...
+    def resolve_public_key(self, request):
+        """
+        Resolve a public key for decoding ``software_statement``. If
+        ``enable_software_statement=True``, developers MUST implement this
+        method in subclass::
+
+            def resolve_public_key(self, request):
+                return get_public_key_from_user(request.credential)
+
+        :return: JWK or Key string
+        """
+        ...
+    def save_client(self, client_info, client_metadata, request):
+        """
+        Save client into database. Developers MUST implement this method
+        in subclass::
+
+            def save_client(self, client_info, client_metadata, request):
+                client = OAuthClient(
+                    client_id=client_info['client_id'],
+                    client_secret=client_info['client_secret'],
+                    ...
+                )
+                client.save()
+                return client
+        """
+        ...

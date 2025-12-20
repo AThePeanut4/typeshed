@@ -141,10 +141,67 @@ class AuthorizationCodeGrant(BaseGrant, AuthorizationEndpointMixin, TokenEndpoin
         ...
     def validate_token_request(self) -> None: ...
     def create_token_response(self) -> _ServerResponse: ...
-    def generate_authorization_code(self) -> str: ...
-    def save_authorization_code(self, code: str, request: OAuth2Request): ...
-    def query_authorization_code(self, code: str, client: ClientMixin): ...
-    def delete_authorization_code(self, authorization_code): ...
-    def authenticate_user(self, authorization_code): ...
+    def generate_authorization_code(self) -> str:
+        """
+        "The method to generate "code" value for authorization code data.
+        Developers may rewrite this method, or customize the code length with::
+
+            class MyAuthorizationCodeGrant(AuthorizationCodeGrant):
+                AUTHORIZATION_CODE_LENGTH = 32  # default is 48
+        """
+        ...
+    def save_authorization_code(self, code: str, request: OAuth2Request):
+        """
+        Save authorization_code for later use. Developers MUST implement
+        it in subclass. Here is an example::
+
+            def save_authorization_code(self, code, request):
+                client = request.client
+                item = AuthorizationCode(
+                    code=code,
+                    client_id=client.client_id,
+                    redirect_uri=request.payload.redirect_uri,
+                    scope=request.payload.scope,
+                    user_id=request.user.id,
+                )
+                item.save()
+        """
+        ...
+    def query_authorization_code(self, code: str, client: ClientMixin):
+        """
+        Get authorization_code from previously savings. Developers MUST
+        implement it in subclass::
+
+            def query_authorization_code(self, code, client):
+                return Authorization.get(code=code, client_id=client.client_id)
+
+        :param code: a string represent the code.
+        :param client: client related to this code.
+        :return: authorization_code object
+        """
+        ...
+    def delete_authorization_code(self, authorization_code):
+        """
+        Delete authorization code from database or cache. Developers MUST
+        implement it in subclass, e.g.::
+
+            def delete_authorization_code(self, authorization_code):
+                authorization_code.delete()
+
+        :param authorization_code: the instance of authorization_code
+        """
+        ...
+    def authenticate_user(self, authorization_code):
+        """
+        Authenticate the user related to this authorization_code. Developers
+        MUST implement this method in subclass, e.g.::
+
+            def authenticate_user(self, authorization_code):
+                return User.get(authorization_code.user_id)
+
+        :param authorization_code: AuthorizationCode object
+        :return: user
+        """
+        ...
 
 def validate_code_authorization_request(grant: AuthorizationCodeGrant) -> str: ...

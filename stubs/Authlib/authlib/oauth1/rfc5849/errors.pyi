@@ -12,7 +12,9 @@ from authlib.common.errors import AuthlibHTTPError
 
 class OAuth1Error(AuthlibHTTPError):
     def __init__(self, description=None, uri=None, status_code=None) -> None: ...
-    def get_headers(self) -> list[tuple[str, str]]: ...
+    def get_headers(self) -> list[tuple[str, str]]:
+        """Get a list of headers."""
+        ...
 
 class InsecureTransportError(OAuth1Error):
     error: str

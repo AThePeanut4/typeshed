@@ -1,3 +1,5 @@
+"""Closeness centrality measures."""
+
 from _typeshed import Incomplete, SupportsKeysAndGetItem
 
 from networkx.classes.graph import Graph, _Node

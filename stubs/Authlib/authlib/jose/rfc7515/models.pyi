@@ -10,9 +10,28 @@ class JWSAlgorithm:
     description: Incomplete
     algorithm_type: str
     algorithm_location: str
-    def prepare_key(self, raw_data): ...
-    def sign(self, msg, key): ...
-    def verify(self, msg, sig, key) -> bool: ...
+    def prepare_key(self, raw_data):
+        """Prepare key for signing and verifying signature."""
+        ...
+    def sign(self, msg, key):
+        """
+        Sign the text msg with a private/sign key.
+
+        :param msg: message bytes to be signed
+        :param key: private key to sign the message
+        :return: bytes
+        """
+        ...
+    def verify(self, msg, sig, key) -> bool:
+        """
+        Verify the signature of text msg with a public/verify key.
+
+        :param msg: message bytes to be signed
+        :param sig: result signature to be compared
+        :param key: public key to verify the signature
+        :return: boolean
+        """
+        ...
 
 class JWSHeader(dict[str, object]):
     """

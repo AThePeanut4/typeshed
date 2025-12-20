@@ -80,4 +80,14 @@ class ResourceOwnerPasswordCredentialsGrant(BaseGrant, TokenEndpointMixin):
         """
         ...
     def create_token_response(self): ...
-    def authenticate_user(self, username, password): ...
+    def authenticate_user(self, username, password):
+        """
+        Validate the resource owner password credentials using its
+        existing password validation algorithm::
+
+            def authenticate_user(self, username, password):
+                user = get_user_by_username(username)
+                if user.check_password(password):
+                    return user
+        """
+        ...

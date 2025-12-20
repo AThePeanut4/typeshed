@@ -38,6 +38,54 @@ class IntrospectionEndpoint(TokenEndpoint):
         """
         ...
     def create_introspection_payload(self, token): ...
-    def check_permission(self, token, client, request): ...
-    def query_token(self, token_string, token_type_hint): ...
-    def introspect_token(self, token): ...
+    def check_permission(self, token, client, request):
+        """
+        Check if the request has permission to introspect the token. Developers
+        MUST implement this method::
+
+            def check_permission(self, token, client, request):
+                # only allow a special client to introspect the token
+                return client.client_id == "introspection_client"
+
+        :return: bool
+        """
+        ...
+    def query_token(self, token_string, token_type_hint):
+        """
+        Get the token from database/storage by the given token string.
+        Developers should implement this method::
+
+            def query_token(self, token_string, token_type_hint):
+                if token_type_hint == "access_token":
+                    tok = Token.query_by_access_token(token_string)
+                elif token_type_hint == "refresh_token":
+                    tok = Token.query_by_refresh_token(token_string)
+                else:
+                    tok = Token.query_by_access_token(token_string)
+                    if not tok:
+                        tok = Token.query_by_refresh_token(token_string)
+                return tok
+        """
+        ...
+    def introspect_token(self, token):
+        """
+        Read given token and return its introspection metadata as a
+        dictionary following `Section 2.2`_::
+
+            def introspect_token(self, token):
+                return {
+                    "active": True,
+                    "client_id": token.client_id,
+                    "token_type": token.token_type,
+                    "username": get_token_username(token),
+                    "scope": token.get_scope(),
+                    "sub": get_token_user_sub(token),
+                    "aud": token.client_id,
+                    "iss": "https://server.example.com/",
+                    "exp": token.expires_at,
+                    "iat": token.issued_at,
+                }
+
+        .. _`Section 2.2`: https://tools.ietf.org/html/rfc7662#section-2.2
+        """
+        ...

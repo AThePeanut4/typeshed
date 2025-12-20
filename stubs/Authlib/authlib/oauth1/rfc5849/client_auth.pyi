@@ -48,10 +48,38 @@ class ClientAuth:
         realm=None,
         force_include_body: bool = False,
     ) -> None: ...
-    def get_oauth_signature(self, method, uri, headers, body) -> str: ...
+    def get_oauth_signature(self, method, uri, headers, body) -> str:
+        """
+        Get an OAuth signature to be used in signing a request.
+
+        To satisfy `section 3.4.1.2`_ item 2, if the request argument's
+        headers dict attribute contains a Host item, its value will
+        replace any netloc part of the request argument's uri attribute
+        value.
+
+        .. _`section 3.4.1.2`: https://tools.ietf.org/html/rfc5849#section-3.4.1.2
+        """
+        ...
     def get_oauth_params(self, nonce, timestamp) -> list[Incomplete]: ...
-    def sign(self, method, uri, headers, body) -> tuple[Incomplete, Incomplete, Incomplete]: ...
-    def prepare(self, method, uri, headers, body) -> tuple[Incomplete, ...]: ...
+    def sign(self, method, uri, headers, body) -> tuple[Incomplete, Incomplete, Incomplete]:
+        """
+        Sign the HTTP request, add OAuth parameters and signature.
+
+        :param method: HTTP method of the request.
+        :param uri:  URI of the HTTP request.
+        :param body: Body payload of the HTTP request.
+        :param headers: Headers of the HTTP request.
+        :return: uri, headers, body
+        """
+        ...
+    def prepare(self, method, uri, headers, body) -> tuple[Incomplete, ...]:
+        """
+        Add OAuth parameters to the request.
+
+        Parameters may be included from the body if the content-type is
+        urlencoded, if no content type is set, a guess is made.
+        """
+        ...
 
 def generate_nonce() -> str: ...
 def generate_timestamp() -> str: ...

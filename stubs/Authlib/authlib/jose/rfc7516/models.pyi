@@ -15,10 +15,20 @@ class JWEAlgorithmBase(metaclass=ABCMeta):
     def generate_preset(self, enc_alg, key): ...
 
 class JWEAlgorithm(JWEAlgorithmBase, metaclass=ABCMeta):
+    """
+    Interface for JWE algorithm conforming to RFC7518.
+    JWA specification (RFC7518) SHOULD implement the algorithms for JWE
+    with this base implementation.
+    """
     def wrap(self, enc_alg, headers, key, preset=None): ...
     def unwrap(self, enc_alg, ek, headers, key): ...
 
 class JWEAlgorithmWithTagAwareKeyAgreement(JWEAlgorithmBase, metaclass=ABCMeta):
+    """
+    Interface for JWE algorithm with tag-aware key agreement (in key agreement
+    with key wrapping mode).
+    ECDH-1PU is an example of such an algorithm.
+    """
     def generate_keys_and_prepare_headers(self, enc_alg, key, sender_key, preset=None): ...
     def agree_upon_key_and_wrap_cek(self, enc_alg, headers, key, sender_key, epk, cek, tag): ...
     def wrap(self, enc_alg, headers, key, sender_key, preset=None): ...
@@ -34,8 +44,29 @@ class JWEEncAlgorithm:
     def generate_cek(self): ...
     def generate_iv(self): ...
     def check_iv(self, iv) -> None: ...
-    def encrypt(self, msg, aad, iv, key): ...
-    def decrypt(self, ciphertext, aad, iv, tag, key): ...
+    def encrypt(self, msg, aad, iv, key):
+        """
+        Encrypt the given "msg" text.
+
+        :param msg: text to be encrypt in bytes
+        :param aad: additional authenticated data in bytes
+        :param iv: initialization vector in bytes
+        :param key: encrypted key in bytes
+        :return: (ciphertext, tag)
+        """
+        ...
+    def decrypt(self, ciphertext, aad, iv, tag, key):
+        """
+        Decrypt the given cipher text.
+
+        :param ciphertext: ciphertext in bytes
+        :param aad: additional authenticated data in bytes
+        :param iv: initialization vector in bytes
+        :param tag: authentication tag in bytes
+        :param key: encrypted key in bytes
+        :return: message
+        """
+        ...
 
 class JWEZipAlgorithm:
     name: Incomplete

@@ -1,3 +1,5 @@
+"""Functions for computing reaching centrality of a node or a graph."""
+
 from _typeshed import Incomplete
 from collections.abc import Mapping
 

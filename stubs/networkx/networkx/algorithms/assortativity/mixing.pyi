@@ -1,3 +1,5 @@
+"""Mixing matrices for node attributes and degree."""
+
 from _typeshed import Incomplete
 from collections.abc import Iterable, Mapping
 
@@ -147,7 +149,70 @@ def degree_mixing_matrix(
     nodes: Iterable[Incomplete] | None = None,
     normalized: bool = True,
     mapping: Mapping[Incomplete, Incomplete] | None = None,
-): ...
+):
+    """
+    Returns mixing matrix for attribute.
+
+    Parameters
+    ----------
+    G : graph
+       NetworkX graph object.
+
+    x: string ('in','out')
+       The degree type for source node (directed graphs only).
+
+    y: string ('in','out')
+       The degree type for target node (directed graphs only).
+
+    nodes: list or iterable (optional)
+        Build the matrix using only nodes in container.
+        The default is all nodes.
+
+    weight: string or None, optional (default=None)
+       The edge attribute that holds the numerical value used
+       as a weight.  If None, then each edge has weight 1.
+       The degree is the sum of the edge weights adjacent to the node.
+
+    normalized : bool (default=True)
+       Return counts if False or probabilities if True.
+
+    mapping : dictionary, optional
+       Mapping from node degree to integer index in matrix.
+       If not specified, an arbitrary ordering will be used.
+
+    Returns
+    -------
+    m: numpy array
+       Counts, or joint probability, of occurrence of node degree.
+
+    Notes
+    -----
+    Definitions of degree mixing matrix vary on whether the matrix
+    should include rows for degree values that don't arise. Here we
+    do not include such empty-rows. But you can force them to appear
+    by inputting a `mapping` that includes those values. See examples.
+
+    Examples
+    --------
+    >>> G = nx.star_graph(3)
+    >>> mix_mat = nx.degree_mixing_matrix(G)
+    >>> mix_mat
+    array([[0. , 0.5],
+           [0.5, 0. ]])
+
+    If you want every possible degree to appear as a row, even if no nodes
+    have that degree, use `mapping` as follows,
+
+    >>> max_degree = max(deg for n, deg in G.degree)
+    >>> mapping = {x: x for x in range(max_degree + 1)}  # identity mapping
+    >>> mix_mat = nx.degree_mixing_matrix(G, mapping=mapping)
+    >>> mix_mat
+    array([[0. , 0. , 0. , 0. ],
+           [0. , 0. , 0. , 0.5],
+           [0. , 0. , 0. , 0. ],
+           [0. , 0.5, 0. , 0. ]])
+    """
+    ...
 @_dispatchable
 def mixing_dict(xy, normalized: bool = False) -> dict[Incomplete, Incomplete]:
     """

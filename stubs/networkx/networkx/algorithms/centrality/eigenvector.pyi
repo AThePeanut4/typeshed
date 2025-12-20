@@ -1,3 +1,5 @@
+"""Functions for computing eigenvector centrality."""
+
 from _typeshed import Incomplete
 from collections.abc import Mapping
 

@@ -47,7 +47,23 @@ class JWTBearerTokenValidator(BearerTokenValidator):
     issuer: Incomplete
     resource_server: Incomplete
     def __init__(self, issuer, resource_server, *args, **kwargs) -> None: ...
-    def get_jwks(self): ...
+    def get_jwks(self):
+        """
+        Return the JWKs that will be used to check the JWT access token signature.
+        Developers MUST re-implement this method. Typically the JWKs are statically
+        stored in the resource server configuration, or dynamically downloaded and
+        cached using :ref:`specs/rfc8414`::
+
+            def get_jwks(self):
+                if "jwks" in cache:
+                    return cache.get("jwks")
+
+                server_metadata = get_server_metadata(self.issuer)
+                jwks_uri = server_metadata.get("jwks_uri")
+                cache["jwks"] = requests.get(jwks_uri).json()
+                return cache["jwks"]
+        """
+        ...
     def validate_iss(self, claims, iss: str) -> bool: ...
     def authenticate_token(self, token_string): ...
     def validate_token(self, token, scopes, request, groups=None, roles=None, entitlements=None) -> None: ...

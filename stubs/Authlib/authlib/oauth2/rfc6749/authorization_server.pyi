@@ -120,12 +120,42 @@ class AuthorizationServer(Hookable):
         """
         ...
     def register_extension(self, extension) -> None: ...
-    def get_error_uri(self, request, error): ...
-    def send_signal(self, name, *args: object, **kwargs: object) -> None: ...
-    def create_oauth2_request(self, request) -> OAuth2Request: ...
-    def create_json_request(self, request) -> JsonRequest: ...
-    def handle_response(self, status: int, body: Mapping[str, object], headers: Mapping[str, str]) -> object: ...
-    def validate_requested_scope(self, scope: str) -> None: ...
+    def get_error_uri(self, request, error):
+        """Return a URI for the given error, framework may implement this method."""
+        ...
+    def send_signal(self, name, *args: object, **kwargs: object) -> None:
+        """
+        Framework integration can re-implement this method to support
+        signal system.
+        """
+        ...
+    def create_oauth2_request(self, request) -> OAuth2Request:
+        """
+        This method MUST be implemented in framework integrations. It is
+        used to create an OAuth2Request instance.
+
+        :param request: the "request" instance in framework
+        :return: OAuth2Request instance
+        """
+        ...
+    def create_json_request(self, request) -> JsonRequest:
+        """
+        This method MUST be implemented in framework integrations. It is
+        used to create an HttpRequest instance.
+
+        :param request: the "request" instance in framework
+        :return: HttpRequest instance
+        """
+        ...
+    def handle_response(self, status: int, body: Mapping[str, object], headers: Mapping[str, str]) -> object:
+        """Return HTTP response. Framework MUST implement this function."""
+        ...
+    def validate_requested_scope(self, scope: str) -> None:
+        """
+        Validate if requested scope is supported by Authorization Server.
+        Developers CAN re-write this method to meet your needs.
+        """
+        ...
     def register_grant(
         self, grant_cls: type[BaseGrant], extensions: Collection[Callable[[BaseGrant], None]] | None = None
     ) -> None:

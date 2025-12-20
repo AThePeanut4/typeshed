@@ -1,3 +1,5 @@
+"""Katz centrality."""
+
 from _typeshed import ConvertibleToFloat, Incomplete, SupportsItemAccess
 from collections.abc import Iterable, Mapping
 
