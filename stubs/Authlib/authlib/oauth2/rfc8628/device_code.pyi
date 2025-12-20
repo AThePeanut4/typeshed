@@ -85,40 +85,6 @@ class DeviceCodeGrant(BaseGrant, TokenEndpointMixin):
         ...
     def create_token_response(self): ...
     def validate_device_credential(self, credential): ...
-    def query_device_credential(self, device_code) -> None:
-        """
-        Get device credential from previously savings via ``DeviceAuthorizationEndpoint``.
-        Developers MUST implement it in subclass::
-
-            def query_device_credential(self, device_code):
-                return DeviceCredential.get(device_code)
-
-        :param device_code: a string represent the code.
-        :return: DeviceCredential instance
-        """
-        ...
-    def query_user_grant(self, user_code) -> None:
-        """
-        Get user and grant via the given user code. Developers MUST
-        implement it in subclass::
-
-            def query_user_grant(self, user_code):
-                # e.g. we saved user grant info in redis
-                data = redis.get("oauth_user_grant:" + user_code)
-                if not data:
-                    return None
-
-                user_id, allowed = data.split()
-                user = User.get(user_id)
-                return user, bool(allowed)
-
-        Note, user grant information is saved by verification endpoint.
-        """
-        ...
-    def should_slow_down(self, credential) -> None:
-        """
-        The authorization request is still pending and polling should
-        continue, but the interval MUST be increased by 5 seconds for this
-        and all subsequent requests.
-        """
-        ...
+    def query_device_credential(self, device_code): ...
+    def query_user_grant(self, user_code): ...
+    def should_slow_down(self, credential): ...

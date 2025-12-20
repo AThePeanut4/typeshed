@@ -1,6 +1,4 @@
-"""Closeness centrality measures."""
-
-from _typeshed import Incomplete, SupportsGetItem
+from _typeshed import Incomplete, SupportsKeysAndGetItem
 
 from networkx.classes.graph import Graph, _Node
 from networkx.utils.backends import _dispatchable
@@ -108,7 +106,7 @@ def closeness_centrality(
 def incremental_closeness_centrality(
     G: Graph[_Node],
     edge: tuple[Incomplete],
-    prev_cc: SupportsGetItem[Incomplete, Incomplete] | None = None,
+    prev_cc: SupportsKeysAndGetItem[Incomplete, Incomplete] | None = None,
     insertion: bool | None = True,
     wf_improved: bool | None = True,
 ) -> dict[_Node, float]:

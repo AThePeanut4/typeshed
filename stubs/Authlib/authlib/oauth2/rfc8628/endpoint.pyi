@@ -71,39 +71,10 @@ class DeviceAuthorizationEndpoint:
         """
         ...
     def create_endpoint_response(self, request): ...
-    def generate_user_code(self):
-        """
-        A method to generate ``user_code`` value for device authorization
-        endpoint. This method will generate a random string like MQNA-JPOZ.
-        Developers can rewrite this  method to create their own ``user_code``.
-        """
-        ...
-    def generate_device_code(self):
-        """
-        A method to generate ``device_code`` value for device authorization
-        endpoint. This method will generate a random string of 42 characters.
-        Developers can rewrite this method to create their own ``device_code``.
-        """
-        ...
-    def get_verification_uri(self) -> None:
-        """
-        Define the ``verification_uri`` of device authorization endpoint.
-        Developers MUST implement this method in subclass::
-
-            def get_verification_uri(self):
-                return "https://your-company.com/active"
-        """
-        ...
-    def save_device_credential(self, client_id, scope, data) -> None:
-        """
-        Save device token into database for later use. Developers MUST
-        implement this method in subclass::
-
-            def save_device_credential(self, client_id, scope, data):
-                item = DeviceCredential(client_id=client_id, scope=scope, **data)
-                item.save()
-        """
-        ...
+    def generate_user_code(self): ...
+    def generate_device_code(self): ...
+    def get_verification_uri(self): ...
+    def save_device_credential(self, client_id, scope, data): ...
 
 def create_string_user_code(): ...
 def create_digital_user_code(): ...

@@ -1,13 +1,7 @@
 from authlib.oauth1.rfc5849.base_server import BaseServer
 
-class ResourceProtector(BaseServer):
-    def validate_request(self, method, uri, body, headers): ...
-    def get_token_credential(self, request) -> None:
-        """
-        Fetch the token credential from data store like a database,
-        framework should implement this function.
+from .wrapper import OAuth1Request
 
-        :param request: OAuth1Request instance
-        :return: Token model instance
-        """
-        ...
+class ResourceProtector(BaseServer):
+    def validate_request(self, method, uri, body, headers) -> OAuth1Request: ...
+    def get_token_credential(self, request): ...

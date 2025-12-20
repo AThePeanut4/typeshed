@@ -1,20 +1,4 @@
-"""
-Functions measuring similarity using graph edit distance.
-
-The graph edit distance is the number of edge/node changes needed
-to make two graphs isomorphic.
-
-The default algorithm/implementation is sub-optimal for some graphs.
-The problem of finding the exact Graph Edit Distance (GED) is NP-hard
-so it is often slow. If the simple interface `graph_edit_distance`
-takes too long for your graph, try `optimize_graph_edit_distance`
-and/or `optimize_edit_paths`.
-
-At the same time, I encourage capable people to investigate
-alternative GED algorithms, in order to improve the choices available.
-"""
-
-from _typeshed import Incomplete, SupportsGetItem
+from _typeshed import Incomplete, SupportsItemAccess
 from collections.abc import Callable, Generator
 
 from networkx.classes.graph import Graph, _Node
@@ -936,7 +920,7 @@ def generate_random_paths(
     G: Graph[_Node],
     sample_size: int,
     path_length: int = 5,
-    index_map: SupportsGetItem[Incomplete, Incomplete] | None = None,
+    index_map: SupportsItemAccess[Incomplete, Incomplete] | None = None,
     weight: str | None = "weight",
     seed: int | RandomState | None = None,
     *,

@@ -26,6 +26,7 @@ class Cursor:
     messages: Any
     errorhandler: Any
     lastrowid: int
+    warning_count: int
     def __init__(self, connection: Connection[Any]) -> None: ...
     def close(self) -> None:
         """Closing a cursor just exhausts all remaining data."""

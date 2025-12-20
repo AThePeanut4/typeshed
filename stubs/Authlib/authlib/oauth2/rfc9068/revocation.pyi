@@ -1,4 +1,5 @@
 from _typeshed import Incomplete
+from typing import NoReturn
 
 from authlib.oauth2.rfc7009 import RevocationEndpoint
 
@@ -37,13 +38,5 @@ class JWTRevocationEndpoint(RevocationEndpoint):
     """
     issuer: Incomplete
     def __init__(self, issuer, server=None, *args, **kwargs) -> None: ...
-    def authenticate_token(self, request, client) -> None: ...
-    def get_jwks(self) -> None:
-        """
-        Return the JWKs that will be used to check the JWT access token signature.
-        Developers MUST re-implement this method::
-
-            def get_jwks(self):
-                return load_jwks("jwks.json")
-        """
-        ...
+    def authenticate_token(self, request, client) -> NoReturn: ...
+    def get_jwks(self): ...

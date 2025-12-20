@@ -20,50 +20,9 @@ class TokenValidator:
     def __init__(self, realm=None, **extra_attributes) -> None: ...
     @staticmethod
     def scope_insufficient(token_scopes, required_scopes): ...
-    def authenticate_token(self, token_string) -> None:
-        """
-        A method to query token from database with the given token string.
-        Developers MUST re-implement this method. For instance::
-
-            def authenticate_token(self, token_string):
-                return get_token_from_database(token_string)
-
-        :param token_string: A string to represent the access_token.
-        :return: token
-        """
-        ...
-    def validate_request(self, request) -> None:
-        """
-        A method to validate if the HTTP request is valid or not. Developers MUST
-        re-implement this method.  For instance, your server requires a
-        "X-Device-Version" in the header::
-
-            def validate_request(self, request):
-                if "X-Device-Version" not in request.headers:
-                    raise InvalidRequestError()
-
-        Usually, you don't have to detect if the request is valid or not. If you have
-        to, you MUST re-implement this method.
-
-        :param request: instance of HttpRequest
-        :raise: InvalidRequestError
-        """
-        ...
-    def validate_token(self, token, scopes, request) -> None:
-        """
-        A method to validate if the authorized token is valid, if it has the
-        permission on the given scopes. Developers MUST re-implement this method.
-        e.g, check if token is expired, revoked::
-
-            def validate_token(self, token, scopes, request):
-                if not token:
-                    raise InvalidTokenError()
-                if token.is_expired() or token.is_revoked():
-                    raise InvalidTokenError()
-                if not match_token_scopes(token, scopes):
-                    raise InsufficientScopeError()
-        """
-        ...
+    def authenticate_token(self, token_string): ...
+    def validate_request(self, request) -> None: ...
+    def validate_token(self, token, scopes, request) -> None: ...
 
 class ResourceProtector:
     def __init__(self) -> None: ...
