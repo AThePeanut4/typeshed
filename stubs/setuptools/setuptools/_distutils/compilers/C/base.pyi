@@ -1,3 +1,10 @@
+"""
+distutils.ccompiler
+
+Contains Compiler, an abstract base class that defines the interface
+for the Distutils compiler abstraction model.
+"""
+
 from _typeshed import BytesPath, Incomplete, StrOrBytesPath, StrPath, Unused
 from collections.abc import Callable, Iterable, MutableSequence, Sequence
 from subprocess import _ENV
