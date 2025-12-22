@@ -7,16 +7,19 @@ These are the defined components.
 
 import datetime
 from _typeshed import Incomplete, SupportsItems
-from collections.abc import Callable
-from typing import Any, ClassVar, Final, Literal, NamedTuple, overload
+from collections.abc import Callable, Iterable
+from typing import Any, ClassVar, Final, Literal, NamedTuple, TypeVar, overload
 from typing_extensions import Self
 
 from .alarms import Alarms
 from .caselessdict import CaselessDict
 from .error import IncompleteComponent as IncompleteComponent
 from .parser import Contentline, Contentlines
-from .prop import TypesFactory, vRecur
+from .parser_tools import ICAL_TYPE
+from .prop import TypesFactory, _vType, vRecur
 from .timezone.tzp import TZP
+
+_D = TypeVar("_D")
 
 __all__ = [
     "Alarm",
@@ -41,13 +44,8 @@ def get_example(component_directory: str, example_name: str) -> bytes:
     ...
 
 class ComponentFactory(CaselessDict[Incomplete]):
-    """
-    All components defined in RFC 5545 are registered in this factory class.
-    To get a component you can use it like this.
-    """
-    def __init__(self, *args, **kwargs) -> None:
-        """Set keys to upper for initial dict."""
-        ...
+    # Inherit complex __init__ from CaselessDict<-dict.
+    ...
 
 INLINE: CaselessDict[int]
 
@@ -67,12 +65,8 @@ class Component(CaselessDict[Incomplete]):
     subcomponents: list[Incomplete]
     errors: list[str]
 
-    def __init__(self, *args, **kwargs) -> None:
-        """Set keys to upper for initial dict."""
-        ...
-    def __bool__(self) -> bool:
-        """Returns True, CaselessDict would return False if it had no items."""
-        ...
+    # Inherit complex __init__ from CaselessDict<-dict.
+    def __bool__(self) -> bool: ...
     __nonzero__ = __bool__
     def is_empty(self) -> bool:
         """Returns True if Component has no items or subcomponents, else False."""
@@ -128,62 +122,16 @@ class Component(CaselessDict[Incomplete]):
     @overload
     def add(
         self, name: str, value: Any, parameters: SupportsItems[str, str | None] | None = None, encode: Literal[True] = True
-    ) -> None:
-        """
-        Add a property.
-
-        :param name: Name of the property.
-        :type name: string
-
-        :param value: Value of the property. Either of a basic Python type of
-                      any of the icalendar's own property types.
-        :type value: Python native type or icalendar property type.
-
-        :param parameters: Property parameter dictionary for the value. Only
-                           available, if encode is set to True.
-        :type parameters: Dictionary
-
-        :param encode: True, if the value should be encoded to one of
-                       icalendar's own property types (Fallback is "vText")
-                       or False, if not.
-        :type encode: Boolean
-
-        :returns: None
-        """
-        ...
-    def decoded(self, name, default=[]):
-        """Returns decoded value of property."""
-        ...
-    def get_inline(self, name, decode: bool = True):
-        """Returns a list of values (split on comma)."""
-        ...
-    def set_inline(self, name, values, encode: bool = True) -> None:
-        """
-        Converts a list of values into comma separated string and sets value
-        to that.
-        """
-        ...
-    def add_component(self, component: Component) -> None:
-        """Add a subcomponent to this component."""
-        ...
-    def walk(self, name: str | None = None, select: Callable[[Component], bool] = ...) -> list[Component]:
-        """
-        Recursively traverses component and subcomponents. Returns sequence
-        of same. If name is passed, only components with name will be returned.
-
-        :param name: The name of the component or None such as ``VEVENT``.
-        :param select: A function that takes the component as first argument
-          and returns True/False.
-        :returns: A list of components that match.
-        :rtype: list[Component]
-        """
-        ...
-    def property_items(self, recursive: bool = True, sorted: bool = True) -> list[tuple[str, object]]:
-        """
-        Returns properties in this component and subcomponents as:
-        [(name, value), ...]
-        """
-        ...
+    ) -> None: ...
+    def decoded(self, name: str, default: _D = ...) -> Incomplete | _D: ...
+    def get_inline(self, name: str, decode: bool = True) -> list[Incomplete]: ...
+    @overload
+    def set_inline(self, name: str, values: Iterable[str], encode: Literal[False] = ...) -> None: ...
+    @overload
+    def set_inline(self, name: str, values: Iterable[Incomplete], encode: Literal[True] = True) -> None: ...
+    def add_component(self, component: Component) -> None: ...
+    def walk(self, name: str | None = None, select: Callable[[Component], bool] = ...) -> list[Component]: ...
+    def property_items(self, recursive: bool = True, sorted: bool = True) -> list[tuple[str, object]]: ...
     @overload
     @classmethod
     def from_ical(cls, st: str, multiple: Literal[False] = False) -> Component:
@@ -191,21 +139,10 @@ class Component(CaselessDict[Incomplete]):
         ...
     @overload
     @classmethod
-    def from_ical(cls, st: str, multiple: Literal[True]) -> list[Component]:
-        """Populates the component recursively from a string."""
-        ...
-    def content_line(self, name: str, value, sorted: bool = True) -> Contentline:
-        """Returns property as content line."""
-        ...
-    def content_lines(self, sorted: bool = True) -> Contentlines:
-        """Converts the Component and subcomponents into content lines."""
-        ...
-    def to_ical(self, sorted: bool = True) -> bytes:
-        """
-        :param sorted: Whether parameters and properties should be
-                       lexicographically sorted.
-        """
-        ...
+    def from_ical(cls, st: str, multiple: Literal[True]) -> list[Component]: ...  # or any of its subclasses
+    def content_line(self, name: str, value: _vType | ICAL_TYPE, sorted: bool = True) -> Contentline: ...
+    def content_lines(self, sorted: bool = True) -> Contentlines: ...
+    def to_ical(self, sorted: bool = True) -> bytes: ...
     def __eq__(self, other: Component) -> bool: ...  # type: ignore[override]
     @property
     def DTSTAMP(self) -> datetime.datetime | None:

@@ -477,6 +477,7 @@ class Flag(Enum):
     """Support for flags"""
     _name_: str | None  # type: ignore[assignment]
     _value_: int
+    _numeric_repr_: Callable[[int], str]
     @_magic_enum_attr
     def name(self) -> str | None: ...  # type: ignore[override]
     @_magic_enum_attr

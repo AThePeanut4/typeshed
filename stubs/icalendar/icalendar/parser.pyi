@@ -16,6 +16,7 @@ from typing_extensions import Self
 
 from .caselessdict import CaselessDict
 from .parser_tools import ICAL_TYPE
+from .prop import _vType
 
 __all__ = [
     "Contentline",
@@ -144,12 +145,8 @@ class Contentline(str):
     strict: bool
     def __new__(cls, value: str | bytes, strict: bool = False, encoding: str = "utf-8") -> Self: ...
     @classmethod
-    def from_parts(cls, name: ICAL_TYPE, params: Parameters, values, sorted: bool = True) -> Self:
-        """Turn a parts into a content line."""
-        ...
-    def parts(self) -> tuple[str, Parameters, str]:
-        """Split the content line up into (name, parameters, values) parts."""
-        ...
+    def from_parts(cls, name: ICAL_TYPE, params: Parameters, values: _vType | ICAL_TYPE, sorted: bool = True) -> Self: ...
+    def parts(self) -> tuple[str, Parameters, str]: ...
     @classmethod
     def from_ical(cls, ical: str | bytes, strict: bool = False) -> Self:
         """Unfold the content lines in an iCalendar into long content lines."""
