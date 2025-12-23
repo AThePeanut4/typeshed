@@ -1,3 +1,5 @@
+"""Extensions to the 'distutils' for large or complex distributions"""
+
 from _typeshed import Incomplete, StrPath
 from abc import abstractmethod
 from collections.abc import ItemsView, Iterable, Mapping, Sequence
