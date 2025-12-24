@@ -445,11 +445,10 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         The Coordinate Reference System (CRS) represented as a ``pyproj.CRS``
         object.
 
-        Returns None if the CRS is not set, and to set the value it
-        :getter: Returns a ``pyproj.CRS`` or None. When setting, the value
-        can be anything accepted by
-        :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
-        such as an authority string (eg "EPSG:4326") or a WKT string.
+        Returns
+        -------
+        ``pyproj.CRS`` | None
+            CRS assigned to an active geometry column
 
         Examples
         --------
@@ -478,11 +477,10 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         The Coordinate Reference System (CRS) represented as a ``pyproj.CRS``
         object.
 
-        Returns None if the CRS is not set, and to set the value it
-        :getter: Returns a ``pyproj.CRS`` or None. When setting, the value
-        can be anything accepted by
-        :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
-        such as an authority string (eg "EPSG:4326") or a WKT string.
+        Returns
+        -------
+        ``pyproj.CRS`` | None
+            CRS assigned to an active geometry column
 
         Examples
         --------
@@ -809,7 +807,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         cls, table, geometry: str | None = None, to_pandas_kwargs: Mapping[str, Incomplete] | None = None
     ) -> GeoDataFrame:
         """
-        Construct a GeoDataFrame from a Arrow table object based on GeoArrow
+        Construct a GeoDataFrame from an Arrow table object based on GeoArrow
         extension types.
 
         See https://geoarrow.org/ for details on the GeoArrow specification.
@@ -1123,7 +1121,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
             struct type.
         include_z : bool, default None
             Only relevant for 'geoarrow' encoding (for WKB, the dimensionality
-            of the individial geometries is preserved).
+            of the individual geometries is preserved).
             If False, return 2D geometries. If True, include the third dimension
             in the output (if a geometry has no third dimension, the z-coordinates
             will be NaN). By default, will infer the dimensionality from the
@@ -2210,7 +2208,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         """
         ...
     # def __getitem__(self, key): ...
-    def __delitem__(self, key) -> None: ...  # type: ignore[misc]
+    def __delitem__(self, key) -> None:
+        """If the last geometry column is removed, downcast to a dataframe."""
+        ...
     # def __setitem__(self, key, value) -> None: ...
     def copy(self, deep: bool = True) -> Self:
         """

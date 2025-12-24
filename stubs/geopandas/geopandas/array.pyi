@@ -208,8 +208,7 @@ class GeometryArray(ExtensionArray):
         """
         The Coordinate Reference System (CRS) represented as a ``pyproj.CRS`` object.
 
-        Returns None if the CRS is not set, and to set the value it
-        :getter: Returns a ``pyproj.CRS`` or None. When setting, the value
+        Returns a ``pyproj.CRS`` or None. When setting, the value
         Coordinate Reference System of the geometry objects. Can be anything accepted by
         :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
         such as an authority string (eg "EPSG:4326") or a WKT string.
@@ -220,8 +219,7 @@ class GeometryArray(ExtensionArray):
         """
         The Coordinate Reference System (CRS) represented as a ``pyproj.CRS`` object.
 
-        Returns None if the CRS is not set, and to set the value it
-        :getter: Returns a ``pyproj.CRS`` or None. When setting, the value
+        Returns a ``pyproj.CRS`` or None. When setting, the value
         Coordinate Reference System of the geometry objects. Can be anything accepted by
         :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
         such as an authority string (eg "EPSG:4326") or a WKT string.
@@ -426,7 +424,7 @@ class GeometryArray(ExtensionArray):
         ----------
         value : shapely geometry object or GeometryArray
             If a geometry value is passed it is used to fill all missing values.
-            Alternatively, an GeometryArray 'value' can be given. It's expected
+            Alternatively, a GeometryArray 'value' can be given. It's expected
             that the GeometryArray has the same length as 'self'.
 
         method : {'backfill', 'bfill', 'pad', 'ffill', None}, default None

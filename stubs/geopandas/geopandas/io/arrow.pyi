@@ -45,7 +45,9 @@ def _read_parquet(
 
     Parameters
     ----------
-    path : str, path object
+    path : str, path object or file-like object
+        String, path object (implementing os.PathLike[str]) or file-like object
+        implementing a binary read() function.
     columns : list-like of strings, default=None
         If not None, only these columns will be read from the file.  If
         the primary geometry column is not included, the first secondary
@@ -91,6 +93,12 @@ def _read_parquet(
     ...     "data.parquet",
     ...     columns=["geometry", "pop_est"]
     ... )  # doctest: +SKIP
+
+    From bytes:
+
+    >>> p_data = client.get_bytes("bucket/geodata.parquet") # doctest: +SKIP
+    >>> with BytesIO(p_data) as geo_bytes: # doctest: +SKIP
+    >>>     df = gpd.read_parquet(geo_bytes) # doctest: +SKIP
     """
     ...
 def _read_feather(
@@ -124,7 +132,9 @@ def _read_feather(
 
     Parameters
     ----------
-    path : str, path object
+    path : str, path object or file-like object
+        String, path object (implementing os.PathLike[str]) or file-like object
+        implementing a binary read() function.
     columns : list-like of strings, default=None
         If not None, only these columns will be read from the file.  If
         the primary geometry column is not included, the first secondary
@@ -154,5 +164,8 @@ def _read_feather(
     ...     "data.feather",
     ...     columns=["geometry", "pop_est"]
     ... )  # doctest: +SKIP
+
+    See the `read_parquet` docs for examples of reading and writing
+    to/from bytes objects.
     """
     ...
