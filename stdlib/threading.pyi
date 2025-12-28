@@ -72,77 +72,16 @@ def current_thread() -> Thread:
     """
     ...
 @deprecated("Deprecated since Python 3.10. Use `current_thread()` instead.")
-def currentThread() -> Thread:
-    """
-    Return the current Thread object, corresponding to the caller's thread of control.
-
-    This function is deprecated, use current_thread() instead.
-    """
-    ...
-def get_ident() -> int:
-    """
-    Return a non-zero integer that uniquely identifies the current thread
-    amongst other threads that exist simultaneously.
-    This may be used to identify per-thread resources.
-    Even though on some platforms threads identities may appear to be
-    allocated consecutive numbers starting at 1, this behavior should not
-    be relied upon, and the number should be seen purely as a magic cookie.
-    A thread's identity may be reused for another thread after it exits.
-    """
-    ...
-def enumerate() -> list[Thread]:
-    """
-    Return a list of all Thread objects currently alive.
-
-    The list includes daemonic threads, dummy thread objects created by
-    current_thread(), and the main thread. It excludes terminated threads and
-    threads that have not yet been started.
-    """
-    ...
-def main_thread() -> Thread:
-    """
-    Return the main thread object.
-
-    In normal conditions, the main thread is the thread from which the
-    Python interpreter was started.
-    """
-    ...
-def settrace(func: TraceFunction) -> None:
-    """
-    Set a trace function for all threads started from the threading module.
-
-    The func will be passed to sys.settrace() for each thread, before its run()
-    method is called.
-    """
-    ...
-def setprofile(func: ProfileFunction | None) -> None:
-    """
-    Set a profile function for all threads started from the threading module.
-
-    The func will be passed to sys.setprofile() for each thread, before its
-    run() method is called.
-    """
-    ...
+def currentThread() -> Thread: ...
+def get_ident() -> int: ...
+def enumerate() -> list[Thread]: ...
+def main_thread() -> Thread: ...
+def settrace(func: TraceFunction | None) -> None: ...
+def setprofile(func: ProfileFunction | None) -> None: ...
 
 if sys.version_info >= (3, 12):
-    def setprofile_all_threads(func: ProfileFunction | None) -> None:
-        """
-        Set a profile function for all threads started from the threading module
-        and all Python threads that are currently executing.
-
-        The func will be passed to sys.setprofile() for each thread, before its
-        run() method is called.
-        """
-        ...
-    def settrace_all_threads(func: TraceFunction) -> None:
-        """
-        Set a trace function for all threads started from the threading module
-        and all Python threads that are currently executing.
-
-        The func will be passed to sys.settrace() for each thread, before its run()
-        method is called.
-        """
-        ...
+    def setprofile_all_threads(func: ProfileFunction | None) -> None: ...
+    def settrace_all_threads(func: TraceFunction | None) -> None: ...
 
 if sys.version_info >= (3, 10):
     def gettrace() -> TraceFunction | None:

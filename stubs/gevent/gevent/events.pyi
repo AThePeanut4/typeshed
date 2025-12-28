@@ -1,30 +1,3 @@
-"""
-Publish/subscribe event infrastructure.
-
-When certain "interesting" things happen during the lifetime of the
-process, gevent will "publish" an event (an object). That event is
-delivered to interested "subscribers" (functions that take one
-parameter, the event object).
-
-Higher level frameworks may take this foundation and build richer
-models on it.
-
-:mod:`zope.event` will be used to provide the functionality of
-`notify` and `subscribers`. See :mod:`zope.event.classhandler` for a
-simple class-based approach to subscribing to a filtered list of
-events, and see `zope.component
-<https://zopecomponent.readthedocs.io/en/latest/event.html>`_ for a
-much higher-level, flexible system. If you are using one of these
-systems, you generally will not want to directly modify `subscribers`.
-
-.. versionadded:: 1.3b1
-
-.. versionchanged:: 23.7.0
-   Now uses :mod:`importlib.metadata` instead of :mod:`pkg_resources`
-   to locate entry points.
-"""
-
-import sys
 from collections.abc import Callable, Mapping, Sequence
 from types import ModuleType
 from typing import Any, Protocol, TypeVar, type_check_only
@@ -32,6 +5,7 @@ from typing_extensions import TypeAlias
 
 from gevent.hub import Hub
 from greenlet import greenlet as greenlet_t
+from psutil._ntuples import pmem
 
 _T = TypeVar("_T")
 # FIXME: While it would be nice to import Interface from zope.interface here so the
@@ -42,17 +16,6 @@ _T = TypeVar("_T")
 Interface: TypeAlias = Any
 
 def implementer(interface: Interface, /) -> Callable[[_T], _T]: ...
-
-# this is copied from types-psutil, it would be nice if we could just import this
-# but it doesn't seem like we can...
-if sys.platform == "linux":
-    from psutil._pslinux import pmem
-elif sys.platform == "darwin":
-    from psutil._psosx import pmem
-elif sys.platform == "win32":
-    from psutil._pswindows import pmem
-else:
-    class pmem(Any): ...
 
 subscribers: list[Callable[[Any], object]]
 

@@ -5,7 +5,7 @@ import sys
 from _typeshed import FileDescriptorOrPath, Incomplete, StrOrBytesPath, Unused
 from collections.abc import Callable
 
-from ._common import sdiskusage
+from . import _ntuples as ntp
 
 def pid_exists(pid: int) -> bool:
     """Check whether pid exists in the current process table."""
@@ -96,18 +96,10 @@ def wait_pid(
     ...
 
 if sys.platform == "darwin":
-    def disk_usage(path: StrOrBytesPath) -> sdiskusage: ...
+    def disk_usage(path: StrOrBytesPath) -> ntp.sdiskusage: ...
 
 else:
-    def disk_usage(path: FileDescriptorOrPath) -> sdiskusage:
-        """
-        Return disk usage associated with path.
-        Note: UNIX usually reserves 5% disk space which is not accessible
-        by user. In this function "total" and "used" values reflect the
-        total and used disk space whereas "free" and "percent" represent
-        the "free" and "used percent" user disk space.
-        """
-        ...
+    def disk_usage(path: FileDescriptorOrPath) -> ntp.sdiskusage: ...
 
 def get_terminal_map() -> dict[int, str]:
     """

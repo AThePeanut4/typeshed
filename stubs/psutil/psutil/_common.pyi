@@ -13,8 +13,10 @@ from _typeshed import ConvertibleToFloat, FileDescriptorOrPath, Incomplete, StrO
 from collections import defaultdict
 from collections.abc import Callable
 from socket import AF_INET6 as AF_INET6, AddressFamily, SocketKind
-from typing import BinaryIO, Final, NamedTuple, SupportsIndex, TypeVar, overload
+from typing import BinaryIO, Final, SupportsIndex, TypeVar, overload
 from typing_extensions import ParamSpec
+
+from . import _ntuples as ntp
 
 POSIX: Final[bool]
 WINDOWS: Final[bool]
@@ -76,175 +78,6 @@ POWER_TIME_UNLIMITED: Final = BatteryTime.POWER_TIME_UNLIMITED
 
 ENCODING: Final[str]
 ENCODING_ERRS: Final[str]
-
-class sswap(NamedTuple):
-    """sswap(total, used, free, percent, sin, sout)"""
-    total: int
-    used: int
-    free: int
-    percent: float
-    sin: int
-    sout: int
-
-class sdiskusage(NamedTuple):
-    """sdiskusage(total, used, free, percent)"""
-    total: int
-    used: int
-    free: int
-    percent: float
-
-class sdiskio(NamedTuple):
-    """sdiskio(read_count, write_count, read_bytes, write_bytes, read_time, write_time)"""
-    read_count: int
-    write_count: int
-    read_bytes: int
-    write_bytes: int
-    read_time: int
-    write_time: int
-
-class sdiskpart(NamedTuple):
-    """sdiskpart(device, mountpoint, fstype, opts)"""
-    device: str
-    mountpoint: str
-    fstype: str
-    opts: str
-
-class snetio(NamedTuple):
-    """snetio(bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout)"""
-    bytes_sent: int
-    bytes_recv: int
-    packets_sent: int
-    packets_recv: int
-    errin: int
-    errout: int
-    dropin: int
-    dropout: int
-
-class suser(NamedTuple):
-    """suser(name, terminal, host, started, pid)"""
-    name: str
-    terminal: str | None
-    host: str | None
-    started: float
-    pid: str
-
-class sconn(NamedTuple):
-    """sconn(fd, family, type, laddr, raddr, status, pid)"""
-    fd: int
-    family: AddressFamily
-    type: SocketKind
-    laddr: addr | tuple[()]
-    raddr: addr | tuple[()]
-    status: str
-    pid: int | None
-
-class snicaddr(NamedTuple):
-    """snicaddr(family, address, netmask, broadcast, ptp)"""
-    family: AddressFamily
-    address: str
-    netmask: str | None
-    broadcast: str | None
-    ptp: str | None
-
-class snicstats(NamedTuple):
-    """snicstats(isup, duplex, speed, mtu, flags)"""
-    isup: bool
-    duplex: int
-    speed: int
-    mtu: int
-    flags: str
-
-class scpustats(NamedTuple):
-    """scpustats(ctx_switches, interrupts, soft_interrupts, syscalls)"""
-    ctx_switches: int
-    interrupts: int
-    soft_interrupts: int
-    syscalls: int
-
-class scpufreq(NamedTuple):
-    """scpufreq(current, min, max)"""
-    current: float
-    min: float
-    max: float
-
-class shwtemp(NamedTuple):
-    """shwtemp(label, current, high, critical)"""
-    label: str
-    current: float
-    high: float | None
-    critical: float | None
-
-class sbattery(NamedTuple):
-    """sbattery(percent, secsleft, power_plugged)"""
-    percent: int
-    secsleft: int
-    power_plugged: bool
-
-class sfan(NamedTuple):
-    """sfan(label, current)"""
-    label: str
-    current: int
-
-class pcputimes(NamedTuple):
-    """pcputimes(user, system, children_user, children_system)"""
-    user: float
-    system: float
-    children_user: float
-    children_system: float
-
-class popenfile(NamedTuple):
-    """popenfile(path, fd)"""
-    path: str
-    fd: int
-
-class pthread(NamedTuple):
-    """pthread(id, user_time, system_time)"""
-    id: int
-    user_time: float
-    system_time: float
-
-class puids(NamedTuple):
-    """puids(real, effective, saved)"""
-    real: int
-    effective: int
-    saved: int
-
-class pgids(NamedTuple):
-    """pgids(real, effective, saved)"""
-    real: int
-    effective: int
-    saved: int
-
-class pio(NamedTuple):
-    """pio(read_count, write_count, read_bytes, write_bytes)"""
-    read_count: int
-    write_count: int
-    read_bytes: int
-    write_bytes: int
-
-class pionice(NamedTuple):
-    """pionice(ioclass, value)"""
-    ioclass: int
-    value: int
-
-class pctxsw(NamedTuple):
-    """pctxsw(voluntary, involuntary)"""
-    voluntary: int
-    involuntary: int
-
-class pconn(NamedTuple):
-    """pconn(fd, family, type, laddr, raddr, status)"""
-    fd: int
-    family: AddressFamily
-    type: SocketKind
-    laddr: addr
-    raddr: addr
-    status: str
-
-class addr(NamedTuple):
-    """addr(ip, port)"""
-    ip: str
-    port: int
 
 conn_tmap: dict[str, tuple[list[AddressFamily], list[SocketKind]]]
 
@@ -395,33 +228,24 @@ def conn_to_ntuple(
     fd: int,
     fam: int,
     type_: int,
-    laddr: addr | tuple[str, int] | tuple[()],
-    raddr: addr | tuple[str, int] | tuple[()],
+    laddr: ntp.addr | tuple[str, int] | tuple[()],
+    raddr: ntp.addr | tuple[str, int] | tuple[()],
     status: int | str,
     status_map: dict[int, str] | dict[str, str],
     pid: int,
-) -> sconn:
-    """Convert a raw connection tuple to a proper ntuple."""
-    ...
+) -> ntp.sconn: ...
 @overload
 def conn_to_ntuple(
     fd: int,
     fam: int,
     type_: int,
-    laddr: addr | tuple[str, int] | tuple[()],
-    raddr: addr | tuple[str, int] | tuple[()],
+    laddr: ntp.addr | tuple[str, int] | tuple[()],
+    raddr: ntp.addr | tuple[str, int] | tuple[()],
     status: int | str,
     status_map: dict[int, str] | dict[str, str],
     pid: None = None,
-) -> pconn:
-    """Convert a raw connection tuple to a proper ntuple."""
-    ...
-def deprecated_method(replacement: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]:
-    """
-    A decorator which can be used to mark a method as deprecated
-    'replcement' is the method name which will be called instead.
-    """
-    ...
+) -> ntp.pconn: ...
+def deprecated_method(replacement: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]: ...
 
 class _WrapNumbers:
     """
@@ -567,26 +391,6 @@ __all__ = [
     "ENCODING",
     "ENCODING_ERRS",
     "AF_INET6",
-    # named tuples
-    "pconn",
-    "pcputimes",
-    "pctxsw",
-    "pgids",
-    "pio",
-    "pionice",
-    "popenfile",
-    "pthread",
-    "puids",
-    "sconn",
-    "scpustats",
-    "sdiskio",
-    "sdiskpart",
-    "sdiskusage",
-    "snetio",
-    "snicaddr",
-    "snicstats",
-    "sswap",
-    "suser",
     # utility functions
     "conn_tmap",
     "deprecated_method",

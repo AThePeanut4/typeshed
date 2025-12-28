@@ -14,7 +14,7 @@ from _typeshed import ReadableBuffer
 from abc import abstractmethod
 from collections.abc import Callable, Generator, Iterable
 from typing import Any, BinaryIO, ClassVar, Final, Literal, Protocol, TextIO, overload, type_check_only
-from typing_extensions import Self, TypeAlias, disjoint_base
+from typing_extensions import Self, TypeAlias, deprecated, disjoint_base
 
 __all__ = [
     "register",
@@ -229,31 +229,10 @@ def getincrementaldecoder(encoding: _BufferedEncoding) -> _BufferedIncrementalDe
     """
     ...
 @overload
-def getincrementaldecoder(encoding: str) -> _IncrementalDecoder:
-    """
-    Lookup up the codec for the given encoding and return
-    its IncrementalDecoder class or factory function.
-
-    Raises a LookupError in case the encoding cannot be found
-    or the codecs doesn't provide an incremental decoder.
-    """
-    ...
-def getreader(encoding: str) -> _StreamReader:
-    """
-    Lookup up the codec for the given encoding and return
-    its StreamReader class or factory function.
-
-    Raises a LookupError in case the encoding cannot be found.
-    """
-    ...
-def getwriter(encoding: str) -> _StreamWriter:
-    """
-    Lookup up the codec for the given encoding and return
-    its StreamWriter class or factory function.
-
-    Raises a LookupError in case the encoding cannot be found.
-    """
-    ...
+def getincrementaldecoder(encoding: str) -> _IncrementalDecoder: ...
+def getreader(encoding: str) -> _StreamReader: ...
+def getwriter(encoding: str) -> _StreamWriter: ...
+@deprecated("Deprecated since Python 3.14. Use `open()` instead.")
 def open(
     filename: str, mode: str = "r", encoding: str | None = None, errors: str = "strict", buffering: int = -1
 ) -> StreamReaderWriter:
