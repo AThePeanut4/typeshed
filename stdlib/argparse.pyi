@@ -166,7 +166,12 @@ class _ActionsContainer:
         dest: str | None = ...,
         version: str = ...,
         **kwargs: Any,
-    ) -> Action: ...
+    ) -> Action:
+        """
+        add_argument(dest, ..., name=value, ...)
+        add_argument(option_string, option_string, ..., name=value, ...)
+        """
+        ...
     if sys.version_info >= (3, 14):
         @overload
         def add_argument_group(

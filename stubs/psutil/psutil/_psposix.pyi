@@ -99,7 +99,15 @@ if sys.platform == "darwin":
     def disk_usage(path: StrOrBytesPath) -> ntp.sdiskusage: ...
 
 else:
-    def disk_usage(path: FileDescriptorOrPath) -> ntp.sdiskusage: ...
+    def disk_usage(path: FileDescriptorOrPath) -> ntp.sdiskusage:
+        """
+        Return disk usage associated with path.
+        Note: UNIX usually reserves 5% disk space which is not accessible
+        by user. In this function "total" and "used" values reflect the
+        total and used disk space whereas "free" and "percent" represent
+        the "free" and "used percent" user disk space.
+        """
+        ...
 
 def get_terminal_map() -> dict[int, str]:
     """

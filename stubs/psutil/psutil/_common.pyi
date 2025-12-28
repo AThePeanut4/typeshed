@@ -233,7 +233,9 @@ def conn_to_ntuple(
     status: int | str,
     status_map: dict[int, str] | dict[str, str],
     pid: int,
-) -> ntp.sconn: ...
+) -> ntp.sconn:
+    """Convert a raw connection tuple to a proper ntuple."""
+    ...
 @overload
 def conn_to_ntuple(
     fd: int,
@@ -244,8 +246,15 @@ def conn_to_ntuple(
     status: int | str,
     status_map: dict[int, str] | dict[str, str],
     pid: None = None,
-) -> ntp.pconn: ...
-def deprecated_method(replacement: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]: ...
+) -> ntp.pconn:
+    """Convert a raw connection tuple to a proper ntuple."""
+    ...
+def deprecated_method(replacement: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]:
+    """
+    A decorator which can be used to mark a method as deprecated
+    'replcement' is the method name which will be called instead.
+    """
+    ...
 
 class _WrapNumbers:
     """

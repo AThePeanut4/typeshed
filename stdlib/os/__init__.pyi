@@ -2637,8 +2637,27 @@ if sys.version_info >= (3, 14):
 
 else:
     def popen(cmd: str, mode: str = "r", buffering: int = -1) -> _wrap_close: ...
-    def spawnl(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: StrOrBytesPath) -> int: ...
-    def spawnle(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: Any) -> int: ...  # Imprecise sig
+    def spawnl(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: StrOrBytesPath) -> int:
+        """
+        spawnl(mode, file, *args) -> integer
+
+        Execute file with arguments from args in a subprocess.
+        If mode == P_NOWAIT return the pid of the process.
+        If mode == P_WAIT return the process's exit code if it exits normally;
+        otherwise return -SIG, where SIG is the signal that killed it. 
+        """
+        ...
+    def spawnle(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: Any) -> int:
+        """
+        spawnle(mode, file, *args, env) -> integer
+
+        Execute file with arguments from args in a subprocess with the
+        supplied environment.
+        If mode == P_NOWAIT return the pid of the process.
+        If mode == P_WAIT return the process's exit code if it exits normally;
+        otherwise return -SIG, where SIG is the signal that killed it. 
+        """
+        ...
 
 if sys.platform != "win32":
     if sys.version_info >= (3, 14):
@@ -2648,8 +2667,27 @@ if sys.platform != "win32":
         def spawnve(mode: int, file: StrOrBytesPath, args: _ExecVArgs, env: _ExecEnv) -> int: ...
 
     else:
-        def spawnv(mode: int, file: StrOrBytesPath, args: _ExecVArgs) -> int: ...
-        def spawnve(mode: int, file: StrOrBytesPath, args: _ExecVArgs, env: _ExecEnv) -> int: ...
+        def spawnv(mode: int, file: StrOrBytesPath, args: _ExecVArgs) -> int:
+            """
+            spawnv(mode, file, args) -> integer
+
+            Execute file with arguments from args in a subprocess.
+            If mode == P_NOWAIT return the pid of the process.
+            If mode == P_WAIT return the process's exit code if it exits normally;
+            otherwise return -SIG, where SIG is the signal that killed it. 
+            """
+            ...
+        def spawnve(mode: int, file: StrOrBytesPath, args: _ExecVArgs, env: _ExecEnv) -> int:
+            """
+            spawnve(mode, file, args, env) -> integer
+
+            Execute file with arguments from args in a subprocess with the
+            specified environment.
+            If mode == P_NOWAIT return the pid of the process.
+            If mode == P_WAIT return the process's exit code if it exits normally;
+            otherwise return -SIG, where SIG is the signal that killed it. 
+            """
+            ...
 
 else:
     if sys.version_info >= (3, 14):
@@ -2667,7 +2705,9 @@ if sys.version_info >= (3, 14):
     def system(command: StrOrBytesPath) -> int: ...
 
 else:
-    def system(command: StrOrBytesPath) -> int: ...
+    def system(command: StrOrBytesPath) -> int:
+        """Execute the command in a subshell."""
+        ...
 
 @final
 class times_result(structseq[float], tuple[float, float, float, float, float]):
@@ -2749,12 +2789,59 @@ else:
         def spawnvpe(mode: int, file: StrOrBytesPath, args: _ExecVArgs, env: _ExecEnv) -> int: ...
 
     else:
-        def spawnlp(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: StrOrBytesPath) -> int: ...
-        def spawnlpe(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: Any) -> int: ...  # Imprecise signature
-        def spawnvp(mode: int, file: StrOrBytesPath, args: _ExecVArgs) -> int: ...
-        def spawnvpe(mode: int, file: StrOrBytesPath, args: _ExecVArgs, env: _ExecEnv) -> int: ...
+        def spawnlp(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: StrOrBytesPath) -> int:
+            """
+            spawnlp(mode, file, *args) -> integer
 
-    def wait() -> tuple[int, int]: ...  # Unix only
+            Execute file (which is looked for along $PATH) with arguments from
+            args in a subprocess with the supplied environment.
+            If mode == P_NOWAIT return the pid of the process.
+            If mode == P_WAIT return the process's exit code if it exits normally;
+            otherwise return -SIG, where SIG is the signal that killed it. 
+            """
+            ...
+        def spawnlpe(mode: int, file: StrOrBytesPath, arg0: StrOrBytesPath, *args: Any) -> int:
+            """
+            spawnlpe(mode, file, *args, env) -> integer
+
+            Execute file (which is looked for along $PATH) with arguments from
+            args in a subprocess with the supplied environment.
+            If mode == P_NOWAIT return the pid of the process.
+            If mode == P_WAIT return the process's exit code if it exits normally;
+            otherwise return -SIG, where SIG is the signal that killed it. 
+            """
+            ...
+        def spawnvp(mode: int, file: StrOrBytesPath, args: _ExecVArgs) -> int:
+            """
+            spawnvp(mode, file, args) -> integer
+
+            Execute file (which is looked for along $PATH) with arguments from
+            args in a subprocess.
+            If mode == P_NOWAIT return the pid of the process.
+            If mode == P_WAIT return the process's exit code if it exits normally;
+            otherwise return -SIG, where SIG is the signal that killed it. 
+            """
+            ...
+        def spawnvpe(mode: int, file: StrOrBytesPath, args: _ExecVArgs, env: _ExecEnv) -> int:
+            """
+            spawnvpe(mode, file, args, env) -> integer
+
+            Execute file (which is looked for along $PATH) with arguments from
+            args in a subprocess with the supplied environment.
+            If mode == P_NOWAIT return the pid of the process.
+            If mode == P_WAIT return the process's exit code if it exits normally;
+            otherwise return -SIG, where SIG is the signal that killed it. 
+            """
+            ...
+
+    def wait() -> tuple[int, int]:
+        """
+        Wait for completion of a child process.
+
+        Returns a tuple of information about the child process:
+            (pid, status)
+        """
+        ...
     # Added to MacOS in 3.13
     if sys.platform != "darwin" or sys.version_info >= (3, 13):
         @final
