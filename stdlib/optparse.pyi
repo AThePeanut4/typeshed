@@ -342,13 +342,8 @@ class OptionContainer:
         callback_kwargs: dict[str, Any] | None = None,
         help: str | None = None,
         metavar: str | None = None,
-        **kwargs,  # Allow arbitrary keyword arguments for user defined option_class
-    ) -> Option:
-        """
-        add_option(Option)
-        add_option(opt_str, ..., kwarg=val, ...)
-        """
-        ...
+        **kwargs: Any,  # Allow arbitrary keyword arguments for user defined option_class
+    ) -> Option: ...
     def add_options(self, option_list: Iterable[Option]) -> None: ...
     def destroy(self) -> None:
         """see OptionParser.destroy()."""
