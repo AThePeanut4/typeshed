@@ -343,7 +343,12 @@ class OptionContainer:
         help: str | None = None,
         metavar: str | None = None,
         **kwargs: Any,  # Allow arbitrary keyword arguments for user defined option_class
-    ) -> Option: ...
+    ) -> Option:
+        """
+        add_option(Option)
+        add_option(opt_str, ..., kwarg=val, ...)
+        """
+        ...
     def add_options(self, option_list: Iterable[Option]) -> None: ...
     def destroy(self) -> None:
         """see OptionParser.destroy()."""

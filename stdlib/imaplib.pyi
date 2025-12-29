@@ -121,23 +121,130 @@ class IMAP4:
     host: str
     port: int
     sock: _socket
-    def read(self, size: int) -> bytes: ...
-    def readline(self) -> bytes: ...
-    def send(self, data: ReadableBuffer) -> None: ...
-    def shutdown(self) -> None: ...
-    def socket(self) -> _socket: ...
-    def recent(self) -> _CommandResults: ...
-    def response(self, code: str) -> _CommandResults: ...
-    def append(self, mailbox: str, flags: str, date_time: str, message: ReadableBuffer) -> tuple[str, _list[bytes]]: ...
-    def authenticate(self, mechanism: str, authobject: Callable[[bytes], bytes | None]) -> tuple[str, str]: ...
-    def capability(self) -> _CommandResults: ...
-    def check(self) -> _CommandResults: ...
-    def close(self) -> _CommandResults: ...
-    def copy(self, message_set: str, new_mailbox: str) -> _CommandResults: ...
-    def create(self, mailbox: str) -> _CommandResults: ...
-    def delete(self, mailbox: str) -> _CommandResults: ...
-    def deleteacl(self, mailbox: str, who: str) -> _CommandResults: ...
-    def enable(self, capability: str) -> _CommandResults: ...
+    def read(self, size: int) -> bytes:
+        """Read 'size' bytes from remote."""
+        ...
+    def readline(self) -> bytes:
+        """Read line from remote."""
+        ...
+    def send(self, data: ReadableBuffer) -> None:
+        """Send data to remote."""
+        ...
+    def shutdown(self) -> None:
+        """Close I/O established in "open"."""
+        ...
+    def socket(self) -> _socket:
+        """
+        Return socket instance used to connect to IMAP4 server.
+
+        socket = <instance>.socket()
+        """
+        ...
+    def recent(self) -> _CommandResults:
+        """
+        Return most recent 'RECENT' responses if any exist,
+        else prompt server for an update using the 'NOOP' command.
+
+        (typ, [data]) = <instance>.recent()
+
+        'data' is None if no new messages,
+        else list of RECENT responses, most recent last.
+        """
+        ...
+    def response(self, code: str) -> _CommandResults:
+        """
+        Return data for response 'code' if received, or None.
+
+        Old value for response 'code' is cleared.
+
+        (code, [data]) = <instance>.response(code)
+        """
+        ...
+    def append(self, mailbox: str, flags: str, date_time: str, message: ReadableBuffer) -> tuple[str, _list[bytes]]:
+        """
+        Append message to named mailbox.
+
+        (typ, [data]) = <instance>.append(mailbox, flags, date_time, message)
+
+                All args except `message' can be None.
+        """
+        ...
+    def authenticate(self, mechanism: str, authobject: Callable[[bytes], bytes | None]) -> tuple[str, str]:
+        """
+        Authenticate command - requires response processing.
+
+        'mechanism' specifies which authentication mechanism is to
+        be used - it must appear in <instance>.capabilities in the
+        form AUTH=<mechanism>.
+
+        'authobject' must be a callable object:
+
+                data = authobject(response)
+
+        It will be called to process server continuation responses; the
+        response argument it is passed will be a bytes.  It should return bytes
+        data that will be base64 encoded and sent to the server.  It should
+        return None if the client abort response '*' should be sent instead.
+        """
+        ...
+    def capability(self) -> _CommandResults:
+        """
+        (typ, [data]) = <instance>.capability()
+        Fetch capabilities list from server.
+        """
+        ...
+    def check(self) -> _CommandResults:
+        """
+        Checkpoint mailbox on server.
+
+        (typ, [data]) = <instance>.check()
+        """
+        ...
+    def close(self) -> _CommandResults:
+        """
+        Close currently selected mailbox.
+
+        Deleted messages are removed from writable mailbox.
+        This is the recommended command before 'LOGOUT'.
+
+        (typ, [data]) = <instance>.close()
+        """
+        ...
+    def copy(self, message_set: str, new_mailbox: str) -> _CommandResults:
+        """
+        Copy 'message_set' messages onto end of 'new_mailbox'.
+
+        (typ, [data]) = <instance>.copy(message_set, new_mailbox)
+        """
+        ...
+    def create(self, mailbox: str) -> _CommandResults:
+        """
+        Create new mailbox.
+
+        (typ, [data]) = <instance>.create(mailbox)
+        """
+        ...
+    def delete(self, mailbox: str) -> _CommandResults:
+        """
+        Delete old mailbox.
+
+        (typ, [data]) = <instance>.delete(mailbox)
+        """
+        ...
+    def deleteacl(self, mailbox: str, who: str) -> _CommandResults:
+        """
+        Delete the ACLs (remove any rights) set for who on mailbox.
+
+        (typ, [data]) = <instance>.deleteacl(mailbox, who)
+        """
+        ...
+    def enable(self, capability: str) -> _CommandResults:
+        """
+        Send an RFC5161 enable string to the server.
+
+        (typ, [data]) = <instance>.enable(capability)
+        """
+        ...
     def __enter__(self) -> Self: ...
     def __exit__(self, t: type[BaseException] | None, v: BaseException | None, tb: TracebackType | None) -> None: ...
     def expunge(self) -> _CommandResults:
