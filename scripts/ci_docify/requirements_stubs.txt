@@ -92,7 +92,7 @@ keyboard==0.13.*
 pycurl==7.45.7
 boltons==25.0.*
 xmltodict~=1.0.1
-psutil==7.2.0
+psutil==7.2.1
 hdbcli==2.25.*
 pyflakes==3.4.*
 workalendar==17.0.*
