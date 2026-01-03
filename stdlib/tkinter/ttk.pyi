@@ -17,10 +17,10 @@ import _tkinter
 import sys
 import tkinter
 from _typeshed import MaybeNone
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Sequence
 from tkinter.font import _FontDescription
-from typing import Any, Literal, TypedDict, overload, type_check_only
-from typing_extensions import Never, TypeAlias, Unpack
+from typing import Any, Literal, TypedDict, TypeVar, overload, type_check_only
+from typing_extensions import Never, ParamSpec, TypeAlias, Unpack
 
 __all__ = [
     "Button",
@@ -82,6 +82,9 @@ _Padding: TypeAlias = (
 _Statespec: TypeAlias = tuple[Unpack[tuple[str, ...]], Any]
 _ImageStatespec: TypeAlias = tuple[Unpack[tuple[str, ...]], tkinter._Image | str]
 _VsapiStatespec: TypeAlias = tuple[Unpack[tuple[str, ...]], int]
+
+_P = ParamSpec("_P")
+_T = TypeVar("_T")
 
 class _Layout(TypedDict, total=False):
     side: Literal["left", "right", "top", "bottom"]
@@ -392,57 +395,15 @@ class Style:
         ...
 
 class Widget(tkinter.Widget):
-    """Base class for Tk themed widgets."""
-    def __init__(self, master: tkinter.Misc | None, widgetname, kw=None) -> None:
-        """
-        Constructs a Ttk Widget with the parent master.
-
-        STANDARD OPTIONS
-
-            class, cursor, takefocus, style
-
-        SCROLLABLE WIDGET OPTIONS
-
-            xscrollcommand, yscrollcommand
-
-        LABEL WIDGET OPTIONS
-
-            text, textvariable, underline, image, compound, width
-
-        WIDGET STATES
-
-            active, disabled, focus, pressed, selected, background,
-            readonly, alternate, invalid
-        """
-        ...
-    def identify(self, x: int, y: int) -> str:
-        """
-        Returns the name of the element at position x, y, or the empty
-        string if the point does not lie within any element.
-
-        x and y are pixel coordinates relative to the widget.
-        """
-        ...
-    def instate(self, statespec, callback=None, *args, **kw):
-        """
-        Test the widget's state.
-
-        If callback is not specified, returns True if the widget state
-        matches statespec and False otherwise. If callback is specified,
-        then it will be invoked with *args, **kw if the widget state
-        matches statespec. statespec is expected to be a sequence.
-        """
-        ...
-    def state(self, statespec=None):
-        """
-        Modify or inquire widget state.
-
-        Widget state is returned if statespec is None, otherwise it is
-        set according to the statespec flags and then a new state spec
-        is returned indicating which flags were changed. statespec is
-        expected to be a sequence.
-        """
-        ...
+    def __init__(self, master: tkinter.Misc | None, widgetname: str | None, kw: dict[str, Any] | None = None) -> None: ...
+    def identify(self, x: int, y: int) -> str: ...
+    @overload
+    def instate(self, statespec: Sequence[str], callback: None = None) -> bool: ...
+    @overload
+    def instate(
+        self, statespec: Sequence[str], callback: Callable[_P, _T], *args: _P.args, **kw: _P.kwargs
+    ) -> Literal[False] | _T: ...
+    def state(self, statespec: Sequence[str] | None = None) -> tuple[str, ...]: ...
 
 class Button(Widget):
     """
