@@ -395,15 +395,71 @@ class Style:
         ...
 
 class Widget(tkinter.Widget):
-    def __init__(self, master: tkinter.Misc | None, widgetname: str | None, kw: dict[str, Any] | None = None) -> None: ...
-    def identify(self, x: int, y: int) -> str: ...
+    """Base class for Tk themed widgets."""
+    def __init__(self, master: tkinter.Misc | None, widgetname: str | None, kw: dict[str, Any] | None = None) -> None:
+        """
+        Constructs a Ttk Widget with the parent master.
+
+        STANDARD OPTIONS
+
+            class, cursor, takefocus, style
+
+        SCROLLABLE WIDGET OPTIONS
+
+            xscrollcommand, yscrollcommand
+
+        LABEL WIDGET OPTIONS
+
+            text, textvariable, underline, image, compound, width
+
+        WIDGET STATES
+
+            active, disabled, focus, pressed, selected, background,
+            readonly, alternate, invalid
+        """
+        ...
+    def identify(self, x: int, y: int) -> str:
+        """
+        Returns the name of the element at position x, y, or the empty
+        string if the point does not lie within any element.
+
+        x and y are pixel coordinates relative to the widget.
+        """
+        ...
     @overload
-    def instate(self, statespec: Sequence[str], callback: None = None) -> bool: ...
+    def instate(self, statespec: Sequence[str], callback: None = None) -> bool:
+        """
+        Test the widget's state.
+
+        If callback is not specified, returns True if the widget state
+        matches statespec and False otherwise. If callback is specified,
+        then it will be invoked with *args, **kw if the widget state
+        matches statespec. statespec is expected to be a sequence.
+        """
+        ...
     @overload
     def instate(
         self, statespec: Sequence[str], callback: Callable[_P, _T], *args: _P.args, **kw: _P.kwargs
-    ) -> Literal[False] | _T: ...
-    def state(self, statespec: Sequence[str] | None = None) -> tuple[str, ...]: ...
+    ) -> Literal[False] | _T:
+        """
+        Test the widget's state.
+
+        If callback is not specified, returns True if the widget state
+        matches statespec and False otherwise. If callback is specified,
+        then it will be invoked with *args, **kw if the widget state
+        matches statespec. statespec is expected to be a sequence.
+        """
+        ...
+    def state(self, statespec: Sequence[str] | None = None) -> tuple[str, ...]:
+        """
+        Modify or inquire widget state.
+
+        Widget state is returned if statespec is None, otherwise it is
+        set according to the statespec flags and then a new state spec
+        is returned indicating which flags were changed. statespec is
+        expected to be a sequence.
+        """
+        ...
 
 class Button(Widget):
     """
