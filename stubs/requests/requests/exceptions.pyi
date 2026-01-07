@@ -1,10 +1,4 @@
-"""
-requests.exceptions
-~~~~~~~~~~~~~~~~~~~
-
-This module contains the set of Requests' exceptions.
-"""
-
+from json import JSONDecodeError as CompatJSONDecodeError
 from typing import Any
 
 from urllib3.exceptions import HTTPError as BaseHTTPError
@@ -25,12 +19,8 @@ class RequestException(OSError):
         """Initialize RequestException with `request` and `response` objects."""
         ...
 
-class InvalidJSONError(RequestException):
-    """A JSON error occurred."""
-    ...
-class JSONDecodeError(InvalidJSONError):
-    """Couldn't decode the text into json"""
-    ...
+class InvalidJSONError(RequestException): ...
+class JSONDecodeError(InvalidJSONError, CompatJSONDecodeError): ...
 
 class HTTPError(RequestException):
     """An HTTP error occurred."""
