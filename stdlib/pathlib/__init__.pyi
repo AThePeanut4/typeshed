@@ -195,10 +195,20 @@ class PurePath(PathLike[str]):
         def is_relative_to(self, other: StrPath) -> bool: ...
     elif sys.version_info >= (3, 12):
         @overload
-        def is_relative_to(self, other: StrPath, /) -> bool: ...
+        def is_relative_to(self, other: StrPath, /) -> bool:
+            """
+            Return True if the path is relative to another path or False.
+        
+            """
+            ...
         @overload
         @deprecated("Passing additional arguments is deprecated since Python 3.12; removed in Python 3.14.")
-        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool: ...
+        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool:
+            """
+            Return True if the path is relative to another path or False.
+        
+            """
+            ...
     else:
         def is_relative_to(self, *other: StrPath) -> bool:
             """
@@ -225,12 +235,23 @@ class PurePath(PathLike[str]):
         def relative_to(self, other: StrPath, *, walk_up: bool = False) -> Self: ...
     elif sys.version_info >= (3, 12):
         @overload
-        def relative_to(self, other: StrPath, /, *, walk_up: bool = False) -> Self: ...
+        def relative_to(self, other: StrPath, /, *, walk_up: bool = False) -> Self:
+            """
+            Return the relative path to another path identified by the passed
+            arguments.  If the operation is not possible (because this is not
+            related to the other path), raise ValueError.
+
+            The *walk_up* parameter controls whether `..` may be used to resolve
+            the path.
+            """
+            ...
         @overload
         @deprecated("Passing additional arguments is deprecated since Python 3.12; removed in Python 3.14.")
-        def relative_to(self, other: StrPath, /, *_deprecated: StrPath, walk_up: bool = False) -> Self: ...
-    else:
-        def relative_to(self, *other: StrPath) -> Self: ...
+        def relative_to(self, other: StrPath, /, *_deprecated: StrPath, walk_up: bool = False) -> Self:
+            """
+            Return the relative path to another path identified by the passed
+            arguments.  If the operation is not possible (because this is not
+            related to the other path), raise ValueError.
 
             The *walk_up* parameter controls whether `..` may be used to resolve
             the path.
