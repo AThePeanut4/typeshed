@@ -194,12 +194,11 @@ class PurePath(PathLike[str]):
     if sys.version_info >= (3, 14):
         def is_relative_to(self, other: StrPath) -> bool: ...
     elif sys.version_info >= (3, 12):
-        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool:
-            """
-            Return True if the path is relative to another path or False.
-        
-            """
-            ...
+        @overload
+        def is_relative_to(self, other: StrPath, /) -> bool: ...
+        @overload
+        @deprecated("Passing additional arguments is deprecated since Python 3.12; removed in Python 3.14.")
+        def is_relative_to(self, other: StrPath, /, *_deprecated: StrPath) -> bool: ...
     else:
         def is_relative_to(self, *other: StrPath) -> bool:
             """
@@ -225,11 +224,13 @@ class PurePath(PathLike[str]):
     if sys.version_info >= (3, 14):
         def relative_to(self, other: StrPath, *, walk_up: bool = False) -> Self: ...
     elif sys.version_info >= (3, 12):
-        def relative_to(self, other: StrPath, /, *_deprecated: StrPath, walk_up: bool = False) -> Self:
-            """
-            Return the relative path to another path identified by the passed
-            arguments.  If the operation is not possible (because this is not
-            related to the other path), raise ValueError.
+        @overload
+        def relative_to(self, other: StrPath, /, *, walk_up: bool = False) -> Self: ...
+        @overload
+        @deprecated("Passing additional arguments is deprecated since Python 3.12; removed in Python 3.14.")
+        def relative_to(self, other: StrPath, /, *_deprecated: StrPath, walk_up: bool = False) -> Self: ...
+    else:
+        def relative_to(self, *other: StrPath) -> Self: ...
 
             The *walk_up* parameter controls whether `..` may be used to resolve
             the path.
