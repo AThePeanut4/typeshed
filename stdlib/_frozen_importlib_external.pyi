@@ -39,11 +39,62 @@ MAGIC_NUMBER: Final[bytes]
 @deprecated(
     "The `debug_override` parameter is deprecated since Python 3.5; will be removed in Python 3.15. Use `optimization` instead."
 )
-def cache_from_source(path: StrPath, debug_override: bool, *, optimization: None = None) -> str: ...
+def cache_from_source(path: StrPath, debug_override: bool, *, optimization: None = None) -> str:
+    """
+    Given the path to a .py file, return the path to its .pyc file.
+
+    The .py file does not need to exist; this simply returns the path to the
+    .pyc file calculated as if the .py file were imported.
+
+    The 'optimization' parameter controls the presumed optimization level of
+    the bytecode file. If 'optimization' is not None, the string representation
+    of the argument is taken and verified to be alphanumeric (else ValueError
+    is raised).
+
+    The debug_override parameter is deprecated. If debug_override is not None,
+    a True value is the same as setting 'optimization' to the empty string
+    while a False value is equivalent to setting 'optimization' to '1'.
+
+    If sys.implementation.cache_tag is None then NotImplementedError is raised.
+    """
+    ...
 @overload
-def cache_from_source(path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str: ...
-def source_from_cache(path: StrPath) -> str: ...
-def decode_source(source_bytes: ReadableBuffer) -> str: ...
+def cache_from_source(path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str:
+    """
+    Given the path to a .py file, return the path to its .pyc file.
+
+    The .py file does not need to exist; this simply returns the path to the
+    .pyc file calculated as if the .py file were imported.
+
+    The 'optimization' parameter controls the presumed optimization level of
+    the bytecode file. If 'optimization' is not None, the string representation
+    of the argument is taken and verified to be alphanumeric (else ValueError
+    is raised).
+
+    The debug_override parameter is deprecated. If debug_override is not None,
+    a True value is the same as setting 'optimization' to the empty string
+    while a False value is equivalent to setting 'optimization' to '1'.
+
+    If sys.implementation.cache_tag is None then NotImplementedError is raised.
+    """
+    ...
+def source_from_cache(path: StrPath) -> str:
+    """
+    Given the path to a .pyc. file, return the path to its .py file.
+
+    The .pyc file does not need to exist; this simply returns the path to
+    the .py file calculated to correspond to the .pyc file.  If path does
+    not conform to PEP 3147/488 format, ValueError will be raised. If
+    sys.implementation.cache_tag is None then NotImplementedError is raised.
+    """
+    ...
+def decode_source(source_bytes: ReadableBuffer) -> str:
+    """
+    Decode bytes representing source code and return the string.
+
+    Universal newline support is used in the decoding.
+    """
+    ...
 def spec_from_file_location(
     name: str,
     location: StrOrBytesPath | None = None,

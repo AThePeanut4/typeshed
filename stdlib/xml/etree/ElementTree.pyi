@@ -588,10 +588,40 @@ class _IterParseIterator(Iterator[tuple[str, Element]], Protocol):
         def __del__(self) -> None: ...
 
 @overload
-def iterparse(source: _FileRead, events: Sequence[str] | None = None) -> _IterParseIterator: ...
+def iterparse(source: _FileRead, events: Sequence[str] | None = None) -> _IterParseIterator:
+    """
+    Incrementally parse XML document into ElementTree.
+
+    This class also reports what's going on to the user based on the
+    *events* it is initialized with.  The supported events are the strings
+    "start", "end", "start-ns" and "end-ns" (the "ns" events are used to get
+    detailed namespace information).  If *events* is omitted, only
+    "end" events are reported.
+
+    *source* is a filename or file object containing XML data, *events* is
+    a list of events to report back, *parser* is an optional parser instance.
+
+    Returns an iterator providing (event, elem) pairs.
+    """
+    ...
 @overload
 @deprecated("The `parser` parameter is deprecated since Python 3.4.")
-def iterparse(source: _FileRead, events: Sequence[str] | None = None, parser: XMLParser | None = None) -> _IterParseIterator: ...
+def iterparse(source: _FileRead, events: Sequence[str] | None = None, parser: XMLParser | None = None) -> _IterParseIterator:
+    """
+    Incrementally parse XML document into ElementTree.
+
+    This class also reports what's going on to the user based on the
+    *events* it is initialized with.  The supported events are the strings
+    "start", "end", "start-ns" and "end-ns" (the "ns" events are used to get
+    detailed namespace information).  If *events* is omitted, only
+    "end" events are reported.
+
+    *source* is a filename or file object containing XML data, *events* is
+    a list of events to report back, *parser* is an optional parser instance.
+
+    Returns an iterator providing (event, elem) pairs.
+    """
+    ...
 
 _EventQueue: TypeAlias = tuple[str] | tuple[str, tuple[str, str]] | tuple[str, None]
 

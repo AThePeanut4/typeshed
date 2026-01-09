@@ -59,7 +59,9 @@ class Container(Model):
         """
         ...
     @property
-    def ports(self) -> dict[Incomplete, Incomplete]: ...
+    def ports(self) -> dict[Incomplete, Incomplete]:
+        """The ports that the container exposes as a dictionary."""
+        ...
     @overload
     def attach(
         self,
@@ -69,7 +71,31 @@ class Container(Model):
         stream: Literal[False] = False,
         logs: bool = False,
         demux: Literal[False] = False,
-    ) -> bytes: ...
+    ) -> bytes:
+        """
+        Attach to this container.
+
+        :py:meth:`logs` is a wrapper around this method, which you can
+        use instead if you want to fetch/stream container output without first
+        retrieving the entire backlog.
+
+        Args:
+            stdout (bool): Include stdout.
+            stderr (bool): Include stderr.
+            stream (bool): Return container output progressively as an iterator
+                of strings, rather than a single string.
+            logs (bool): Include the container's previous output.
+
+        Returns:
+            By default, the container's output as a single string.
+
+            If ``stream=True``, an iterator of output strings.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
     @overload
     def attach(
         self,
@@ -79,7 +105,31 @@ class Container(Model):
         stream: Literal[False] = False,
         logs: bool = False,
         demux: Literal[True],
-    ) -> tuple[bytes | None, bytes | None]: ...
+    ) -> tuple[bytes | None, bytes | None]:
+        """
+        Attach to this container.
+
+        :py:meth:`logs` is a wrapper around this method, which you can
+        use instead if you want to fetch/stream container output without first
+        retrieving the entire backlog.
+
+        Args:
+            stdout (bool): Include stdout.
+            stderr (bool): Include stderr.
+            stream (bool): Return container output progressively as an iterator
+                of strings, rather than a single string.
+            logs (bool): Include the container's previous output.
+
+        Returns:
+            By default, the container's output as a single string.
+
+            If ``stream=True``, an iterator of output strings.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
     @overload
     def attach(
         self,
@@ -89,14 +139,109 @@ class Container(Model):
         stream: Literal[True],
         logs: bool = False,
         demux: Literal[False] = False,
-    ) -> CancellableStream[bytes]: ...
+    ) -> CancellableStream[bytes]:
+        """
+        Attach to this container.
+
+        :py:meth:`logs` is a wrapper around this method, which you can
+        use instead if you want to fetch/stream container output without first
+        retrieving the entire backlog.
+
+        Args:
+            stdout (bool): Include stdout.
+            stderr (bool): Include stderr.
+            stream (bool): Return container output progressively as an iterator
+                of strings, rather than a single string.
+            logs (bool): Include the container's previous output.
+
+        Returns:
+            By default, the container's output as a single string.
+
+            If ``stream=True``, an iterator of output strings.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
     @overload
     def attach(
         self, *, stdout: bool = True, stderr: bool = True, stream: Literal[True], logs: bool = False, demux: Literal[True]
-    ) -> CancellableStream[tuple[bytes | None, bytes | None]]: ...
-    def attach_socket(self, **kwargs) -> SocketIO | _BufferedReaderStream | SSHSocket: ...
-    def commit(self, repository: str | None = None, tag: str | None = None, **kwargs) -> Image: ...
-    def diff(self) -> list[dict[str, Incomplete]]: ...
+    ) -> CancellableStream[tuple[bytes | None, bytes | None]]:
+        """
+        Attach to this container.
+
+        :py:meth:`logs` is a wrapper around this method, which you can
+        use instead if you want to fetch/stream container output without first
+        retrieving the entire backlog.
+
+        Args:
+            stdout (bool): Include stdout.
+            stderr (bool): Include stderr.
+            stream (bool): Return container output progressively as an iterator
+                of strings, rather than a single string.
+            logs (bool): Include the container's previous output.
+
+        Returns:
+            By default, the container's output as a single string.
+
+            If ``stream=True``, an iterator of output strings.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def attach_socket(self, **kwargs) -> SocketIO | _BufferedReaderStream | SSHSocket:
+        """
+        Like :py:meth:`attach`, but returns the underlying socket-like object
+        for the HTTP request.
+
+        Args:
+            params (dict): Dictionary of request parameters (e.g. ``stdout``,
+                ``stderr``, ``stream``).
+            ws (bool): Use websockets instead of raw HTTP.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def commit(self, repository: str | None = None, tag: str | None = None, **kwargs) -> Image:
+        """
+        Commit a container to an image. Similar to the ``docker commit``
+        command.
+
+        Args:
+            repository (str): The repository to push the image to
+            tag (str): The tag to push
+            message (str): A commit message
+            author (str): The name of the author
+            pause (bool): Whether to pause the container before committing
+            changes (str): Dockerfile instructions to apply while committing
+            conf (dict): The configuration for the container. See the
+                `Engine API documentation
+                <https://docs.docker.com/reference/api/docker_remote_api/>`_
+                for full details.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
+    def diff(self) -> list[dict[str, Incomplete]]:
+        """
+        Inspect changes on a container's filesystem.
+
+        Returns:
+            (list) A list of dictionaries containing the attributes `Path`
+                and `Kind`.
+
+        Raises:
+            :py:class:`docker.errors.APIError`
+                If the server returns an error.
+        """
+        ...
     def exec_run(
         self,
         cmd: str | list[str],
