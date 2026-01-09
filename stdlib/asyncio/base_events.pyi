@@ -197,10 +197,19 @@ class BaseEventLoop(AbstractEventLoop):
         """Create a Future object attached to the loop."""
         ...
     # Tasks methods
-    if sys.version_info >= (3, 11):
-        def create_task(self, coro: _CoroutineLike[_T], *, name: object = None, context: Context | None = None) -> Task[_T]:
-            """
-            Schedule a coroutine object.
+    if sys.version_info >= (3, 14):
+        def create_task(
+            self,
+            coro: _CoroutineLike[_T],
+            *,
+            name: object = None,
+            context: Context | None = None,
+            eager_start: bool | None = None,
+        ) -> Task[_T]: ...
+    elif sys.version_info >= (3, 11):
+        def create_task(self, coro: _CoroutineLike[_T], *, name: object = None, context: Context | None = None) -> Task[_T]: ...
+    else:
+        def create_task(self, coro: _CoroutineLike[_T], *, name: object = None) -> Task[_T]: ...
 
             Return a task object.
             """

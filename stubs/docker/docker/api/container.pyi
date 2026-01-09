@@ -24,61 +24,50 @@ class _TopResult(TypedDict):
 _Container: TypeAlias = _HasId | _HasID | str
 
 class ContainerApiMixin:
+    @overload
     def attach(
         self,
         container: _Container,
         stdout: bool = True,
         stderr: bool = True,
-        stream: bool = False,
+        stream: Literal[False] = False,
         logs: bool = False,
-        demux: bool = False,
-    ):
-        """
-        Attach to a container.
-
-        The ``.logs()`` function is a wrapper around this method, which you can
-        use instead if you want to fetch/stream container output without first
-        retrieving the entire backlog.
-
-        Args:
-            container (str): The container to attach to.
-            stdout (bool): Include stdout.
-            stderr (bool): Include stderr.
-            stream (bool): Return container output progressively as an iterator
-                of strings, rather than a single string.
-            logs (bool): Include the container's previous output.
-            demux (bool): Keep stdout and stderr separate.
-
-        Returns:
-            By default, the container's output as a single string (two if
-            ``demux=True``: one for stdout and one for stderr).
-
-            If ``stream=True``, an iterator of output strings. If
-            ``demux=True``, two iterators are returned: one for stdout and one
-            for stderr.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
-    def attach_socket(self, container: _Container, params=None, ws: bool = False):
-        """
-        Like ``attach``, but returns the underlying socket-like object for the
-        HTTP request.
-
-        Args:
-            container (str): The container to attach to.
-            params (dict): Dictionary of request parameters (e.g. ``stdout``,
-                ``stderr``, ``stream``).
-                For ``detachKeys``, ~/.docker/config.json is used by default.
-            ws (bool): Use websockets instead of raw HTTP.
-
-        Raises:
-            :py:class:`docker.errors.APIError`
-                If the server returns an error.
-        """
-        ...
+        demux: Literal[False] = False,
+    ) -> bytes: ...
+    @overload
+    def attach(
+        self,
+        container: _Container,
+        stdout: bool = True,
+        stderr: bool = True,
+        stream: Literal[False] = False,
+        logs: bool = False,
+        *,
+        demux: Literal[True],
+    ) -> tuple[bytes | None, bytes | None]: ...
+    @overload
+    def attach(
+        self,
+        container: _Container,
+        stdout: bool = True,
+        stderr: bool = True,
+        *,
+        stream: Literal[True],
+        logs: bool = False,
+        demux: Literal[False] = False,
+    ) -> CancellableStream[bytes]: ...
+    @overload
+    def attach(
+        self,
+        container: _Container,
+        stdout: bool = True,
+        stderr: bool = True,
+        *,
+        stream: Literal[True],
+        logs: bool = False,
+        demux: Literal[True],
+    ) -> CancellableStream[tuple[bytes | None, bytes | None]]: ...
+    def attach_socket(self, container: _Container, params=None, ws: bool = False): ...
     def commit(
         self,
         container: _Container,
