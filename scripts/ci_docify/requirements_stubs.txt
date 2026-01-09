@@ -117,7 +117,7 @@ Flask-SocketIO==5.6.*
 opentracing==2.4.*
 PyMeeus==0.5.*
 grpcio==1.*
-peewee==3.18.3
+peewee==3.19.0
 ldap3==2.9.*
 click-default-group==1.2.*
 WebOb==1.8.*
@@ -168,7 +168,7 @@ grpcio-channelz==1.*
 rfc3339-validator==0.1.*
 pony==0.7.*
 JACK-Client==0.5.*
-jsonschema[format]~=4.25.1
+jsonschema[format]~=4.26.0
 xlrd==2.0.*
 ratelimit==2.2.*
 croniter==6.0.0
