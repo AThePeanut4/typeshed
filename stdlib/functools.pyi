@@ -79,35 +79,14 @@ class _CacheParameters(TypedDict):
     typed: bool
 
 @final
-class _lru_cache_wrapper(Generic[_T]):
-    """
-    Create a cached callable that wraps another function.
-
-    user_function:      the function being cached
-
-    maxsize:  0         for no caching
-              None      for unlimited cache size
-              n         for a bounded cache
-
-    typed:    False     cache f(3) and f(3.0) as identical calls
-              True      cache f(3) and f(3.0) as distinct calls
-
-    cache_info_type:    namedtuple class with the fields:
-                            hits misses currsize maxsize
-    """
-    __wrapped__: Callable[..., _T]
-    def __call__(self, *args: Hashable, **kwargs: Hashable) -> _T:
-        """Call self as a function."""
-        ...
-    def cache_info(self) -> _CacheInfo:
-        """Report cache statistics"""
-        ...
-    def cache_clear(self) -> None:
-        """Clear the cache and cache statistics"""
-        ...
+class _lru_cache_wrapper(Generic[_T_co]):
+    __wrapped__: Callable[..., _T_co]
+    def __call__(self, *args: Hashable, **kwargs: Hashable) -> _T_co: ...
+    def cache_info(self) -> _CacheInfo: ...
+    def cache_clear(self) -> None: ...
     def cache_parameters(self) -> _CacheParameters: ...
-    def __copy__(self) -> _lru_cache_wrapper[_T]: ...
-    def __deepcopy__(self, memo: Any, /) -> _lru_cache_wrapper[_T]: ...
+    def __copy__(self) -> _lru_cache_wrapper[_T_co]: ...
+    def __deepcopy__(self, memo: Any, /) -> _lru_cache_wrapper[_T_co]: ...
 
 @overload
 def lru_cache(maxsize: int | None = 128, typed: bool = False) -> Callable[[Callable[..., _T]], _lru_cache_wrapper[_T]]:

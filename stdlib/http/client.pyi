@@ -79,7 +79,7 @@ from collections.abc import Callable, Iterable, Iterator, Mapping
 from email._policybase import _MessageT
 from socket import socket
 from typing import BinaryIO, Final, TypeVar, overload
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self, TypeAlias, deprecated
 
 __all__ = [
     "HTTPResponse",
@@ -285,45 +285,12 @@ class HTTPResponse(io.BufferedIOBase, BinaryIO):  # type: ignore[misc]  # incomp
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: types.TracebackType | None
     ) -> None: ...
-    def info(self) -> email.message.Message:
-        """
-        Returns an instance of the class mimetools.Message containing
-        meta-information associated with the URL.
-
-        When the method is HTTP, these headers are those returned by
-        the server at the head of the retrieved HTML page (including
-        Content-Length and Content-Type).
-
-        When the method is FTP, a Content-Length header will be
-        present if (as is now usual) the server passed back a file
-        length in response to the FTP retrieval request. A
-        Content-Type header will be present if the MIME type can be
-        guessed.
-
-        When the method is local-file, returned headers will include
-        a Date representing the file's last-modified time, a
-        Content-Length giving file size, and a Content-Type
-        containing a guess at the file's type. See also the
-        description of the mimetools module.
-        """
-        ...
-    def geturl(self) -> str:
-        """
-        Return the real URL of the page.
-
-        In some cases, the HTTP server redirects a client to another
-        URL. The urlopen() function handles this transparently, but in
-        some cases the caller needs to know which URL the client was
-        redirected to. The geturl() method can be used to get at this
-        redirected URL.
-        """
-        ...
-    def getcode(self) -> int:
-        """
-        Return the HTTP status code that was sent with the response,
-        or None if the URL is not an HTTP URL.
-        """
-        ...
+    @deprecated("Deprecated since Python 3.9. Use `HTTPResponse.headers` attribute instead.")
+    def info(self) -> email.message.Message: ...
+    @deprecated("Deprecated since Python 3.9. Use `HTTPResponse.url` attribute instead.")
+    def geturl(self) -> str: ...
+    @deprecated("Deprecated since Python 3.9. Use `HTTPResponse.status` attribute instead.")
+    def getcode(self) -> int: ...
     def begin(self) -> None: ...
 
 class HTTPConnection:
