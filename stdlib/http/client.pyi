@@ -286,28 +286,7 @@ class HTTPResponse(io.BufferedIOBase, BinaryIO):  # type: ignore[misc]  # incomp
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: types.TracebackType | None
     ) -> None: ...
     @deprecated("Deprecated since Python 3.9. Use `HTTPResponse.headers` attribute instead.")
-    def info(self) -> email.message.Message:
-        """
-        Returns an instance of the class mimetools.Message containing
-        meta-information associated with the URL.
-
-        When the method is HTTP, these headers are those returned by
-        the server at the head of the retrieved HTML page (including
-        Content-Length and Content-Type).
-
-        When the method is FTP, a Content-Length header will be
-        present if (as is now usual) the server passed back a file
-        length in response to the FTP retrieval request. A
-        Content-Type header will be present if the MIME type can be
-        guessed.
-
-        When the method is local-file, returned headers will include
-        a Date representing the file's last-modified time, a
-        Content-Length giving file size, and a Content-Type
-        containing a guess at the file's type. See also the
-        description of the mimetools module.
-        """
-        ...
+    def info(self) -> HTTPMessage: ...
     @deprecated("Deprecated since Python 3.9. Use `HTTPResponse.url` attribute instead.")
     def geturl(self) -> str:
         """
