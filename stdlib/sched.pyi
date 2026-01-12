@@ -62,7 +62,12 @@ class scheduler:
 
     def __init__(
         self, timefunc: Callable[[], float] = time.monotonic, delayfunc: Callable[[float], object] = time.sleep
-    ) -> None: ...
+    ) -> None:
+        """
+        Initialize a new instance, passing the time and delay
+        functions
+        """
+        ...
     def enterabs(
         self, time: float, priority: Any, action: _ActionCallback, argument: tuple[Any, ...] = (), kwargs: dict[str, Any] = ...
     ) -> Event:

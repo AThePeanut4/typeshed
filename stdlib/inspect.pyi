@@ -1190,10 +1190,29 @@ def formatargvalues(
     formatvarargs: Callable[[str], str] | None = ...,
     formatvarkw: Callable[[str], str] | None = ...,
     formatvalue: Callable[[Any], str] | None = ...,
-) -> str: ...
-def getmro(cls: type) -> tuple[type, ...]: ...
+) -> str:
+    """
+    Format an argument spec from the 4 values returned by getargvalues.
+
+    The first four arguments are (args, varargs, varkw, locals).  The
+    next four arguments are the corresponding optional formatting functions
+    that are called to turn names and values into strings.  The ninth
+    argument is an optional function to format the sequence of arguments.
+    """
+    ...
+def getmro(cls: type) -> tuple[type, ...]:
+    """Return tuple of base classes (including cls) in method resolution order."""
+    ...
 @deprecated("Deprecated since Python 3.5. Use `Signature.bind` and `Signature.bind_partial` instead.")
-def getcallargs(func: Callable[_P, Any], /, *args: _P.args, **kwds: _P.kwargs) -> dict[str, Any]: ...
+def getcallargs(func: Callable[_P, Any], /, *args: _P.args, **kwds: _P.kwargs) -> dict[str, Any]:
+    """
+    Get the mapping of arguments to values.
+
+    A dict is returned, with keys the function argument names (including the
+    names of the * and ** arguments, if any), and values the respective bound
+    values from 'positional' and 'named'.
+    """
+    ...
 
 class ClosureVars(NamedTuple):
     """ClosureVars(nonlocals, globals, builtins, unbound)"""

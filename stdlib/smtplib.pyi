@@ -461,7 +461,25 @@ class SMTP:
             ...
     else:
         @overload
-        def starttls(self, keyfile: None = None, certfile: None = None, context: SSLContext | None = None) -> _Reply: ...
+        def starttls(self, keyfile: None = None, certfile: None = None, context: SSLContext | None = None) -> _Reply:
+            """
+            Puts the connection to the SMTP server into TLS mode.
+
+            If there has been no previous EHLO or HELO command this session, this
+            method tries ESMTP EHLO first.
+
+            If the server supports TLS, this will encrypt the rest of the SMTP
+            session. If you provide the keyfile and certfile parameters,
+            the identity of the SMTP server and client can be checked. This,
+            however, depends on whether the socket module really checks the
+            certificates.
+
+            This method may raise the following exceptions:
+
+             SMTPHeloError            The server didn't reply properly to
+                                      the helo greeting.
+            """
+            ...
         @overload
         @deprecated(
             "The `keyfile`, `certfile` parameters are deprecated since Python 3.6; "
@@ -469,7 +487,25 @@ class SMTP:
         )
         def starttls(
             self, keyfile: StrOrBytesPath | None = None, certfile: StrOrBytesPath | None = None, context: None = None
-        ) -> _Reply: ...
+        ) -> _Reply:
+            """
+            Puts the connection to the SMTP server into TLS mode.
+
+            If there has been no previous EHLO or HELO command this session, this
+            method tries ESMTP EHLO first.
+
+            If the server supports TLS, this will encrypt the rest of the SMTP
+            session. If you provide the keyfile and certfile parameters,
+            the identity of the SMTP server and client can be checked. This,
+            however, depends on whether the socket module really checks the
+            certificates.
+
+            This method may raise the following exceptions:
+
+             SMTPHeloError            The server didn't reply properly to
+                                      the helo greeting.
+            """
+            ...
 
     def sendmail(
         self,
@@ -578,6 +614,15 @@ class SMTP:
         ...
 
 class SMTP_SSL(SMTP):
+    """
+    This is a subclass derived from SMTP that connects over an SSL
+    encrypted socket (to use this class you need a socket module that was
+    compiled with SSL support). If host is not specified, '' (the local
+    host) is used. If port is omitted, the standard SMTP-over-SSL port
+    (465) is used.  local_hostname and source_address have the same meaning
+    as they do in the SMTP class.  context also optional, can contain a
+    SSLContext.
+    """
     context: SSLContext
     if sys.version_info >= (3, 12):
         def __init__(

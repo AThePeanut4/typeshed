@@ -597,11 +597,46 @@ if sys.version_info < (3, 12):
         ciphers: str | None = None,
     ) -> SSLSocket: ...
     @deprecated("Deprecated since Python 3.7; removed in Python 3.12.")
-    def match_hostname(cert: _PeerCertRetDictType, hostname: str) -> None: ...
+    def match_hostname(cert: _PeerCertRetDictType, hostname: str) -> None:
+        """
+        Verify that *cert* (in decoded format as returned by
+        SSLSocket.getpeercert()) matches the *hostname*.  RFC 2818 and RFC 6125
+        rules are followed.
 
-def cert_time_to_seconds(cert_time: str) -> int: ...
-def DER_cert_to_PEM_cert(der_cert_bytes: ReadableBuffer) -> str: ...
-def PEM_cert_to_DER_cert(pem_cert_string: str) -> bytes: ...
+        The function matches IP addresses rather than dNSNames if hostname is a
+        valid ipaddress string. IPv4 addresses are supported on all platforms.
+        IPv6 addresses are supported on platforms with IPv6 support (AF_INET6
+        and inet_pton).
+
+        CertificateError is raised on failure. On success, the function
+        returns nothing.
+        """
+        ...
+
+def cert_time_to_seconds(cert_time: str) -> int:
+    """
+    Return the time in seconds since the Epoch, given the timestring
+    representing the "notBefore" or "notAfter" date from a certificate
+    in ``"%b %d %H:%M:%S %Y %Z"`` strptime format (C locale).
+
+    "notBefore" or "notAfter" dates must use UTC (RFC 5280).
+
+    Month is one of: Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+    UTC should be specified as GMT (see ASN1_TIME_print())
+    """
+    ...
+def DER_cert_to_PEM_cert(der_cert_bytes: ReadableBuffer) -> str:
+    """
+    Takes a certificate in binary DER format and returns the
+    PEM version of it as a string.
+    """
+    ...
+def PEM_cert_to_DER_cert(pem_cert_string: str) -> bytes:
+    """
+    Takes a certificate in ASCII PEM format and returns the
+    DER-encoded version of it as a byte sequence
+    """
+    ...
 
 if sys.version_info >= (3, 10):
     def get_server_certificate(
@@ -609,12 +644,27 @@ if sys.version_info >= (3, 10):
         ssl_version: int = _SSLMethod.PROTOCOL_TLS_CLIENT,
         ca_certs: str | None = None,
         timeout: float = ...,
-    ) -> str: ...
+    ) -> str:
+        """
+        Retrieve the certificate from the server at the specified address,
+        and return it as a PEM-encoded string.
+        If 'ca_certs' is specified, validate the server cert against it.
+        If 'ssl_version' is specified, use it in the connection attempt.
+        If 'timeout' is specified, use it in the connection attempt.
+        """
+        ...
 
 else:
     def get_server_certificate(
         addr: tuple[str, int], ssl_version: int = _SSLMethod.PROTOCOL_TLS_CLIENT, ca_certs: str | None = None
-    ) -> str: ...
+    ) -> str:
+        """
+        Retrieve the certificate from the server at the specified address,
+        and return it as a PEM-encoded string.
+        If 'ca_certs' is specified, validate the server cert against it.
+        If 'ssl_version' is specified, use it in the connection attempt.
+        """
+        ...
 
 class TLSVersion(enum.IntEnum):
     """An enumeration."""
