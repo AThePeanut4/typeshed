@@ -76,7 +76,7 @@ from email.message import Message
 from http.client import HTTPConnection, HTTPMessage, HTTPResponse
 from http.cookiejar import CookieJar
 from re import Pattern
-from typing import IO, Any, ClassVar, NoReturn, Protocol, TypeVar, overload, type_check_only
+from typing import IO, Any, ClassVar, Literal, NoReturn, Protocol, TypeVar, overload, type_check_only
 from typing_extensions import TypeAlias, deprecated
 from urllib.error import HTTPError as HTTPError
 from urllib.response import addclosehook, addinfourl
@@ -177,66 +177,32 @@ if sys.version_info >= (3, 13):
         ...
 
 else:
+    @overload
     def urlopen(
         url: str | Request,
         data: _DataType | None = None,
         timeout: float | None = ...,
         *,
-        cafile: str | None = None,
-        capath: str | None = None,
-        cadefault: bool = False,
+        cafile: None = None,
+        capath: None = None,
+        cadefault: Literal[False] = False,
         context: ssl.SSLContext | None = None,
-    ) -> _UrlopenRet:
-        """
-        Open the URL url, which can be either a string or a Request object.
-
-        *data* must be an object specifying additional data to be sent to
-        the server, or None if no such data is needed.  See Request for
-        details.
-
-        urllib.request module uses HTTP/1.1 and includes a "Connection:close"
-        header in its HTTP requests.
-
-        The optional *timeout* parameter specifies a timeout in seconds for
-        blocking operations like the connection attempt (if not specified, the
-        global default timeout setting will be used). This only works for HTTP,
-        HTTPS and FTP connections.
-
-        If *context* is specified, it must be a ssl.SSLContext instance describing
-        the various SSL options. See HTTPSConnection for more details.
-
-        The optional *cafile* and *capath* parameters specify a set of trusted CA
-        certificates for HTTPS requests. cafile should point to a single file
-        containing a bundle of CA certificates, whereas capath should point to a
-        directory of hashed certificate files. More information can be found in
-        ssl.SSLContext.load_verify_locations().
-
-        The *cadefault* parameter is ignored.
-
-
-        This function always returns an object which can work as a
-        context manager and has the properties url, headers, and status.
-        See urllib.response.addinfourl for more detail on these properties.
-
-        For HTTP and HTTPS URLs, this function returns a http.client.HTTPResponse
-        object slightly modified. In addition to the three new methods above, the
-        msg attribute contains the same information as the reason attribute ---
-        the reason phrase returned by the server --- instead of the response
-        headers as it is specified in the documentation for HTTPResponse.
-
-        For FTP, file, and data URLs and requests explicitly handled by legacy
-        URLopener and FancyURLopener classes, this function returns a
-        urllib.response.addinfourl object.
-
-        Note that None may be returned if no handler handles the request (though
-        the default installed global OpenerDirector uses UnknownHandler to ensure
-        this never happens).
-
-        In addition, if proxy settings are detected (for example, when a *_proxy
-        environment variable like http_proxy is set), ProxyHandler is default
-        installed and makes sure the requests are handled through the proxy.
-        """
-        ...
+    ) -> _UrlopenRet: ...
+    @overload
+    @deprecated(
+        "The `cafile`, `capath`, `cadefault` parameters are deprecated since Python 3.6; "
+        "removed in Python 3.13. Use `context` parameter instead."
+    )
+    def urlopen(
+        url: str | Request,
+        data: _DataType | None = None,
+        timeout: float | None = ...,
+        *,
+        cafile: StrOrBytesPath | None = None,
+        capath: StrOrBytesPath | None = None,
+        cadefault: bool = False,
+        context: None = None,
+    ) -> _UrlopenRet: ...
 
 def install_opener(opener: OpenerDirector) -> None: ...
 def build_opener(*handlers: BaseHandler | Callable[[], BaseHandler]) -> OpenerDirector:

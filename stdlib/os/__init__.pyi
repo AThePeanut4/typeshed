@@ -1389,10 +1389,10 @@ def fdopen(
     mode: OpenTextMode = "r",
     buffering: int = -1,
     encoding: str | None = None,
-    errors: str | None = ...,
-    newline: str | None = ...,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    errors: str | None = None,
+    newline: str | None = None,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> TextIOWrapper: ...
 @overload
 def fdopen(
@@ -1402,8 +1402,8 @@ def fdopen(
     encoding: None = None,
     errors: None = None,
     newline: None = None,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> FileIO: ...
 @overload
 def fdopen(
@@ -1413,8 +1413,8 @@ def fdopen(
     encoding: None = None,
     errors: None = None,
     newline: None = None,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> BufferedRandom: ...
 @overload
 def fdopen(
@@ -1424,8 +1424,8 @@ def fdopen(
     encoding: None = None,
     errors: None = None,
     newline: None = None,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> BufferedWriter: ...
 @overload
 def fdopen(
@@ -1435,8 +1435,8 @@ def fdopen(
     encoding: None = None,
     errors: None = None,
     newline: None = None,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> BufferedReader: ...
 @overload
 def fdopen(
@@ -1446,8 +1446,8 @@ def fdopen(
     encoding: None = None,
     errors: None = None,
     newline: None = None,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> BinaryIO: ...
 @overload
 def fdopen(
@@ -1455,10 +1455,10 @@ def fdopen(
     mode: str,
     buffering: int = -1,
     encoding: str | None = None,
-    errors: str | None = ...,
-    newline: str | None = ...,
-    closefd: bool = ...,
-    opener: _Opener | None = ...,
+    errors: str | None = None,
+    newline: str | None = None,
+    closefd: bool = True,
+    opener: _Opener | None = None,
 ) -> IO[Any]: ...
 def close(fd: int) -> None:
     """Close a file descriptor."""
@@ -2974,78 +2974,28 @@ else:
             env: _ExecEnv | None,  # None allowed starting in 3.13
             /,
             *,
-            file_actions: Sequence[tuple[Any, ...]] | None = ...,
-            setpgroup: int | None = ...,
-            resetids: bool = ...,
-            setsid: bool = ...,
-            setsigmask: Iterable[int] = ...,
-            setsigdef: Iterable[int] = ...,
-            scheduler: tuple[Any, sched_param] | None = ...,
-        ) -> int:
-            """
-            Execute the program specified by path in a new process.
-
-            path
-              Path of executable file.
-            argv
-              Tuple or list of strings.
-            env
-              Dictionary of strings mapping to strings.
-            file_actions
-              A sequence of file action tuples.
-            setpgroup
-              The pgroup to use with the POSIX_SPAWN_SETPGROUP flag.
-            resetids
-              If the value is `true` the POSIX_SPAWN_RESETIDS will be activated.
-            setsid
-              If the value is `true` the POSIX_SPAWN_SETSID or POSIX_SPAWN_SETSID_NP will be activated.
-            setsigmask
-              The sigmask to use with the POSIX_SPAWN_SETSIGMASK flag.
-            setsigdef
-              The sigmask to use with the POSIX_SPAWN_SETSIGDEF flag.
-            scheduler
-              A tuple with the scheduler policy (optional) and parameters.
-            """
-            ...
+            file_actions: Sequence[tuple[Any, ...]] | None = (),
+            setpgroup: int = ...,
+            resetids: bool = False,
+            setsid: bool = False,
+            setsigmask: Iterable[int] = (),
+            setsigdef: Iterable[int] = (),
+            scheduler: tuple[Any, sched_param] = ...,
+        ) -> int: ...
         def posix_spawnp(
             path: StrOrBytesPath,
             argv: _ExecVArgs,
             env: _ExecEnv | None,  # None allowed starting in 3.13
             /,
             *,
-            file_actions: Sequence[tuple[Any, ...]] | None = ...,
-            setpgroup: int | None = ...,
-            resetids: bool = ...,
-            setsid: bool = ...,
-            setsigmask: Iterable[int] = ...,
-            setsigdef: Iterable[int] = ...,
-            scheduler: tuple[Any, sched_param] | None = ...,
-        ) -> int:
-            """
-            Execute the program specified by path in a new process.
-
-            path
-              Path of executable file.
-            argv
-              Tuple or list of strings.
-            env
-              Dictionary of strings mapping to strings.
-            file_actions
-              A sequence of file action tuples.
-            setpgroup
-              The pgroup to use with the POSIX_SPAWN_SETPGROUP flag.
-            resetids
-              If the value is `True` the POSIX_SPAWN_RESETIDS will be activated.
-            setsid
-              If the value is `True` the POSIX_SPAWN_SETSID or POSIX_SPAWN_SETSID_NP will be activated.
-            setsigmask
-              The sigmask to use with the POSIX_SPAWN_SETSIGMASK flag.
-            setsigdef
-              The sigmask to use with the POSIX_SPAWN_SETSIGDEF flag.
-            scheduler
-              A tuple with the scheduler policy (optional) and parameters.
-            """
-            ...
+            file_actions: Sequence[tuple[Any, ...]] | None = (),
+            setpgroup: int = ...,
+            resetids: bool = False,
+            setsid: bool = False,
+            setsigmask: Iterable[int] = (),
+            setsigdef: Iterable[int] = (),
+            scheduler: tuple[Any, sched_param] = ...,
+        ) -> int: ...
     else:
         def posix_spawn(
             path: StrOrBytesPath,
@@ -3053,78 +3003,28 @@ else:
             env: _ExecEnv,
             /,
             *,
-            file_actions: Sequence[tuple[Any, ...]] | None = ...,
-            setpgroup: int | None = ...,
-            resetids: bool = ...,
-            setsid: bool = ...,
-            setsigmask: Iterable[int] = ...,
-            setsigdef: Iterable[int] = ...,
-            scheduler: tuple[Any, sched_param] | None = ...,
-        ) -> int:
-            """
-            Execute the program specified by path in a new process.
-
-            path
-              Path of executable file.
-            argv
-              Tuple or list of strings.
-            env
-              Dictionary of strings mapping to strings.
-            file_actions
-              A sequence of file action tuples.
-            setpgroup
-              The pgroup to use with the POSIX_SPAWN_SETPGROUP flag.
-            resetids
-              If the value is `true` the POSIX_SPAWN_RESETIDS will be activated.
-            setsid
-              If the value is `true` the POSIX_SPAWN_SETSID or POSIX_SPAWN_SETSID_NP will be activated.
-            setsigmask
-              The sigmask to use with the POSIX_SPAWN_SETSIGMASK flag.
-            setsigdef
-              The sigmask to use with the POSIX_SPAWN_SETSIGDEF flag.
-            scheduler
-              A tuple with the scheduler policy (optional) and parameters.
-            """
-            ...
+            file_actions: Sequence[tuple[Any, ...]] | None = (),
+            setpgroup: int = ...,
+            resetids: bool = False,
+            setsid: bool = False,
+            setsigmask: Iterable[int] = (),
+            setsigdef: Iterable[int] = (),
+            scheduler: tuple[Any, sched_param] = ...,
+        ) -> int: ...
         def posix_spawnp(
             path: StrOrBytesPath,
             argv: _ExecVArgs,
             env: _ExecEnv,
             /,
             *,
-            file_actions: Sequence[tuple[Any, ...]] | None = ...,
-            setpgroup: int | None = ...,
-            resetids: bool = ...,
-            setsid: bool = ...,
-            setsigmask: Iterable[int] = ...,
-            setsigdef: Iterable[int] = ...,
-            scheduler: tuple[Any, sched_param] | None = ...,
-        ) -> int:
-            """
-            Execute the program specified by path in a new process.
-
-            path
-              Path of executable file.
-            argv
-              Tuple or list of strings.
-            env
-              Dictionary of strings mapping to strings.
-            file_actions
-              A sequence of file action tuples.
-            setpgroup
-              The pgroup to use with the POSIX_SPAWN_SETPGROUP flag.
-            resetids
-              If the value is `True` the POSIX_SPAWN_RESETIDS will be activated.
-            setsid
-              If the value is `True` the POSIX_SPAWN_SETSID or POSIX_SPAWN_SETSID_NP will be activated.
-            setsigmask
-              The sigmask to use with the POSIX_SPAWN_SETSIGMASK flag.
-            setsigdef
-              The sigmask to use with the POSIX_SPAWN_SETSIGDEF flag.
-            scheduler
-              A tuple with the scheduler policy (optional) and parameters.
-            """
-            ...
+            file_actions: Sequence[tuple[Any, ...]] | None = (),
+            setpgroup: int = ...,
+            resetids: bool = False,
+            setsid: bool = False,
+            setsigmask: Iterable[int] = (),
+            setsigdef: Iterable[int] = (),
+            scheduler: tuple[Any, sched_param] = ...,
+        ) -> int: ...
 
     POSIX_SPAWN_OPEN: Final = 0
     POSIX_SPAWN_CLOSE: Final = 1
@@ -3310,7 +3210,7 @@ if sys.platform == "linux":
     MFD_HUGE_2GB: Final[int]
     MFD_HUGE_16GB: Final[int]
     def memfd_create(name: str, flags: int = ...) -> int: ...
-    def copy_file_range(src: int, dst: int, count: int, offset_src: int | None = ..., offset_dst: int | None = ...) -> int: ...
+    def copy_file_range(src: int, dst: int, count: int, offset_src: int | None = None, offset_dst: int | None = None) -> int: ...
 
 def waitstatus_to_exitcode(status: int) -> int:
     """
@@ -3331,7 +3231,7 @@ def waitstatus_to_exitcode(status: int) -> int:
     ...
 
 if sys.platform == "linux":
-    def pidfd_open(pid: int, flags: int = ...) -> int: ...
+    def pidfd_open(pid: int, flags: int = 0) -> int: ...
 
 if sys.version_info >= (3, 12) and sys.platform == "linux":
     PIDFD_NONBLOCK: Final = 2048
@@ -3355,8 +3255,8 @@ if sys.version_info >= (3, 10) and sys.platform == "linux":
         src: FileDescriptor,
         dst: FileDescriptor,
         count: int,
-        offset_src: int | None = ...,
-        offset_dst: int | None = ...,
+        offset_src: int | None = None,
+        offset_dst: int | None = None,
         flags: int = 0,
     ) -> int: ...
 

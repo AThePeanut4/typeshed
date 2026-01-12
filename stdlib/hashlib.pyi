@@ -117,12 +117,7 @@ else:
         "pbkdf2_hmac",
     )
 
-def new(name: str, data: ReadableBuffer = b"", *, usedforsecurity: bool = ...) -> HASH:
-    """
-    new(name, data=b'') - Return a new hashing object using the named algorithm;
-    optionally initialized with data (which must be a bytes-like object).
-    """
-    ...
+def new(name: str, data: ReadableBuffer = b"", *, usedforsecurity: bool = True) -> HASH: ...
 
 algorithms_guaranteed: AbstractSet[str]
 algorithms_available: AbstractSet[str]
