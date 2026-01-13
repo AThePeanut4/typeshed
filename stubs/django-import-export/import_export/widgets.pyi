@@ -202,43 +202,19 @@ class ForeignKeyWidget(Widget, Generic[_ModelT]):
     def __init__(
         self, model: _ModelT, field: str = "pk", use_natural_foreign_keys: bool = False, key_is_id: bool = False, **kwargs: Any
     ) -> None: ...
-    def get_queryset(self, value: Any, row: Mapping[str, Any], *args: Any, **kwargs: Any) -> QuerySet[_ModelT]:
-        r"""
-        Returns a queryset of all objects for this Model.
+    def get_queryset(self, value: Any, row: Mapping[str, Any], *args: Any, **kwargs: Any) -> QuerySet[_ModelT]: ...
+    def get_instance_by_natural_key(self, value: str | bytes | bytearray) -> _ModelT: ...
+    def get_instance_by_lookup_fields(self, value: Any, row: Mapping[str, Any], **kwargs: Any) -> _ModelT: ...
+    def get_lookup_kwargs(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]: ...
 
-        Overwrite this method if you want to limit the pool of objects from
-        which the related object is retrieved.
+class _CachedQuerySetWrapper(Generic[_ModelT]):
+    queryset: QuerySet[_ModelT]
+    model: type[_ModelT]
+    def __init__(self, queryset: QuerySet[_ModelT]) -> None: ...
+    def get(self, **lookup_fields: Any) -> _ModelT: ...  # instance can have different fields
 
-        :param value: The field's value in the dataset.
-        :param row: The dataset's current row.
-        :param \*args:
-            Optional args.
-        :param \**kwargs:
-            Optional kwargs.
-
-        As an example; if you'd like to have ForeignKeyWidget look up a Person
-        by their pre- **and** lastname column, you could subclass the widget
-        like so::
-
-            class FullNameForeignKeyWidget(ForeignKeyWidget):
-                def get_queryset(self, value, row, *args, **kwargs):
-                    return self.model.objects.filter(
-                        first_name__iexact=row["first_name"],
-                        last_name__iexact=row["last_name"]
-                    )
-        """
-        ...
-    def get_lookup_kwargs(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]:
-        r"""
-        :return: the key value pairs used to identify a model instance.
-          Override this to customize instance lookup.
-
-        :param value: The field's value in the dataset.
-        :param row: The dataset's current row.
-        :param \**kwargs:
-            Optional kwargs.
-        """
-        ...
+class CachedForeignKeyWidget(ForeignKeyWidget[_ModelT]):
+    def get_instance_by_lookup_fields(self, value: Any, row: Mapping[str, Any], **kwargs: Any) -> _ModelT: ...
 
 class ManyToManyWidget(Widget, Generic[_ModelT]):
     """
