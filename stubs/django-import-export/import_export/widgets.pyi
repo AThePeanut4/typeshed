@@ -202,18 +202,130 @@ class ForeignKeyWidget(Widget, Generic[_ModelT]):
     def __init__(
         self, model: _ModelT, field: str = "pk", use_natural_foreign_keys: bool = False, key_is_id: bool = False, **kwargs: Any
     ) -> None: ...
-    def get_queryset(self, value: Any, row: Mapping[str, Any], *args: Any, **kwargs: Any) -> QuerySet[_ModelT]: ...
+    def get_queryset(self, value: Any, row: Mapping[str, Any], *args: Any, **kwargs: Any) -> QuerySet[_ModelT]:
+        r"""
+        Returns a queryset of all objects for this Model.
+
+        Overwrite this method if you want to limit the pool of objects from
+        which the related object is retrieved.
+
+        :param value: The field's value in the dataset.
+        :param row: The dataset's current row.
+        :param \*args:
+            Optional args.
+        :param \**kwargs:
+            Optional kwargs.
+
+        As an example; if you'd like to have ForeignKeyWidget look up a Person
+        by their pre- **and** lastname column, you could subclass the widget
+        like so::
+
+            class FullNameForeignKeyWidget(ForeignKeyWidget):
+                def get_queryset(self, value, row, *args, **kwargs):
+                    return self.model.objects.filter(
+                        first_name__iexact=row["first_name"],
+                        last_name__iexact=row["last_name"]
+                    )
+        """
+        ...
     def get_instance_by_natural_key(self, value: str | bytes | bytearray) -> _ModelT: ...
     def get_instance_by_lookup_fields(self, value: Any, row: Mapping[str, Any], **kwargs: Any) -> _ModelT: ...
-    def get_lookup_kwargs(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]: ...
+    def get_lookup_kwargs(self, value: Any, row: Mapping[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]:
+        r"""
+        :return: the key value pairs used to identify a model instance.
+          Override this to customize instance lookup.
+
+        :param value: The field's value in the dataset.
+        :param row: The dataset's current row.
+        :param \**kwargs:
+            Optional kwargs.
+        """
+        ...
 
 class _CachedQuerySetWrapper(Generic[_ModelT]):
+    """
+    A wrapper around a Django QuerySet that caches its results in a dictionary
+    for quick lookups.
+
+    This class has the same 'get()' method signature as a QuerySet
+    because it is intended to be used as a drop-in replacement for QuerySet
+    in case of ForeignKeyWidget that calls 'get()' method for every row
+    in the import dataset.
+    """
     queryset: QuerySet[_ModelT]
     model: type[_ModelT]
     def __init__(self, queryset: QuerySet[_ModelT]) -> None: ...
     def get(self, **lookup_fields: Any) -> _ModelT: ...  # instance can have different fields
 
 class CachedForeignKeyWidget(ForeignKeyWidget[_ModelT]):
+    """
+    A :class:`~import_export.widgets.ForeignKeyWidget` subclass that caches
+    the queryset results to minimize database hits during import. The default
+    :class:`~import_export.widgets.ForeignKeyWidget` makes query for each row,
+    which can be inefficient for large imports. This widget fetches all related
+    instances once and caches them in memory for subsequent lookups.
+
+    Using this class has some limitations:
+
+    - It does not support caching when ``use_natural_foreign_keys=True`` is set.
+
+    - It calls :meth:`~import_export.widgets.ForeignKeyWidget.get_queryset` only once,
+      so if the queryset depends on the row data, this widget may not work as expected.
+      You must be sure that the queryset is static for all rows.
+      Avoid using :class:`~import_export.widgets.CachedForeignKeyWidget`
+      in the following way::
+
+            class FullNameForeignKeyWidget(CachedForeignKeyWidget):
+                def get_queryset(self, value, row, *args, **kwargs):
+                    return self.model.objects.filter(
+                        first_name__iexact=row["first_name"],
+                        last_name__iexact=row["last_name"]
+                    )
+
+      It makes more sense to filter by static values::
+
+            class ActiveForeignKeyWidget(CachedForeignKeyWidget):
+                def get_queryset(self, value, row, *args, **kwargs):
+                    return self.model.objects.filter(active=True)
+
+    - It stores data in a hash table where the key is a tuple of the fields that
+      returned by :meth:`~import_export.widgets.ForeignKeyWidget.get_lookup_kwargs`.
+      You must be sure that the lookup fields are the same for all rows.
+      If the lookup fields differ between rows, this widget may not work as expected.
+      The following example is incorrect usage::
+
+            class MultiColumnForeignKeyWidget(CachedForeignKeyWidget):
+                def get_lookup_kwargs(self, value, row, **kwargs):
+                    if row['active'] == 'yes':
+                        return {self.field: value, 'active': True}
+                    else:
+                        return {self.field: value, 'inactive': True}
+
+    - It performs lookup on Python side, so the filtering logic
+      with non-text data types may not work::
+
+            class MultiColumnForeignKeyWidget(CachedForeignKeyWidget):
+                def get_lookup_kwargs(self, value, row, **kwargs):
+                    # row['birthday'] is a string like '01-01-2000'.
+                    #
+                    # It won't match the instance because the birthday values
+                    # in the cached instances are datetime objects, not strings.
+                    return {self.field: value, 'birthday': row['birthday']}
+
+    - It does not support complex lookups like ``__gt``, ``__lt``,
+      or filtering over relationships in the ``get_lookup_kwargs()``.
+      For example, the following code won't work::
+
+            class BookForeignKeyWidget(CachedForeignKeyWidget):
+                def get_lookup_kwargs(self, value, row, **kwargs):
+                    return {f'{self.field}__author': value}
+
+    :param model: The Model the ForeignKey refers to (required).
+    :param field: A field on the related model used for looking up a particular
+        object.
+    :param use_natural_foreign_keys: Use natural key functions to identify
+        related object, default to False
+    """
     def get_instance_by_lookup_fields(self, value: Any, row: Mapping[str, Any], **kwargs: Any) -> _ModelT: ...
 
 class ManyToManyWidget(Widget, Generic[_ModelT]):

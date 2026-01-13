@@ -3060,14 +3060,142 @@ def squeeze(
     """
     ...
 @overload
-def squeeze(input: RaggedTensor, axis: int | tuple[int, ...] | list[int], name: str | None = None) -> RaggedTensor: ...
+def squeeze(input: RaggedTensor, axis: int | tuple[int, ...] | list[int], name: str | None = None) -> RaggedTensor:
+    """
+    Removes dimensions of size 1 from the shape of a tensor.
+
+    Given a tensor `input`, this operation returns a tensor of the same type with
+    all dimensions of size 1 removed. If you don't want to remove all size 1
+    dimensions, you can remove specific size 1 dimensions by specifying
+    `axis`.
+
+    For example:
+
+    ```python
+    # 't' is a tensor of shape [1, 2, 1, 3, 1, 1]
+    tf.shape(tf.squeeze(t))  # [2, 3]
+    ```
+
+    Or, to remove specific size 1 dimensions:
+
+    ```python
+    # 't' is a tensor of shape [1, 2, 1, 3, 1, 1]
+    tf.shape(tf.squeeze(t, [2, 4]))  # [1, 2, 3, 1]
+    ```
+
+    Unlike the older op `tf.compat.v1.squeeze`, this op does not accept a
+    deprecated `squeeze_dims` argument.
+
+    Note: if `input` is a `tf.RaggedTensor`, then this operation takes `O(N)`
+    time, where `N` is the number of elements in the squeezed dimensions.
+
+    Note: If squeeze is performed on dimensions of unknown sizes, then the
+    returned Tensor will be of unknown shape. A common situation is when the
+    first (batch) dimension is of size `None`, `tf.squeeze` returns
+    `<unknown>` shape which may be a surprise. Specify the `axis=` argument
+    to get the expected result, as illustrated in the following example:
+
+    ```python
+    @tf.function
+    def func(x):
+      print('x.shape:', x.shape)
+      known_axes = [i for i, size in enumerate(x.shape) if size == 1]
+      y = tf.squeeze(x, axis=known_axes)
+      print('shape of tf.squeeze(x, axis=known_axes):', y.shape)
+      y = tf.squeeze(x)
+      print('shape of tf.squeeze(x):', y.shape)
+      return 0
+
+    _ = func.get_concrete_function(tf.TensorSpec([None, 1, 2], dtype=tf.int32))
+    # Output is.
+    # x.shape: (None, 1, 2)
+    # shape of tf.squeeze(x, axis=known_axes): (None, 2)
+    # shape of tf.squeeze(x): <unknown>
+    ```
+
+    Args:
+      input: A `Tensor`. The `input` to squeeze.
+      axis: An optional list of `ints`. Defaults to `[]`. If specified, only
+        squeezes the dimensions listed. The dimension index starts at 0. It is an
+        error to squeeze a dimension that is not 1. Must be in the range
+        `[-rank(input), rank(input))`. Must be specified if `input` is a
+        `RaggedTensor`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor`. Has the same type as `input`.
+      Contains the same data as `input`, but has one or more dimensions of
+      size 1 removed.
+
+    Raises:
+      ValueError: The input cannot be converted to a tensor, or the specified
+        axis cannot be squeezed.
+    """
+    ...
 def split(
     value: TensorCompatible,
     num_or_size_splits: int | TensorCompatible,
     axis: int | Tensor = 0,
     num: int | None = None,
     name: str | None = "split",
-) -> list[Tensor]: ...
+) -> list[Tensor]:
+    """
+    Splits a tensor `value` into a list of sub tensors.
+
+    See also `tf.unstack`.
+
+    If `num_or_size_splits` is an `int`,  then it splits `value` along the
+    dimension `axis` into `num_or_size_splits` smaller tensors. This requires that
+    `value.shape[axis]` is divisible by `num_or_size_splits`.
+
+    If `num_or_size_splits` is a 1-D Tensor (or list), then `value` is split into
+    `len(num_or_size_splits)` elements. The shape of the `i`-th
+    element has the same size as the `value` except along dimension `axis` where
+    the size is `num_or_size_splits[i]`.
+
+    For example:
+
+    >>> x = tf.Variable(tf.random.uniform([5, 30], -1, 1))
+    >>>
+    >>> # Split `x` into 3 tensors along dimension 1
+    >>> s0, s1, s2 = tf.split(x, num_or_size_splits=3, axis=1)
+    >>> tf.shape(s0).numpy()
+    array([ 5, 10], dtype=int32)
+    >>>
+    >>> # Split `x` into 3 tensors with sizes [4, 15, 11] along dimension 1
+    >>> split0, split1, split2 = tf.split(x, [4, 15, 11], 1)
+    >>> tf.shape(split0).numpy()
+    array([5, 4], dtype=int32)
+    >>> tf.shape(split1).numpy()
+    array([ 5, 15], dtype=int32)
+    >>> tf.shape(split2).numpy()
+    array([ 5, 11], dtype=int32)
+
+    Args:
+      value: The `Tensor` to split.
+      num_or_size_splits: Either an `int` indicating the number of splits
+        along `axis` or a 1-D integer `Tensor` or Python list containing the sizes
+        of each output tensor along `axis`. If an `int`, then it must evenly
+        divide `value.shape[axis]`; otherwise the sum of sizes along the split
+        axis must match that of the `value`.
+      axis: An `int` or scalar `int32` `Tensor`. The dimension along which
+        to split. Must be in the range `[-rank(value), rank(value))`. Defaults to
+        0.
+      num: Optional, an `int`, used to specify the number of outputs when it
+        cannot be inferred from the shape of `size_splits`.
+      name: A name for the operation (optional).
+
+    Returns:
+      if `num_or_size_splits` is an `int` returns a list of
+      `num_or_size_splits` `Tensor` objects; if `num_or_size_splits` is a 1-D
+      list or 1-D `Tensor` returns `num_or_size_splits.get_shape[0]`
+      `Tensor` objects resulting from splitting `value`.
+
+    Raises:
+      ValueError: If `num` is unspecified and cannot be inferred.
+      ValueError: If `num_or_size_splits` is a scalar `Tensor`.
+    """
+    ...
 def tensor_scatter_nd_update(
     tensor: TensorCompatible, indices: TensorCompatible, updates: TensorCompatible, name: str | None = None
 ) -> Tensor:
@@ -4302,11 +4430,399 @@ def gather_nd(
     batch_dims: UIntTensorCompatible = 0,
     name: str | None = None,
     bad_indices_policy: Literal["", "DEFAULT", "ERROR", "IGNORE"] = "",
-) -> Tensor: ...
+) -> Tensor:
+    """
+    Gather slices from `params` into a Tensor with shape specified by `indices`.
+
+    `indices` is a `Tensor` of indices into `params`. The index vectors are
+    arranged along the last axis of `indices`.
+
+    This is similar to `tf.gather`, in which `indices` defines slices into the
+    first dimension of `params`. In `tf.gather_nd`, `indices` defines slices into
+    the first `N` dimensions of `params`, where `N = indices.shape[-1]`.
+
+    ## Gathering scalars
+
+    In the simplest case the vectors in `indices` index the full rank of `params`:
+
+    >>> tf.gather_nd(
+    ...     indices=[[0, 0],
+    ...              [1, 1]],
+    ...     params = [['a', 'b'],
+    ...               ['c', 'd']]).numpy()
+    array([b'a', b'd'], dtype=object)
+
+    In this case the result has 1-axis fewer than `indices`, and each index vector
+    is replaced by the scalar indexed from `params`.
+
+    In this case the shape relationship is:
+
+    ```
+    index_depth = indices.shape[-1]
+    assert index_depth == params.shape.rank
+    result_shape = indices.shape[:-1]
+    ```
+
+    If `indices` has a rank of `K`, it is helpful to think `indices` as a
+    (K-1)-dimensional tensor of indices into `params`.
+
+    ## Gathering slices
+
+    If the index vectors do not index the full rank of `params` then each location
+    in the result contains a slice of params. This example collects rows from a
+    matrix:
+
+    >>> tf.gather_nd(
+    ...     indices = [[1],
+    ...                [0]],
+    ...     params = [['a', 'b', 'c'],
+    ...               ['d', 'e', 'f']]).numpy()
+    array([[b'd', b'e', b'f'],
+           [b'a', b'b', b'c']], dtype=object)
+
+    Here `indices` contains `[2]` index vectors, each with a length of `1`.
+    The index vectors each refer to rows of the `params` matrix. Each
+    row has a shape of `[3]` so the output shape is `[2, 3]`.
+
+    In this case, the relationship between the shapes is:
+
+    ```
+    index_depth = indices.shape[-1]
+    outer_shape = indices.shape[:-1]
+    assert index_depth <= params.shape.rank
+    inner_shape = params.shape[index_depth:]
+    output_shape = outer_shape + inner_shape
+    ```
+
+    It is helpful to think of the results in this case as tensors-of-tensors.
+    The shape of the outer tensor is set by the leading dimensions of `indices`.
+    While the shape of the inner tensors is the shape of a single slice.
+
+    ## Batches
+
+    Additionally, both `params` and `indices` can have `M` leading batch
+    dimensions that exactly match. In this case `batch_dims` must be set to `M`.
+
+    For example, to collect one row from each of a batch of matrices you could
+    set the leading elements of the index vectors to be their location in the
+    batch:
+
+    >>> tf.gather_nd(
+    ...     indices = [[0, 1],
+    ...                [1, 0],
+    ...                [2, 4],
+    ...                [3, 2],
+    ...                [4, 1]],
+    ...     params=tf.zeros([5, 7, 3])).shape.as_list()
+    [5, 3]
+
+    The `batch_dims` argument lets you omit those leading location dimensions
+    from the index:
+
+    >>> tf.gather_nd(
+    ...     batch_dims=1,
+    ...     indices = [[1],
+    ...                [0],
+    ...                [4],
+    ...                [2],
+    ...                [1]],
+    ...     params=tf.zeros([5, 7, 3])).shape.as_list()
+    [5, 3]
+
+    This is equivalent to caling a separate `gather_nd` for each location in the
+    batch dimensions.
+
+
+    >>> params=tf.zeros([5, 7, 3])
+    >>> indices=tf.zeros([5, 1])
+    >>> batch_dims = 1
+    >>>
+    >>> index_depth = indices.shape[-1]
+    >>> batch_shape = indices.shape[:batch_dims]
+    >>> assert params.shape[:batch_dims] == batch_shape
+    >>> outer_shape = indices.shape[batch_dims:-1]
+    >>> assert index_depth <= params.shape.rank
+    >>> inner_shape = params.shape[batch_dims + index_depth:]
+    >>> output_shape = batch_shape + outer_shape + inner_shape
+    >>> output_shape.as_list()
+    [5, 3]
+
+    ### More examples
+
+    Indexing into a 3-tensor:
+
+    >>> tf.gather_nd(
+    ...     indices = [[1]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[b'a1', b'b1'],
+            [b'c1', b'd1']]], dtype=object)
+
+
+
+    >>> tf.gather_nd(
+    ...     indices = [[0, 1], [1, 0]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[b'c0', b'd0'],
+           [b'a1', b'b1']], dtype=object)
+
+
+    >>> tf.gather_nd(
+    ...     indices = [[0, 0, 1], [1, 0, 1]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([b'b0', b'b1'], dtype=object)
+
+    The examples below are for the case when only indices have leading extra
+    dimensions. If both 'params' and 'indices' have leading batch dimensions, use
+    the 'batch_dims' parameter to run gather_nd in batch mode.
+
+    Batched indexing into a matrix:
+
+    >>> tf.gather_nd(
+    ...     indices = [[[0, 0]], [[0, 1]]],
+    ...     params = [['a', 'b'], ['c', 'd']]).numpy()
+    array([[b'a'],
+           [b'b']], dtype=object)
+
+
+
+    Batched slice indexing into a matrix:
+
+    >>> tf.gather_nd(
+    ...     indices = [[[1]], [[0]]],
+    ...     params = [['a', 'b'], ['c', 'd']]).numpy()
+    array([[[b'c', b'd']],
+           [[b'a', b'b']]], dtype=object)
+
+
+    Batched indexing into a 3-tensor:
+
+    >>> tf.gather_nd(
+    ...     indices = [[[1]], [[0]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[[b'a1', b'b1'],
+             [b'c1', b'd1']]],
+           [[[b'a0', b'b0'],
+             [b'c0', b'd0']]]], dtype=object)
+
+
+    >>> tf.gather_nd(
+    ...     indices = [[[0, 1], [1, 0]], [[0, 0], [1, 1]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[b'c0', b'd0'],
+            [b'a1', b'b1']],
+           [[b'a0', b'b0'],
+            [b'c1', b'd1']]], dtype=object)
+
+    >>> tf.gather_nd(
+    ...     indices = [[[0, 0, 1], [1, 0, 1]], [[0, 1, 1], [1, 1, 0]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[b'b0', b'b1'],
+           [b'd0', b'c1']], dtype=object)
+
+
+    Examples with batched 'params' and 'indices':
+
+    >>> tf.gather_nd(
+    ...     batch_dims = 1,
+    ...     indices = [[1],
+    ...                [0]],
+    ...     params = [[['a0', 'b0'],
+    ...                ['c0', 'd0']],
+    ...               [['a1', 'b1'],
+    ...                ['c1', 'd1']]]).numpy()
+    array([[b'c0', b'd0'],
+           [b'a1', b'b1']], dtype=object)
+
+
+    >>> tf.gather_nd(
+    ...     batch_dims = 1,
+    ...     indices = [[[1]], [[0]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[[b'c0', b'd0']],
+           [[b'a1', b'b1']]], dtype=object)
+
+    >>> tf.gather_nd(
+    ...     batch_dims = 1,
+    ...     indices = [[[1, 0]], [[0, 1]]],
+    ...     params = [[['a0', 'b0'], ['c0', 'd0']],
+    ...               [['a1', 'b1'], ['c1', 'd1']]]).numpy()
+    array([[b'c0'],
+           [b'b1']], dtype=object)
+
+
+    See also `tf.gather`.
+
+    Args:
+      params: A `Tensor`. The tensor from which to gather values.
+      indices: A `Tensor`. Must be one of the following types: `int32`, `int64`.
+        Index tensor.
+      name: A name for the operation (optional).
+      batch_dims: An integer or a scalar 'Tensor'. The number of batch dimensions.
+      bad_indices_policy: A string. If `""` or `"DEFAULT"`, the default behavior
+        is used (error on CPU and ignore on GPU). If `"IGNORE"`, the bad indices
+        are ignored and 0 is stored in the corresponding output value. If
+        `"ERROR"`, an error is raised. Accelerators generally don't support
+        `"ERROR"`.
+
+    Returns:
+      A `Tensor`. Has the same type as `params`.
+    """
+    ...
 def transpose(
     a: Tensor, perm: Sequence[int] | IntArray | None = None, conjugate: _bool = False, name: str = "transpose"
-) -> Tensor: ...
+) -> Tensor:
+    """
+    Transposes `a`, where `a` is a Tensor.
+
+    Permutes the dimensions according to the value of `perm`.
+
+    The returned tensor's dimension `i` will correspond to the input dimension
+    `perm[i]`. If `perm` is not given, it is set to (n-1...0), where n is the rank
+    of the input tensor. Hence, by default, this operation performs a regular
+    matrix transpose on 2-D input Tensors.
+
+    If conjugate is `True` and `a.dtype` is either `complex64` or `complex128`
+    then the values of `a` are conjugated and transposed.
+
+    @compatibility(numpy)
+    In `numpy` transposes are memory-efficient constant time operations as they
+    simply return a new view of the same data with adjusted `strides`.
+
+    TensorFlow does not support strides, so `transpose` returns a new tensor with
+    the items permuted.
+    @end_compatibility
+
+    For example:
+
+    >>> x = tf.constant([[1, 2, 3], [4, 5, 6]])
+    >>> tf.transpose(x)
+    <tf.Tensor: shape=(3, 2), dtype=int32, numpy=
+    array([[1, 4],
+           [2, 5],
+           [3, 6]], dtype=int32)>
+
+    Equivalently, you could call `tf.transpose(x, perm=[1, 0])`.
+
+    If `x` is complex, setting conjugate=True gives the conjugate transpose:
+
+    >>> x = tf.constant([[1 + 1j, 2 + 2j, 3 + 3j],
+    ...                  [4 + 4j, 5 + 5j, 6 + 6j]])
+    >>> tf.transpose(x, conjugate=True)
+    <tf.Tensor: shape=(3, 2), dtype=complex128, numpy=
+    array([[1.-1.j, 4.-4.j],
+           [2.-2.j, 5.-5.j],
+           [3.-3.j, 6.-6.j]])>
+
+    'perm' is more useful for n-dimensional tensors where n > 2:
+
+    >>> x = tf.constant([[[ 1,  2,  3],
+    ...                   [ 4,  5,  6]],
+    ...                  [[ 7,  8,  9],
+    ...                   [10, 11, 12]]])
+
+    As above, simply calling `tf.transpose` will default to `perm=[2,1,0]`.
+
+    To take the transpose of the matrices in dimension-0 (such as when you are
+    transposing matrices where 0 is the batch dimension), you would set
+    `perm=[0,2,1]`.
+
+    >>> tf.transpose(x, perm=[0, 2, 1])
+    <tf.Tensor: shape=(2, 3, 2), dtype=int32, numpy=
+    array([[[ 1,  4],
+            [ 2,  5],
+            [ 3,  6]],
+            [[ 7, 10],
+            [ 8, 11],
+            [ 9, 12]]], dtype=int32)>
+
+    Note: This has a shorthand `linalg.matrix_transpose`):
+
+    Args:
+      a: A `Tensor`.
+      perm: A permutation of the dimensions of `a`.  This should be a vector.
+      conjugate: Optional bool. Setting it to `True` is mathematically equivalent
+        to tf.math.conj(tf.transpose(input)).
+      name: A name for the operation (optional).
+
+    Returns:
+      A transposed `Tensor`.
+    """
+    ...
 def clip_by_value(
     t: Tensor | IndexedSlices, clip_value_min: TensorCompatible, clip_value_max: TensorCompatible, name: str | None = None
-) -> Tensor: ...
+) -> Tensor:
+    """
+    Clips tensor values to a specified min and max.
+
+    Given a tensor `t`, this operation returns a tensor of the same type and
+    shape as `t` with its values clipped to `clip_value_min` and `clip_value_max`.
+    Any values less than `clip_value_min` are set to `clip_value_min`. Any values
+    greater than `clip_value_max` are set to `clip_value_max`.
+
+    Note: `clip_value_min` needs to be smaller or equal to `clip_value_max` for
+    correct results.
+
+    For example:
+
+    Basic usage passes a scalar as the min and max value.
+
+    >>> t = tf.constant([[-10., -1., 0.], [0., 2., 10.]])
+    >>> t2 = tf.clip_by_value(t, clip_value_min=-1, clip_value_max=1)
+    >>> t2.numpy()
+    array([[-1., -1.,  0.],
+           [ 0.,  1.,  1.]], dtype=float32)
+
+    The min and max can be the same size as `t`, or broadcastable to that size.
+
+    >>> t = tf.constant([[-1, 0., 10.], [-1, 0, 10]])
+    >>> clip_min = [[2],[1]]
+    >>> t3 = tf.clip_by_value(t, clip_value_min=clip_min, clip_value_max=100)
+    >>> t3.numpy()
+    array([[ 2.,  2., 10.],
+           [ 1.,  1., 10.]], dtype=float32)
+
+    Broadcasting fails, intentionally, if you would expand the dimensions of `t`
+
+    >>> t = tf.constant([[-1, 0., 10.], [-1, 0, 10]])
+    >>> clip_min = [[[2, 1]]] # Has a third axis
+    >>> t4 = tf.clip_by_value(t, clip_value_min=clip_min, clip_value_max=100)
+    Traceback (most recent call last):
+    ...
+    InvalidArgumentError: Incompatible shapes: [2,3] vs. [1,1,2]
+
+    It throws a `TypeError` if you try to clip an `int` to a `float` value
+    (`tf.cast` the input to `float` first).
+
+    >>> t = tf.constant([[1, 2], [3, 4]], dtype=tf.int32)
+    >>> t5 = tf.clip_by_value(t, clip_value_min=-3.1, clip_value_max=3.1)
+    Traceback (most recent call last):
+    ...
+    TypeError: Cannot convert ...
+
+
+    Args:
+      t: A `Tensor` or `IndexedSlices`.
+      clip_value_min: The minimum value to clip to. A scalar `Tensor` or one that
+        is broadcastable to the shape of `t`.
+      clip_value_max: The maximum value to clip to. A scalar `Tensor` or one that
+        is broadcastable to the shape of `t`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A clipped `Tensor` or `IndexedSlices`.
+
+    Raises:
+      `tf.errors.InvalidArgumentError`: If the clip tensors would trigger array
+        broadcasting that would make the returned tensor larger than the input.
+      TypeError: If dtype of the input is `int32` and dtype of
+        the `clip_value_min` or `clip_value_max` is `float32`
+    """
+    ...
 def __getattr__(name: str): ...  # incomplete module
