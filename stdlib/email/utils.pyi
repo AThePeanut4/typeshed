@@ -97,53 +97,11 @@ def parsedate_tz(data: None) -> None:
     """
     ...
 @overload
-def parsedate_tz(data: str) -> _PDTZ | None:
-    """
-    Convert a date string to a time tuple.
-
-    Accounts for military timezones.
-    """
-    ...
-
-if sys.version_info >= (3, 10):
-    @overload
-    def parsedate_to_datetime(data: None) -> None: ...
-    @overload
-    def parsedate_to_datetime(data: str) -> datetime.datetime: ...
-
-else:
-    def parsedate_to_datetime(data: str) -> datetime.datetime: ...
-
-def mktime_tz(data: _PDTZ) -> int:
-    """Turn a 10-tuple as returned by parsedate_tz() into a POSIX timestamp."""
-    ...
-def formatdate(timeval: float | None = None, localtime: bool = False, usegmt: bool = False) -> str:
-    """
-    Returns a date string as specified by RFC 2822, e.g.:
-
-    Fri, 09 Nov 2001 01:08:47 -0000
-
-    Optional timeval if given is a floating-point time value as accepted by
-    gmtime() and localtime(), otherwise the current time is used.
-
-    Optional localtime is a flag that when True, interprets timeval, and
-    returns a date relative to the local timezone instead of UTC, properly
-    taking daylight savings time into account.
-
-    Optional argument usegmt means that the timezone is written out as
-    an ascii string, not numeric one (so "GMT" instead of "+0000"). This
-    is needed for HTTP, and is only used when localtime==False.
-    """
-    ...
-def format_datetime(dt: datetime.datetime, usegmt: bool = False) -> str:
-    """
-    Turn a datetime into a date string as specified in RFC 2822.
-
-    If usegmt is True, dt must be an aware datetime with an offset of zero.  In
-    this case 'GMT' will be rendered instead of the normal +0000 required by
-    RFC2822.  This is to support HTTP headers involving date stamps.
-    """
-    ...
+def parsedate_tz(data: str) -> _PDTZ | None: ...
+def parsedate_to_datetime(data: str) -> datetime.datetime: ...
+def mktime_tz(data: _PDTZ) -> int: ...
+def formatdate(timeval: float | None = None, localtime: bool = False, usegmt: bool = False) -> str: ...
+def format_datetime(dt: datetime.datetime, usegmt: bool = False) -> str: ...
 
 if sys.version_info >= (3, 14):
     def localtime(dt: datetime.datetime | None = None) -> datetime.datetime: ...
