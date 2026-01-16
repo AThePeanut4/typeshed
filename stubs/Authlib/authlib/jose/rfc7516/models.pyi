@@ -44,8 +44,29 @@ class JWEEncAlgorithm:
     def generate_cek(self) -> bytes: ...
     def generate_iv(self) -> bytes: ...
     def check_iv(self, iv: Sized) -> None: ...
-    def encrypt(self, msg, aad, iv, key) -> tuple[bytes, bytes]: ...
-    def decrypt(self, ciphertext, aad, iv, tag, key) -> bytes: ...
+    def encrypt(self, msg, aad, iv, key) -> tuple[bytes, bytes]:
+        """
+        Encrypt the given "msg" text.
+
+        :param msg: text to be encrypt in bytes
+        :param aad: additional authenticated data in bytes
+        :param iv: initialization vector in bytes
+        :param key: encrypted key in bytes
+        :return: (ciphertext, tag)
+        """
+        ...
+    def decrypt(self, ciphertext, aad, iv, tag, key) -> bytes:
+        """
+        Decrypt the given cipher text.
+
+        :param ciphertext: ciphertext in bytes
+        :param aad: additional authenticated data in bytes
+        :param iv: initialization vector in bytes
+        :param tag: authentication tag in bytes
+        :param key: encrypted key in bytes
+        :return: message
+        """
+        ...
 
 class JWEZipAlgorithm:
     name: Incomplete

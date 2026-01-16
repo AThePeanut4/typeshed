@@ -155,7 +155,16 @@ if sys.version_info >= (3, 13):
         sync: bool = False,
         use: str | None = None,
         /,
-    ) -> TkappType: ...
+    ) -> TkappType:
+        """
+        wantTk
+          if false, then Tk_Init() doesn't get called
+        sync
+          if true, then pass -sync to wish
+        use
+          if not None, then pass -use to wish
+        """
+        ...
 
 else:
     def create(
@@ -168,7 +177,16 @@ else:
         sync: bool = False,
         use: str | None = None,
         /,
-    ) -> TkappType: ...
+    ) -> TkappType:
+        """
+        wantTk
+          if false, then Tk_Init() doesn't get called
+        sync
+          if true, then pass -sync to wish
+        use
+          if not None, then pass -use to wish
+        """
+        ...
 
 def getbusywaitinterval() -> int:
     """Return the current busy-wait interval between successive calls to Tcl_DoOneEvent in a threaded Python interpreter."""

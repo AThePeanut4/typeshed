@@ -660,6 +660,35 @@ class Process:
         ...
 
 class Popen(Process):
+    """
+    Same as subprocess.Popen, but in addition it provides all
+    psutil.Process methods in a single class.
+    For the following methods which are common to both classes, psutil
+    implementation takes precedence:
+
+    * send_signal()
+    * terminate()
+    * kill()
+
+    This is done in order to avoid killing another process in case its
+    PID has been reused, fixing BPO-6973.
+
+      >>> import psutil
+      >>> from subprocess import PIPE
+      >>> p = psutil.Popen(["python", "-c", "print 'hi'"], stdout=PIPE)
+      >>> p.name()
+      'python'
+      >>> p.uids()
+      user(real=1000, effective=1000, saved=1000)
+      >>> p.username()
+      'giampaolo'
+      >>> p.communicate()
+      ('hi', None)
+      >>> p.terminate()
+      >>> p.wait(timeout=2)
+      0
+      >>>
+    """
     # sync with subprocess.Popen.__init__:
     if sys.version_info >= (3, 11):
         def __init__(

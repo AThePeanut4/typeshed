@@ -2,6 +2,10 @@ from _typeshed import Incomplete
 from typing_extensions import Self
 
 class JWSAlgorithm:
+    """
+    Interface for JWS algorithm. JWA specification (RFC7518) SHOULD
+    implement the algorithms for JWS with this base implementation.
+    """
     name: str | None
     description: str | None
     algorithm_type: str

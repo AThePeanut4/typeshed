@@ -34,14 +34,27 @@ class AsymmetricKey(Key):
     def dumps_public_key(self): ...
     def load_private_key(self): ...
     def load_public_key(self): ...
-    def as_dict(self, is_private: bool = False, **params) -> dict[Incomplete, Incomplete]: ...
-    def as_key(self, is_private: bool = False): ...
+    def as_dict(self, is_private: bool = False, **params) -> dict[Incomplete, Incomplete]:
+        """Represent this key as a dict of the JSON Web Key."""
+        ...
+    def as_key(self, is_private: bool = False):
+        """Represent this key as raw key."""
+        ...
     def as_bytes(
         self,
         encoding: Literal["PEM", "DER"] | None = None,
         is_private: bool = False,
         password: str | bytes | float | Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | ReadableBuffer | None = None,
-    ): ...
+    ):
+        """
+        Export key into PEM/DER format bytes.
+
+        :param encoding: "PEM" or "DER"
+        :param is_private: export private key or public key
+        :param password: encrypt private key with password
+        :return: bytes
+        """
+        ...
     def as_pem(
         self,
         is_private: bool = False,

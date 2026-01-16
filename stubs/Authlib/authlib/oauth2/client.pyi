@@ -83,12 +83,53 @@ class OAuth2Client:
     def token(self): ...
     @token.setter
     def token(self, token) -> None: ...
-    def create_authorization_url(self, url, state=None, code_verifier=None, **kwargs) -> tuple[str, Incomplete]: ...
+    def create_authorization_url(self, url, state=None, code_verifier=None, **kwargs) -> tuple[str, Incomplete]:
+        """
+        Generate an authorization URL and state.
+
+        :param url: Authorization endpoint url, must be HTTPS.
+        :param state: An optional state string for CSRF protection. If not
+                      given it will be generated for you.
+        :param code_verifier: An optional code_verifier for code challenge.
+        :param kwargs: Extra parameters to include.
+        :return: authorization_url, state
+        """
+        ...
     def fetch_token(
         self, url=None, body: str = "", method: str = "POST", headers=None, auth=None, grant_type=None, state=None, **kwargs
-    ): ...
+    ):
+        """
+        Generic method for fetching an access token from the token endpoint.
+
+        :param url: Access Token endpoint URL, if not configured,
+                    ``authorization_response`` is used to extract token from
+                    its fragment (implicit way).
+        :param body: Optional application/x-www-form-urlencoded body to add the
+                     include in the token request. Prefer kwargs over body.
+        :param method: The HTTP method used to make the request. Defaults
+                       to POST, but may also be GET. Other methods should
+                       be added as needed.
+        :param headers: Dict to default request headers with.
+        :param auth: An auth tuple or method as accepted by requests.
+        :param grant_type: Use specified grant_type to fetch token.
+        :param state: Optional "state" value to fetch token.
+        :return: A :class:`OAuth2Token` object (a dict too).
+        """
+        ...
     def token_from_fragment(self, authorization_response, state=None) -> dict[Incomplete, Incomplete]: ...
-    def refresh_token(self, url=None, refresh_token=None, body: str = "", auth=None, headers=None, **kwargs): ...
+    def refresh_token(self, url=None, refresh_token=None, body: str = "", auth=None, headers=None, **kwargs):
+        """
+        Fetch a new access token using a refresh token.
+
+        :param url: Refresh Token endpoint, must be HTTPS.
+        :param refresh_token: The refresh_token to use.
+        :param body: Optional application/x-www-form-urlencoded body to add the
+                     include in the token request. Prefer kwargs over body.
+        :param auth: An auth tuple or method as accepted by requests.
+        :param headers: Dict to default request headers with.
+        :return: A :class:`OAuth2Token` object (a dict too).
+        """
+        ...
     def ensure_active_token(self, token=None): ...
     def revoke_token(self, url, token=None, token_type_hint=None, body=None, auth=None, headers=None, **kwargs):
         """
