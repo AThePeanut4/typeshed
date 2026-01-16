@@ -73,6 +73,7 @@ pyRFC3339~=2.0.1
 requests[socks]~=2.32.4
 protobuf~=6.32.1
 pyserial[cp2110]==3.5.*
+punq==0.7.*
 pyxdg==0.28.*
 google-cloud-ndb==2.4.*
 tzdata==2025.*
@@ -96,6 +97,7 @@ psutil==7.2.1
 hdbcli==2.25.*
 pyflakes==3.4.*
 workalendar==17.0.*
+ephem==4.2.*
 vobject~=0.9.9
 python-http-client==3.3.7
 nanoid==2.0.0
@@ -138,7 +140,7 @@ dockerfile-parse==2.0.*
 binaryornot==0.4.*
 retry==0.9.*
 cachetools==6.2.*
-Send2Trash==1.8.*
+Send2Trash==2.0.*
 wurlitzer==3.1.*
 zxcvbn==4.5.*
 untangle==1.2.*
@@ -160,7 +162,7 @@ mock==5.2.*
 flake8-builtins==3.1.*
 pyasn1==0.6.*
 editdistance==0.8.*
-regex==2025.11.3
+regex==2026.1.15
 whatthepatch==1.0.*
 Flask-Migrate==4.1.*
 pyaudio==0.2.*
