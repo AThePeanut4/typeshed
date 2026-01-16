@@ -16,9 +16,10 @@ Supported Python versions are cPython 3.6+ and PyPy.
 """
 
 import sys
-from _typeshed import Incomplete
-from collections.abc import Callable, Iterable, Iterator
+from _typeshed import Incomplete, StrOrBytesPath
+from collections.abc import Callable, Collection, Iterable, Iterator
 from contextlib import AbstractContextManager
+from subprocess import _CMD, _ENV, _FILE
 from types import TracebackType
 from typing import Any, Literal, Protocol, overload, type_check_only
 from typing_extensions import Self, TypeAlias, deprecated
@@ -659,36 +660,98 @@ class Process:
         ...
 
 class Popen(Process):
-    """
-    Same as subprocess.Popen, but in addition it provides all
-    psutil.Process methods in a single class.
-    For the following methods which are common to both classes, psutil
-    implementation takes precedence:
+    # sync with subprocess.Popen.__init__:
+    if sys.version_info >= (3, 11):
+        def __init__(
+            self,
+            args: _CMD,
+            bufsize: int = -1,
+            executable: StrOrBytesPath | None = None,
+            stdin: _FILE | None = None,
+            stdout: _FILE | None = None,
+            stderr: _FILE | None = None,
+            preexec_fn: Callable[[], object] | None = None,
+            close_fds: bool = True,
+            shell: bool = False,
+            cwd: StrOrBytesPath | None = None,
+            env: _ENV | None = None,
+            universal_newlines: bool | None = None,
+            startupinfo: Any | None = None,
+            creationflags: int = 0,
+            restore_signals: bool = True,
+            start_new_session: bool = False,
+            pass_fds: Collection[int] = (),
+            *,
+            text: bool | None = None,
+            encoding: str | None = None,
+            errors: str | None = None,
+            user: str | int | None = None,
+            group: str | int | None = None,
+            extra_groups: Iterable[str | int] | None = None,
+            umask: int = -1,
+            pipesize: int = -1,
+            process_group: int | None = None,
+        ) -> None: ...
+    elif sys.version_info >= (3, 10):
+        def __init__(
+            self,
+            args: _CMD,
+            bufsize: int = -1,
+            executable: StrOrBytesPath | None = None,
+            stdin: _FILE | None = None,
+            stdout: _FILE | None = None,
+            stderr: _FILE | None = None,
+            preexec_fn: Callable[[], object] | None = None,
+            close_fds: bool = True,
+            shell: bool = False,
+            cwd: StrOrBytesPath | None = None,
+            env: _ENV | None = None,
+            universal_newlines: bool | None = None,
+            startupinfo: Any | None = None,
+            creationflags: int = 0,
+            restore_signals: bool = True,
+            start_new_session: bool = False,
+            pass_fds: Collection[int] = (),
+            *,
+            text: bool | None = None,
+            encoding: str | None = None,
+            errors: str | None = None,
+            user: str | int | None = None,
+            group: str | int | None = None,
+            extra_groups: Iterable[str | int] | None = None,
+            umask: int = -1,
+            pipesize: int = -1,
+        ) -> None: ...
+    else:
+        def __init__(
+            self,
+            args: _CMD,
+            bufsize: int = -1,
+            executable: StrOrBytesPath | None = None,
+            stdin: _FILE | None = None,
+            stdout: _FILE | None = None,
+            stderr: _FILE | None = None,
+            preexec_fn: Callable[[], object] | None = None,
+            close_fds: bool = True,
+            shell: bool = False,
+            cwd: StrOrBytesPath | None = None,
+            env: _ENV | None = None,
+            universal_newlines: bool | None = None,
+            startupinfo: Any | None = None,
+            creationflags: int = 0,
+            restore_signals: bool = True,
+            start_new_session: bool = False,
+            pass_fds: Collection[int] = (),
+            *,
+            text: bool | None = None,
+            encoding: str | None = None,
+            errors: str | None = None,
+            user: str | int | None = None,
+            group: str | int | None = None,
+            extra_groups: Iterable[str | int] | None = None,
+            umask: int = -1,
+        ) -> None: ...
 
-    * send_signal()
-    * terminate()
-    * kill()
-
-    This is done in order to avoid killing another process in case its
-    PID has been reused, fixing BPO-6973.
-
-      >>> import psutil
-      >>> from subprocess import PIPE
-      >>> p = psutil.Popen(["python", "-c", "print 'hi'"], stdout=PIPE)
-      >>> p.name()
-      'python'
-      >>> p.uids()
-      user(real=1000, effective=1000, saved=1000)
-      >>> p.username()
-      'giampaolo'
-      >>> p.communicate()
-      ('hi', None)
-      >>> p.terminate()
-      >>> p.wait(timeout=2)
-      0
-      >>>
-    """
-    def __init__(self, *args, **kwargs) -> None: ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None

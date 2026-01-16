@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from typing import ClassVar
 
 from authlib.jose.rfc7517 import AsymmetricKey
@@ -7,8 +6,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 class ECKey(AsymmetricKey):
     """Key class of the ``EC`` key type."""
     kty: str
-    DSS_CURVES: Incomplete
-    CURVES_DSS: Incomplete
+    DSS_CURVES: dict[str, type]
+    CURVES_DSS: dict[property, str]
     REQUIRED_JSON_FIELDS: ClassVar[list[str]]
     PUBLIC_KEY_FIELDS = REQUIRED_JSON_FIELDS
     PRIVATE_KEY_FIELDS: ClassVar[list[str]]

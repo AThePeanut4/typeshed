@@ -1,23 +1,11 @@
 from _typeshed import Incomplete
 
-def encode_client_secret_basic(client, method, uri, headers, body): ...
-def encode_client_secret_post(client, method, uri, headers, body): ...
-def encode_none(client, method, uri, headers, body): ...
+def encode_client_secret_basic(client, method, uri, headers, body) -> tuple[Incomplete, Incomplete, Incomplete]: ...
+def encode_client_secret_post(client, method, uri, headers, body) -> tuple[Incomplete, Incomplete, str]: ...
+def encode_none(client, method, uri, headers, body) -> tuple[Incomplete, Incomplete, Incomplete]: ...
 
 class ClientAuth:
-    """
-    Attaches OAuth Client Information to HTTP requests.
-
-    :param client_id: Client ID, which you get from client registration.
-    :param client_secret: Client Secret, which you get from registration.
-    :param auth_method: Client auth method for token endpoint. The supported
-        methods for now:
-
-        * client_secret_basic (default)
-        * client_secret_post
-        * none
-    """
-    DEFAULT_AUTH_METHODS: Incomplete
+    DEFAULT_AUTH_METHODS: dict[str, Incomplete]
     client_id: Incomplete
     client_secret: Incomplete
     auth_method: Incomplete
@@ -37,12 +25,12 @@ class TokenAuth:
         * uri
     """
     DEFAULT_TOKEN_TYPE: str
-    SIGN_METHODS: Incomplete
+    SIGN_METHODS: dict[str, Incomplete]
     token: Incomplete
-    token_placement: Incomplete
-    client: Incomplete
-    hooks: Incomplete
+    token_placement: str
+    client: Incomplete | None
+    hooks: set[Incomplete]
     def __init__(self, token, token_placement: str = "header", client=None) -> None: ...
     def set_token(self, token) -> None: ...
-    def prepare(self, uri, headers, body): ...
+    def prepare(self, uri, headers, body) -> tuple[Incomplete, Incomplete, Incomplete]: ...
     def __del__(self) -> None: ...

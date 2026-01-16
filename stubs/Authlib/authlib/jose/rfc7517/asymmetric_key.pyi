@@ -1,5 +1,6 @@
-from _typeshed import Incomplete
-from typing import ClassVar
+from _typeshed import Incomplete, ReadableBuffer
+from collections.abc import Iterable
+from typing import ClassVar, Literal, SupportsBytes, SupportsIndex
 from typing_extensions import Self
 
 from authlib.jose.rfc7517 import Key
@@ -33,24 +34,24 @@ class AsymmetricKey(Key):
     def dumps_public_key(self): ...
     def load_private_key(self): ...
     def load_public_key(self): ...
-    def as_dict(self, is_private: bool = False, **params) -> dict[Incomplete, Incomplete]:
-        """Represent this key as a dict of the JSON Web Key."""
-        ...
-    def as_key(self, is_private: bool = False):
-        """Represent this key as raw key."""
-        ...
-    def as_bytes(self, encoding=None, is_private: bool = False, password=None):
-        """
-        Export key into PEM/DER format bytes.
-
-        :param encoding: "PEM" or "DER"
-        :param is_private: export private key or public key
-        :param password: encrypt private key with password
-        :return: bytes
-        """
-        ...
-    def as_pem(self, is_private: bool = False, password=None): ...
-    def as_der(self, is_private: bool = False, password=None): ...
+    def as_dict(self, is_private: bool = False, **params) -> dict[Incomplete, Incomplete]: ...
+    def as_key(self, is_private: bool = False): ...
+    def as_bytes(
+        self,
+        encoding: Literal["PEM", "DER"] | None = None,
+        is_private: bool = False,
+        password: str | bytes | float | Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | ReadableBuffer | None = None,
+    ): ...
+    def as_pem(
+        self,
+        is_private: bool = False,
+        password: str | bytes | float | Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | ReadableBuffer | None = None,
+    ): ...
+    def as_der(
+        self,
+        is_private: bool = False,
+        password: str | bytes | float | Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | ReadableBuffer | None = None,
+    ): ...
     @classmethod
     def import_dict_key(cls, raw, options=None) -> Self: ...
     @classmethod

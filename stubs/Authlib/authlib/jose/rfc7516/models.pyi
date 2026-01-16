@@ -1,6 +1,6 @@
 from _typeshed import Incomplete
 from abc import ABCMeta
-from collections.abc import Iterable
+from collections.abc import Iterable, Sized
 from typing import ClassVar
 from typing_extensions import Self
 
@@ -39,34 +39,13 @@ class JWEEncAlgorithm:
     description: str | None
     algorithm_type: str
     algorithm_location: str
-    IV_SIZE: Incomplete
-    CEK_SIZE: Incomplete
-    def generate_cek(self): ...
-    def generate_iv(self): ...
-    def check_iv(self, iv) -> None: ...
-    def encrypt(self, msg, aad, iv, key):
-        """
-        Encrypt the given "msg" text.
-
-        :param msg: text to be encrypt in bytes
-        :param aad: additional authenticated data in bytes
-        :param iv: initialization vector in bytes
-        :param key: encrypted key in bytes
-        :return: (ciphertext, tag)
-        """
-        ...
-    def decrypt(self, ciphertext, aad, iv, tag, key):
-        """
-        Decrypt the given cipher text.
-
-        :param ciphertext: ciphertext in bytes
-        :param aad: additional authenticated data in bytes
-        :param iv: initialization vector in bytes
-        :param tag: authentication tag in bytes
-        :param key: encrypted key in bytes
-        :return: message
-        """
-        ...
+    IV_SIZE: int | None
+    CEK_SIZE: int | None
+    def generate_cek(self) -> bytes: ...
+    def generate_iv(self) -> bytes: ...
+    def check_iv(self, iv: Sized) -> None: ...
+    def encrypt(self, msg, aad, iv, key) -> tuple[bytes, bytes]: ...
+    def decrypt(self, ciphertext, aad, iv, tag, key) -> bytes: ...
 
 class JWEZipAlgorithm:
     name: Incomplete

@@ -2,12 +2,8 @@ from _typeshed import Incomplete
 from typing_extensions import Self
 
 class JWSAlgorithm:
-    """
-    Interface for JWS algorithm. JWA specification (RFC7518) SHOULD
-    implement the algorithms for JWS with this base implementation.
-    """
-    name: Incomplete
-    description: Incomplete
+    name: str | None
+    description: str | None
     algorithm_type: str
     algorithm_location: str
     def prepare_key(self, raw_data):
@@ -59,7 +55,7 @@ class JWSObject(dict[str, object]):
     """A dict instance to represent a JWS object."""
     header: Incomplete
     payload: Incomplete
-    type: Incomplete
+    type: str
     def __init__(self, header, payload, type: str = "compact") -> None: ...
     @property
     def headers(self):

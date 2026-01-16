@@ -446,21 +446,11 @@ class SSLSocket(socket.socket):
     @overload
     def sendto(self, data: ReadableBuffer, flags_or_addr: int, addr: socket._Address) -> int: ...
     def shutdown(self, how: int) -> None: ...
-    def read(self, len: int = 1024, buffer: bytearray | None = None) -> bytes:
-        """
-        Read up to LEN bytes and return them.
-        Return zero-length string on EOF.
-        """
-        ...
-    def write(self, data: ReadableBuffer) -> int:
-        """
-        Write DATA to the underlying SSL channel.  Returns
-        number of bytes of DATA actually transmitted.
-        """
-        ...
-    def do_handshake(self, block: bool = False) -> None:
-        """Start the SSL/TLS handshake."""
-        ...
+    @deprecated("Deprecated since Python 3.6. Use `SSLSocket.recv` method instead.")
+    def read(self, len: int = 1024, buffer: bytearray | None = None) -> bytes: ...
+    @deprecated("Deprecated since Python 3.6. Use `SSLSocket.send` method instead.")
+    def write(self, data: ReadableBuffer) -> int: ...
+    def do_handshake(self, block: bool = False) -> None: ...  # block is undocumented
     @overload
     def getpeercert(self, binary_form: Literal[False] = False) -> _PeerCertRetDictType | None:
         """
