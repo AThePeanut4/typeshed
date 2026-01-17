@@ -4,6 +4,7 @@ doc/reportlab-userguide.pdf for copious examples.
 """
 
 from _typeshed import Incomplete
+from collections.abc import Callable
 from typing import IO, Literal
 
 from reportlab.lib.colors import Color, _ConvertibleToColor
@@ -953,11 +954,10 @@ class Canvas(_PDFColorSetter):
         """add a PDFPageLabel for pageNum"""
         ...
     @property
-    def acroForm(self):
-        """get form from canvas, create the form if needed"""
-        ...
-    def drawBoundary(self, sb, x1: float, y1: float, width: float, height: float) -> None:
-        """draw a boundary as a rectangle (primarily for debugging)."""
-        ...
+    def acroForm(self): ...
+    def drawBoundary(self, sb, x1: float, y1: float, width: float, height: float) -> None: ...
+    # Following callbacks are accepted: canvas, kind and label
+    def setNamedCB(self, name: str, cb: Callable[[Canvas, str | None, str], None]) -> None: ...
+    def getNamedCB(self, name: str) -> Callable[[Canvas, str | None, str], None] | None: ...
 
 __all__ = ["Canvas", "ShowBoundaryValue"]
