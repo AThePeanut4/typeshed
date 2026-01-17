@@ -437,7 +437,19 @@ else:
 if sys.version_info >= (3, 13):
     # 3.13 made `show_caches` `None` by default and has no effect
     @overload
-    def get_instructions(x: _HaveCodeType, *, first_line: int | None = None, adaptive: bool = False) -> Iterator[Instruction]: ...
+    def get_instructions(x: _HaveCodeType, *, first_line: int | None = None, adaptive: bool = False) -> Iterator[Instruction]:
+        """
+        Iterator for the opcodes in methods, functions or code
+
+        Generates a series of Instruction named tuples giving the details of
+        each operations in the supplied code.
+
+        If *first_line* is not None, it indicates the line number that should
+        be reported for the first source line in the disassembled code.
+        Otherwise, the source line information (if any) is taken directly from
+        the disassembled code object.
+        """
+        ...
     @overload
     @deprecated(
         "The `show_caches` parameter is deprecated since Python 3.13. "
