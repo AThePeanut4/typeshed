@@ -23,7 +23,7 @@ paramiko==4.0.*
 openpyxl==3.1.5
 inifile==0.4.*
 docutils==0.22.3
-reportlab[pycairo]==4.4.7
+reportlab[pycairo]==4.4.9
 portpicker==1.6.*
 waitress~=3.0.1
 pyfarmhash==0.4.*
@@ -140,7 +140,7 @@ dockerfile-parse==2.0.*
 binaryornot==0.4.*
 retry==0.9.*
 cachetools==6.2.*
-Send2Trash==2.0.*
+Send2Trash==2.1.*
 wurlitzer==3.1.*
 zxcvbn==4.5.*
 untangle==1.2.*
