@@ -4758,6 +4758,113 @@ def transpose(
     ...
 def clip_by_value(
     t: Tensor | IndexedSlices, clip_value_min: TensorCompatible, clip_value_max: TensorCompatible, name: str | None = None
-) -> Tensor: ...
-def tile(input: RaggedTensorLike, multiples: Tensor, name: str | None = None) -> Tensor: ...
+) -> Tensor:
+    """
+    Clips tensor values to a specified min and max.
+
+    Given a tensor `t`, this operation returns a tensor of the same type and
+    shape as `t` with its values clipped to `clip_value_min` and `clip_value_max`.
+    Any values less than `clip_value_min` are set to `clip_value_min`. Any values
+    greater than `clip_value_max` are set to `clip_value_max`.
+
+    Note: `clip_value_min` needs to be smaller or equal to `clip_value_max` for
+    correct results.
+
+    For example:
+
+    Basic usage passes a scalar as the min and max value.
+
+    >>> t = tf.constant([[-10., -1., 0.], [0., 2., 10.]])
+    >>> t2 = tf.clip_by_value(t, clip_value_min=-1, clip_value_max=1)
+    >>> t2.numpy()
+    array([[-1., -1.,  0.],
+           [ 0.,  1.,  1.]], dtype=float32)
+
+    The min and max can be the same size as `t`, or broadcastable to that size.
+
+    >>> t = tf.constant([[-1, 0., 10.], [-1, 0, 10]])
+    >>> clip_min = [[2],[1]]
+    >>> t3 = tf.clip_by_value(t, clip_value_min=clip_min, clip_value_max=100)
+    >>> t3.numpy()
+    array([[ 2.,  2., 10.],
+           [ 1.,  1., 10.]], dtype=float32)
+
+    Broadcasting fails, intentionally, if you would expand the dimensions of `t`
+
+    >>> t = tf.constant([[-1, 0., 10.], [-1, 0, 10]])
+    >>> clip_min = [[[2, 1]]] # Has a third axis
+    >>> t4 = tf.clip_by_value(t, clip_value_min=clip_min, clip_value_max=100)
+    Traceback (most recent call last):
+    ...
+    InvalidArgumentError: Incompatible shapes: [2,3] vs. [1,1,2]
+
+    It throws a `TypeError` if you try to clip an `int` to a `float` value
+    (`tf.cast` the input to `float` first).
+
+    >>> t = tf.constant([[1, 2], [3, 4]], dtype=tf.int32)
+    >>> t5 = tf.clip_by_value(t, clip_value_min=-3.1, clip_value_max=3.1)
+    Traceback (most recent call last):
+    ...
+    TypeError: Cannot convert ...
+
+
+    Args:
+      t: A `Tensor` or `IndexedSlices`.
+      clip_value_min: The minimum value to clip to. A scalar `Tensor` or one that
+        is broadcastable to the shape of `t`.
+      clip_value_max: The maximum value to clip to. A scalar `Tensor` or one that
+        is broadcastable to the shape of `t`.
+      name: A name for the operation (optional).
+
+    Returns:
+      A clipped `Tensor` or `IndexedSlices`.
+
+    Raises:
+      `tf.errors.InvalidArgumentError`: If the clip tensors would trigger array
+        broadcasting that would make the returned tensor larger than the input.
+      TypeError: If dtype of the input is `int32` and dtype of
+        the `clip_value_min` or `clip_value_max` is `float32`
+    """
+    ...
+def tile(input: RaggedTensorLike, multiples: Tensor, name: str | None = None) -> Tensor:
+    """
+    Constructs a tensor by tiling a given tensor.
+
+    This operation creates a new tensor by replicating `input` `multiples` times.
+    The output tensor's i'th dimension has `input.dims(i) * multiples[i]` elements,
+    and the values of `input` are replicated `multiples[i]` times along the 'i'th
+    dimension. For example, tiling `[a b c d]` by `[2]` produces
+    `[a b c d a b c d]`.
+
+    >>> a = tf.constant([[1,2,3],[4,5,6]], tf.int32)
+    >>> b = tf.constant([1,2], tf.int32)
+    >>> tf.tile(a, b)
+    <tf.Tensor: shape=(2, 6), dtype=int32, numpy=
+    array([[1, 2, 3, 1, 2, 3],
+           [4, 5, 6, 4, 5, 6]], dtype=int32)>
+    >>> c = tf.constant([2,1], tf.int32)
+    >>> tf.tile(a, c)
+    <tf.Tensor: shape=(4, 3), dtype=int32, numpy=
+    array([[1, 2, 3],
+           [4, 5, 6],
+           [1, 2, 3],
+           [4, 5, 6]], dtype=int32)>
+    >>> d = tf.constant([2,2], tf.int32)
+    >>> tf.tile(a, d)
+    <tf.Tensor: shape=(4, 6), dtype=int32, numpy=
+    array([[1, 2, 3, 1, 2, 3],
+           [4, 5, 6, 4, 5, 6],
+           [1, 2, 3, 1, 2, 3],
+           [4, 5, 6, 4, 5, 6]], dtype=int32)>
+
+    Args:
+      input: A `Tensor`. Can be of any rank.
+      multiples: A `Tensor`. Must be one of the following types: `int32`, `int64`.
+        1-D. Length must be the same as the number of dimensions in `input`
+      name: A name for the operation (optional).
+
+    Returns:
+      A `Tensor`. Has the same type as `input`.
+    """
+    ...
 def __getattr__(name: str): ...  # incomplete module
