@@ -129,23 +129,17 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
 
         When ``deep=False``, a new object will be created without copying
         the calling object's data or index (only references to the data
-        and index are copied). Any changes to the data of the original
-        will be reflected in the shallow copy (and vice versa).
+        and index are copied). With Copy-on-Write, changes to the original
+        will *not* be reflected in the shallow copy (and vice versa). The
+        shallow copy uses a lazy (deferred) copy mechanism that copies the
+        data only when any changes to the original or shallow copy are made,
+        ensuring memory efficiency while maintaining data integrity.
 
         .. note::
-            The ``deep=False`` behaviour as described above will change
-            in pandas 3.0. `Copy-on-Write
-            <https://pandas.pydata.org/docs/dev/user_guide/copy_on_write.html>`__
-            will be enabled by default, which means that the "shallow" copy
-            is that is returned with ``deep=False`` will still avoid making
-            an eager copy, but changes to the data of the original will *no*
-            longer be reflected in the shallow copy (or vice versa). Instead,
-            it makes use of a lazy (deferred) copy mechanism that will copy
-            the data only when any changes to the original or shallow copy is
-            made.
-
-            You can already get the future behavior and improvements through
-            enabling copy on write ``pd.options.mode.copy_on_write = True``
+            In pandas versions prior to 3.0, the default behavior without
+            Copy-on-Write was different: changes to the original *were* reflected
+            in the shallow copy (and vice versa). See the :ref:`Copy-on-Write
+            user guide <copy_on_write>` for more information.
 
         Parameters
         ----------
@@ -157,6 +151,11 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         -------
         Series or DataFrame
             Object type matches caller.
+
+        See Also
+        --------
+        copy.copy : Return a shallow copy of an object.
+        copy.deepcopy : Return a deep copy of an object.
 
         Notes
         -----
@@ -174,8 +173,7 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         :ref:`gotchas <gotchas.thread-safety>` when copying in a threading
         environment.
 
-        When ``copy_on_write`` in pandas config is set to ``True``, the
-        ``copy_on_write`` config takes effect even when ``deep=False``.
+        Copy-on-Write protects shallow copies against accidental modifications.
         This means that any changes to the copied data would make a new copy
         of the data upon write (and vice versa). Changes made to either the
         original or copied variable would not be reflected in the counterpart.
@@ -189,54 +187,26 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         b    2
         dtype: int64
 
-        >>> s_copy = s.copy()
+        >>> s_copy = s.copy(deep=True)
         >>> s_copy
         a    1
         b    2
         dtype: int64
 
-        **Shallow copy versus default (deep) copy:**
+        Due to Copy-on-Write, shallow copies still protect data modifications.
+        Note shallow does not get modified below.
 
         >>> s = pd.Series([1, 2], index=["a", "b"])
-        >>> deep = s.copy()
         >>> shallow = s.copy(deep=False)
-
-        Shallow copy shares data and index with original.
-
-        >>> s is shallow
-        False
-        >>> s.values is shallow.values and s.index is shallow.index
-        True
-
-        Deep copy has own copy of data and index.
-
-        >>> s is deep
-        False
-        >>> s.values is deep.values or s.index is deep.index
-        False
-
-        Updates to the data shared by shallow copy and original is reflected
-        in both (NOTE: this will no longer be true for pandas >= 3.0);
-        deep copy remains unchanged.
-
-        >>> s.iloc[0] = 3
-        >>> shallow.iloc[1] = 4
-        >>> s
-        a    3
-        b    4
-        dtype: int64
+        >>> s.iloc[1] = 200
         >>> shallow
-        a    3
-        b    4
-        dtype: int64
-        >>> deep
         a    1
         b    2
         dtype: int64
 
-        Note that when copying an object containing Python objects, a deep copy
-        will copy the data, but will not do so recursively. Updating a nested
-        data object will be reflected in the deep copy.
+        When the data has object dtype, even a deep copy does not copy the
+        underlying Python objects. Updating a nested data object will be
+        reflected in the deep copy.
 
         >>> s = pd.Series([[1, 2], [3, 4]])
         >>> deep = s.copy()
@@ -249,22 +219,6 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         0    [10, 2]
         1     [3, 4]
         dtype: object
-
-        **Copy-on-Write is set to true**, the shallow copy is not modified
-        when the original data is changed:
-
-        >>> with pd.option_context("mode.copy_on_write", True):
-        ...     s = pd.Series([1, 2], index=["a", "b"])
-        ...     copy = s.copy(deep=False)
-        ...     s.iloc[0] = 100
-        ...     s
-        a    100
-        b      2
-        dtype: int64
-        >>> copy
-        a    1
-        b    2
-        dtype: int64
         """
         ...
     @property
@@ -292,20 +246,21 @@ class GeoSeries(GeoPandasBase, pd.Series[BaseGeometry]):  # type: ignore[type-va
         >>> pd.Series([1, 2, 3]).values
         array([1, 2, 3])
 
-        >>> pd.Series(list('aabc')).values
-        array(['a', 'a', 'b', 'c'], dtype=object)
-
-        >>> pd.Series(list('aabc')).astype('category').values
+        >>> pd.Series(list("aabc")).values
+        <ArrowStringArray>
         ['a', 'a', 'b', 'c']
-        Categories (3, object): ['a', 'b', 'c']
+        Length: 4, dtype: str
+
+        >>> pd.Series(list("aabc")).astype("category").values
+        ['a', 'a', 'b', 'c']
+        Categories (3, str): ['a', 'b', 'c']
 
         Timezone aware datetime data is converted to UTC:
 
-        >>> pd.Series(pd.date_range('20130101', periods=3,
-        ...                         tz='US/Eastern')).values
-        array(['2013-01-01T05:00:00.000000000',
-               '2013-01-02T05:00:00.000000000',
-               '2013-01-03T05:00:00.000000000'], dtype='datetime64[ns]')
+        >>> pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values
+        array(['2013-01-01T05:00:00.000000',
+               '2013-01-02T05:00:00.000000',
+               '2013-01-03T05:00:00.000000'], dtype='datetime64[us]')
         """
         ...
     @property

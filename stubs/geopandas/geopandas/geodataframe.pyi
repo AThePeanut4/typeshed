@@ -2241,14 +2241,13 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
             will perform column selection instead.
         dtype : dtype, default None
             Data type to force. Only a single dtype is allowed. If None, infer.
+            If ``data`` is DataFrame then is ignored.
         copy : bool or None, default None
             Copy data from inputs.
             For dict data, the default of None behaves like ``copy=True``.  For DataFrame
             or 2d ndarray input, the default of None behaves like ``copy=False``.
             If data is a dict containing one or more Series (possibly of different dtypes),
             ``copy=False`` will ensure that these inputs are not copied.
-
-            .. versionchanged:: 1.3.0
 
         See Also
         --------
@@ -2266,7 +2265,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         --------
         Constructing DataFrame from a dictionary.
 
-        >>> d = {'col1': [1, 2], 'col2': [3, 4]}
+        >>> d = {"col1": [1, 2], "col2": [3, 4]}
         >>> df = pd.DataFrame(data=d)
         >>> df
            col1  col2
@@ -2290,7 +2289,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Constructing DataFrame from a dictionary including Series:
 
-        >>> d = {'col1': [0, 1, 2, 3], 'col2': pd.Series([2, 3], index=[2, 3])}
+        >>> d = {"col1": [0, 1, 2, 3], "col2": pd.Series([2, 3], index=[2, 3])}
         >>> pd.DataFrame(data=d, index=[0, 1, 2, 3])
            col1  col2
         0     0   NaN
@@ -2300,8 +2299,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Constructing DataFrame from numpy ndarray:
 
-        >>> df2 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
-        ...                    columns=['a', 'b', 'c'])
+        >>> df2 = pd.DataFrame(
+        ...     np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=["a", "b", "c"]
+        ... )
         >>> df2
            a  b  c
         0  1  2  3
@@ -2310,10 +2310,11 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Constructing DataFrame from a numpy ndarray that has labeled columns:
 
-        >>> data = np.array([(1, 2, 3), (4, 5, 6), (7, 8, 9)],
-        ...                 dtype=[("a", "i4"), ("b", "i4"), ("c", "i4")])
-        >>> df3 = pd.DataFrame(data, columns=['c', 'a'])
-        ...
+        >>> data = np.array(
+        ...     [(1, 2, 3), (4, 5, 6), (7, 8, 9)],
+        ...     dtype=[("a", "i4"), ("b", "i4"), ("c", "i4")],
+        ... )
+        >>> df3 = pd.DataFrame(data, columns=["c", "a"])
         >>> df3
            c  a
         0  3  1
@@ -2389,14 +2390,13 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
             will perform column selection instead.
         dtype : dtype, default None
             Data type to force. Only a single dtype is allowed. If None, infer.
+            If ``data`` is DataFrame then is ignored.
         copy : bool or None, default None
             Copy data from inputs.
             For dict data, the default of None behaves like ``copy=True``.  For DataFrame
             or 2d ndarray input, the default of None behaves like ``copy=False``.
             If data is a dict containing one or more Series (possibly of different dtypes),
             ``copy=False`` will ensure that these inputs are not copied.
-
-            .. versionchanged:: 1.3.0
 
         See Also
         --------
@@ -2414,7 +2414,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
         --------
         Constructing DataFrame from a dictionary.
 
-        >>> d = {'col1': [1, 2], 'col2': [3, 4]}
+        >>> d = {"col1": [1, 2], "col2": [3, 4]}
         >>> df = pd.DataFrame(data=d)
         >>> df
            col1  col2
@@ -2438,7 +2438,7 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Constructing DataFrame from a dictionary including Series:
 
-        >>> d = {'col1': [0, 1, 2, 3], 'col2': pd.Series([2, 3], index=[2, 3])}
+        >>> d = {"col1": [0, 1, 2, 3], "col2": pd.Series([2, 3], index=[2, 3])}
         >>> pd.DataFrame(data=d, index=[0, 1, 2, 3])
            col1  col2
         0     0   NaN
@@ -2448,8 +2448,9 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Constructing DataFrame from numpy ndarray:
 
-        >>> df2 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
-        ...                    columns=['a', 'b', 'c'])
+        >>> df2 = pd.DataFrame(
+        ...     np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=["a", "b", "c"]
+        ... )
         >>> df2
            a  b  c
         0  1  2  3
@@ -2458,10 +2459,11 @@ class GeoDataFrame(GeoPandasBase, pd.DataFrame):  # type: ignore[misc]
 
         Constructing DataFrame from a numpy ndarray that has labeled columns:
 
-        >>> data = np.array([(1, 2, 3), (4, 5, 6), (7, 8, 9)],
-        ...                 dtype=[("a", "i4"), ("b", "i4"), ("c", "i4")])
-        >>> df3 = pd.DataFrame(data, columns=['c', 'a'])
-        ...
+        >>> data = np.array(
+        ...     [(1, 2, 3), (4, 5, 6), (7, 8, 9)],
+        ...     dtype=[("a", "i4"), ("b", "i4"), ("c", "i4")],
+        ... )
+        >>> df3 = pd.DataFrame(data, columns=["c", "a"])
         >>> df3
            c  a
         0  3  1
