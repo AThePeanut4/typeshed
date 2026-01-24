@@ -24,8 +24,9 @@ class Extension(_Extension):
       the full name of the extension, including any packages -- ie.
       *not* a filename or pathname, but Python dotted name
 
-    :arg list[str|os.PathLike[str]] sources:
-      list of source filenames, relative to the distribution root
+    :arg Iterable[str | os.PathLike[str]] sources:
+      iterable of source filenames, (except strings, which could be misinterpreted
+      as a single filename), relative to the distribution root
       (where the setup script lives), in Unix form (slash-separated)
       for portability.  Source files may be C, C++, SWIG (.i),
       platform-specific resource files, or whatever else is recognized

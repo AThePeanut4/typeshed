@@ -268,7 +268,7 @@ class RegistryInfo:
         ----------
         key: str
             Registry key path where look.
-        x86: str
+        x86: bool
             Force x86 software registry.
 
         Return
@@ -286,7 +286,7 @@ class RegistryInfo:
         ----------
         key: str
             Registry key path where look.
-        x86: str
+        x86: bool
             Force x86 software registry.
 
         Return
@@ -308,7 +308,7 @@ class RegistryInfo:
 
         Return
         ------
-        str
+        str | None
             value
         """
         ...
@@ -418,7 +418,7 @@ class SystemInfo:
 
         Return
         ------
-        str
+        str | None
             path
         """
         ...
@@ -440,7 +440,7 @@ class SystemInfo:
 
         Return
         ------
-        str
+        str | None
             path
         """
         ...
@@ -473,7 +473,7 @@ class SystemInfo:
 
         Return
         ------
-        str
+        str | None
             path
         """
         ...
