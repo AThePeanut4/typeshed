@@ -110,7 +110,7 @@ translationstring==1.4.*
 entrypoints==0.4.*
 dateparser[fasttext,langdetect]~=1.2.2
 passpy==1.0.*
-setuptools==80.9.*
+setuptools==80.10.*
 lupa==2.6.*
 objgraph==3.6.*
 antlr4-python3-runtime==4.13.*
@@ -154,7 +154,7 @@ pywin32==311.*
 python-dateutil==2.9.*
 httplib2==0.31.1
 jwcrypto==1.5.*
-jmespath==1.0.*
+jmespath==1.1.*
 click-web==0.8.*
 colorama==0.4.*
 PyYAML==6.0.*
