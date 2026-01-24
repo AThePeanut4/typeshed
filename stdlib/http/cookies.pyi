@@ -167,26 +167,9 @@ class Morsel(dict[str, Any], Generic[_T]):
 class BaseCookie(dict[str, Morsel[_T]], Generic[_T]):
     """A container class for a set of Morsels."""
     def __init__(self, input: _DataType | None = None) -> None: ...
-    def value_decode(self, val: str) -> tuple[_T, str]:
-        """
-        real_value, coded_value = value_decode(STRING)
-        Called prior to setting a cookie's value from the network
-        representation.  The VALUE is the value read from HTTP
-        header.
-        Override this function to modify the behavior of cookies.
-        """
-        ...
-    def value_encode(self, val: _T) -> tuple[_T, str]:
-        """
-        real_value, coded_value = value_encode(VALUE)
-        Called prior to setting a cookie's value from the dictionary
-        representation.  The VALUE is the value being assigned.
-        Override this function to modify the behavior of cookies.
-        """
-        ...
-    def output(self, attrs: list[str] | None = None, header: str = "Set-Cookie:", sep: str = "\r\n") -> str:
-        """Return a string suitable for HTTP."""
-        ...
+    def value_decode(self, val: str) -> tuple[_T, str]: ...
+    def value_encode(self, val: _T) -> tuple[str, str]: ...
+    def output(self, attrs: list[str] | None = None, header: str = "Set-Cookie:", sep: str = "\r\n") -> str: ...
     __str__ = output
     def js_output(self, attrs: list[str] | None = None) -> str:
         """Return a string suitable for JavaScript."""

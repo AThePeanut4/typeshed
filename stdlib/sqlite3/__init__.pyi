@@ -256,7 +256,7 @@ _AdaptedInputData: TypeAlias = _SqliteData | Any
 _Parameters: TypeAlias = SupportsLenAndGetItem[_AdaptedInputData] | Mapping[str, _AdaptedInputData]
 # Controls the legacy transaction handling mode of sqlite3.
 _IsolationLevel: TypeAlias = Literal["DEFERRED", "EXCLUSIVE", "IMMEDIATE"] | None
-_RowFactoryOptions: TypeAlias = type[Row] | Callable[[Cursor, Row], object] | None
+_RowFactoryOptions: TypeAlias = type[Row] | Callable[[Cursor, tuple[Any, ...]], object] | None
 
 @type_check_only
 class _AnyParamWindowAggregateClass(Protocol):
@@ -737,26 +737,14 @@ class PrepareProtocol:
 @disjoint_base
 class Row(Sequence[Any]):
     def __new__(cls, cursor: Cursor, data: tuple[Any, ...], /) -> Self: ...
-    def keys(self) -> list[str]:
-        """Returns the keys of the row."""
-        ...
-    @overload
-    def __getitem__(self, key: int | str, /) -> Any:
-        """Return self[key]."""
-        ...
-    @overload
-    def __getitem__(self, key: slice, /) -> tuple[Any, ...]:
-        """Return self[key]."""
-        ...
-    def __hash__(self) -> int:
-        """Return hash(self)."""
-        ...
-    def __iter__(self) -> Iterator[Any]:
-        """Implement iter(self)."""
-        ...
-    def __len__(self) -> int:
-        """Return len(self)."""
-        ...
+    def keys(self) -> list[str]: ...
+    @overload  # Note: really needs int instead of SupportsIndex
+    def __getitem__(self, key: int | str, /) -> Any: ...
+    @overload  # Note: SupportsIndex does work within slices.
+    def __getitem__(self, key: slice[SupportsIndex | None], /) -> tuple[Any, ...]: ...
+    def __hash__(self) -> int: ...
+    def __iter__(self) -> Iterator[Any]: ...
+    def __len__(self) -> int: ...
     # These return NotImplemented for anything that is not a Row.
     def __eq__(self, value: object, /) -> bool:
         """Return self==value."""
