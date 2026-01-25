@@ -152,7 +152,7 @@ django-filter==25.2.*
 tabulate==0.9.*
 pywin32==311.*
 python-dateutil==2.9.*
-httplib2==0.31.1
+httplib2==0.31.2
 jwcrypto==1.5.*
 jmespath==1.1.*
 click-web==0.8.*
