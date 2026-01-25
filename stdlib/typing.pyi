@@ -1096,12 +1096,14 @@ _ContainerT_contra = TypeVar("_ContainerT_contra", contravariant=True, default=A
 
 @runtime_checkable
 class Container(Protocol[_ContainerT_contra]):
+    """A generic version of collections.abc.Container."""
     # This is generic more on vibes than anything else
     @abstractmethod
     def __contains__(self, x: _ContainerT_contra, /) -> bool: ...
 
 @runtime_checkable
 class Collection(Iterable[_T_co], Container[Any], Protocol[_T_co]):
+    """A generic version of collections.abc.Collection."""
     # Note: need to use Container[Any] instead of Container[_T_co] to ensure covariance.
     # Implement Sized (but don't have it as a base class).
     @abstractmethod
@@ -1438,7 +1440,14 @@ class MutableMapping(Mapping[_KT, _VT]):
         """
         ...
     @overload
-    def update(self: SupportsGetItem[str, _VT], /, **kwargs: _VT) -> None: ...
+    def update(self: SupportsGetItem[str, _VT], /, **kwargs: _VT) -> None:
+        """
+        D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
+        ...
 
 Text = str
 
