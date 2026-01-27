@@ -922,7 +922,14 @@ class NewSSLContext(Setting):
 
     def ssl_context(config: Config, default_ssl_context_factory: Callable[[], SSLContext]) -> SSLContext: ...  # type: ignore[misc] # pyright: ignore[reportGeneralTypeIssues]
 
-def validate_proxy_protocol(val: str | bool | None) -> str: ...
+def validate_proxy_protocol(val: str | bool | None) -> str:
+    """
+    Validate proxy_protocol setting.
+
+    Accepts: off, false, v1, v2, auto, true
+    Returns normalized value: off, v1, v2, or auto
+    """
+    ...
 
 class ProxyProtocol(Setting):
     name: ClassVar[str]

@@ -10,6 +10,18 @@ from .._types import _AddressType
 
 def get_parser(
     cfg: Config, source: socket.socket | Iterable[bytes], source_addr: _AddressType
-) -> UWSGIParser | RequestParser: ...
+) -> UWSGIParser | RequestParser:
+    """
+    Get appropriate parser based on protocol config.
+
+    Args:
+        cfg: Gunicorn config object
+        source: Socket or iterable source
+        source_addr: Source address tuple or None
+
+    Returns:
+        Parser instance (RequestParser or UWSGIParser)
+    """
+    ...
 
 __all__ = ["Message", "Request", "RequestParser", "get_parser"]
