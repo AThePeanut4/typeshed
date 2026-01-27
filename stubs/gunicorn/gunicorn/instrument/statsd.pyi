@@ -4,6 +4,7 @@ import logging
 import socket
 from collections.abc import Mapping
 from datetime import timedelta
+from typing import Final
 
 from gunicorn.config import Config
 from gunicorn.glogging import Logger
@@ -13,12 +14,13 @@ from gunicorn.http.wsgi import Response
 from .._types import _EnvironType
 from ..glogging import _LogLevelType
 
-METRIC_VAR: str
-VALUE_VAR: str
-MTYPE_VAR: str
-GAUGE_TYPE: str
-COUNTER_TYPE: str
-HISTOGRAM_TYPE: str
+METRIC_VAR: Final = "metric"
+VALUE_VAR: Final = "value"
+MTYPE_VAR: Final = "mtype"
+GAUGE_TYPE: Final = "gauge"
+COUNTER_TYPE: Final = "counter"
+HISTOGRAM_TYPE: Final = "histogram"
+TIMER_TYPE: Final = "timer"
 
 class Statsd(Logger):
     """
@@ -109,4 +111,5 @@ class Statsd(Logger):
     def gauge(self, name: str, value: float) -> None: ...
     def increment(self, name: str, value: int, sampling_rate: float = 1.0) -> None: ...
     def decrement(self, name: str, value: int, sampling_rate: float = 1.0) -> None: ...
+    def timer(self, name: str, value: float) -> None: ...
     def histogram(self, name: str, value: float) -> None: ...

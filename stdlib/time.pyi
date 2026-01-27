@@ -25,10 +25,17 @@ if it is -1, mktime() should guess based on the date and time.
 
 import sys
 from _typeshed import structseq
-from typing import Any, Final, Literal, Protocol, final, type_check_only
+from typing import Any, Final, Literal, Protocol, SupportsFloat, SupportsIndex, final, type_check_only
 from typing_extensions import TypeAlias
 
 _TimeTuple: TypeAlias = tuple[int, int, int, int, int, int, int, int, int]
+
+if sys.version_info >= (3, 15):
+    # anticipate on https://github.com/python/cpython/pull/139224
+    _SupportsFloatOrIndex: TypeAlias = SupportsFloat | SupportsIndex
+else:
+    # before, time functions only accept (subclass of) float, *not* SupportsFloat
+    _SupportsFloatOrIndex: TypeAlias = float | SupportsIndex
 
 altzone: int
 daylight: int
@@ -124,129 +131,15 @@ class struct_time(structseq[Any | int], _TimeTuple):
         """offset from UTC in seconds"""
         ...
 
-def asctime(time_tuple: _TimeTuple | struct_time = ..., /) -> str:
-    """
-    asctime([tuple]) -> string
-
-    Convert a time tuple to a string, e.g. 'Sat Jun 06 16:26:11 1998'.
-    When the time tuple is not present, current time as returned by localtime()
-    is used.
-    """
-    ...
-def ctime(seconds: float | None = None, /) -> str:
-    """
-    ctime(seconds) -> string
-
-    Convert a time in seconds since the Epoch to a string in local time.
-    This is equivalent to asctime(localtime(seconds)). When the time tuple is
-    not present, current time as returned by localtime() is used.
-    """
-    ...
-def gmtime(seconds: float | None = None, /) -> struct_time:
-    """
-    gmtime([seconds]) -> (tm_year, tm_mon, tm_mday, tm_hour, tm_min,
-                           tm_sec, tm_wday, tm_yday, tm_isdst)
-
-    Convert seconds since the Epoch to a time tuple expressing UTC (a.k.a.
-    GMT).  When 'seconds' is not passed in, convert the current time instead.
-
-    If the platform supports the tm_gmtoff and tm_zone, they are available as
-    attributes only.
-    """
-    ...
-def localtime(seconds: float | None = None, /) -> struct_time:
-    """
-    localtime([seconds]) -> (tm_year,tm_mon,tm_mday,tm_hour,tm_min,
-                              tm_sec,tm_wday,tm_yday,tm_isdst)
-
-    Convert seconds since the Epoch to a time tuple expressing local time.
-    When 'seconds' is not passed in, convert the current time instead.
-    """
-    ...
-def mktime(time_tuple: _TimeTuple | struct_time, /) -> float:
-    """
-    mktime(tuple) -> floating-point number
-
-    Convert a time tuple in local time to seconds since the Epoch.
-    Note that mktime(gmtime(0)) will not generally return zero for most
-    time zones; instead the returned value will either be equal to that
-    of the timezone or altzone attributes on the time module.
-    """
-    ...
-def sleep(seconds: float, /) -> None:
-    """
-    sleep(seconds)
-
-    Delay execution for a given number of seconds.  The argument may be
-    a floating-point number for subsecond precision.
-    """
-    ...
-def strftime(format: str, time_tuple: _TimeTuple | struct_time = ..., /) -> str:
-    """
-    strftime(format[, tuple]) -> string
-
-    Convert a time tuple to a string according to a format specification.
-    See the library reference manual for formatting codes. When the time tuple
-    is not present, current time as returned by localtime() is used.
-
-    Commonly used format codes:
-
-    %Y  Year with century as a decimal number.
-    %m  Month as a decimal number [01,12].
-    %d  Day of the month as a decimal number [01,31].
-    %H  Hour (24-hour clock) as a decimal number [00,23].
-    %M  Minute as a decimal number [00,59].
-    %S  Second as a decimal number [00,61].
-    %z  Time zone offset from UTC.
-    %a  Locale's abbreviated weekday name.
-    %A  Locale's full weekday name.
-    %b  Locale's abbreviated month name.
-    %B  Locale's full month name.
-    %c  Locale's appropriate date and time representation.
-    %I  Hour (12-hour clock) as a decimal number [01,12].
-    %p  Locale's equivalent of either AM or PM.
-
-    Other codes may be available on your platform.  See documentation for
-    the C library strftime function.
-    """
-    ...
-def strptime(data_string: str, format: str = "%a %b %d %H:%M:%S %Y", /) -> struct_time:
-    """
-    strptime(string, format) -> struct_time
-
-    Parse a string to a time tuple according to a format specification.
-    See the library reference manual for formatting codes (same as
-    strftime()).
-
-    Commonly used format codes:
-
-    %Y  Year with century as a decimal number.
-    %m  Month as a decimal number [01,12].
-    %d  Day of the month as a decimal number [01,31].
-    %H  Hour (24-hour clock) as a decimal number [00,23].
-    %M  Minute as a decimal number [00,59].
-    %S  Second as a decimal number [00,61].
-    %z  Time zone offset from UTC.
-    %a  Locale's abbreviated weekday name.
-    %A  Locale's full weekday name.
-    %b  Locale's abbreviated month name.
-    %B  Locale's full month name.
-    %c  Locale's appropriate date and time representation.
-    %I  Hour (12-hour clock) as a decimal number [01,12].
-    %p  Locale's equivalent of either AM or PM.
-
-    Other codes may be available on your platform.  See documentation for
-    the C library strftime function.
-    """
-    ...
-def time() -> float:
-    """
-    time() -> floating-point number
-
-    Return the current time in seconds since the Epoch.
-    Fractions of a second may be present if the system clock provides them.
-    """
-    ...
+def asctime(time_tuple: _TimeTuple | struct_time = ..., /) -> str: ...
+def ctime(seconds: _SupportsFloatOrIndex | None = None, /) -> str: ...
+def gmtime(seconds: _SupportsFloatOrIndex | None = None, /) -> struct_time: ...
+def localtime(seconds: _SupportsFloatOrIndex | None = None, /) -> struct_time: ...
+def mktime(time_tuple: _TimeTuple | struct_time, /) -> float: ...
+def sleep(seconds: _SupportsFloatOrIndex, /) -> None: ...
+def strftime(format: str, time_tuple: _TimeTuple | struct_time = ..., /) -> str: ...
+def strptime(data_string: str, format: str = "%a %b %d %H:%M:%S %Y", /) -> struct_time: ...
+def time() -> float: ...
 
 if sys.platform != "win32":
     def tzset() -> None:

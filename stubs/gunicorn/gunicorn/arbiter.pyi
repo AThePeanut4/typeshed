@@ -1,3 +1,4 @@
+from queue import SimpleQueue
 from types import FrameType
 from typing import ClassVar
 
@@ -21,11 +22,11 @@ class Arbiter:
     START_CTX: ClassVar[dict[int | str, str | list[str]]]
     LISTENERS: ClassVar[list[BaseSocket]]
     WORKERS: ClassVar[dict[int, Worker]]
-    PIPE: ClassVar[list[int]]
-    SIG_QUEUE: ClassVar[list[int]]
+    WAKEUP_REQUEST: ClassVar[int]
     SIGNALS: ClassVar[list[int]]
     SIG_NAMES: ClassVar[dict[int, str]]
     log: GLogger | None
+    SIG_QUEUE: SimpleQueue[int]
     pidfile: Pidfile | None
     systemd: bool
     worker_age: int
@@ -56,88 +57,25 @@ class Arbiter:
         """
         ...
     def signal(self, sig: int, frame: FrameType | None) -> None: ...
-    def run(self) -> None:
-        """Main master loop."""
-        ...
-    def handle_chld(self, sig: int, frame: FrameType | None) -> None:
-        """SIGCHLD handling"""
-        ...
-    def handle_hup(self) -> None:
-        """
-        HUP handling.
-        - Reload configuration
-        - Start the new worker processes with a new configuration
-        - Gracefully shutdown the old worker processes
-        """
-        ...
-    def handle_term(self) -> None:
-        """SIGTERM handling"""
-        ...
-    def handle_int(self) -> None:
-        """SIGINT handling"""
-        ...
-    def handle_quit(self) -> None:
-        """SIGQUIT handling"""
-        ...
-    def handle_ttin(self) -> None:
-        """
-        SIGTTIN handling.
-        Increases the number of workers by one.
-        """
-        ...
-    def handle_ttou(self) -> None:
-        """
-        SIGTTOU handling.
-        Decreases the number of workers by one.
-        """
-        ...
-    def handle_usr1(self) -> None:
-        """
-        SIGUSR1 handling.
-        Kill all workers by sending them a SIGUSR1
-        """
-        ...
-    def handle_usr2(self) -> None:
-        """
-        SIGUSR2 handling.
-        Creates a new arbiter/worker set as a fork of the current
-        arbiter without affecting old workers. Use this to do live
-        deployment with the ability to backout a change.
-        """
-        ...
-    def handle_winch(self) -> None:
-        """SIGWINCH handling"""
-        ...
+    def run(self) -> None: ...
+    def signal_chld(self, sig: int, frame: FrameType | None) -> None: ...
+    def handle_chld(self) -> None: ...
+    handle_cld = handle_chld
+    def handle_hup(self) -> None: ...
+    def handle_term(self) -> None: ...
+    def handle_int(self) -> None: ...
+    def handle_quit(self) -> None: ...
+    def handle_ttin(self) -> None: ...
+    def handle_ttou(self) -> None: ...
+    def handle_usr1(self) -> None: ...
+    def handle_usr2(self) -> None: ...
+    def handle_winch(self) -> None: ...
     def maybe_promote_master(self) -> None: ...
-    def wakeup(self) -> None:
-        """
-        Wake up the arbiter by writing to the PIPE
-        
-        """
-        ...
-    def halt(self, reason: str | None = None, exit_status: int = 0) -> None:
-        """halt arbiter """
-        ...
-    def sleep(self) -> None:
-        """
-        Sleep until PIPE is readable or we timeout.
-        A readable PIPE means a signal occurred.
-        """
-        ...
-    def stop(self, graceful: bool = True) -> None:
-        """
-        Stop workers
-
-        :attr graceful: boolean, If True (the default) workers will be
-        killed gracefully  (ie. trying to wait for the current connection)
-        """
-        ...
-    def reexec(self) -> None:
-        """
-        Relaunch the master and workers.
-        
-        """
-        ...
+    def wakeup(self) -> None: ...
+    def halt(self, reason: str | None = None, exit_status: int = 0) -> None: ...
+    def wait_for_signals(self, timeout: float | None = 1.0) -> list[int]: ...
+    def stop(self, graceful: bool = True) -> None: ...
+    def reexec(self) -> None: ...
     def reload(self) -> None: ...
     def murder_workers(self) -> None:
         """
