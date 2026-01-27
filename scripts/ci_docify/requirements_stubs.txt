@@ -48,7 +48,7 @@ flake8-typing-imports==1.17.*
 hnswlib==0.8.*
 shapely==2.1.*
 braintree==4.41.*
-gunicorn==23.0.*
+gunicorn==24.1.*
 aws-xray-sdk==2.15.*
 Jetson.GPIO==2.1.12
 ttkthemes==3.3.*
