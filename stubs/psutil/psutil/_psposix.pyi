@@ -62,38 +62,22 @@ class Negsignal(enum.IntEnum):
             if sys.version_info >= (3, 11):
                 SIGSTKFLT = -16
 
-def negsig_to_enum(num: int) -> int:
-    """Convert a negative signal value to an enum."""
-    ...
-def wait_pid(
+def negsig_to_enum(num: int) -> int: ...
+def convert_exit_code(status: int) -> int: ...
+def wait_pid_posix(
     pid: int,
     timeout: float | None = None,
-    proc_name: str | None = None,
     _waitpid: Unused = ...,
     _timer: Callable[[], float] = ...,
     _min: Callable[..., Incomplete] = ...,
     _sleep: Callable[[float], None] = ...,
     _pid_exists: Callable[[int], bool] = ...,
-) -> int | None:
-    """
-    Wait for a process PID to terminate.
-
-    If the process terminated normally by calling exit(3) or _exit(2),
-    or by returning from main(), the return value is the positive integer
-    passed to *exit().
-
-    If it was terminated by a signal it returns the negated value of the
-    signal which caused the termination (e.g. -SIGTERM).
-
-    If PID is not a children of os.getpid() (current process) just
-    wait until the process disappears and return None.
-
-    If PID does not exist at all return None immediately.
-
-    If *timeout* != None and process is still alive raise TimeoutExpired.
-    timeout=0 is also possible (either return immediately or raise).
-    """
-    ...
+) -> int | None: ...
+def wait_pid_pidfd_open(pid: int, timeout: float | None = None) -> int | None: ...
+def wait_pid_kqueue(pid: int, timeout: float | None = None) -> int | None: ...
+def can_use_pidfd_open() -> bool: ...
+def can_use_kqueue() -> bool: ...
+def wait_pid(pid: int, timeout: float | None = None) -> int | None: ...
 
 if sys.platform == "darwin":
     def disk_usage(path: StrOrBytesPath) -> ntp.sdiskusage: ...
