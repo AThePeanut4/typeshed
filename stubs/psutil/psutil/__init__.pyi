@@ -620,18 +620,21 @@ class Process:
         ...
     def wait(self, timeout: float | None = None) -> int:
         """
-        Wait for process to terminate and, if process is a children
+        Wait for process to terminate, and if process is a children
         of os.getpid(), also return its exit code, else None.
         On Windows there's no such limitation (exit code is always
         returned).
 
-        If the process is already terminated immediately return None
+        If the process is already terminated, immediately return None
         instead of raising NoSuchProcess.
 
         If *timeout* (in seconds) is specified and process is still
-        alive raise TimeoutExpired.
+        alive, raise TimeoutExpired.
 
-        To wait for multiple Process(es) use psutil.wait_procs().
+        If *timeout=0* either return immediately or raise
+        TimeoutExpired (non-blocking).
+
+        To wait for multiple Process objects use psutil.wait_procs().
         """
         ...
     def net_connections(self, kind: str = "inet") -> list[_ntp.pconn]:
