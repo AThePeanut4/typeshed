@@ -52,7 +52,7 @@ gunicorn==24.1.*
 aws-xray-sdk==2.15.*
 Jetson.GPIO==2.1.12
 ttkthemes==3.3.*
-yt-dlp==2025.12.08
+yt-dlp==2026.01.29
 flake8-docstrings==1.7.*
 flake8-rst-docstrings==0.4.*
 docker==7.1.*
